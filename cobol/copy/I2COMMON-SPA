@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,50 +17,50 @@
       ********************************************************************
       *****************************************************************
       *
-      *    Æþ±¡´µ¼Ô¸¡º÷¾ðÊóÀßÄê ¶¦ÄÌ£Ó£Ð£Á(SPA-WORK ¤ÎÆâÍÆ)
+      *    å…¥é™¢æ‚£è€…æ¤œç´¢æƒ…å ±è¨­å®š å…±é€šï¼³ï¼°ï¼¡(SPA-WORK ã®å†…å®¹)
       *          
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        01  SPA-I2KYOUTU.
       *
            05  SPA-I20-CLIENT-SAVE          PIC X(01).
       *
-      *·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
            05  SPA-I2IDCD                   PIC X(04).
-      *·Ù¹ð²èÌÌ¤è¤ê
+      *è­¦å‘Šç”»é¢ã‚ˆã‚Š
            05  SPA-I2ID1-AREA. 
                07  SPA-I2ID1-FLG            PIC X(02).
       *
-      *        I20¢«¢ªI22Á«°Ü¾ðÊó
+      *        I20â†â†’I22é·ç§»æƒ…å ±
            05  SPA-I22-SENI-AREA.
                07  SPA-I22-PROC-FLG     PIC 9(01).
-      *        ¥Õ¥¡¥¤¥ëÌ¾(IO)
+      *        ãƒ•ã‚¡ã‚¤ãƒ«å(IO)
                07  SPA-I22-FILENAME     PIC X(200).
-      *        ³«»Ï·ï¿ô¡Ê¥Ú¡¼¥¸¿ô¡Ë(I)
+      *        é–‹å§‹ä»¶æ•°ï¼ˆãƒšãƒ¼ã‚¸æ•°ï¼‰(I)
                07  SPA-I22-STNUM        PIC 9(09).
-      *        ½ªÎ»·ï¿ô¡Ê¥Ú¡¼¥¸¿ô¡Ë(I)
+      *        çµ‚äº†ä»¶æ•°ï¼ˆãƒšãƒ¼ã‚¸æ•°ï¼‰(I)
                07  SPA-I22-EDNUM        PIC 9(09).
-      *        ³«»Ï·ï¿ô(O)
+      *        é–‹å§‹ä»¶æ•°(O)
                07  SPA-I22-STKNS        PIC 9(09).
-      *        ½ªÎ»·ï¿ô(O)
+      *        çµ‚äº†ä»¶æ•°(O)
                07  SPA-I22-EDKNS        PIC 9(09).
-      *        ³«»Ï¥Ú¡¼¥¸¿ô(O)...°õºþ½èÍý»þ¤Î¤ßÀßÄê
+      *        é–‹å§‹ãƒšãƒ¼ã‚¸æ•°(O)...å°åˆ·å‡¦ç†æ™‚ã®ã¿è¨­å®š
                07  SPA-I22-STPAGE       PIC 9(09).
-      *        ½ªÎ»¥Ú¡¼¥¸¿ô(O)...°õºþ½èÍý»þ¤Î¤ßÀßÄê
+      *        çµ‚äº†ãƒšãƒ¼ã‚¸æ•°(O)...å°åˆ·å‡¦ç†æ™‚ã®ã¿è¨­å®š
                07  SPA-I22-EDPAGE       PIC 9(09).
-      *        ¥Õ¥¡¥¤¥ë½ÐÎÏÀè
+      *        ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å…ˆ
                07  SPA-I22-FILE         PIC  X(01).
-      *        Ê¸»ú¥³¡¼¥É
+      *        æ–‡å­—ã‚³ãƒ¼ãƒ‰
                07  SPA-I22-CDKBN        PIC  X(01).
-      *        Á«°Ü¸µ²èÌÌ
+      *        é·ç§»å…ƒç”»é¢
                07  SPA-I22-MOTOPG       PIC  X(10).
-      *        Ìá¤ë¡¿£Ï£Ë¥Õ¥é¥°(O)
+      *        æˆ»ã‚‹ï¼ï¼¯ï¼«ãƒ•ãƒ©ã‚°(O)
                07  SPA-I22-RTOK-FLG     PIC 9(01).
       *
-      *    I23Á«°Ü¾ðÊó
+      *    I23é·ç§»æƒ…å ±
            05  SPA-I23KYOTU.
                07  SPA-I23-SELHMS           PIC X(08).
                07  SPA-I23-FILESV-CHK-FLG   PIC 9(01).

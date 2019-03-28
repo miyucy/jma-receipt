@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,43 +16,43 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¸þÀº¿ÀÌôÂ¿ºÞÅêÍ¿¥µ¥Ö¥ë¡¼¥Á¥ó¥Ñ¥é¥á¥¿
+      *    å‘ç²¾ç¥žè–¬å¤šå‰¤æŠ•ä¸Žã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ãƒ‘ãƒ©ãƒ¡ã‚¿
       *                                   COPY (CPORCSPSYCHO.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCSPSYCHOAREA.
-      *    ¿ÇÎÅÆüÉÕ
+      *    è¨ºç™‚æ—¥ä»˜
            03  ORCSPSYCHO-SRYYMD       PIC X(08).
-      *    °åÌôÉÊ¥Æ¡¼¥Ö¥ë
+      *    åŒ»è–¬å“ãƒ†ãƒ¼ãƒ–ãƒ«
            03  ORCSPSYCHO-MEDICINE-TBL.
                05  ORCSPSYCHO-MEDICINE-OCC     OCCURS   50.
-      *            ÌôºÞ¥³¡¼¥É
+      *            è–¬å‰¤ã‚³ãƒ¼ãƒ‰
                    07  ORCSPSYCHO-SRYCD        PIC X(09).
-      *            Ìô²Á´ð½à¥³¡¼¥É
+      *            è–¬ä¾¡åŸºæº–ã‚³ãƒ¼ãƒ‰
                    07  ORCSPSYCHO-YAKKAKJNCD   PIC X(12).
-      *            ¿ÇÎÅ¼ïÊÌ
+      *            è¨ºç™‚ç¨®åˆ¥
                    07  ORCSPSYCHO-SRYSYUKBN    PIC X(03).
-      *            ²ó¿ô
+      *            å›žæ•°
                    07  ORCSPSYCHO-KAISU        PIC 9(03).
-      *    ÊÖµÑ
+      *    è¿”å´
            03  ORCSPSYCHO-OUT-AREA.
-      *        ÌôºÞËè¤ÎÊÖµÑ
+      *        è–¬å‰¤æ¯Žã®è¿”å´
                05  ORCSPSYCHO-MED-OUT-OCC      OCCURS   50.
-      *            ÌôºÞ¤Î¸úÇ½¶èÊ¬
+      *            è–¬å‰¤ã®åŠ¹èƒ½åŒºåˆ†
                    07  ORCSPSYCHO-FFECT-KBN    PIC 9(01).
-      *            ¼ïÎà¶èÊ¬
+      *            ç¨®é¡žåŒºåˆ†
                    07  ORCSPSYCHO-GROUP-KBN    PIC X(07).
-      *            Î×»þÅêÌô¶èÊ¬
+      *            è‡¨æ™‚æŠ•è–¬åŒºåˆ†
                    07  ORCSPSYCHO-RINJI-KBN    PIC X(01).
-      *        ¸þÀº¿ÀÌôÍ­
+      *        å‘ç²¾ç¥žè–¬æœ‰
                05  ORCSPSYCHO-FFECT-FLG    PIC 9(01).
-      *        Â¿ºÞÅêÍ¿·ë²Ì¡Ê¸úÇ½·ï¿ô¡Ë
-      *          ¡Ê1:¹³ÉÔ°ÂÌô¡¢2:¿çÌ²Ìô¡¢3:¹³¤¦¤ÄÌô¡¢4:¹³Àº¿ÀÉÂÌô¡Ë
+      *        å¤šå‰¤æŠ•ä¸Žçµæžœï¼ˆåŠ¹èƒ½ä»¶æ•°ï¼‰
+      *          ï¼ˆ1:æŠ—ä¸å®‰è–¬ã€2:ç¡çœ è–¬ã€3:æŠ—ã†ã¤è–¬ã€4:æŠ—ç²¾ç¥žç—…è–¬ï¼‰
                05  ORCSPSYCHO-COUNT        PIC 9(02)   OCCURS   4.
-      *        Â¿ºÞÅêÍ¿Í­Ìµ¡Ê1:Â¿ºÞÅêÍ¿¤Ë³ºÅö¤¹¤ë)
+      *        å¤šå‰¤æŠ•ä¸Žæœ‰ç„¡ï¼ˆ1:å¤šå‰¤æŠ•ä¸Žã«è©²å½“ã™ã‚‹)
                05  ORCSPSYCHO-TAZAI        PIC 9(01).
       *

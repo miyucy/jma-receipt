@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    HAORI¥ê¥¯¥¨¥¹¥È¡¡¥ê¥Ï¥Ó¥ê¥³¥á¥ó¥ÈÅùÆþÎÏ¾ðÊó (°ìÂÎ²½)
+      *    HAORIãƒªã‚¯ã‚¨ã‚¹ãƒˆã€€ãƒªãƒãƒ“ãƒªã‚³ãƒ¡ãƒ³ãƒˆç­‰å…¥åŠ›æƒ…å ± (ä¸€ä½“åŒ–)
       *                                     COPY (CPMDCXMLV3REQ5.INC)
       ******************************************************************
        01  XML-MEDICALV3REQ5.
@@ -29,45 +29,45 @@
            03  MDCREQ-MODE             PIC S9(9)   BINARY.
            03  MDCREQ-RECORDNAME       PIC X(128).
            03  MDCREQ-MEDICALREQ.
-      *       ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *       ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
               05  MDCREQ-REQUEST-NUMBER    PIC X(2).
-      *       UID¡ÊÅÅ»Ò¥«¥ë¥Æ¡Ë
+      *       UIDï¼ˆé›»å­ã‚«ãƒ«ãƒ†ï¼‰
               05  MDCREQ-KARTE-UID         PIC X(36).
-      *       ´ð½àÆüÉÕ
+      *       åŸºæº–æ—¥ä»˜
       *****   05  MDCREQ-BASE-DATE         PIC X(10).
-      *       ´µ¼ÔÈÖ¹æ
+      *       æ‚£è€…ç•ªå·
               05  MDCREQ-PATIENTID         PIC X(20).
-      *       UID¡Ê¥ª¥ë¥«¡Ë
+      *       UIDï¼ˆã‚ªãƒ«ã‚«ï¼‰
               05  MDCREQ-ORCA-UID          PIC X(36).
       *
-      *       ³«»ÏÆüÁªÂò¡¦¹¹¿·ÆâÍÆ¡Ê¥ê¥¯¥¨¥¹¥È¡á£°£²¡Á¡Ë
+      *       é–‹å§‹æ—¥é¸æŠžãƒ»æ›´æ–°å†…å®¹ï¼ˆãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼ï¼ï¼’ã€œï¼‰
               05  MDCREQ-SANTEIRRK-INFO.
-      *           ½èÍý¶èÊ¬¡ÊNEW,MODIFY,DELETE,¶õÇò)
+      *           å‡¦ç†åŒºåˆ†ï¼ˆNEW,MODIFY,DELETE,ç©ºç™½)
                   07  MDCREQ-SANTEI-MODE           PIC X(6).
-      *           ³«»ÏÆü¿ÇÎÅ¥³¡¼¥É
+      *           é–‹å§‹æ—¥è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                   07  MDCREQ-PRSCRPT-CODE          PIC X(9).
-      *           ¿ÇÎÅÌ¾¾Î
+      *           è¨ºç™‚åç§°
                   07  MDCREQ-PRSCRPT-NAME          PIC X(80).
-      *           »»ÄêÇ¯·î
+      *           ç®—å®šå¹´æœˆ
                   07  MDCREQ-PERFORM-YM            PIC X(07).
-      *           ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *           ä¿é™ºçµ„åˆã›ç•ªå·
                   07  MDCREQ-COMBINATION-NUMBER    PIC X(04).
-      *           »»ÄêÆü
+      *           ç®—å®šæ—¥
                   07  MDCREQ-PERFORM-DATE-G.
                       09  MDCREQ-PERFORM-DAY       PIC X(02)
                                                    OCCURS   31.
       *
-      *       ¥³¥á¥ó¥È¡Ê¥ê¥¯¥¨¥¹¥È¡á£°£³¡Ë
+      *       ã‚³ãƒ¡ãƒ³ãƒˆï¼ˆãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼ï¼ï¼“ï¼‰
               05  MDCREQ-COMMNT-INFO.
-      *           ½èÍý¶èÊ¬¡ÊMODIFY)(³«»ÏÆüÁªÂò¤Î½èÍý¶èÊ¬¡á¶õÇò»þ¤Î¤ß¡Ë
+      *           å‡¦ç†åŒºåˆ†ï¼ˆMODIFY)(é–‹å§‹æ—¥é¸æŠžã®å‡¦ç†åŒºåˆ†ï¼ç©ºç™½æ™‚ã®ã¿ï¼‰
                   07  MDCREQ-COMMNT-MODE           PIC X(6).
-      *           »»ÄêÆü
+      *           ç®—å®šæ—¥
                   07  MDCREQ-COMMNT-DAY-TBL        OCCURS   31.
-      *               »»ÄêÆü
+      *               ç®—å®šæ—¥
                       09  MDCREQ-COMMNT-DAY            PIC X(02).
-      *               ½ªÎ»Æü
+      *               çµ‚äº†æ—¥
                       09  MDCREQ-END-DATE              PIC X(10).
-      *               ¥³¥á¥ó¥È£±
+      *               ã‚³ãƒ¡ãƒ³ãƒˆï¼‘
                       09  MDCREQ-COMMNT-TBL-G.
                           11  MDCREQ-COMMNT-TBL        OCCURS   50.
                               13  MDCREQ-COMMNT        PIC X(80).

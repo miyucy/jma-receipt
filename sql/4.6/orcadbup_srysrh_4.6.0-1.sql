@@ -1,6 +1,6 @@
 --
 -- tbl_srysrh
--- zaikaisu,suryototal,srysyuryo1-5 ди╡ц
+-- zaikaisu,suryototal,srysyuryo1-5 Х©╫Е┼═
 --
 
 \set ON_ERROR_STOP

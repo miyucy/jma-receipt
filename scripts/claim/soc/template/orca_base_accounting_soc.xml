@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="EUC-JP" ?>
 <!-- 
-ÅÀ¿ô¶â³Û¥â¥¸¥å¡¼¥ë²ñ·×½ªÎ»¾ðÊó¡¢¥Æ¥ó¥×¥ì¡¼¥ÈXML¥Õ¥¡¥¤¥ë
+ç‚¹æ•°é‡‘é¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ä¼šè¨ˆçµ‚äº†æƒ…å ±ã€ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆXMLãƒ•ã‚¡ã‚¤ãƒ«
 
-¥Ð¡¼¥¸¥ç¥ó2.0·Á¼°
+ãƒãƒ¼ã‚¸ãƒ§ãƒ³2.0å½¢å¼
 -->
 
 <Mml version="2.3" createDate="%M_RH_CD1%" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mmlCm="http://www.medxml.net/MML/SharedComponent/Common/1.0" xmlns:mmlNm="http://www.medxml.net/MML/SharedComponent/Name/1.0" xmlns:mmlFc="http://www.medxml.net/MML/SharedComponent/Facility/1.0" xmlns:mmlDp="http://www.medxml.net/MML/SharedComponent/Department/1.0" xmlns:mmlAd="http://www.medxml.net/MML/SharedComponent/Address/1.0" xmlns:mmlPh="http://www.medxml.net/MML/SharedComponent/Phone/1.0" xmlns:mmlPsi="http://www.medxml.net/MML/SharedComponent/PersonalizedInfo/1.0" xmlns:mmlCi="http://www.medxml.net/MML/SharedComponent/CreatorInfo/1.0" xmlns:mmlPi="http://www.medxml.net/MML/ContentModule/PatientInfo/1.0" xmlns:mmlBc="http://www.medxml.net/MML/ContentModule/BaseClinic/1.0" xmlns:mmlFcl="http://www.medxml.net/MML/ContentModule/FirstClinic/1.0" xmlns:mmlHi="http://www.medxml.net/MML/ContentModule/HealthInsurance/1.1" xmlns:mmlLs="http://www.medxml.net/MML/ContentModule/Lifestyle/1.0" xmlns:mmlPc="http://www.medxml.net/MML/ContentModule/ProgressCourse/1.0" xmlns:mmlRd="http://www.medxml.net/MML/ContentModule/RegisteredDiagnosis/1.0" xmlns:mmlSg="http://www.medxml.net/MML/ContentModule/Surgery/1.0" xmlns:mmlSm="http://www.medxml.net/MML/ContentModule/Summary/1.0" xmlns:mmlLb="http://www.medxml.net/MML/ContentModule/test/1.0" xmlns:mmlRp="http://www.medxml.net/MML/ContentModule/report/1.0" xmlns:mmlRe="http://www.medxml.net/MML/ContentModule/Referral/1.0" xmlns:mmlSc="http://www.medxml.net/MML/SharedComponent/Security/1.0" xmlns:claim="http://www.medxml.net/claim/claimModule/2.1" xmlns:claimA="http://www.medxml.net/claim/claimAmountModule/2.1">       
 	<MmlHeader>
-		<!-- ºîÀ®¼Ô¾ðÊó -->
+		<!-- ä½œæˆè€…æƒ…å ± -->
 		<!--  -->
 		<mmlCi:CreatorInfo>
 			<mmlPsi:PersonalizedInfo>
-				<!-- ºîÀ®¼Ô ¸Ä¿ÍID (¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤Ï¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹) -->
+				<!-- ä½œæˆè€… å€‹äººID (ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã¯ã€ã¯ãšã—ã¦ã„ã¾ã™) -->
 				<mmlCm:Id mmlCm:type="facility" mmlCm:tableId="MML0024">
 					%M_RX001_A%
 				</mmlCm:Id>
-				<!-- ºîÀ®¼Ô ¸Ä¿ÍÌ¾¾ðÊó -->
+				<!-- ä½œæˆè€… å€‹äººåæƒ…å ± -->
 				<mmlPsi:personName>
 					<mmlNm:Name mmlNm:repCode="I" mmlNm:tableId="MML0025">
 						<mmlNm:fullname>%M_RX001_B11%</mmlNm:fullname>
@@ -26,17 +26,17 @@
 						<mmlNm:degree>%M_RX001_B16%</mmlNm:degree>
 					</mmlNm:Name>
 				</mmlPsi:personName>
-				<!-- »ÜÀß¾ðÊó -->
+				<!-- æ–½è¨­æƒ…å ± -->
 				<mmlFc:Facility>
 					<mmlFc:name mmlFc:repCode="I" mmlFc:tableId="MML0025">
 						%M_RX001_C11%
 					</mmlFc:name>
-					<!-- insurance»ØÄê¤¬¤¢¤ë¾ì¹ç¡¢¼¡¤ÎID¥³¡¼¥É¤Ï¡¢ÊÝ¸±°åÎÅµ¡´Ø¥³¡¼¥É¤ò¥»¥Ã¥È¤·¤Þ¤¹ -->
+					<!-- insuranceæŒ‡å®šãŒã‚ã‚‹å ´åˆã€æ¬¡ã®IDã‚³ãƒ¼ãƒ‰ã¯ã€ä¿é™ºåŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã—ã¾ã™ -->
 					<mmlCm:Id mmlCm:type="insurance" mmlCm:tableId="MML0027">
 						%M_RX001_C2%
 					</mmlCm:Id>
 				</mmlFc:Facility>
-				<!-- ¿ÇÎÅ²Ê¾ðÊó -->
+				<!-- è¨ºç™‚ç§‘æƒ…å ± -->
 				<mmlDp:Department>
 					<mmlDp:name mmlDp:repCode="I" mmlDp:tableId="MML0025">
 						%M_RX001_D11%
@@ -45,7 +45,7 @@
 						%M_RX001_D2%
 					</mmlCm:Id>
 				</mmlDp:Department>
-				<!-- ½»½ê¾ðÊó -->
+				<!-- ä½æ‰€æƒ…å ± -->
 				<mmlPsi:addresses>
 					<mmlAd:Address mmlAd:repCode="I"%M_RX001_E18% mmlAd:tableId="MML0025">
 						<mmlAd:full>
@@ -71,11 +71,11 @@
 						</mmlAd:countryCode>
 					</mmlAd:Address>
 				</mmlPsi:addresses>
-				<!-- ¥á¡¼¥ë¥¢¥É¥ì¥¹ -->
+				<!-- ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ -->
 				<mmlPsi:emailAddresses>
 					<mmlCm:email>%M_RX001_F1%</mmlCm:email>
 				</mmlPsi:emailAddresses>
-				<!-- ÅÅÏÃÈÖ¹æ -->
+				<!-- é›»è©±ç•ªå· -->
 				<mmlPsi:phones>
 					<mmlPh:Phone%M_RX001_G17%>
 						<mmlPh:area>
@@ -99,12 +99,12 @@
 					</mmlPh:Phone>
 				</mmlPsi:phones>
 			</mmlPsi:PersonalizedInfo>
-			<!-- À¸À®¼Ô¤Î»ñ³Ê -->
+			<!-- ç”Ÿæˆè€…ã®è³‡æ ¼ -->
 			<mmlCi:creatorLicense mmlCi:tableId="MML0026">
 				%M_RX001_H1%
 			</mmlCi:creatorLicense>
 		</mmlCi:CreatorInfo>
-		<!-- ´µ¼Ô¼çID -->
+		<!-- æ‚£è€…ä¸»ID -->
 		<masterId>
 			<mmlCm:Id %M_RH_PIDSTYLE% mmlCm:tableId="MML0024">
 				%M_RH_PID%
@@ -112,7 +112,7 @@
 		</masterId>
 		<!-- table of content -->
 		<toc>
-			<!-- DTD¥ê¥¹¥È -->
+			<!-- DTDãƒªã‚¹ãƒˆ -->
 			<tocItem>http://www.medxml.net/MML/SharedComponent/Common/1.0</tocItem>
 			<tocItem>http://www.medxml.net/MML/SharedComponent/Name/1.0</tocItem>
 			<tocItem>http://www.medxml.net/MML/SharedComponent/Facility/1.0</tocItem>
@@ -123,8 +123,8 @@
 			<tocItem>http://www.medxml.net/MML/SharedComponent/CreatorInfo/1.0</tocItem>
 			<tocItem>http://www.medxml.net/claim/claimAmountModule/2.1</tocItem>
 		</toc>
-		<!-- scopePeriod¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢ºï½ü¤·¤Æ¤¤¤Þ¤¹ -->
-		<!-- ÅÅ»Ò½ðÌ¾¤Ê¤É¤Î°Å¹æ²½¾ðÊó -->
+		<!-- scopePeriodã¯çœç•¥å¯èƒ½ã§ã‚ã‚‹ãŸã‚ã€å‰Šé™¤ã—ã¦ã„ã¾ã™ -->
+		<!-- é›»å­ç½²åãªã©ã®æš—å·åŒ–æƒ…å ± -->
 		<encryptInfo>no encryption</encryptInfo>
 	</MmlHeader>
 	<!-- ============================================================ -->
@@ -132,33 +132,33 @@
 	<MmlBody>
 		<!-- ============================================================ -->
 		<!-- ============================================================ -->
-		<!-- Claim¾ðÊó -->
+		<!-- Claimæƒ…å ± -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="claimAmount">
-				<!-- ¥¢¥¯¥»¥¹¸¢¼ïÊÌ -->
+				<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨©ç¨®åˆ¥ -->
 				<securityLevel>
-					<!-- ¥¢¥¯¥»¥¹¸¢ -->
+					<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨© -->
 					%M_RI401_ACC1%
 				</securityLevel>
-				<!-- Ê¸½ñ¥¿¥¤¥È¥ë -->
+				<!-- æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ« -->
 				<title>
 					%M_RI401_TITLE%
 				</title>
-				<!-- Ê¸½ñID¾ðÊó -->
+				<!-- æ–‡æ›¸IDæƒ…å ± -->
 				<docId>
 					<uid>%M_RI401_UI%</uid>
 				</docId>
-				<!-- ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü -->
+				<!-- ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥ -->
 				<confirmDate>%M_RI401_KD%</confirmDate>
-				<!-- ºîÀ®¼Ô¾ðÊó -->
+				<!-- ä½œæˆè€…æƒ…å ± -->
 				<!--  -->
 				<mmlCi:CreatorInfo>
 					<mmlPsi:PersonalizedInfo>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍID (¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤Ï¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹) -->
+						<!-- ä½œæˆè€… å€‹äººID (ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã¯ã€ã¯ãšã—ã¦ã„ã¾ã™) -->
 						<mmlCm:Id mmlCm:type="facility" mmlCm:tableId="MML0024">
 							%M_RX401_A%
 						</mmlCm:Id>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍÌ¾¾ðÊó -->
+						<!-- ä½œæˆè€… å€‹äººåæƒ…å ± -->
 						<mmlPsi:personName>
 							<mmlNm:Name mmlNm:repCode="I" mmlNm:tableId="MML0025">
 								<mmlNm:fullname>%M_RX401_B11%</mmlNm:fullname>
@@ -169,17 +169,17 @@
 								<mmlNm:degree>%M_RX401_B16%</mmlNm:degree>
 							</mmlNm:Name>
 						</mmlPsi:personName>
-						<!-- »ÜÀß¾ðÊó -->
+						<!-- æ–½è¨­æƒ…å ± -->
 						<mmlFc:Facility>
 							<mmlFc:name mmlFc:repCode="I" mmlFc:tableId="MML0025">
 								%M_RX401_C11%
 							</mmlFc:name>
-							<!-- insurance»ØÄê¤¬¤¢¤ë¾ì¹ç¡¢¼¡¤ÎID¥³¡¼¥É¤Ï¡¢ÊÝ¸±°åÎÅµ¡´Ø¥³¡¼¥É¤ò¥»¥Ã¥È¤·¤Þ¤¹ -->
+							<!-- insuranceæŒ‡å®šãŒã‚ã‚‹å ´åˆã€æ¬¡ã®IDã‚³ãƒ¼ãƒ‰ã¯ã€ä¿é™ºåŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã—ã¾ã™ -->
 							<mmlCm:Id mmlCm:type="insurance" mmlCm:tableId="MML0027">
 								%M_RX401_C2%
 							</mmlCm:Id>
 						</mmlFc:Facility>
-						<!-- ¿ÇÎÅ²Ê¾ðÊó -->
+						<!-- è¨ºç™‚ç§‘æƒ…å ± -->
 						<mmlDp:Department>
 							<mmlDp:name mmlDp:repCode="I" mmlDp:tableId="MML0025">
 								%M_RX401_D11%
@@ -188,7 +188,7 @@
 								%M_RX401_D2%
 							</mmlCm:Id>
 						</mmlDp:Department>
-						<!-- ½»½ê¾ðÊó -->
+						<!-- ä½æ‰€æƒ…å ± -->
 						<mmlPsi:addresses>
 							<mmlAd:Address mmlAd:repCode="I"%M_RX401_E18% mmlAd:tableId="MML0025">
 								<mmlAd:full>
@@ -214,11 +214,11 @@
 								</mmlAd:countryCode>
 							</mmlAd:Address>
 						</mmlPsi:addresses>
-						<!-- ¥á¡¼¥ë¥¢¥É¥ì¥¹ -->
+						<!-- ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ -->
 						<mmlPsi:emailAddresses>
 							<mmlCm:email>%M_RX401_F1%</mmlCm:email>
 						</mmlPsi:emailAddresses>
-						<!-- ÅÅÏÃÈÖ¹æ -->
+						<!-- é›»è©±ç•ªå· -->
 						<mmlPsi:phones>
 							<mmlPh:Phone%M_RX401_G17%>
 								<mmlPh:area>
@@ -242,46 +242,46 @@
 							</mmlPh:Phone>
 						</mmlPsi:phones>
 					</mmlPsi:PersonalizedInfo>
-					<!-- À¸À®¼Ô¤Î»ñ³Ê -->
+					<!-- ç”Ÿæˆè€…ã®è³‡æ ¼ -->
 					<mmlCi:creatorLicense mmlCi:tableId="MML0026">
 						%M_RX401_H1%
 					</mmlCi:creatorLicense>
 				</mmlCi:CreatorInfo>
 				%M_RX401_I1%
 			</docInfo>
-			<!-- µ­ºÜÆâÍÆ -->
+			<!-- è¨˜è¼‰å†…å®¹ -->
 			<content>
 				<claimA:ClaimAmountModule>
 
-					<!-- ÅÀ¿ô¶â³Û¥Ø¥Ã¥À¾ðÊó -->
+					<!-- ç‚¹æ•°é‡‘é¡ãƒ˜ãƒƒãƒ€æƒ…å ± -->
 					<claimA:amountInformation%A_A1%%A_A2%%A_A3%%A_A4%%A_A5%%A_A6%%A_A7%%A_A8%%A_A9%%A_A10%>
-						<!-- ¿ÇÎÅ¼Â»Ü²Ê -->
+						<!-- è¨ºç™‚å®Ÿæ–½ç§‘ -->
 						<claimA:patientDepartment>
 							<mmlDp:Department>
-								<!-- ¿ÇÎÅ²ÊÌ¾¾Î -->
+								<!-- è¨ºç™‚ç§‘åç§° -->
 								<mmlDp:name%A_B2% mmlDp:tableId="MML0025">
 									%A_B1%
 								</mmlDp:name>
-								<!-- ¿ÇÎÅ²ÊID -->
+								<!-- è¨ºç™‚ç§‘ID -->
 								<mmlCm:Id%A_B5% mmlCm:tableId="MML0029">
 									%A_B4%
 								</mmlCm:Id>
 							</mmlDp:Department>
 						</claimA:patientDepartment>
-						<!-- ¿ÇÎÅ¼Â»ÜÉÂÅï -->
+						<!-- è¨ºç™‚å®Ÿæ–½ç—…æ£Ÿ -->
 						<claimA:patientWard>
 							<mmlDp:Department>
-								<!-- ÉÂÅï¿ÇÎÅ²ÊÌ¾¾Î -->
+								<!-- ç—…æ£Ÿè¨ºç™‚ç§‘åç§° -->
 								<mmlDp:name%A_C2% mmlDp:tableId="MML0025">
 									%A_C1%
 								</mmlDp:name>
-								<!-- ÉÂÅï¿ÇÎÅ²ÊID -->
+								<!-- ç—…æ£Ÿè¨ºç™‚ç§‘ID -->
 								<mmlCm:Id %A_C5% mmlCm:tableId="MML0029">
 									%A_C4%
 								</mmlCm:Id>
 							</mmlDp:Department>
 						</claimA:patientWard>
-						<!-- ·ò¹¯ÊÝ¸±¼ïÊÌ -->
+						<!-- å¥åº·ä¿é™ºç¨®åˆ¥ -->
 						<mmlHi:insuranceClass%A_D2%%A_D3%>
 							%A_D1%
 						</mmlHi:insuranceClass>
@@ -289,92 +289,92 @@
 
 
 
-<!-- ¿ÇÎÅ³ç¤ê¥»¥¯¥·¥ç¥ó[01-20] (·«¤êÊÖ¤·¤ÎºÝ¤Ë¡¢@@BUNDLE@@¤Ë01¡Á20¤Î¿ô»ú¤¬Æþ¤Ã¤ÆÃÖ´¹¤µ¤ì¤ë) -->
+<!-- è¨ºç™‚æ‹¬ã‚Šã‚»ã‚¯ã‚·ãƒ§ãƒ³[01-20] (ç¹°ã‚Šè¿”ã—ã®éš›ã«ã€@@BUNDLE@@ã«01ã€œ20ã®æ•°å­—ãŒå…¥ã£ã¦ç½®æ›ã•ã‚Œã‚‹) -->
 $Repeat, 30, @@BUNDLE@@, 2
 
-					<!-- ¿ÇÎÅ³ç¤ê¥»¥¯¥·¥ç¥ó   ¤½¤Î@@BUNDLE@@ -->
+					<!-- è¨ºç™‚æ‹¬ã‚Šã‚»ã‚¯ã‚·ãƒ§ãƒ³   ãã®@@BUNDLE@@ -->
 					<claimA:bundle%A_@@BUNDLE@@_01%%A_@@BUNDLE@@_02%>
-						<!-- ¿ÇÎÅ¹Ô°Ù¶èÊ¬Ì¾ -->
+						<!-- è¨ºç™‚è¡Œç‚ºåŒºåˆ†å -->
 						<claimA:className>%A_@@BUNDLE@@_03%</claimA:className>
-						<!-- ¹ç·×ÀÁµáÅÀ¿ô -->
+						<!-- åˆè¨ˆè«‹æ±‚ç‚¹æ•° -->
 						<claimA:claimBundlePoint>%A_@@BUNDLE@@_04%</claimA:claimBundlePoint>
-						<!-- ¹ç·×ÀÁµá³Û -->
+						<!-- åˆè¨ˆè«‹æ±‚é¡ -->
 						<claimA:claimBundleRate>%A_@@BUNDLE@@_05%</claimA:claimBundleRate>
-						<!-- ÍÑË¡ -->
+						<!-- ç”¨æ³• -->
 						<claimA:administration%A_@@BUNDLE@@_07%%A_@@BUNDLE@@_08%>
 							%A_@@BUNDLE@@_06%
 						</claimA:administration>
-						<!-- ÍÑË¡¥³¥á¥ó¥È -->
+						<!-- ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆ -->
 						<claimA:admMemo>%A_@@BUNDLE@@_09%</claimA:admMemo>
-						<!-- ²ó¿ô¤â¤·¤¯¤ÏÆü¿ô -->
+						<!-- å›žæ•°ã‚‚ã—ãã¯æ—¥æ•° -->
 						<claimA:bundleNumber>
 							%A_@@BUNDLE@@_10%
 						</claimA:bundleNumber>
-						<!-- ¼êµ»ÎÁ¹ç·×ÅÀ¿ô -->
+						<!-- æ‰‹æŠ€æ–™åˆè¨ˆç‚¹æ•° -->
 						<claimA:methodPoint>
 							%A_@@BUNDLE@@_11%
 						</claimA:methodPoint>
-						<!-- ºàÎÁÎÁ¹ç·×ÅÀ¿ô -->
+						<!-- ææ–™æ–™åˆè¨ˆç‚¹æ•° -->
 						<claimA:materialPoint>
 							%A_@@BUNDLE@@_12%
 						</claimA:materialPoint>
-						<!-- ÌôºÞÎÁ¹ç·×ÅÀ¿ô -->
+						<!-- è–¬å‰¤æ–™åˆè¨ˆç‚¹æ•° -->
 						<claimA:drugPoint>
 							%A_@@BUNDLE@@_13%
 						</claimA:drugPoint>
-						<!-- Êñ³ç¶èÊ¬Êñ³ç¥Õ¥é¥° -->
+						<!-- åŒ…æ‹¬åŒºåˆ†åŒ…æ‹¬ãƒ•ãƒ©ã‚° -->
 						<claimA:ppsClass>
 							%A_@@BUNDLE@@_14%
 						</claimA:ppsClass>
 
-<!-- ¿ÇÎÅ¹àÌÜ¥»¥¯¥·¥ç¥ó[01-20] (·«¤êÊÖ¤·¤ÎºÝ¤Ë¡¢@@ITEM@@¤Ë01¡Á20¤Î¿ô»ú¤¬Æþ¤Ã¤ÆÃÖ´¹¤µ¤ì¤ë) -->
+<!-- è¨ºç™‚é …ç›®ã‚»ã‚¯ã‚·ãƒ§ãƒ³[01-20] (ç¹°ã‚Šè¿”ã—ã®éš›ã«ã€@@ITEM@@ã«01ã€œ20ã®æ•°å­—ãŒå…¥ã£ã¦ç½®æ›ã•ã‚Œã‚‹) -->
 $Repeat, 30, @@ITEM@@, 2
-						<!-- ¿ÇÎÅ¹àÌÜ¥»¥¯¥·¥ç¥ó   ¤½¤Î@@ITEM@@ -->
+						<!-- è¨ºç™‚é …ç›®ã‚»ã‚¯ã‚·ãƒ§ãƒ³   ãã®@@ITEM@@ -->
 						<claimA:item%A_@@BUNDLE@@_@@ITEM@@_01%%A_@@BUNDLE@@_@@ITEM@@_02%%A_@@BUNDLE@@_@@ITEM@@_03%%A_@@BUNDLE@@_@@ITEM@@_04%%A_@@BUNDLE@@_@@ITEM@@_05%%A_@@BUNDLE@@_@@ITEM@@_06%>
-							<!-- °å»öÀÁµáÌ¾¾Î -->
+							<!-- åŒ»äº‹è«‹æ±‚åç§° -->
 							<claimA:name>%A_@@BUNDLE@@_@@ITEM@@_07%</claimA:name>
-							<!-- ¿ôÎÌ -->
+							<!-- æ•°é‡ -->
 							<claimA:number%A_@@BUNDLE@@_@@ITEM@@_09%%A_@@BUNDLE@@_@@ITEM@@_10%%A_@@BUNDLE@@_@@ITEM@@_11%>
 								%A_@@BUNDLE@@_@@ITEM@@_08%
 							</claimA:number>
-							<!-- ÀÁµáÅÀ¿ô -->
+							<!-- è«‹æ±‚ç‚¹æ•° -->
 							<claimA:claimPoint>%A_@@BUNDLE@@_@@ITEM@@_12%</claimA:claimPoint>
-							<!-- ÌÀºÙÃ±²Á -->
+							<!-- æ˜Žç´°å˜ä¾¡ -->
 							<claimA:claimRate>%A_@@BUNDLE@@_@@ITEM@@_13%</claimA:claimRate>
-							<!-- ½êÍ×»þ´Ö -->
+							<!-- æ‰€è¦æ™‚é–“ -->
 							<claimA:duration>%A_@@BUNDLE@@_@@ITEM@@_14%</claimA:duration>
-							<!-- Éô°Ì -->
+							<!-- éƒ¨ä½ -->
 							<claimA:location>%A_@@BUNDLE@@_@@ITEM@@_15%</claimA:location>
-							<!-- ¥Õ¥£¥ë¥à¾ðÊó -->
+							<!-- ãƒ•ã‚£ãƒ«ãƒ æƒ…å ± -->
 							<claimA:film>
-								<!-- ¥Õ¥£¥ë¥à¥µ¥¤¥º -->
+								<!-- ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚º -->
 								<claimA:filmSize%A_@@BUNDLE@@_@@ITEM@@_16_B%%A_@@BUNDLE@@_@@ITEM@@_16_C%%A_@@BUNDLE@@_@@ITEM@@_16_D%>
 									%A_@@BUNDLE@@_@@ITEM@@_16_A%
 								</claimA:filmSize>
-								<!-- ¥Õ¥£¥ë¥àËç¿ô -->
+								<!-- ãƒ•ã‚£ãƒ«ãƒ æžšæ•° -->
 								<claimA:filmNumber>
 									%A_@@BUNDLE@@_@@ITEM@@_16_E%
 								</claimA:filmNumber>
 							</claimA:film>
-							<!-- ´ØÏ¢¼êµ» -->
+							<!-- é–¢é€£æ‰‹æŠ€ -->
 							<claimA:event%A_@@BUNDLE@@_@@ITEM@@_18%%A_@@BUNDLE@@_@@ITEM@@_19%>
 								%A_@@BUNDLE@@_@@ITEM@@_17%
 							</claimA:event>
-							<!-- ¿ÇÎÅ¹àÌÜ¥á¥â -->
+							<!-- è¨ºç™‚é …ç›®ãƒ¡ãƒ¢ -->
 							<claimA:memo>
 								%A_@@BUNDLE@@_@@ITEM@@_20%
 							</claimA:memo>
 						</claimA:item>
 $EndRepeat
-<!-- ¿ÇÎÅ¹àÌÜ¥»¥¯¥·¥ç¥ó End -->
+<!-- è¨ºç™‚é …ç›®ã‚»ã‚¯ã‚·ãƒ§ãƒ³ End -->
 
-						<!-- ¥á¥â -->
+						<!-- ãƒ¡ãƒ¢ -->
 						<claimA:memo>
 							%A_@@BUNDLE@@_15%
 						</claimA:memo>
 					</claimA:bundle>
 $EndRepeat
-<!-- ¿ÇÎÅ³ç¤ê¥»¥¯¥·¥ç¥ó End -->
+<!-- è¨ºç™‚æ‹¬ã‚Šã‚»ã‚¯ã‚·ãƒ§ãƒ³ End -->
 
 				</claimA:ClaimAmountModule>
 			</content>

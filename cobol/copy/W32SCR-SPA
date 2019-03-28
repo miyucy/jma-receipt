@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,9 +15,9 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    �����Ź԰��������ӣУ�  
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *    包括診療行為設定情報ＳＰＡ  
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        01  SPA-W32.
@@ -26,7 +26,7 @@
                05  SPA-GMN-SYORI       PIC 9(01).
       *
                05  SPA-GMN-AREA.
-      *            ��ʬ������
+      *            区分コード
                    07  SPA-GMN-KBNCD-G.
                        09  SPA-GMN-KBNCD          PIC X(03).
                        09  SPA-GMN-KBNCD-F        PIC X(01).
@@ -54,27 +54,27 @@
                    07  SPA-GMN-SELNUM             PIC 9(02).
       *
                    07  SPA-GMN-AREA3.
-      *                ��绻����ˡ
+      *                包括算定方法
                        09  SPA-GMN-SANTEIHOU-G.
                            11  SPA-GMN-SANTEIHOU     PIC X(01).
                            11  SPA-GMN-SANTEIHOU-F   PIC X(01).
                            11  SPA-GMN-SANTEIHOU-MEI PIC X(38).
-      *                ��绻���ʬ
+      *                包括算定区分
                        09  SPA-GMN-SANTEIKBN-G.
                            11  SPA-GMN-SANTEIKBN     PIC X(01).
                            11  SPA-GMN-SANTEIKBN-F   PIC X(01).
                            11  SPA-GMN-SANTEIKBN-MEI PIC X(38).
-      *                ������ʬ
+      *                入外区分
                        09  SPA-GMN-NYUGAIKBN-G.
                            11  SPA-GMN-NYUGAIKBN     PIC X(01).
                            11  SPA-GMN-NYUGAIKBN-F   PIC X(01).
                            11  SPA-GMN-NYUGAIKBN-MEI PIC X(38).
-      *                �ݸ��ȹ礻��ʬ
+      *                保険組合せ区分
                        09  SPA-GMN-HKNCOMBIKBN-G.
                            11  SPA-GMN-HKNCOMBIKBN     PIC X(01).
                            11  SPA-GMN-HKNCOMBIKBN-F   PIC X(01).
                            11  SPA-GMN-HKNCOMBIKBN-MEI PIC X(38).
-      *                ���Ŷ�ʬ
+      *                診療区分
                        09  SPA-GMN-SRYKBN-ARA.
                            11  SPA-GMN-SRYKBN-TBL    OCCURS  13.
                                13  SPA-GMN-SRYKBN-G.
@@ -84,7 +84,7 @@
       *
       *
                05  SPA-GMN-INIT-G.
-      *            ��绻����ˡ
+      *            包括算定方法
                        09  SPA-GMN-SANTEIHOU-LST-G.
                            11  SPA-GMN-SANTEIHOU-LST
                                                    PIC X(40) OCCURS  10.
@@ -123,13 +123,13 @@
                        09  SPA-NAIB-KBNCD-LST     OCCURS   200.
                            11  SPA-NAIB-YUKOSTYMD     PIC X(08).
                            11  SPA-NAIB-YUKOEDYMD     PIC X(08).
-      *            �����ťǡ����δ���
+      *            包括診療データの期間
                    07  SPA-HKT-YUKOSTYMD       PIC X(08).
                    07  SPA-HKT-YUKOEDYMD       PIC X(08).
       *
-      *    ��������ʬ
+      *    包括処理区分
            03  SPA-W321-SYORIKKBN          PIC X(02).
-      *    ��祳���ɰ���(W321)
+      *    包括コード一覧(W321)
            03  SPA-W321-AREA.
                05  SPA-W321-CUR                PIC 9(02).
                05  SPA-W321-UPKBN              PIC 9(01).
@@ -152,7 +152,7 @@
                        09  SPA-W321-TEDYMD     PIC X(08).
       *
                05  SPA-W321-SELNUM             PIC 9(04).
-      *        ����ޥ�������
+      *        補助マスタ期間
                05  SPA-W321-ETENSU1-G.
                    07  SPA-W321-YUKOSTYMD      PIC X(08).
                    07  SPA-W321-YUKOEDYMD      PIC X(08).

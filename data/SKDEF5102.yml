@@ -1,17 +1,17 @@
 kanri_cd    : "5102"
-name        : "Ê¿¶Ñºß±¡Æü¿ô"
+name        : "å¹³å‡åœ¨é™¢æ—¥æ•°"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "BTU-HEIKINZAIKBN-NM"
-  item_jp   : "Ê¿¶Ñºß±¡Æü¿ôÌ¾¾Î"
+  item_jp   : "å¹³å‡åœ¨é™¢æ—¥æ•°åç§°"
   type      : "X"
   start     : 1
   length    : 12
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 13
   length    : 488

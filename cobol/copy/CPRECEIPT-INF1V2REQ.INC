@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥ쥻�ץȾ���ʥ쥻�ץȤ������������(xml2)
+      *    ＡＰＩレセプト情報（レセプトの枚数、点数）(xml2)
       *                                   COPY (CPRECEIPT-INF1V2REQ.INC)
       ******************************************************************
         01  XML-RECEIPT-INFREQ.
@@ -29,6 +29,6 @@
             02  RECEIPT-INFQ-MODE          PIC S9(9)   BINARY.
             02  RECEIPT-INFQ-RECORDNAME    PIC X(128).
             02  RECEIPT-INFQ-PATIENTREQ.
-      *         ����ǯ��
+      *         診療年月
                 03  RECEIPT-INFQ-PERFORM-MONTH PIC X(7).
       *

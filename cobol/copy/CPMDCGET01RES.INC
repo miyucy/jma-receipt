@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,72 +16,72 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹿��Ź԰پ�������ʼ��������
+      *    ＡＰＩレスポンス診療行為情報取得（受診履歴）
       *                                         COPY (CPMDCGET01RES.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
         01  XML-MEDICALGET01RES.
             02  MDC01RES-OBJECT              PIC X(36).
             02  MDC01RES-MODE                PIC S9(9)   BINARY.
             02  MDC01RES-MEDICALRES.
-      *       �»���
+      *       実施日
               03  MDC01RES-INFORMATION-DATE    PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  MDC01RES-INFORMATION-TIME    PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  MDC01RES-API-RESULT          PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  MDC01RES-API-RESULT-MSG      PIC X(100).
       *
               03  MDC01RES-RESKEY              PIC X(100).
-      *       ���Ծ���
+      *       患者情報
               03  MDC01RES-PATIENT-INFOMATION.
-      *           �����ֹ�
+      *           患者番号
                   05  MDC01RES-PATIENTID         PIC X(20).
-      *           ���Ի�̾
+      *           患者氏名
                   05  MDC01RES-NAME              PIC X(100).
-      *           ���ԥ��ʻ�̾
+      *           患者カナ氏名
                   05  MDC01RES-KANANAME          PIC X(100).
-      *           ������
+      *           誕生日
                   05  MDC01RES-BIRTHDAY          PIC X(10).
-      *           ����
+      *           性別
                   05  MDC01RES-SEX               PIC X(1).
-      *       �����������
+      *       受診履歴情報
               03  MDC01RES-MEDICAL-INF     OCCURS   150.
-      *           ��������
+      *           受診日付
                   05  MDC01RES-PERFORM-DATE        PIC X(10).
-      *           ���Ų�
+      *           診療科
                   05  MDC01RES-DEP-CODE            PIC X(02).
-      *           ���Ų�û��̾��
+      *           診療科短縮名称
                   05  MDC01RES-DEP-NAME            PIC X(20).
-      *           Ϣ��
+      *           連番
                   05  MDC01RES-NUMBER              PIC X(01).
-      *           �ݸ��ȹ礻�ֹ�
+      *           保険組合せ番号
                   05  MDC01RES-COMBINATION-NUMBER  PIC X(04).
-      *           �ݸ��ȹ礻����
+      *           保険組合せ情報
                   05  MDC01RES-INSURANCE-INFO.
-      *             �ݸ��μ���
+      *             保険の種類
                     06  MDC01RES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *             �ݸ��μ���̾��
+      *             保険の種類名称
                     06  MDC01RES-MAIN-INSURANCE-NAME    PIC X(20).
-      *             �ݸ����ֹ�
+      *             保険者番号
                     06  MDC01RES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *             ����
+      *             記号
                     06  MDC01RES-MAIN-MARK              PIC X(80).
-      *             �ֹ�
+      *             番号
                     06  MDC01RES-MAIN-NUMBER            PIC X(80).
-      *             �������
+      *             公費情報
                     06  MDC01RES-PUBLIC-INSURANCE-INFO
                                               OCCURS  4 TIMES.
-      *               ����μ���
+      *               公費の種類
                       07  MDC01RES-INSURANCE-CLASS         PIC X(03).
-      *               ����μ���̾��
+      *               公費の種類名称
                       07  MDC01RES-INSURANCE-NAME          PIC X(20).
-      *               ��ô���ֹ�
+      *               負担者番号
                       07  MDC01RES-PROVIDER-NUMBER         PIC X(08).
-      *               ������ֹ�
+      *               受給者番号
                       07  MDC01RES-RECIPIENT-NUMBER        PIC X(20).
       *

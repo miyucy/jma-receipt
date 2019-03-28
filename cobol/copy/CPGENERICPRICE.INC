@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ºÇÄãÌô²Á¥Þ¥¹¥¿  COPY (CPGENERICPRICE.INC)     *
+      *         æœ€ä½Žè–¬ä¾¡ãƒžã‚¹ã‚¿  COPY (CPGENERICPRICE.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/03/17  Ìô²Á·å¿ô¡¢°ìÈÌÌ¾¥³¡¼¥ÉÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.08.00    NACL-å¤šã€…ç´  16/03/17  è–¬ä¾¡æ¡æ•°ã€ä¸€èˆ¬åã‚³ãƒ¼ãƒ‰å¯¾å¿œ
       ************************************************************
       *01  GENERICPRICE-REC.
            03  GENERICPRICE-KEY.
-      *Ìô²Á´ð½à¥³¡¼¥É
+      *è–¬ä¾¡åŸºæº–ã‚³ãƒ¼ãƒ‰
                05  GENERICPRICE-YAKKAKJNCD   PIC  X(12).
-      *Í­¸ú´ü´Ö³«»Ï
+      *æœ‰åŠ¹æœŸé–“é–‹å§‹
                05  GENERICPRICE-YUKOSTYMD    PIC  X(08).
-      *Í­¸ú´ü´Ö½ªÎ»
+      *æœ‰åŠ¹æœŸé–“çµ‚äº†
                05  GENERICPRICE-YUKOEDYMD    PIC  X(08).
-      *Ìô²Á
+      *è–¬ä¾¡
            03  GENERICPRICE-PRICE            PIC  9(09)V9(3).
-      *°ìÈÌÌ¾¥³¡¼¥É
+      *ä¸€èˆ¬åã‚³ãƒ¼ãƒ‰
            03  GENERICPRICE-GECODE           PIC  X(12).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  GENERICPRICE-CREYMD           PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  GENERICPRICE-UPYMD            PIC  X(08).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  GENERICPRICE-UP-KEY.
                05  GENERICPRICE-UPYAKKAKJNCD PIC  X(12).
                05  GENERICPRICE-UPYUKOSTYMD  PIC  X(08).

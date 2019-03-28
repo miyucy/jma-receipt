@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,50 +16,50 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���饤����Ȱ����������                              *
+      *    クライアント印刷情報取得                              *
       *                         COPY  (CPORCSPRTCTRL.INC)        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSPRTCTRLAREA.
-      *�⡼��
+      *モード
            03  ORCSPRTCTRL-MODE          PIC X(01).
-      *�Хå�����Ƚ��
+      *バッチ処理判定
            03  ORCSPRTCTRL-BATCH-FLG     PIC 9(01).
-      *������
+      *入力値
            03  ORCSPRTCTRL-IN            OCCURS   10.
-      *    Ģɼ�����ȥ�
+      *    帳票タイトル
              05  ORCSPRTCTRL-TITLE-I     PIC X(256).
-      *�ˣţ�
+      *ＫＥＹ
              05  ORCSPRTCTRL-TBL-KEY     PIC X(08).
-      *Ϣ��
+      *連番
              05  ORCSPRTCTRL-RENNUM      PIC 9(04).
-      *���롼��
+      *グループ
              05  ORCSPRTCTRL-TBL-GROUP   PIC X(14).
       *UUID
              05  ORCSPRTCTRL-TBL-UUID    PIC X(36).
-      *������Ϣ��
+      *処理内連番
              05  ORCSPRTCTRL-SHORI-RENNUM
                                          PIC 9(04).
-      *������
+      *開始頁
              05  ORCSPRTCTRL-STPAGE
                                          PIC 9(05).
-      *��λ��
+      *終了頁
              05  ORCSPRTCTRL-EDPAGE
                                          PIC 9(05).
       *
-      *������
+      *出力値
            03  ORCSPRTCTRL-OUT.
              05  ORCSPRTCTRL-O           OCCURS   10.
-      *    Ģɼ�ѥ�
+      *    帳票パス
                07  ORCSPRTCTRL-PATH-O    PIC X(256).
-      *    Ģɼ�����ȥ�
+      *    帳票タイトル
                07  ORCSPRTCTRL-TITLE-O   PIC X(256).
-      *    ɽ��̵ͭ�ե饰
+      *    表示有無フラグ
                07  ORCSPRTCTRL-SHOWDIALOG  PIC S9(9)   BINARY.
-      *    ��ȥ饤���
+      *    リトライ回数
                07  ORCSPRTCTRL-NRETRY   PIC S9(9)   BINARY.
       *
       *

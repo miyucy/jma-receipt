@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    £¡£–£…°°∆˛±°ªÿº®‰µƒ¢…ºæ Û        COPY (CPFMSHIJI.INC)
+      *    Ôº°Ôº∞Ôº©„ÄÄÂÖ•Èô¢ÊåáÁ§∫ÁÆãÂ∏≥Á•®ÊÉÖÂ†±        COPY (CPFMSHIJI.INC)
       ******************************************************************
         01  FMSHIJI-REC.
             03  FMSHIJI-CONTEXT                PIC S9(9)   BINARY.
@@ -26,47 +26,47 @@
               05  FMSHIJI-FORM-ID              PIC X(30).
               05  FMSHIJI-CUSTOM-ID            PIC X(30).
               05  FMSHIJI-PRINTER              PIC X(20).
-      *       ƒ¢…º•ø•§•»•Î
+      *       Â∏≥Á•®„Çø„Ç§„Éà„É´
               05  FMSHIJI-TITLE-AREA.
                   07  FMSHIJI-TITLE-OCC        OCCURS 4.
                       09  FMSHIJI-TITLE        PIC X(30).
                       09  FMSHIJI-MAISU        PIC X(2).
               05  FMSHIJI-HAKKOKBN             PIC X(1).
-      *       ªÿº®∆¸
+      *       ÊåáÁ§∫Êó•
               05  FMSHIJI-SRYYMD               PIC X(10).
-      *       ΩË ˝∆¸
+      *       Âá¶ÊñπÊó•
               05  FMSHIJI-SYSYMD               PIC X(10).
-      *       ΩË ˝ª˛πÔ
+      *       Âá¶ÊñπÊôÇÂàª
               05  FMSHIJI-SYSTIME              PIC X(5).
-      *       ø«Œ≈≤ ° ∆¸•Ï•ª°À
+      *       Ë®∫ÁôÇÁßëÔºàÊó•„É¨„ÇªÔºâ
               05  FMSHIJI-SRYKA                PIC X(2).
               05  FMSHIJI-SRYKANAME            PIC X(40).
-      *       …¬≈Ô»÷πÊ
+      *       ÁóÖÊ£üÁï™Âè∑
               05  FMSHIJI-BTUNUM               PIC X(2).
               05  FMSHIJI-BTUNAME              PIC X(20).
               05  FMSHIJI-BRMNUM               PIC X(6).
-      *       ¥µº‘æ Û
+      *       ÊÇ£ËÄÖÊÉÖÂ†±
               05  FMSHIJI-PTINF.
                 07  FMSHIJI-PTNUM              PIC X(20).
                 07  FMSHIJI-NAME               PIC X(50).
                 07  FMSHIJI-KANANAME           PIC X(50).
                 07  FMSHIJI-BIRTHDAY           PIC X(10).
                 07  FMSHIJI-SEX                PIC X(1).
-      *       •…•Ø•ø°º
+      *       „Éâ„ÇØ„Çø„Éº
               05  FMSHIJI-DOCTOR-AREA.
                 07  FMSHIJI-DR-CODE             PIC X(5).
                 07  FMSHIJI-DR-NAME             PIC X(50).
                 07  FMSHIJI-DR-KANANAME         PIC X(50).
                 07  FMSHIJI-DR-MAYAKULICENSE    PIC X(15).
-      *       º¬ª‹∆¸
+      *       ÂÆüÊñΩÊó•
               05  FMSHIJI-JISIYMD               PIC X(10).
       *
               05  FMSHIJI-ZAI-AREA              OCCURS  50 TIMES.
-      *         ø«Œ≈∂Ë ¨° £¥£∞°¢£∏£∞§Œ§ﬂ°À
+      *         Ë®∫ÁôÇÂå∫ÂàÜÔºàÔºîÔºê„ÄÅÔºòÔºê„ÅÆ„ÅøÔºâ
                 07  FMSHIJI-SRYKBN              PIC X(2).
                 07  FMSHIJI-KAISU               PIC X(3).
                 07  FMSHIJI-MEDICATION          OCCURS  50 TIMES.
-      *           ø«Œ≈ÃææŒ° ÃÙ∫ﬁÃæ°À
+      *           Ë®∫ÁôÇÂêçÁß∞ÔºàËñ¨Ââ§ÂêçÔºâ
                   09  FMSHIJI-YKZNAME           PIC X(200).
                   09  FMSHIJI-SURYO             PIC X(12).
                   09  FMSHIJI-TANINAME          PIC X(12).

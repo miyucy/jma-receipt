@@ -16,7 +16,7 @@ monbatch_log {
 	exuser		varchar(256);
 	exhost		varchar(256);
 	exec_record varchar(8192);
-#-----> ¥«¡¼¥½¥ë°ÜÆ°ÍÑ
+#-----> ã‚«ãƒ¼ã‚½ãƒ«ç§»å‹•ç”¨
 	movecount	integer,virtual;
 );
 

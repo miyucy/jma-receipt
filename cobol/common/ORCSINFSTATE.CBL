@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSINFSTATE.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : 
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ´¶À÷¾É¥µ¡¼¥Ù¥¤¥é¥ó¥¹
-      *                      »²²ÃÁ÷¿®¾õÂÖ¥Á¥§¥Ã¥¯½èÍý
-      *  ÊÖµÑ¥³¡¼¥É        : 00:Àµ¾ï
-      *                      10:¥Ç¡¼¥¿ºîÀ®¤Ê¤·(¥·¥¹¥Æ¥à´ÉÍý)
-      *                      30:¥Ç¡¼¥¿ºîÀ®½èÍýÃæ
-      *                      40:¥Ç¡¼¥¿ºîÀ®½èÍýºÑ¤ß(¥¸¥ç¥Ö´ÉÍý¤¢¤ê´Þ¤à)
-      *                      90:¥Ç¡¼¥¿ºîÀ®½èÍýÃæ(³«»ÏÆü¤¬ÅöÆü¤Ç¤Ê¤¤)
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  11.05.19    °ËÆ£          ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : 
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ„ŸæŸ“ç—‡ã‚µãƒ¼ãƒ™ã‚¤ãƒ©ãƒ³ã‚¹
+      *                      å‚åŠ é€ä¿¡çŠ¶æ…‹ãƒã‚§ãƒƒã‚¯å‡¦ç†
+      *  è¿”å´ã‚³ãƒ¼ãƒ‰        : 00:æ­£å¸¸
+      *                      10:ãƒ‡ãƒ¼ã‚¿ä½œæˆãªã—(ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†)
+      *                      30:ãƒ‡ãƒ¼ã‚¿ä½œæˆå‡¦ç†ä¸­
+      *                      40:ãƒ‡ãƒ¼ã‚¿ä½œæˆå‡¦ç†æ¸ˆã¿(ã‚¸ãƒ§ãƒ–ç®¡ç†ã‚ã‚Šå«ã‚€)
+      *                      90:ãƒ‡ãƒ¼ã‚¿ä½œæˆå‡¦ç†ä¸­(é–‹å§‹æ—¥ãŒå½“æ—¥ã§ãªã„)
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  11.05.19    ä¼Šè—¤          æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…        æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,36 +45,36 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥ï¡¼¥¯ÎÎ°è
+      *    ãƒ¯ãƒ¼ã‚¯é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-YOBI            PIC 9(01).
            03  WRK-STR-YMD         PIC X(08).
            03  WRK-END-YMD         PIC X(08).
       *
        01  CONST-AREA.
-      *    ´¶À÷¾É»²²Ã  
+      *    æ„ŸæŸ“ç—‡å‚åŠ   
            03  CONST-INFAJOBID     PIC 9(07)  VALUE    1.
            03  CONST-INFASHELLID   PIC X(08)  VALUE    "INFAGREE".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
            COPY    "MCPAREA".
@@ -88,25 +88,25 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            MOVE    ZERO                TO  INFCHK-RC
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯¡Ê´¶À÷¾É¡Ë
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯ï¼ˆæ„ŸæŸ“ç—‡ï¼‰
            IF     (SPA-DATAINFECTIONKBN    NOT =   1)  AND
                   (SPA-DATAINFECTIONKBN    NOT =   2)
                MOVE    10                  TO  INFCHK-RC
            END-IF
       *
-      *    ¥Þ¥·¥óÆüÉÕ¤Î½µ¤Î·îÍËÆü¤ÎÆüÉÕ¤òµá¤á¤ë
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜ã®é€±ã®æœˆæ›œæ—¥ã®æ—¥ä»˜ã‚’æ±‚ã‚ã‚‹
       **** PERFORM 100-GET-YMD-SEC
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¤«¤éº£½µ½èÍý¤Î¼ÂÀÓ¤òÄ´¤Ù¤ë
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ã‹ã‚‰ä»Šé€±å‡¦ç†ã®å®Ÿç¸¾ã‚’èª¿ã¹ã‚‹
       **** PERFORM 200-JOBEXEC-CHK-SEC
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¤ÎÍ­Ìµ¤òÄ´¤Ù¤ë
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ã®æœ‰ç„¡ã‚’èª¿ã¹ã‚‹
            PERFORM 210-JOBEXIST-CHK-SEC
            .
       *
@@ -115,17 +115,17 @@
            .
       *
       *****************************************************************
-      *    ·îÍËÆü»»½Ð½èÍý
+      *    æœˆæ›œæ—¥ç®—å‡ºå‡¦ç†
       *****************************************************************
        100-GET-YMD-SEC             SECTION.
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
            MOVE    SMCNDATE-YMD        TO  WRK-END-YMD
       *
-      *    ÍËÆü»ØÄê
+      *    æ›œæ—¥æŒ‡å®š
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY3-AREA
            MOVE    "31"                TO  LNK-DAY3-IRAI
@@ -139,10 +139,10 @@
            END-IF
       *
            IF      WRK-YOBI                =   1
-      *        ·îÍËÆü
+      *        æœˆæ›œæ—¥
                MOVE    WRK-END-YMD         TO  WRK-STR-YMD
            ELSE
-      *        ¥Þ¥·¥óÆüÉÕ¤Î½µ¤Î·îÍËÆü¤Ï¡©
+      *        ãƒžã‚·ãƒ³æ—¥ä»˜ã®é€±ã®æœˆæ›œæ—¥ã¯ï¼Ÿ
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -158,7 +158,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½èÍý¼ÂÀÓ¥Á¥§¥Ã¥¯½èÍý
+      *    å‡¦ç†å®Ÿç¸¾ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        200-JOBEXEC-CHK-SEC         SECTION.
       *
@@ -189,7 +189,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍýÍ­Ìµ¥Á¥§¥Ã¥¯½èÍý
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†æœ‰ç„¡ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        210-JOBEXIST-CHK-SEC        SECTION.
       *

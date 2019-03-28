@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɴ�����Ͽ����ʴ��Զش����ޡ�(���β���V3)
+      *    ＡＰＩ患者登録情報（患者禁忌薬剤）(一体化　V3)
       *                                   COPY (CPPATIENTMODV3REQ7.INC)
       ******************************************************************
         01  XML-PATIENTMODREQ.
@@ -29,42 +29,42 @@
             02  PTMODREQ-MODE              PIC S9(9)   BINARY.
             02  PTMODREQ-RECORDNAME        PIC X(128).
             02  PTMODREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               03  PTMODREQ-REQUEST-NUMBER   PIC X(2).
-      *       UID���Żҥ���ơ�
+      *       UID（電子カルテ）
               03  PTMODREQ-KARTE-UID        PIC X(36).
-      *       UID�ʥ��륫��
+      *       UID（オルカ）
               03  PTMODREQ-ORCA-UID         PIC X(36).
-      *       ������աʥ����ƥ����ա�
+      *       基準日付（システム日付）
               03  PTMODREQ-BASE-DATE        PIC X(10).
-      *       ��ǧ��å���������
+      *       確認メッセージ返答
       *       03  PTMODREQ-SELECT-ANSWER    PIC X(03).
-      *       ��³��ʬ
+      *       継続区分
               03  PTMODREQ-CONT-MODE        PIC X(05).
-      *       ���Ծ���
+      *       患者情報
               03  PTMODREQ-PTINF-INFO.
-      *         �����ֹ�
+      *         患者番号
                 05  PTMODREQ-PATIENTID        PIC X(20).
-      *         ���Ի�̾
+      *         患者氏名
                 05  PTMODREQ-NAME             PIC X(100).
-      *         ���ԥ��ʻ�̾
+      *         患者カナ氏名
                 05  PTMODREQ-KANANAME         PIC X(100).
-      *         ��ǯ����
+      *         生年月日
                 05  PTMODREQ-BIRTHDAY         PIC X(10).
-      *         ����
+      *         性別
                 05  PTMODREQ-SEX              PIC X(01).
       *
-      *       ���Զش����޾���
+      *       患者禁忌薬剤情報
               03  PTMODREQ-PTKINKI-INFO-G.
-      *          ������ʬ��MODIFY,DELETE)
+      *          処理区分（MODIFY,DELETE)
                  05  PTMODREQ-PTKINKI-MODE    PIC X(06).
-      *          ���Զش����޾���
+      *          患者禁忌薬剤情報
                  05  PTMODREQ-PTKINKI-G       OCCURS   500.
-      *              �ش����ޥ�����
+      *              禁忌薬剤コード
                      07  PTMODREQ-DRUGCD-CODE      PIC X(09).
-      *              �ش�������
+      *              禁忌開始日
                      07  PTMODREQ-START-DATE       PIC X(10).
-      *              ��Ϳ��
+      *              投与日
                      07  PTMODREQ-TOUYO-DATE       PIC X(10).
       *
       *

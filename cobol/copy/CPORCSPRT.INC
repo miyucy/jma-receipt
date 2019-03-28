@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,59 +16,59 @@
       * 113-8621, Japan.
       ********************************************************************
 000100************************************************************
-000200* �����ģ����極�֥ѥ�᥿    CPORCSPRT.INC                *
+000200* 印刷ＤＢ制御サブパラメタ    CPORCSPRT.INC                *
 000300************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    02/10/10  �����ȶ�ʬ�ɲ�
-      *  01.00.02    NACL-ƣ��    03/03/03  �����ѥե饰�ɲ�
-      *  01.00.03    NACL-ƣ��    03/03/10  ü���ɣĤ򣶣����ѹ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02/10/10  サイト区分追加
+      *  01.00.02    NACL-藤原    03/03/03  印刷済フラグ追加
+      *  01.00.03    NACL-藤原    03/03/10  端末ＩＤを６４に変更
       ************************************************************
        01  ORCSPRTAREA.
-      *    ������ʬ                              
+      *    処理区分                              
            03  SPRT-MODE           PIC X(03).
-      *    ����������     
+      *    復帰コード     
            03  SPRT-RETURN         PIC S9(03).
-      *    Ϣ��
+      *    連番
            03  SPRT-RENNUM         PIC 9(04).
-      *    �ˣţ�
+      *    ＫＥＹ
            03  SPRT-TBL-KEY        PIC X(08).
-      *    ���롼��
+      *    グループ
            03  SPRT-TBL-GROUP      PIC X(14).
       *    UUID
            03  SPRT-TBL-UUID       PIC X(36).
-      *    ��̳������
+      *    業務コード
            03  SPRT-GYOUMU-CD      PIC 9(03).
-      *    ����ǯ��
+      *    診療年月
            03  SPRT-SRYYM          PIC X(06).
-      *    ����ǯ����
+      *    請求年月日
            03  SPRT-SKYYMD         PIC X(08).
-      *    ������ɣ�
+      *    シェルＩＤ
            03  SPRT-SHELLID        PIC X(20).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  SPRT-PTID           PIC 9(10).
-      *    ������Ϣ��
+      *    処理内連番
            03  SPRT-SHORI-RENNUM   PIC 9(04).
-      *    ������Ϣ��
+      *    印刷順連番
            03  SPRT-PRIORITY       PIC 9(04).
-      *    Ģɼ�ɣ�
+      *    帳票ＩＤ
            03  SPRT-PRTID          PIC X(20).
-      *    Ģɼ�����ȥ�
+      *    帳票タイトル
            03  SPRT-TITLE          PIC X(100).
-      *    Ģɼ�ǡ���
+      *    帳票データ
            03  SPRT-PRTDATA        PIC X(20000).
-      *    ü���ɣ�
+      *    端末ＩＤ
            03  SPRT-TERMID         PIC X(64).
-      *    ���ڥ졼���ɣ�
+      *    オペレータＩＤ
            03  SPRT-OPID           PIC X(16).
-      *    �ץ��̾
+      *    プリンタ名
            03  SPRT-PRTNM          PIC X(16).
-      *    �����ȶ�ʬ
+      *    サイト区分
            03  SPRT-SITEKBN        PIC X(01).
-      *    �����ѥե饰	
+      *    印刷済フラグ	
            03  SPRT-PRTFLG         PIC X(01).
-      *    �ǡ����μ���
+      *    データの種類
            03  SPRT-DATA-TYPE      PIC X(16).
       *    PDF(UUID)
            03  SPRT-PDF            PIC X(36).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,19 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    ¿ÇÎÅ²ÊÍúÎò¹¹¿·¥Ñ¥é¥á¥¿                       *
+      *    è¨ºç™‚ç§‘å±¥æ­´æ›´æ–°ãƒ‘ãƒ©ãƒ¡ã‚¿                       *
       *                         COPY  (CPORCSKARRK.INC) *
       *-------------------------------------------------*
        01  ORCSKARRKAREA.
       *
-      *ÂĞ¾İÇ¯·î
+      *å¯¾è±¡å¹´æœˆ
            03  SKARRK-SRYYM              PIC  X(06).
-      *ºÇ½ª¿ÇÎÅÆü
+      *æœ€çµ‚è¨ºç™‚æ—¥
            03  SKARRK-LASTYMD            PIC  X(08).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  SKARRK-SRYKA              PIC  X(02).
-      *Éüµ¢¥³¡¼¥É
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰
            03  SKARRK-RC                 PIC S9(9)   BINARY.
-      *¥¨¥é¡¼Ì¾¾Î
+      *ã‚¨ãƒ©ãƒ¼åç§°
            03  SKARRK-ERRMSG             PIC  X(80).
       *

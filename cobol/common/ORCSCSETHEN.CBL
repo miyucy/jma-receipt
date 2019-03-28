@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,23 +18,23 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSCSETHEN.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���åȥޥ���Ÿ������
-      *                     �ʣˣ������ˣ����Ρ��ˣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/01/16    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : セットマスタ展開サブ
+      *                     （Ｋ０２，Ｋ０２Ｎ，Ｋ０５）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/01/16    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL��¿��Ǽ 05/02/01  �����Ѵ�Ƚ���ɲ�
-      *  01.00.02    NACL-¿��Ǽ  05/12/22  MONFUNC �б�
-      *  01.00.03    NACL-¿��Ǽ  06/03/02  ���åȴ����б�
-      *  03.05.00    NACL-¿��Ǽ  07/05/08  ���롼�׿����б�
-      *  04.05.00    NACL-¿��Ǽ  09/09/XX  '0086'�����ȥ������б�
-      *  04.05.00    NACL-¿��Ǽ  09/10/XX  ���������ϡ��ط������Ȼؼ����б�
-      *  04.08.00    NACL-¿��Ǽ  16/06/XX  ����Ÿ�������ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 05/02/01  残量廃棄判定追加
+      *  01.00.02    NACL-多々納  05/12/22  MONFUNC 対応
+      *  01.00.03    NACL-多々納  06/03/02  セット期間対応
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
+      *  04.05.00    NACL-多々納  09/09/XX  '0086'コメントコード対応
+      *  04.05.00    NACL-多々納  09/10/XX  換算値入力・関係コメント指示等対応
+      *  04.08.00    NACL-多々納  16/06/XX  全体展開処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -49,7 +49,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-INPUTSET        PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
@@ -64,7 +64,7 @@
            03  FLG-AUTOKBN2        PIC 9(01).
            03  FLG-ZEROOK          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -74,7 +74,7 @@
            03  IDX-YAKUSOKU            PIC 9(04).
            03  IDX-H                   PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYKBN          PIC X(02).
            03  WRK-SRYSYUKBN       PIC X(03).
@@ -85,85 +85,85 @@
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
                05  WRK-SURYO-S2    PIC 9(05).
-      *    ���ϥ��åȽ���
+      *    入力セット処理
            03  WRK-SETCD           PIC X(06).
            03  WRK-INPUTCD         PIC X(10).
       *
            03  WRK-GMN-IDX         PIC 9(04).
            03  WRK-GMN-STR         PIC 9(04).
-      *    ����
+      *    内部
            03  SPA-GMN-IDX         PIC 9(04).
       *
            03  WRK-PATH            PIC X(64).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD           PIC X(04).
            03  WRK-ERRCD1          PIC X(04).
            03  WRK-ERRCD2          PIC X(04).
            03  WRK-ERRMSG1         PIC X(80).
-      *    ��«���åȰ���
+      *    約束セット位置
            03  WRK-IDX-YAKUSOKU.
                05  WRK-IDX-YAK         PIC 9(04)    OCCURS  20.
-      *���̺����
+      *画面最大行
       *01  WRK-GYO-MAX                 PIC 9(04)   VALUE   400.
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ϥ��åȥ�����
+      *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
       *
-      *    ���ϥ����ɥޥ�����
+      *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1038.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
-      *    �����Խ������å��ѥ�᥿
+      *    点数編集チェックパラメタ
            COPY    "CPORCSC92.INC".
       *
-      *    ���̺��Խ��ѥ�᥿
+      *    画面再編集パラメタ
            COPY    "CPORCSC94.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
-      *    ���̣ӣУ��ΰ���
+      *    画面ＳＰＡ領域ワーク
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
-      *    ��¸�ӣУ��ΰ���
+      *    保存ＳＰＡ領域ワーク
        01  WRK-HZN-SCR-AREA.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-HZN-//.
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
            COPY    "MCPAREA".
@@ -171,19 +171,19 @@
            COPY    "ORCA-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
       *
            COPY    "CPORCSCSETHEN.INC".
-      *    ���̣ӣУ��ΰ�
+      *    画面ＳＰＡ領域
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
       *****COPY    "K02SCR-SPA".
       *
       *
@@ -195,7 +195,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -209,11 +209,11 @@
            ELSE
                INITIALIZE                  SPA-K01KYOUTU
       *H28.6
-      *        ���å�Ÿ����ʬ����
+      *        セット展開区分設定
                PERFORM 1001-SETALLKBN-SEC
            END-IF
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -221,10 +221,10 @@
            MOVE    ORCSCSETHEN-IDX     TO  SPA-GMN-IDX
       *
            EVALUATE    ORCSCSETHEN-SRYCD(1:1)
-      *        ���å�Ÿ������
+      *        セット展開処理
                WHEN    "P"
                    PERFORM 100-PSET-TENKAI-SEC
-      *        ��«�������å�Ÿ������
+      *        約束処方セット展開処理
                WHEN    "S"
                    PERFORM 200-SSET-TENKAI-SEC
            END-EVALUATE
@@ -236,11 +236,11 @@
            .
       *
       *****************************************************************
-      *    ���å�Ÿ������
+      *    セット展開処理
       *****************************************************************
        100-PSET-TENKAI-SEC          SECTION.
       *
-      *    �ԥ����С��ΰ١��ӣУ�����¸����
+      *    行オーバーの為、ＳＰＡを保存する
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
            MOVE    SPA-GMN-IDX         TO  WRK-GMN-IDX
            MOVE    SPA-GMN-IDX         TO  WRK-GMN-STR
@@ -250,7 +250,7 @@
            MOVE    ZERO                TO  IDX-IP
            MOVE    WRK-SRYCD(1:6)      TO  WRK-SETCD
       *
-      *    ���ϥ��åȥޥ�������
+      *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
@@ -282,16 +282,16 @@
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE ) OR
                              (SPA-GMN-IDX      >   SPA-MAX-LINE )
-      *        ���å�Ÿ��
+      *        セット展開
                MOVE    1               TO  FLG-SETSYORI
                MOVE    ZERO            TO  FLG-ERR
       *
                ADD     1               TO  IDX-IP
-      *        �Խ�
+      *        編集
                MOVE    ZERO            TO  FLG-SYORI
       *!!
-      *        ��ྦ�ʥ������б�
-      *        1��������ॳ���ɤμ�ưȯ���λ����ִ���
+      *        器材商品コード対応
+      *        1行前が器材コードの自動発生の時、置換え
                MOVE    ZERO            TO  FLG-AUTOKBN2
                IF     (SPA-GMN-IDX         >   1    )    AND
                       (ISET-INPUTCD (1:1)  =   "7"  )    AND
@@ -304,7 +304,7 @@
                END-IF
       *!!
                MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
-      *        �ݸ��ȹ礻�����ιԤ�ʣ�̤���
+      *        保険組合せは前の行を複写する
                IF     (SPA-GMN-IDX     >   1   )  AND
                       (SPA-COM-HKNCOMBI (SPA-GMN-IDX - 1 ) =   "9999")
                   MOVE    "9999"           TO  SPA-COM-HKNCOMBI
@@ -313,24 +313,24 @@
       *
                EVALUATE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:1)
                    WHEN    "S"
-      *                ���å������«���åȤ������
+      *                セット内に約束セットがある時
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                                TO  SPA-COM-INPUTCD
                                                           (SPA-GMN-IDX)
                        PERFORM 1001-INSET-HEN-SEC
                        PERFORM 1003-YAKUSOKU-SYORI-SEC
                    WHEN    "."
-      *                ������ϤǺ޽�λ�Ȥ���
+      *                回数入力で剤終了とする
                        IF       SPA-GMN-IDX        >   1
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                       (SPA-GMN-IDX - 1)
                        END-IF
-      *                ���ż��̶�ʬ̾�Υ����å�
+      *                診療種別区分名称チェック
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(2:3)
                                                TO  WRK-SRYSYUKBN
                        PERFORM 510-SRYKBN-MEI-SEC
                    WHEN    OTHER
-      *                ���ť������Խ�
+      *                診療コード編集
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:9)
                                                TO  SPA-COM-INPUTCD
                                                           (SPA-GMN-IDX)
@@ -347,11 +347,11 @@
       *
                IF      SPA-COM-KAIFLG (SPA-GMN-IDX)    =   "1"
                    MOVE    SPACE               TO  WRK-SRYKBN
-      *            ������ϤǺ޽�λ�Ȥ���
+      *            回数入力で剤終了とする
                    MOVE    "1"             TO  SPA-COM-ZAIEND
                                                       (SPA-GMN-IDX)
                END-IF
-      *        ���顼���ʤ����������å��ѤߤȤ���
+      *        エラーがない時、チェック済みとする
                IF     (FLG-ERR             =   ZERO )  AND
                       (SPA-ERRCD           =   SPACE)
                    MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
@@ -366,7 +366,7 @@
                IF      (FLG-INPUTSET     =   ZERO  )  AND
                        (SPA-ERRCD        =   SPACE )
       *
-      *            �Ԥ����������ɲä���
+      *            行を挿入して追加する
                    ADD     1               TO  SPA-GMN-IDX
                    PERFORM 41014-GYOINSN-SEC
                END-IF
@@ -376,11 +376,11 @@
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���åȤʤ�
+      *    セットなし
            IF       SPA-ERRCD           =   "0150"
                GO      TO    100-PSET-TENKAI-EXT
            END-IF
-      *   ���顼�ΰ�Ÿ���Ǥ��ʤ�
+      *   エラーの為展開できない
           IF      (SPA-ERRCD       NOT =   SPACE )  AND
                   (FLG-INPUTSET        =   ZERO  )
                MOVE    WRK-SCR-REC        TO  SPA-SCR-REC
@@ -393,15 +393,15 @@
            END-IF
            MOVE    SPACE               TO  SPA-ERRCD
       *
-      *    �оݤʤ�
+      *    対象なし
            IF      IDX-IP              =   ZERO
                MOVE    "0050"              TO  SPA-ERRCD
                GO      TO    100-PSET-TENKAI-EXT
            END-IF
-      *    �ǽ��Ԥ������ϤȤ���
+      *    最終行を回数入力とする
            IF      SPA-GMN-INPUTCD(WRK-GMN-IDX)(1:1)   =   "S"
                MOVE    "1"             TO  SPA-COM-KAIFLG (SPA-GMN-IDX)
-      *        ���åȤλ������Խ�
+      *        セットの時前に編集
                IF      WRK-ERRCD       =   SPACE
                    MOVE    SPA-GMN-INPUTCD(WRK-GMN-IDX)
                                        TO  SPA-MAE-INPUTCD(WRK-GMN-IDX)
@@ -411,7 +411,7 @@
                END-IF
            END-IF
       *
-      *    ��«���åȤ����ä���硢�Խ�����
+      *    約束セットがあった場合、編集する
            MOVE    ZERO                TO  IDX-IP
            PERFORM VARYING     IDX-YAK FROM    1   BY  1
                    UNTIL      (IDX-YAK     >   IDX-YAKUSOKU) OR
@@ -423,17 +423,17 @@
                    MOVE    SPA-GMN-IDX         TO  WRK-GMN-IDX
                    MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                                TO  WRK-SRYCD
-      *            ��«�������å�Ÿ������
+      *            約束処方セット展開処理
                    PERFORM 200-SSET-TENKAI-SEC
                END-IF
            END-PERFORM
       *
-      *    �����Ѵ���̵ͭȽ��
+      *    残量廃棄の有無判定
            PERFORM VARYING     IDX-H   FROM    WRK-GMN-STR BY  1
                    UNTIL       IDX-H   >   SPA-GMN-IDX
                IF    ((SPA-COM-SRYKBN (IDX-H)(1:1) =   "3" )  AND
                       (SPA-COM-INPUTCD(IDX-H)(1:1) =   "6" ))
-      *H27.11   ���Ƕ衡�ɲ�
+      *H27.11   全診区　追加
                OR    ((SPA-HAIKIKBN-FLG            =   2  )  AND
                       (SPA-COM-SRYKBN (IDX-H)(1:1) =   "4"
                                                    OR  "5"
@@ -442,8 +442,8 @@
                                                    OR  "8" )  AND
                       (SPA-COM-INPUTCD(IDX-H)(1:1) =   "6" ))
                    MOVE    SPA-COM-SURYO(IDX-H)    TO  WRK-SURYO
-      *        �������ǥ���ץ롢�����ʲ�������������˻����Ѵ�������
-      *H27.11  �������ɲ�
+      *        注射薬でアンプル、少数以下がある時、次に残量廃棄がある
+      *H27.11  外用薬追加
                    IF      (SPA-COM-YKZKBN (IDX-H)  =   "4"
                                                     OR  "6"  )  AND
                            (SPA-COM-TANICD (IDX-H)  =   "014"
@@ -457,20 +457,20 @@
                        ELSE
                            MOVE    "1"         TO  SPA-COM-AUTOFLG2
                                                              (IDX-H)
-      *                    ���ϥ����ɤβ����Ѻ��Խ�
+      *                    入力コードの画面用再編集
                            PERFORM 3101-INPUTCD-HEN-SEC
                        END-IF
                    END-IF
                END-IF
            END-PERFORM
       *
-      *    ���̥������顼
+      *    数量ゼロエラー
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD2      NOT =   SPACE
                    MOVE    WRK-ERRCD2          TO  SPA-ERRCD
                END-IF
            END-IF
-      *    �ޥ����ʤ����顼
+      *    マスタなしエラー
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD1      NOT =   SPACE
                    MOVE    WRK-ERRCD1          TO  SPA-ERRCD
@@ -482,15 +482,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ť������Խ�����
+      *    診療コード編集処理
       *****************************************************************
        1001-INSET-HEN-SEC          SECTION.
       *
-      *    �����Ѵ��ΰ١����Ŷ�ʬ����
+      *    残量廃棄の為、診療区分設定
            MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (SPA-GMN-IDX)
       *
            IF      ISET-SURYO1     =   ZERO
-      *        ���̥����ե饰
+      *        数量ゼロフラグ
                MOVE    ZERO                TO  FLG-ZEROOK
                IF     (ISET-INPUTCD(1:1)   =   "6"
                                            OR  "7"
@@ -518,7 +518,7 @@
                END-IF
            ELSE
                MOVE    ISET-SURYO1     TO  SPA-COM-SURYO (SPA-GMN-IDX)
-      *        ���ʾ�λ����������ϤȤ���
+      *        １以上の時、数量入力とする
                IF     (ISET-INPUTCD(1:1)   =   "1"
                                            OR  "6"
                                            OR  "7" )   AND
@@ -566,15 +566,15 @@
            MOVE    ISET-ATAI (03)  TO  SPA-COM-ATAI3 (SPA-GMN-IDX)
            MOVE    ISET-ATAI (04)  TO  SPA-COM-ATAI4 (SPA-GMN-IDX)
            MOVE    ISET-ATAI (05)  TO  SPA-COM-ATAI5 (SPA-GMN-IDX)
-      *    ������
+      *    換算値
            MOVE    ISET-KANSURYO       TO  SPA-COM-KANSURYO
                                                            (SPA-GMN-IDX)
-      *    �ط������Ȼؼ�
+      *    関係コメント指示
            IF      ISET-INPUTKBN       =   "1"
                 MOVE    "1"            TO  SPA-COM-INPUTCONT
                                                            (SPA-GMN-IDX)
            END-IF
-      *    �����������ʬ
+      *    内服１種類区分
            IF      SPA-NYUGAIKBN       =   "2"
                IF      ISET-INPUTKBN       =   "2"
                    MOVE    "1"             TO  SPA-COM-INPUTNAIF
@@ -589,17 +589,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ť�����Ÿ������
+      *    診療コード展開処理
       *****************************************************************
        1001-SRYCD-SYORI-SEC          SECTION.
       *
-      *    �����ޥ����Խ������ܥ����å�
+      *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    ORCSCSETHEN-PG      TO  LNK-SC92-PG
            MOVE    ORCSCSETHEN-SYORIFLG    TO  LNK-SC92-SYORIFLG
            MOVE    SPACE               TO  LNK-SC92-KBN
            MOVE    "8"                 TO  LNK-SC92-KBN
-      *    �ٹ�����å�����
+      *    警告チェックあり
            MOVE    "1"                 TO  LNK-SC92-KEIFLG
            MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
            MOVE    SPA-COM-INPUTCD(SPA-GMN-IDX)
@@ -636,7 +636,7 @@
                END-IF
            END-IF
       *
-      *    �����ޥ����ʤ��Υ��顼��ɽ������
+      *    点数マスタなしのエラーは表示する
            IF      SPA-ERRCD           =   "0001"
                 IF      SPA-COM-SET (SPA-GMN-IDX)   =  "1"
                     MOVE    "S001"          TO  WRK-ERRCD
@@ -649,20 +649,20 @@
                 MOVE    SPACE           TO  SPA-ERRCD
                 MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
            END-IF
-      *    �ٹ�λ���ɽ������
+      *    警告の時、表示する
            IF     (SPA-ERRCD   (1:1)   =   "K"  )
                MOVE    SPACE           TO  SPA-ERRCD
                MOVE    SPACE           TO  SPA-COM-KZMFLG (SPA-GMN-IDX)
            END-IF
-      *    �ٹ�λ���ɽ������
+      *    警告の時、表示する
            IF     (LNK-SC92-ERRCD3  (1:1)   =   "K"  )  OR
                   (LNK-SC92-ERRCD6  (1:1)   =   "K"  )
                MOVE    SPACE           TO  LNK-SC92-ERRAREA
                MOVE    SPACE           TO  SPA-COM-KZMFLG (SPA-GMN-IDX)
                MOVE    SPACE           TO  SPA-COM-HKEIFLG (SPA-GMN-IDX)
            END-IF
-      *    �������ǤΣãԡ��ͣңɤϣ����ܤΥ����ɤ��㤦�Τ�
-      *    �������Υ����å��ʤ�
+      *    画像診断のＣＴ．ＭＲＩは２回目のコードが違うので
+      *    算定回数のチェックなし
            IF     (SPA-COM-TNSSRYSYUKBN (SPA-GMN-IDX)
                                                =   "723"
                                                OR  "724"  )  AND
@@ -676,7 +676,7 @@
            END-IF
       *
       *H28.6
-      *    ���顼�Ǥ�Ÿ������(��«���åȤ�Ÿ���ʤ���
+      *    エラーでも展開する(約束セットは展開なし）
            IF      SPA-SETALLKBN       =   "1"
                IF     (SPA-ERRCD           NOT =   SPACE )  OR
                       (LNK-SC92-ERRAREA    NOT =   SPACE )
@@ -694,7 +694,7 @@
                END-IF
            END-IF
       *
-      *    ���顼�����ɲä��ʤ�
+      *    エラー時、追加しない
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
@@ -707,9 +707,9 @@
                                            -   1
                END-IF
            ELSE
-      *        �ݸ������Ƚ��
+      *        保険外金額判定
                PERFORM 4101191-JIHI-HEN-SEC
-      *        ���ϥ����ɤβ����Ѻ��Խ�
+      *        入力コードの画面用再編集
                MOVE    SPA-GMN-IDX         TO  IDX-H
                PERFORM 3101-INPUTCD-HEN-SEC
            END-IF
@@ -720,7 +720,7 @@
       *
       *
       *****************************************************************
-      *     ���ż��̶�ʬ̾�Ρ����Ź԰ٶ�ʬ���å�
+      *     診療種別区分名称、診療行為区分セット
       *****************************************************************
        510-SRYKBN-MEI-SEC            SECTION.
       *
@@ -743,11 +743,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ������Ƚ�����
+      *    保険外金額判定処理
       *****************************************************************
        4101191-JIHI-HEN-SEC           SECTION.
       *
-      *    �����Ѵ��ΰ١����Ŷ�ʬ����
+      *    残量廃棄の為、診療区分設定
            IF     (SPA-COM-INPUTCD(SPA-GMN-IDX)(1:1) =   "1" ) AND
                   (SPA-COM-DATAKBN(SPA-GMN-IDX) =   "1" ) AND
                   (WRK-SRYKBN (1:1)    NOT =   "9"         )
@@ -756,7 +756,7 @@
                                                           (SPA-GMN-IDX)
            END-IF
       *
-      *    �����դλ����оݳ�
+      *    自賠責の時、対象外
            IF     (SPA-HKNKBN          =   1    )  AND
                   (SPA-RSI-HKNKBN      =   "4"  )  AND
                   (SPA-COM-SRYKBN (SPA-GMN-IDX)
@@ -765,7 +765,7 @@
                                        =   "09591"  OR
                                            "09592"  OR
                                            "09593"  )
-      *        ����������
+      *        自賠責入力
                IF    (SPA-COM-SRYSYUKBN (SPA-GMN-IDX)  =   "809")
                    MOVE    "1"                 TO  SPA-COM-KEIFLG
                                                          (SPA-GMN-IDX)
@@ -806,11 +806,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���ϥ����ɤβ����Ѻ��Խ�����
+      *   入力コードの画面用再編集処理
       *****************************************************************
        3101-INPUTCD-HEN-SEC                  SECTION.
       *
-      *    ���̺��Խ������ܥ����å�
+      *    画面再編集・基本チェック
            INITIALIZE                  ORCSC94AREA
            MOVE    "1"                 TO  LNK-SC94-KBN
            MOVE    ORCSCSETHEN-PG      TO  LNK-SC94-PG
@@ -824,14 +824,14 @@
        3101-INPUTCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���å������«���å�Ÿ������
+      *    セット内の約束セット展開処理
       *****************************************************************
        1003-YAKUSOKU-SYORI-SEC          SECTION.
       *
-      *    ���ϥ����ɤβ����Ѻ��Խ�
+      *    入力コードの画面用再編集
            MOVE    SPA-GMN-IDX         TO  IDX-H
            PERFORM 3101-INPUTCD-HEN-SEC
-      *    ��«̾���Խ�
+      *    約束名称編集
            MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)(1:6)
                                        TO  WRK-INPUTCD
            PERFORM 41011921-INPSET-MEI-SEC
@@ -854,11 +854,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��«���å�Ÿ������
+      *    約束セット展開処理
       *****************************************************************
        200-SSET-TENKAI-SEC     SECTION.
       *
-      *    ��«�λ����������˿��ż��̤����뤳��
+      *    約束の時、１行前に診療種別があること
            IF     (SPA-GMN-IDX         =   1   )   OR
                   (SPA-GMN-INPUTCD(SPA-GMN-IDX - 1)(1:1) NOT =   "." )
                MOVE    "0048"              TO  SPA-ERRCD
@@ -866,7 +866,7 @@
                GO      TO      200-SSET-TENKAI-EXT
            END-IF
       *
-      *    ��«̾���Խ�
+      *    約束名称編集
            MOVE    WRK-SRYCD(1:6)      TO  WRK-INPUTCD
            PERFORM 41011921-INPSET-MEI-SEC
            MOVE    SPACE               TO  SPA-COM-INPUTCD
@@ -876,13 +876,13 @@
                GO      TO      200-SSET-TENKAI-EXT
            END-IF
       *
-      *    �ԥ����С��ΰ١��ӣУ�����¸����
+      *    行オーバーの為、ＳＰＡを保存する
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
            MOVE    SPA-GMN-IDX         TO  WRK-GMN-IDX
       *
            MOVE    ZERO                TO  IDX-IP
            MOVE    WRK-SRYCD(1:6)      TO  WRK-SETCD
-      *    ���ϥ��åȥޥ�������
+      *    入力セットマスタ検索
            MOVE    SPACE               TO  INPUTSET-REC
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
@@ -909,14 +909,14 @@
                    UNTIL     (FLG-INPUTSET     =   1 )  OR
                              (SPA-ERRCD    NOT =   SPACE )
       *
-      *        �Ԥ����������ɲä���
+      *        行を挿入して追加する
                ADD     1               TO  SPA-GMN-IDX
                PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
       *
                    ADD     1               TO  IDX-IP
       *
-      *            �Խ�
+      *            編集
                    MOVE    1               TO  FLG-SYORI
                    MOVE    ISET-INPUTCD    TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)
@@ -925,10 +925,10 @@
                                                           (SPA-GMN-IDX)
                    PERFORM 1001-INSET-HEN-SEC
       *
-      *            ����ɽ���ʤ�
+      *            画面表示なし
                    MOVE    "1"             TO  SPA-COM-SET(SPA-GMN-IDX)
       *
-      *            ��«�����Ρ����̤�׻�����
+      *            約束処方の、数量を計算する
                    COMPUTE SPA-COM-SURYO (SPA-GMN-IDX)
                                            =   SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
@@ -937,7 +937,7 @@
                    MOVE    SPA-COM-SURYO (SPA-GMN-IDX)
                                                TO  SPA-COM-SURYO2
                                                          (SPA-GMN-IDX)
-      *            ����ѹ�
+      *            回数変更
                    MOVE    SPA-COM-KAISU (WRK-GMN-IDX)
                                                TO  SPA-COM-KAISU
                                                          (SPA-GMN-IDX)
@@ -945,10 +945,10 @@
                                                TO  SPA-COM-KAISU2
                                                          (SPA-GMN-IDX)
       *
-      *            �����ޥ����Խ������ܥ����å�
+      *            点数マスタ編集・基本チェック
                    PERFORM 1001-SRYCD-SYORI-SEC
       *
-      *            ���åȤλ������Խ�
+      *            セットの時前に編集
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    SPA-GMN-INPUTCD(SPA-GMN-IDX)
                                                TO  SPA-MAE-INPUTCD
@@ -966,11 +966,11 @@
            MOVE    "tbl_inputset"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���åȤʤ�
+      *    セットなし
            IF       SPA-ERRCD           =   "0150"
                GO      TO    200-SSET-TENKAI-EXT
            END-IF
-      *    �ԥ����С�
+      *    行オーバー
            IF     ((SPA-ERRCD       NOT =   SPACE )  AND
                    (FLG-INPUTSET        =   ZERO  ))  OR
                   ( SPA-ERRCD           =   "0150" )
@@ -982,9 +982,9 @@
       *
            MOVE    SPACE               TO  SPA-ERRCD
       *
-      *    �ǽ��Ԥ������ϤȤ���
+      *    最終行を回数入力とする
            MOVE    "1"                 TO  SPA-COM-KAIFLG (SPA-GMN-IDX)
-      *    ���åȤλ������Խ�
+      *    セットの時前に編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    SPA-GMN-INPUTCD(WRK-GMN-IDX)
                                        TO  SPA-MAE-INPUTCD(WRK-GMN-IDX)
@@ -993,13 +993,13 @@
                MOVE    "1"             TO  SPA-COM-CUR (WRK-GMN-IDX)
            END-IF
       *
-      *    ���̥������顼
+      *    数量ゼロエラー
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD2      NOT =   SPACE
                    MOVE    WRK-ERRCD2          TO  SPA-ERRCD
                END-IF
            END-IF
-      *    �ޥ����ʤ����顼
+      *    マスタなしエラー
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-ERRCD1      NOT =   SPACE
                    MOVE    WRK-ERRCD1          TO  SPA-ERRCD
@@ -1011,7 +1011,7 @@
        200-SSET-TENKAI-EXT.
            EXIT.
       *****************************************************************
-      *    ��«�����ν���
+      *    約束処方の処理
       *****************************************************************
        41011921-INPSET-MEI-SEC           SECTION.
       *
@@ -1031,7 +1031,7 @@
                GO  TO                  41011921-INPSET-MEI-EXT
            END-IF
            MOVE    ICD-DSPNAME         TO  SPA-GMN-MEISYO(SPA-GMN-IDX)
-      *    ������ϤȤ��ʤ�
+      *    回数入力としない
            MOVE    SPACE               TO  SPA-COM-KAIFLG (SPA-GMN-IDX)
       *
            .
@@ -1039,7 +1039,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    行挿入処理
       *****************************************************************
        41014-GYOINSN-SEC         SECTION.
       *
@@ -1074,7 +1074,7 @@
        41014-GYOINSN-EXT.
            EXIT.
       *****************************************************************
-      *    ���å�Ÿ����ʬ��������
+      *    セット展開区分検索処理
       *****************************************************************
        1001-SETALLKBN-SEC            SECTION.
       *
@@ -1086,11 +1086,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SYS-1038-REC        TO  SYSKANRI-REC
-      *    �����ƥ������������
+      *    システム管理キー検索
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1038-REC
-      *        ���å�Ÿ����ʬ
+      *        セット展開区分
                MOVE    SYS-1038-SETALLKBN  TO  SPA-SETALLKBN
            END-IF
            IF      SPA-SETALLKBN       =   SPACE
@@ -1101,7 +1101,7 @@
        1001-SETALLKBN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ��åȥǡ������ɹ�
+      *    入力セットデータ次読込
       *****************************************************************
        910-INPUTSET-READ-SEC         SECTION.
       *
@@ -1119,7 +1119,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɥޥ������ɹ�
+      *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
@@ -1145,7 +1145,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɥޥ��������ɹ�
+      *    入力コードマスター次読込
       *****************************************************************
        9301-INPUTCD-NEXT-SEC         SECTION.
       *
@@ -1163,7 +1163,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -1196,7 +1196,7 @@
       *
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1209,7 +1209,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1224,7 +1224,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

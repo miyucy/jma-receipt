@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÊ»ÍÑ¶Ø´÷ÌôºÞ¥Á¥§¥Ã¥¯¾ðÊó
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆä½µç”¨ç¦å¿Œè–¬å‰¤ãƒã‚§ãƒƒã‚¯æƒ…å ±
       *                                    COPY (CPCONTRACHECKV2REQ.INC)
       ******************************************************************
        01  XML-CONTRA-CHECKV2REQ.
@@ -29,19 +29,19 @@
            03  CHKREQ-MODE             PIC S9(9)   BINARY.
            03  CHKREQ-RECORDNAME       PIC X(128).
            03  CHKREQ-CONTRACHKREQ.
-      *       ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *       ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
               05  CHKREQ-REQUEST-NUMBER    PIC X(2).
-      *       ´µ¼ÔÈÖ¹æ
+      *       æ‚£è€…ç•ªå·
               05  CHKREQ-PATIENTID         PIC X(20).
-      *       ¿ÇÎÅÆüÉÕ
+      *       è¨ºç™‚æ—¥ä»˜
               05  CHKREQ-PERFORM-YM        PIC X(07).
-      *       ÂÐ¾Ý´ü´Ö·î¿ô
+      *       å¯¾è±¡æœŸé–“æœˆæ•°
               05  CHKREQ-CHECK-TUKI        PIC X(02).
       *
-      *       ÌôºÞ¾ðÊó
+      *       è–¬å‰¤æƒ…å ±
               05  CHKREQ-MDC-INFO-G.
                   07  CHKREQ-PRESCRIPTION-INFO    OCCURS   30.
-      *               ÌôºÞ¥³¡¼¥É
+      *               è–¬å‰¤ã‚³ãƒ¼ãƒ‰
                       09  CHKREQ-PRSCRPT-CODE          PIC X(9).
                       09  CHKREQ-PRSCRPT-NAME          PIC X(80).
       *

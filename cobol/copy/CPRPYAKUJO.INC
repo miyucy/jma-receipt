@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -25,9 +25,9 @@
               05  RPYAKUJO-CUSTOM-ID            PIC X(30).
               05  RPYAKUJO-PRINTER              PIC X(20).
               05  RPYAKUJO-STYLE                PIC X(1).
-      *       ø«Œ≈∆¸
+      *       Ë®∫ÁôÇÊó•
               05  RPYAKUJO-SRYYMD               PIC X(10).
-      *       ∏Ú…’∆¸
+      *       ‰∫§‰ªòÊó•
               05  RPYAKUJO-KOFYMD               PIC X(10).
               05  RPYAKUJO-PTINF.
                 07  RPYAKUJO-PTNUM              PIC X(20).
@@ -40,7 +40,7 @@
                   09  RPYAKUJO-HOSP-NAME         PIC X(120)
                                                  OCCURS   3.
                 07  RPYAKUJO-HOSP-POST           PIC X(7).
-      *         ΩªΩÍ
+      *         ‰ΩèÊâÄ
                 07  RPYAKUJO-HOSP-ADRS-G.
                   09  RPYAKUJO-HOSP-ADRS         PIC X(200)
                                                  OCCURS   3.

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,47 +16,47 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �����ɥץ롼�վ���                          (CPINFECTION.INC)*
+      *  感染症プルーフ情報                          (CPINFECTION.INC)*
       *****************************************************************
-      *  ��������
-      * Maj/Min/Rev  ������       ����      ����
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
       *01  INFECTION-REC.
            03  INFECT-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  INFECT-HOSPNUM      PIC 9(2).
-      *�����
+      *報告日
                05  INFECT-SENDYMD      PIC X(8).
-      *���ԣɣ�
+      *患者ＩＤ
                05  INFECT-PTID         PIC 9(10).
-      *�¸��ζ�ʬ
+      *病原体区分
                05  INFECT-DISEASE      PIC 9(02).
-      *������
+      *診療日
                05  INFECT-SRYYMD       PIC X(08).
-      *���ť����ɡʿ��Ź԰١�
+      *診療コード（診療行為）
            03  INFECT-SRYCD            PIC X(09).
-      *���ť����ɡʰ����ʡ�
+      *診療コード（医薬品）
            03  INFECT-MEDSRYCD         PIC X(09).
-      *��ǺƿǶ�ʬ
+      *初診再診区分
            03  INFECT-SYOSAI           PIC 9(01).
-      *��ǻ�����
+      *初診算定日
            03  INFECT-SYOSINYMD        PIC X(08).
-      *��̾������
+      *病名コード
            03  INFECT-BYOMEICD         PIC X(07).
-      *���ų�����
+      *診療開始日
            03  INFECT-BYOSRYYMD        PIC X(08).
-      *ž����ʬ
+      *転帰区分
            03  INFECT-TENKIKBN         PIC X(01).
-      *ž����
+      *転帰日
            03  INFECT-TENKIYMD         PIC X(08).
-      *ü���ɣ�
+      *端末ＩＤ
            03  INFECT-TERMID           PIC X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  INFECT-OPID             PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  INFECT-CREYMD           PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  INFECT-UPYMD            PIC X(08).
-      *��������
+      *更新時間
            03  INFECT-UPHMS            PIC X(06).

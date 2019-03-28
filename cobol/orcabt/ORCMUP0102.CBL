@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0102.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : ����ޥ�����������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : 住所マスタ更新処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04.10.04    NACL-����     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04.10.04    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  06/05/25  MONFUNC�б� ¾
-      * 04.03.00     NACL-����    08/05/28  ���顼���������б�
-      * 04.06.00     NACL-����    11/03/23  ��¤�ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  06/05/25  MONFUNC対応 他
+      * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
+      * 04.06.00     NACL-森脇    11/03/23  構造変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,17 +38,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ����깹���ǡ����ե�����
+      *    入力：住所更新データファイル
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -57,18 +57,18 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ����깹���ǡ���
+      *    入力：住所更新データ
        FD  IN-FILE.
        01  IN-REC                      PIC X(5000).
       *
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
        FD  ERR-FILE.
        01  ERR-ADRSWK-REC.
            03  ERR-ADRSWK-SYORIKBN     PIC  X(01).
            COPY    "CPADRS.INC"        REPLACING
                                        //ADRS-// BY //ERR-ADRSWK-//.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                 PIC X(1000).
       *
@@ -76,24 +76,24 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-ADRS                PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-INS                 PIC 9(06).
@@ -107,7 +107,7 @@ grpsys     COPY    "COMMON-SPA".
            03  SYS-YY                  PIC 9(02).
            03  SYS-MM                  PIC 9(02).
            03  SYS-DD                  PIC 9(02).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -122,11 +122,11 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-ERRCD               PIC 9(02).
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ���ϥե������ΰ�
+      *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCMUP0102.CBL��".
+                                       "【PGID:ORCMUP0102.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -150,33 +150,33 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ����
+      *    住所
        01  ADRSWK-REC.
            03  ADRSWK-SYORIKBN     PIC X(01).
            COPY    "CPADRS.INC"    REPLACING   //ADRS-//
                                           BY   //ADRSWK-//.
       *
-      *    ����
+      *    住所
        01  ADRS-REC.
            COPY    "CPADRS.INC".
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -187,7 +187,7 @@ grpsys     COPY    "COMMON-SPA".
            LNK-AREA.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -204,7 +204,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -221,20 +221,20 @@ grpsys     COPY    "COMMON-SPA".
       *        DISPLAY "DBOPEN ERR"
       *    END-IF.
       *
-      *    �ե��������
+      *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT               IN-FILE
            IF      STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
                DISPLAY "*(ORCMUP0102)* IN-FILE OPN STS[" STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    �����ѹ��ե������ɹ��߽���
+      *    住所変更ファイル読込み処理
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -243,7 +243,7 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
@@ -256,7 +256,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE           TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -267,7 +267,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            MOVE    SPACE           TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -278,7 +278,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    �ץ롼�եե�����
+      *    プルーフファイル
            MOVE    SPACE           TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -293,12 +293,12 @@ grpsys     COPY    "COMMON-SPA".
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            IF      ADRSWK-POST     NOT =   WRK-SAVE-POST
-      *        �桼�����������ޥ���ʬ�������
+      *        ユーザーカスタマイズ分削除処理
                PERFORM 2010-USER-DELETE-SYORI-SEC
                MOVE    ADRSWK-POST     TO  WRK-SAVE-POST
            END-IF
@@ -306,18 +306,18 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    ZERO            TO  WRK-ERRCD
       *
            EVALUATE    ADRSWK-SYORIKBN
-      *        �ɲ�
+      *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ����
+      *        更新
                WHEN    "U"
                    PERFORM 2010-UPDATE-SYORI-SEC
-      *        ���
+      *        削除
                WHEN    "D"
                    PERFORM 2010-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    �����ѹ��ե������ɹ��߽���
+      *    住所変更ファイル読込み処理
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -325,7 +325,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    �ɲ�  ����
+      *    追加  処理
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
@@ -353,14 +353,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ����Ф��Τޤ�
+      *    あればそのまま
            IF      FLG-ADRS            =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO  TO  2010-INSERT-SYORI-EXT
            END-IF
       *
-      *    �ģ��ɲ�
+      *    ＤＢ追加
            PERFORM 20101-ADRS-INS-SEC
            IF      WRK-ERRCD           =   ZERO
                ADD     1               TO  CNT-INS
@@ -371,7 +371,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɲ�  ����
+      *    ＤＢ追加  処理
       *****************************************************************
        20101-ADRS-INS-SEC          SECTION.
       *
@@ -394,7 +394,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����  ����
+      *    更新  処理
       *****************************************************************
        2010-UPDATE-SYORI-SEC       SECTION.
       *
@@ -422,14 +422,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �ʤ���Ф��Τޤ�
+      *    なければそのまま
            IF      FLG-ADRS        NOT =   ZERO
                MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO  TO  2010-UPDATE-SYORI-EXT
            END-IF
       *
-      *    �ģ¹���
+      *    ＤＢ更新
            PERFORM 20101-ADRS-UPD-SEC
            IF      WRK-ERRCD           =   ZERO
                ADD     1               TO  CNT-UPD
@@ -440,7 +440,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        20101-ADRS-UPD-SEC          SECTION.
       *
@@ -463,7 +463,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���  ����
+      *    削除  処理
       *****************************************************************
        2010-DELETE-SYORI-SEC       SECTION.
       *
@@ -491,14 +491,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ������顼
+      *    削除エラー
            IF      FLG-ADRS        NOT =   ZERO
                MOVE    7               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO  TO  2010-DELETE-SYORI-EXT
            END-IF
       *
-      *    �ģº��
+      *    ＤＢ削除
            PERFORM 20101-ADRS-DEL-SEC
       *
            .
@@ -506,7 +506,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģº��  ����
+      *    ＤＢ削除  処理
       *****************************************************************
        20101-ADRS-DEL-SEC          SECTION.
       *
@@ -529,7 +529,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �桼�����������ޥ���ʬ���  ����
+      *    ユーザーカスタマイズ分削除  処理
       *****************************************************************
        2010-USER-DELETE-SYORI-SEC  SECTION.
       *
@@ -553,7 +553,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            PERFORM UNTIL   FLG-ADRS    NOT =   ZERO
-      *        �ģº��
+      *        ＤＢ削除
                PERFORM 20101-ADRS-DEL-SEC
                MOVE    "tbl_adrs_master"
                                        TO  MCP-TABLE
@@ -570,16 +570,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����
+      *    エラー処理
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    ���顼����
+      *    エラー出力
            MOVE    ADRSWK-REC      TO  ERR-ADRSWK-REC
            WRITE                       ERR-ADRSWK-REC
            ADD     1               TO  CNT-ERR
       *
-      *    ���顼��å���������
+      *    エラーメッセージ出力
            PERFORM 20401-PLF-OUT-SEC
       *
            .
@@ -587,7 +587,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������Ͻ���
+      *    エラーメッセージ出力処理
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -598,21 +598,21 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "������Ͽ�Ѥ�"  TO  WRK-MSG-01
+                   MOVE    "住所登録済み"  TO  WRK-MSG-01
                WHEN    2
-                   MOVE    "�ɲå��顼"    TO  WRK-MSG-01
+                   MOVE    "追加エラー"    TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "�����оݤʤ�"
+                   MOVE    "更新対象なし"
                                            TO  WRK-MSG-01
                WHEN    4
-                   MOVE    "����̵�����顼"
+                   MOVE    "更新無しエラー"
                                            TO  WRK-MSG-01
                WHEN    5
-                   MOVE    "�������顼"    TO  WRK-MSG-01
+                   MOVE    "更新エラー"    TO  WRK-MSG-01
                WHEN    6
-                   MOVE    "������顼"    TO  WRK-MSG-01
+                   MOVE    "削除エラー"    TO  WRK-MSG-01
                WHEN    7
-                   MOVE    "����оݤʤ�"    TO  WRK-MSG-01
+                   MOVE    "削除対象なし"    TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA    TO  PLF-REC
@@ -624,7 +624,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -634,7 +634,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ���顼�쥳���ɽ��ϥե����롡�����ץ�
+      *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUP0102)* PLFFILE OPN STS[" STS-PLF "]"
@@ -657,14 +657,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -699,7 +699,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *     �����ѹ��ե������ɹ��߽���
+      *     住所変更ファイル読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -721,7 +721,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
           EXIT.
       *
       *****************************************************************
-      *    ����ޥ������ɹ�
+      *    住所マスター読込
       *****************************************************************
        910-ADRS-READ-SEC           SECTION.
       *
@@ -740,7 +740,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC               SECTION.
       *
@@ -753,7 +753,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -772,7 +772,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -790,7 +790,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

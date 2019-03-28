@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG025.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ����̾�ޥ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  15/09/28    NACL-ƣ��     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 傷病名マスタ一覧
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  15/09/28    NACL-藤原     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,14 +34,14 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  TOUKEIERR-FILE    ASSIGN  TOUKEIERR
                                    FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  TOUKEIERR-FILE.
        01  TOUKEIERR-REC             PIC X(200).
       *
@@ -52,18 +52,18 @@
       *
            COPY    "HCMSL80.INC".
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-TOUKEIERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-BYOMEI          PIC 9(01).
       *
            03  FLG-SYORI           PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(05).
            03  CNT-PAGE-ALL        PIC 9(05).
@@ -93,7 +93,7 @@
       *
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
-      *    �ãӣ֥ǡ����Խ���
+      *    ＣＳＶデータ編集用
        01  WRK-CSV-AREA.
            03  WRK-IN-DATA         PIC X(2000).
            03  WRK-OUT-REC         PIC X(2000).
@@ -102,7 +102,7 @@
            03  WRK-IN-MAX          PIC 9(04).
            03  WRK-END             PIC 9(01).
       *
-      *    �ãӣ֥ǡ��������Խ���
+      *    ＣＳＶデータ日付編集用
        01  WRK-CSVHENYMD.
            03  WRK-CYY             PIC 9(04).
            03  FILLER              PIC X(01)   VALUE   "/".
@@ -110,7 +110,7 @@
            03  FILLER              PIC X(01)   VALUE   "/".
            03  WRK-CDD             PIC 9(02).
       *
-      *    �ãӣֽ�����
+      *    ＣＳＶ出力先
        01  WRK-TO-DATA-AREA.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
@@ -120,7 +120,7 @@
                05  WRK-TO-DATA-PRTKBN  PIC X(01).
                05  FILLER              PIC X(04)   VALUE   ".csv".
       *
-      *    �ܹ�����̾
+      *    移行先病名
        01  WRK-BYOMEI-REC.
            COPY    "CPBYOMEI.INC"  REPLACING  //BYO-//
                                    BY         //WRK-BYO-//.
@@ -136,97 +136,97 @@
       *
        01  CSV-HEAD-01.
            03  FILLER                  PIC X(12)   VALUE
-               "����̾������".
+               "傷病名コード".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(08)   VALUE
-               "����̾��".
+               "傷病名称".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(14)  VALUE
-               "����̾����̾��".
+               "傷病名カナ名称".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(16)   VALUE
-               "�ɣãġݣ����ݣ�".
+               "ＩＣＤ−１０−１".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(16)   VALUE
-               "�ɣãġݣ����ݣ�".
+               "ＩＣＤ−１０−２".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(12)   VALUE
-               "��̾�����ֹ�".
+               "病名管理番号".
            03  FILLER                  PIC X(01)   VALUE   ",".
-           03  FILLER                  PIC X(08)   VALUE   "�����ʬ".
+           03  FILLER                  PIC X(08)   VALUE   "採択区分".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(12)   VALUE
-               "���ѥ�����".
+               "交換用コード".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(18)   VALUE
-               "����������оݶ�ʬ".
+               "特定疾患等対象区分".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(16)   VALUE
-               "���³����оݶ�ʬ".
+               "難病外来対象区分".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(16)   VALUE
-               "ñ�Ȼ��Ѷػ߶�ʬ".
+               "単独使用禁止区分".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(14)   VALUE
-               "�ݸ����ᳰ��ʬ".
+               "保険請求外区分".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(10)   VALUE
-               "�ѻ�ǯ����".
+               "廃止年月日".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(12)   VALUE
-               "�ܹ��襳����".
+               "移行先コード".
            03  FILLER                  PIC X(01)   VALUE   ",".
            03  FILLER                  PIC X(12)   VALUE
-               "�ܹ������̾".
+               "移行先傷病名".
       *
        01  HEAD-01.
            03  FILLER                  PIC X(40)   VALUE   SPACE.
            03  FILLER                  PIC X(16)   VALUE
-               "����̾�ޥ�������".
+               "傷病名マスタ一覧".
            03  H01-TITLE               PIC X(26)   VALUE   SPACE.
-           03  FILLER                  PIC X(08)   VALUE   "��������".
+           03  FILLER                  PIC X(08)   VALUE   "作成日：".
            03  H01-SYSYMD              PIC X(09).
            03  FILLER                  PIC X(05)   VALUE   "   P.".
            03  H01-PAGE                PIC ZZZ9.
       *
        01  HEAD-02.
            03  FILLER                  PIC X(14)   VALUE
-               "����̾�����ɡ�".
+               "傷病名コード　".
            03  FILLER                  PIC X(08)   VALUE
-               "����̾��".
+               "傷病名称".
       *
        01  HEAD-03.
            03  FILLER                  PIC X(14)   VALUE
-               "��������������".
+               "　　　　　　　".
            03  FILLER                  PIC X(14)  VALUE
-               "����̾����̾��".
+               "傷病名カナ名称".
       *
        01  HEAD-04.
            03  FILLER                  PIC X(14)   VALUE
-               "��������������".
+               "　　　　　　　".
            03  FILLER                  PIC X(12)   VALUE
-               "�ɣãġݣ���".
+               "ＩＣＤ−１０".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE
-               "�����ֹ�".
+               "管理番号".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(04)   VALUE
-               "����".
+               "採択".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(06)   VALUE
-               "����".
+               "交換用".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(14)   VALUE
-               "���������".
+               "特定疾患等".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(12)   VALUE
-               "���³���".
+               "難病外来".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(18)   VALUE
-               "ñ�Ȼ��Ѷػ�".
+               "単独使用禁止".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(10)   VALUE
-               "�ݸ����ᳰ".
+               "保険請求外".
       *
        01  BODY-01.
            03  B01-BYOMEICD            PIC X(14).
@@ -276,63 +276,63 @@
       *
        01  WRK-CONST-AREA.
            03  WRK-CONS-LINE-MAX       PIC 9(02)   VALUE   80.
-      *    �����
+      *    カンマ
            03  WRK-KUGIRI          PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO          PIC X(01)   VALUE   X"0D".
       *
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��̾
+      *    病名
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    ����
+      *    印刷
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ���ףãӣ����極��
+      *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -345,7 +345,7 @@
                                        USING   COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -361,7 +361,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -400,28 +400,28 @@
            DISPLAY "WRK-PARA-SYOKBN="  WRK-PARA-SYOKBN
            DISPLAY "WRK-PARA-PRTKBN="  WRK-PARA-PRTKBN
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBG025"      TO  JOB-PGID
       *
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "0"
-                   MOVE    "����̾�ޥ�������"  TO  JOB-SHELLMSG
+                   MOVE    "傷病名マスタ一覧"  TO  JOB-SHELLMSG
                WHEN    "1"
-                   MOVE     "����̾�ޥ��������ʽ���̾��"
+                   MOVE     "傷病名マスタ一覧（傷病名）"
                                                TO  JOB-SHELLMSG
                WHEN    "2"
-                   MOVE    "����̾�ޥ����������ѻ���̾�Τߡ�"
+                   MOVE    "傷病名マスタ一覧（廃止病名のみ）"
                                                TO  JOB-SHELLMSG
                WHEN    "3"
-                   MOVE    "����̾�ޥ��������ʰܹ���̾�Τߡ�"
+                   MOVE    "傷病名マスタ一覧（移行病名のみ）"
                                                TO  JOB-SHELLMSG
                WHEN    "9"
-                   MOVE    "����̾�ޥ��������ʽ������"
+                   MOVE    "傷病名マスタ一覧（修飾語）"
                                                TO  JOB-SHELLMSG
                WHEN    OTHER
-                   MOVE    "����̾�ޥ�������"  TO  JOB-SHELLMSG
+                   MOVE    "傷病名マスタ一覧"  TO  JOB-SHELLMSG
            END-EVALUATE
       *
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -434,17 +434,17 @@
       *
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "0"
-                   MOVE    "������������"      TO  H01-TITLE
+                   MOVE    "　　　　　　"      TO  H01-TITLE
                WHEN    "1"
-                   MOVE    "�ʽ���̾�ˡ�"      TO  H01-TITLE
+                   MOVE    "（傷病名）　"      TO  H01-TITLE
                WHEN    "2"
-                   MOVE    "���ѻ���̾�Τߡ�"  TO  H01-TITLE
+                   MOVE    "（廃止病名のみ）"  TO  H01-TITLE
                WHEN    "3"
-                   MOVE    "�ʰܹ���̾�Τߡ�"  TO  H01-TITLE
+                   MOVE    "（移行病名のみ）"  TO  H01-TITLE
                WHEN    "9"
-                   MOVE    "�ʽ�����ˡ�"      TO  H01-TITLE
+                   MOVE    "（修飾語）　"      TO  H01-TITLE
                WHEN    OTHER
-                   MOVE    "���ꤷ���ѥ�᥿������������ޤ���"
+                   MOVE    "指定したパラメタが正しくありません"
                                                TO  WRK-TOUKEIERR
                    PERFORM 500-ERR-HENSYU-SEC
            END-EVALUATE
@@ -452,12 +452,12 @@
            IF      WRK-PARA-PRTKBN     =   "0" OR  "1"
                CONTINUE
            ELSE
-               MOVE    "���ꤷ���ѥ�᥿������������ޤ���"
+               MOVE    "指定したパラメタが正しくありません"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ����������
+      *    作成日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -466,7 +466,7 @@
            MOVE    LNK-DAY2-EDTYMD1
                                    TO  H01-SYSYMD
       *
-      *    �ãӣ�
+      *    ＣＳＶ
            MOVE    SPA-HOSPNUM         TO  WRK-TO-DATA-HOSPNUM
            MOVE    WRK-PARA-SYOKBN     TO  WRK-TO-DATA-SYOKBN
            MOVE    WRK-PARA-PRTKBN     TO  WRK-TO-DATA-PRTKBN
@@ -476,7 +476,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -486,7 +486,7 @@
                MOVE    "key8"          TO  WRK-MCP-PATHNAME
            END-IF
       *
-      *    ����̾
+      *    傷病名
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "0"
                WHEN    "1"
@@ -496,7 +496,7 @@
                    PERFORM 2001-PRINT-SEC
            END-EVALUATE
       *
-      *    ������
+      *    修飾語
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "0"
                WHEN    "9"
@@ -508,7 +508,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        2001-PRINT-SEC                SECTION.
       *
@@ -520,18 +520,18 @@
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "0"
                    IF      FLG-SYORI       =   1
-                       MOVE    "�ʽ���̾�ˡ�"      TO  H01-TITLE
+                       MOVE    "（傷病名）　"      TO  H01-TITLE
                    ELSE
-                       MOVE    "�ʽ�����ˡ�"      TO  H01-TITLE
+                       MOVE    "（修飾語）　"      TO  H01-TITLE
                    END-IF
                WHEN    "1"
-                   MOVE    "�ʽ���̾�ˡ�"      TO  H01-TITLE
+                   MOVE    "（傷病名）　"      TO  H01-TITLE
                WHEN    "2"
-                   MOVE    "���ѻ���̾�Τߡ�"  TO  H01-TITLE
+                   MOVE    "（廃止病名のみ）"  TO  H01-TITLE
                WHEN    "3"
-                   MOVE    "�ʰܹ���̾�Τߡ�"  TO  H01-TITLE
+                   MOVE    "（移行病名のみ）"  TO  H01-TITLE
                WHEN    "9"
-                   MOVE    "�ʽ�����ˡ�"      TO  H01-TITLE
+                   MOVE    "（修飾語）　"      TO  H01-TITLE
            END-EVALUATE
       *
            INITIALIZE                  BYOMEI-REC
@@ -553,7 +553,7 @@
                MOVE    1               TO  FLG-END
            END-IF
       *
-      *    �����Խ�����
+      *    明細編集処理
            PERFORM 20011-BODY-PRINT-SEC
                            UNTIL   FLG-END    =   1 
       *
@@ -562,7 +562,7 @@
                                    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            IF      CNT-PAGE        >   ZERO
                PERFORM 2002-PRINT-OUT-SEC
            END-IF
@@ -579,7 +579,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    明細編集処理
       *****************************************************************
        20011-BODY-PRINT-SEC         SECTION.
       *
@@ -595,10 +595,10 @@
       *
            MOVE    BYO-BYOMEICD        TO  B01-BYOMEICD
            MOVE    BYO-BYOMEI          TO  B01-BYOMEI
-           INSPECT B01-BYOMEI          REPLACING  ALL "  "  BY  "��"
+           INSPECT B01-BYOMEI          REPLACING  ALL "  "  BY  "　"
       *
            MOVE    BYO-BYOMEIKANA      TO  B02-BYOMEIKANA
-           INSPECT B02-BYOMEIKANA      REPLACING  ALL "  "  BY  "��"
+           INSPECT B02-BYOMEIKANA      REPLACING  ALL "  "  BY  "　"
       *
            MOVE    BYO-ICD10-1         TO  B03-ICD10-1
            MOVE    BYO-ICD10-2         TO  B03-ICD10-2
@@ -612,45 +612,45 @@
                MOVE    BYO-TOKSKNCD        TO  B03-TOKSKNCD
                EVALUATE    BYO-TOKSKNCD
                    WHEN    "00"
-                       MOVE    "�оݳ�����"        TO  B03-TOKSKNCD-NM
+                       MOVE    "対象外　　"        TO  B03-TOKSKNCD-NM
                    WHEN    "03"
-                       MOVE    "����ʣ���"        TO  B03-TOKSKNCD-NM
+                       MOVE    "皮膚（１）"        TO  B03-TOKSKNCD-NM
                    WHEN    "04"
-                       MOVE    "����ʣ���"        TO  B03-TOKSKNCD-NM
+                       MOVE    "皮膚（２）"        TO  B03-TOKSKNCD-NM
                    WHEN    "05"
-                       MOVE    "���������"        TO  B03-TOKSKNCD-NM
+                       MOVE    "特定疾患　"        TO  B03-TOKSKNCD-NM
                    WHEN    "07"
-                       MOVE    "�Ƥ󤫤�"        TO  B03-TOKSKNCD-NM
+                       MOVE    "てんかん　"        TO  B03-TOKSKNCD-NM
                    WHEN    "08"
-                       MOVE    "���ꡦ�Ƥ�"        TO  B03-TOKSKNCD-NM
+                       MOVE    "特定・てん"        TO  B03-TOKSKNCD-NM
                END-EVALUATE
                MOVE    BYO-NANBYOCD        TO  B03-NANBYOCD
                EVALUATE    BYO-NANBYOCD
                    WHEN    "00"
-                       MOVE    "�оݳ���"          TO  B03-NANBYOCD-NM
+                       MOVE    "対象外　"          TO  B03-NANBYOCD-NM
                    WHEN    "09"
-                       MOVE    "���³���"          TO  B03-NANBYOCD-NM
+                       MOVE    "難病外来"          TO  B03-NANBYOCD-NM
                END-EVALUATE
                MOVE    BYO-TANDOKUKBN      TO  B03-TANDOKUKBN
                EVALUATE    BYO-TANDOKUKBN
                    WHEN    0
-                       MOVE    "�ȹ礻ɬ�ܰʳ�"    TO  B03-TANDOKUKBN-NM
+                       MOVE    "組合せ必須以外"    TO  B03-TANDOKUKBN-NM
                    WHEN    1
-                       MOVE    "�ȹ礻ɬ�ܡ���"    TO  B03-TANDOKUKBN-NM
+                       MOVE    "組合せ必須　　"    TO  B03-TANDOKUKBN-NM
                END-EVALUATE
                MOVE    BYO-HKNSKYKBN       TO  B03-HKNSKYKBN
                EVALUATE    BYO-HKNSKYKBN
                    WHEN    "0"
-                       MOVE    "�����оݡ�"        TO  B03-HKNSKYKBN-NM
+                       MOVE    "請求対象　"        TO  B03-HKNSKYKBN-NM
                    WHEN    "1"
-                       MOVE    "�����оݳ�"        TO  B03-HKNSKYKBN-NM
+                       MOVE    "請求対象外"        TO  B03-HKNSKYKBN-NM
                END-EVALUATE
            END-IF
       *
            IF      BYO-HAISIYMD        =   "99999999"
                CONTINUE
            ELSE
-               MOVE    "�ѻ�����"          TO  B04-HAISI-TITLE
+               MOVE    "廃止日："          TO  B04-HAISI-TITLE
       *
                MOVE    BYO-HAISIYMD        TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
@@ -661,14 +661,14 @@
            IF      BYO-IKOSAKICD       =   SPACE
                CONTINUE
            ELSE
-               MOVE    "�ܹ��衧"          TO  B04-IKOSAKI-TITLE
+               MOVE    "移行先："          TO  B04-IKOSAKI-TITLE
       *
                MOVE    BYO-IKOSAKICD       TO  B04-IKOSAKICD
                INITIALIZE                      WRK-BYOMEI-REC
                MOVE    BYO-IKOSAKICD       TO  WRK-BYO-BYOMEICD
                PERFORM 900-BYOMEI-READ-SEC
                MOVE    WRK-BYO-BYOMEI      TO  B04-IKOSAKI-BYOMEI
-               INSPECT B04-IKOSAKI-BYOMEI  REPLACING  ALL "  "  BY  "��"
+               INSPECT B04-IKOSAKI-BYOMEI  REPLACING  ALL "  "  BY  "　"
            END-IF
       *
            ADD     1               TO  CNT-LINE
@@ -696,7 +696,7 @@
                MOVE    BODY-04         TO  HCMSL80-MOJI (CNT-LINE)
            END-IF
       *
-      *    �ãӣ֥ǡ�������
+      *    ＣＳＶデータ出力
            PERFORM 500-CSV-SYORI-SEC
       *
            ADD     1               TO  CNT-LINE
@@ -710,11 +710,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ф��Խ�����
+      *    見出し編集処理
       *****************************************************************
        20012-HEAD-PRINT-SEC                SECTION.
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            IF      CNT-PAGE            >   ZERO
                PERFORM 2002-PRINT-OUT-SEC
            END-IF
@@ -734,7 +734,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        2002-PRINT-OUT-SEC                SECTION.
       *
@@ -757,13 +757,13 @@
            MOVE    HCMSL80             TO  SPRT-PRTDATA
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    "2"
-                   MOVE    "����̾�������ѻ���̾��"
+                   MOVE    "傷病名一覧（廃止病名）"
                                                TO  SPRT-TITLE
                WHEN    "3"
-                   MOVE    "����̾�����ʰܹ���̾��"
+                   MOVE    "傷病名一覧（移行病名）"
                                                TO  SPRT-TITLE
                WHEN    OTHER
-                   MOVE    "����̾����"        TO  SPRT-TITLE
+                   MOVE    "傷病名一覧"        TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -776,7 +776,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -785,7 +785,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֥ǡ�������
+      *    ＣＳＶデータ処理
       *****************************************************************
        500-CSV-SYORI-SEC             SECTION.
       *
@@ -794,55 +794,55 @@
            END-IF
       *
            INITIALIZE                      WRK-CSV-AREA
-      *    ����̾������
+      *    傷病名コード
            MOVE    BYO-BYOMEICD        TO  WRK-IN-DATA
            MOVE    7                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    ����̾��
+      *    傷病名称
            MOVE    BYO-BYOMEI          TO  WRK-IN-DATA
            MOVE    200                 TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    ����̾����̾��
+      *    傷病名カナ名称
            MOVE    BYO-BYOMEIKANA      TO  WRK-IN-DATA
            MOVE    200                 TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �ɣģáݣ����ݣ�
+      *    ＩＤＣ−１０−１
            MOVE    BYO-ICD10-1         TO  WRK-IN-DATA
            MOVE    5                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �ɣģáݣ����ݣ�
+      *    ＩＤＣ−１０−２
            MOVE    BYO-ICD10-2         TO  WRK-IN-DATA
            MOVE    5                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    ��̾������ʬ
+      *    病名管理区分
            MOVE    BYO-HYOJUNCD        TO  WRK-IN-DATA
            MOVE    8                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �����ʬ
+      *    採択区分
            MOVE    BYO-SAITAKUKBN      TO  WRK-IN-DATA
            MOVE    1                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    ��̾���ѥ�����
+      *    病名交換用コード
            MOVE    BYO-BYOMEICHGCD     TO  WRK-IN-DATA
            MOVE    4                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �������������
+      *    特定疾患コード
            MOVE    BYO-TOKSKNCD        TO  WRK-IN-DATA
            MOVE    2                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    ���³��襳����
+      *    難病外来コード
            MOVE    BYO-TOKSKNCD        TO  WRK-IN-DATA
            MOVE    2                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    ñ�Ȼ��Ѷػ߶�ʬ
+      *    単独使用禁止区分
            MOVE    BYO-TANDOKUKBN      TO  WRK-IN-DATA
            MOVE    2                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �ݸ����ᳰ��ʬ
+      *    保険請求外区分
            MOVE    BYO-HKNSKYKBN       TO  WRK-IN-DATA
            MOVE    1                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �ѻ�ǯ����
+      *    廃止年月日
            MOVE    BYO-HAISIYMD        TO  WRK-SYMD
            MOVE    WRK-SYY             TO  WRK-CYY
            MOVE    WRK-SMM             TO  WRK-CMM
@@ -850,11 +850,11 @@
            MOVE    WRK-CSVHENYMD       TO  WRK-IN-DATA
            MOVE    10                  TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �ܹ��襳����
+      *    移行先コード
            MOVE    BYO-IKOSAKICD       TO  WRK-IN-DATA
            MOVE    7                   TO  WRK-IN-MAX
            PERFORM 5002-MOJI-HENSYU-SEC
-      *    �ܹ������̾
+      *    移行先傷病名
            MOVE    WRK-BYO-BYOMEI      TO  WRK-IN-DATA
            MOVE    200                 TO  WRK-IN-MAX
            MOVE    1                   TO  WRK-END
@@ -874,7 +874,7 @@
       *
       *
       *****************************************************************
-      *    ���ףãӣֽ��Ͻ���
+      *    統計ＣＳＶ出力処理
       *****************************************************************
        5001-CSV-HEAD-SEC           SECTION.
       *
@@ -891,7 +891,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5002-MOJI-HENSYU-SEC          SECTION.
       *
@@ -935,7 +935,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ףãӣֽ��Ͻ���
+      *    統計ＣＳＶ出力処理
       *****************************************************************
        600-TOUKEICSV-SEC           SECTION.
       *
@@ -955,7 +955,7 @@
            MOVE    WRK-TO-DATA         TO  STOUKEICSV-TO-DATA
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-CSV-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "����̾�ޥ��������ãӣֺ���"
+           MOVE    "傷病名マスタ一覧ＣＳＶ作成"
                                        TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
@@ -965,7 +965,7 @@
                ADD     1               TO  CNT-CSV
                CONTINUE
            ELSE
-               MOVE    "���ףãӣ֣ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
                                       TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -975,7 +975,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -989,7 +989,7 @@
                WRITE   TOUKEIERR-REC
                CLOSE   TOUKEIERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-TOUKEIERR   TO  JOB-YOBI
@@ -1002,7 +1002,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �۾ｪλ����
+      *    異常終了処理
       *****************************************************************
        500-COBABORT-SEC          SECTION.
       *
@@ -1018,7 +1018,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1026,7 +1026,7 @@
       *    DISPLAY "*** ORCBG025          PAGE "  CNT-PAGE-ALL
            DISPLAY "*** ORCBG025 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-PAGE-ALL    TO  JOB-UPDCNT
@@ -1039,7 +1039,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -1054,7 +1054,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ɹ�
+      *    病名読込
       *****************************************************************
        900-BYOMEI-READ-N-SEC           SECTION.
       *
@@ -1088,7 +1088,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ɹ�
+      *    病名読込
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -1120,7 +1120,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1137,7 +1137,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1150,7 +1150,7 @@
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -1176,7 +1176,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1188,7 +1188,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1200,7 +1200,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1213,7 +1213,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1231,7 +1231,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

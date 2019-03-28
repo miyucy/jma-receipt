@@ -10,34 +10,34 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ����������ѥե�����������˺���
+#    医療請求書用ファイル（入院）作成
 #
 #        CPCOMMONSHELL1.INC  
 #        $1 SRYYM TERID SYSYMD
 #        $2 SYOKBN
-#           1:������  2:���̺���
+#           1:一括作成  2:個別作成
 #        $3 RECEKBN
-#           0:����  1:���ݡ�2:����
-#        $4 ���顼�ե�����̾ 
+#           0:全体  1:社保　2:国保
+#        $4 エラーファイル名 
 #        $5 JOBID 
 #        $6 SHELLID
-#        $7 ��ñ�ѹ����Խ��ץ������̾
-#        $8  ����ǯ��
-#        $9  ����ǯ����
-#        $10 ��������
-#        $11 ���ֹ�ʸ��̺����ΤȤ���"00"��
-#        $12 ���ݥ쥻�Ž��϶�ʬ
-#        $13 ���ݥ쥻�Ž��϶�ʬ
-#        $14 ����ʬ�ʸ��̺����ΤȤ�������ʡ���Τ������
+#        $7 県単用項目編集プログラム名
+#        $8  処理年月
+#        $9  作成年月日
+#        $10 作成時間
+#        $11 県番号（個別作成のときは"00"）
+#        $12 社保レセ電出力区分
+#        $13 国保レセ電出力区分
+#        $14 県区分（個別作成のとき山形、福岡のみ設定）
 #        $16 HOSPNUM 
-#        $18 �쥻�ץȺ�����ʬ
-#            1:����ѥ쥻��2:�����ѥ쥻��3:�����ѥ쥻�ʣ������񵭺ܡ�
-#            4:�����ѥ쥻����绻��ʬ���ܡˡ�5:�����ѥ쥻�ʣ���������绻��ʬ���ܡ�
-#            8:�ţƥե����������9:Ϣ�ȴ�����
-#        $19 ����ǡ��������ʬ
-#            0:������ʤ���2:�������
-#        $20 ��̳��ʬ
-#            0:�쥻�ץ� 1:��׾Ȳ� 2:������׾Ȳ� 3:���Ź԰�
+#        $18 レセプト作成区分
+#            1:提出用レセ、2:点検用レセ、3:点検用レセ（０点公費記載）
+#            4:点検用レセ（包括算定分記載）、5:点検用レセ（０点公費・包括算定分記載）
+#            8:ＥＦファイル作成、9:連携基盤用
+#        $19 請求データ削除区分
+#            0:削除しない、2:削除する
+#        $20 業務区分
+#            0:レセプト 1:会計照会 2:入院会計照会 3:診療行為
 #-------------------------------------------#
 
         echo "window  ${MCP_WINDOW}"
@@ -47,11 +47,11 @@ fi
         fi
 
 cleanup(){
-##      �ѥ�᡼���ե�������
+##      パラメータファイル削除
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
-##      MCP_WINDOW ��API �ΤȤ�������ǥ��쥯�ȥ����
+##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
         if  [ "${MCP_WINDOW}" == "receiptmakev3" ]; then
             $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELTEMPDIR
         fi
@@ -98,7 +98,7 @@ trap cleanup EXIT
         echo "arg18 = [" ${18} "]"
         echo "arg19 = [" ${19} "]"
 
-##      ���顼�ե�������
+##      エラーファイル削除
 	echo "errfile = [" ${MCP_TEMPDIR}/${4}  "]"
         rm  -f ${MCP_TEMPDIR}/${4}
         
@@ -189,7 +189,7 @@ trap cleanup EXIT
             else
                 if  [ $2 -eq '1' ]; then
 ##
-##                  �쥻������ 
+##                  レセ一括作成 
                     if  [ $8 -lt '200610' ]; then
                         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0710 -parameter $9${10}$1$2$3$8$5$6,${16},${4}    
                     else
@@ -204,7 +204,7 @@ trap cleanup EXIT
                     fi
                 else
 ##
-##                  �쥻���̺��� 
+##                  レセ個別作成 
                     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0710 -parameter $9${10}$1$2$3$8$5$6,${16},${4}    
                     if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                         exit 
@@ -227,14 +227,14 @@ trap cleanup EXIT
             exit 
         else
             if  [ ${18} -eq '8' ];then
-##            �ţƥե��������
+##            ＥＦファイル作成
               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0250 -parameter $1,$3,${12},${13},$5,$6,${18},${16},${4} 
               if  [ -e ${MCP_TEMPDIR}/${4} ]; then
                   exit 
               fi
               $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRDPC10 -parameter $1,$3,${12},${13},$5,$6,${16},${9},${10},${4} 
             else
-##            �쥻�ź���        
+##            レセ電作成        
               if  [ ${12} -eq '2' ] || [ ${12} -eq '3' ] || [ ${13} -eq '2' ] || [ ${13} -eq '3' ]; then
                 if ( ( [ ${12} != '2' ] && [ ${12} != '3' ] ) && [ ${3} -eq '1' ] ) || \
                    ( ( [ ${13} != '2' ] && [ ${13} != '3' ] ) && [ ${3} -eq '2' ] ); then

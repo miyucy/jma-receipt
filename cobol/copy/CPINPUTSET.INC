@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,60 +16,60 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÆþÎÏ¥»¥Ã¥È       COPY (CPINPUTSET.INC)
+      *    å…¥åŠ›ã‚»ãƒƒãƒˆ       COPY (CPINPUTSET.INC)
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/02  ÆþÎÏ¶èÊ¬¡¢´¹»»ÆþÎÏ¿ôÎÌÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.05.00    NACL-å¤šã€…ç´  09/10/02  å…¥åŠ›åŒºåˆ†ã€æ›ç®—å…¥åŠ›æ•°é‡è¿½åŠ 
       ************************************************************
       *01 INPUTSET-REC.
            03 ISET-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05 ISET-HOSPNUM          PIC 9(2).
-      *¥»¥Ã¥È¥³¡¼¥É
+      *ã‚»ãƒƒãƒˆã‚³ãƒ¼ãƒ‰
                05 ISET-SETCD           PIC  X(06).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05 ISET-YUKOSTYMD       PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05 ISET-YUKOEDYMD       PIC  X(08).
-      *¥»¥Ã¥ÈÆâÈÖ¹æ
+      *ã‚»ãƒƒãƒˆå†…ç•ªå·
                05 ISET-SETSEQ          PIC  9(03).
-      *ÆþÎÏ¡Ê¿ÇÎÅ¡Ë¥³¡¼¥É
+      *å…¥åŠ›ï¼ˆè¨ºç™‚ï¼‰ã‚³ãƒ¼ãƒ‰
            03 ISET-INPUTCD             PIC  X(09).
-      *¿ôÎÌ£±
+      *æ•°é‡ï¼‘
            03 ISET-SURYO1              PIC  9(07)V9(5).
-      *¿ôÎÌ£²
+      *æ•°é‡ï¼’
            03 ISET-SURYO2              PIC  9(07)V9(5).
-      *²ó¿ô
+      *å›žæ•°
            03 ISET-KAISU               PIC  9(03).
-      *ÆþÎÏ¥³¥á¥ó¥È
+      *å…¥åŠ›ã‚³ãƒ¡ãƒ³ãƒˆ
            03 ISET-COMMENT             PIC  X(80).
-      *ÆþÎÏÃÍ
+      *å…¥åŠ›å€¤
            03 ISET-ATAI-AREA.
-      *ÆþÎÏÃÍ£±
+      *å…¥åŠ›å€¤ï¼‘
                05 ISET-ATAI1           PIC  X(08).
-      *ÆþÎÏÃÍ£²
+      *å…¥åŠ›å€¤ï¼’
                05 ISET-ATAI2           PIC  X(08).
-      *ÆþÎÏÃÍ£³
+      *å…¥åŠ›å€¤ï¼“
                05 ISET-ATAI3           PIC  X(08).
-      *ÆþÎÏÃÍ£´
+      *å…¥åŠ›å€¤ï¼”
                05 ISET-ATAI4           PIC  X(08).
-      *ÆþÎÏÃÍ£µ
+      *å…¥åŠ›å€¤ï¼•
                05 ISET-ATAI5           PIC  X(08).
            03  ISET-ATAI-AREA-R        REDEFINES    ISET-ATAI-AREA.
                05 ISET-ATAI            PIC  X(08)   OCCURS  5.
-      *ÆþÎÏ¶èÊ¬¡Ê£±¡§´Ø·¸¥³¥á¥ó¥È»Ø¼¨¡¢£²¡§ÆâÉþ¼ïÎà¿ô»Ø¼¨¡Ë
+      *å…¥åŠ›åŒºåˆ†ï¼ˆï¼‘ï¼šé–¢ä¿‚ã‚³ãƒ¡ãƒ³ãƒˆæŒ‡ç¤ºã€ï¼’ï¼šå†…æœç¨®é¡žæ•°æŒ‡ç¤ºï¼‰
            03 ISET-INPUTKBN            PIC  X(01).
-      *´¹»»ÆþÎÏ¿ôÎÌ
+      *æ›ç®—å…¥åŠ›æ•°é‡
            03 ISET-KANSURYO            PIC  9(05)V9(5).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03 ISET-TERMID              PIC  X(16).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03 ISET-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03 ISET-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03 ISET-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03 ISET-UPHMS               PIC  X(06).

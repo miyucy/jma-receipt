@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,30 +18,30 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCGSESEND.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������󥨥�ɽ���
-      *  ����ݡ��ͥ��̾  : ü�����󥯥ꥢ
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  02/08/08    MCC�����ġ�   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : セションエンド処理
+      *  コンポーネント名  : 端末情報クリア
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  02/08/08    MCC−竹田　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION           SECTION.
        DATA                DIVISION.
        WORKING-STORAGE         SECTION.
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-LOCK            PIC 9(01).
            COPY    "COMMON-SPA".
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
            COPY    "CPTBLLOCK.INC".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
        LINKAGE                 SECTION.
            COPY    "MCPAREA".
@@ -66,7 +66,7 @@
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            EXIT    PROGRAM.
       *****************************************************************
-      *    ��¾����������
+      *    排他制御削除処理
       *****************************************************************
        910-LOCK-DLT-SEC            SECTION.
       *

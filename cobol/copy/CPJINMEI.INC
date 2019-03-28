@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,19 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿ÍÌ¾                 COPY (CPJINMEI.INC)     *
+      *    äººå                 COPY (CPJINMEI.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  JINMEI-REC.
            03  JINMEI-HOSPNUM           PIC 9(2).
-      *    ´Á»ú
+      *    æ¼¢å­—
            03  JINMEI-KANJI            PIC X(50).
-      *    ¥«¥Ê
+      *    ã‚«ãƒŠ
            03  JINMEI-KANA             PIC X(50).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  JINMEI-UPYMD            PIC X(08).
-      *    ¹¹¿·»þ´Ö
+      *    æ›´æ–°æ™‚é–“
            03  JINMEI-UPHMS            PIC X(06).

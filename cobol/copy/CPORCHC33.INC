@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,59 +16,59 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *     ¥«¥ë¥Æ£³¹æÍÍ¼°½ÐÎÏ¥Ñ¥é¥á¥¿    COPY (CPORCHC33.INC)
-      *                                          (ORCHC33 ¤Ç»ÈÍÑ¡Ë
+      *     ã‚«ãƒ«ãƒ†ï¼“å·æ§˜å¼å‡ºåŠ›ãƒ‘ãƒ©ãƒ¡ã‚¿    COPY (CPORCHC33.INC)
+      *                                          (ORCHC33 ã§ä½¿ç”¨ï¼‰
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     NACL-Â¿¡¹Ç¼  04/12/1X  °õºþ¶èÊ¬ÅùÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     NACL-å¤šã€…ç´  04/12/1X  å°åˆ·åŒºåˆ†ç­‰è¿½åŠ 
       ************************************************************
       *
        01  ORCHC33AREA.
       *
-      *    ½èÍý¶èÊ¬¡Ê£±¡§¥ª¥ó¥é¥¤¥ó¡¢£²¡§°ì³ç¡Ë
+      *    å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šã‚ªãƒ³ãƒ©ã‚¤ãƒ³ã€ï¼’ï¼šä¸€æ‹¬ï¼‰
            03  ORCHC33-KBN             PIC X(01).
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
            03  ORCHC33-PTNUM           PIC X(20).
-      *    ´µ¼Ô£É£Ä
+      *    æ‚£è€…ï¼©ï¼¤
            03  ORCHC33-PTID            PIC 9(10).
-      *    ´µ¼Ô»áÌ¾
+      *    æ‚£è€…æ°å
            03  ORCHC33-NAME            PIC X(50).
-      *    ´µ¼ÔÀ­ÊÌ
+      *    æ‚£è€…æ€§åˆ¥
            03  ORCHC33-SEX             PIC X(02).
-      *    ´µ¼ÔÀ¸Ç¯·îÆü
+      *    æ‚£è€…ç”Ÿå¹´æœˆæ—¥
            03  ORCHC33-BIRTHDAY        PIC X(08).
-      *    ¿ÇÎÅÇ¯·î
+      *    è¨ºç™‚å¹´æœˆ
            03  ORCHC33-SRYYM           PIC X(06).
-      *    ¿ÇÎÅÇ¯·î¡Ê½ªÎ»¡Ë
+      *    è¨ºç™‚å¹´æœˆï¼ˆçµ‚äº†ï¼‰
            03  ORCHC33-SRYYM-END       PIC X(06).
-      *    Æþ³°¶èÊ¬
+      *    å…¥å¤–åŒºåˆ†
            03  ORCHC33-NYUGAIKBN       PIC X(01).
-      *    ¿ÇÎÅ²Ê
+      *    è¨ºç™‚ç§‘
            03  ORCHC33-SRYKA           PIC X(02).
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
            03  ORCHC33-HKNCOMBI        PIC X(04).
       *
-      *    °õºþ¶èÊ¬¡Ê1:Æ¬½ñ¡¢0:ÌÀºÙ)
+      *    å°åˆ·åŒºåˆ†ï¼ˆ1:é ­æ›¸ã€0:æ˜Žç´°)
            03  ORCHC33-PRINT-FLG       PIC 9(01).
-      *    °õºþ³«»ÏÆü
+      *    å°åˆ·é–‹å§‹æ—¥
            03  ORCHC33-STRDD           PIC 9(02).
-      *    ºÇ½ª°õºþÊÇ
+      *    æœ€çµ‚å°åˆ·é 
            03  ORCHC33-ENDPAGE         PIC 9(03).
-      *    ºÇ½ª°õºþ¹Ô
+      *    æœ€çµ‚å°åˆ·è¡Œ
            03  ORCHC33-ENDLINE         PIC 9(02).
-      *    °õºþ·ÁÂÖ
+      *    å°åˆ·å½¢æ…‹
            03  ORCHC33-KARUTE3KBN      PIC X(01).
       *
-      *    °ì³ç¥Ñ¥é¥á¥¿
+      *    ä¸€æ‹¬ãƒ‘ãƒ©ãƒ¡ã‚¿
            03  ORCHC33-PRTAREA         PIC X(25000).
       *
-      *½ÐÎÏÎÎ°è
-      *    ¥Ú¡¼¥¸Ëç¿ô
+      *å‡ºåŠ›é ˜åŸŸ
+      *    ãƒšãƒ¼ã‚¸æžšæ•°
            03  ORCHC33-PAGE            PIC 9(04).
       *
-      *    ¥¨¥é¡¼¥³¡¼¥É
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  ORCHC33-RC              PIC 9(02).
       *

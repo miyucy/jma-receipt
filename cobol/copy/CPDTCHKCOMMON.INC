@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,15 +16,15 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ǡ��������å��ʥХå��˶��̥��ԡ���
+      *    データチェック（バッチ）共通コピー句
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  DTCHKCOMMON-AREA.
       *
-      *    �ݸ��ɣ�������
+      *    保険ＩＤ退避ワーク
          02  THKNID-AREA.
            03  THKNID-MAX                              PIC 9(05).
            03  THKNID-IDX                              PIC 9(05).
@@ -38,7 +38,7 @@
                    07  THKNID-HKNID-DAY                PIC 9(01)
                                                        OCCURS  31.
       *
-      *    ����ɣ�������
+      *    公費ＩＤ退避ワーク
          02  TKOHID-AREA.
            03  TKOHID-MAX                              PIC 9(05).
            03  TKOHID-IDX                              PIC 9(05).
@@ -49,8 +49,8 @@
                    07  TKOHID-KOHID-DAY                PIC 9(01)
                                                        OCCURS  31.
       *
-      *    �ݸ��ȹ礻������
-      *    ��THKNCOMBI-MAX�ϴ��Ի�̾�Υ����å��оݤ�Ƚ��ˤ���ѡ�
+      *    保険組合せ退避ワーク
+      *    （THKNCOMBI-MAXは患者氏名のチェック対象の判定にも使用）
          02  THKNCOMBI-AREA.
            03  THKNCOMBI-MAX                           PIC 9(05).
            03  THKNCOMBI-OCC                           OCCURS 40.
@@ -83,7 +83,7 @@
            03  TNACCT-GAIHAKU-DAY                      PIC 9(03)
                                                        OCCURS 31.
       *
-      *    ���Ų�������
+      *    診療科退避ワーク
          02  TSRYKA-AREA.
            03  TSRYKA-ALL-G.
                05  TSRYKA-ALL-SYOSIN-DAY               PIC 9(01)
@@ -128,13 +128,13 @@
                        09  TSRYKA-PSRYCD-DAY           PIC 9(01)
                                                        OCCURS  31.
       *
-      *    ���Ź԰�������
+      *    診療行為退避ワーク
          02  TSRYCD-AREA.
            03  TSRYCD-MAX                              PIC 9(05).
            03  TSRYCD-OCC                              OCCURS 2000.
                05  TSRYCD-TAISYO                       PIC 9(01).
-      *        �����Ȥ��Ʊ��ο��Ź԰٥����ɤ����꤬���ä�����
-      *        �����ѥ�᥿��������ʬ��ͥ��Ū������
+      *        入外ともに同一の診療行為コードの設定があった場合は
+      *        処理パラメタの入外区分を優先的に設定
                05  TSRYCD-NYUGAIKBN                    PIC X(01).
                05  TSRYCD-HKNFLG                       PIC 9(01).
                05  TSRYCD-SRYCD                        PIC X(09).
@@ -167,7 +167,7 @@
                        09  TSRYCD-GROUP-KAISU        PIC 9(09).
                        09  TSRYCD-GROUP-DAY          PIC 9(02).
       *
-      *    �������������ʼ����������å��ѡ�
+      *    実日数退避ワーク（実日数チェック用）
          02  TJNISSU-AREA.
            03  TJNISSU-MAX                             PIC 9(05).
            03  TJNISSU-OCC                             OCCURS 20.
@@ -176,7 +176,7 @@
                05  TJNISSU-DAY                         PIC 9(01)
                                                        OCCURS 31.
       *
-      *    �������������ʼ����������å��ѡ�
+      *    算定回数退避ワーク（実日数チェック用）
          02  TKAISU-AREA.
            03  TKAISU-MAX                              PIC 9(05).
            03  TKAISU-OCC                              OCCURS 20.
@@ -189,19 +189,19 @@
                        09  TKAISU-SRYCD-DAY            PIC 9(01)
                                                        OCCURS 31.
       *
-      *    ����Ĵ����������������
+      *    入院調剤料算定日退避ワーク
          02  TNYUIN-CHOZAI-AREA.
            03  TNYUIN-CHOZAI-DAY-OCC                   OCCURS 3.
                05  TNYUIN-CHOZAI-DAY                   PIC 9(01)
                                                        OCCURS 31.
       *
-      *    �������Ź԰���������
+      *    入院診療行為日退避ワーク
          02  TNYUIN-ACCT-AREA.
            03  TNYUIN-ACCT-DAY-G.
                05  TNYUIN-ACCT-DAY                     PIC 9(01)
                                                        OCCURS 31.
       *
-      *    ʻ�Ѷش��ʻ����������
+      *    併用禁忌（算定）退避ワーク
          02  THEIYOU-AREA.
            03  THEIYOU-MAX                             PIC 9(05).
            03  THEIYOU-OCC                             OCCURS 4000.
@@ -219,7 +219,7 @@
                        09  THEIYOU-DAY2                PIC 9(01)
                                                        OCCURS 31.
       *
-      *  ���ñ�̥����å�������
+      *  器材単位チェック退避ワーク
          02  TKZI-AREA.
            03  TKZI-MAX                                PIC 9(05).
            03  TKZI-OCC                                OCCURS 30.
@@ -235,7 +235,7 @@
                    07  TKZI-MICD-DAY                   PIC 9(01)
                                                        OCCURS 31.
       *
-      *    �����å��ޥ���������
+      *    チェックマスタ退避ワーク
          02  TCHK-AREA.
            03  TCHK-IDX                                PIC 9(08).
            03  TCHK-FLG                                PIC 9(01).
@@ -323,7 +323,7 @@
                        09  TGENZAN-ERR-DAY         PIC 9(01)
                                                    OCCURS  31.
       *
-      *    �������û��ݸ������å��ѥ��
+      *    入院料加算保険チェック用ワーク
          02  TNYUKSN-AREA.
            03  TNYUKSN-MAX                         PIC 9(05).
            03  TNYUKSN-OCC                         OCCURS  20.
@@ -356,7 +356,7 @@
                    07  TRSIRECEDEN-DAY             PIC 9(01)
                                                    OCCURS  31.
       *
-      *  ���������ΰ�
+      *  院外処方領域
          02  TINGAI-AREA.
            03  TINGAI-MAX                          PIC 9(07).
            03  TINGAI-OCC                          OCCURS  20.
@@ -364,7 +364,7 @@
                05  TINGAI-NYUGAIKBN                PIC X(01).
                05  TINGAI-TEN                      PIC 9(07).
       *
-      *  ����͹�����å������ΰ�
+      *  介護突合チェック退避領域
          02  TKAIGO-AREA.
            03  TKAIGO-NINTEI-DAY-G.
                05  TKAIGO-NINTEI-DAY               PIC 9(01)

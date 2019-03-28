@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹼��հ���           COPY (CPACCPTLSTRES.INC)
+      *    ＡＰＩレスポンス受付一覧           COPY (CPACCPTLSTRES.INC)
       ******************************************************************
         01  XML-ACCEPTLSTRES.
             02  ACPLSTRES-CONTEXT          PIC S9(9)   BINARY.
@@ -24,111 +24,111 @@
             02  ACPLSTRES-MODE             PIC S9(9)   BINARY.
             02  ACPLSTRES-RECORDNAME       PIC X(128).
             02  ACPLSTRES-APPOINTRES.
-      *       �»���
+      *       実施日
               03  ACPLSTRES-INFORMATION-DATE    PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  ACPLSTRES-INFORMATION-TIME    PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  ACPLSTRES-API-RESULT          PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  ACPLSTRES-API-RESULT-MSG      PIC X(100).
       *
               03  ACPLSTRES-RESKEY              PIC X(100).
-      *       ������
+      *       受付日
               03  ACPLSTRES-ACCEPT-DATE         PIC X(10).
-      *       ��������
+      *       受付内容
               03  ACPLSTRES-ACCEPT-LST-G.
                   05  ACPLSTRES-ACCEPT-LST      OCCURS   500.
-      *               ���ջ���
+      *               受付時間
                       07  ACPLSTRES-ACCEPT-TIME        PIC X(8).
-      *               ���գɣ�
+      *               受付ＩＤ
                       07  ACPLSTRES-ACCEPT-ID          PIC X(5).
-      *               ���Ų�
+      *               診療科
                       07  ACPLSTRES-ACCEPT-DEP-CODE    PIC X(2).
-      *               ���Ų�̾��
+      *               診療科名称
                       07  ACPLSTRES-ACCEPT-DEP-NAME    PIC X(80).
-      *               �ɥ�����������
+      *               ドクターコード
                       07  ACPLSTRES-ACCEPT-DR-CODE     PIC X(5).
-      *               �ɥ�������̾
+      *               ドクター氏名
                       07  ACPLSTRES-ACCEPT-DR-NAME     PIC X(80).
-      *               �������ƶ�ʬ
+      *               診療内容区分
                       07  ACPLSTRES-ACCEPT-DEP-INFO    PIC X(2).
-      *               ����������
+      *               送受信情報
                       07  ACPLSTRES-CLAIM-INFO         PIC X(1).
-      *               ��׻���
+      *               会計時間
                       07  ACPLSTRES-ACCOUNT-TIME       PIC X(8).
       *H29.4
-      *               ͽ�����
+      *               予約時間
                       07  ACPLSTRES-APPOINT-TIME       PIC X(8).
-      *               ͽ��ID
+      *               予約ID
                       07  ACPLSTRES-APPOINT-ID         PIC X(2).
-      *               ���Ծ���
+      *               患者情報
                       07  ACPLSTRES-PATIENT-INFOMATION.
-      *                   �����ֹ�
+      *                   患者番号
                           09  ACPLSTRES-PATIENTID         PIC X(20).
-      *                   ���Ի�̾
+      *                   患者氏名
                           09  ACPLSTRES-NAME              PIC X(100).
-      *                   ���ԥ��ʻ�̾
+      *                   患者カナ氏名
                           09  ACPLSTRES-KANANAME          PIC X(100).
-      *                   ������
+      *                   誕生日
                           09  ACPLSTRES-BIRTHDAY          PIC X(10).
-      *                   ����
+      *                   性別
                           09  ACPLSTRES-SEX               PIC X(1).
-      *               �ݸ�����
+      *               保険情報
                       07  ACPLSTRES-INSURANCE-INFO.
-      *                 �ݸ��ȹ礻�ֹ�
+      *                 保険組合せ番号
                         09  ACPLSTRES-COMBINATION-NUMBER     PIC X(04).
-      *H29.4            ��ɽ����ʬ
+      *H29.4            非表示区分
                         09  ACPLSTRES-COMBINATION-HYOJI      PIC X(01).
-      *                 �ݸ��μ���
+      *                 保険の種類
                         09  ACPLSTRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *                 �ݸ����ֹ�
+      *                 保険者番号
                         09  ACPLSTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *                 �ݸ��μ���̾��
+      *                 保険の種類名称
                         09  ACPLSTRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *                 ����
+      *                 記号
                         09  ACPLSTRES-MAIN-MARK              PIC X(80).
-      *                 �ֹ�
+      *                 番号
                         09  ACPLSTRES-MAIN-NUMBER            PIC X(80).
-      *                 ��³��ʬ
+      *                 継続区分
                         09  ACPLSTRES-MAIN-CONTINUATION      PIC X(01).
-      *                 �����ʬ
+      *                 補助区分
                         09  ACPLSTRES-MAIN-ASSISTANCE        PIC X(01).
-      *                 �ܿͲ�²��ʬ
+      *                 本人家族区分
                         09  ACPLSTRES-MAIN-FAMILY            PIC X(01).
-      *                 ���ݸ���̾
+      *                 被保険者名
                         09  ACPLSTRES-MAIN-POLICYHOLDER      PIC X(100).
-      *                 ͭ��������
+      *                 有効開始日
                         09  ACPLSTRES-MAIN-START-DATE        PIC X(10).
-      *                 ͭ����λ��
+      *                 有効終了日
                         09  ACPLSTRES-MAIN-END-DATE          PIC X(10).
-      *                 �������
+      *                 公費情報
                         09  ACPLSTRES-PUBLIC-INSURANCE-INFO           
                                                   OCCURS  4 TIMES.
-      *                    ����μ���
+      *                    公費の種類
                            11  ACPLSTRES-INSURANCE-CLASS     PIC X(03).
-      *                    ����μ���̾��
+      *                    公費の種類名称
                            11  ACPLSTRES-INSURANCE-NAME      PIC X(20).
-      *                    ��ô���ֹ�
+      *                    負担者番号
                            11  ACPLSTRES-PROVIDER-NUMBER     PIC X(08).
-      *                    ������ֹ�
+      *                    受給者番号
                            11  ACPLSTRES-RECIPIENT-NUMBER    PIC X(20).
-      *                    ��������ôΨ�ʳ��
+      *                    入院−負担率（割）
                            11  ACPLSTRES-RATE-ADMISSION      PIC X(04).
-      *                    �����ݸ����
+      *                    入院−固定額
                            11  ACPLSTRES-MONEY-ADMISSION     PIC X(06). 
-      *                    �������ôΨ�ʳ��
+      *                    外来−負担率（割）
                            11  ACPLSTRES-RATE-OUTPATIENT     PIC X(04).
-      *                    ����ݸ����
+      *                    外来−固定額
                            11  ACPLSTRES-MONEY-OUTPATIENT    PIC X(06).
-      *                    ͭ��������
+      *                    有効開始日
                            11  ACPLSTRES-INSURANCE-START-DATE
                                                            PIC X(10).
-      *                    ͭ����λ��
+      *                    有効終了日
                            11  ACPLSTRES-INSURANCE-END-DATE  PIC X(10).
       *
       *H30.11
-      *               �����Ͽ����
+      *               メモ登録情報
                       07  ACPLSTRES-MEMO-INF.
                           09  ACPLSTRES-MEMO-00   PIC X(01).
                           09  ACPLSTRES-MEMO-KA   PIC X(01).

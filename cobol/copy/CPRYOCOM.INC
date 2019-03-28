@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���ܥ쥻�ץȥ����ȥޥ���    COPY (CPRYOUYOCOM.INC)  *
+      *    療養レセプトコメントマスタ    COPY (CPRYOUYOCOM.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  RYOUYOCOM-REC.
            03  RYOCOM-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  RYOCOM-HOSPNUM         PIC 9(2).
-      *������ʬ
+      *入外区分
                05  RYOCOM-NYUGAIKBN      PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RYOCOM-PTID           PIC  9(10).
-      *����ǯ��
+      *診療年月
                05  RYOCOM-SRYYM          PIC  X(06).
-      *���ֹ�
+      *剤番号
                05  RYOCOM-ZAINUM         PIC  9(08).
-      *�޼��̶�ʬ�ʣ������ģ��������������Ŷ�ʬ��
+      *剤識別区分（１：ＡＤＬ点数　２：医療区分）
            03  RYOCOM-ZAISKBKBN          PIC  X(01).
-      *���ť����ɡʥ����ȥ����ɡ�
+      *診療コード（コメントコード）
            03  RYOCOM-SRYCD              PIC  X(09).
-      *�������
+      *月固定値
            03  RYOCOM-MONTH              PIC  9(02).
-      *��ʬ�������˥ơ��֥�
+      *区分（点数）テーブル
            03  RYOCOM-DAY-AREA.
-      *        ��ʬ�����ơ��֥�
+      *        区分点数テーブル
              04  RYOCOM-DAY-TBL.
-      *        ���Ų���ʣ������飳������
+      *        診療回数（１日から３１日）
                05  RYOCOM-DAY-1          PIC  9(02).
                05  RYOCOM-DAY-2          PIC  9(02).
                05  RYOCOM-DAY-3          PIC  9(02).
@@ -77,18 +77,18 @@
                05  RYOCOM-DAY-30         PIC  9(02).
                05  RYOCOM-DAY-31         PIC  9(02).
            03  RYOCOM-DAY-AREA-R         REDEFINES   RYOCOM-DAY-AREA.
-      *        ��ʬ����ơ��֥�
+      *        区分回数テーブル
                05  RYOCOM-DAY-TBL2.
                    07  RYOCOM-DAY        PIC  9(02)
                                          OCCURS   31.
-      *ü���ɣ�
+      *端末ＩＤ
            03  RYOCOM-TERMID             PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  RYOCOM-OPID               PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  RYOCOM-CREYMD             PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  RYOCOM-UPYMD              PIC  X(08).
-      *��������
+      *更新時間
            03  RYOCOM-UPHMS              PIC  X(06).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,55 +16,55 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ������̾�ޥ�����       (CPPTBYOMEI.INC)
+      *  患者病名マスター       (CPPTBYOMEI.INC)
       *****************************************************************
-      *  ��������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/06/06  �ݸ���̾�ե饰���ɲ�
-      *  01/00/02    MCC-ƣ��     01.12.06  �������쥤�����Ȥ��ѹ�     
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/06/06  保険病名フラグの追加
+      *  01/00/02    MCC-藤原     01.12.06  新しいレイアウトに変更     
       *
-      *  ��������̾�ޥ����б�
-      *  01.02.01    NACL-ƣ��    04/01/07  �������쥤�����Ȥ��ѹ�
+      *  新患者病名マスタ対応
+      *  01.02.01    NACL-藤原    04/01/07  新しいレイアウトに変更
       *ver.2.6.0 
-      *  01.02.02    NACL-ƣ��    05/05/26  ��̾�����ѹ��ܤ��ɲ�
+      *  01.02.02    NACL-藤原    05/05/26  病名検索用項目を追加
       *
-      *  03.04.01    NACL-ƣ��    06/10/31  ����ե饰��������ڥ졼��
-      *                                     �ɣĤ��ɲ�
+      *  03.04.01    NACL-藤原    06/10/31  削除フラグ、削除オペレータ
+      *                                     ＩＤを追加
       *
-      *  04.06.01    NACL-ƣ��    10/06/20  ��̾�����Ͻ��б�
-      *                                     ���Ͻ�Ϣ�֤��ɲ� 
-      *  04.06.02    NACL-ƣ��    10/11/05  ��­�������б�
+      *  04.06.01    NACL-藤原    10/06/20  病名の入力順対応
+      *                                     入力順連番を追加 
+      *  04.06.02    NACL-藤原    10/11/05  補足コメント対応
       *
-      *  04.07.01    NACL-ƣ��    13/07/12  �軰�Թ԰��б�
-      *  04.07.02    NACL-ƣ��    15/07/29  ������̾��Ͽ������Ͽ���ֵ�Ͽ
-      *                                     �Ȳ���ɽ���б�
-      *                                     ��Ͽ���֤��ɲ�
+      *  04.07.01    NACL-藤原    13/07/12  第三者行為対応
+      *  04.07.02    NACL-藤原    15/07/29  患者病名登録時の登録時間記録
+      *                                     と画面表示対応
+      *                                     登録時間を追加
       *
-      *  04.08.01    NACL-ƣ��    16/02/17  �ౡ������ν���̾�󵭺��б�
-      *                                     ��ʻ�ɤ˷��������ɲ��б�
+      *  04.08.01    NACL-藤原    16/02/17  退院証明書の傷病名欄記載対応
+      *                                     合併症に係わる情報追加対応
       *****************************************************************
       *
       *01  PTBYOMEI-REC.
            03  PTBYO-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTBYO-HOSPNUM        PIC 9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTBYO-PTID          PIC 9(10).
-      *���Ų�
+      *診療科
                05  PTBYO-SRYKA         PIC X(02).
-      *���ų�����
+      *診療開始日
                05  PTBYO-SRYYMD        PIC X(08).
-      *Ϣ�ֹ�
+      *連番号
                05  PTBYO-RENNUM        PIC 9(02).
-      *������̾������
+      *基本病名コード
            03  PTBYO-KHNBYOMEICD       PIC X(07).
-      *��̾���ϥ�����
+      *病名入力コード
            03  PTBYO-BYOMEIINPUTCD-G.
                05  PTBYO-BYOMEIINPUTCD PIC X(20)
                                        OCCURS  6.
-      *��̾�����ɿ�
+      *病名コード数
            03  PTBYO-BYOMEICDSU        PIC 9(02).
-      *��̾������
+      *病名コード
            03  PTBYO-BYOMEICD-G.
                05  PTBYO-BYOMEICD-1    PIC X(07).
                05  PTBYO-BYOMEICD-2    PIC X(07).
@@ -91,76 +91,76 @@
            03  PTBYO-BYOMEICD-R        REDEFINES   PTBYO-BYOMEICD-G.
                05  PTBYO-BYOMEICD      PIC X(07)
                                        OCCURS   21.
-      *�����ե饰
+      *疑いフラグ
            03  PTBYO-UTAGAIFLG         PIC X(01).
-      *����̾�ե饰
+      *主病名フラグ
            03  PTBYO-SYUBYOFLG         PIC X(01).
-      *�����ե饰
+      *慢性フラグ
            03  PTBYO-MANSEIKBN         PIC 9(02).
-      *������ʬ
+      *入外区分
            03  PTBYO-NYUGAIKBN         PIC X(01).
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            03  PTBYO-HKNCOMBI          PIC 9(04).
-      *����ɣġ��軰�Թ԰٤Τߡ�
+      *公費ＩＤ（第三者行為のみ）
            03  PTBYO-KOHID             PIC 9(10).
-      *�쥻�ץ�ɽ���ե饰
+      *レセプト表示フラグ
            03  PTBYO-REZEFLG           PIC X(01).
-      *�쥻�ץ�ɽ�����
+      *レセプト表示月数
            03  PTBYO-REZEMM            PIC 9(02).
-      *ž����ʬ
+      *転帰区分
            03  PTBYO-TENKIKBN          PIC X(01).
-      *ž����
+      *転帰日
            03  PTBYO-TENKIYMD          PIC X(08).
-      *��̾
+      *病名
            03  PTBYO-BYOMEI            PIC X(160).
-      *��̾ʸ����
+      *病名文字数
            03  PTBYO-BYOMEIMOJI        PIC 9(02).
-      *�������̾
+      *カルテ病名
            03  PTBYO-CHARTBYOMEI       PIC X(160).
-      *�������̾ʸ����
+      *カルテ病名文字数
            03  PTBYO-CHARTBYOMEIMOJI   PIC 9(02).
-      *��­������
+      *補足コメント
            03  PTBYO-HOSOKU-COMMENT    PIC X(80).
-      *��­�����ȥ�����
+      *補足コメントコード
            03  PTBYO-HOSOKUCD-G.
                05  PTBYO-HOSOKUCD      PIC X(20)
                                        OCCURS   3.
-      *��̾�Խ��ե饰
+      *病名編集フラグ
            03  PTBYO-BYOMEIHENFLG      PIC X(01).
-      *�ݸ���̾�ե饰
+      *保険病名フラグ
            03  PTBYO-HKNBYOMEIFLG      PIC X(01).
-      *�쥻�ť��顼�ե饰
+      *レセ電エラーフラグ
            03  PTBYO-RECEDENFLG        PIC X(01).
-      *�ݸ��ֹ�
+      *保険番号
            03  PTBYO-HKNNUM            PIC X(03).
-      *�������̥�����
+      *基本部位コード
            03  PTBYO-KHNBUICD-G.
                05  PTBYO-KHNBUICD      PIC X(07)
                                        OCCURS  3.
-      *���Ͻ�Ϣ��
+      *入力順連番
            03  PTBYO-SEQNUM            PIC 9(04).
-      *�ౡ�����񵭺ܥե饰
+      *退院証明書記載フラグ
            03  PTBYO-DISCHARGEFLG      PIC X(01).
-      *��������ʬ
+      *原疾患区分
            03  PTBYO-CLASS1            PIC 9(02).
-      *��ʻ�ɶ�ʬ
+      *合併症区分
            03  PTBYO-CLASS2            PIC 9(02).
-      *����ե饰
+      *削除フラグ
            03  PTBYO-DLTFLG            PIC X(01).
-      *������ڥ졼���ɣ�
+      *削除オペレータＩＤ
            03  PTBYO-DLT-OPID          PIC X(16).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTBYO-TERMID            PIC X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  PTBYO-OPID              PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  PTBYO-CREYMD            PIC X(08).
-      *��������
+      *作成時間
            03  PTBYO-CREHMS            PIC X(06).
-      *����ǯ����
+      *更新年月日
            03  PTBYO-UPYMD             PIC X(08).
-      *��������
+      *更新時間
            03  PTBYO-UPHMS             PIC X(06).
       *
-      *��̾�����ѹ���
+      *病名検索用項目
            03  PTBYO-XXBYOMEI         PIC X(160).

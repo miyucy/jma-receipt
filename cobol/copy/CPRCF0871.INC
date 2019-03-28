@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,47 +16,47 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ϫ�ҥ쥻�ץ����ٽ��������     COPY (CPRCF0871.INC)   *
+      *    労災レセプト明細書（入院）     COPY (CPRCF0871.INC)   *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    05.07.28  ���ֹ��ɲ�
-      *  03.05.01    NACL-����    07.06.01  ���롼�׿����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    05.07.28  剤番号追加
+      *  03.05.01    NACL-門脇    07.06.01  グループ診療対応
       ************************************************************
       *01  RECE871-REC.
            03  RECE871-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  RECE871-HOSPNUM         PIC  9(02).
-      *����ǯ��
+      *診療年月
                05  RECE871-SRYYM           PIC  9(06).
-      *������ʬ
+      *入外区分
                05  RECE871-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RECE871-PTID            PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                05  RECE871-RECEKA          PIC  X(02).
-      *�ݸ��ɣ�        
+      *保険ＩＤ        
                05  RECE871-HKNID           PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE871-TEKSTYMD        PIC  X(08).
-      *���Ŷ�ʬ
+      *診療区分
                05  RECE871-SRYKBN          PIC  X(02).
       *
                05  RECE871-NYUTENTTLKBN    PIC  9(03).
-      *���ť����ɡʺޤ���Ƭ�ο��ť����ɡ�
+      *診療コード（剤の先頭の診療コード）
                05  RECE871-SRYCD1          PIC  X(09).
-      *���ֹ�
+      *剤番号
                05  RECE871-ZAINUM          PIC  9(08).
-      *Ϣ�ֹ�
+      *連番号
                05  RECE871-LINENUM         PIC  9(05).
-      *�����ֹ�
+      *患者番号
            03  RECE871-PTNUM               PIC  X(20).
-      *���Ų�
+      *診療科
            03  RECE871-SRYKA               PIC  X(02).
-      *Ŭ�������
+      *適要欄情報
            03  RECE871-TEKIYO-INF.
-      *�޶��ڡʡ���
+      *剤区切（＊）
                05  RECE871-ASTER           PIC  X(02).
-      *Ŧ��
+      *摘要
                05  RECE871-TEKIYO          PIC  X(100).

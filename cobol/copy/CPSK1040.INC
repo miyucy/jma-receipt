@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,81 +16,81 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK1040.INC)   *
-      *         ¡Ê£±£°£´£°¡Ë                            *
-      *         ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯µ¡Ç½¾ðÊó                  *
-      *         ¸øÈñÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æ¥Á¥§¥¯¾ðÊó    *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK1040.INC)   *
+      *         ï¼ˆï¼‘ï¼ï¼”ï¼ï¼‰                            *
+      *         ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯æ©Ÿèƒ½æƒ…å ±                  *
+      *         å…¬è²»è² æ‹…è€…ç•ªå·ãƒ»å—çµ¦è€…ç•ªå·ãƒã‚§ã‚¯æƒ…å ±    *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-1040-REC.
            03  SYS-1040-KEY.
                05  SYS-1040-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-1040-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-1040-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-1040-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-1040-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-1040-TBL.
-      *ÉéÃ´¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯
+      *è² æ‹…è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯
                05  SYS-1040-FTNJANUMCHK PIC  X(01).
-      *¼õµë¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯
+      *å—çµ¦è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯
                05  SYS-1040-JKYSNUMCHK  PIC  X(01).
-      *ÉéÃ´¼ÔÈÖ¹æÈ¾³ÑÊ¸»úµö²Ä
+      *è² æ‹…è€…ç•ªå·åŠè§’æ–‡å­—è¨±å¯
                05  SYS-1040-FTNJHANKAKUCHK
                                         PIC  X(01).
-      *ÉéÃ´¼ÔÈÖ¹æÁ´³ÑÊ¸»úµö²Ä
+      *è² æ‹…è€…ç•ªå·å…¨è§’æ–‡å­—è¨±å¯
                05  SYS-1040-FTNJZENKAKUCHK
                                         PIC  X(01).
-      *¼õµë¼ÔÈÖ¹æÈ¾³ÑÊ¸»úµö²Ä
+      *å—çµ¦è€…ç•ªå·åŠè§’æ–‡å­—è¨±å¯
                05  SYS-1040-JKYSHANKAKUCHK
                                         PIC  X(01).
-      *¼õµë¼ÔÈÖ¹æÁ´³ÑÊ¸»úµö²Ä
+      *å—çµ¦è€…ç•ªå·å…¨è§’æ–‡å­—è¨±å¯
                05  SYS-1040-JKYSZENKAKUCHK
                                         PIC  X(01).
-      *ÉéÃ´¼ÔÈÖ¹æ¿ô»ú°Ê³°¤ÎÊ¸»úµö²Ä
+      *è² æ‹…è€…ç•ªå·æ•°å­—ä»¥å¤–ã®æ–‡å­—è¨±å¯
                05  SYS-1040-FTNJNUMERICCHK
                                         PIC  X(01).
-      *¼õµë¼ÔÈÖ¹æ¿ô»ú°Ê³°¤ÎÊ¸»úµö²Ä
+      *å—çµ¦è€…ç•ªå·æ•°å­—ä»¥å¤–ã®æ–‡å­—è¨±å¯
                05  SYS-1040-JKYSNUMERICCHK
                                         PIC  X(01).
-      *ÉéÃ´¼ÔÈÖ¹æ·å¿ô¥Á¥§¥Ã¥¯
+      *è² æ‹…è€…ç•ªå·æ¡æ•°ãƒã‚§ãƒƒã‚¯
                05  SYS-1040-FTNJKETACHK
                                         PIC  X(01).
-      *ÉéÃ´¼ÔÈÖ¹æ·å¿ôºÇ¾®
+      *è² æ‹…è€…ç•ªå·æ¡æ•°æœ€å°
                05  SYS-1040-FTNJKETAMIN
                                         PIC  X(02).
-      *ÉéÃ´¼ÔÈÖ¹æ·å¿ôºÇÂç
+      *è² æ‹…è€…ç•ªå·æ¡æ•°æœ€å¤§
                05  SYS-1040-FTNJKETAMAX
                                         PIC  X(02).
-      *¼õµë¼ÔÈÖ¹æ·å¿ô¥Á¥§¥Ã¥¯
+      *å—çµ¦è€…ç•ªå·æ¡æ•°ãƒã‚§ãƒƒã‚¯
                05  SYS-1040-JKYSKETACHK
                                         PIC  X(01).
-      *¼õµë¼ÔÈÖ¹æ·å¿ôºÇ¾®
+      *å—çµ¦è€…ç•ªå·æ¡æ•°æœ€å°
                05  SYS-1040-JKYSKETAMIN
                                         PIC  X(02).
-      *¼õµë¼ÔÈÖ¹æ·å¿ôºÇÂç
+      *å—çµ¦è€…ç•ªå·æ¡æ•°æœ€å¤§
                05  SYS-1040-JKYSKETAMAX
                                         PIC  X(02).
-      *Í½È÷
+      *äºˆå‚™
                05  SYS-1040-YOBI        PIC  X(482).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-1040-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-1040-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-1040-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-1040-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-1040-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-1040-UPD-KEY.
                05  SYS-1040-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1040-UPD-KANRICD     PIC X(04).

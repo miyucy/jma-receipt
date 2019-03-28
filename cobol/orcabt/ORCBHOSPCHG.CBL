@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBHOSPCHG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���
-      *  ����ݡ��ͥ��̾  : ��ץ��ꥢ�ʷ�������ŵ��إ������ѹ��б���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 随時
+      *  コンポーネント名  : 会計クリア（月途中医療機関コード変更対応）
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-��Ʀ��  07/06/15  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-小豆沢  07/06/15  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
       *
@@ -41,7 +41,7 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
@@ -53,7 +53,7 @@
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
@@ -66,7 +66,7 @@
            03  FLG-RIHA                PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYACCT-UPD         PIC 9(05).
            03  CNT-NYUINACCT-UPD       PIC 9(05).
@@ -76,18 +76,18 @@
            03  CNT-PTBYOMEI-UPD        PIC 9(05).
            03  CNT-PTBYOMEI-DEL        PIC 9(05).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX1                    PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -97,7 +97,7 @@
            03  WRK-PARA-STIDX          PIC X(02).
            03  WRK-PARA-EDIDX          PIC X(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-RECEERR             PIC X(200).
@@ -111,53 +111,53 @@
       *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
       *
-      *    ���Ų�ץޥ���
+      *    診療会計マスタ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスター
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    �������Ų�ץޥ�����
+      *    入院診療会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ��Ǽ�ޥ�����
+      *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ������̾�ޥ�����
+      *    患者病名マスター
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -165,7 +165,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -179,7 +179,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -194,7 +194,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -229,11 +229,11 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO   SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBHOSPCHG"   TO  JOB-PGID
-           MOVE    "��ץ��ꥢ����"
+           MOVE    "会計クリア処理"
                                    TO  JOB-SHELLMSG
            PERFORM   900-CALL-ORCSJOB-SEC
       *
@@ -248,7 +248,7 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  RECEERR
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  100-INIT-EXT
@@ -257,7 +257,7 @@
            MOVE    WRK-PARA-STIDX    TO  WRK-STIDX
            MOVE    WRK-PARA-EDIDX    TO  WRK-EDIDX
       *
-      *    ����ǯ��������λǯ�����Υ��å�
+      *    開始年月日、終了年月日のセット
            MOVE    WRK-PARA-SRYYM    TO  WRK-STYMD (1:6)
            MOVE    WRK-PARA-STIDX    TO  WRK-STYMD (7:2)
            MOVE    WRK-PARA-SRYYM    TO  WRK-EDYMD (1:6)
@@ -265,7 +265,7 @@
            DISPLAY  "WRK-STYMD = " WRK-STYMD
            DISPLAY  "WRK-EDYMD = " WRK-EDYMD
       *
-      *    ��Ⱦ�������Ⱦ����Υե饰���å�
+      *    前半削除、後半削除のフラグセット
            IF     WRK-PARA-STIDX     =    "01"
                MOVE    1             TO  FLG-SYORI
            ELSE
@@ -276,7 +276,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
@@ -285,7 +285,7 @@
               ( WRK-PARA-STIDX     <=   "31")
                CONTINUE
            ELSE
-               MOVE    "������������Ǥ�"   TO  WRK-RECEERR
+               MOVE    "開始日が誤りです"   TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
@@ -293,7 +293,7 @@
            IF   WRK-PARA-STIDX  IS  NUMERIC
                CONTINUE
            ELSE
-               MOVE    "������������Ǥ�"   TO  WRK-RECEERR
+               MOVE    "開始日が誤りです"   TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
@@ -302,7 +302,7 @@
               ( WRK-PARA-EDIDX     <=   "31")
                CONTINUE
            ELSE
-               MOVE    "��λ��������Ǥ�"   TO  WRK-RECEERR
+               MOVE    "終了日が誤りです"   TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
@@ -310,7 +310,7 @@
            IF   WRK-PARA-EDIDX  IS  NUMERIC
                CONTINUE
            ELSE
-               MOVE    "��λ��������Ǥ�"   TO  WRK-RECEERR
+               MOVE    "終了日が誤りです"   TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
@@ -318,7 +318,7 @@
            IF ( WRK-PARA-STIDX     <=    WRK-PARA-EDIDX)
                CONTINUE
            ELSE
-               MOVE    "����������λ���������դǤ�"
+               MOVE    "開始日が終了日より後日付です"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
@@ -329,41 +329,41 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ���Ų�׹�������
+      *    診療会計更新処理
            PERFORM 201-SRYACCT-UPD-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
            END-IF
       *
-      *    ������׹�������
+      *    入院会計更新処理
            PERFORM 201-NYUINACCT-UPD-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
            END-IF
       *
-      *    �������򹹿�����
+      *    算定履歴更新処理
            PERFORM 201-SANTEI-UPD-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
            END-IF
       *
-      *    ��������������
+      *    受診履歴削除処理
            PERFORM 201-JYURRK-DEL-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
            END-IF
       *
-      *    ��Ǽ�������
+      *    収納削除処理
            PERFORM 201-SYUNOU-DEL-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
            END-IF
       *
-      *    ������̾��������
+      *    患者病名更新処理
            PERFORM 201-PTBYOMEI-UPD-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  200-MAIN-EXT
@@ -374,7 +374,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�׹�������
+      *    診療会計更新処理
       *****************************************************************
        201-SRYACCT-UPD-SEC             SECTION.
       *
@@ -425,7 +425,7 @@
                  IF    ( MCP-RC      NOT =   ZERO )
                      DISPLAY "ORCBMRECE SRYACCT UPD ERR:"  MCP-RC
                              ",PTID:"   ACCT-PTID
-                     MOVE    "���Ų�פι����˼��Ԥ��ޤ���"
+                     MOVE    "診療会計の更新に失敗しました"
                                        TO  WRK-RECEERR
                      PERFORM 500-ERR-HENSYU-SEC
                      GO  TO  201-SRYACCT-UPD-EXT
@@ -455,7 +455,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ�ơ�����󳫻�������λ���Υ����ƥ�ͽ�󥳡���Ƚ��
+      *    リハビリテーション開始日、終了日のシステム予約コード判定
       *****************************************************************
        201-SRYACCT-RIHA-SYYK-SEC         SECTION.
       *
@@ -472,72 +472,72 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-SRYACT-SELECT-SEC
            IF      FLG-SRYACT     =    ZERO
-      *            �����ɼ�����ϥӥ�ơ�����󳫻���
+      *            心大血管疾患リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800111"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �����ɼ�����ϥӥ�ơ������λ��
+      *            心大血管疾患リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800112"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            Ǿ��ɼ�������ϥӥ�ơ�����󳫻���
+      *            脳血管疾患等リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800121"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            Ǿ��ɼ�������ϥӥ�ơ������λ��
+      *            脳血管疾患等リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800122"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            ��ư���ϥӥ�ơ�����󳫻���
+      *            運動器リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800131"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            ��ư���ϥӥ�ơ������λ��
+      *            運動器リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800132"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �Ƶ۴��ϥӥ�ơ�����󳫻���
+      *            呼吸器リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800141"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �Ƶ۴��ϥӥ�ơ������λ��
+      *            呼吸器リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800142"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �ݿ���ǽ��ˡ������
+      *            摂食機能療法開始日
                    IF    SRY-SRYCD(1)  =  "099800151"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �ݿ���ǽ��ˡ��λ��
+      *            摂食機能療法終了日
                    IF    SRY-SRYCD(1)  =  "099800152"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            ���´��ԥ�ϥӥ�ơ�����󳫻���
+      *            難病患者リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800161"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            ���´��ԥ�ϥӥ�ơ������λ��
+      *            難病患者リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800162"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �㳲���ʼԡ˥�ϥӥ�ơ�����󳫻���
+      *            障害児（者）リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800171"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            �㳲���ʼԡ˥�ϥӥ�ơ������λ��
+      *            障害児（者）リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800172"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            ���󴵼ԥ�ϥӥ�ơ�����󳫻���
+      *            がん患者リハビリテーション開始日
                    IF    SRY-SRYCD(1)  =  "099800181"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
-      *            ���󴵼ԥ�ϥӥ�ơ������λ��
+      *            がん患者リハビリテーション終了日
                    IF    SRY-SRYCD(1)  =  "099800182"
                        MOVE   1        TO  FLG-RIHA
                    END-IF
            END-IF
-      *    ���Ź԰٥�������
+      *    診療行為クローズ
            MOVE     "tbl_sryact"   TO  MCP-TABLE
            MOVE     "key2"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -546,7 +546,7 @@
        201-SRYACCT-RIHA-SYYK-EXT.
            EXIT.
       *****************************************************************
-      *    ������׹�������
+      *    入院会計更新処理
       *****************************************************************
        201-NYUINACCT-UPD-SEC           SECTION.
       *
@@ -585,7 +585,7 @@
                IF    ( MCP-RC      NOT =   ZERO )
                    DISPLAY "ORCBMRECE NYUINACCT UPD ERR:"  MCP-RC
                            ",PTID:"   NACCT-PTID
-                   MOVE    "������פι����˼��Ԥ��ޤ���"
+                   MOVE    "入院会計の更新に失敗しました"
                                        TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  201-NYUINACCT-UPD-EXT
@@ -612,7 +612,7 @@
        201-NYUINACCT-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    ���깹������
+      *    算定更新処理
       *****************************************************************
        201-SANTEI-UPD-SEC              SECTION.
       *
@@ -633,8 +633,8 @@
       *
            PERFORM UNTIL ( FLG-SANTEI NOT =   ZERO )
       *
-      *        ��ϥӥ�ơ�����󳫻�������λ���Υ����ƥ�ͽ�󥳡��ɤ�
-      *        ���ꥢ�оݳ��Ȥ���
+      *        リハビリテーション開始日、終了日のシステム予約コードは
+      *        クリア対象外とする
                IF     SANTEI-SRYCD     =    "099800111"  OR
                                             "099800112"  OR
                                             "099800121"  OR
@@ -668,7 +668,7 @@
                  IF    ( MCP-RC      NOT =   ZERO )
                      DISPLAY "ORCBMRECE SANTEI UPD ERR:"  MCP-RC
                              ",PTID:"   SANTEI-PTID
-                     MOVE    "��������ι����˼��Ԥ��ޤ���"
+                     MOVE    "算定履歴の更新に失敗しました"
                                          TO  WRK-RECEERR
                      PERFORM 500-ERR-HENSYU-SEC
                      GO  TO  201-SANTEI-UPD-EXT
@@ -697,7 +697,7 @@
        201-SANTEI-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    ��������������
+      *    受診履歴削除処理
       *****************************************************************
        201-JYURRK-DEL-SEC              SECTION.
       *
@@ -719,7 +719,7 @@
       *
            PERFORM UNTIL ( FLG-JYURRK NOT =   ZERO )
       *
-      *        ��������κ��
+      *        受診履歴の削除
                IF     ( JYURRK-SRYYMD   >=   WRK-STYMD  )  AND
                       ( JYURRK-SRYYMD   <=   WRK-EDYMD  )
       *
@@ -731,7 +731,7 @@
                  IF    ( MCP-RC      NOT =   ZERO )
                      DISPLAY "ORCBMRECE JYURRK DEL ERR:"  MCP-RC
                              ",PTID:"   JYURRK-PTID
-                     MOVE    "��������κ���˼��Ԥ��ޤ���"
+                     MOVE    "受診履歴の削除に失敗しました"
                                          TO  WRK-RECEERR
                      PERFORM 500-ERR-HENSYU-SEC
                      GO  TO  201-JYURRK-DEL-EXT
@@ -760,7 +760,7 @@
        201-JYURRK-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�������
+      *    収納削除処理
       *****************************************************************
        201-SYUNOU-DEL-SEC              SECTION.
       *
@@ -783,7 +783,7 @@
       *
            PERFORM UNTIL ( FLG-SYUNOU NOT =   ZERO )
       *
-      *        ��Ǽ�κ��
+      *        収納の削除
                IF     ( SYU-SRYYMD   >=   WRK-STYMD  )  AND
                       ( SYU-SRYYMD   <=   WRK-EDYMD  )
       *
@@ -795,7 +795,7 @@
                  IF    ( MCP-RC      NOT =   ZERO )
                      DISPLAY "ORCBMRECE SYUNOU DEL ERR:"  MCP-RC
                              ",PTID:"   SYU-PTID
-                     MOVE    "��Ǽ�κ���˼��Ԥ��ޤ���"
+                     MOVE    "収納の削除に失敗しました"
                                          TO  WRK-RECEERR
                      PERFORM 500-ERR-HENSYU-SEC
                      GO  TO  201-SYUNOU-DEL-EXT
@@ -824,7 +824,7 @@
        201-SYUNOU-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ������̾��������
+      *    患者病名更新処理
       *****************************************************************
        201-PTBYOMEI-UPD-SEC              SECTION.
       *
@@ -844,9 +844,9 @@
       *
            PERFORM UNTIL ( FLG-PTBYOMEI NOT =   ZERO )
       *
-      *        ������̾����Ⱦ���ꥢ����
+      *        患者病名の前半クリア処理
                IF       FLG-SYORI    =    1
-      *          ��Ⱦ���֤ν�λ����������ž���ѥǡ�����������
+      *          前半期間の終了日より以前の転帰済データを削除する
                  IF     ( PTBYO-TENKIKBN   NOT =   SPACE )      AND
                         ( PTBYO-TENKIYMD   <=      WRK-EDYMD )  AND
                         ( PTBYO-DLTFLG     =       SPACE )
@@ -859,7 +859,7 @@
                    IF    ( MCP-RC      NOT =   ZERO )
                        DISPLAY "ORCBMRECE PTBYOMEI DEL ERR:"  MCP-RC
                                ",PTID:"   PTBYO-PTID
-                       MOVE    "������̾�κ���˼��Ԥ��ޤ���"
+                       MOVE    "患者病名の削除に失敗しました"
                                            TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        GO  TO  201-PTBYOMEI-UPD-EXT
@@ -870,9 +870,9 @@
                  END-IF
                END-IF
       *
-      *        ������̾�θ�Ⱦ���ꥢ����
+      *        患者病名の後半クリア処理
                IF       FLG-SYORI    =    2
-      *          ��Ⱦ���֤����Ϥ��줿ž���򥯥ꥢ����
+      *          後半期間に入力された転帰をクリアする
                  IF     ( PTBYO-SRYYMD     <       WRK-STYMD ) AND
                         ( PTBYO-TENKIKBN   NOT =   SPACE )     AND
                         ( PTBYO-TENKIYMD   >=      WRK-STYMD ) AND
@@ -888,7 +888,7 @@
                    IF    ( MCP-RC      NOT =   ZERO )
                        DISPLAY "ORCBMRECE PTBYOMEI UPD ERR:"  MCP-RC
                                ",PTID:"   PTBYO-PTID
-                       MOVE    "������̾�ι����˼��Ԥ��ޤ���"
+                       MOVE    "患者病名の更新に失敗しました"
                                            TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        GO  TO  201-PTBYOMEI-UPD-EXT
@@ -898,7 +898,7 @@
       *
                  END-IF
       *
-      *          ��Ⱦ���֤����Ϥ��줿������̾��������
+      *          後半期間に入力された患者病名を削除する
                  IF     ( PTBYO-SRYYMD     >=      WRK-STYMD ) AND
                         ( PTBYO-DLTFLG     =       SPACE )
       *
@@ -910,7 +910,7 @@
                    IF    ( MCP-RC      NOT =   ZERO )
                        DISPLAY "ORCBMRECE PTBYOMEI DEL ERR:"  MCP-RC
                                ",PTID:"   PTBYO-PTID
-                       MOVE    "������̾�κ���˼��Ԥ��ޤ���"
+                       MOVE    "患者病名の削除に失敗しました"
                                            TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        GO  TO  201-PTBYOMEI-UPD-EXT
@@ -940,7 +940,7 @@
        201-PTBYOMEI-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -953,7 +953,7 @@
            DISPLAY "*** ORCBMRECE PTBYOMEI  DEL:"     CNT-PTBYOMEI-DEL
            DISPLAY "*** ORCBMRECE END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-SRYACCT-UPD TO  JOB-UPDCNT
@@ -965,7 +965,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -979,7 +979,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -994,7 +994,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ���������
+      *    診療行為マスター検索
       *****************************************************************
        910-SRYACT-SELECT-SEC        SECTION.
       *
@@ -1013,7 +1013,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1025,7 +1025,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1042,7 +1042,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1058,7 +1058,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1071,7 +1071,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1084,7 +1084,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1102,7 +1102,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,11 +18,11 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSNYUKIN.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : �ޤȤ����⥵��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : まとめ入金サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,20 +37,20 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PATHNAME        PIC X(20).
            03  WRK-NYUKIN-ZAN      PIC 9(08).
@@ -59,28 +59,28 @@
            03  WRK-DENPEDANUM      PIC 9(02).
            03  WRK-HENKIN          PIC S9(10).
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ���󥭡���������
+      *    日報キー取得サブ
            COPY "CPORCSDAILYKEY.INC".
       *
-      *    �����ΰ�
+      *    共通領域
            COPY    "MCPAREA".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ����
+      *    収納明細
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1001.INC".
       *
@@ -89,12 +89,12 @@
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                         SECTION.
       *
            COPY    "CPORCSNYUKIN.INC".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
       *
@@ -103,7 +103,7 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -114,7 +114,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
       *
            IF    ( LNK-SCNYUKIN-RC   = ZERO )
@@ -128,7 +128,7 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
@@ -159,7 +159,7 @@
       *        GO  TO  100-PRM-CHK-EXT
       *    END-IF
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
            INITIALIZE                      PTINF-REC
            MOVE    LNK-SCNYUKIN-HOSPNUM TO  PTINF-HOSPNUM
            MOVE    LNK-SCNYUKIN-PTID   TO  PTINF-PTID
@@ -174,16 +174,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    �ޥ������ռ���
+      *    マシン日付取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    ��Ǽ�ɤ߹����ѣˣţ٤λ���
+      *    収納読み込み用ＫＥＹの指定
            MOVE    SPACE               TO  WRK-PATHNAME
            EVALUATE    LNK-SCNYUKIN-NYKNKNRKBN
            WHEN    "2"
@@ -195,7 +195,7 @@
            END-EVALUATE
       *
       *
-      *    ��Ǽ�ޥ���������̤�������μ���
+      *    収納マスターから未収金情報の取得
            INITIALIZE                      SYUNOU-REC
            MOVE    LNK-SCNYUKIN-HOSPNUM TO  SYU-HOSPNUM
            MOVE    LNK-SCNYUKIN-PTID   TO  SYU-PTID
@@ -273,7 +273,7 @@
       *
            END-PERFORM
       *
-      *    ��Ǽ��������
+      *    収納クローズ
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
@@ -287,7 +287,7 @@
                END-IF
            END-IF
       *
-      *    �ֶ⿶��ʬ���ĳۤ�����
+      *    返金振り分け残額の設定
            IF    ( LNK-SCNYUKIN-HENKINKBN  =   "1" )
                MOVE    LNK-SCNYUKIN-HENKIN-MONEY
                                            TO  LNK-SCNYUKIN-HENKINZAN
@@ -297,7 +297,7 @@
                END-IF
            END-IF
       *
-      *    ���⿶��ʬ���ĳۤ�����
+      *    入金振り分け残額の設定
            IF    ( WRK-NYUKIN-ZAN      NOT =   ZERO )
                MOVE  WRK-NYUKIN-ZAN    TO  LNK-SCNYUKIN-FURIWAKEZAN
            END-IF
@@ -316,7 +316,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ֶ����
+      *    収納返金処理
       *****************************************************************
        210-SYUNOU-HENKIN-SEC           SECTION.
       *
@@ -354,7 +354,7 @@
        210-SYUNOU-HENKIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�����ֶ����
+      *    収納明細返金処理
       *****************************************************************
        2101-SYUMEI-HENKIN-SEC          SECTION.
       *
@@ -407,7 +407,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2101-SYUMEI-HENKIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�ֶ����
+      *    収納返金処理
       *****************************************************************
        2101-SYUNOU-HENKIN-SEC          SECTION.
       *
@@ -429,11 +429,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2101-SYUNOU-HENKIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ��������
+      *    収納更新処理
       *****************************************************************
        300-SYUNOU-UPD-SEC                SECTION.
       *
-      *    ���⿶��ʬ���ۥ��å�
+      *    入金振り分け額セット
            ADD     LNK-SCNYUKIN-FURIWAKEMONEY(IDX 1)
                                        TO  SYU-NYUKIN-TOTAL
            ADD     LNK-SCNYUKIN-FURIWAKEMONEY(IDX 2)
@@ -448,7 +448,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
       *
-      *    ��Ǽ����
+      *    収納更新
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
@@ -464,7 +464,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *************************************************************
-      *    ��Ǽ���ٺ���
+      *    収納明細作成
       *************************************************************
        310-SYUMEI-INS-SEC           SECTION.
       *
@@ -488,47 +488,47 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *************************************************************
-      *    ��Ǽ���ٺ���
+      *    収納明細作成
       *************************************************************
        3101-SYUMEI-INS-SEC             SECTION.
       *
-      *��Ǽ���ٺ�������
+      *収納明細作成処理
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
            MOVE    SYU-HOSPNUM          TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
-      *��ɼ�ֹ�
+      *伝票番号
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *��ɼ�ֹ����
+      *伝票番号枝番
            MOVE    WRK-DENPEDANUM      TO  SMEI-DENPEDANUM
-      *����Ϣ��
+      *入金連番
            MOVE    ZERO                TO  SMEI-NYUKINRENNUM
-      *���Ų�
+      *診療科
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
-      *��ɼ���ֶ�ʬ
+      *伝票状態区分
            IF    ( IDX2                =   1 )
                MOVE    "1"             TO  SMEI-MEISAIJOUTAIKBN
            END-IF
-      *����ȯ������ȯ�����������
+      *請求発行日（発行日の西暦）
            MOVE    SPACE               TO  SMEI-SKYPRINTYMD
-      *�����ȯ����
+      *請求再発行日
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
-      *�μ���ȯ����
+      *領収書発行日
            MOVE    SPACE               TO  SMEI-RYOSYUPRINTYMD
-      *�μ����ȯ����
+      *領収書再発行日
            MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
-      *������
+      *請求金額
            MOVE    ZERO                TO  SMEI-SKYMONEY
-      *���ֶ��ʬ
+      *入返金区分
            MOVE    "1"                 TO  SMEI-NYUHEN-KBN
-      *���ֶ��
+      *入返金額
            MOVE    LNK-SCNYUKIN-FURIWAKEMONEY(IDX IDX2)
                                        TO  SMEI-NYUHEN-MONEY
-      *���ֶ���
+      *入返金日
            MOVE    LNK-SCNYUKIN-NYUKIN-YMD
                                        TO  SMEI-NYUHEN-YMD
-      *������ˡ
+      *入金方法
            IF    ( IDX2                =   1 )
                    MOVE    "01"        TO  SMEI-NYUKIN-HOHO
            ELSE
@@ -539,7 +539,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        TO  SMEI-NYUKIN-HOHO
                END-IF
            END-IF
-      *���ֶ�ʬ
+      *状態区分
            MOVE    "2"                 TO  SMEI-JOUTAIKBN
       *
            MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
@@ -570,7 +570,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ɼ�ֹ���Ǽ�������
+      *    伝票番号枝版取得処理
       *****************************************************************
        800-GET-DENPEDANUM-SEC          SECTION.
       *
@@ -582,7 +582,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        800-GET-DENPEDANUM-EXT.
            EXIT.
       *****************************************************************
-      *    ���󥭡���������
+      *    日報キー取得サブ
       *****************************************************************
        800-DAILYKEY-SEC         SECTION.
       *
@@ -594,7 +594,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        800-DAILYKEY-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -621,7 +621,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ޥ���������
+      *    収納マスター検索
       *****************************************************************
        900-SYUNOU-SELECT-SEC           SECTION.
       *
@@ -642,7 +642,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ޥ������ɹ�
+      *    収納マスター読込
       *****************************************************************
        900-SYUNOU-FETCH-SEC            SECTION.
       *
@@ -661,7 +661,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ���ٸ������� (KEY14)
+      *    収納明細検索処理 (KEY14)
       *****************************************************************
        900-SYUMEI-KEY14-SEL-SEC        SECTION.
       *
@@ -692,7 +692,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        900-SYUMEI-KEY14-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸�������
+      *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -709,7 +709,7 @@ grpsys                            SPA-AREA
        910-DB-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -723,7 +723,7 @@ grpsys                            SPA-AREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -737,7 +737,7 @@ grpsys                            SPA-AREA
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥��󥵡��Ƚ���
+      *    ＤＢインサート処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -751,7 +751,7 @@ grpsys                            SPA-AREA
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¹�������
+      *    ＤＢ更新処理
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -765,7 +765,7 @@ grpsys                            SPA-AREA
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģº������
+      *    ＤＢ削除処理
       *****************************************************************
        910-DBDELETE-SEC                SECTION.
       *

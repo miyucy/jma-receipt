@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI48.
       ********************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������׾Ȳ� 
-      *  ����ݡ��ͥ��̾  : ���Ź԰ٰ������򥵥֡ʣɣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02.09.19    �Ҥ��ʤ�      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院会計照会 
+      *  コンポーネント名  : 診療行為一覧選択サブ（Ｉ４８）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02.09.19    ひさなが      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.00    NACL-¿��Ǽ  04.05.06  ���������ѹ�¾
-      *  03.05.00    NACL-¿��Ǽ  07/05/09  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.00    NACL-多々納  04.05.06  選択内容変更他
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,16 +42,16 @@
       *
       *
        WORKING-STORAGE             SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ��׾Ȳ��̥ѥ�᥿
+      *    会計照会共通パラメタ
            COPY    "I4COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "I44SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTCD         PIC 9(01).
@@ -69,19 +69,19 @@
       *
            03  FLG-HENSYU          PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
            03  CNT-ENT             PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -99,7 +99,7 @@
       *
            03  IDX-KAI             PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYY         PIC 9(04).
@@ -146,39 +146,39 @@
                05  WRK-HDD         PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ�����
+      *    点数マスタ−
            COPY    "CPTENSU.INC".
       *
-      *    ���ϥ����ɥޥ�����
+      *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    ������������
+      *    検索記号設定
            COPY    "CPORCSADDSIGN.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -197,7 +197,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -216,15 +216,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF.
@@ -236,21 +236,21 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA.
            INITIALIZE                  CNT-AREA.
            INITIALIZE                  WRK-AREA.
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "I4ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF.
       *
@@ -268,7 +268,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
@@ -288,7 +288,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                 SECTION.
       *
@@ -309,7 +309,7 @@
            END-IF.
            IF     ( SPA-I48-GMN-MAX    =   ZERO  )
                PERFORM 3102-TENSU-SET-SEC
-      *        �����ޥ�����������������������λ������Τ򸡺�
+      *        点数マスタ検索時、自院がゼロ件の時、全体を検索
                IF     (SPA-I48-GMN-ALL     =   SPACE)  AND
                       (SPA-I48-GMN-MAX     =   ZERO)
                    MOVE    "1"             TO  SPA-I48-GMN-ALL
@@ -333,7 +333,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ���ϥ����ɥޥ����ݤ���Խ�
+      *     入力コードマスタ−より編集
       *****************************************************************
        3101-INPUTCD-SET-SEC            SECTION.
       *
@@ -343,7 +343,7 @@
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM.
            MOVE    SPA-I48-CDSYUBETU   TO  ICD-CDSYU.
            MOVE    SPA-I48-GMN-INPUT   TO  ICD-INPUTCD.
-      *    ���ϥ����ɤη���׻�
+      *    入力コードの桁数計算
            MOVE    ZERO                TO  WRK-KETA.
            PERFORM VARYING     IDX-K   FROM    20   BY  -1
                    UNTIL       IDX-K   <   1
@@ -382,7 +382,7 @@
                        MOVE    "0001"          TO  SPA-ERRCD
                        MOVE    1               TO  FLG-INPUTCD
                    ELSE
-      *                �����ޥ�������Խ�
+      *                点数マスタより編集
                        INITIALIZE              TNS-TENSU-REC
                        MOVE    ICD-SRYCD       TO  TNS-SRYCD
                        MOVE    "key"           TO  WRK-PATH
@@ -409,18 +409,18 @@
                                MOVE    TNS-TEN
                                                TO  SPA-I48-GMN-KISOTEN
                                                                 (IDX)
-      *                        ���ޡ����λ�ñ��
+      *                        薬剤・器材の時単位
                                IF      TNS-SRYCD (1:1) =   "6"  OR  "7"
                                    MOVE    TNS-TANINAME    TO
                                                SPA-I48-GMN-TANI(IDX)
                                END-IF
       *
-      *                        ���Ź԰٤�Ϸ�ͤλ������Խ�
+      *                        診療行為で老人の時、再編集
                                IF     (TNS-SRYCD(1:1)      =   "1") AND
                                       (TNS-ROUTEKKBN       =   2  )
                                    MOVE    SPACE   TO  SPA-I48-GMN-NAME
                                                                 (IDX)
-                                   STRING  "��Ϸ��"
+                                   STRING  "［老］"
                                      TNS-NAME      DELIMITED   BY  SIZE
                                      INTO        SPA-I48-GMN-NAME(IDX)
                                    END-STRING
@@ -451,7 +451,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�쥳���ɥ����å�����
+      *    同一コードチェック処理
       *****************************************************************
        31011-INPUTCD-CHK-SEC                 SECTION.
       *
@@ -475,7 +475,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ݤ���Խ�
+      *    点数マスタ−より編集
       *****************************************************************
        3102-TENSU-SET-SEC                 SECTION.
       *
@@ -483,19 +483,19 @@
            MOVE    ZERO                TO  FLG-MAX.
            MOVE    SPACE               TO  WRK-KEY-INPUT
       *
-      *    �桼������Ͽʬ
+      *    ユーザー登録分
            IF      SPA-I48-GMN-SYORI   =   "U"
                CONTINUE
            ELSE
       *
                IF      SPA-I48-GMN-ALL     =   SPACE
-      *        ����ʬ�Τ�
+      *        自院分のみ
                    MOVE    "key7j"         TO  WRK-PATH
                ELSE
                    MOVE    "key7"          TO  WRK-PATH
                END-IF
       *
-      *        ���������Խ�
+      *        検索キー編集
                INITIALIZE                  ORCSADDSIGNAREA
                MOVE    "1"                 TO  SADDSIGN-KBN
                MOVE    SPA-I48-GMN-INPUT   TO  SADDSIGN-STR
@@ -508,7 +508,7 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    WRK-KEY-INPUT       TO  TNS-NAME
            MOVE    WRK-KEY-INPUT       TO  TNS-KANANAME
-      *    �桼������Ͽʬ
+      *    ユーザー登録分
            IF      SPA-I48-GMN-SYORI   =   "U"
                PERFORM 31021-ETC-PATH-SET-SEC
            ELSE
@@ -535,12 +535,12 @@
                UNTIL      (IDX         >    200)   OR
                           (FLG-TENSU   =   1   )
       *
-      *        �����ޥ��������å�
+      *        点数マスタチェック
                PERFORM 31021-TENSU-CHK-SEC
       *
                IF      FLG-CHK             =   ZERO
                    ADD     1               TO  IDX2
-      *            ���ڡ����λ���ɽ��ʬ���ɤ����Ф�
+      *            次ページの時、表示分は読み飛ばし
                    IF      IDX2            >=  SPA-I48-NEXT
                        PERFORM 31021-TENSU-HEN-SEC
                    END-IF
@@ -557,13 +557,13 @@
       *
            MOVE    WRK-CNT-ENT         TO  SPA-I48-GMN-MAX.
       *
-      *    ϫ��ʬɽ���λ����Ĥ�Υޥ�����ɽ������
+      *    労災分表示の時、残りのマスタを表示する
            EVALUATE    SPA-I48-GMN-SYORI3
                WHEN    "U2"
                    PERFORM 31022-RSI-HENSYU-SEC
            END-EVALUATE.
       *
-      *    �����ޥ������оݤ�ͭ�ä����������פ��ѹ�����
+      *    点数マスタで対象が有った時、タイプを変更する
            IF      SPA-I48-GMN-MAX     >   ZERO
                MOVE    "2"             TO  SPA-I48-TYPE
            END-IF.
@@ -572,19 +572,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �桼������Ͽʬ����
+      *    ユーザー登録分処理
       *****************************************************************
        31021-ETC-PATH-SET-SEC          SECTION.
       *
            EVALUATE    SPA-I48-GMN-SYORI3
                WHEN    "U1"
-      *            ������������
+      *            自院・コメント
                    MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "1"                  TO  SPA-I48-GMN-ALL
                    MOVE    "800000000"          TO  TNS-SRYCD
                    MOVE    "899999999"          TO  TNSUP-SRYCD
                WHEN    "U2"
-      *            ϫ�ҿǻ�
+      *            労災診察
                    MOVE    "key12s"             TO  WRK-PATH
                    MOVE    "100000000"          TO  TNS-SRYCD
                    MOVE    "109999999"          TO  TNSUP-SRYCD
@@ -594,7 +594,7 @@
        31021-ETC-PATH-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ϫ��ʬɽ������
+      *    労災分表示処理
       *****************************************************************
        31022-RSI-HENSYU-SEC                  SECTION.
       *
@@ -603,22 +603,22 @@
                INITIALIZE                      TNS-TENSU-REC
                EVALUATE    IDX-KAI
                    WHEN    1
-      *            ���
+      *            器材
                        MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "788888000"          TO  TNS-SRYCD
                        MOVE    "788888999"          TO  TNSUP-SRYCD
                    WHEN    2
-      *            �����ȣ�
+      *            コメント１
                        MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "820800000"          TO  TNS-SRYCD
                        MOVE    "820899999"          TO  TNSUP-SRYCD
                    WHEN    3
-      *            �����ȣ�
+      *            コメント２
                        MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "830800000"          TO  TNS-SRYCD
                        MOVE    "830899999"          TO  TNSUP-SRYCD
                    WHEN    4
-      *            �����ȣ�
+      *            コメント３
                        MOVE    "key12s"             TO  WRK-PATH
                        MOVE    "840800000"          TO  TNS-SRYCD
                        MOVE    "840899999"          TO  TNSUP-SRYCD
@@ -630,12 +630,12 @@
                     UNTIL      (IDX         >    200 )   OR
                                (FLG-TENSU   =   1   )
       *
-      *            �����ޥ��������å�
+      *            点数マスタチェック
                    PERFORM 31021-TENSU-CHK-SEC
       *
                    IF      FLG-CHK             =   ZERO
                        ADD     1               TO  IDX2
-      *                ���ڡ����λ���ɽ��ʬ���ɤ����Ф�
+      *                次ページの時、表示分は読み飛ばし
                        IF      IDX2            >=  SPA-I48-NEXT
                            PERFORM 31021-TENSU-HEN-SEC
                        END-IF
@@ -657,19 +657,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ��������å�����
+      *    点数マスタチェック処理
       *****************************************************************
        31021-TENSU-CHK-SEC                  SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK.
       *
-      *    �±����Ž��ʬȽ��
+      *    病院診療所区分判定
            IF      (TNS-HOSPSRYKBN     =   ZERO)        OR
                    (TNS-HOSPSRYKBN     =   SPA-HOSPSBT)
       *H30.4
-      *       û���ں߼�Ѵ��ܣ����±������Ž��
+      *       短期滞在手術基本２（病院・診療所）
               OR   (TNS-HOSPSRYKBN     =   3   )
-      *       û���ں߼�Ѵ��ܣ����±��Τߡ�
+      *       短期滞在手術基本３（病院のみ）
               OR  ((TNS-HOSPSRYKBN     =   4   )   AND
                    (SPA-HOSPSBT        =   1   ))
                CONTINUE
@@ -677,7 +677,7 @@
                MOVE   1                TO  FLG-CHK
            END-IF.
       *
-      *    Ϸ�Ͷ�ʬȽ��
+      *    老人区分判定
            IF      (TNS-ROUTEKKBN      =   ZERO)   OR
                    ((TNS-ROUTEKKBN      =   1  )  AND
                     (SPA-ROUJIN         =   ZERO))  OR
@@ -688,7 +688,7 @@
                MOVE   1                TO  FLG-CHK
            END-IF.
       *
-      *    ������ʬ
+      *    入外区分
            IF      (TNS-NYUGAITEKKBN      =   ZERO)          OR
                    (TNS-NYUGAITEKKBN      =   SPA-NYUGAIKBN)
                CONTINUE
@@ -696,7 +696,7 @@
                MOVE   1                TO  FLG-CHK
            END-IF.
       *
-      *    ���Ŷ�ʬ
+      *    診療区分
            IF      (TNS-SRYKBN            =   "90")  OR
                    (TNS-SRYKBN            =   "99")
                CONTINUE
@@ -717,12 +717,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����Խ�����
+      *    点数マスタ編集処理
       *****************************************************************
        31021-TENSU-HEN-SEC                  SECTION.
       *
            ADD     1                   TO  IDX.
-      *    �������索���С������å�
+      *    ２００件オーバーチェック
            IF      IDX                 >   200
                MOVE    1                   TO  FLG-MAX
                MOVE    IDX2                TO  SPA-I48-NEXT
@@ -738,15 +738,15 @@
                                                              (IDX).
            MOVE    TNS-TEN             TO  SPA-I48-GMN-KISOTEN
                                                             (IDX).
-      *     ���ޡ����λ�ñ��
+      *     薬剤・器材の時単位
            IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
                MOVE    TNS-TANINAME        TO  SPA-I48-GMN-TANI(IDX)
            END-IF.
       *
-      *    ���Ź԰٤�Ϸ�ͤλ������Խ�
+      *    診療行為で老人の時、再編集
            IF     (TNS-ROUTEKKBN       =   2   )
                MOVE    SPACE               TO  SPA-I48-GMN-NAME(IDX)
-               STRING  "��Ϸ��"
+               STRING  "［老］"
                        TNS-NAME            DELIMITED   BY  SIZE
                        INTO                    SPA-I48-GMN-NAME(IDX)
                END-STRING
@@ -757,7 +757,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
@@ -770,7 +770,7 @@
       *
            MOVE    SPACE               TO  I48.
            INITIALIZE                      I48.
-      *    �����ꥹ�Ȥΰ��ֻ���
+      *    コラムリストの位置指定
            MOVE    ZERO                TO  I48-ROW
            MOVE    ZERO                TO  I48-ROWATTR
            IF      WRK-I48-ROW     NOT =   ZERO
@@ -789,35 +789,35 @@
            END-IF.
       *
            EVALUATE    SPA-I48-GMN-SYORI
-      *        ���Ź԰�
+      *        診療行為
                WHEN    "8"
                    IF      SPA-I48-GMN-ALL     =   SPACE
-                       MOVE    "���Ź԰١ʼ�����" 
+                       MOVE    "診療行為（自院）" 
                                                TO  I48-SENTAKU
                    ELSE
-                       MOVE    "���Ź԰١����Ρ�" 
+                       MOVE    "診療行為（全体）" 
                                                TO  I48-SENTAKU
                    END-IF
-      *        �桼������Ͽ
+      *        ユーザー登録
                WHEN    "U"
                    EVALUATE    SPA-I48-GMN-SYORI3
                        WHEN    "U1"
-                           MOVE    "�����ȡ����Ρ�"
+                           MOVE    "コメント（全体）"
                                                TO  I48-SENTAKU
                        WHEN    "U2"
-                           MOVE    "ϫ��"
+                           MOVE    "労災"
                                                TO  I48-SENTAKU
                    END-EVALUATE
-      *        ����¾
+      *        その他
                WHEN    OTHER
-                   MOVE    "���ϥ��������Ρʼ�����"
+                   MOVE    "入力コード全体（自院）"
                                               TO  I48-SENTAKU
            END-EVALUATE.
       *
-      *    �������Ϥǡ����ϥ����ɤǸ���
+      *    漢字入力で、入力コードで検索
            IF     (SPA-I48-TYPE        =   "1" )  AND
                   (SPA-I48-CDSYUBETU   =   "J" )
-               MOVE    "���ϥ��������Ρʼ�����"
+               MOVE    "入力コード全体（自院）"
                                               TO  I48-SENTAKU
            END-IF.
       *
@@ -848,7 +848,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -863,28 +863,28 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE               TO  SPA-I48-SRYCD-G
                    PERFORM 210-BACK
-      *        ���Ź԰�
+      *        診療行為
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 280-SINRYOU-SEC
-      *        ����
+      *        全体
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 290-ALL-SEL-SEC
-      *        ��ʬ
+      *        部分
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 291-BUB-SEC
-      *        ����
+      *        後方
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 292-ATO-SEC
-      *        ���ڡ���
+      *        次ページ
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 270-NEXT-SEC
            END-EVALUATE.
@@ -892,18 +892,18 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ��������
+      *        キー入力
                WHEN    "ACTIVATE"      ALSO    "INPUT"
                    PERFORM 41013-INPUT-CHK-SEC
-      *        �ֹ�����
+      *        番号入力
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41011-SELNUM-ALLCHK-SEC
-      *        ������
+      *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
            END-EVALUATE.
@@ -912,7 +912,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ϡ�����
+      *    キー入力　処理
       *****************************************************************
        41013-INPUT-CHK-SEC                SECTION.
       *
@@ -930,11 +930,11 @@
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-I48-GMN-INPUT
            IF      KANACHK-RC      NOT =   ZERO
-      *        ����Ⱦ�Ѻ��ߥ��顼
+      *        全角半角混在エラー
                MOVE    "0001"          TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-MAX     TO  WRK-MOJI
-      *        ����
+      *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
                ELSE
@@ -950,13 +950,13 @@
            END-IF.
       *
            IF      FLG-KANJI           =   1
-      *        �������ϡ������ޥ�������
+      *        全角入力（点数マスタより）
                MOVE    "J"                 TO  SPA-I48-CDSYUBETU
                MOVE    "1"                 TO  SPA-I48-TYPE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
            ELSE
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
-      *        Ⱦ�����ϡ����ϥ��åȥޥ�������
+      *        半角入力（入力セットマスタより）
                MOVE    "1"                 TO  SPA-I48-TYPE
       *
                MOVE    SPACE               TO  SPA-I48-GMN-SYORI
@@ -977,7 +977,7 @@
                END-IF
            END-IF.
            MOVE    1                   TO  SPA-I48-GMN-CUR.
-      *    �ӣУ����å�
+      *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-I48-NEXT.
            PERFORM                     310-SPA-SET-SEC.
       *
@@ -985,7 +985,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ֹ����򡡽��������Ρ�
+      *    番号選択　処理（全体）
       *****************************************************************
        41011-SELNUM-ALLCHK-SEC             SECTION.
       *
@@ -997,13 +997,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �ֹ����򡡽���
+      *    番号選択　処理
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
       *
            MOVE    1                   TO  SPA-I48-GMN-CUR.
       *
-      *    �� ���ϻ������оݤȤ���
+      *    ＊ 入力時、全対象とする
            IF      I48-SELNUM          =   "*  "  OR
                                            " * "  OR
                                            "  *" 
@@ -1011,14 +1011,14 @@
                INITIALIZE                  SPA-I48-NAI-SELNUM-G
                INITIALIZE                  SPA-I48-GMN-SELNUM-G
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
-      *        �ӣУ����å�
+      *        ＳＰＡセット
                MOVE    ZERO                TO  SPA-I48-NEXT
                PERFORM                     310-SPA-SET-SEC
                GO      TO      41011-SELNUM-CHK-EXT
            END-IF.
       *
            MOVE    I48-SELNUM          TO  SPA-I48-GMN-SELNUM
-      *    �����ֹ�����
+      *    選択番号入力
            INITIALIZE                      ORCSNUMAREA.
            MOVE    I48-SELNUM          TO  SNUM-INX.
            CALL    "ORCSNUM"           USING
@@ -1032,7 +1032,7 @@
            ELSE
                MOVE    SNUM-OUTNUM     TO  SPA-I48-NAI-SELNUM
            END-IF.
-      *    ����ΤߤȤ������Ȥ���
+      *    １件のみとき、１とする
            IF     (SPA-I48-GMN-MAX     =   1  )  AND
                   (IDX-1               =   1  )  AND
                   (SPA-I48-NAI-SELNUM  =  ZERO)
@@ -1054,7 +1054,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ť������������
+      *    診療コード選択処理
       *****************************************************************
        41012-SRYCD-SEL-SEC       SECTION.
       *
@@ -1063,7 +1063,7 @@
            PERFORM 41011-SELNO-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-      *         ����
+      *         戻るへ
                 PERFORM 210-BACK
            END-IF.
       *
@@ -1071,10 +1071,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        41012-LISTSEL-SEC       SECTION.
-      *        ������
+      *        行選択
            MOVE    ZERO                TO  WRK-SELNO.
            MOVE    ZERO                TO  WRK-GMN-SELNO.
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1103,7 +1103,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    明細選択編集処理
       *****************************************************************
        41011-SELNO-SEC       SECTION.
       *
@@ -1123,7 +1123,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰��������
+      *    診療行為選択処理
       *****************************************************************
        280-SINRYOU-SEC                   SECTION.
       *
@@ -1135,7 +1135,7 @@
            INITIALIZE                      SPA-I48-GMN-SELNUM-G.
            MOVE    SPACE               TO  SPA-I48-SRYCD-G.
            MOVE    SPACE               TO  SPA-I48-GMN-ALL.
-      *    �ӣУ����å�
+      *    ＳＰＡセット
            MOVE    ZERO                TO  SPA-I48-NEXT.
            PERFORM                     310-SPA-SET-SEC.
       *
@@ -1143,11 +1143,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ΰ��׽���
+      *    全体一致処理
       *****************************************************************
        290-ALL-SEL-SEC                   SECTION.
       *
-      *    ���ϥ����ɤ���Խ��λ���
+      *    入力コードより編集の時、
            IF      SPA-I48-TYPE        =   "1"
                MOVE    SPACE               TO  SPA-I48-GMN-ALL
       *
@@ -1156,7 +1156,7 @@
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
                MOVE    ZERO                TO  SPA-I48-NEXT
                MOVE    "2"                 TO  SPA-I48-TYPE
-      *        �ӣУ����å�
+      *        ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
            ELSE
                MOVE    "1"                 TO  SPA-I48-GMN-ALL
@@ -1165,7 +1165,7 @@
                INITIALIZE                  SPA-I48-GMN-SELNUM-G
                MOVE    SPACE               TO  SPA-I48-SRYCD-G
                MOVE    ZERO                TO  SPA-I48-NEXT
-      *        �ӣУ����å�
+      *        ＳＰＡセット
                PERFORM                     310-SPA-SET-SEC
            END-IF.
       *
@@ -1173,12 +1173,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ڡ�������
+      *    次ページ処理
       *****************************************************************
        270-NEXT-SEC                   SECTION.
       *
            IF      SPA-I48-NEXT       >   ZERO
-      *        �ӣУ����å�
+      *        ＳＰＡセット
                PERFORM                     3102-TENSU-SET-SEC
            ELSE
                MOVE    "0006"              TO  SPA-ERRCD
@@ -1188,16 +1188,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʬ���׽���
+      *    部分一致処理
       *****************************************************************
        291-BUB-SEC                   SECTION.
       *
-      *    �������ϻ����Τ�
+      *    全角入力時、のみ
            IF      SPA-I48-CDSYUBETU   NOT =   "J"
                GO      TO      291-BUB-EXT
            END-IF.
       *
-           INSPECT SPA-I48-GMN-INPUT   REPLACING  ALL "��"  BY  "  "
+           INSPECT SPA-I48-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -1208,9 +1208,9 @@
                                                TO  WRK-INPUTCD(ID2:1)
                END-IF
            END-PERFORM
-           STRING  "��"                DELIMITED  BY  SIZE
+           STRING  "＊"                DELIMITED  BY  SIZE
                    WRK-INPUTCD         DELIMITED  BY  SPACE
-                   "��"                DELIMITED  BY  SIZE
+                   "＊"                DELIMITED  BY  SIZE
                                        INTO    SPA-I48-GMN-INPUT
            END-STRING.
       *
@@ -1219,27 +1219,27 @@
            MOVE    SPACE               TO  SPA-I48-SRYCD-G.
            MOVE    ZERO                TO  SPA-I48-NEXT.
            MOVE    SPACE               TO  SPA-I48-TYPE.
-      *    �ӣУ����å�
+      *    ＳＰＡセット
            PERFORM                     310-SPA-SET-SEC.
       *
       *
        291-BUB-EXT.
            EXIT.
       ****************************************************************
-      *    ��ʬ���׽���
+      *    後分一致処理
       *****************************************************************
        292-ATO-SEC                   SECTION.
       *
-      *    �������ϻ����Τ�
+      *    全角入力時、のみ
            IF      SPA-I48-CDSYUBETU   NOT =   "J"
                GO      TO      292-ATO-EXT
            END-IF.
-      *    �����ʳ��λ��Τ�
+      *    検査以外の時のみ
            IF      SPA-I48-GMN-SYORI   =   "9"
                GO      TO      292-ATO-EXT
            END-IF.
       *
-           INSPECT SPA-I48-GMN-INPUT   REPLACING  ALL "��"  BY  "  "
+           INSPECT SPA-I48-GMN-INPUT   REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    ZERO                TO  ID2
            PERFORM VARYING     ID1     FROM    1   BY  1
@@ -1250,7 +1250,7 @@
                                                TO  WRK-INPUTCD(ID2:1)
                END-IF
            END-PERFORM
-           STRING  "��"                DELIMITED  BY  SIZE
+           STRING  "＊"                DELIMITED  BY  SIZE
                    WRK-INPUTCD         DELIMITED  BY  SPACE
                                        INTO    SPA-I48-GMN-INPUT
            END-STRING
@@ -1260,14 +1260,14 @@
            MOVE    SPACE               TO  SPA-I48-SRYCD-G.
            MOVE    ZERO                TO  SPA-I48-NEXT.
            MOVE    SPACE               TO  SPA-I48-TYPE.
-      *    �ӣУ����å�
+      *    ＳＰＡセット
            PERFORM                     310-SPA-SET-SEC.
       *
            .
        292-ATO-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -1285,7 +1285,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1305,7 +1305,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1313,30 +1313,30 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "���ϥ��顼"
+                   MOVE    "入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "選択番号入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE
-                   "�оݥǡ���������ޤ���"
+                   "対象データがありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE
-                   "�оݥǡ�������������ʾ夢��ޤ���"
+                   "対象データが２００件以上あります。"
                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE
-                   "���ڡ����Ϥ���ޤ���"
+                   "次ページはありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0011"
                    MOVE
-                   "�桼������Ͽ��ʬ������ޤ���"
+                   "ユーザー登録区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
                    MOVE
-                   "���̤ΰ㤦�ǡ����Ǥ�������Ǥ��ޤ���"
+                   "種別の違うデータです。選択できません。"
                                        TO  SPA-ERRMSG
            END-EVALUATE.
       *
@@ -1358,7 +1358,7 @@
        510-ERRSET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ���������
+      *    点数マスター検索
       *****************************************************************
        910-TENSU-SELECT-SEC         SECTION.
       *
@@ -1380,7 +1380,7 @@
        910-TENSU-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1397,7 +1397,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɥޥ������ɹ�
+      *    入力コードマスター読込
       *****************************************************************
        930-INPUTCD-READ-SEC         SECTION.
       *
@@ -1413,7 +1413,7 @@
        920-INPUTCD-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1426,7 +1426,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1441,7 +1441,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -1455,7 +1455,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

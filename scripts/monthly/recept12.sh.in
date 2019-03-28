@@ -9,27 +9,27 @@ fi
 
 . $JMARECEIPT_ENV
 #-------------------------------------------#
-#    ������������ѥե��������
-#    �ʽ����ͼ����軰�Թ԰١�
+#    自賠責請求書用ファイル作成
+#    （従来様式・第三者行為）
 #        CPCOMMONSHELL1.INC  
 #        $1 SRYYM TERID SYSYMD
 #        $2 SYOKBN
-#           1:������  2:���̺���
+#           1:一括作成  2:個別作成
 #        $3 RECEKBN
-#           5:�����ͼ�  8:�軰�Թ԰�
-#        $4 ���顼�ե�����̾ 
+#           5:従来様式  8:第三者行為
+#        $4 エラーファイル名 
 #        $5 JOBID 
 #        $6 SHELLID
-#        $8 ����ǯ��
-#        $9  ����ǯ����
-#        $10 ��������
+#        $8 処理年月
+#        $9  作成年月日
+#        $10 作成時間
 #        $16 HOSPNUM 
-#        $17 �ͼ���ʬ
-#        $18 �쥻�ץȺ�����ʬ
-#            1:����ѥ쥻��2:�����ѥ쥻��3:�����ѥ쥻�ʣ������񵭺ܡ�
-#            4:�����ѥ쥻����绻��ʬ���ܡˡ�5:�����ѥ쥻�ʣ���������绻��ʬ���ܡ�
-#        $19 ����ǡ��������ʬ
-#            0:������ʤ���2:�������
+#        $17 様式区分
+#        $18 レセプト作成区分
+#            1:提出用レセ、2:点検用レセ、3:点検用レセ（０点公費記載）
+#            4:点検用レセ（包括算定分記載）、5:点検用レセ（０点公費・包括算定分記載）
+#        $19 請求データ削除区分
+#            0:削除しない、2:削除する
 #-------------------------------------------#
 
         echo "window  ${MCP_WINDOW}"
@@ -39,11 +39,11 @@ fi
         fi
 
 cleanup(){
-##      �ѥ�᡼���ե�������
+##      パラメータファイル削除
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
-##      MCP_WINDOW ��API �ΤȤ�������ǥ��쥯�ȥ����
+##      MCP_WINDOW がAPI のとき、一時ディレクトリを削除
         if  [ "${MCP_WINDOW}" == "receiptmakev3" ]; then
             $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBDELTEMPDIR
         fi
@@ -80,7 +80,7 @@ trap cleanup EXIT
         echo "arg18 = [" ${18} "]"
         echo "arg19 = [" ${19} "]"
 
-##      ���顼�ե�������
+##      エラーファイル削除
 	echo "errfile = [" ${MCP_TEMPDIR}/${4}  "]" 
         rm  -f ${MCP_TEMPDIR}/${4}
         

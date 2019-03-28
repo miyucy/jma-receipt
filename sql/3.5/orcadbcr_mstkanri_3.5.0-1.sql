@@ -1,12 +1,12 @@
 \set ON_ERROR_STOP
 
 --				--
--- ¥Ş¥¹¥¿´ÉÍı¥Æ¡¼¥Ö¥ë¤ÎºîÀ®	--
+-- ãƒã‚¹ã‚¿ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®ä½œæˆ	--
 --				--
 -- Create Date : 2007/01/26	--
 --				--
 
--- TBL_MSTKANRI ºîÀ®		--
+-- TBL_MSTKANRI ä½œæˆ		--
 
 CREATE TABLE tbl_mstkanri (
 	hospnum		numeric(2,0) NOT NULL,

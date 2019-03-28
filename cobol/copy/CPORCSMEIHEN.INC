@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿ÇÎÅ¹Ô°ÙÌ¾¾ÎºÆÊÔ½¸¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSMEIHEN.INC)
+      *    è¨ºç™‚è¡Œç‚ºåç§°å†ç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSMEIHEN.INC)
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSMEIHENAREA.
       *
-      *ÆþÎÏ
+      *å…¥åŠ›
            03  ORCSMEIHEN-IN-AREA.
-      *½èÍý¶èÊ¬¡Ê£±¡§ÍÑÎÌ¡¢£²¡§¸¡ººÊñ³ç¿ô¡Ë
+      *å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šç”¨é‡ã€ï¼’ï¼šæ¤œæŸ»åŒ…æ‹¬æ•°ï¼‰
                05  ORCSMEIHEN-KBN                 PIC  X(01).
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  ORCSMEIHEN-GRPHOSPNUM          PIC  9(02).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  ORCSMEIHEN-SRYCD               PIC  X(09).
-      *Ì¾¾Î
+      *åç§°
                05  ORCSMEIHEN-TNS-NAME            PIC  X(100).
-      *¿ôÎÌ¡ÊÊñ³ç·ï¿ô¡Ë
+      *æ•°é‡ï¼ˆåŒ…æ‹¬ä»¶æ•°ï¼‰
                05  ORCSMEIHEN-SURYO               PIC 9(05)V9(05).
-      *½ÐÎÏ
+      *å‡ºåŠ›
            03  ORCSMEIHEN-OUT-AREA.
                05  ORCSMEIHEN-MEISYO           PIC X(80).
                05  ORCSMEIHEN-MEISYO2          PIC X(20).

@@ -1,68 +1,68 @@
 kanri_cd    : "8000"
-name        : "°õºş¥Ç¡¼¥¿Åùºï½üµ¡Ç½¾ğÊó"
+name        : "å°åˆ·ãƒ‡ãƒ¼ã‚¿ç­‰å‰Šé™¤æ©Ÿèƒ½æƒ…å ±"
 class_cd    : "*"
 item_max    : 10
 item_list   :
 - item_no   : 1
   item      : "DAILY"
-  item_jp   : "Æü¼¡Ä¢É¼"
+  item_jp   : "æ—¥æ¬¡å¸³ç¥¨"
   type      : "9"
   start     : 1
   length    : 3
   precision : 0
 - item_no   : 2
   item      : "DAILY-YM"
-  item_jp   : "¡¡¡¡ÊİÍ­·î¿ô"
+  item_jp   : "ã€€ã€€ä¿æœ‰æœˆæ•°"
   type      : "X"
   start     : 4
   length    : 6
 - item_no   : 3
   item      : "DAILY-UPYMD"
-  item_jp   : "¡¡¡¡¹¹¿·Ç¯·îÆü"
+  item_jp   : "ã€€ã€€æ›´æ–°å¹´æœˆæ—¥"
   type      : "X"
   start     : 10
   length    : 8
 - item_no   : 4
   item      : "MONTHLY"
-  item_jp   : "·î¼¡Ä¢É¼"
+  item_jp   : "æœˆæ¬¡å¸³ç¥¨"
   type      : "9"
   start     : 18
   length    : 3
   precision : 0
 - item_no   : 5
   item      : "MONTHLY-YM"
-  item_jp   : "¡¡¡¡ÊİÍ­·î¿ô"
+  item_jp   : "ã€€ã€€ä¿æœ‰æœˆæ•°"
   type      : "X"
   start     : 21
   length    : 6
 - item_no   : 6
   item      : "MONTHLY-UPYMD"
-  item_jp   : "¡¡¡¡¹¹¿·Ç¯·îÆü"
+  item_jp   : "ã€€ã€€æ›´æ–°å¹´æœˆæ—¥"
   type      : "X"
   start     : 27
   length    : 8
 - item_no   : 7
   item      : "NORDER"
-  item_jp   : "Æş±¡¥ª¡¼¥À¡¼"
+  item_jp   : "å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼"
   type      : "9"
   start     : 35
   length    : 3
   precision : 0
 - item_no   : 8
   item      : "NORDER-YM"
-  item_jp   : "¡¡¡¡ÊİÍ­·î¿ô"
+  item_jp   : "ã€€ã€€ä¿æœ‰æœˆæ•°"
   type      : "X"
   start     : 38
   length    : 6
 - item_no   : 9
   item      : "NORDER-UPYMD"
-  item_jp   : "¡¡¡¡¹¹¿·Ç¯·îÆü"
+  item_jp   : "ã€€ã€€æ›´æ–°å¹´æœˆæ—¥"
   type      : "X"
   start     : 44
   length    : 8
 - item_no   : 10
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 52
   length    : 449

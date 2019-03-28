@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,69 +16,69 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ��������                    COPY  (CPDASCONF.INC)     *
+      *    定点設定                    COPY  (CPDASCONF.INC)     *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  DASCF-REC.
            03  DASCF-KEY.
-      *���ŵ��ؼ����ֹ�
+      *医療機関識別番号
                05  DASCF-HOSPNUM             PIC  9(02).
-      *������
+      *申請日
            03  DASCF-SINSEIYMD               PIC  X(08).
-      *��̾�ʥ������ʡ�
+      *氏名（カタカナ）
            03  DASCF-KANANAME                PIC  X(50).
-      *��̾
+      *氏名
            03  DASCF-NAME                    PIC  X(50).
-      *�᡼�륢�ɥ쥹
+      *メールアドレス
            03  DASCF-EMAIL                   PIC  X(256).
-      *���ŵ��ؼ��̣�
+      *医療機関種別１
            03  DASCF-HOSPSBT1                PIC  X(01).
-      *���ŵ��ؼ��̣�
+      *医療機関種別２
            03  DASCF-HOSPSBT2                PIC  X(01).
-      *�¾����ʰ��̡�
+      *病床数（一般）
            03  DASCF-BEDSUIPPAN              PIC  9(04).
-      *�¾��������ܡ�
+      *病床数（療養）
            03  DASCF-BEDSURYOYO              PIC  9(04).
-      *�¾�����������
+      *病床数（精神）
            03  DASCF-BEDSUSEISIN             PIC  9(04).
-      *�¾����ʷ�ˡ�
+      *病床数（結核）
            03  DASCF-BEDSUKEKKAKU            PIC  9(04).
-      *�¾��������Ρ�
+      *病床数（全体）
            03  DASCF-BEDSU                   PIC  9(04).
-      *���ּ���
+      *設置主体
            03  DASCF-SETTI                   PIC  X(01).
-      *�礿����Ų�
+      *主たる診療科
            03  DASCF-SYUKA                   PIC  X(02).
-      *�ϰ���Żٱ��±�
+      *地域医療支援病院
            03  DASCF-CHIIKI                  PIC  X(01).
-      *�ģУ��о��±�
+      *ＤＰＣ対象病院
            03  DASCF-DPCKBN                  PIC  X(01).
-      *����ٱ���Ž�
+      *在宅支援診療所
            03  DASCF-ZAITAKU                 PIC  X(01).
-      *��������
+      *開院時期
            03  DASCF-KAIINYM                 PIC  X(06).
-      *͹���ֹ�
+      *郵便番号
            03  DASCF-POST                    PIC  X(07).
-      *���������ֹ�
+      *定点参加番号
            03  DASCF-USERID                  PIC  X(15).
-      *�ѥ����
+      *パスワード
            03  DASCF-PASSWORD                PIC  X(128).
-      *Ʊ��
+      *同意
            03  DASCF-AGREEMENT               PIC  X(01).
-      *�������
+      *送信結果
            03  DASCF-SENDRESULT              PIC  X(03).
-      *������
+      *送信日
            03  DASCF-SENDDATE                PIC  X(08).
-      *ü���ɣ�
+      *端末ＩＤ
            03  DASCF-TERMID                  PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  DASCF-OPID                    PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  DASCF-CREYMD                  PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  DASCF-UPYMD                   PIC  X(08).
-      *��������
+      *更新時間
            03  DASCF-UPHMS                   PIC  X(06).

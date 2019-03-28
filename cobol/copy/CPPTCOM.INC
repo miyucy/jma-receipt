@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,53 +16,53 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô¥³¥á¥ó¥È       COPY (CPPTCOM.INC)
+      *    æ‚£è€…ã‚³ãƒ¡ãƒ³ãƒˆ       COPY (CPPTCOM.INC)
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.06.00     NACL-Â¿¡¹Ç¼  11/02/14  ÍÑË¡¥³¥á¥ó¥ÈÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.06.00     NACL-å¤šã€…ç´  11/02/14  ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆå¯¾å¿œ
       ************************************************************
       *01  PTCOM-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTCOM-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTCOM-HOSPNUM         PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTCOM-PTID           PIC  9(10).
-      *ºÞÈÖ¹æ
+      *å‰¤ç•ªå·
                05  PTCOM-ZAINUM         PIC  9(08).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  PTCOM-SRYCD          PIC  X(09).
-      *¥³¥á¥ó¥È»ÞÈÖÈÖ¹æ
+      *ã‚³ãƒ¡ãƒ³ãƒˆæžç•ªç•ªå·
                05  PTCOM-RENNUM         PIC  9(03).
-      *ÆþÎÏ¥³¥á¥ó¥È
+      *å…¥åŠ›ã‚³ãƒ¡ãƒ³ãƒˆ
            03  PTCOM-INPUTCOMENT        PIC  X(80).
-      *ÆþÎÏÃÍÎÎ°è
+      *å…¥åŠ›å€¤é ˜åŸŸ
            03  PTCOM-INPUTCHI-AREA.
-      *ÆþÎÏÃÍ£±
+      *å…¥åŠ›å€¤ï¼‘
                05  PTCOM-INPUTCHI1      PIC  X(08).
-      *ÆþÎÏÃÍ£²
+      *å…¥åŠ›å€¤ï¼’
                05  PTCOM-INPUTCHI2      PIC  X(08).
-      *ÆþÎÏÃÍ£³
+      *å…¥åŠ›å€¤ï¼“
                05  PTCOM-INPUTCHI3      PIC  X(08).
-      *ÆþÎÏÃÍ£´
+      *å…¥åŠ›å€¤ï¼”
                05  PTCOM-INPUTCHI4      PIC  X(08).
-      *ÆþÎÏÃÍ£µ
+      *å…¥åŠ›å€¤ï¼•
                05  PTCOM-INPUTCHI5      PIC  X(08).
            03  PTCOM-INPUTCHI-AREA-R    REDEFINES   PTCOM-INPUTCHI-AREA
                                         OCCURS  5.
-      *ÆþÎÏÃÍ
+      *å…¥åŠ›å€¤
                05  PTCOM-INPUTCHI       PIC  X(08).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTCOM-TERMID             PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTCOM-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTCOM-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTCOM-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTCOM-UPHMS              PIC  X(06).
       *

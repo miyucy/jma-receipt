@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    ÆüÉÕ²èÌÌÆþÎÏ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿                 *
+      *    æ—¥ä»˜ç”»é¢å…¥åŠ›ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿                 *
       *                         COPY  (CPORCSGDAY.INC)  *
       *
-      *     SPTID-RC    : ZERO ¡ÊÀµ¾ï½ªÎ»¡Ë
-      *                   10    (ÆüÉÕ¥¨¥é¡¼¡Ë
-      *                   99    (¥Ñ¥é¥á¥¿¥¨¥é¡¼¡Ë
+      *     SPTID-RC    : ZERO ï¼ˆæ­£å¸¸çµ‚äº†ï¼‰
+      *                   10    (æ—¥ä»˜ã‚¨ãƒ©ãƒ¼ï¼‰
+      *                   99    (ãƒ‘ãƒ©ãƒ¡ã‚¿ã‚¨ãƒ©ãƒ¼ï¼‰
       *-------------------------------------------------*
        01  ORCSGDAYAREA.
-      *ÆþÎÏÆüÉÕ
+      *å…¥åŠ›æ—¥ä»˜
            03  SGDAY-INDAY              PIC X(10).
-      *ÆþÎÏ¥¿¥¤¥×¡Ê£±¡§Ç¯·î¡¢¶õÇò¡§Ç¯·îÆü¡¢£²¡§¥¿¥¤¥×¤Ê¤·¡Ë
+      *å…¥åŠ›ã‚¿ã‚¤ãƒ—ï¼ˆï¼‘ï¼šå¹´æœˆã€ç©ºç™½ï¼šå¹´æœˆæ—¥ã€ï¼’ï¼šã‚¿ã‚¤ãƒ—ãªã—ï¼‰
            03  SGDAY-INTYPE             PIC X(01).
-      *¥·¥¹¥Æ¥àÆüÉÕ
+      *ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜
            03  SGDAY-SYSYMD.
                05  SGDAY-SYSYY          PIC X(04).
                05  SGDAY-SYSMM          PIC X(02).
                05  SGDAY-SYSDD          PIC X(02).
-      *¾ÊÎ¬¶èÊ¬¡Ê£±¡§¥·¥¹¥Æ¥àÆüÉÕ£±·î¤Î£±£²·îÆþÎÏ¤ÏÁ°Ç¯
-      *          £²¡§¥·¥¹¥Æ¥àÆüÉÕ¤Î²áµîÆü¡Ë
+      *çœç•¥åŒºåˆ†ï¼ˆï¼‘ï¼šã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ï¼‘æœˆã®ï¼‘ï¼’æœˆå…¥åŠ›ã¯å‰å¹´
+      *          ï¼’ï¼šã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ã®éŽåŽ»æ—¥ï¼‰
            03  SGDAY-SYSKBN             PIC X(01).
-      *½ÐÎÏ
+      *å‡ºåŠ›
            03  SGDAY-OT-AREA.
-      *        ²èÌÌÍÑÆüÉÕ¡ÊHZ9.Z9.Z9)
+      *        ç”»é¢ç”¨æ—¥ä»˜ï¼ˆHZ9.Z9.Z9)
                05  SGDAY-OTDAY          PIC X(10).
-      *        À¾ÎñÆüÉÕ
+      *        è¥¿æš¦æ—¥ä»˜
                05  SGDAY-SDAY           PIC X(08).
-      *        ÏÂÎñÆüÉÕ
+      *        å’Œæš¦æ—¥ä»˜
                05  SGDAY-WDAY           PIC X(07).
       *
-      *Éüµ¢¥³¡¼¥É
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰
            03  SGDAY-RC                 PIC S9(9)   BINARY.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɣ֣���������λ���֥ѥ�᥿
+      *    ＡＰＩＶ３　処理終了サブパラメタ
       *                                         (CPORAPIV3SUB01.INC)
       ******************************************************************
        01  ORAPIV3SUB01AREA.
-      *    9:������λ
+      *    9:強制終了
            03  APIV3SUB01-SYORI             PIC X(01).
-      *    TERMID��API+���륫�գɣġ�
+      *    TERMID（API+オルカＵＩＤ）
            03  APIV3SUB01-TERMID            PIC X(64).
-      *    ����ƣգɣ�
+      *    カルテＵＩＤ
            03  APIV3SUB01-KARTE-UID         PIC X(36).
-      *    �����ֹ�
+      *    患者番号
            03  APIV3SUB01-PTNUM             PIC X(20).
-      *    API��̳ID
+      *    API業務ID
            03  APIV3SUB01-API-GYOUMUID      PIC X(08).
            03  APIV3SUB01-API-FILEMEI       PIC X(20).
-      *    ��̳ID(��¾�����
+      *    業務ID(排他制御）
            03  APIV3SUB01-PARA-GYOUMUID     PIC X(04).
-      *    ��̳ID��ͽ����
+      *    業務ID（予備）
            03  APIV3SUB01-PARA-GYOUMUID2    PIC X(04).
       *
-      *�ֵ�
+      *返却
            03  APIV3SUB01-ERRCD             PIC X(02).
            03  APIV3SUB01-ERRMSG            PIC X(200).
       *

@@ -1,6 +1,6 @@
 --                                              --
--- �ӥ塼�ƺ���                                 --
--- view_q001   �Ȳ�                           --
+-- ビュー再作成                                 --
+-- view_q001   照会１                           --
 --                                              --
 -- Create Date : 2009/01/15                     --
 --                                              --
@@ -77,5 +77,5 @@ CREATE VIEW view_q001 AS
        AND view_q004.sryymd <= tbl_ptkohinf.tekedymd;
 
 COMMENT 
-        ON VIEW view_q001 IS '���ԾȲ�ӥ塼1';
+        ON VIEW view_q001 IS '患者照会ビュー1';
 

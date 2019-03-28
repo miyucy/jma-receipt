@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,23 +16,23 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  BI201.
-      *    ������ʬ��0:�ãӣֽ��ϡ�1:Ģɼ������
+      *    処理区分（0:ＣＳＶ出力／1:帳票印刷）
            03  BI201-PROC-FLG          PIC 9(01).
-      *    �ãӣ֥ե�����̾
+      *    ＣＳＶファイル名
            03  BI201-CSVFILENAME       PIC X(100).
-      *    ���ϥڡ�����
+      *    開始ページ数
            03  BI201-STPAGE            PIC 9(09).
-      *    ��λ�ڡ�����
+      *    終了ページ数
            03  BI201-EDPAGE            PIC 9(09).
-      *    ���Ϸ��
+      *    開始件数
            03  BI201-STKNS             PIC 9(09).
-      *    ��λ���
+      *    終了件数
            03  BI201-EDKNS             PIC 9(09).
-      *    �����
+      *    基準日
            03  BI201-KJYNYMD           PIC 9(08).
       *    SQL
            03  BI201-SQL               PIC X(15000).

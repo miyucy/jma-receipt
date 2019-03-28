@@ -1,6 +1,6 @@
        *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,118 +18,118 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSSYUBETU.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : �쥻�ץȼ��̼�������
-      *  ������            : 
-      *  06/02/01    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : レセプト種別取得処理
+      *  管理者            : 
+      *  06/02/01    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.02.01    NACL-ƣ��    06/09/05  ��������ǯ����������б�
-      *                                     Ĺ���������б�
-      *                                     ʡ�����������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.01    NACL-藤原    06/09/05  ２００６年１０月改正対応
+      *                                     長期９７４対応
+      *                                     福岡地方公費対応
       *
-      *  03.03.01    NACL-����    06/09/27  ��������ǯ����������б�
-      *                                     �쥻�ץȼ��� 
-      *                                     ������ɲ�
-      *  03.03.02    NACL-ƣ��    06/10/10  ���ݸ����ʤ���硢����������
-      *                                     ����ñ�ȤΥ쥻�ץȤȤ���
-      *  03.03.03    NACL-ƣ��    06/10/25  ��������ǯ����������б�
-      *                                     ʡ����������ξ㳲
-      *  03.03.04    NACL-ƣ��    06/10/26  ʡ����������Υ쥻����Ƚ��ν���
-      *  03.03.05    NACL-ƣ��    06/10/27  �쥻�ץȤ������ݸ�����᤬��
-      *                                     ����絭�ܤ��оݤȤ��ʤ�
-      *  03.03.06    NACL-ƣ��    06/10/31  ���ܲ����ţ������ɲ�
-      *  03.03.07    NACL-ƣ��    06/12/04  ʡ����������ξ㳲�ΤĤ�������
-      *                                     �����ղþ����국��Ƚ���Ԥ�
-      *  03.03.08    NACL-ƣ��    06/12/14  ����ʬ�ΤȤ�����ñ�Ȥξ��
-      *                                     �����å��Ϥ��ʤ�
-      *  03.03.09    NACL-ƣ��    06/12/14  ��������ΤߤΤȤ����оݤȤ��ʤ�
+      *  03.03.01    NACL-門脇    06/09/27  ２００６年１０月改正対応
+      *                                     レセプト種別 
+      *                                     公費の追加
+      *  03.03.02    NACL-藤原    06/10/10  主保険がない場合、精神入院は
+      *                                     公費単独のレセプトとする
+      *  03.03.03    NACL-藤原    06/10/25  ２００６年１０月改正対応
+      *                                     福岡地方公費の障害
+      *  03.03.04    NACL-藤原    06/10/26  福岡地方公費のレセ記載判定の修正
+      *  03.03.05    NACL-藤原    06/10/27  レセプトで生活保護の請求がな
+      *                                     い場合記載の対象としない
+      *  03.03.06    NACL-藤原    06/10/31  療養介護医療２４の追加
+      *  03.03.07    NACL-藤原    06/12/04  福岡地方公費の障害のついて全て
+      *                                     公費付加情報より記載判定を行う
+      *  03.03.08    NACL-藤原    06/12/14  不明分のとき生保単独の上限
+      *                                     チェックはしない
+      *  03.03.09    NACL-藤原    06/12/14  地方公費のみのときは対象としない
       *
-      *  03.04.01    NACL-ƣ��    07/04/04  �����࿦���Ťμ��̷�����ν���
+      *  03.04.01    NACL-藤原    07/04/04  特例退職医療の種別決定条件の修正
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/09/04  �ܺ긩�ָ��񣹣����б�
-      *                                     ��������ǯ����ʹߤΤ��о� 
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/09/04  宮崎県「公費９０」対応
+      *                                     ２００７年９月以降のみ対象 
       *
-      *  04.01.01    NACL-ƣ��    07/11/22  �����쥻�ץ��б�
-      *  04.01.02    NACL-ƣ��    08/01/21  ���������ô���ֹ��ѹ��б�
-      *                                     �����ݤθ���ñ�ȤΤߡ� 
-      *  04.01.03    NACL-ƣ��    08/02/12  �ܺ긩�ָ��񣹣����б�
-      *                                     �̾�ε�����ˡ���᤹ 
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
+      *  04.01.02    NACL-藤原    08/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
+      *  04.01.03    NACL-藤原    08/02/12  宮崎県「公費９０」対応
+      *                                     通常の記載方法に戻す 
       *
-      *  04.02.01    NACL-ƣ��    08/03/04  ʿ������ǯ��������б�
-      *  04.02.02    NACL-ƣ��    08/04/14  ���������ô���ֹ��ѹ��б�
-      *                                     ������αˡ�����θ���ñ�ȡ� 
-      *  04.02.03    NACL-ƣ��    08/04/18  ʡ����������ι��ݤΤȤ�
-      *                                     ʿ������ǯ����ʹߤϸ����ղ�
-      *                                     �����국��Ƚ��Ϥ��ʤ�
-      *  04.02.04    NACL-ƣ��    08/04/23  �������Ԥ������ݸ����ܿͤȤ���
-      *  04.02.05    NACL-����    08/08/07  �����̱���������Ƚ���ɲ�
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/14  月途中の負担者番号変更対応
+      *                                     （中国残留法人等の公費単独） 
+      *  04.02.03    NACL-藤原    08/04/18  福岡地方公費の国保のとき
+      *                                     平成２０年４月以降は公費付加
+      *                                     情報より記載判定はしない
+      *  04.02.04    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
+      *  04.02.05    NACL-門脇    08/08/07  精神通院の請求点判定追加
       *
-      *  04.03.01    NACL-ƣ��    08/05/07  ���񣴼�ޤǤ�ʻ�Ѥε�Ͽ�б�
-      *                                     �쥻�ץȼ��̡ʻ�쥻�ץȡˤ��ɲ�
-      *  04.03.02    NACL-����    08/09/02  ������Ƚ���ɲ�
-      *  04.03.03    NACL-����    08/12/17  ʿ������ǯ��������б�
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *                                     レセプト種別（紙レセプト）の追加
+      *  04.03.02    NACL-門脇    08/09/02  請求点判定追加
+      *  04.03.03    NACL-門脇    08/12/17  平成２１年１月改正対応
       *
-      *  04.04.01    NACL-ƣ��    08/12/02  ��������ʬ�Υ쥻�ץȼ���
-      *                                     �ʻ�쥻�ץȡˤؤ������ɲ�
-      *  04.04.02    NACL-ƣ��    09/01/14  ������˰��ݤ����ݤ�ʻ�Ѥ���
-      *                                     ����ñ�Ȥˤʤä��Ȥ��ΤޤȤ�
-      *  04.04.03    NACL-ƣ��    09/10/21  ���������ô���ֹ��ѹ��б�
-      *                                     �ʼ�Ω�ٱ�θ���ñ�ȡ� 
-      *  04.04.04    NACL-ƣ��    09/12/17  ������˰��ݤȼ�Ω�ٱ��ʻ��
-      *                                     ���鼫Ω�ٱ�ñ�Ȥˤʤä��Ȥ�
-      *                                     �ΤޤȤ��б�
-      *  04.04.05    NACL-ƣ��    10/08/23  ������������б�
-      *                                     �ʹ�������ɼ���ʤ����� 
-      *  04.04.06    NACL-ƣ��    10/09/14  ���Ŵѻ�ˡ�б�
-      *                                     ����ñ�ȤΥ쥻�ץȤȤ���
+      *  04.04.01    NACL-藤原    08/12/02  自費、不明分のレセプト種別
+      *                                     （紙レセプト）への設定追加
+      *  04.04.02    NACL-藤原    09/01/14  月途中に医保と生保の併用から
+      *                                     生保単独になったときのまとめ
+      *  04.04.03    NACL-藤原    09/10/21  月途中の負担者番号変更対応
+      *                                     （自立支援の公費単独） 
+      *  04.04.04    NACL-藤原    09/12/17  月途中に医保と自立支援の併用
+      *                                     から自立支援単独になったとき
+      *                                     のまとめ対応
+      *  04.04.05    NACL-藤原    10/08/23  後期高齢非該当対応
+      *                                     （高齢受給者票がない場合） 
+      *  04.04.06    NACL-藤原    10/09/14  医療観察法対応
+      *                                     公費単独のレセプトとする
       *
-      *  04.05.01    NACL-ƣ��    10/03/12  ʿ������ǯ��������б�
-      *                                     ʿ������ǯ����ʬ�ʹߤ����ܴ�
-      *                                     ���򥨥顼�Ȥ���
-      *  04.05.02    NACL-ƣ��    11/08/25  ����ñ���б�
-      *                                     �������磵�����ѹ�
-      *  04.05.03    NACL-ƣ��    11/11/22  Ʊ���������б�
-      *  04.05.04    NACL-ƣ��    12/04/11  ʿ������ǯ��������б�
-      *                                     �֣����·��α�פ��ɲ�
-      *  04.05.05    NACL-ƣ��    12/11/12  Ʊ���������Υ����å����ν���
+      *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
+      *                                     平成２２年４月分以降の政府管
+      *                                     掌をエラーとする
+      *  04.05.02    NACL-藤原    11/08/25  公費単独対応
+      *                                     公費を最大５０に変更
+      *  04.05.03    NACL-藤原    11/11/22  同日再入院対応
+      *  04.05.04    NACL-藤原    12/04/11  平成２４年４月改正対応
+      *                                     「６２Ｂ型肝炎」の追加
+      *  04.05.05    NACL-藤原    12/11/12  同日再入院のチェック条件の修正
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *  04.06.02    NACL-ƣ��    11/02/01  ���ݸ����ʤ���硢��Ƹ�ݸ�(53)
-      *                                     �ϸ���ñ�ȤΥ쥻�ץȤȤ���
-      *  04.06.03    NACL-ƣ��    11/02/24  ������˰��ݤȻ�Ƹ�ݸ�(53)��
-      *                                     ʻ�Ѥ���ñ�Ȥˤʤä��Ȥ��ΤޤȤ�
-      *  04.06.04    NACL-ƣ��    12/10/04  Ʊ��쥻�ץȤθ��񤬣��Ĥ�Ķ
-      *                                     �������μ��������б�
-      *  04.06.02    NACL-ƣ��    12/09/27  �����ݸ���ֽ�ʣ�б�
-      *  04.06.03    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *  04.06.02    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
+      *  04.06.03    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
+      *  04.06.04    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
+      *                                     えた場合の種別不明対応
+      *  04.06.02    NACL-藤原    12/09/27  生活保護期間重複対応
+      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
-      *  04.07.01    NACL-ƣ��    12/12/17  ʣ����쥻�ץ�ʬ���б�
-      *  04.07.02    NACL-ƣ��    14/03/30  ʿ������ǯ��������б�
-      *  04.07.03    NACL-ƣ��    14/06/03  û���ں߼�Ѵ������������ϣ���
-      *                                     ��������̤���������б�
-      *  04.04.04    NACL-ƣ��    14/06/05  ������ΤޤȤ�ΤȤ��������
-      *                                     �ޥ�Ĺ�ΤȤ����оݤȤ���
+      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
+      *  04.07.02    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *  04.07.03    NACL-藤原    14/06/03  短期滞在手術基本料２（又は３）
+      *                                     で入院料未算定日の対応
+      *  04.04.04    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
+      *                                     マル長のときも対象とする
       *
-      *  04.07.01    NACL-ƣ��    14/08/18  �����аʾ�γ����ｻ�ԣ����б�
-      *  04.07.02    NACL-ƣ��    14/12/05  ʿ������ǯ��������б�
-      *  04.07.03    NACL-ƣ��    14/12/08  ������˸������ô���ֹ�����
-      *                                     �ѹ������ä����ε����б�
-      *                                     ˡ���ֹ桢Ŭ�ѳ������ν�Ȥ���
+      *  04.07.01    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
+      *  04.07.02    NACL-藤原    14/12/05  平成２７年１月改正対応
+      *  04.07.03    NACL-藤原    14/12/08  月途中に公費の負担者番号等の
+      *                                     変更があった場合の記載対応
+      *                                     法別番号、適用開始日の順とする
       *
-      *  04.08.01    NACL-ƣ��    15/10/08  ʣ����쥻�ץ�ʬ���б�
-      *                                     ����ñ�ȤΣ���ʾ��ʬ���б�
-      *  04.08.02    NACL-ƣ��    15/12/22  �����������ʬ���б�
-      *  04.08.03    NACL-ƣ��    16/08/08  �ҳ�����ʬ�������оݤȸ����оݡ�
-      *                                     �쥻�ץȤ�ʬ���б�
-      *  04.08.04    NACL-ƣ��    18/03/28  ʿ������ǯ��������б�
+      *  04.08.01    NACL-藤原    15/10/08  複数枚レセプト分割対応
+      *                                     公費単独の２回以上の分割対応
+      *  04.08.02    NACL-藤原    15/12/22  施設入所時の分割対応
+      *  04.08.03    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
+      *  04.08.04    NACL-藤原    18/03/28  平成３０年４月改正対応
       *
-      *  05.00.01    NACL-ƣ��    18/11/29  �Τ������б�
-      *  05.00.02    NACL-ƣ��    19/02/15  Warning �б�
+      *  05.00.01    NACL-藤原    18/11/29  肝がん治療対応
+      *  05.00.02    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -141,7 +141,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
@@ -160,7 +160,7 @@
            03  FLG-SEIHO               PIC 9(01).
            03  FLG-WRITE               PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDA                     PIC 9(04).
            03  IDB                     PIC 9(04).
@@ -187,18 +187,18 @@
                05  KEY-O-PTID          PIC 9(10).
                05  KEY-O-HKNCOMBI      PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
       *
-      *    �ǽ�������
+      *    最終受診日
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
-      *    �������� ����������
+      *    １：入院 ２：入院外
            03  WRK-DBKBN               PIC X(01).
       *
-      *    ����ǯ��
+      *    診療年月
            03  WRK-STYMD               PIC X(08).
            03  WRK-EDYMD               PIC X(08).
       * 
@@ -218,9 +218,9 @@
       *
            03  WRK-RECEIPT-KBN         PIC X(10).
       *
-      *    ǯ��
+      *    年齢
            03  WRK-NENREI              PIC 9(03).
-      *    �������������ե饰
+      *    後期高齢者非該当フラグ
            03  WRK-KOUKI-FLG           PIC 9(01).
       *
            03  WRK-TEKSTYMD.
@@ -238,13 +238,13 @@
                    07  WRK-1033-EDYUKYMD 
                                        PIC X(08).
       *              
-      *    ���Ų���ơ��֥����������ѡ��������ܡ������ȹ礻��
+      *    診療回数テーブル（入院会計用　１：基本　２：組合せ）
            03  WRK-DAY-AREA.
                05  WRK-DAY-TBL         OCCURS  2.
                    07  WRK-DAY         PIC 9(03)
                                            OCCURS   31.
       *
-      *    �������ؤ��ѥ��
+      *    公費並替え用ワーク
            03  WRK-KOHI-AREA.
                05  WRK-KOHI-TBL        OCCURS  10.
                    07  WRK-KOHID-O     PIC  9(10).
@@ -274,7 +274,7 @@
            03  ST-IDX                  PIC 9(03).
       ***  03  ED-IDX                  PIC 9(03).
       *
-      *    �����ʬ�̸������ʣ����쥻�ץȡ�����������
+      *    請求区分別公費情報（１：レセプト　２：請求書）
            03  WRK-SEIKYUKBN-KOHI-AREA.
                05  WRK-SEIKYU-TBL   OCCURS  2.
                    07  WRK-SEIKYU-OCC    OCCURS  10.
@@ -400,7 +400,7 @@
       *
            03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   31.
       *     
-      *    ����ݸ��ȹ礻����������ѡ� 
+      *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
            02  WRK-HKNCOMBI-REC        OCCURS  10. 
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
@@ -410,43 +410,43 @@
        01  WRK-RECE61-REC. 
            COPY    "CPRCF061.INC"      REPLACING  //RECE61//
                                        BY         //WRK-RECE61//.
-      *    Ϸ���ݸ��ݻ�ʧ��ʬ
+      *    老人保険−支払区分
            03  WRK-RECE61-RJNPAYKBN    PIC X(02).
-      *    ���ݸ��ݸ�����̶�ʬ
+      *    主保険−公費種別区分
            03  WRK-RECE61-HKNKOHSBTKBN PIC X(01).
       *    
            03  WRK-RECE61-KOH-AREA     OCCURS  10. 
-      *       �����ˡ���ֹ�
+      *       公費−法別番号
                05  WRK-RECE61-KOHHBTNUM    PIC X(02).
       *
        01  TABLE-RECE61-AREA.
            02  TBL-RECE61-OCC          OCCURS  100.
            COPY    "CPRCF061.INC"      REPLACING  //RECE61//
                                        BY         //TBL-RECE61//.
-      *    Ϸ���ݸ��ݻ�ʧ��ʬ
+      *    老人保険−支払区分
            03  TBL-RECE61-RJNPAYKBN    PIC X(02).
-      *    ���ݸ��ݸ�����̶�ʬ
+      *    主保険−公費種別区分
            03  TBL-RECE61-HKNKOHSBTKBN PIC X(01).
       *    
            03  TBL-RECE61-KOH-AREA     OCCURS  10. 
-      *       �����ˡ���ֹ�
+      *       公費−法別番号
                05  TBL-RECE61-KOHHBTNUM    PIC X(02).
-      *    ������ʬ
+      *    処理区分
            03  TBL-RECE61-SYOKBN       PIC X(01).
       *     
        01  WRK-SEIHO-RECE61-REC. 
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
                                    BY         //WK-SH-RECE61//.
-      *    Ϸ���ݸ��ݻ�ʧ��ʬ
+      *    老人保険−支払区分
            03  WRK-SH-RE61-RJNPAYKBN         PIC X(02).
-      *    ���ݸ��ݸ�����̶�ʬ
+      *    主保険−公費種別区分
            03  WRK-SH-RE61-HKNKOHSBTKBN      PIC X(01).
       *    
            03  WRK-SH-RE61-KOH-AREA          OCCURS  10. 
-      *       �����ˡ���ֹ�
+      *       公費−法別番号
                05  WRK-SH-RE61-KOHHBTNUM         PIC X(02).
       *
-      *    ������ݤޤȤ�
+      *    ワーク生保まとめ
        01  TBL-SEIHO-RECE61-AREA.
            02  TBL-SEIHO-RECE61-REC    OCCURS  50. 
            COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
@@ -458,7 +458,7 @@
            COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
                                        BY         //WRK-KO-RE61-//.
       *
-      *    �����������ʣ����������������������ΰ�
+      *    施設入所情報（９５０、９５１）退避用領域
        01  TABLE-PTKOHINF-AREA.
            02  TBL-PTKOHINF-REC        OCCURS  100.
            COPY    "CPPTKOHINF.INC"
@@ -466,7 +466,7 @@
                                    BY          //TBL-PTKOH//.
            02  TBL-PTKOHINF-MAX    PIC 9(03).
       *
-      *    ���ԥ쥻�ץ�ʬ������������ΰ�
+      *    患者レセプト分割情報退避用領域
        01  TBL-PT-HDIST-DAY-T.
          02  TBL-PT-HDIST-DAY-REC      OCCURS  10.
            COPY    "CPPT-HDIST-DAY.INC"
@@ -475,15 +475,15 @@
          02  TBL-PT-HDIST-DAY-MAX  PIC 9(02).
       *
        01  WRK-CONS-AREA.
-      *    ϫ���ݸ��ֹ� 
+      *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
-      *    �������ݸ��ֹ� 
+      *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
-      *    Ĺ��
+      *    長期
            03  WRK-CONS-CHOUKI-HKNNUM  PIC X(03)   VALUE   "972".
-      *    Ĺ���ʾ�̽����ԡ�
+      *    長期（上位所得者）
            03  WRK-CONS-CHOUKI-HKNNUM2 PIC X(03)   VALUE   "974".
-      *    �����ݸ��ֹ� 
+      *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975". 
       *
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
@@ -492,7 +492,7 @@
            03  WRK-CONS-SRYYM-201501   PIC 9(06)   VALUE   201501.     
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *     
            COPY    "CPSK2005.INC".
@@ -500,71 +500,71 @@
                                    REPLACING  //SYS-200501//
                                    BY         //SYS-25//.
       *     
-      *    ���ⰷ���ݸ��Ծ���
+      *    県内扱い保険者情報
            COPY    "CPSK1033.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    �������
+      *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    �ݸ�����
+      *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    ���ԥ쥻�ץ�ʬ��
+      *    患者レセプト分割
        01  PT-HDIST-DAY-REC.
            COPY    "CPPT-HDIST-DAY.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �����ղþ����������
+      *    公費付加情報取得サブ
            COPY    "CPORCSKOHPLUS.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���Լ�����ô��쥻�ץȵ���Ƚ��
+      *    患者自己負担金レセプト記載判定
            COPY    "CPORCSFTNJGNCHK.INC".
       *
-      *    �ݸ�ǯ����ô��绻�ꥵ��
+      *    保険年齢・負担割合算定サブ
            COPY    "CPORCSAGECHK.INC".
       *
-      *    �쥻�ץȼ����ֵѥ���
+      *    レセプト種別返却サブ
            COPY    "CPORCSSYUBETUGET.INC".
       *
-      *    ������̤��������������
+      *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -579,7 +579,7 @@ grpsys     COPY    "COMMON-SPA".
            .
      *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -614,7 +614,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *     
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -626,7 +626,7 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    ZERO                TO  LNK-SYUBETU-RC
            INITIALIZE                      LNK-SYUBETU-OT
       *
-      *    ���Ϲ��ܥ����å�
+      *    入力項目チェック
 grpsys     IF    ( LNK-SYUBETU-HOSPNUM     =   ZERO )
            OR    ( LNK-SYUBETU-PREFNUM     =   ZERO  )
            OR    ( LNK-SYUBETU-SRYYM       =   ZERO  )
@@ -667,7 +667,7 @@ grpsys                                         SPA-AREA
       *     DISPLAY " SYUGAKU  =" AGECHK-SYUGAKUKBN
       *??
       *     
-      *    �쥻�ץ��Խ���ʬ����
+      *    レセプト編集区分情報
            INITIALIZE                  SYS-2005-REC
            MOVE    "2005"              TO  SYS-2005-KANRICD
            MOVE    "*"                 TO  SYS-2005-KBNCD
@@ -709,7 +709,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
           "SYS-200501-DISASTER-RECEIPT=" SYS-25-DISASTER-RECEIPT
       *??
       *
-      *    ���ⰷ���ݸ��Ծ����ʡ���Τߡ�
+      *    県内扱い保険者情報（福岡のみ）
            IF    ( LNK-SYUBETU-PREFNUM =   "40"                  )
            AND   ( LNK-SYUBETU-SRYYM   <=  WRK-CONS-SRYYM-200609 )
                MOVE    SPACE           TO  WRK-1033-TABLE
@@ -752,7 +752,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                PERFORM 900-CLOSE-SEC
            END-IF
       *
-      *    ����ǯ���Խ�
+      *    診療年月編集
            MOVE    LNK-SYUBETU-SRYYM   TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
            INITIALIZE                      STS-AREA-DAY
@@ -768,19 +768,19 @@ grpsys         PERFORM 900-DBSELECT-SEC
            .
       *     
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC               SECTION.
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
       *
-      *    �����������
+      *    施設入所情報
            PERFORM 500-SISETU-HENSYU-SEC
       *
-      *    ���ԥ쥻�ץ�ʬ��������
+      *    患者レセプト分割情報情報
            PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
-      *    ���Ų���ɤ߹���
+      *    診療会計読み込み
            MOVE    "1"                 TO  WRK-DBKBN 
       *   
            INITIALIZE                      SRYACCT-REC
@@ -811,7 +811,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    ��������ɤ߹���
+      *    入院会計読み込み
            IF      LNK-SYUBETU-NYUGAIKBN   =   "1"
                MOVE    "2"                 TO  WRK-DBKBN 
       *     
@@ -848,7 +848,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ų���Խ�����
+      *    診療会計編集処理
       *****************************************************************
        2001-SRYACCT-HENSYU-SEC                SECTION.
       *
@@ -858,7 +858,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                OR      FLG-END         =   1
                MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
                MOVE    ACCT-PTID           TO  KEY-N-PTID 
-      *        �ݸ��ȹ礻�ɹ���
+      *        保険組合せ読込み
                INITIALIZE                  HKNCOMBI-REC
 grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                MOVE    ACCT-PTID           TO  COMB-PTID
@@ -866,7 +866,7 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM 910-HKNCOMBI-INV-SEC
       *
-      *        ̤����ʬ�����뤫
+      *        未訂正分があるか
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
       *
@@ -888,7 +888,7 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                    PERFORM 20019-FILE-SYORI-SEC 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
-      *                Ʊ�����ԣɣġ����Ųʡ��ݸ��ȹ礻���ɤ����Ф�
+      *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-END         =   1      
@@ -909,19 +909,19 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
            EXIT.
       *            
       *****************************************************************
-      *    ��������Խ�����
+      *    入院会計編集処理
       *****************************************************************
        2002-NYUINACCT-HENSYU-SEC              SECTION.
       *     
            INITIALIZE                      WRK-DAY-AREA
                                            WRK-HKNCOMBI-TABLE
       *
-      *    �ǽ�������
+      *    最終診療日
            MOVE    NACCT-SRYYM         TO  WRK-SRYYM
       *
            PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                            OR      FLG-END         =   1      
-      *        �޼��̶�ʬ�̥ơ��֥��Խ�
+      *        剤識別区分別テーブル編集
                EVALUATE    NACCT-ZAISKBKBN
                    WHEN    "1"
                        MOVE    1               TO  IDX
@@ -933,7 +933,7 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                    IF      NACCT-DAY  (IDX1)       >   ZERO
                        MOVE    NACCT-DAY (IDX1)    TO
                                                    WRK-DAY (IDX IDX1)
-      *                �ǽ�������
+      *                最終診療日
                        MOVE    IDX                 TO  WRK-SRYDD
                    END-IF
                END-PERFORM            
@@ -943,10 +943,10 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
            END-PERFORM
       *
            IF      FLG-END             =   ZERO
-      *        Ʊ���������Υ����å�
+      *        同日再入院のチェック
                PERFORM 500-ORCSNYUINDAY-CHECK-SEC
       *
-      *        ������פ���ݸ��ȹ礻�ɹ�     
+      *        入院会計より保険組合せ読込     
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
                    IF  ( ( WRK-DAY (1 IDX)        >   ZERO ) OR
@@ -956,7 +956,7 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                    END-IF
                END-PERFORM        
       *
-      *        ������פ��ݸ��ȹ礻���ɲ�
+      *        入院会計の保険組合せを追加
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >       10
                        OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
@@ -973,14 +973,14 @@ grpsys         MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
            EXIT. 
       *            
       *****************************************************************
-      *    ������ץ����å�����
+      *    入院会計チェック処理
       *****************************************************************
        20021-NYUINACCT-CHK-SEC         SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
       *
-      *        �ݸ��ȹ礻�ɲ�
+      *        保険組合せ追加
                IF      WRK-COMB-HKNCOMBINUM (IDX1) =   ZERO
                    INITIALIZE                  HKNCOMBI-REC
 grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
@@ -988,7 +988,7 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                    MOVE    WRK-DAY (2 IDX)     TO  COMB-HKNCOMBINUM 
                    MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
-      *            ���оݳ����ȹ礻�ϣ��򥻥åȡ�
+      *            （対象外の組合せは１をセット）
                    IF      FLG-HKNCOMBI    =   ZERO
                        MOVE    HKNCOMBI-REC    TO
                                                WRK-HKNCOMBI-REC  (IDX1)
@@ -1000,7 +1000,7 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                    END-IF
                END-IF
       *
-      *        Ŭ���ϰϤ������å����ϰϳ��ΤȤ����򥻥åȡ�
+      *        適用範囲かチェック（範囲外のとき２をセット）
                IF      WRK-DAY (2 IDX)     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
@@ -1026,14 +1026,14 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル処理
       *****************************************************************
        20019-FILE-SYORI-SEC              SECTION.
       *
            EVALUATE    WRK-DBKBN
                WHEN    "1"
                    IF      WRK-UPDKBN          =   "1"
-      *                �ݸ�������������Ƥ��뤫
+      *                保険の訂正がされているか
                        IF      COMB-TEKSTYMD(1:6)  =   WRK-STYMD (1:6)
                            MOVE    COMB-TEKSTYMD       TO  WRK-YMD
                            PERFORM VARYING IDX FROM    1   BY  1
@@ -1067,7 +1067,7 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                        END-IF    
                    END-IF
       *
-      *            �ǽ�������
+      *            最終診療日
                    MOVE    ACCT-SRYYM          TO  WRK-SRYYM
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       31
@@ -1081,26 +1081,26 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM TO  COMB-HOSPNUM
                    END-IF        
             END-EVALUATE
       *
-      *    ʿ������ǯ����ʹߤ�Ϸ���ݸ����ѤΤȤ�
+      *    平成２０年４月以降に老人保険使用のとき
            IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
            AND   ( COMB-KOH1HKNNUM     =   "027"                 )
                MOVE    "1"                 TO  WRK-TEISEIKBN
            END-IF
       *
-      *    ʿ������ǯ����ʹߤ��࿦���ݤǣ����аʾ�ΤȤ�
+      *    平成２０年４月以降に退職国保で６５歳以上のとき
            IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
            AND   ( COMB-HKNNUM         =   "067"                 )
            AND   ( WRK-NENREI          >=  65                    )
                MOVE    "1"                 TO  WRK-TEISEIKBN
            END-IF
       *
-      *    ʿ������ǯ����ʹߤ����ܴɾ�����ѤΤȤ�
+      *    平成２２年４月以降に政府管掌を使用のとき
            IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201004 )
            AND   ( COMB-HKNNUM         =   "001"                 )
                MOVE    "1"                 TO  WRK-TEISEIKBN
            END-IF
       *
-      *   ���ݸ������ɤ߽Ф�
+      *   主保険情報読み出し
            INITIALIZE                      PTHKNINF-REC
                                            PTRSIINF-REC
            IF      COMB-HKNID          NOT =   ZERO
@@ -1120,20 +1120,20 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTHKN-HOSPNUM
                END-EVALUATE 
            END-IF
       *
-      *    ����Υ쥻�ץȡ������ؤο���ʬ��
+      *    公費のレセプト・請求書への振り分け
       *
            INITIALIZE                  WRK-SEIKYUKBN-KOHI-AREA
                                        FLG-KOHRECEDSP
            MOVE    ZERO                TO  IDY
                                            IDZ    
       *
-      *    ��������ΤȤ��쥻�ץ������ʬ���������Ƚ��
+      *    地方公費のときレセプト請求区分を取得して判別
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                    OR      COMB-KOHHKNNUM (IDX)    
                                            =   SPACE
       *
-      *      ʿ������ǯ����ʹߤ�Ϸ���ݸ����оݳ��Ȥ���
+      *      平成２０年４月以降の老人保険は対象外とする
              IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
              AND   ( COMB-KOHHKNNUM (IDX)  =  "027"                )
                  CONTINUE
@@ -1149,7 +1149,7 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM     TO  HKN-HOSPNUM
                    MOVE    "00"                    TO  HKN-PAYKBN   
                    MOVE    HKNNUM-REC              TO  MCPDATA-REC
                    PERFORM 900-HKNNUM-INV-SEC
-      *            ʡ�����ι��ݤΤȤ��ʣ���Ϸ�Ͱʳ���
+      *            福岡県の国保のとき（４１老人以外）
                    IF    ( COMB-HKNNUM         =   "060"   OR  "067" )
                    AND   ( LNK-SYUBETU-PREFNUM =   40                )
                    AND   ( HKN-HBTNUM      NOT =   "41"              )
@@ -1171,7 +1171,7 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM     TO  HKN-HOSPNUM
                            PERFORM 200191-PREFKBN-40-CHECK-SEC
                        END-IF
                    ELSE
-      *                ʡ�����μ��ݤΤȤ��ʣ���Ϸ�͡�
+      *                福岡県の社保のとき（４１老人）
                        IF    ( COMB-HKNNUM     NOT =   "060" AND "067"
                                                              AND "039" )
                        AND   ( LNK-SYUBETU-PREFNUM =    40             )
@@ -1212,7 +1212,7 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM     TO  HKN-HOSPNUM
                        END-IF
                    END-IF
                    IF     IDX1          =        1
-      *                ��������쥻����Ƚ��
+      *                地方公費レセ記載判定
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE              ORCSFTNJGNCHKAREA
 grpsys                 MOVE    COMB-HOSPNUM
@@ -1220,22 +1220,22 @@ grpsys                 MOVE    COMB-HOSPNUM
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
                        MOVE    LNK-SYUBETU-NYUGAIKBN 
                                            TO  LNK-FTNJGNCHK-NYUGAIKBN
-      *                ����ǯ��
+      *                診療年月
                        MOVE    LNK-SYUBETU-SRYYM
                                            TO  LNK-FTNJGNCHK-SRYYM
-      *                �����ֹ�
+      *                公費番号
                        MOVE    COMB-KOHHKNNUM (IDX)
                                            TO  LNK-FTNJGNCHK-KOHNUM
-      *                ����ɣ�
+      *                公費ＩＤ
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
-      *                ��ƻ�ܸ��ֹ�
+      *                都道府県番号
                        MOVE    LNK-SYUBETU-PREFNUM
                                            TO  LNK-FTNJGNCHK-PREFNUM
-      *                �ݸ��ȹ礻�ֹ�
+      *                保険組合せ番号
                        MOVE    COMB-HKNCOMBINUM
                                            TO  LNK-FTNJGNCHK-HKNCOMBINUM
-      *                ���ݸ��ݣɣ�
+      *                主保険−ＩＤ
                        MOVE    COMB-HKNID  TO  LNK-FTNJGNCHK-HKNID
       *
                        CALL    "ORCSFTNJGNCHK"     USING
@@ -1256,7 +1256,7 @@ grpsys                                             SPA-AREA
                      AND   ( COMB-HKNNUM             =   SPACE )
                          CONTINUE
                      ELSE 
-      *                Ĺ��������ܥ쥻����Ƚ�������ñ�Ȥ�����ʬ�Ϥ��ʤ���
+      *                長期高額療養レセ記載判定（生保単独の不明分はしない）
                        MOVE    ZERO        TO  FLG-KOHRECEDSP
                        INITIALIZE              ORCSFTNJGNCHKAREA
 grpsys                 MOVE    COMB-HOSPNUM
@@ -1264,22 +1264,22 @@ grpsys                 MOVE    COMB-HOSPNUM
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
                        MOVE    LNK-SYUBETU-NYUGAIKBN 
                                            TO  LNK-FTNJGNCHK-NYUGAIKBN
-      *                ����ǯ��
+      *                診療年月
                        MOVE    LNK-SYUBETU-SRYYM
                                            TO  LNK-FTNJGNCHK-SRYYM
-      *                �����ֹ�
+      *                公費番号
                        MOVE    COMB-KOHHKNNUM (IDX)
                                            TO  LNK-FTNJGNCHK-KOHNUM
-      *                ����ɣ�
+      *                公費ＩＤ
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
-      *                ��ƻ�ܸ��ֹ�
+      *                都道府県番号
                        MOVE    LNK-SYUBETU-PREFNUM
                                            TO  LNK-FTNJGNCHK-PREFNUM
-      *                �ݸ��ȹ礻�ֹ�
+      *                保険組合せ番号
                        MOVE    COMB-HKNCOMBINUM
                                            TO  LNK-FTNJGNCHK-HKNCOMBINUM
-      *                ���ݸ��ݣɣ�
+      *                主保険−ＩＤ
                        MOVE    COMB-HKNID  TO  LNK-FTNJGNCHK-HKNID
       *
                        CALL    "ORCSFTNJGNCHK"     USING
@@ -1304,7 +1304,7 @@ grpsys                                             SPA-AREA
              END-IF    
           END-PERFORM
       *            
-      *    �ե������Խ�����
+      *    ファイル編集処理
            INITIALIZE                      WRK-RECE61-REC
 grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            MOVE    LNK-SYUBETU-SRYYM       TO  WRK-RECE61-SRYYM
@@ -1553,7 +1553,7 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            END-IF             
            MOVE    SPACE               TO WRK-RECE61-RECEKA
       *
-      *    ���������̵ͭ
+      *    施設入所の有無
            IF    ( WRK-RECE61-RECEIPT-KBN  =   SPACE )
            AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
            AND   ( LNK-SYUBETU-NYUGAIKBN   =   "2"   )
@@ -1578,7 +1578,7 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    �ҳ�������̵ͭ��ʿ������ǯ������ʹߡ�
+      *    災害該当の有無（平成２８年１０月以降）
            IF    ( SYS-25-DISASTER-RECEIPT =   "1"     )
            AND   ( WRK-RECE61-SRYYM        >=   201610 )
                IF    ( WRK-RECE61-RECEIPT-KBN (5:1)
@@ -1611,7 +1611,7 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
                END-IF
            END-IF
       *
-      *    ���ԥ쥻�ץ�ʬ������̵ͭ
+      *    患者レセプト分割情報の有無
            IF    ( WRK-RECE61-RECEIPT-KBN (2:3)
                                            =   SPACE )
            AND   ( TBL-PT-HDIST-DAY-MAX    >   ZERO  )
@@ -1665,7 +1665,7 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            DISPLAY "WRK-RECE61-RECEIPT-KBN=" WRK-RECE61-RECEIPT-KBN "#"
       *??
       *
-      *    ��������Τߤξ��Ͻ��Ϥ��ʤ�
+      *    地方公費のみの場合は出力しない
            IF    ( WRK-RECE61-HKNNUM      =   SPACE )
            AND   ( WRK-RECE61-KOHID       =   ZERO  )
            AND   ( WRK-SEIKYU-KOHID (1 1) =   ZERO  )
@@ -1686,7 +1686,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                END-IF
            END-PERFORM
       *
-      *    ����ñ�Ȥξ������ݡ�����αˮ��������Ω�ٱ��
+      *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF    ( COMB-HKNNUM         =   SPACE )
            AND   ( COMB-KOHHKNNUM (1)  =   "012"
                                        OR  "015"
@@ -1701,7 +1701,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
            EXIT. 
       *            
       *****************************************************************
-      *    ʡ������������å�����
+      *    福岡県公費チェック処理
       *****************************************************************
        200191-PREFKBN-40-CHECK-SEC      SECTION.
       *
@@ -1709,11 +1709,11 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                            WRK-PREFNUM
       *
       *
-      *    ��������ǯ������ʹߤϸ����ղþ���������
+      *    ２００６年１０月以降は公費付加情報より設定
            IF    ( LNK-SYUBETU-SRYYM   >  WRK-CONS-SRYYM-200609 )
                MOVE    "1"                 TO  WRK-PREFKBN
            ELSE
-      *        �����������ݸ��Ԥϥ쥻�ץȤص��ܤ��ʤ�
+      *        県外扱いの保険者はレセプトへ記載しない
                IF      PTHKN-HKNJANUM (1:2)    =   "67"
                    MOVE    PTHKN-HKNJANUM (3:2)
                                            TO  WRK-PREFNUM
@@ -1744,7 +1744,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                END-IF
            END-IF
       *        
-      *    ���ⰷ���ξ�硢�����ղþ�����쥻�ץ������ʬ�����
+      *    県内扱いの場合、公費付加情報よりレセプト請求区分を取得
            IF      WRK-PREFKBN      =   SPACE
                MOVE    2                   TO  IDX1
            ELSE
@@ -1775,7 +1775,7 @@ grpsys                                     SPA-AREA
            EXIT. 
       *            
       *****************************************************************
-      *    ���Ͻ���
+      *    出力処理
       *****************************************************************
        200192-RECE61-WRITE-SEC              SECTION.
       *
@@ -1800,7 +1800,7 @@ grpsys                                     SPA-AREA
                MOVE    PTKOH-TEKEDYMD      TO  WRK-RECE61-TEKEDYMDX  (1)
            END-IF
       *    
-      *    ���ݸ�����
+      *    主保険情報
            IF      WRK-RECE61-HKNNUM  NOT =   SPACE
                EVALUATE    WRK-RECE61-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
@@ -1816,7 +1816,7 @@ grpsys                                     SPA-AREA
                        MOVE    PTHKN-HOJOKBN
                                            TO  WRK-RECE61-HKN-HOJOKBN
       *
-      *                �ݸ�������̶�ʬ�ʼ����ݸ�Ƚ���ѡ�
+      *                保険公費種別区分（自費保険判定用）
 grpsys                 MOVE    LNK-SYUBETU-HOSPNUM
                                            TO  HKN-HOSPNUM
                        MOVE    WRK-RECE61-HKNNUM
@@ -1831,7 +1831,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM
                END-EVALUATE
            END-IF
       *
-      *    Ϸ�;���
+      *    老人情報
            IF      WRK-RECE61-KOHID     >   ZERO
                INITIALIZE                       PTKOHINF-REC
 grpsys         MOVE    WRK-RECE61-HOSPNUM   TO  PTKOH-HOSPNUM
@@ -1851,7 +1851,7 @@ grpsys         MOVE    WRK-RECE61-HOSPNUM   TO  PTKOH-HOSPNUM
            EXIT.
       *            
       *****************************************************************
-      *    ���Ͻ���
+      *    出力処理
       *****************************************************************
        200193-RECE61-REWRITE-SEC            SECTION.
       *
@@ -1874,7 +1874,7 @@ grpsys         MOVE    WRK-RECE61-HOSPNUM   TO  PTKOH-HOSPNUM
                END-IF
            END-PERFORM
       *
-      *    ���ݸ�����
+      *    主保険情報
            IF      WRK-RECE61-HKNNUM  NOT =   SPACE
                EVALUATE    WRK-RECE61-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
@@ -1942,7 +1942,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    ������̽���
+      *    公費個別処理
       *****************************************************************
        2001921-KOHID-HENSYU-SEC              SECTION.
       *
@@ -1953,7 +1953,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
       *
            MOVE    1                       TO  IDX1   
       *
-      *    ������ɲ� 
+      *    公費の追加 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                MOVE    SPACE               TO  WRK-RECESKYKBN
@@ -1961,7 +1961,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                IF      WRK-SEIKYU-KOHID (IDX1 IDX)    =   ZERO
                    MOVE    10                  TO  IDX
                ELSE    
-      *            Ϸ�ܸ͡����ΤȤ�  
+      *            老人＋原爆のとき  
                    IF    ( WRK-RECE61-KOHID    NOT =   ZERO  )
                    AND   ( WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                                    =   "019" )
@@ -1979,7 +1979,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                            END-IF
                        END-IF
                    ELSE
-      *                Ĺ���ΤȤ�
+      *                長期のとき
                        IF      WRK-SEIKYU-KOHHKNNUM(IDX1 IDX)  
                                            =   WRK-CONS-CHOUKI-HKNNUM
                                            OR  WRK-CONS-CHOUKI-HKNNUM2
@@ -1992,12 +1992,12 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                END-IF      
            END-PERFORM
       *
-      *    ������ɲä��ʤ��ä��Ȥ�
+      *    公費を追加しなかったとき
            IF      FLG-ADDKBN              =   ZERO
                GO  TO  2001921-KOHID-HENSYU-EXT
            END-IF
       *
-      *    ͥ���̤��¤��ؤ�
+      *    優先順位に並べ替え
            INITIALIZE                      WRK-RECE61-KOHI-AREA
            MOVE    ZERO                    TO  TBL-MAX
       *
@@ -2029,7 +2029,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                END-PERFORM
            END-PERFORM
       *
-      *    ���٤��¤��ؤ����� 
+      *    すべて並べ替えた時 
            IF      WRK-KOHHKNNUM-O (1)     =   SPACE
            AND     WRK-KOHHKNNUM-O (2)     =   SPACE
            AND     WRK-KOHHKNNUM-O (3)     =   SPACE
@@ -2043,7 +2043,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                GO  TO  2001921-KOHID-HENSYU-EXT
            END-IF
       *
-      *    ����������¤��ؤ�
+      *    地方公費の並び替え
            PERFORM VARYING IDX FROM    1    BY  1
                    UNTIL   IDX >       9
                COMPUTE IDX1    =   IDX     +   1
@@ -2059,7 +2059,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                END-PERFORM
            END-PERFORM
       *
-      *    ����������ɲ�
+      *    地方公費の追加
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   10
                    OR      TBL-MAX     =   10 
@@ -2067,7 +2067,7 @@ grpsys                     MOVE    LNK-SYUBETU-HOSPNUM
                    ADD     1                   TO  TBL-MAX
                    MOVE    WRK-KOHI-TBL (IDX)  TO 
                                            WRK-RECE61-KOHI-TBL(TBL-MAX)
-      *            ˡ���ֹ��ʡ���Τߡ�
+      *            法別番号（福岡のみ）
                    IF    ( LNK-SYUBETU-PREFNUM =   "40"             )
                    AND   ( LNK-SYUBETU-SRYYM   <=
                                               WRK-CONS-SRYYM-200609 ) 
@@ -2091,7 +2091,7 @@ grpsys                 MOVE   LNK-SYUBETU-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    ��������������
+      *    公費情報退避処理
       *****************************************************************
        20019211-KOHID-TBL-HENSYU-SEC     SECTION.
       *
@@ -2117,7 +2117,7 @@ grpsys                 MOVE   LNK-SYUBETU-HOSPNUM
            EXIT.
       *            
       *****************************************************************
-      *    ���Ͻ���������ñ�ȤΤȤ��Τߡ�
+      *    出力処理（生保単独のときのみ）
       *****************************************************************
        200194-SEIHO-RECE61-WRITE-SEC              SECTION.
       *
@@ -2133,7 +2133,7 @@ grpsys                 MOVE   LNK-SYUBETU-HOSPNUM
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            PERFORM 900-PTKOHINF-READ-SEC
            MOVE    PTKOH-TEKSTYMD      TO  WRK-RECE61-TEKSTYMD
-      *    �����ݸ���ֽ�ʣ�б��Τ���
+      *    生活保護期間重複対応のため
            IF      COMB-KOHHKNNUM (1)  =   "012"
                MOVE    COMB-KOH1ID         TO  WRK-RECE61-KOH-KOHID
            END-IF
@@ -2159,7 +2159,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       * 
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -2176,7 +2176,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
                                            =   ZERO )
                        MOVE    1               TO  ST-IDX
                        MOVE    SPACE           TO  WRK-RECEIPT-KBN
-      *                ���Ͻ���
+      *                出力処理
                        PERFORM 3001-RECESYUBETU-HENSYU-SEC
                    ELSE
                        MOVE    ZERO            TO  ST-IDX
@@ -2197,7 +2197,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
                            END-PERFORM
       *
                            IF      ST-IDX          >   ZERO
-      *                        ���Ͻ���
+      *                        出力処理
                                PERFORM 3001-RECESYUBETU-HENSYU-SEC
                            ELSE
                                MOVE    999             TO  ST-IDX
@@ -2212,7 +2212,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
            EXIT. 
       *
       *****************************************************************
-      *    ���Ͻ���
+      *    出力処理
       *****************************************************************
        3001-RECESYUBETU-HENSYU-SEC     SECTION.
       *
@@ -2221,7 +2221,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
                                            WRK-KOH-RECE61-REC
       *
            MOVE    ZERO                TO  WRK-SEIHO-FLG
-      *    ����ñ�Ȥ���������ݡ�����αˮ��������Ω�ٱ��
+      *    公費単独の退避（生保、中国残留邦人等、自立支援）
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
 grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
@@ -2229,19 +2229,19 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
              IF      WRK-RECEIPT-KBN   =   TBL-RECE61-RECEIPT-KBN (IDXX)
                MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
       *
-      *        ����ñ�Ȥξ������������������Ӽ��ʳ���
+      *        公費単独の場合（精神入院、心身喪失以外）
                IF      WRK-RECE61-HKNNUM       =   SPACE
                    IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
       *********                                                OR  "053"
                        CONTINUE
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD =   ZERO
-      *                    ����ñ�Ȥξ������ݡ�����αˮ��������Ω�ٱ��
+      *                    公費単独の場合（生保、中国残留邦人等、自立支援）
                            IF    ( WRK-RECE61-KOHHKNNUM-O (1)
                                                =   "012"   OR  "025"
                                                OR  "015"   OR  "016"
                                                OR  "021"            )
-      *                        Ʊ������θ���ñ�Ȥξ��
+      *                        同じ公費の公費単独の場合
                                IF    ( WRK-RECE61-KOHHKNNUM-O  (2)
                                                     =
                                            WRK-RECE61-KOHHKNNUM-O (1) 
@@ -2292,8 +2292,8 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *****************************            =   "012"   OR  "025"
       *****************************            OR  "015"   OR  "016"
       *****************************            OR  "021"   OR  SPACE )
-      *****************************    ���ݡ�����αˮ��������Ω�ٱ�Τ�
-      *****************************    �θ���ñ�Ȥξ������
+      *****************************    生保、中国残留邦人等、自立支援のみ
+      *****************************    の公費単独の場合退避
       *****************************    MOVE    WRK-RECE61-REC      TO
       *****************************                WRK-KOH-RECE61-REC
       *****************************ELSE
@@ -2304,7 +2304,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                MOVE    1           TO  FLG-SEIHO
                            END-IF
                        ELSE
-      *                    ����ñ�ȡ����ݡ�����αˮ��������Ω�ٱ�ˤξ������
+      *                    公費単独（生保、中国残留邦人等、自立支援）の場合退避
                            ADD     1        TO  TBL-SH-RE61-MAX
                            MOVE    WRK-RECE61-REC
                                             TO  TBL-SEIHO-RECE61-REC
@@ -2328,19 +2328,19 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        ����ñ�Ȥξ������������������Ӽ��ʳ���
+      *        公費単独の場合（精神入院、心身喪失以外）
                IF      WRK-RECE61-HKNNUM        =   SPACE
                    IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020" OR  "030"
       *************                                            OR  "053"
                        CONTINUE
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD  =   ZERO
-      *                    ����ñ�Ȥξ������ݡ�����αˮ��������Ω�ٱ��
+      *                    公費単独の場合（生保、中国残留邦人等、自立支援）
                            IF    ( WRK-RECE61-KOHHKNNUM-O (1)
                                                =   "012"   OR  "025"
                                                OR  "015"   OR  "016"
                                                OR  "021"            )
-      *                        Ʊ������θ���ñ�Ȥξ��
+      *                        同じ公費の公費単独の場合
                                IF    ( WRK-RECE61-KOHHKNNUM-O  (2)
                                                     =
                                            WRK-RECE61-KOHHKNNUM-O (1) 
@@ -2400,7 +2400,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                   END-IF
                END-IF
       *
-      *    ���ݤǸ���ʻ�Ѥξ������ݡ�����αˮ��������Ω�ٱ硢��Ƹ�ݸ��
+      *    社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
                IF    ( WRK-RECE61-HKNNUM
                                        NOT =   SPACE                 )
                AND   ( WRK-RECE61-KOHHKNNUM-O (1)
@@ -2418,7 +2418,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    ELSE
                        PERFORM VARYING IDA FROM    1   BY  1
                                UNTIL   IDA >       TBL-SH-RE61-MAX
-      *                  �쥻�ץ�ʬ���ʬ��ˤޤȤ��
+      *                  レセプト分割区分毎にまとめる
                          IF      WRK-RECE61-RECEIPT-KBN    =
                                    TBL-SH-RE61-RECEIPT-KBN (IDA)
                            PERFORM VARYING IDYY    FROM    1   BY  1
@@ -2460,9 +2460,9 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    END-IF                     
                END-IF
       *
-      *        �оݳ��ե饰
+      *        対象外フラグ
                IF      FLG-WRITE            =   ZERO
-      *            �쥻�ץȾ����������
+      *            レセプト情報設定処理
                    PERFORM 30011-SYUBETUGET-CALL-SEC
                END-IF
       *
@@ -2470,13 +2470,13 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
              END-IF
            END-PERFORM
       *
-      *    ����ñ�ȥ쥻�ν��Ͻ���
+      *    公費単独レセの出力処理
            IF    ( WRK-SEIHO-FLG           =   ZERO )
            AND   (  WRK-KO-RE61-HOSPNUM    >   ZERO )
-      *        ���ݸ��ȤΤޤȤ᤬�ʤ����ݡ�����αˮ��������Ω�ٱ�ʳ��Ȥ�
-      *        ����ñ�Ȥξ��
+      *        主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
+      *        公費単独の場合
                MOVE    WRK-KOH-RECE61-REC  TO  WRK-RECE61-REC
-      *        �쥻�ץȾ����������
+      *        レセプト情報設定処理
                PERFORM 30011-SYUBETUGET-CALL-SEC
            ELSE
                IF      TBL-SH-RE61-MAX         >   ZERO
@@ -2488,7 +2488,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                        ELSE
                            MOVE    TBL-SEIHO-RECE61-REC (IDXX)
                                                    TO  WRK-RECE61-REC
-      *                    �쥻�ץȾ����������
+      *                    レセプト情報設定処理
                            PERFORM 30011-SYUBETUGET-CALL-SEC
                        END-IF
                    END-PERFORM
@@ -2499,12 +2499,12 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
            EXIT. 
       *
       *****************************************************************
-      *    �쥻�ץȾ����������
+      *    レセプト情報設定処理
       *****************************************************************
        30011-SYUBETUGET-CALL-SEC              SECTION.
       *
            ADD     1                    TO  IDZZ 
-      *    ������ʧ����
+      *    審査支払機関
            EVALUATE    WRK-RECE61-HKNNUM
                WHEN    WRK-CONS-ROUSAI-HKNNUM
                    MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
@@ -2523,32 +2523,32 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                WHEN    OTHER
                    MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
            END-EVALUATE
-      *    �ݸ����ֹ�
+      *    保険者番号
            MOVE    WRK-RECE61-HKNJANUM 
                                    TO  LNK-SYUBETU-HKNJANUM (IDZZ)
-      *    �����ʬ
+      *    補助区分
            MOVE    WRK-RECE61-HOJOKBN
                                    TO  LNK-SYUBETU-HOJOKBN  (IDZZ)
-      *    ����ɣ�
+      *    公費ＩＤ
            MOVE    WRK-RECE61-KOH-KOHID
                                    TO  LNK-SYUBETU-KOHID    (IDZZ)
-      *    Ŭ�ѳ���ǯ����
+      *    適用開始年月日
            MOVE    WRK-RECE61-TEKSTYMD
                                    TO  LNK-SYUBETU-TEKSTYMD (IDZZ)
-      *    ʬ���ʬ
+      *    分割区分
            MOVE    WRK-RECE61-RECEIPT-KBN 
                                    TO  LNK-SYUBETU-RECEIPT-KBN  (IDZZ)
-      *    �ݸ��ֹ�ʼ��ݸ���
+      *    保険番号（主保険）
            MOVE    WRK-RECE61-HKNNUM
                                    TO  LNK-SYUBETU-HKNNUM   (IDZZ)
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       10
                MOVE    WRK-RECE61-HKNCOMBI-O (IDX)
                                    TO  LNK-SYUBETU-HKNCOMBI (IDZZ IDX)
            END-PERFORM
       *        
-      *    �������������̵ͭ����
+      *    後期高齢非該当の有無設定
            MOVE    ZERO            TO  WRK-KOUKI-FLG
       *
            IF    WRK-NENREI        >=  70
@@ -2606,33 +2606,33 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                END-IF
            END-IF
       *
-      *    �쥻�ץȼ���
+      *    レセプト種別
            PERFORM 30011-RECESYUBETU-SET-SEC
            .
        30011-SYUBETUGET-CALL-EXT.
            EXIT. 
       *
       *****************************************************************
-      *    �쥻�ץȼ��̥��åȽ���
+      *    レセプト種別セット処理
       *****************************************************************
        30011-RECESYUBETU-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  WK-RECESYUBETU-AREA
            INITIALIZE                      WK-RECESYUBETU-AREA
       *
-      *    ϫ�ҡ������դΤȤ��쥻�ץȼ��̤�����Ϥʤ�
+      *    労災・自賠責のときレセプト種別の設定はなし
            IF      WRK-RECE61-HKNNUM   =   WRK-CONS-ROUSAI-HKNNUM  OR
                                            WRK-CONS-JIBAI-HKNNUM 
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    �����ΤȤ��쥻�ץȼ��̤�����Ϥʤ�
+      *    公害のときレセプト種別の設定はなし
            IF      WRK-RECE61-HKNNUM   =   WRK-CONS-KOUGAI-HKNNUM
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    �ݸ��ѹ��塢�������Ƥ��ʤ��Ȥ�
-      *    �ݸ��ȹ礻���ʤ��Ȥ�
+      *    保険変更後、訂正していないとき
+      *    保険組合せがないとき
            IF      WRK-RECE61-TEISEIKBN
                                    =   "1" OR  "9"
                MOVE    ZERO        TO  LNK-SYUBETU-RECESYUBETU  (IDZZ)
@@ -2640,7 +2640,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ���񤬣��Ĥ�Ķ�����
+      *    公費が４つを超える時
            IF      WRK-RECE61-KOHID-O (5)
                                    >   ZERO
                MOVE    ZERO        TO  LNK-SYUBETU-RECESYUBETU  (IDZZ)
@@ -2648,7 +2648,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *     
-      *    ����ΤȤ�
+      *    自費のとき
            IF     WRK-RECE61-HKNKOHSBTKBN
                                    =   "8"
                MOVE    "8888"      TO  LNK-SYUBETU-RECESYUBETU  (IDZZ)
@@ -2656,7 +2656,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ���������������б�
+      *    神奈川地方公費対応
            IF    ( LNK-SYUBETU-PREFNUM     =   "14" )
            AND   ( LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
                                        =   "2"      )
@@ -2679,7 +2679,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    ��������
+      *    種別設定
            INITIALIZE                  ORCSSYUBETUGETAREA
            MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
            MOVE    LNK-SYUBETU-NYUGAIKBN
@@ -2729,7 +2729,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            MOVE    LNK-SYUBETU-BIRTHDAY
                                    TO  LNK-SYUBETUGET-BIRTHDAY
       *
-      *    ���ݤΤȤ��������θ����̵ͭ
+      *    国保のとき９７７の公費の有無
            IF    ( LNK-SYUBETUGET-BIRTHDAY
                                        <   19440402 )
            AND   ( LNK-SYUBETUGET-HKNNUM
@@ -2794,7 +2794,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�������������å�����
+      *    同日再入院チェック処理
       *****************************************************************
        500-ORCSNYUINDAY-CHECK-SEC          SECTION.
       *
@@ -2816,7 +2816,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL   IDX1    >   10
       *
-      *                �ݸ��ȹ礻�ɲ�
+      *                保険組合せ追加
                        IF      WRK-COMB-HKNCOMBINUM (IDX1)
                                                    =   ZERO
                            INITIALIZE                      HKNCOMBI-REC
@@ -2827,7 +2827,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                                                        COMB-HKNCOMBINUM 
                            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                            PERFORM 910-HKNCOMBI-INV-SEC
-      *                    ���оݳ����ȹ礻�ϣ��򥻥åȡ�
+      *                    （対象外の組合せは１をセット）
                            IF      FLG-HKNCOMBI    =   ZERO
                                MOVE    HKNCOMBI-REC    TO
                                                WRK-HKNCOMBI-REC(IDX1)
@@ -2841,7 +2841,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                            END-IF
                        END-IF
       *
-      *                Ŭ���ϰϤ������å����ϰϳ��ΤȤ����򥻥åȡ�
+      *                適用範囲かチェック（範囲外のとき２をセット）
                        IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDXX)
                                                =
                                            WRK-COMB-HKNCOMBINUM (IDX1)
@@ -2872,13 +2872,13 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������ꡢ�ҳ������������
+      *    施設入所、災害該当情報処理
       *****************************************************************
        500-SISETU-HENSYU-SEC             SECTION.
       *
            INITIALIZE                      TABLE-PTKOHINF-AREA
       *
-      *    �������ʺҳ�������
+      *    ９５９（災害該当）
            IF    ( SYS-25-DISASTER-RECEIPT =   "1"     )
            AND   ( LNK-SYUBETU-SRYYM       >=   201610 )
                INITIALIZE                      PTKOHINF-REC
@@ -2924,7 +2924,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            DISPLAY "TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX 
       *??
       *
-      *    �������Τ��о�
+      *    入院外のみ対象
            IF      LNK-SYUBETU-NYUGAIKBN   =   "1"
                GO  TO  500-SISETU-HENSYU-EXT
            END-IF
@@ -2937,16 +2937,16 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                MOVE    LNK-SYUBETU-PTID    TO  PTKOH-PTID
                EVALUATE    IDZ4
                    WHEN    1
-      *                ��������Ϸʻ��
+      *                ９５０（老併）
                        MOVE    "950"               TO  PTKOH-KOHNUM
                    WHEN    2
-      *                ��������Ϸ���
+      *                ９５１（老健）
                        MOVE    "951"               TO  PTKOH-KOHNUM
                    WHEN    3
-      *                �������ʰ�ʻ��
+      *                ９４８（医併）
                        MOVE    "948"               TO  PTKOH-KOHNUM
                    WHEN    4
-      *                �������ʰ��š�
+      *                ９４９（医療）
                        MOVE    "949"               TO  PTKOH-KOHNUM
                END-EVALUATE
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
@@ -2984,7 +2984,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ��������
+      *    患者レセプト分割情報処理
       *****************************************************************
        500-PT-HDIST-DAY-HENSYU-SEC     SECTION.
       *
@@ -3026,7 +3026,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -3049,7 +3049,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *     
       *****************************************************************
-      *    �����ƥ�����ޥ����ңţ���
+      *    システム管理マスタＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3064,7 +3064,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ����ңţ���
+      *    診療行為マスタＲＥＡＤ
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -3085,7 +3085,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ����ңţ���
+      *    入院会計マスタＲＥＡＤ
       *****************************************************************
        900-NYUINACCT-READ-SEC          SECTION.
       *
@@ -3101,7 +3101,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ɹ�
+      *    保険組合せマスタ読込
       *****************************************************************
        910-HKNCOMBI-INV-SEC         SECTION.
       *
@@ -3136,7 +3136,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ�����ޥ����ɹ�
+      *    患者保険情報マスタ読込
       *****************************************************************
        900-PTHKNINF-READ-SEC         SECTION.
       *
@@ -3169,7 +3169,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ը������ޥ����ɹ�
+      *    患者公費情報マスタ読込
       *****************************************************************
        900-PTKOHINF-READ-SEC         SECTION.
       *
@@ -3202,7 +3202,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������ɹ�
+      *    患者公費情報読込
       *****************************************************************
        900-PTKOHINF-READ-N-SEC           SECTION.
       *
@@ -3223,7 +3223,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ�����ޥ����ɹ�
+      *    患者労災保険情報マスタ読込
       *****************************************************************
        900-PTRSIINF-INV-SEC         SECTION.
       *
@@ -3258,7 +3258,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ��ɹ�����
+      *    保険番号読込処理
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
@@ -3289,7 +3289,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ���ɹ�
+      *    患者レセプト分割読込
       *****************************************************************
        900-PT-HDIST-DAY-READ-N-SEC         SECTION.
       *
@@ -3307,7 +3307,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -3318,7 +3318,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -3330,7 +3330,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -3342,7 +3342,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

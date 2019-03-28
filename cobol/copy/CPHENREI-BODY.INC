@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,24 +16,24 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ����饤����������    COPY (CPHENREI-BODY.INC)        *
+      *    オンライン返戻明細    COPY (CPHENREI-BODY.INC)        *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    10/12/20  �ݸ��Ԥ���������б�
-      *  04.06.03    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加
       *
-      *  04.08.01    NACL-ƣ��    16/08/08  �ҳ�����ʬ�������оݤȸ����оݡ�
-      *                                     �쥻�ץȤ�ʬ���б�
-      *                                     disaster s_disaster 1-10 �ɲ�
+      *  04.08.01    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
+      *                                     disaster s_disaster 1-10 追加
       *
-      *  04.08.02    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
+      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       ************************************************************
       *01  HENREI-BODY-REC.
            03  HENREI-B-HOSPNUM    PIC 9(2).
@@ -98,19 +98,19 @@
       *
                    07  HENREI-B-S-KIGO         PIC X(40).
                    07  HENREI-B-S-DISASTER     PIC X(02).
-      *ü���ɣ�
+      *端末ＩＤ
            03  HENREI-B-TERMID     PIC X(64).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  HENREI-B-OPID       PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  HENREI-B-CREYMD     PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  HENREI-B-UPYMD      PIC X(08).
-      *��������
+      *更新時間
            03  HENREI-B-UPHMS      PIC X(06).
-      *�����ѹ���
+      *検索用項目
            03  HENREI-B-XX-AREA.
-      *������ʧ���ظ����ѹ���
+      *審査支払機関検索用項目
                05  HENREI-B-XXTEISYUTUSAKI
                                    PIC X(1).
 

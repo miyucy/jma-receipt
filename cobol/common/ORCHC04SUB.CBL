@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHC04SUB.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ������������ٽ��Խ����֡ʣȣãͣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/04/07    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 外来診療費明細書編集サブ（ＨＣＭ０４）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/04/07    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.00    NACL-¿��Ǽ  10/11/29  �����ն�������б�
-      *  04.07.00    NACL-¿��Ǽ  11/12/19  ����̾������ñ���б�
-      *  04.08.00    NACL-¿��Ǽ  13/01/11  ���Ų���ơ��֥룱���б�
-      *  04.07.00    NACL-¿��Ǽ  14/02/13  ϫ�Ҷ�ۡ�û��б�
-      *  04.07.00    NACL-¿��Ǽ  14/10/14  �������о�¾�ɲ�
-      *  05.00.00    NACL-����    16/02/02  ���Ų�̾¾�ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.00    NACL-多々納  10/11/29  自賠責金額入力対応
+      *  04.07.00    NACL-多々納  11/12/19  商品名コード単価対応
+      *  04.08.00    NACL-多々納  13/01/11  診療回数テーブル１０対応
+      *  04.07.00    NACL-多々納  14/02/13  労災金額％加算対応
+      *  04.07.00    NACL-多々納  14/10/14  コメント対象他追加
+      *  05.00.00    NACL-太田    16/02/02  診療科名他追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,7 +48,7 @@
        WORKING-STORAGE             SECTION.
       *
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -72,7 +72,7 @@
       *
            03  FLG-NEXT            PIC 9(01).
            03  FLG-MEISAI          PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDXA                PIC 9(04).
@@ -92,7 +92,7 @@
            03  IDXM2               PIC 9(04).
            03  IDXD                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-SYMD.
@@ -141,7 +141,7 @@
            03  WRK-SURYO-X-R       REDEFINES   WRK-SURYO-X.
                05  WRK-SURYO-ZF    PIC X(06).
                05  WRK-SURYO-Z4    PIC ZZZZ9.
-      *    ʸ���Ѵ�
+      *    文字変換
            03  WRK-ZENKAKU-G           PIC X(100).
            03  WRK-MOJI                PIC X(100).
            03  WRK-MOJISU              PIC 9(02).
@@ -149,7 +149,7 @@
            03  WRK-K-SURYO             PIC X(22).
            03  WRK-ZENHEN-SURYO        PIC X(80).
       *
-      *    ����̾ñ��̾��
+      *    商品名単位名称
            03  WRK-SYO-TANINAME        PIC X(12).
            03  WRK-SYO-TEN             PIC 9(07)V99.
       *
@@ -200,92 +200,92 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ���� 
+      *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
       *
            COPY    "CPSK1005.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
-      *    ���Ų�����þ���ޥ�����
+      *    診療会計附加情報マスタ−
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ��¸�Ѽ�Ǽ���
+      *    保存用収納ワーク
        01  TBL-SYUNOU-AREA.
          02  TBL-SYUNOU-REC        OCCURS   15.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //TBL-SYU-//.
-      *    ��¸�Ѽ�Ǽ���
+      *    保存用収納ワーク
        01  HZN-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //HZN-SYU-//.
       *
-      *    ��¸�Ѽ���������
+      *    保存用受診履歴ワーク
        01  HZN-JYURRK-REC.
            COPY    "CPJYURRK.INC"  REPLACING
                                      //JYURRK-// BY //HZN-JYURRK-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ݸ��ȹ礻̾���Խ�����
+      *    保険組合せ名称編集サブ
            COPY    "CPORCSHKNMEI.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    �����ģ����極��
+      *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
            COPY    "MCPDATA.INC".
@@ -293,14 +293,14 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ѥ�᥿
+      *    請求書パラメタ
            COPY    "CPORCHC04SUB.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -309,7 +309,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -319,16 +319,16 @@
            INITIALIZE                  ORCHC04SUB-LIST-AREA
            INITIALIZE                  HZN-JYURRK-REC
       *
-      *    �ƣģ��ɹ�
+      *    各ＤＢ読込
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            PERFORM 200-MAIN-SEC
            .
        000-PROC-EXT.
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ����Խ�����
+      *    初期編集処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -336,15 +336,15 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *   ���������
+      *   主処理処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ��ɼ�ֹ�ʬ�Խ�����
+      *    伝票番号分編集処理
            PERFORM 2001-DENPNUM-SYORI-SEC
-      *    ���Ŷ�ʬ��ˣӣϣң�
+      *    診療区分毎にＳＯＲＴ
            PERFORM 2002-TBL-SORT-SEC
-      *    ��ɼ�ֹ�ʬ�ơ��֥��Խ�
+      *    伝票番号分テーブル編集
            PERFORM 2003-SUBTBL-HEN-SEC
       *
            .
@@ -352,13 +352,13 @@
            EXIT.
       *
       *****************************************************************
-      *   ��ɼ�ֹ����������
+      *   伝票番号毎印刷処理
       *****************************************************************
        2001-DENPNUM-SYORI-SEC          SECTION.
       *
            INITIALIZE                  TBL-DATA-AREA
            MOVE    ZERO                TO  IDX-TBL
-      *    �������򸡺�
+      *    受診履歴検索
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
@@ -379,7 +379,7 @@
                MOVE    1               TO  FLG-JYURRK
            END-IF
            PERFORM UNTIL    FLG-JYURRK     =   1
-      *        �����������Խ�
+      *        受診履歴より編集
                PERFORM 2001-JYURRK-HEN-SEC
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -398,7 +398,7 @@
        2012-DENPNUM-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�̾�������Խ�����
+      *    診療科名等概要編集処理
       *****************************************************************
        20011-INFO-HEN-SEC              SECTION.
       *
@@ -442,7 +442,7 @@
        20011-INFO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������򤫤��Ƚ���Խ�����
+      *    受診履歴からの判定編集処理
       *****************************************************************
        2001-JYURRK-HEN-SEC          SECTION.
       *
@@ -462,11 +462,11 @@
        2001-JYURRK-HEN-EXT.
            EXIT.
       *****************************************************************
-      *        ���Ź԰٤���Խ�����
+      *        診療行為より編集処理
       *****************************************************************
        2002-SRYACCT-SYORI-SEC      SECTION.
       *
-      *    ���Ų��
+      *    診療会計
            INITIALIZE                      SRYACCT-REC
            MOVE    JYURRK-HOSPNUM      TO  ACCT-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  ACCT-NYUGAIKBN
@@ -494,12 +494,12 @@
            MOVE    JYURRK-SRYYMD(7:2)  TO  IDX-ACT
            MOVE    ACCT-DAY (IDX-REN IDX-ACT)
                                        TO  WRK-KAISU
-      *    ������������������������Ȥ��оݳ�
+      *    回数ゼロ、点数ゼロ、コメントは対象外
            IF     (WRK-KAISU           =   ZERO )  OR
       *******     (ACCT-ZAITEN         =   ZERO )  OR
                   (ACCT-SRYKBN         =   "98"
                                        OR  "99" )
-      *        ���ʬ���оݳ�
+      *        包括分は対象外
                OR (ACCT-HKNCOMBI       =   "9999")
                OR (ACCT-JIHOKBN        =   "1"   )
                CONTINUE
@@ -510,7 +510,7 @@
        2002-SRYACCT-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *        ���Ź԰٤���Խ�����
+      *        診療行為より編集処理
       *****************************************************************
        20021-SRYACT-SYORI-SEC      SECTION.
       *
@@ -535,13 +535,13 @@
                MOVE    1               TO  FLG-SRYACT
            END-IF
       *
-      *    �����ۡ������᥼�����оݳ�
+      *    自費金額・点数＝ゼロは対象外
            IF     (ACCT-ZAITEN         =   ZERO )  AND
                   (SRY-JIHIMONEYTOTAL  =   ZERO )  AND
                   (FLG-SRYACT          =   ZERO )
                MOVE    1                   TO  FLG-SRYACT
       *H26.10
-      *        �����оݤǤ���С������������оݤȤ���
+      *        自費対象であれば、点数ゼロも対象とする
                IF      ORCHC04SUB-PARAJIHIKBN  =   "1"
                    IF     (ACCT-SRYKBN         =   "95"
                                                OR  "96" )
@@ -559,7 +559,7 @@
                PERFORM VARYING     IDXA    FROM    1   BY  1
                        UNTIL      (IDXA    >   5   )   OR
                                   (SRY-SRYCD (IDXA)    =   SPACE)
-      *            ���š����ޡ���ࡦ���̡�������оݤȤ���
+      *            診療・薬剤・器材・部位・自費を対象とする
                    IF      (SRY-SRYCD (IDXA)(1:1)      =   "1"
                                                        OR  "6"
                                                        OR  "7" ) OR
@@ -567,10 +567,10 @@
                                                        OR  "002"
                                                        OR  "095"
                                                        OR  "096")
-      *            ��ྦ��̾�о�
+      *            器材商品名対象
                        OR  (SRY-SRYCD (IDXA)(1:3)      =   "058")
       *H26.10
-      *            �����ȥ������о�
+      *            コメントコード対象
                        OR ((ORCHC04SUB-PARACOMKBN  =   "1"  )  AND
                            ((SRY-SRYCD (IDXA)(1:3)  =   "008") OR
                             (SRY-SRYCD (IDXA)(1:1)  =   "8"  )))
@@ -588,7 +588,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �ޤ��Ȥˡ��Խ�����
+      *    剤ごとに、編集する
            IF      IDX-S               >   ZERO
                PERFORM 20023-TBL-HENSYU-SEC
            END-IF
@@ -596,7 +596,7 @@
        20021-SRYACT-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *        �����Խ�����
+      *        明細編集処理
       *****************************************************************
        200211-MEISE-HEN-SEC      SECTION.
       *
@@ -610,11 +610,11 @@
               OR  (TNSP-SHONAME        =   SPACE )
                CONTINUE
            ELSE
-      *        ���ްʳ���Ģɼ̾�������Ģɼ̾��
+      *        薬剤以外で帳票名があれば帳票名称
                MOVE    TNSP-SHONAME        TO  TNS-NAME
            END-IF
       *
-      *    �������о�
+      *    コメント対象
            IF    ((SRY-SRYCD (IDXA)(1:1)   =   "8" )  OR
                   (SRY-SRYCD (IDXA)(1:3)   =   "008"))
               AND (SRY-INPUTNUM (IDXA) NOT =   ZERO )
@@ -622,26 +622,26 @@
            END-IF
       *
            MOVE    TNS-NAME            TO  WRK-TBL-NAME  (IDX-S)
-      *    ��ྦ��̾������
+      *    器材商品名コード
            IF      SRY-SRYCD (IDXA)(1:3)   =   "058"
                MOVE    TNS-FORMALNAME      TO  WRK-TBL-NAME  (IDX-S)
-      *ver.4.7 ñ�̤ϴ�ॳ���ɤ�ɽ��
+      *ver.4.7 単位は器材コードで表示
                MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
                MOVE    TNS-TEN             TO  WRK-SYO-TEN
                MOVE    SPACE               TO  TNS-TANINAME
                MOVE    ZERO                TO  TNS-TANICD
            END-IF
-      *    ��ྦ��̾�δ�ॳ����
+      *    器材商品名の器材コード
            IF     (SRY-SRYCD (IDXA)(1:1)   =   "7" ) AND
                   (SRY-MEISKYFLG  (IDXA)   =   "1" )
                MOVE    SPACE               TO  WRK-TBL-NAME  (IDX-S)
-               STRING     "��"             DELIMITED   BY  SIZE
+               STRING     "〔"             DELIMITED   BY  SIZE
                           TNS-NAME         DELIMITED   BY  "    "
-                          "��"             DELIMITED   BY  SIZE
+                          "〕"             DELIMITED   BY  SIZE
                           INTO             WRK-TBL-NAME  (IDX-S)
                END-STRING
       *ver.4.7
-      *        ����̾�����ɤ�ñ�̤�
+      *        商品名コードの単位へ
                IF      WRK-SYO-TANINAME    NOT =   SPACE
                    MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
                    MOVE    SPACE               TO  WRK-SYO-TANINAME
@@ -651,13 +651,13 @@
                END-IF
       *
            END-IF
-      *    ñ��
+      *    単位
            MOVE    TNS-TANINAME        TO  WRK-TBL-TANINAME(IDX-S)
-      *    ����
+      *    数量
            MOVE    SRY-SRYSURYO(IDXA)  TO  WRK-TBL-SURYO (IDX-S)
            IF     (TNS-TANICD          =   ZERO
                                        OR  SPACE )
-      *        ��ࡢ���ޤ�ñ�̤ʤ��Ǥ�ɽ���ʡ�û������������оݳ���
+      *        器材、薬剤は単位なしでも表示（％加算、減算等は対象外）
                IF    ( SRY-SRYCD (IDXA)(1:1)   =   "6"
                                                OR  "7"  )  AND
                      ( TNS-TEN                 >   ZERO )  AND
@@ -668,7 +668,7 @@
                    MOVE    ZERO            TO  WRK-TBL-SURYO (IDX-S)
                END-IF
            END-IF
-      *    ��ǡ��ƿ����������������
+      *    初診・再診料は明細毎の点数
            IF      SRY-SRYKBN          =   "95"
                                        OR  "96"
                CONTINUE
@@ -685,9 +685,9 @@
                        ADD     TNS-TEN         TO  WRK-SUM-KINGAKU
                    END-IF
                END-IF
-      *        �����դΤ���¾
+      *        自賠責のその他
                IF     (SRY-SRYCD (IDXA)(1:4)   =   "0959" )
-      *            �����ն�����Ϥ������Ȥ���
+      *            自賠責金額入力を点数とする
                    IF     (SRY-SRYSYUKBN       =   "809")
                        MOVE    SRY-JIHIMONEY(IDXA)     TO  TNS-TEN
                    END-IF
@@ -700,7 +700,7 @@
       *
            IF      SRY-SRYKBN          =   "95"
                                        OR  "96"
-      *        ����ϣ��ԣ����٤Ȥ���
+      *        自費は１行１明細とする
                COMPUTE WRK-TBL-JIHIMONEY(IDX-S)
                                        =   SRY-JIHIMONEY(IDXA)
       *****    MOVE    ZERO                TO  WRK-TBL-SURYO (IDX-S)
@@ -710,7 +710,7 @@
        200211-MEISE-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ����Ȥ����Խ�����
+      *    患者コメントから編集する
       *****************************************************************
        2002110-PTCOM-SET-SEC              SECTION.
       *
@@ -719,7 +719,7 @@
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD (IDXA)    TO  PTCOM-SRYCD
            MOVE    SRY-INPUTNUM(IDXA)  TO  PTCOM-RENNUM
-      *    �祭���Ǹ���
+      *    主キーで検索
            PERFORM 950-PTCOM-READ-SEC
            IF      FLG-PTCOM           =   ZERO
                MOVE    PTCOM-INPUTCOMENT   TO  TNS-NAME
@@ -728,7 +728,7 @@
        2002110-PTCOM-SET-EXT.
            EXIT.
       *****************************************************************
-      *        �ơ��֥��Խ�����
+      *        テーブル編集処理
       *****************************************************************
        20023-TBL-HENSYU-SEC      SECTION.
       *
@@ -739,14 +739,14 @@
                CONTINUE
            ELSE
                IF      ACCT-ZAIREQFLG      =   "1"
-      *            ���þ��󤢤�
+      *            附加情報あり
                    PERFORM 200231-SRYACCTPLUS-CHK-SEC
                ELSE
                    MOVE    ACCT-ZAITEN     TO  TBL-ZAITENSU (IDX-TBL)
                END-IF
            END-IF
            MOVE    ACCT-SRYKBN         TO  TBL-SRYKBN (IDX-TBL)
-      *    ���Ŷ�ʬ ���� �λ����ѹ�
+      *    診療区分 ８０ の時、変更
            IF      ACCT-SRYKBN         =   "80"
                EVALUATE    WRK-SRYSYUKBN
                    WHEN    "800"
@@ -773,13 +773,13 @@
            MOVE    ZERO                TO  FLG-MEISAI
            IF     (WRK-SUM-TENSU       NOT =   ZERO )  AND
                   (WRK-SUM-KINGAKU     NOT =   ZERO )
-      *        ��ۡ��������߻��ϡ�����
+      *        金額・点数混在時は、明細
                MOVE    1               TO  FLG-MEISAI
                MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
            END-IF
            IF     (WRK-SUM-KINGAKU     =   ZERO )  AND
                   (WRK-SUM-TENSU       =   TBL-ZAITENSU (IDX-TBL))
-      *        ������פλ�����ǡ��ƿǤΤ�����
+      *        点数合計の時、初診・再診のみ明細
                IF      ACCT-SRYKBN         =   "11"
                                            OR  "12"
                    MOVE    1               TO  FLG-MEISAI
@@ -789,12 +789,12 @@
       *
            IF     (WRK-SUM-KINGAKU NOT =   ZERO )  AND
                   (WRK-SUM-TENSU       =   ZERO )
-      *        �����դζ��ʬ
+      *        自賠責の金額分
                MOVE    1               TO  FLG-MEISAI
                MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
            END-IF
       *!!!
-      *    ϫ�Ҷ��
+      *    労災金額
            IF     (WRK-SUM-KINGAKU NOT =   ZERO )  AND
                   (WRK-SUM-TENSU       =   ZERO )  AND
                   (TBL-RSIKINGAKU (IDX-TBL)    NOT =   ZERO )
@@ -802,11 +802,11 @@
                                            OR  "12"
                    CONTINUE
                ELSE
-      *            ��ǡ��ƿǰʳ��ϣ�����ζ�ۤȤ��� 
+      *            初診・再診以外は１剤毎の金額とする 
                    MOVE    "1"             TO  TBL-RSIKIN   (IDX-TBL)
                    MOVE    ZERO            TO  TBL-ZAITENSU (IDX-TBL)
                    MOVE    ZERO            TO  FLG-MEISAI
-      *            ����¾�Ȥ���
+      *            その他とする
                    IF     (ACCT-SRYKBN         =   "80"  )
                      AND  (WRK-SRYSYUKBN       =   "800" )
                        MOVE    "86"            TO  TBL-SRYKBN (IDX-TBL)
@@ -835,7 +835,7 @@
                IF     (WRK-TBL-SRYCD (IDX)(1:4)    =   "0959" )  AND
                       (WRK-SRYSYUKBN           =   "800"  )  AND
                       (TBL-SRYKBN (IDX-TBL)    =   "80"   )
-      *            �����ե桼�������ɤϡ�����¾�Ȥ���
+      *            自賠責ユーザコードは、その他とする
                    MOVE    "86"            TO  TBL-SRYKBN (IDX-TBL)
                END-IF
            END-PERFORM
@@ -844,7 +844,7 @@
        20023-TBL-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ���þ����Խ�����
+      *    附加情報編集処理
       *****************************************************************
        200231-SRYACCTPLUS-CHK-SEC       SECTION.
       *
@@ -876,7 +876,7 @@
            MOVE    ZERO                TO  FLG-PLUSKBN
            IF      FLG-SRYACCTPLUS     =   ZERO
                IF      ACCTP-PLUSKBN       =   1
-      *            �ޥ��ʥ�����
+      *            マイナス点数
                    COMPUTE TBL-ZAITENSU (IDX-TBL)
                                                =   ACCT-ZAITEN
                                                *   -1
@@ -884,7 +884,7 @@
                    MOVE    ACCT-ZAITEN     TO  TBL-ZAITENSU(IDX-TBL)
                END-IF
       *!
-      *        ϫ�Ҷ��
+      *        労災金額
                MOVE    ACCTP-RSIKINGAKU    TO  TBL-RSIKINGAKU (IDX-TBL)
            ELSE
                MOVE    ACCT-ZAITEN     TO  TBL-ZAITENSU(IDX-TBL)
@@ -895,7 +895,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�ӣϣңԽ���
+      *    テーブルＳＯＲＴ処理
       *****************************************************************
        2002-TBL-SORT-SEC             SECTION.
       *
@@ -931,18 +931,18 @@
            EXIT.
       *
       *****************************************************************
-      *     ���ż��̶�ʬ̾�ν���
+      *     診療種別区分名称処理
       *****************************************************************
        200521-SRYSYUMEI-SEC             SECTION.
       *
            EVALUATE    TBL-SRYKBN (IDX)
                WHEN    "11"
                WHEN    "12"
-                   MOVE    "�顦�ƿ���"        TO  WRK-SRYMEI
+                   MOVE    "初・再診料"        TO  WRK-SRYMEI
                WHEN    "13"
-                   MOVE    "��ش�����"        TO  WRK-SRYMEI
+                   MOVE    "医学管理等"        TO  WRK-SRYMEI
                WHEN    "14"
-                   MOVE    "�������"          TO  WRK-SRYMEI
+                   MOVE    "在宅医療"          TO  WRK-SRYMEI
                WHEN    "21"
                WHEN    "22"
                WHEN    "23"
@@ -951,52 +951,52 @@
                WHEN    "26"
                WHEN    "27"
                WHEN    "29"
-                   MOVE    "�ꡡ����"          TO  WRK-SRYMEI
+                   MOVE    "投　　薬"          TO  WRK-SRYMEI
                WHEN    "31"
                WHEN    "32"
                WHEN    "33"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "注　　射"          TO  WRK-SRYMEI
                WHEN    "40"
-                   MOVE    "�衡����"          TO  WRK-SRYMEI
+                   MOVE    "処　　置"          TO  WRK-SRYMEI
                WHEN    "50"
-                   MOVE    "�ꡡ����"          TO  WRK-SRYMEI
+                   MOVE    "手　　術"          TO  WRK-SRYMEI
                WHEN    "54"
-                   MOVE    "�㡡����"          TO  WRK-SRYMEI
+                   MOVE    "麻　　酔"          TO  WRK-SRYMEI
                WHEN    "60"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "検　　査"          TO  WRK-SRYMEI
                WHEN    "64"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "病理診断"          TO  WRK-SRYMEI
                WHEN    "70"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "画像診断"          TO  WRK-SRYMEI
                WHEN    "80"
-                   MOVE    "��ϥӥ�"          TO  WRK-SRYMEI
+                   MOVE    "リハビリ"          TO  WRK-SRYMEI
                WHEN    "83"
-                   MOVE    "����������"        TO  WRK-SRYMEI
+                   MOVE    "精神科専門"        TO  WRK-SRYMEI
                WHEN    "84"
-                   MOVE    "����������"        TO  WRK-SRYMEI
+                   MOVE    "放射線治療"        TO  WRK-SRYMEI
                WHEN    "85"
-                   MOVE    "����ô��"          TO  WRK-SRYMEI
+                   MOVE    "療養担当"          TO  WRK-SRYMEI
                WHEN    "89"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "入院料等"          TO  WRK-SRYMEI
                WHEN    "86"
-                   MOVE    "����¾"            TO  WRK-SRYMEI
+                   MOVE    "その他"            TO  WRK-SRYMEI
                WHEN    "90"
                WHEN    "92"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "入院料等"          TO  WRK-SRYMEI
                WHEN    "97"
-                   MOVE    "��������"          TO  WRK-SRYMEI
+                   MOVE    "入院料等"          TO  WRK-SRYMEI
                WHEN    "95"
                WHEN    "96"
-                   MOVE    "���ճ�"            TO  WRK-SRYMEI
+                   MOVE    "給付外"            TO  WRK-SRYMEI
                WHEN    OTHER
-                   MOVE    "����¾"            TO  WRK-SRYMEI
+                   MOVE    "その他"            TO  WRK-SRYMEI
            END-EVALUATE
            .
        200521-SRYSYUMEI-EXT.
            EXIT.
       *
       *****************************************************************
-      *   ��ɼ�ֹ�ʬ�ơ��֥��Խ�����
+      *   伝票番号分テーブル編集処理
       *****************************************************************
        2003-SUBTBL-HEN-SEC                SECTION.
       *
@@ -1013,11 +1013,11 @@
                                OR (TBL-SRYCD (IDX IDX2)  =   SPACE)
                                OR (IDX-H   >=  800  )
                    ADD     1               TO  IDX-H
-      *            ���Ŷ�ʬ
+      *            診療区分
                    IF      IDX2                =   1
                        PERFORM 200521-SRYSYUMEI-SEC
                        IF      WRK-SRYMEI     NOT  =   WRK-SRYMEI-OLD
-      *                    ����
+      *                    小計
                            IF     (ORCHC04SUB-PARAKBN  =   "1"  )
                            AND    (WRK-TENSU-KEI       >   ZERO )
                                PERFORM 20039-SYOKEI-HEN-SEC
@@ -1030,7 +1030,7 @@
                            MOVE    ZERO            TO  WRK-TENSU-KEI
                        END-IF
                    END-IF
-      *            �ޤΣ�����
+      *            剤の１行目
                    IF      IDX-H-S         =   ZERO
                        MOVE    IDX-H           TO  IDX-H-S
                    END-IF
@@ -1041,40 +1041,40 @@
                                                               (IDX-H)
                    MOVE    TBL-SURYO(IDX IDX2) TO  ORCHC04SUB-SURYO
                                                               (IDX-H)
-      *            �޳���
+      *            剤開始
                    IF      IDX2                =   1
-                       MOVE    "��"            TO  ORCHC04SUB-H-ZAIHEN
+                       MOVE    "＊"            TO  ORCHC04SUB-H-ZAIHEN
                                                               (IDX-H)
                    ELSE
-                       MOVE    "��"            TO  ORCHC04SUB-H-ZAIHEN
+                       MOVE    "　"            TO  ORCHC04SUB-H-ZAIHEN
                                                               (IDX-H)
                    END-IF
-      *            ̾��
+      *            名称
                    MOVE    TBL-NAME (IDX IDX2) TO  ORCHC04SUB-NAME
                                                               (IDX-H)
-      *            ñ��̾��
+      *            単位名称
                    MOVE    TBL-TANINAME (IDX IDX2)
                                                TO  ORCHC04SUB-TANINAME
                                                               (IDX-H)
-      *            ����
+      *            数量
                    IF      TBL-SURYO (IDX IDX2)    >   ZERO
                        MOVE    TBL-SURYO (IDX IDX2)   TO  WRK-SURYO
                        PERFORM 200521-SURYO-HEN-SEC
                        MOVE    WRK-SURYO-X     TO  ORCHC04SUB-H-SURYO
                                                               (IDX-H)
-      *                ���̡�ñ��̾�Ρ����ѡ�
+      *                数量＋単位名称（全角）
                        PERFORM 20052-SURYO-ZENHEN-SEC
                    END-IF
-      *            ��������
+      *            明細点数
                    IF      TBL-TEN  (IDX IDX2) NOT =   ZERO
                        PERFORM 30051-TENSU-HEN-SEC
                    END-IF
                    IF      TBL-JIHIMONEY (IDX IDX2)   >   ZERO
-      *                ���
+      *                金額
                        MOVE    TBL-JIHIMONEY(IDX IDX2) TO  WRK-Z1192
                        MOVE    WRK-Z1192       TO  ORCHC04SUB-H-TENSU
                                                               (IDX-H)
-      *                ���
+      *                合計
                        COMPUTE WRK-KINGAKU     =  (TBL-JIHIMONEY
                                                            (IDX IDX2)
                                                *   TBL-KAISU    (IDX) )
@@ -1088,10 +1088,10 @@
                            MOVE    WRK-Z1192   TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
                        END-IF
-      *                ��
+      *                円
                        MOVE    "1"             TO  ORCHC04SUB-H-ENKBN
                                                               (IDX-H)
-                       MOVE    "��"            TO  ORCHC04SUB-H-ZAIHEN
+                       MOVE    "◇"            TO  ORCHC04SUB-H-ZAIHEN
                                                               (IDX-H)
                    END-IF
                END-PERFORM
@@ -1101,14 +1101,14 @@
                    CONTINUE
                ELSE
                    IF      ORCHC04SUB-GOKEITANI    =   "1"
-      *                ����ɽ��
+      *                点数表示
                        MOVE    TBL-ZAITENSU (IDX)  TO  WRK-ZAITENSU
                    ELSE
-      *                ���ɽ��
+      *                金額表示
                        COMPUTE WRK-ZAITENSU    =   TBL-ZAITENSU (IDX)
                                                *   10
                    END-IF
-      *            ����
+      *            点数
                    IF      WRK-ZAITENSU        >   ZERO
                        MOVE    WRK-ZAITENSU    TO  WRK-Z1192
                        MOVE    WRK-Z1192       TO  ORCHC04SUB-H-TENSU
@@ -1118,7 +1118,7 @@
                        MOVE    WRK-Z1192-2     TO  ORCHC04SUB-H-TENSU
                                                               (IDX-H)
                    END-IF
-      *            ���
+      *            合計
                    COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
                                                *   TBL-KAISU    (IDX) )
                    IF      WRK-KINGAKU         >   ZERO
@@ -1130,16 +1130,16 @@
                        MOVE    WRK-Z119-2      TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
                    END-IF
-      *            ������
+      *            剤点数
                    MOVE    TBL-ZAITENSU (IDX) TO  ORCHC04SUB-ZAITENSU
                                                               (IDX-H)
-      *            ����������
+      *            点数　集計
                    COMPUTE WRK-TENSU-KEI       =   WRK-TENSU-KEI
                                                +   WRK-KINGAKU
                END-IF
       *!!!
                IF     (TBL-RSIKIN (IDX)    =   "1"  )
-      *            ϫ�ұ�
+      *            労災円
                    MOVE    TBL-RSIKINGAKU (IDX)  TO  WRK-ZAITENSU
                    IF      WRK-ZAITENSU        >   ZERO
                        MOVE    WRK-ZAITENSU    TO  WRK-Z1192
@@ -1150,7 +1150,7 @@
                        MOVE    WRK-Z1192-2     TO  ORCHC04SUB-H-TENSU
                                                               (IDX-H)
                    END-IF
-      *            ���
+      *            合計
                    COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
                                                *   TBL-KAISU    (IDX) )
                    IF      WRK-KINGAKU         >   ZERO
@@ -1162,28 +1162,28 @@
                        MOVE    WRK-Z119-2      TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
                    END-IF
-      *            ������
+      *            剤点数
                    MOVE    TBL-RSIKINGAKU (IDX)
                                            TO  ORCHC04SUB-ZAITENSU
                                                               (IDX-H)
-      *            ��
+      *            円
                    MOVE    "1"                 TO  ORCHC04SUB-H-ENKBN
                                                               (IDX-H)
                END-IF
       *!!!
       *
-      *        ���
+      *        回数
                MOVE    TBL-KAISU (IDX)     TO  WRK-ZZ9
                MOVE    WRK-ZZ9             TO  ORCHC04SUB-H-KAISU
                                                             (IDX-H)
-      *        ���
+      *        回数
                MOVE    TBL-KAISU (IDX)     TO  ORCHC04SUB-KAISU
                                                             (IDX-H)
-      *        �޽�λ
+      *        剤終了
                MOVE    "1"                 TO  ORCHC04SUB-ZAIEND
                                                             (IDX-H)
            END-PERFORM
-      *    ����
+      *    小計
            IF     (ORCHC04SUB-PARAKBN  =   "1"  )
            AND    (WRK-TENSU-KEI       >   ZERO )
                ADD     1               TO  IDX-H
@@ -1196,21 +1196,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    点数編集処理
       *****************************************************************
        30051-TENSU-HEN-SEC       SECTION.
       *
            IF      TBL-TENSIKIBETU (IDX IDX2)  =   3
-      *        ����
+      *        点数
                IF      ORCHC04SUB-GOKEITANI    =   "1"
-      *            ����ɽ��
+      *            点数表示
                    COMPUTE WRK-ZAITENSU    =   TBL-TEN   (IDX IDX2)
                ELSE
-      *            ���ɽ��
+      *            金額表示
                    COMPUTE WRK-ZAITENSU    =   TBL-TEN   (IDX IDX2)
                                            *   10
                END-IF
-      *        ����
+      *        点数
                IF      WRK-ZAITENSU        >   ZERO
                    MOVE    WRK-ZAITENSU    TO  WRK-Z1192
                    MOVE    WRK-Z1192       TO  ORCHC04SUB-H-TENSU
@@ -1220,7 +1220,7 @@
                    MOVE    WRK-Z1192-2     TO  ORCHC04SUB-H-TENSU
                                                               (IDX-H)
                END-IF
-      *        ���
+      *        合計
                COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
                                            *   TBL-KAISU    (IDX) )
                IF      WRK-KINGAKU         >   ZERO
@@ -1232,20 +1232,20 @@
                    MOVE    WRK-Z119-2          TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
                END-IF
-      *        ����������
+      *        点数　集計
                COMPUTE WRK-TENSU-KEI       =   WRK-TENSU-KEI
                                            +   WRK-KINGAKU
            ELSE
-      *        ���
+      *        金額
                MOVE    TBL-TEN (IDX IDX2)  TO  WRK-ZAITENSU
                MOVE    WRK-ZAITENSU        TO  WRK-Z1192
                MOVE    WRK-Z1192           TO  ORCHC04SUB-H-TENSU
                                                             (IDX-H)
-      *        ��
+      *        円
                MOVE    "1"                 TO  ORCHC04SUB-H-ENKBN
                                                             (IDX-H)
            END-IF
-      *    ���
+      *    合計
            COMPUTE WRK-KINGAKU         =  (WRK-ZAITENSU
                                        *   TBL-KAISU    (IDX) )
            IF      WRK-KINGAKU         >   ZERO
@@ -1257,22 +1257,22 @@
                MOVE    WRK-Z119-2          TO  ORCHC04SUB-H-KINGAKU
                                                               (IDX-H)
            END-IF
-      *    ����������
+      *    コード点数
            MOVE    TBL-TEN (IDX IDX2)  TO  ORCHC04SUB-TENSU
                                                             (IDX-H)
-      *    ���
+      *    回数
            MOVE    TBL-KAISU (IDX)     TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  ORCHC04SUB-H-KAISU
                                                             (IDX-H)
-      *    ����ɽ����
-           MOVE    "��"                TO  ORCHC04SUB-H-ZAIHEN
+      *    点数表示行
+           MOVE    "＊"                TO  ORCHC04SUB-H-ZAIHEN
                                                               (IDX-H)
            .
        30051-TENSU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����������Խ�����
+      *    点数　小計編集処理
       *****************************************************************
        20039-SYOKEI-HEN-SEC                  SECTION.
       *
@@ -1288,7 +1288,7 @@
            MOVE    WRK-TENSU-KEI       TO  ORCHC04SUB-ZAITENSU (IDX-H)
            MOVE    "XX"                TO  ORCHC04SUB-SRYKBN   (IDX-H)
       *
-      *    �޽�λ
+      *    剤終了
            IF      ORCHC04SUB-APIKBN   NOT =   "1"
                MOVE    SPACE           TO  ORCHC04SUB-ZAIEND
                                                             (IDX-H - 1 )
@@ -1300,7 +1300,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�����Խ�����
+      *    数量表示用編集処理
       *****************************************************************
        200521-SURYO-HEN-SEC                  SECTION.
       *
@@ -1329,7 +1329,7 @@
        200521-SURYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���̡�ñ��̾�Ρ����ѡ��Խ�����
+      *    数量＋単位名称（全角）編集処理
       *****************************************************************
        20052-SURYO-ZENHEN-SEC                  SECTION.
       *
@@ -1351,7 +1351,7 @@
            PERFORM VARYING     IDXM    FROM    1   BY  2
                    UNTIL       IDXM    >   22
                IF      WRK-K-SURYO (IDXM:2)     =   SPACE
-                                                OR  "��"
+                                                OR  "　"
                    CONTINUE
                ELSE
                    MOVE    WRK-K-SURYO(IDXM:2)  TO  WRK-ZENHEN-SURYO
@@ -1359,12 +1359,12 @@
                    ADD     2                    TO  IDXM2
                END-IF
            END-PERFORM 
-      *    ñ��̾��
+      *    単位名称
            PERFORM VARYING     IDXM    FROM    1   BY  2
                    UNTIL       IDXM    >   10
                IF      TBL-TANINAME (IDX IDX2) (IDXM:2)
                                                 =   SPACE
-                                                OR  "��"
+                                                OR  "　"
                    CONTINUE
                ELSE
                    MOVE    TBL-TANINAME (IDX IDX2)(IDXM:2)
@@ -1381,7 +1381,7 @@
        20052-SURYO-ZENHEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        2009-KANACHK-SEC                 SECTION.
       *
@@ -1403,7 +1403,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC        SECTION.
       *
@@ -1419,7 +1419,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        910-JYURRK-READ-SEC         SECTION.
       *
@@ -1436,7 +1436,7 @@
        910-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        920-SRYACT-READ-SEC         SECTION.
       *
@@ -1453,7 +1453,7 @@
        920-SRYACT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        930-SRYACCT-READ-SEC         SECTION.
       *
@@ -1470,7 +1470,7 @@
        930-SRYACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        930-SRYACCTPLUS-READ-SEC         SECTION.
       *
@@ -1487,7 +1487,7 @@
        930-SRYACCTPLUS-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�ޥ������ɹ�
+      *    収納マスター読込
       *****************************************************************
        980-SYUNOU-READ-SEC         SECTION.
       *
@@ -1504,7 +1504,7 @@
        980-SYUNOU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1536,7 +1536,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �������þ��󸡺�
+      *    点数附加情報検索
            IF     (FLG-TENSU           =   ZERO)
                PERFORM 9101-TENSUPLUS-READ-SEC
            ELSE
@@ -1546,7 +1546,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ղþ��󸡺�����
+      *    点数マスタ付加情報検索処理
       *****************************************************************
        9101-TENSUPLUS-READ-SEC          SECTION.
       *
@@ -1583,7 +1583,7 @@
        9101-TENSUPLUS-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ����ȥޥ����ɤ߹���
+      *    患者コメントマスタ読み込み
       *****************************************************************
        950-PTCOM-READ-SEC           SECTION.
       *
@@ -1616,7 +1616,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����祭���ɤ߹��߽���
+      *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEC         SECTION.
       *
@@ -1644,7 +1644,7 @@
        900-SYSKANRI-KEY10-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1659,7 +1659,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1671,7 +1671,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1684,7 +1684,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    クロース処理
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *
@@ -1697,7 +1697,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *

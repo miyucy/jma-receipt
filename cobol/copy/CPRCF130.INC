@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,88 +16,88 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����쥻�ץȡ����ž���         COPY (CPRCF130.INC) 
+      *    公害レセプト・診療情報         COPY (CPRCF130.INC) 
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.01    NACL-ƣ��    09/07/14  �������ʲ������б�
-      *  04.07.01    NACL-����    14/09/11  �����ޥ����ο��Ŷ�ʬ�ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
+      *  04.07.01    NACL-門脇    14/09/11  点数マスタの診療区分追加
       *
-      *  04.08.01    NACL-����    16/01/12  �����ѥ쥻�ץȱ�������
-      *                                     ����̾�����б�
-      *  04.08.02    NACL-����    16/04/20  ʿ������ǯ��������б�
+      *  04.08.01    NACL-門脇    16/01/12  点検用レセプト院外処方
+      *                                     一般名記載対応
+      *  04.08.02    NACL-門脇    16/04/20  平成２８年４月改正対応
       ************************************************************
       *01  RECE130-REC.
            03  RECE130-KEY.
                05  RECE130-KEY1.
-      *���ŵ����ֹ�
+      *医療機関番号
                    07  RECE130-HOSPNUM     PIC 9(2).
-      *����ǯ��
+      *診療年月
                    07  RECE130-SRYYM       PIC 9(06).
-      *������ʬ
+      *入外区分
                    07  RECE130-NYUGAIKBN   PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  RECE130-PTID        PIC 9(10).
-      *�쥻�ץȿ��Ų�
+      *レセプト診療科
                    07  RECE130-RECEKA      PIC X(02).
-      *����ɣ�
+      *公費ＩＤ
                    07  RECE130-HKNID       PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  RECE130-TEKSTYMD    PIC X(08). 
-      *���ֹ�
+      *剤番号
                05  RECE130-ZAINUM          PIC 9(08).
-      *Ϣ�ֹ�
+      *連番号
                05  RECE130-RENNUM          PIC 9(02).
-      *�����ֹ�
+      *患者番号
            03  RECE130-PTNUM               PIC X(20).
-      *���Ų�
+      *診療科
            03  RECE130-SRYKA               PIC X(02).
-      *���Ŷ�ʬ
+      *診療区分
            03  RECE130-SRYKBN              PIC X(02).
-      *���ż��̶�ʬ
+      *診療種別区分
            03  RECE130-SRYSYUKBN           PIC X(03).
-      *������
+      *自費金額
            03  RECE130-JIHIMONEY           PIC 9(07).
       *
            03  RECE130-SRYACT-TBL          OCCURS  5.
-      *���Ź԰پ���
+      *診療行為情報
                05  RECE130-SRYACTINF.
-      *���ť�����
+      *診療コード
                    07  RECE130-SRYCD           PIC X(09).
-      *���ż��̶�ʬ
+      *診療種別区分
                    07  RECE130-SRYSYUKBN-X     PIC X(03).
-      *����
+      *数量
                    07  RECE130-SRYSURYO        PIC 9(05)V9(05).
-      *���
+      *回数
                    07  RECE130-SRYKAISU        PIC 9(03).
-      *ñ�̥�����
+      *単位コード
                    07  RECE130-TANICD          PIC 9(03).
-      *ñ��̾��ͭ�����
+      *単位名称有効桁数
                    07  RECE130-TANIMOJISU      PIC 9(01).
-      *ñ��̾��
+      *単位名称
                    07  RECE130-TANINAME        PIC X(24).
-      *�������̶�ʬ
+      *点数識別区分
                    07  RECE130-TENSIKIBETU     PIC 9(01).
-      *����
+      *点数
                    07  RECE130-TEN             PIC 9(09)V9(02).
-      *��������ե饰
+      *明細請求フラグ
                    07  RECE130-MEISKYFLG       PIC X(01).
-      *��ư�����ʬ
+      *自動算定区分
                    07  RECE130-AUTOKBN         PIC X(01).
-      *̾�������ֹ�
+      *名称入力番号
                    07  RECE130-INPUTNUM        PIC 9(03).
-      *�����󽸷��輱��
+      *点数欄集計先識別
                    07  RECE130-TENTTLKBN       PIC 9(03).
-      *�ǡ�����ʬ
+      *データ区分
                    07  RECE130-DATAKBN         PIC 9(01).
-      *����оݸ���
+      *包括対象検査
                    07  RECE130-HOUKNSKBN       PIC 9(02).
-      *�������»�Ƚ��
+      *検査等実施判断
                    07  RECE130-KNSJISKBN       PIC 9(01).
-      *�������»�Ƚ�ǥ��롼��
+      *検査等実施判断グループ
                    07  RECE130-KNSJISGRPKBN    PIC 9(02).
-      *�Ƽ��ֹ���
+      *各種番号等
                    07  RECE130-CDKBNINF.
                        09  RECE130-CDKBN-KBN        PIC X(01).
                        09  RECE130-CDKBN-SYO        PIC 9(01).
@@ -106,57 +106,57 @@
                        09  RECE130-CDKBN-KBNNUM-EDA PIC 9(02).
                        09  RECE130-CDKBN-KOUBAN     PIC 9(02).
                        09  RECE130-KOUHYOJYUNNUM    PIC 9(09).
-      *�������̶�ʬ��
+      *告示等識別区分１
                    07  RECE130-KOKUJISKBKBN1   PIC 9(01).
-      *�������ͷ׻�����
+      *きざみ値計算識別
                    07  RECE130-KZMCOMPSIKIBETU PIC 9(01).
-      *���û�������
+      *注加算コード
                    07  RECE130-CHUKSNINF.
-      *������
+      *コード
                        09  RECE130-CHUKSNCD     PIC X(04).
-      *����
+      *通番
                        09  RECE130-CHUKSNTUBAN  PIC X(01).
-      *���θ���������
+      *検体検査コメント
                    07  RECE130-KENTAICOMMENT    PIC 9(01).
-      *���ϥ�����
+      *入力コメント
                    07  RECE130-INPUTCOMENT      PIC X(80).
-      *̾�ξ���
+      *名称情報
                05  RECE130-NAMEINF.
-      *����ͭ�����
+      *漢字有効桁数
                    07  RECE130-YUKOKETA         PIC 9(03).
-      *����̾��
+      *漢字名称
                    07  RECE130-NAME             PIC X(200).
-      *��������̣�
+      *特定器材種別１
                05  RECE130-TOKUKIZAISBT1        PIC 9(01).
-      *��������ʬ  
+      *酸素等区分  
                05  RECE130-SANSOKBN             PIC 9(01).
-      *����¾����
+      *その他情報
                05  RECE130-SONOTAINF.
-      *�쥻�ץ��оݳ��ե饰
+      *レセプト対象外フラグ
                    07  RECE130-RECEPTFLG        PIC X(01).
-      *�쥻�������ྦ��̾�Խ��ե饰
+      *レセ用特定器材商品名編集フラグ
                    07  RECE130-RECEHENFLG       PIC X(01).
-      *�����ޥ����ο��Ŷ�ʬ
+      *点数マスタの診療区分
                    07  RECE130-TNSSRYKBN        PIC X(02).
       *
-      *���ž���Ϣ���Ѿ���
+      *医療情報連携用情報
                05  RECE130-IRYORENKEIINF.
-      *����̾���ܱ��������ե饰
+      *一般名記載院外処方フラグ
                    07  RECE130-INGAIFLG         PIC X(01).
-      *����̾���ܱ��������ե饰�ʥ쥻�ץ��ѡ�
+      *一般名記載院外処方フラグ（レセプト用）
                    07  RECE130-INGAIFLG-RECE    PIC X(01).
-      *����̾���ܱ��������ե饰�ʼ������������ѡ�
+      *一般名記載院外処方フラグ（湿布薬コメント用）
                    07  RECE130-INGAIFLG-SIPPU   PIC X(01).
-      *����̾�����ɡ�������ॳ���ɡ�
+      *一般名コード（薬価基準コード）
                    07  RECE130-YAKKAKJNCD       PIC X(12).
-      *����̾�����û���ʬ
+      *一般名処方加算区分
                    07  RECE130-GENERIC-KBN      PIC X(01).
-      *����̾��
+      *一般名称
                    07  RECE130-GENERICNAME      PIC X(200).
-      *����ͭ�����
+      *漢字有効桁数
                    07  RECE130-GENERICYUKOKETA  PIC 9(03).
       *
-      *����������
+      *湿布薬情報
                05  RECE130-SIPPUINF.
                    07  RECE130-SIPPUFLG         PIC X(01).
       *

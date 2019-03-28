@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    �����ʳ���ǻ����ơ��֥� COPY (CMSYONIKATBL.INC)
+      *    小児科外来診察料テーブル COPY (CMSYONIKATBL.INC)
       *----------------------------------------------------------------*
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        01  TBL-SYONIKA-AREA.
@@ -48,13 +48,13 @@
            03  FILLER              PIC X(11)   VALUE   "4 113005370".
            03  FILLER              PIC X(11)   VALUE   "4 113005470".
            03  FILLER              PIC X(11)   VALUE   "4 113005570".
-      *    �������±���Ʊ��Ƴ���ʣ���
+      *    開放型病院共同指導料（１）
            03  FILLER              PIC X(11)   VALUE   "9 180010510".
-      *    �ౡ����Ʊ��Ƴ�û�
+      *    退院時共同指導加算
            03  FILLER              PIC X(11)   VALUE   "9 180015870".
-      *    �ϰ�Ϣ�Ⱦ�����֡�����������
+      *    地域連携小児夜間・休日診療料
            03  FILLER              PIC X(11)   VALUE   "9 113006710".
-      *    �ȣ������������ɲ�
+      *    Ｈ１６．４から追加
            03  FILLER              PIC X(11)   VALUE   "3 113007070".
            03  FILLER              PIC X(11)   VALUE   "3 113007170".
            03  FILLER              PIC X(11)   VALUE   "3 113007270".
@@ -64,23 +64,23 @@
            03  FILLER              PIC X(11)   VALUE   "4 113007670".
            03  FILLER              PIC X(11)   VALUE   "4 113007770".
            03  FILLER              PIC X(11)   VALUE   "4 113007870".
-      *    ���ֳ��û�
+      *    時間外加算
            03  FILLER              PIC X(11)   VALUE   "3 113009670".
            03  FILLER              PIC X(11)   VALUE   "4 113009770".
            03  FILLER              PIC X(11)   VALUE   "4 113009870".
-      *    ����ô����������������
+      *    療養担当手当（入院外）
            03  FILLER              PIC X(11)   VALUE   "9 199000610".
-      *    ���ž����������ʣȣ������������
+      *    診療情報提供料２（Ｈ１８／４から）
            03  FILLER              PIC X(11)   VALUE   "9 113009510".
-      *    �ϰ�Ϣ�Ⱦ�����֡�������������
+      *    地域連携小児夜間・休日診療料２
            03  FILLER              PIC X(11)   VALUE   "9 113008210".
-      *    ����ȥꥢ�����û�
+      *    院内トリアージ加算
            03  FILLER              PIC X(11)   VALUE   "9 113011570".
       *
        01  TBL-SYONIKA-AREA-R      REDEFINES   TBL-SYONIKA-AREA.
            03  TBL-SYONIKA-OCC     OCCURS  42  INDEXED   TBL-SYO.
-      *        1:��ǡ�2:�ƿǡ�3:��ǻ��ֳ���4:�ƿǻ��ֳ�
-      *        9:�����ʳ���ǻ����ʳ��Ǥ⻻���ǽ
+      *        1:初診、2:再診、3:初診時間外、4:再診時間外
+      *        9:小児科外来診察料以外でも算定可能
                05  TBL-SYONIKA-KBN         PIC X(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-SYONIKA-SRYCD       PIC X(09).

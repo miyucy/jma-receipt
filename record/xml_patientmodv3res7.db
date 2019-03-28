@@ -21,22 +21,22 @@ xml_patientmodv3res7 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
     	};
-#---    ´µ¼Ô¶Ø´÷ÌôºŞ¾ğÊó
+#---    æ‚£è€…ç¦å¿Œè–¬å‰¤æƒ…å ±
 	Patient_Contra_Information	{
 	    Patient_Contra_Info	{
-#---            ÌôºŞ¥³¡¼¥É
+#---            è–¬å‰¤ã‚³ãƒ¼ãƒ‰
 		Medication_Code		varchar(09);
 		Medication_Name		varchar(80);
-#---            ÌôºŞ¥³¡¼¥É½ªÎ»Æü
+#---            è–¬å‰¤ã‚³ãƒ¼ãƒ‰çµ‚äº†æ—¥
 		Medication_EndDate	varchar(10);
-#---            ·Ğ²áÁ¼ÃÖÉÊÌÜ°Ü¹Ô¥³¡¼¥É
+#---            çµŒéæªç½®å“ç›®ç§»è¡Œã‚³ãƒ¼ãƒ‰
 		Medication_Change_Code	varchar(09);
 		Medication_Change_Name	varchar(80);
-#---            ¶Ø´÷³«»ÏÆüÉÕ
+#---            ç¦å¿Œé–‹å§‹æ—¥ä»˜
                 Contra_StartDate	varchar(10);
-#---            ÅêÌôÆüÉÕ
+#---            æŠ•è–¬æ—¥ä»˜
                 Medication_StartDate	varchar(10);
-#---            ¥¨¥é¡¼¥³¡¼¥É
+#---            ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
 	        } [500];

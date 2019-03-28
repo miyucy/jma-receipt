@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGN11.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : ��̾�������ʣΣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/06/18    MCC�ݿ���     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : 人名辞書情報（Ｎ１１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/06/18    MCC−森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-����    03/05/13  �������ϤΥ����å����
-      *  00.00.02    NACL-����    04/10/05  Ⱦ�����ѥ����å����ɲ�
-      *  04.06.00    NACL-¿��Ǽ  11/03/22  LD104 ,LD105,LD106,LD108,LD109������
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-森脇    03/05/13  カナ入力のチェック中止
+      *  00.00.02    NACL-森脇    04/10/05  半角全角チェックの追加
+      *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,15 +41,15 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "N11COMMON-SPA".
       *
            COPY    "ENUM-VALUE".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-N11.
            03  SPA-N11-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -75,19 +75,19 @@
            03  FLG-END             PIC 9(01).
            03  FLG-JINMEI          PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC X(06).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PATH-TABLE      PIC X(64).
            03  WRK-PATH-PATHNAME   PIC X(64).
@@ -98,31 +98,31 @@
            03  WRK-STR2            PIC X(100).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��̾�ޥ���
+      *    人名マスタ
        01  JINMEI-REC.
            COPY    "CPJINMEI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�
+      *    カナ変換
            COPY    "CPORCSKANACNV.INC".
       *----(00.00.02)--ADD-START---
-      *    ����Ⱦ���Ѵ�����
+      *    全角半角変換サブ
            COPY    "CPORCSKANACHK.INC".
-      *    ����Ⱦ���Ѵ�����
+      *    全角半角変換サブ
            COPY    "CPORCSKANACHK2.INC".
       *----(00.00.02)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                    SECTION.
       *
@@ -162,7 +162,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -176,15 +176,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN    OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -197,7 +197,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -206,17 +206,17 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "N11ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -236,11 +236,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
@@ -261,7 +261,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -274,7 +274,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣΣ����ɣģ��ˣϣ˽���
+      *    確認画面（Ｎ１１ＩＤ１）ＯＫ処理
       *****************************************************************
        330-N11ID1-SET-SEC            SECTION.
       *
@@ -297,21 +297,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"   ALSO    "B01"
                    PERFORM  210-BACK
-      *    ���ꥢ
+      *    クリア
                WHEN    "CLICKED"   ALSO    "B02"
                    PERFORM  403-CLEAR-SEC
-      *    ���
+      *    削除
                WHEN    "CLICKED"   ALSO    "B03"
                    PERFORM  403-DEL-SEC
-      *    ��Ͽ
+      *    登録
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM  490-TOUROKU-SEC
            END-EVALUATE
@@ -320,7 +320,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -340,7 +340,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������
+      *    条件処理
       *****************************************************************
        4111-JYOKEN-SEC         SECTION.
       *
@@ -353,13 +353,13 @@
       *     MOVE    SPACE           TO  SPA-GMN-NAIYO
       *
            IF      SPA-GMN-JYOKEN      NOT  =   SPACE
-      *    Ⱦ��ʸ�����ߥ����å�
+      *    半角文字混在チェック
                PERFORM  4121-JYOKEN-CHK-SEC
       *
                IF  SPA-ERRCD  NOT  =  SPACE
                    GO  TO  4111-JYOKEN-EXT
                END-IF
-      *    ��̥ꥹ�ȥ��å�
+      *    結果リストセット
                EVALUATE  KANACNV-TYPE
                    WHEN  2
                        MOVE    "2"         TO  SPA-JYOKEN-KBN
@@ -378,7 +378,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������å�
+      *    条件チェック
       *****************************************************************
        4121-JYOKEN-CHK-SEC         SECTION.
       *
@@ -389,7 +389,7 @@
            CALL    "ORCSKANACHK2"       USING
                                        ORCSKANACHK2AREA
            MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-JYOKEN
-      *    ����Ⱦ�Ѻ��ߥ��顼
+      *    全角半角混在エラー
            IF    ( KANACHK2-SYUBETU     NOT =   2    )  OR
                  ( KANACHK2-RC          NOT =   ZERO )  OR
                  ( KANACHK2-RC2             =   7    )
@@ -399,7 +399,7 @@
            END-IF
       *----(01.00.02)--ADD-END-----
       *
-      *    Ⱦ��ʸ�����ߥ����å�
+      *    半角文字混在チェック
            INITIALIZE              KANACNV-LNK
            MOVE    SPA-GMN-JYOKEN  TO  KANACNV-IN-STR
            CALL    "ORCSKANACNV"   USING
@@ -418,7 +418,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �����ֹ����
+      *     選択番号処理
       *****************************************************************
        4112-SELNUM-SEC         SECTION.
       *
@@ -427,7 +427,7 @@
            MOVE    N11-SELNUM      TO  SPA-GMN-SELNUM
       *
            IF  SPA-GMN-SELNUM          >   ZERO
-      *    �ֹ�����å�
+      *    番号チェック
                PERFORM  4122-SELNUM-CHK-SEC
       *
                IF    SPA-ERRCD  NOT  =  SPACE
@@ -451,11 +451,11 @@
            EXIT.
       *
       *****************************************************************
-      *     �����ֹ�����å�
+      *     選択番号チェック
       *****************************************************************
        4122-SELNUM-CHK-SEC         SECTION.
       *
-      *    �ֹ�����å�
+      *    番号チェック
            IF      SPA-GMN-SELNUM        >   SPA-GMN-MAX
                MOVE    "0003"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-GMN-CUR
@@ -471,7 +471,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ��Ͽ���ƽ���
+      *     登録内容処理
       *****************************************************************
        4113-NAIYO-SEC          SECTION.
       *
@@ -482,13 +482,13 @@
            MOVE    SPACE           TO  SPA-NAIYO-KBN
       *
            IF    SPA-GMN-NAIYO     NOT  =   SPACE
-      *    Ⱦ��ʸ�����ߥ����å�
+      *    半角文字混在チェック
                PERFORM 4123-NAIYO-CHK-SEC
       *
                IF  SPA-ERRCD  NOT  =  SPACE
                    GO  TO  4113-NAIYO-EXT
                END-IF
-      *    ��̥ꥹ�ȥ��å�
+      *    結果リストセット
                EVALUATE  KANACNV-TYPE
                    WHEN  2
                        MOVE    "2"         TO  SPA-NAIYO-KBN
@@ -505,7 +505,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ���ƥ����å�
+      *    登録内容チェック
       *****************************************************************
        4123-NAIYO-CHK-SEC         SECTION.
       *
@@ -516,7 +516,7 @@
            CALL    "ORCSKANACHK2"      USING
                                        ORCSKANACHK2AREA
            MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-NAIYO
-      *    ����Ⱦ�Ѻ��ߥ��顼
+      *    全角半角混在エラー
            IF    ( KANACHK2-SYUBETU    NOT =   2    )  OR
                  ( KANACHK2-RC         NOT =   ZERO )  OR
                  ( KANACHK2-RC2            =   7    )
@@ -526,7 +526,7 @@
            END-IF
       *----(01.00.02)--ADD-END-----
       *
-      *    Ⱦ��ʸ�����ߥ����å�
+      *    半角文字混在チェック
            INITIALIZE              KANACNV-LNK
            MOVE    SPA-GMN-NAIYO  TO  KANACNV-IN-STR
            CALL    "ORCSKANACNV"   USING
@@ -545,11 +545,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̥ꥹ�� �����å�����
+      *    結果リスト チェック処理
       *****************************************************************
        4114-KEKKALST-SEC        SECTION.
       *
-      *    ������
+      *    行選択
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >       200
                IF    N11-KEKKALST-SELECT(IDX)  =   "T"
@@ -572,7 +572,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ꥹ�ȥ��åȽ���
+      *    漢字リストセット処理
       *****************************************************************
        500-KANJILIST-SET-SEC       SECTION.
       *
@@ -605,7 +605,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ʥꥹ�ȥ��åȽ���
+      *    カナリストセット処理
       *****************************************************************
        500-KANALIST-SET-SEC        SECTION.
       *
@@ -638,7 +638,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
       *
@@ -663,11 +663,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꥢ����
+      *    クリア処理
       *****************************************************************
        403-CLEAR-SEC                   SECTION.
       *
-      *    ���̽����
+      *    画面初期化
            PERFORM 310-SPASET-SEC
       *
            .
@@ -676,11 +676,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ǧ����ɽ������
+      *    削除確認画面表示処理
       *****************************************************************
        403-DEL-SEC                               SECTION.
       *
-      *    �����å�
+      *    チェック
            IF  SPA-GMN-JYOKEN   =   SPACE
                MOVE    "1001"   TO  SPA-ERRCD
                MOVE    2        TO  SPA-GMN-CUR
@@ -701,7 +701,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        4031-DEL-SEC                SECTION.
       *
@@ -742,11 +742,11 @@
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ������
+      *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
       *
-      *    �����å�
+      *    チェック
            IF  SPA-GMN-JYOKEN   =   SPACE
                MOVE    "1001"   TO  SPA-ERRCD
                MOVE    2        TO  SPA-GMN-CUR
@@ -758,7 +758,7 @@
                END-IF
            END-IF
       *
-      *    ���ʡʴ����˥����å�
+      *    カナ（漢字）チェック
            IF      SPA-ERRCD        =   SPACE
                IF  SPA-GMN-NAIYO   =   SPACE
                    EVALUATE  SPA-JYOKEN-KBN
@@ -786,7 +786,7 @@
                GO  TO  490-TOUROKU-EXT
            END-IF
       *
-      *    Ʊ���̾�����å�
+      *    同一人名チェック
            IF      SPA-ERRCD        =   SPACE
                MOVE    SPACE           TO  JINMEI-REC
                INITIALIZE                  JINMEI-REC
@@ -823,7 +823,7 @@
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ����
+      *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC             SECTION.
       *
@@ -865,7 +865,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -892,7 +892,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -922,7 +922,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -930,43 +930,43 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "���ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�������Ѥ����Ϥ��Ʋ�����"  
+                   MOVE    "全て全角で入力して下さい"  
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "�ϰϳ����ֹ椬���Ϥ���Ƥ��ޤ�"
+                   MOVE    "範囲外の番号が入力されています"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "�����������Ϥ��Ʋ�����" 
+                   MOVE    "検索条件を入力して下さい" 
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ʤ����Ϥ��Ʋ�����"
+                   MOVE    "カナを入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "1003"
-                   MOVE    "���������Ϥ��Ʋ�����"
+                   MOVE    "漢字を入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "1010"
                    MOVE    SPA-GMN-NAIYO       TO  WRK-STR1
-                   MOVE    "�ۤϤ��Ǥ���Ͽ����Ƥ��ޤ�"
+                   MOVE    "】はすでに登録されています"
                                                TO  WRK-STR2
                    PERFORM  530-MSGSET-SEC
                    MOVE    WRK-N11IDMSG          TO  SPA-ERRMSG
                WHEN    "1011"
                    MOVE    SPA-GMN-NAIYO       TO  WRK-STR1
-                   MOVE    "�ۤ���Ͽ�Ǥ��ޤ���Ǥ���"
+                   MOVE    "】は登録できませんでした"
                                                TO  WRK-STR2
                    PERFORM  530-MSGSET-SEC
                    MOVE    WRK-N11IDMSG          TO  SPA-ERRMSG
                WHEN    "1012"
                    MOVE  SPA-GMN-NAME(SPA-GMN-SELNUM) 
                                                TO  WRK-STR1
-                   MOVE    "�ۤϺ���Ǥ��ޤ���Ǥ���"
+                   MOVE    "】は削除できませんでした"
                                                TO  WRK-STR2
                    PERFORM  530-MSGSET-SEC
                    MOVE    WRK-N11IDMSG          TO  SPA-ERRMSG
                WHEN    "1013"
-                   MOVE    "�ֹ�����Ϥ��Ƥ�������"
+                   MOVE    "番号を入力してください"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -990,7 +990,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-N11IDSET-SEC            SECTION.
       *
@@ -998,12 +998,12 @@
       *
            EVALUATE    SPA-N11IDCD
       *         WHEN    "1011"
-      *             MOVE    "��̾����������Ͽ���ޤ�"
+      *             MOVE    "人名辞書情報を登録します"
       *                                          TO  WRK-N11IDMSG
                WHEN    "1012"
                    MOVE  SPA-GMN-NAME(SPA-GMN-SELNUM)
                                                   TO  WRK-STR1
-                   MOVE    "�ۤ������ޤ�"       TO  WRK-STR2
+                   MOVE    "】を削除します"       TO  WRK-STR2
                    PERFORM  530-MSGSET-SEC
            END-EVALUATE
       *
@@ -1028,11 +1028,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��å���������
+      *    メッセージ作成
       *****************************************************************
        530-MSGSET-SEC              SECTION.
       *
-           STRING "��"     DELIMITED BY SPACE
+           STRING "【"     DELIMITED BY SPACE
                   WRK-STR1 DELIMITED BY SPACE
                   WRK-STR2 DELIMITED BY SPACE
                   INTO WRK-N11IDMSG
@@ -1043,7 +1043,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1063,7 +1063,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ��ʥ�����
+      *    人名マスター読込（キー）
       *****************************************************************
        900-JINMEI-SELECT-SEC       SECTION.
       *
@@ -1086,7 +1086,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ��ʥ�����
+      *    人名マスター読込（キー）
       *****************************************************************
        900-JINMEI-FETCH-SEC        SECTION.
       *
@@ -1110,7 +1110,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ��ʥ�����
+      *    人名マスター読込（キー）
       *****************************************************************
        900-JINMEI-CLOSE-SEC        SECTION.
       *
@@ -1127,7 +1127,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

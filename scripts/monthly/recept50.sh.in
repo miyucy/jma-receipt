@@ -10,7 +10,7 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ¼ç²Ê¾ðÊó°ì³ç¼èÆÀ½èÍý
+#    ä¸»ç§‘æƒ…å ±ä¸€æ‹¬å–å¾—å‡¦ç†
 #        $1 JOBID 
 #        $2 SHELLID
 #        $3 HOSPNUM
@@ -26,7 +26,7 @@ fi
         [ -e ${LOG_FILE} ] && rm ${LOG_FILE}
         echo $(basename ${LOG_FILE})
 
-#   ¼ç²Ê¾ðÊó°ì³ç¼èÆÀ
+#   ä¸»ç§‘æƒ…å ±ä¸€æ‹¬å–å¾—
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCRSYUKA01 -parameter ${1},${2},${3},${4},${5},${6}
         

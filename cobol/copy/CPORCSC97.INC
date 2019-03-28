@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,94 +16,94 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¹àÌÜÊÑ´¹¥Ñ¥é¥á¥¿¡¡  COPY (CPORCSC97.INC)
-      *                              (ORCSC97 ¤Ç»ÈÍÑ¡Ë
+      *    è¨ºç™‚è¡Œç‚ºå…¥åŠ›é …ç›®å¤‰æ›ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€  COPY (CPORCSC97.INC)
+      *                              (ORCSC97 ã§ä½¿ç”¨ï¼‰
       *
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.06.00    NACL-Â¿¡¹Ç¼  11/02/14  ÍÑË¡¥³¥á¥ó¥ÈÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  13/12/20  ¹ÔÁÞÆþÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.06.00    NACL-å¤šã€…ç´  11/02/14  ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆå¯¾å¿œ
+      *  04.08.00    NACL-å¤šã€…ç´  13/12/20  è¡ŒæŒ¿å…¥å¯¾å¿œ
       ************************************************************
       *
        01  ORCSC97AREA.
-      *    £Ð£ÇÌ¾
+      *    ï¼°ï¼§å
            03  LNK-SC97-PG             PIC X(06).
-      *    ½èÍý¶èÊ¬¡Ê¶õÇò¡§Á´Éô¡¢
-      *              £±¡§È¾³ÑÊÑ´¹¤Î¤ß¡Ë
+      *    å‡¦ç†åŒºåˆ†ï¼ˆç©ºç™½ï¼šå…¨éƒ¨ã€
+      *              ï¼‘ï¼šåŠè§’å¤‰æ›ã®ã¿ï¼‰
            03  LNK-SC97-KBN            PIC X(01).
-      *    ÆþÎÏ½ÐÎÏÎÎ°è
+      *    å…¥åŠ›å‡ºåŠ›é ˜åŸŸ
            03  LNK-SC97-INPUTCD        PIC X(54).
-      *    £Ó£Ð£Á¥é¥¤¥ó
+      *    ï¼³ï¼°ï¼¡ãƒ©ã‚¤ãƒ³
            03  LNK-SC97-GMN-IDX        PIC 9(04).
-      *    ²èÌÌ¥é¥¤¥ó
+      *    ç”»é¢ãƒ©ã‚¤ãƒ³
            03  LNK-SC97-MAP-IDX        PIC 9(04).
-      *    »þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø
+      *    æ™‚é–“å¤–ç‰¹ä¾‹åŒ»ç™‚æ©Ÿé–¢
            03  LNK-SC97-JIKANTOKU          PIC  9(01).
       *
-      *    ½ÐÎÏÎÎ°è
+      *    å‡ºåŠ›é ˜åŸŸ
            03  LNK-SC97-OUTAREA.
-      *        ¡Ç¡²¡ÇÍ­Ìµ
+      *        â€™ï¼¿â€™æœ‰ç„¡
                05  LNK-SC97-JODOU          PIC 9(01).
-      *        ¥³¡¼¥ÉÊÑ¹¹Í­Ìµ¡Ê£°¡§ÊÑ¹¹¤Ê¤·¡¢£±¡§ÊÑ¹¹¤¢¤ê¡Ë
+      *        ã‚³ãƒ¼ãƒ‰å¤‰æ›´æœ‰ç„¡ï¼ˆï¼ï¼šå¤‰æ›´ãªã—ã€ï¼‘ï¼šå¤‰æ›´ã‚ã‚Šï¼‰
                05  LNK-SC97-NYURYOKU       PIC 9(01).
-      *        ÆþÎÏ¥³¡¼¥É
+      *        å…¥åŠ›ã‚³ãƒ¼ãƒ‰
                05  LNK-SC97-INCD           PIC X(54).
-      *        ÆþÎÏ¥³¡¼¥É·å¿ô
+      *        å…¥åŠ›ã‚³ãƒ¼ãƒ‰æ¡æ•°
                05  LNK-SC97-INCDCNT        PIC 9(02).
-      *        ÆþÎÏ¥³¡¼¥É¼ïÊÌ
+      *        å…¥åŠ›ã‚³ãƒ¼ãƒ‰ç¨®åˆ¥
                05  LNK-SC97-CDSYU          PIC X(01).
-      *        ÊÔ½¸ÃÍ
+      *        ç·¨é›†å€¤
                05  LNK-SC97-INPUT-G.
-      *        ¿ôÎÌ
+      *        æ•°é‡
                    07  LNK-SC97-SURYO          PIC 9(07)V9(05).
-      *        ²ó¿ô
+      *        å›žæ•°
                    07  LNK-SC97-KAISU          PIC 9(03).
-      *        Ê¬²è¿ô
+      *        åˆ†ç”»æ•°
                    07  LNK-SC97-BUNGSU         PIC 9(03).
-      *        ¤½¤ÎÆþÎÏÃÍ
+      *        ãã®å…¥åŠ›å€¤
                    07  LNK-SC97-MOJI1          PIC X(10).
                    07  LNK-SC97-MOJI2          PIC X(10).
                    07  LNK-SC97-MOJI3          PIC X(10).
                    07  LNK-SC97-MOJI4          PIC X(10).
                    07  LNK-SC97-MOJI5          PIC X(10).
-      *        »þ´Ö³°¥Õ¥é¥°
+      *        æ™‚é–“å¤–ãƒ•ãƒ©ã‚°
                    07  LNK-SC97-JIKAN          PIC 9(01).
       *
-      *        ¿ôÎÌ
+      *        æ•°é‡
                    07  LNK-SC97-SURYOFLG      PIC 9(02).
                    07  LNK-SC97-SURYOCNT      PIC 9(02).
-      *        ²ó¿ô¡Ê¡ö¥¢¥ê¡Ë
+      *        å›žæ•°ï¼ˆï¼Šã‚¢ãƒªï¼‰
                    07  LNK-SC97-KAISUCNT       PIC 9(02).
-      *        ²ó¿ô¡Ê¡ö¥¢¥ê¡Ë
+      *        å›žæ•°ï¼ˆï¼Šã‚¢ãƒªï¼‰
                    07  LNK-SC97-KAISUFLG       PIC 9(01).
-      *        Ê¬²è¿ô
+      *        åˆ†ç”»æ•°
                    07  LNK-SC97-BUNGSUFLG      PIC 9(01).
-      *        ¤½¤ÎÆþÎÏÃÍ
+      *        ãã®å…¥åŠ›å€¤
                    07  LNK-SC97-MCNT1          PIC 9(02).
                    07  LNK-SC97-MCNT2          PIC 9(02).
                    07  LNK-SC97-MCNT3          PIC 9(02).
                    07  LNK-SC97-MCNT4          PIC 9(02).
                    07  LNK-SC97-MCNT5          PIC 9(02).
-      *        »ÄÎÌÇÑ´þ
+      *        æ®‹é‡å»ƒæ£„
                    07  LNK-SC97-AUTOFLG2        PIC X(01).
-      *        ´¹»»ÃÍÆþÎÏ
+      *        æ›ç®—å€¤å…¥åŠ›
                    07  LNK-SC97-INKBNFLG1       PIC X(01).
-      *        ÆâÉþ¼ïÎà¿ô
+      *        å†…æœç¨®é¡žæ•°
                    07  LNK-SC97-INKBNFLG2       PIC X(01).
-      *        ·ÑÂ³¥³¥á¥ó¥È
+      *        ç¶™ç¶šã‚³ãƒ¡ãƒ³ãƒˆ
                    07  LNK-SC97-CONTFLG         PIC X(01).
       *!!!!!!!!!!!!!!!!!!
-      *        ÁÞÆþ¹Ô¿ô
+      *        æŒ¿å…¥è¡Œæ•°
                    07  LNK-SC97-INSCNT          PIC 9(02).
-      *        ÁÞÆþÏ¢Â³
+      *        æŒ¿å…¥é€£ç¶š
                    07  LNK-SC97-INSREN          PIC 9(01).
       *!!!!!!!!!!!!!!!!!!
       *
-      *        ¸¡º÷²èÌÌ¤Ø
+      *        æ¤œç´¢ç”»é¢ã¸
                05  LNK-SC97-KENSAKU        PIC X(01).
-      *        Æþ±¡²ó¿ô
+      *        å…¥é™¢å›žæ•°
                05  LNK-SC97-NYUIN-KAISU.
                    07  LNK-SC97-NYU-DAY    PIC 9(02)
                                            OCCURS   31.

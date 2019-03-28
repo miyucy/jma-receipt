@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,31 +18,31 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBT120SUB.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æü¼¡Åý·×ÍÑÆþ±¡¾ðÊó¼èÆÀ¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  04/12/15    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ—¥æ¬¡çµ±è¨ˆç”¨å…¥é™¢æƒ…å ±å–å¾—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  04/12/15    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.01    NACL-¾®Æ¦Âô  07/05/31  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
-      *Ê¿À®£²£°Ç¯£´·î²þÄêÂÐ±þ
-      *  04.02.00    NACL-¾®Æ¦Âô  08/04/15  ¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
-      *  04.02.01    NACL-Æ£¸¶    08/04/23  ¸å´ü¹âÎð¼Ô¤ÎÁ¥°÷ÊÝ¸±¤òËÜ¿Í¤È¤¹¤ë
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.01    NACL-å°è±†æ²¢  07/05/31  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  04.01.01    NACL-å°è±†æ²¢  07/11/16  å…¬å‹™ç½å®³ã€å…¬å®³ã®ç¨®åˆ¥åˆ¤å®šè¿½åŠ 
+      *å¹³æˆï¼’ï¼å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  04.02.00    NACL-å°è±†æ²¢  08/04/15  ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥å¯¾å¿œ
+      *  04.02.01    NACL-è—¤åŽŸ    08/04/23  å¾ŒæœŸé«˜é½¢è€…ã®èˆ¹å“¡ä¿é™ºã‚’æœ¬äººã¨ã™ã‚‹
       *
-      *  04.04.01    NACL-Æ£¸¶    09/02/26  Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Ë£·£µºÐÅþ
-      *                                     Ã£»þ¤Ë³¤³°¤Ë½»½ê¤òÍ­¤¹¤ë¾ì¹ç
-      *                                     ¤ÎÂÐ±þ
-      *  04.04.02    NACL-Æ£¸¶    10/08/23  ¸å´ü¹âÎðÈó³ºÅöÂÐ±þ
-      *                                     ¡Ê¹âÎð¼õµë¼ÔÉ¼¤¬¤Ê¤¤¾ì¹ç¡Ë
+      *  04.04.01    NACL-è—¤åŽŸ    09/02/26  å¹³æˆï¼’ï¼å¹´ï¼”æœˆä»¥é™ã«ï¼—ï¼•æ­³åˆ°
+      *                                     é”æ™‚ã«æµ·å¤–ã«ä½æ‰€ã‚’æœ‰ã™ã‚‹å ´åˆ
+      *                                     ã®å¯¾å¿œ
+      *  04.04.02    NACL-è—¤åŽŸ    10/08/23  å¾ŒæœŸé«˜é½¢éžè©²å½“å¯¾å¿œ
+      *                                     ï¼ˆé«˜é½¢å—çµ¦è€…ç¥¨ãŒãªã„å ´åˆï¼‰
       * 
-      *  04.05.00    NACL-¾®Æ¦Âô  10/01/07  ¼£¸³¤Î¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
+      *  04.05.00    NACL-å°è±†æ²¢  10/01/07  æ²»é¨“ã®ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥å¯¾å¿œ
       *
-      *  04.07.01    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.02    NACL-Æ£¸¶    14/08/18  £·£µºÐ°Ê¾å¤Î³¤³°µï½»¼Ô£²³äÂÐ±þ
+      *  04.07.01    NACL-è—¤åŽŸ    14/03/30  å¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *  04.07.02    NACL-è—¤åŽŸ    14/08/18  ï¼—ï¼•æ­³ä»¥ä¸Šã®æµ·å¤–å±…ä½è€…ï¼’å‰²å¯¾å¿œ
       *****************************************************************
       *
       *
@@ -57,7 +57,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
@@ -70,7 +70,7 @@
            03  FLG-PTRSIINF                PIC 9(01).
            03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-NYUIN-HIT1              PIC 9(01).
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
@@ -79,35 +79,35 @@
            03  COMB-IDX                    PIC 9(04).
            03  IDX-SKJ-TAIHI               PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
       *
-      *    »»ÄêÆüÂàÈò
+      *    ç®—å®šæ—¥é€€é¿
            03  WRK-SANTEIYMD.
                05  WRK-SANTEIYM.
                    07  WRK-SANTEIYY            PIC 9(04).
                    07  WRK-SANTEIMM            PIC 9(02).
                05  WRK-SANTEIDD                PIC 9(02).
       *
-      *    Á°Æü»»ÄêÆü
+      *    å‰æ—¥ç®—å®šæ—¥
            03  WRK-MAE-SANTEIYMD.
                05  WRK-MAE-SANTEIYM.
                    07  WRK-MAE-SANTEIYY        PIC 9(04).
                    07  WRK-MAE-SANTEIMM        PIC 9(02).
                05  WRK-MAE-SANTEIDD            PIC 9(02).
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¿ô»úÊÑ´¹
+      *    ä¿é™ºçµ„åˆã›ç•ªå·æ•°å­—å¤‰æ›
            03  WRK-HKNCOMBINUM-X               PIC X(04).
            03  WRK-HKNCOMBINUM-9  REDEFINES  WRK-HKNCOMBINUM-X
                                                PIC 9(04).
-      *    ¸å´ü¹âÎð¼ÔÈó³ºÅö¥Õ¥é¥°
+      *    å¾ŒæœŸé«˜é½¢è€…éžè©²å½“ãƒ•ãƒ©ã‚°
            03  WRK-KOUKI-FLG                   PIC 9(01).
       *
            03  WRK-TEKSTYMD.
                05  WRK-TEKSTYYMM               PIC 9(06).
                05  WRK-TEKSTDD                 PIC 9(02).
       *
-      *    ¥ì¥»¥×¥È¼ïÊÌÈ½ÄêÍÑÎÎ°è
+      *    ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥åˆ¤å®šç”¨é ˜åŸŸ
        01  WK-RECESYUBETU-AREA.
            03  WK-KOKUHO                       PIC X(01).
            03  WK-IHO                          PIC X(01).
@@ -120,94 +120,94 @@
       *
        01  WRK-CONS-AREA.
       *    
-      *    À¸³èÊÝ¸îÊÝ¸±ÈÖ¹æ 
+      *    ç”Ÿæ´»ä¿è­·ä¿é™ºç•ªå· 
            03  WRK-CONS-SEIHO-HKNNUM   PIC X(03)   VALUE   "012". 
-      *    ¼«ÈñÊÝ¸±ÈÖ¹æ 
+      *    è‡ªè²»ä¿é™ºç•ªå· 
            03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980". 
-      *    Ï«ºÒÊÝ¸±ÈÖ¹æ 
+      *    åŠ´ç½ä¿é™ºç•ªå· 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
-      *    ¼«ÇåÀÕÊÝ¸±ÈÖ¹æ 
+      *    è‡ªè³ è²¬ä¿é™ºç•ªå· 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
-      *    ¸¶ÇúÊÝ¸±ÈÖ¹æ 
+      *    åŽŸçˆ†ä¿é™ºç•ªå· 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
-      *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
+      *    å…¬å®³ä¿é™ºç•ªå· 
            03  WRK-CONS-KOUGAI-HKNNUM PIC X(03)    VALUE   "975".       
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1005.INC".
            COPY    "CPSK5000.INC".
       *
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ¼ýÇ¼
+      *    åŽç´
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ´µ¼ÔÊÝ¸±¾ðÊó
+      *    æ‚£è€…ä¿é™ºæƒ…å ±
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
+      *    æ‚£è€…åŠ´ç½ä¿é™ºæƒ…å ±
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó
+      *    æ‚£è€…å…¬è²»æƒ…å ±
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+      *    ä¿é™ºç®—å®šç”¨å¹´é½¢ãƒ»å‰²åˆè¨ˆç®—ã‚µãƒ–
            COPY    "CPORCSAGECHK.INC".
       *
-      *    ¥ì¥»¥×¥È¼ïÊÌÊÖµÑ¥µ¥Ö
+      *    ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥è¿”å´ã‚µãƒ–
            COPY    "CPORCSSYUBETUGET.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö¡ÊÆ±ÆüºÆÆþ±¡¤ÎÊÝ¸±¼èÆÀ¤Ë»ÈÍÑ¡Ë
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ã‚µãƒ–ï¼ˆåŒæ—¥å†å…¥é™¢ã®ä¿é™ºå–å¾—ã«ä½¿ç”¨ï¼‰
            COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    Æü¼¡Åý·×ÍÑÆþ±¡¾ðÊó¥Ñ¥é¥á¥¿
+      *    æ—¥æ¬¡çµ±è¨ˆç”¨å…¥é™¢æƒ…å ±ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCBT120SUB.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -216,7 +216,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -226,13 +226,13 @@
            INITIALIZE                  LNK-ORCBT120SUB-HENKYAKU-AREA
            MOVE    ZERO                TO  LNK-ORCBT120SUB-RC
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-ORCBT120SUB-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      LNK-ORCBT120SUB-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -244,17 +244,17 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    »»ÄêÇ¯·î¥Á¥§¥Ã¥¯
+      *    ç®—å®šå¹´æœˆãƒã‚§ãƒƒã‚¯
            IF    ( LNK-ORCBT120SUB-SANTEIYMD    =   SPACE )
                MOVE    1               TO  LNK-ORCBT120SUB-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                      PTINF-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTINF-PTID
@@ -264,7 +264,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ¿ÇÎÅ²Ê¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ãƒã‚§ãƒƒã‚¯
            IF     LNK-ORCBT120SUB-SRYKA    NOT =   SPACE
                CONTINUE
            ELSE
@@ -272,7 +272,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    Æþ±¡Ãæ¤Î¥Á¥§¥Ã¥¯¡ÊÆþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷¡Ë
+      *    å…¥é™¢ä¸­ã®ãƒã‚§ãƒƒã‚¯ï¼ˆå…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢ï¼‰
            INITIALIZE                      NYUINACCT-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
@@ -284,7 +284,7 @@
            PERFORM 910-NYUINACCT-SELECT-SEC
            IF      FLG-NYUINACCT           NOT =   ZERO
                MOVE    4               TO  LNK-ORCBT120SUB-RC
-      *        Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *        å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
                MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                MOVE    "key17"                 TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
@@ -295,7 +295,7 @@
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT          NOT =   ZERO
                     MOVE    4              TO  LNK-ORCBT120SUB-RC
-      *            Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *            å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
                     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                     MOVE    "key17"                 TO  MCP-PATHNAME
                     PERFORM   910-DB-CLOSE-SEC
@@ -309,7 +309,7 @@
                END-IF
            END-IF
       *
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -318,11 +318,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¼èÆÀ
+      *    ä¸»å–å¾—
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *Æþ±¡²Ê¡¿ÆþÂà±¡¶èÊ¬¡¿ÉÂÅïÈÖ¹æ¡¿ÉÂ¼¼ÈÖ¹æ¡¿Âà±¡»öÍ³¡¿¥É¥¯¥¿¡¼¤Î¼èÆÀ
+      *å…¥é™¢ç§‘ï¼å…¥é€€é™¢åŒºåˆ†ï¼ç—…æ£Ÿç•ªå·ï¼ç—…å®¤ç•ªå·ï¼é€€é™¢äº‹ç”±ï¼ãƒ‰ã‚¯ã‚¿ãƒ¼ã®å–å¾—
            MOVE    ZERO                     TO  FLG-NYUIN-HIT1
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
@@ -346,10 +346,10 @@
                             (PTNYUINRRK-TENSTUYMD >=
                                LNK-ORCBT120SUB-SANTEIYMD)
                            MOVE    1      TO   FLG-NYUIN-HIT1
-      *                    Æþ±¡²Ê
+      *                    å…¥é™¢ç§‘
                            MOVE    PTNYUINRRK-NYUINKA
                                          TO  LNK-ORCBT120SUB-NYUINKA
-      *                    ÆþÂà±¡¶èÊ¬
+      *                    å…¥é€€é™¢åŒºåˆ†
                            MOVE   3      TO  LNK-ORCBT120SUB-NYUIN-KBN
                            IF    LNK-ORCBT120SUB-SANTEIYMD  =  
                                                    PTNYUINRRK-NYUINYMD
@@ -359,16 +359,16 @@
                                                    PTNYUINRRK-TAIINYMD
                                MOVE   2  TO  LNK-ORCBT120SUB-NYUIN-KBN
                            END-IF
-      *                    ÉÂÅïÈÖ¹æ
+      *                    ç—…æ£Ÿç•ªå·
                            MOVE   PTNYUINRRK-BTUNUM
                                          TO  LNK-ORCBT120SUB-BTUNUM
-      *                    ÉÂ¼¼ÈÖ¹æ
+      *                    ç—…å®¤ç•ªå·
                            MOVE   PTNYUINRRK-BRMNUM(3:6)
                                          TO  LNK-ORCBT120SUB-BRMNUM
-      *                    Âà±¡»öÍ³
+      *                    é€€é™¢äº‹ç”±
                            MOVE   PTNYUINRRK-TAIINCD
                                          TO  LNK-ORCBT120SUB-TAIINCD
-      *                    °å»Õ¥³¡¼¥É
+      *                    åŒ»å¸«ã‚³ãƒ¼ãƒ‰
                            MOVE   PTNYUINRRK-DRCD1
                                          TO  LNK-ORCBT120SUB-DRCD
                        END-IF
@@ -380,13 +380,13 @@
            ELSE
                MOVE     5      TO      LNK-ORCBT120SUB-RC
            END-IF
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
            MOVE    "key"                    TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Á°ÆüÆþ±¡²Ê¡¿Á°ÆüÉÂÅïÈÖ¹æ¡¿Á°ÆüÉÂ¼¼ÈÖ¹æ¤Î¼èÆÀ
-      *    Á°ÆüÆü¤Î»»Äê
+      *å‰æ—¥å…¥é™¢ç§‘ï¼å‰æ—¥ç—…æ£Ÿç•ªå·ï¼å‰æ—¥ç—…å®¤ç•ªå·ã®å–å¾—
+      *    å‰æ—¥æ—¥ã®ç®—å®š
            INITIALIZE                           STS-AREA-DAY
            INITIALIZE                           LNK-DAY6-AREA
            MOVE    "61"                     TO  LNK-DAY6-IRAI
@@ -396,7 +396,7 @@
            CALL    "ORCSDAY"                USING  STS-AREA-DAY
                                                    LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN          TO  WRK-MAE-SANTEIYMD
-      *    Æþ±¡ÍúÎò¤Î¸¡º÷
+      *    å…¥é™¢å±¥æ­´ã®æ¤œç´¢
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
@@ -415,13 +415,13 @@
                                WRK-MAE-SANTEIYMD)   AND
                             (PTNYUINRRK-TENSTUYMD >=
                                WRK-MAE-SANTEIYMD)
-      *                    Æþ±¡²Ê
+      *                    å…¥é™¢ç§‘
                            MOVE    PTNYUINRRK-NYUINKA
                                        TO  LNK-ORCBT120SUB-MAE-NYUINKA
-      *                    ÉÂÅïÈÖ¹æ
+      *                    ç—…æ£Ÿç•ªå·
                            MOVE   PTNYUINRRK-BTUNUM
                                        TO  LNK-ORCBT120SUB-MAE-BTUNUM
-      *                    ÉÂ¼¼ÈÖ¹æ
+      *                    ç—…å®¤ç•ªå·
                            MOVE   PTNYUINRRK-BRMNUM(3:6)
                                        TO  LNK-ORCBT120SUB-MAE-BRMNUM
                        END-IF
@@ -433,12 +433,12 @@
            ELSE
                MOVE     5      TO      LNK-ORCBT120SUB-RC
            END-IF
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
            MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    ¥ì¥»ÅÅÆþ±¡²Ê¤Î¼èÆÀ(»»ÄêÆü¡Ë
+      *    ãƒ¬ã‚»é›»å…¥é™¢ç§‘ã®å–å¾—(ç®—å®šæ—¥ï¼‰
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
@@ -460,7 +460,7 @@
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC
-      *            ¥ì¥»ÅÅ¿ÇÎÅ²Ê
+      *            ãƒ¬ã‚»é›»è¨ºç™‚ç§‘
                    IF      SYS-1005-RECESRYKA  =   SPACE
                        MOVE    SPACE       TO  
                                          LNK-ORCBT120SUB-RECENYUINKA
@@ -470,12 +470,12 @@
                    END-IF
                END-IF
            END-IF
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥¯¥í¡¼¥º
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_syskanri"           TO  MCP-TABLE
            MOVE    "key10"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    ¥ì¥»ÅÅÆþ±¡²Ê¤Î¼èÆÀ(Á°»»ÄêÆü¡Ë
+      *    ãƒ¬ã‚»é›»å…¥é™¢ç§‘ã®å–å¾—(å‰ç®—å®šæ—¥ï¼‰
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
@@ -497,7 +497,7 @@
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO                TO  FLG-SYSKANRI
                    MOVE    MCPDATA-REC         TO  SYS-1005-REC
-      *            ¥ì¥»ÅÅ¿ÇÎÅ²Ê
+      *            ãƒ¬ã‚»é›»è¨ºç™‚ç§‘
                    IF      SYS-1005-RECESRYKA  =   SPACE
                        MOVE    SPACE       TO  
                                      LNK-ORCBT120SUB-MAE-RECENYUINKA
@@ -507,12 +507,12 @@
                    END-IF
                END-IF
            END-IF
-      *   ¥·¥¹¥Æ¥à´ÉÍý¥¯¥í¡¼¥º
+      *   ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_syskanri"           TO  MCP-TABLE
            MOVE    "key10"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Æþ±¡»þ¤Î³°Çñ¼èÆÀ
+      *å…¥é™¢æ™‚ã®å¤–æ³Šå–å¾—
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
@@ -529,12 +529,12 @@
                MOVE    NACCT-DAY(WRK-SANTEIDD)
                                  TO  LNK-ORCBT120SUB-GAIHAKU-KBN
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *¿©»ö¾ðÊó¤Î¼èÆÀ¡ÊÆþ±¡²ñ·×¡Ë
+      *é£Ÿäº‹æƒ…å ±ã®å–å¾—ï¼ˆå…¥é™¢ä¼šè¨ˆï¼‰
            IF     LNK-ORCBT120SUB-GAIHAKU-KBN  =  1  OR  2  OR  3
                CONTINUE
            ELSE
@@ -573,7 +573,7 @@
                                               LNK-ORCBT120SUB-SKJ-KBN
                          END-IF
                      END-IF
-      *             Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *             å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
                      MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                      EVALUATE   IDX-SKJ-TAIHI
                          WHEN    1
@@ -601,14 +601,14 @@
                        MOVE    NACCT-DAY(WRK-SANTEIDD)
                                          TO  LNK-ORCBT120SUB-SKJ-KBN
                    END-IF
-      *           Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *           å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                    MOVE    "key28"                 TO  MCP-PATHNAME
                    PERFORM   910-DB-CLOSE-SEC
                END-IF
            END-IF
       *
-      *    ¼ýÇ¼¾ðÊó¤Î¼èÆÀ
+      *    åŽç´æƒ…å ±ã®å–å¾—
            MOVE    ZERO                     TO  SYU-IDX
            INITIALIZE                           SYUNOU-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  SYU-HOSPNUM
@@ -635,12 +635,12 @@
                    PERFORM 910-SYUNOU-READ-SEC
                END-PERFORM
            END-IF
-      *    ¼ýÇ¼¥¯¥í¡¼¥º
+      *    åŽç´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_syunou"             TO  MCP-TABLE
            MOVE    "key2"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¤Î¼èÆÀ¡Ê¼ýÇ¼¤¬Ìµ¤¤¾ì¹ç¤ËÆþ±¡²ñ·×¤«¤é¼èÆÀ¡Ë
+      *    ä¿é™ºçµ„åˆã›ç•ªå·ã®å–å¾—ï¼ˆåŽç´ãŒç„¡ã„å ´åˆã«å…¥é™¢ä¼šè¨ˆã‹ã‚‰å–å¾—ï¼‰
            IF    LNK-ORCBT120SUB-HKNCOMBINUM(1)    =   ZERO
                INITIALIZE                          NYUINACCT-REC
                MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
@@ -658,12 +658,12 @@
                    MOVE    NACCT-DAY(WRK-SANTEIDD)
                                TO  LNK-ORCBT120SUB-HKNCOMBINUM(1)
                END-IF
-      *        Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *        å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
                MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                MOVE    "key17"                 TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
       *
-      *        Æ±ÆüºÆÆþ±¡È½Äê
+      *        åŒæ—¥å†å…¥é™¢åˆ¤å®š
                IF    LNK-ORCBT120SUB-NYUIN-KBN    =    1
                  INITIALIZE                        ORCSNYUINDAY-AREA
                  MOVE  LNK-ORCBT120SUB-HOSPNUM TO  LNK-NYUINDAY-HOSPNUM
@@ -680,7 +680,7 @@
            END-IF
       *
       *
-      *    ÊÝ¸±¾ðÊó¤Î¼èÆÀ
+      *    ä¿é™ºæƒ…å ±ã®å–å¾—
            PERFORM    VARYING   SYU-IDX   FROM  1  BY  1
              UNTIL   (LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX) = ZERO) OR
                      (SYU-IDX     >     10)
@@ -728,13 +728,13 @@
                        END-PERFORM
                    END-IF
                END-IF
-      *        ÊÝ¸±ÁÈ¹ç¤»¥¯¥í¡¼¥º
+      *        ä¿é™ºçµ„åˆã›ã‚¯ãƒ­ãƒ¼ã‚º
                MOVE    "tbl_hkncombi"   TO  MCP-TABLE
                MOVE    "key"            TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
            END-PERFORM
       *
-      *    ¥ì¥»¥×¥È¼ïÊÌ¤Î¼èÆÀ
+      *    ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ã®å–å¾—
            PERFORM    VARYING   SYU-IDX   FROM  1  BY  1
              UNTIL   (LNK-ORCBT120SUB-HKNCOMBINUM(SYU-IDX) = ZERO) OR
                      (SYU-IDX     >     10)
@@ -748,74 +748,74 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ýÇ¼¥»¥Ã¥È½èÍý
+      *    åŽç´ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        210-SYUNOU-SET-SEC         SECTION.
       *
            ADD    1     TO   SYU-IDX
-      *    ÅÁÉ¼ÈÖ¹æ
+      *    ä¼ç¥¨ç•ªå·
            MOVE    SYU-DENPNUM         TO  LNK-ORCBT120SUB-DENPNUM
                                                            (SYU-IDX)
-      *    ÅÁÉ¼¾õÂÖ¶èÊ¬
+      *    ä¼ç¥¨çŠ¶æ…‹åŒºåˆ†
            MOVE    SYU-DENPJTIKBN      TO  LNK-ORCBT120SUB-DENPJTIKBN
                                                            (SYU-IDX)
-      *    ÅÁÉ¼ºîÀ®¶èÊ¬
+      *    ä¼ç¥¨ä½œæˆåŒºåˆ†
            MOVE    SYU-CREATEKBN       TO  LNK-ORCBT120SUB-CREATEKBN
                                                            (SYU-IDX)
-      *    ÊÝ¸±ÅÀ¿ô
+      *    ä¿é™ºç‚¹æ•°
            MOVE    SYU-TOTAL-HKNTEN    TO  LNK-ORCBT120SUB-HKNTEN
                                                            (SYU-IDX)
-      *    ÊÝ¸±ÉéÃ´¶â³Û
+      *    ä¿é™ºè² æ‹…é‡‘é¡
            COMPUTE    LNK-ORCBT120SUB-HKNMONEY (SYU-IDX)
                                        =   SYU-HKNTEKMONEY
                                        +   SYU-RJN-FTN
                                        +   SYU-KOH-FTN
-      *    ÊÝ¸±Å¬ÍÑ³°¶â³Û
+      *    ä¿é™ºé©ç”¨å¤–é‡‘é¡
            COMPUTE    LNK-ORCBT120SUB-TGMONEY (SYU-IDX)
                                        =   SYU-TOTAL-TGMONEY
                                        +   SYU-TOTAL-TGMONEY-TAX
                                        -   SYU-TGMONEY-TAX-SAI
-      *    ÊÝ¸±Å¬ÍÑ³°ÀÇ³Û
+      *    ä¿é™ºé©ç”¨å¤–ç¨Žé¡
            MOVE    SYU-TGMONEY-TAX-SAI
                                        TO  LNK-ORCBT120SUB-TGMONEY-TAX
                                                            (SYU-IDX)
-      *    ¼«Èñ¶â³Û 
+      *    è‡ªè²»é‡‘é¡ 
            COMPUTE LNK-ORCBT120SUB-JIHI (SYU-IDX)
                                        =  SYU-JIHI-TOTAL
                                        +  SYU-JIHI-TOTAL-TAX
-      *    ¼«ÈñÀÇ³Û
+      *    è‡ªè²»ç¨Žé¡
            MOVE    SYU-JIHI-TAX        TO  LNK-ORCBT120SUB-JIHI-TAX
                                                            (SYU-IDX)
-      *    ¿©»öÉéÃ´¶â³Û
+      *    é£Ÿäº‹è² æ‹…é‡‘é¡
            COMPUTE  LNK-ORCBT120SUB-SKJ (SYU-IDX)
                                        =   SYU-SKYMONEY-SKJ
                                        +   SYU-SKYMONEY-SKJ-JIHI
                                        +   SYU-SKYMONEY-LIFE
                                        +   SYU-SKYMONEY-LIFE-JIHI
-      *    ¿©»ö¾ÃÈñÀÇ³Û
+      *    é£Ÿäº‹æ¶ˆè²»ç¨Žé¡
            COMPUTE  LNK-ORCBT120SUB-SKJ-TAX (SYU-IDX)
                                        =   SYU-SKYMONEY-SKJ-TAX
                                        +   SYU-SKYMONEY-SKJ-JIHI-TAX
                                        +   SYU-SKYMONEY-LIFE-TAX
                                        +   SYU-SKYMONEY-LIFE-JIHI-TAX
-      *    ¼¼ÎÁº¹³Û
+      *    å®¤æ–™å·®é¡
            COMPUTE  LNK-ORCBT120SUB-RMSAGAKU (SYU-IDX)
                                        =   SYU-RMSAGAKU
                                        -   SYU-RMSAGAKU-TAX-SAI
-      *    ¼¼ÎÁº¹³ÛÀÇ³Û
+      *    å®¤æ–™å·®é¡ç¨Žé¡
            MOVE     SYU-RMSAGAKU-TAX-SAI   TO  
                                 LNK-ORCBT120SUB-RMSAGAKU-TAX (SYU-IDX)
-      *    ÀÁµá¶â³Û
+      *    è«‹æ±‚é‡‘é¡
            MOVE    SYU-SKYMONEY        TO  LNK-ORCBT120SUB-SKYMONEY
                                                            (SYU-IDX)
-      *    Ï«ºÒ¡¿¼«ÇåÀÕ¤¬¤¢¤ë¾ì¹ç¤ÎÀÁµá³Û
+      *    åŠ´ç½ï¼è‡ªè³ è²¬ãŒã‚ã‚‹å ´åˆã®è«‹æ±‚é¡
            IF      SYU-RSIJIBAI-SKYMONEY   NOT =  ZERO
                MOVE   SYU-RSIJIBAI-SKYMONEY
                                        TO  LNK-ORCBT120SUB-SKYMONEY
                                                            (SYU-IDX)
            END-IF
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *    ä¿é™ºçµ„åˆã›ç•ªå·
            MOVE    SYU-HKNCOMBINUM     TO  WRK-HKNCOMBINUM-X
            MOVE    WRK-HKNCOMBINUM-9   TO  LNK-ORCBT120SUB-HKNCOMBINUM
                                                            (SYU-IDX)
@@ -825,7 +825,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±¼ÔÈÖ¹æ¥»¥Ã¥È½èÍý
+      *    ä¿é™ºè€…ç•ªå·ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        220-HKNJANUM-SET-SEC         SECTION.
       *
@@ -847,7 +847,7 @@
                               TO  LNK-ORCBT120SUB-HKNJANUM(SYU-IDX)
                END-IF
            END-IF
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¥¯¥í¡¼¥º
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_pthkninf"   TO  MCP-TABLE
            MOVE    "key"            TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -857,7 +857,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÏ«ºÒ¾ðÊó¥»¥Ã¥È½èÍý
+      *    æ‚£è€…åŠ´ç½æƒ…å ±ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        230-PTRSIINF-SET-SEC         SECTION.
       *
@@ -883,7 +883,7 @@
                               TO  LNK-ORCBT120SUB-SAIGAIKBN(SYU-IDX)
                END-IF
            END-IF
-      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó¥¯¥í¡¼¥º
+      *    æ‚£è€…åŠ´ç½ä¿é™ºæƒ…å ±ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptrsiinf"   TO  MCP-TABLE
            MOVE    "key"            TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -893,7 +893,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥ì¥»¥×¥È¼ïÊÌ¥»¥Ã¥È½èÍý
+      *    ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        240-RECESYUBETU-SET-SEC              SECTION.
       *
@@ -901,7 +901,7 @@
            INITIALIZE                      WK-RECESYUBETU-AREA
            MOVE    "1"                 TO  WRK-NYUGAIKBN
       *
-      *    Ï«ºÒ¡¦¼«ÇåÀÕ¤Î¤È¤­
+      *    åŠ´ç½ãƒ»è‡ªè³ è²¬ã®ã¨ã
            IF      LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
                                        =   WRK-CONS-ROUSAI-HKNNUM  OR
                                            WRK-CONS-JIBAI-HKNNUM
@@ -930,7 +930,7 @@
                        MOVE    7021        TO    WRK-RECESYUBETU
                    WHEN    "4"         ALSO    ANY     ALSO    ANY
                        MOVE    7011        TO    WRK-RECESYUBETU
-      *            ¸øÌ³ºÒ³²
+      *            å…¬å‹™ç½å®³
                    WHEN    "5"         ALSO    ANY     ALSO    "1"
                        MOVE    7061        TO    WRK-RECESYUBETU
                    WHEN    "5"         ALSO    ANY     ALSO    "2"
@@ -939,13 +939,13 @@
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ¼«Èñ¤Î¤È¤­
+      *    è‡ªè²»ã®ã¨ã
            IF     LNK-ORCBT120SUB-HKNNUM(SYU-IDX)(1:2) =   "98"
                MOVE    8888                TO  WRK-RECESYUBETU
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ¼£¸³¤Î¤È¤­
+      *    æ²»é¨“ã®ã¨ã
            IF     LNK-ORCBT120SUB-SANTEIYMD    >=  "20080401"
                IF    (LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  >=  "900")  AND
                      (LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  <=  "919")
@@ -954,14 +954,14 @@
                END-IF
            END-IF
       *
-      *    ¸ø³²ÊÝ¸±¡ÊÆþ±¡¡Ë¤Î¤È¤­
+      *    å…¬å®³ä¿é™ºï¼ˆå…¥é™¢ï¼‰ã®ã¨ã
            IF     LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  =
                                                WRK-CONS-KOUGAI-HKNNUM
                MOVE    7210                TO  WRK-RECESYUBETU
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    Ç¯Îð·×»»
+      *    å¹´é½¢è¨ˆç®—
            INITIALIZE                      PTINF-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM
                                        TO  PTINF-HOSPNUM
@@ -1026,19 +1026,19 @@
       *
                IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200210"  )
                AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "200803"  )
-      *            £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
+      *            ï¼“æ­³æœªæº€ã®å ´åˆã€ï¼·ï¼«âˆ’ï¼¨ï¼¯ï¼®ï¼«ï¼ºï¼«ï¼«ï¼¢ï¼®ã«"ï¼“"ã‚’ã‚»ãƒƒãƒˆ
                    IF      WRK-AGE         <     3
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
                END-IF
-      *        Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *        å¹³æˆï¼’ï¼å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
                IF      LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200804"
                    IF      AGECHK-SYUGAKUKBN     =     1
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
                END-IF
       *
-      *        ¸å´ü¹âÎð¼ÔÈó³ºÅö
+      *        å¾ŒæœŸé«˜é½¢è€…éžè©²å½“
                MOVE    ZERO            TO  WRK-KOUKI-FLG
       *
                IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)
@@ -1103,11 +1103,11 @@
                    END-IF
                END-IF
       *
-      *            £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
-      *            "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
-      *            Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë
+      *            ï¼‘å‰²ã€ï¼’å‰²è² æ‹…ã®é«˜é½¢è€…ã®å ´åˆï¼·ï¼«âˆ’ï¼¨ï¼¯ï¼®ï¼«ï¼ºï¼«ï¼«ï¼¢ï¼®ã«
+      *            "ï¼™"ã¾ãŸã¯"ï¼˜"ã‚’ã‚»ãƒƒãƒˆ
+      *            è€äººä¿é™ºã®å ´åˆã¯ï¼·ï¼«âˆ’ï¼²ï¼ªï¼®ã«ã‚»ãƒƒãƒˆã™ã‚‹
       *
-      *        Ê¿À®£²£µÇ¯£µ·î°Ê¹ß
+      *        å¹³æˆï¼’ï¼•å¹´ï¼•æœˆä»¥é™
                IF     LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "201405"
                    IF    ( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
                                            =   "002" )
@@ -1213,7 +1213,7 @@
                    END-EVALUATE
                END-IF
       *
-      *        Ê¿À®£²£°Ç¯£´·î¡ÁÊ¿À®£²£µÇ¯£´·î
+      *        å¹³æˆï¼’ï¼å¹´ï¼”æœˆã€œå¹³æˆï¼’ï¼•å¹´ï¼”æœˆ
                IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200804" )
                AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "201404" )
                    IF    ( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
@@ -1317,7 +1317,7 @@
                    END-EVALUATE
                END-IF
       *
-      *        Ê¿À®£±£¸Ç¯£±£°·î¡ÁÊ¿À®£²£°Ç¯£³·î
+      *        å¹³æˆï¼‘ï¼˜å¹´ï¼‘ï¼æœˆã€œå¹³æˆï¼’ï¼å¹´ï¼“æœˆ
                IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200610" )
                AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "200803" )
                    EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
@@ -1388,7 +1388,7 @@
                    END-IF
                END-IF
       *
-      *        Ê¿À®£±£´Ç¯£±£°·î¡ÁÊ¿À®£±£¸Ç¯£¹·î
+      *        å¹³æˆï¼‘ï¼”å¹´ï¼‘ï¼æœˆã€œå¹³æˆï¼‘ï¼˜å¹´ï¼™æœˆ
                IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200210" )
                AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "200609" )
                    EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
@@ -1477,7 +1477,7 @@
                                        TO  LNK-SYUBETUGET-HKNNUM
            MOVE    PTINF-BIRTHDAY      TO  LNK-SYUBETUGET-BIRTHDAY 
       *
-      *    ¹ñÊÝ¤Î¤È¤­£¹£·£·¤Î¸øÈñ¤ÎÍ­Ìµ
+      *    å›½ä¿ã®ã¨ãï¼™ï¼—ï¼—ã®å…¬è²»ã®æœ‰ç„¡
            IF    ( LNK-SYUBETUGET-BIRTHDAY
                                        <   19440402 )
            AND   ( LNK-SYUBETUGET-HKNNUM
@@ -1534,7 +1534,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1552,7 +1552,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1585,7 +1585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -1602,7 +1602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -1620,7 +1620,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
+      *    ä¿é™ºçµ„åˆã›ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -1637,7 +1637,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ä¿é™ºçµ„åˆã›ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -1655,7 +1655,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
@@ -1672,7 +1672,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC        SECTION.
       *
@@ -1690,7 +1690,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ýÇ¼¥Þ¥¹¥¿¡¼¸¡º÷
+      *    åŽç´ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-SYUNOU-SELECT-SEC        SECTION.
       *
@@ -1707,7 +1707,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ýÇ¼¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    åŽç´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SYUNOU-READ-SEC        SECTION.
       *
@@ -1725,7 +1725,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTHKNINF-SELECT-SEC        SECTION.
       *
@@ -1742,7 +1742,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTHKNINF-READ-SEC        SECTION.
       *
@@ -1760,7 +1760,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…åŠ´ç½ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTRSIINF-SELECT-SEC        SECTION.
       *
@@ -1777,7 +1777,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…åŠ´ç½ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTRSIINF-READ-SEC        SECTION.
       *
@@ -1795,7 +1795,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¹þ
+      *    æ‚£è€…å…¬è²»æƒ…å ±èª­è¾¼
       *****************************************************************
        900-PTKOHINF-READ-N-SEC           SECTION.
       *
@@ -1815,7 +1815,7 @@
        900-PTKOHINF-READ-N-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼³ï¼¥ï¼¬ï¼¥ï¼£ï¼´å‡¦ç†
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1832,7 +1832,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *    ï¼¤ï¼¢ï¼¦ï¼¥ï¼´ï¼£ï¼¨å‡¦ç†
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1845,7 +1845,7 @@
       *
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1858,7 +1858,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

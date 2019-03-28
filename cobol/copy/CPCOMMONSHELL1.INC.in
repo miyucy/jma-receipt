@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,24 +17,24 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ¥ì¥»¥×¥ÈÌÀºÙºîÀ®ÍÑ¥·¥§¥ëÍÑÎÎ°è    CPCOMMONSHELL1.INC
+      *    ãƒ¬ã‚»ãƒ—ãƒˆæ˜Žç´°ä½œæˆç”¨ã‚·ã‚§ãƒ«ç”¨é ˜åŸŸ    CPCOMMONSHELL1.INC
       *            
       *      $1 SRYYM TERID SYSYMD
       *      $2 SYOKBN
-      *         1:°ì³çºîÀ®  2:¸ÄÊÌºîÀ®
+      *         1:ä¸€æ‹¬ä½œæˆ  2:å€‹åˆ¥ä½œæˆ
       *      $3 RECEKBN
-      *         0:Á´ÂÎ  1:¼ÒÊÝ¡¡2:¹ñÊÝ
-      *      $4 ¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾
+      *         0:å…¨ä½“  1:ç¤¾ä¿ã€€2:å›½ä¿
+      *      $4 ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«å
       * 
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-Æ£¸¶     01/06/29  PRTKBN¤òºï½ü
-      *                                     SYSYMD¤òÄÉ²Ã 
-      *  01.00.02    MCC-Æ£¸¶     02/02/28  SHELL-SHELL¤ÎÄ¹¤µÊÑ¹¹
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-è—¤åŽŸ     01/06/29  PRTKBNã‚’å‰Šé™¤
+      *                                     SYSYMDã‚’è¿½åŠ  
+      *  01.00.02    MCC-è—¤åŽŸ     02/02/28  SHELL-SHELLã®é•·ã•å¤‰æ›´
       *****************************************************************
        01  SHELL-AREA.
-      *¡ú    03  FILLER             PIC  X(03) VALUE "sh ".
+      *â˜…    03  FILLER             PIC  X(03) VALUE "sh ".
            03  SHELL-NAME.
              05  FILLER             PIC  X(@monthlyscripts_len@) VALUE
            "@monthlyscripts@".

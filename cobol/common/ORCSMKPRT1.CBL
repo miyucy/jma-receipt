@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,97 +18,97 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSMKPRT1.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ����饤��Ģɼ��������
-      *                    : (�ư�����DB�񤭹����ɲ�)
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/09/12    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : オンライン帳票印刷サブ
+      *                    : (再印刷用DB書き込み追加)
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/09/12    NACL-竹田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����    ����
-      *  04.07.00    NACL-����  11/03/20  ���饤����Ȱ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付    内容
+      *  04.07.00    NACL-竹田  11/03/20  クライアント印刷対応
       *****************************************************************
       *
-      *  ����饤��Ģɼ����������ή��(2017.05.29)
-      *  1.�̾����
-      *  2.���饤����Ȱ�����Ģɼ�����
-      *  3.Ginbee�Ķ�
-      *  4.API����ΰ���
-      *  5.HAORI����ΰ���
+      *  オンライン帳票印刷処理の流れ(2017.05.29)
+      *  1.通常印刷
+      *  2.クライアント印刷、帳票毎印刷
+      *  3.Ginbee環境
+      *  4.APIからの印刷
+      *  5.HAORIからの印刷
       *
-      *  1.�̾�����ʽ�����֤Ǥΰ�����
-      *    �����ƥ������1010 ���������
-      *     +�θ��������
-      *       +�ץ�󥿤ؤΥǡ���������0 ���ڡ������������
-      *       +���饤����Ȱ���      ��0 ���ʤ���
+      *  1.通常印刷（初期状態での印刷）
+      *    システム管理［1010 職員情報］
+      *     +［個別設定］
+      *       +プリンタへのデータ送信［0 １ページ毎に送信］
+      *       +クライアント印刷      ［0 しない］
       *
-      *    ORCSONPRTSET �ư�����UUID����Ф�
-      *    ��
-      *    ĢɼPG
-      *       +ORCSMKPRT1 Ģɼ����
-      *         +HC01.sh ��Ģɼ������
-      *         +online-reprint.sh (�ư����ǡ�����Ͽ��
+      *    ORCSONPRTSET 再印刷用UUID振り出し
+      *    ↓
+      *    帳票PG
+      *       +ORCSMKPRT1 帳票印刷
+      *         +HC01.sh （帳票印刷）
+      *         +online-reprint.sh (再印刷データ登録）
       *          +ORCBONPRT
       *
-      *       +ORCRPMAIN ĢɼAPI�ǡ����������ư����ǡ�����Ͽ
-      *         +rpmain1.sh (push����)
+      *       +ORCRPMAIN 帳票APIデータ作成、再印刷データ登録
+      *         +rpmain1.sh (push通知)
       *
       *
-      *  2.���饤����Ȱ�����Ģɼ�����
-      *  3.Ginbee�Ķ�
-      *    �����ƥ������1010 ���������
-      *     +�θ��������
-      *       +�ץ�󥿤ؤΥǡ���������1 Ģɼ���������
-      *       +���饤����Ȱ���      ��1 �����
+      *  2.クライアント印刷、帳票毎印刷
+      *  3.Ginbee環境
+      *    システム管理［1010 職員情報］
+      *     +［個別設定］
+      *       +プリンタへのデータ送信［1 帳票毎に送信］
+      *       +クライアント印刷      ［1 する］
       *
       *    ORCSONPRTSET
-      *    ��
-      *    ORCSPRTCTRL ���饤����Ȱ����ե饰����
-      *    ��
-      *    ĢɼPG
-      *    �� +ORCSMKPRT1
-      *    ��   +online-reprint.sh (�ư����ǡ�����Ͽ��
-      *    ��    +ORCBONPRT
-      *    ��
-      *    �� +ORCRPMAIN
-      *    ��   +online-reprint.sh (�ư����ǡ�����Ͽ��
-      *    ��    +ORCBONPRT
-      *    ��
+      *    ↓
+      *    ORCSPRTCTRL クライアント印刷フラグ設定
+      *    ↓
+      *    帳票PG
+      *    ｜ +ORCSMKPRT1
+      *    ｜   +online-reprint.sh (再印刷データ登録）
+      *    ｜    +ORCBONPRT
+      *    ｜
+      *    ｜ +ORCRPMAIN
+      *    ｜   +online-reprint.sh (再印刷データ登録）
+      *    ｜    +ORCBONPRT
+      *    ↓
       *    ORCHCDUMMY
       *       +ORCSMKPRT1
-      *         +client_print.sh (Ģɼ������
+      *         +client_print.sh (帳票印刷）
       *           +ORCBCLPRT
       *             +print_prv.sh
       *               +ORCBPRT1
-      *                 +HCALL_prv.sh��Ģɼ������
+      *                 +HCALL_prv.sh（帳票印刷）
       *
-      *                 +push_form.sh��push���Ρ�
+      *                 +push_form.sh（push通知）
       *
       *
-      *  4.API����ΰ���
+      *  4.APIからの印刷
       *    ORCSONPRTSET
-      *    ��
-      *    ORCSPRTCTRL ���饤����Ȱ����ե饰����
-      *    ��
-      *    ĢɼPG
-      *    �� +ORCRPMAIN ĢɼAPI�ǡ����������ư����ǡ�����Ͽ
-      *    ��
-      *    ORCSAPIFM(�쥹�ݥ󥹺���)
-      *       +ORCSAPIFMTERM(push���Ρ�
+      *    ↓
+      *    ORCSPRTCTRL クライアント印刷フラグ設定
+      *    ↓
+      *    帳票PG
+      *    ｜ +ORCRPMAIN 帳票APIデータ作成、再印刷データ登録
+      *    ↓
+      *    ORCSAPIFM(レスポンス作成)
+      *       +ORCSAPIFMTERM(push通知）
       *
       *
-      *  5.HAORI����ΰ���
+      *  5.HAORIからの印刷
       *    ORCSONPRTSET
-      *    ��
-      *    ORCSPRTCTRL ���饤����Ȱ����ե饰����
-      *    ��
-      *    ĢɼPG
-      *    �� +ORCRPMAIN ĢɼAPI�ǡ����������ư����ǡ�����Ͽ
-      *    ��
+      *    ↓
+      *    ORCSPRTCTRL クライアント印刷フラグ設定
+      *    ↓
+      *    帳票PG
+      *    ｜ +ORCRPMAIN 帳票APIデータ作成、再印刷データ登録
+      *    ↓
       *    ORCHCDUMMY
-      *       +ORCSAPIFMTERM(push���Ρ�
+      *       +ORCSAPIFMTERM(push通知）
       *
       *
        ENVIRONMENT             DIVISION.
@@ -116,7 +116,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
            SELECT  PRT-IN-FILE     ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-IN.
            SELECT  PRT-OUT-FILE    ASSIGN  HOUTPARA
@@ -125,7 +125,7 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-IN-FILE.
        01  PRT-IN-REC.
            03  PRT-IN-PRTDATA      PIC X(20000).
@@ -148,12 +148,12 @@
        01  STS-AREA.
            03  STS-IN              PIC X(02).
            03  STS-OUT             PIC X(02).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *     �����ѥǡ��� ̾���ΰ� 
+      *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *
            COPY    "CPCOMMONPRT.INC"       REPLACING   //HC01PARA//
@@ -162,7 +162,7 @@
            COPY    "CPASGNPARA.INC"       REPLACING    //ASGNPARA//
                                            BY          //HOUTPARA//.
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
       *
@@ -171,7 +171,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-PRTCTRL         PIC 9(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-DIA             PIC X(10).
            03  WRK-SHORI-RENNUM    PIC 9(02).
@@ -183,23 +183,23 @@
            03  WRK-PRT-FLG         PIC 9(02).
            03  WRK-PRTDATA         PIC X(20000).
       *
-      *    �ǥ��쥯�ȥ����
+      *    デイレクトリ位置
        01  SHELL-NAME.
            03  FILLER              PIC X(30)   VALUE
                "scripts/daily/".
-      *   �ģ��
+      *   Ｄｉａ
        01  SHELL-DIA.
            03  FILLER              PIC X(40)   VALUE
                "scripts/daily/print-data.rb".
-      *   �ͣϣΣУ�
+      *   ＭＯＮＰＥ
        01  SHELL-MONPE.
            03  FILLER              PIC X(10)   VALUE
                "red2ps".
-      *    �ƣϣңͰ���
+      *    ＦＯＲＭ位置
        01  SHELL-FORM.
            03  FILLER              PIC X(10)   VALUE
                "form/".
-      *    �쥳���ɰ���
+      *    レコード位置
        01  SHELL-RECORD.
            03  FILLER              PIC X(10)   VALUE
                "record/".
@@ -214,19 +214,19 @@
            05  WRK-SHELL-SHELL    PIC X(20).         
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
-      *    ��������ޥ���
+      *    印刷制御マスタ
        01  PRTCTRL-REC.
            COPY    "CPPRTCTRL.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ե��å���
+      *    オフセット用
            COPY   "CPSK1044.INC".
-      *    �ǥ��쥯�ȥ�����Խ�����
+      *    ディレクトリ位置編集サブ
            COPY   "CPMKPASS.INC".
       *
            COPY    "MCPDATA.INC".
@@ -234,22 +234,22 @@
       *
            COPY    "MCPAREA".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
            COPY  "CPORCSMKPRT.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -258,7 +258,7 @@
       *
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -306,7 +306,7 @@
                    PERFORM 200-MON-PRINT-SEC
                END-IF
       *
-      *        �ư����񤭽Ф���Ƚ��
+      *        再印刷書き出しの判定
                IF    ( SPA-PRT-FLG             NOT =   SPACE )
                    IF    ( SPA-CLIENT-PRT-FLG      =   ZERO )
                     AND  ( SPA-PRTCONF             =   SPACE )
@@ -324,23 +324,23 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        200-MON-PRINT-SEC            SECTION.
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
-      *    �ӣȣţ̣�̾
+      *    ＳＨＥＬＬ名
            STRING  SHELL-NAME          DELIMITED  BY  SPACE
                    MKPRT-ID            DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-01
            END-STRING
-      *    �ƣϣң�
+      *    ＦＯＲＭ
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-03
            END-STRING
-      *    DEF̾
+      *    DEF名
            IF    ( MKPRT-DEF           =   "__SITE__" )
                CALL    "ORCSMKPASSSITE"
                                        USING   ORCSMKPASSAREA
@@ -359,19 +359,19 @@
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
-      *    ���᡼���ݻ��ե饰��T:�ݻ���
+      *    イメージ保持フラグ（T:保持）
            IF    ( SPA-CLIENT-TEMP-FLG =   2 )
                MOVE    "T"             TO  SHELLTBL-ARG3
            END-IF
-      *    �ǡ�������
+      *    データ内容
            MOVE    MKPRT-DAT (ASGNPARA-ST:)
                                        TO  SHELLTBL-ARG4
-      *    ��������
+      *    印刷位置
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
-      *    ���ե��å�
+      *    オフセット
            MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
            MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
-      *    ���󥳡��ǥ���
+      *    エンコーディング
            MOVE    WRK-ENCODING        TO  SHELLTBL-ARG8
       *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
@@ -388,7 +388,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        200-MON-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ���ե��åȼ�������
+      *    オフセット取得処理
       *****************************************************************
        201-OFFSET-GET-SEC              SECTION.
       *
@@ -443,7 +443,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        201-OFFSET-GET-EXT.
            EXIT.
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        300-REPRINT-SEC                 SECTION.
       *
@@ -470,10 +470,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CLOSE   PRT-OUT-FILE
       *
            INITIALIZE                  LNK-PRTKANRI-AREA
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルデイレクトリ位置指定
            INITIALIZE              ORCSMKPASSAREA
            MOVE    SHELL-ONLINE    TO  MKPASS-IN-01
-      *    �ƣϣң�
+      *    ＦＯＲＭ
            STRING  SHELL-FORM      DELIMITED  BY  SPACE
                    MKPRT-DIA       DELIMITED  BY  SPACE
                                    INTO    MKPASS-IN-02
@@ -544,7 +544,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    MKPRT-DIA       TO  SHELLTBL-ARG19
       *    TYPE
            MOVE    MKPRT-TYPE      TO  SHELLTBL-ARG20
-      *    �ǡ�������
+      *    データ内容
            MOVE    HOUTPARA (HOUTPARA-ST:)
                                    TO  SHELLTBL-ARG21
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG22
@@ -570,7 +570,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        300-REPRINT-EXT.
            EXIT.
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        301-CLIENTPRINT-SEC         SECTION.
       *

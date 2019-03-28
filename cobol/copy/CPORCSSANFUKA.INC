@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       *---------------------------------------------------*
-      *    ÆâÊ¬ÈçÉé²Ù»î¸³¹¹¿·¥Ñ¥é¥á¥¿                          *
+      *    å†…åˆ†æ³Œè² è·è©¦é¨“æ›´æ–°ãƒ‘ãƒ©ãƒ¡ã‚¿                          *
       *                         COPY  (CPORCSSANFUKA.INC) *
       *
       *---------------------------------------------------*
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
        01  ORCSSANFUKAAREA.
-      *£É£Î¹àÌÜ
-      *½èÍý¶èÊ¬¡Ê£±¡§Åö·îÊ¬½¸·×¡¢£²¡§ÅÀ¿ô·×»»¡¢£³¡§¹¹¿·¡Ë
+      *ï¼©ï¼®é …ç›®
+      *å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šå½“æœˆåˆ†é›†è¨ˆã€ï¼’ï¼šç‚¹æ•°è¨ˆç®—ã€ï¼“ï¼šæ›´æ–°ï¼‰
            03  LNK-SANFUKA-SYORI             PIC  9(01).
-      *½èÍý£Ð£Ç
+      *å‡¦ç†ï¼°ï¼§
            03  LNK-SANFUKA-PG                PIC  X(03).
-      *¿ÇÎÅÇ¯·îÆü
+      *è¨ºç™‚å¹´æœˆæ—¥
            03  LNK-SANFUKA-SRYYMD            PIC  X(08).
-      *    ÄûÀµ»þ¤Î¿ÇÎÅ¥³¡¼¥É
+      *    è¨‚æ­£æ™‚ã®è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  LNK-SANFUKA-TEISEI-AREA.
                05  LNK-SANFUKA-TEISEI-OCC      OCCURS   400.
                    07  LNK-SANFUKA-TEI-SRYCD   PIC X(09).
                    07  LNK-SANFUKA-TEI-KAISU   PIC 9(03).
            03  LNK-SANFUKA-I-O.
-      *ÆâÊ¬ÈçÉé²Ù»î¸³¾å¸ÂÅÀ¿ô
+      *å†…åˆ†æ³Œè² è·è©¦é¨“ä¸Šé™ç‚¹æ•°
                05  LNK-SANFUKA-TEN-MAX         PIC 9(08).
-      *Åö·îÊ¬¹ç·×
+      *å½“æœˆåˆ†åˆè¨ˆ
                05  LNK-SANFUKA-MSANTESU        PIC 9(08).
-      *Åö·îºÇ½ª»»ÄêÆü
+      *å½“æœˆæœ€çµ‚ç®—å®šæ—¥
                05  LNK-SANFUKA-MSANTEID        PIC 9(02).
-      *ÄûÀµÊ¬¹ç·×
+      *è¨‚æ­£åˆ†åˆè¨ˆ
                05  LNK-SANFUKA-MSANTESU-DEL    PIC 9(08).
       *
            03  LNK-SANFUKA-OUT.
-      *ÎßÀÑÅÀ¿ô¥¨¥é¡¼
+      *ç´¯ç©ç‚¹æ•°ã‚¨ãƒ©ãƒ¼
                05  LNK-SANFUKA-ERRMSG       PIC X(80).
       *

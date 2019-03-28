@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,51 +16,51 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    ¥ï¡¼¥¯¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿ÉÕ²Ã  COPY (CPWKSRYACTPLUS.INC)
+      *    ãƒ¯ãƒ¼ã‚¯è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ä»˜åŠ   COPY (CPWKSRYACTPLUS.INC)
       *
       *-------------------------------------------------*
       *03  WKSRYACTPLUS-REC.
-      *ºîÀ®¶èÊ¬¡Ê£±¡§¤¢¤ê¡Ë
+      *ä½œæˆåŒºåˆ†ï¼ˆï¼‘ï¼šã‚ã‚Šï¼‰
            05  WKSRYP-ADDKBN             PIC  X(01).
-      *ÅÀ¿ô¶èÊ¬¡Ê£°¡§¥×¥é¥¹¡¢£±¡§¥Þ¥¤¥Ê¥¹¡Ë
+      *ç‚¹æ•°åŒºåˆ†ï¼ˆï¼ï¼šãƒ—ãƒ©ã‚¹ã€ï¼‘ï¼šãƒžã‚¤ãƒŠã‚¹ï¼‰
            05  WKSRYP-PLUSKBN            PIC  9(01).
-      *Ï«ºÒ¤Î±ß
+      *åŠ´ç½ã®å††
            05  WKSRYP-RSIKINGAKU         PIC  9(07).
-      *¼êµ»Ëè¤ÎÆâÍÆ¡Ê¿Ç»¡¡¦¼ê½Ñ¡¦²èÁü¿ÇÃÇ¡¦½èÃÖ¡Ë
+      *æ‰‹æŠ€æ¯Žã®å†…å®¹ï¼ˆè¨ºå¯Ÿãƒ»æ‰‹è¡“ãƒ»ç”»åƒè¨ºæ–­ãƒ»å‡¦ç½®ï¼‰
            05  WKSRYP-SYUGI-TBL-G.
                07  WKSRYP-SYUGI-TBL      OCCURS   5.
-      *³«»Ï¼êµ»¥³¡¼¥É
+      *é–‹å§‹æ‰‹æŠ€ã‚³ãƒ¼ãƒ‰
                    09  WKSRYP-SRYCD          PIC  X(09).
-      *¼êµ»ÅÀ¿ô
+      *æ‰‹æŠ€ç‚¹æ•°
                    09  WKSRYP-SYUTEN         PIC  9(07).
-      *ÌôºÞÅÀ¿ô
+      *è–¬å‰¤ç‚¹æ•°
                    09  WKSRYP-YKZTEN         PIC  9(07).
-      *¤½¤ÎÂ¾´ïºàÅÀ¿ô¡Ê¥Õ¥£¥ë¥à¡¦»ÀÁÇ¡¦ÃâÁÇ°Ê³°¡Ë
+      *ãã®ä»–å™¨æç‚¹æ•°ï¼ˆãƒ•ã‚£ãƒ«ãƒ ãƒ»é…¸ç´ ãƒ»çª’ç´ ä»¥å¤–ï¼‰
                    09  WKSRYP-KIZAITEN       PIC  9(07).
-      *¥Õ¥£¥ë¥àÅÀ¿ô
+      *ãƒ•ã‚£ãƒ«ãƒ ç‚¹æ•°
                    09  WKSRYP-FIRTEN         PIC  9(07).
-      *»ÀÁÇÅÀ¿ô
+      *é…¸ç´ ç‚¹æ•°
            05  WKSRYP-SANSOTEN       PIC  9(07).
-      *ÃâÁÇÅÀ¿ô
+      *çª’ç´ ç‚¹æ•°
            05  WKSRYP-CHISOTEN       PIC  9(07).
-      *±¡³°½èÊýÅÀ¿ô
+      *é™¢å¤–å‡¦æ–¹ç‚¹æ•°
            05  WKSRYP-INGAITEN       PIC  9(07).
       *
-      *ÆâÊ¬ÈçÉé²Ù»î¸³ÍÑ
-      *Åö·î»»Äê¥Õ¥é¥°
+      *å†…åˆ†æ³Œè² è·è©¦é¨“ç”¨
+      *å½“æœˆç®—å®šãƒ•ãƒ©ã‚°
            05  WKSRYP-MSANTEITFLG       PIC  9(01).
-      *Åö·î»»ÄêÅÀ¿ô
+      *å½“æœˆç®—å®šç‚¹æ•°
            05  WKSRYP-MSANTEITEN        PIC  9(08).
-      *Åö·î»»ÄêÅÀ¿ô¶èÊ¬
+      *å½“æœˆç®—å®šç‚¹æ•°åŒºåˆ†
            05  WKSRYP-MSANTEITENKBN     PIC  9(01).
       *
-      *ÆâÉþ£·¼ïÎàÄþ¸ºÂÐ¾Ý¡Ê£±¡§Äþ¸ºÌÀºÙºÞ¡¢£²¡§Äþ¸º¡Ë
+      *å†…æœï¼—ç¨®é¡žé€“æ¸›å¯¾è±¡ï¼ˆï¼‘ï¼šé€“æ¸›æ˜Žç´°å‰¤ã€ï¼’ï¼šé€“æ¸›ï¼‰
            05  WKSRYP-TEI-NKBN           PIC  9(01).
       *H27.4
-      *£³£°ÆüÅêÌôÄþ¸ºÂÐ¾Ý¡Ê£±¡§Äþ¸ºÌÀºÙºÞ¡¢£²¡§Äþ¸º¡Ë
+      *ï¼“ï¼æ—¥æŠ•è–¬é€“æ¸›å¯¾è±¡ï¼ˆï¼‘ï¼šé€“æ¸›æ˜Žç´°å‰¤ã€ï¼’ï¼šé€“æ¸›ï¼‰
            05  WKSRYP-TEI-NKBN30         PIC  9(01).
       *
-      *APIÍÑ
-      *Ï«ºÒÅÀ¿ô
+      *APIç”¨
+      *åŠ´ç½ç‚¹æ•°
            05  WKSRYP-RSI-TENSU          PIC  9(07).
       *

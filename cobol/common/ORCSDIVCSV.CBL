@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSDIVCSV.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : CSV�쥳����ʬ��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  13/12/12    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : CSVレコード分割
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  13/12/12    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,7 +38,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-EDIT-AREA.
@@ -47,12 +47,12 @@
                05  FLG-DQED            PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-REC-LEN             PIC 9(04).
            03  WRK-POINT-AREA.
@@ -64,7 +64,7 @@
                05  WRK-MO-BYTE         PIC 9(04).
                05  WRK-WK1             PIC 9(04).
       *
-      *    �������ΰ�
+      *    固定値領域
        01  CONST-AREA.
            03  CONST-RECSIZE-MAX       PIC 9(04)  VALUE 3000.
            03  CONST-TBL-MAX           PIC 9(03)  VALUE 100.
@@ -72,7 +72,7 @@
            03  CONST-DQ                PIC X(01)  VALUE X"22".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -82,7 +82,7 @@
            ORCSDIVCSV-AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -99,7 +99,7 @@
            .
       *
       *****************************************************************
-      *    ���������å�
+      *    引数チェック
       *****************************************************************
        100-PARAM-CHECK-SEC         SECTION.
       *
@@ -116,7 +116,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ�����ͭ��ʸ���������
+      *    データの有効文字数を求める
       *****************************************************************
        1001-REC-SIZE-SEC           SECTION.
       *
@@ -137,7 +137,7 @@
            EXIT.
       *
       *****************************************************************
-      *    CSV�쥳���ɤ���������Υǡ��������
+      *    CSVレコードから要素毎のデータを抽出
       *****************************************************************
        200-DIVIDE-CSV-SEC          SECTION.
       *
@@ -155,11 +155,11 @@
                                            =   SPACE
                    MOVE    WRK-PO-ST           TO  WRK-PO-ED
                ELSE
-      *            ���ܽ�λʸ����Υ���ް��֤����(WRK-PO-ED)
+      *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 2001-CHAR-END-SEC
                END-IF
       *
-      *        ���ܶ��̽���
+      *        項目共通処理
                PERFORM 2002-ELEMENT-KYOTU-SEC
       *
                IF     (IDX                 =   ORCSDIVCSV-ELE-C)   OR
@@ -173,7 +173,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݹ��ܤ�ʸ����λ���֤����
+      *    対象項目の文字終了位置を取得
       *****************************************************************
        2001-CHAR-END-SEC           SECTION.
       *
@@ -183,7 +183,7 @@
                    UNTIL  (IDY        >    CONST-RECSIZE-MAX)
                        OR (IDY        >    WRK-REC-LEN)
                        OR (FLG-COMMA   =   1)
-      *        �ǥ�ߥ��ΰ���
+      *        デリミタの位置
                IF      ORCSDIVCSV-CHAR (IDY)
                                            =   ORCSDIVCSV-DELI
                    MOVE    IDY                 TO  WRK-PO-ED
@@ -193,7 +193,7 @@
                       (FLG-COMMA           =   0)
                    COMPUTE WRK-PO-ED           =   IDY +   1
                END-IF
-      *        �ǥ�ߥ�(")¸�ߤ��뤫�ɤ���
+      *        デリミタ(")存在するかどうか
                IF      ORCSDIVCSV-DQ       =   1
                    IF      ORCSDIVCSV-CHAR (IDY)
                                                =   CONST-DQ
@@ -210,16 +210,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ��̽���
+      *    項目共通処理
       *****************************************************************
        2002-ELEMENT-KYOTU-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-MOVE-AREA
       *
-      *    �ǡ�������ά����Ƥ����硢FLG-NODATA��1�򥻥å�
+      *    データが省略されている場合、FLG-NODATAに1をセット
            IF     (ORCSDIVCSV-DQ       =   1)  AND
                   (FLG-DQST            =   1)
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                IF      FLG-DQED            =   1
                    COMPUTE WRK-WK1     =   WRK-PO-ST   +   2
                ELSE
@@ -229,17 +229,17 @@
                    MOVE    1                   TO  FLG-NODATA
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                IF      WRK-PO-ST           =   WRK-PO-ED
                    MOVE    1                   TO  FLG-NODATA
                END-IF
            END-IF
       *
            IF      FLG-NODATA          =   ZERO
-      *    ž�����ϰ��֡�ž������򻻽�
+      *    転送開始位置・転送桁数を算出
                IF     (ORCSDIVCSV-DQ       =   1)  AND
                       (FLG-DQST            =   1)
-      *            �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *            デリミタ(")を含んでいる場合
                    COMPUTE WRK-MO-ST           =   WRK-PO-ST   +   1
                    IF      FLG-DQED            =   1
                        COMPUTE WRK-MO-BYTE         =   WRK-PO-ED
@@ -251,7 +251,7 @@
                                                    -   1
                    END-IF
                ELSE
-      *            �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *            デリミタ(")を含んでいない場合
                    MOVE    WRK-PO-ST           TO  WRK-MO-ST
                    COMPUTE WRK-MO-BYTE         =   WRK-PO-ED
                                                -   WRK-PO-ST
@@ -264,7 +264,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǥǡ�����ơ��֥�س�Ǽ
+      *    要素データをテーブルへ格納
       *****************************************************************
        20021-DATA-COPY-SEC         SECTION.
       *

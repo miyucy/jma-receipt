@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSSYOTOKU.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ���Խ��������Խ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 患者所得情報編集
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.01    NACL-����    09/07/28  �����Ծ���ε�ǽ�ɲ�
-      *                                     ��ɸ����ô�ۤΤߤθ��ۡ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-門脇    09/07/28  所得者情報の機能追加
+      *                                     （標準負担額のみの減額）
       *
-      *  04.08.01    NACL-����    15/10/21  ��ʪ�����оݳ���������ʿ������б�
-      *  04.08.02    NACL-����    17/08/01  ʿ������ǯ���������
-      *                                     ������������������θ�ľ����
-      *  04.08.03    NACL-����    17/10/18  �������Ȱۤʤ��ݸ��Ȥ߹�碌
-      *                                     �Ǥο��������б�
+      *  04.08.01    NACL-門脇    15/10/21  現物給付対象外の低所得（食事）対応
+      *  04.08.02    NACL-門脇    17/08/01  平成２９年１０月改正
+      *                                     （入院時生活療養費の見直し）
+      *  04.08.03    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
+      *                                     での食事算定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,7 +48,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-TNKRRK            PIC 9(01).
            03  FLG-TSYRRK            PIC 9(01).
@@ -66,7 +66,7 @@
            03  FLG-SRYACCT           PIC 9(01).
            03  FLG-SRYACT            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                   PIC 9(02).
            03  IDX2                  PIC 9(02).
@@ -76,7 +76,7 @@
            03  IDX-ST                PIC 9(02).
            03  IDX-ED                PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-DAY-TABLE.
              05  WRK-DAY-T             OCCURS   31.
@@ -138,71 +138,71 @@
                  09  WRK-CHECK2-HOJOKBN          PIC X(01).
                  09  WRK-CHECK2-SETFLG           PIC 9(01).
       *
-      *    ������
+      *    固定値
        01  WRK-CONS-AREA.
       *
            03  WRK-CONS-SRYYM-200610   PIC 9(06)   VALUE   200610.
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ΰ�
+      *    共通領域
            COPY    "MCPAREA".
       *
-      *    �㣱
+      *    低１
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
       *
-      *    �㣲
+      *    低２
        01  TSYRRK-REC.
            COPY    "CPTSYRRK.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �������
+      *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰�
+      *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "MCPDATA.INC".
       *
-      *    �ݸ�������ǯ�𡦳��׻�����
+      *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
-      *    �������������Ƚ�ꥵ��
+      *    特定疾患等算定判定サブ
            COPY    "CPORCSSRHKOH.INC".
       *
-      *    ������̤��������������
+      *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌��������
+      *    入院料と異なる食事算定保険組み合わせ取得サブ
            COPY    "CPORCSSKJHKN.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -215,7 +215,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -226,7 +226,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    �ѥ�᥿�����å�
+      *    パラメタチェック
            PERFORM   100-PRM-CHK-SEC
            IF    LNK-SYOTOKU-RC   NOT =   ZERO
                GO   TO   000-PROC-EXT
@@ -243,16 +243,16 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᥿�����å�
+      *    パラメタチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ����ǯ������å�
+      *    処理年月チェック
            IF      LNK-SYOTOKU-SRYYM    =   SPACE
                MOVE    1                 TO  LNK-SYOTOKU-RC
            END-IF
       *
-      *    ���ԣɣĥ����å�
+      *    患者ＩＤチェック
            IF  LNK-SYOTOKU-RC  =  ZERO
              IF    LNK-SYOTOKU-PTID     =   ZERO
                MOVE    2                 TO  LNK-SYOTOKU-RC
@@ -291,11 +291,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    �㣱
+      *    低１
            INITIALIZE                        TNKRRK-REC
            MOVE    LNK-SYOTOKU-HOSPNUM   TO  TNKRRK-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID      TO  TNKRRK-PTID
@@ -332,7 +332,7 @@
            MOVE     "key3"               TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    �㣲
+      *    低２
            INITIALIZE                        TSYRRK-REC
            MOVE    LNK-SYOTOKU-HOSPNUM   TO  TSYRRK-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID      TO  TSYRRK-PTID
@@ -369,13 +369,13 @@
            MOVE     "key3"               TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    ����Խ�
+      *    結果編集
            IF        LNK-SYOTOKU-RC      =   ZERO
       *
              PERFORM   VARYING   IDX     FROM    1   BY  1
                         UNTIL    IDX      >     31
       *
-      *       ���ݸ�����������ʬ
+      *       主保険・全国公費区分
               EVALUATE WRK-DAY-SYU-TSY(IDX) ALSO WRK-DAY-SYU-TNK(IDX)
                  WHEN    SPACE              ALSO    SPACE
                        MOVE   SPACE   TO    LNK-SYOTOKU-SYUKBN(IDX)
@@ -391,7 +391,7 @@
                        MOVE   "4"     TO    LNK-SYOTOKU-SYUKBN(IDX)
               END-EVALUATE
       *
-      *       ���������ʬ
+      *       地方公費区分
               EVALUATE WRK-DAY-CHI-TSY(IDX) ALSO WRK-DAY-CHI-TNK(IDX)
                  WHEN    SPACE              ALSO    SPACE
                        MOVE   SPACE   TO    LNK-SYOTOKU-CHIKBN(IDX)
@@ -403,7 +403,7 @@
                        MOVE   "1"     TO    LNK-SYOTOKU-CHIKBN(IDX)
               END-EVALUATE
       *
-      *       ������ʬ
+      *       食事区分
               EVALUATE WRK-DAY-SKJ-TSY(IDX) ALSO WRK-DAY-SKJ-TNK(IDX)
                  WHEN    SPACE              ALSO    SPACE
                        MOVE   SPACE   TO    LNK-SYOTOKU-SKJKBN(IDX)
@@ -425,7 +425,7 @@
                        MOVE   "4"     TO    LNK-SYOTOKU-SKJKBN(IDX)
               END-EVALUATE
       *
-      *       �ڿ����ѡ۶����ض�ʬ
+      *       【食事用】境界層区分
               EVALUATE WRK-DAY-KKS-TSY(IDX) ALSO WRK-DAY-KKS-TNK(IDX)
                  WHEN    SPACE              ALSO    SPACE
                        MOVE   SPACE   TO    LNK-SYOTOKU-KKSKBN(IDX)
@@ -446,7 +446,7 @@
       *
              END-PERFORM
       *
-      *      ������ʬ�����å��ܡڿ����ѡ��ֵѹ����Խ�
+      *      食事区分チェック＋【食事用】返却項目編集
              IF  (LNK-SYOTOKU-SRYYM      >=  "201501")
              AND (LNK-SYOTOKU-SKJCHKFLG   =  "1"     )
                PERFORM  230-SKJKBN-CHECK-SEC
@@ -489,7 +489,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �㣱�Խ�
+      *    低１編集
       *****************************************************************
        210-TNK-HENSYU-SEC            SECTION.
       *
@@ -544,7 +544,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �㣲�Խ�
+      *    低２編集
       *****************************************************************
        220-TSY-HENSYU-SEC            SECTION.
       *
@@ -596,7 +596,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �㣱�Խ��ʣ�������ǯ����ޤǡ�
+      *    低１編集（２００６年３月まで）
       *****************************************************************
        211-TNK-HENSYU2-SEC            SECTION.
       *
@@ -620,7 +620,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �㣲�Խ��ʣ�������ǯ����ޤǡ�
+      *    低２編集（２００６年３月まで）
       *****************************************************************
        221-TSY-HENSYU2-SEC            SECTION.
       *
@@ -652,11 +652,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ�����å��ܡڿ����ѡ��ֵѹ����Խ�
+      *    食事区分チェック＋【食事用】返却項目編集
       *****************************************************************
        230-SKJKBN-CHECK-SEC            SECTION.
       *
-      *    ����ǯ��
+      *    患者年齢
            MOVE    ZERO                   TO  WRK-NENREI
            INITIALIZE                         ORCSAGECHKAREA
            MOVE    LNK-SYOTOKU-HOSPNUM    TO  AGECHK-HOSPNUM
@@ -670,10 +670,10 @@
               MOVE    AGECHK-NENREI       TO  WRK-NENREI
            END-IF
       *
-      *    ���Ը������������ݸ��ֹ�968��976��
+      *    患者公費情報取得（保険番号968・976）
            PERFORM   2301-KOHINF-GET1-SEC
       *
-      *    ������פ��ݸ��Ȥ߹�碌
+      *    入院会計の保険組み合わせ
            INITIALIZE                         NYUINACCT-REC
            MOVE    LNK-SYOTOKU-HOSPNUM    TO  NACCT-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID       TO  NACCT-PTID
@@ -701,7 +701,7 @@
            MOVE    "key17"                TO  MCP-PATHNAME
            PERFORM  910-DB-CLOSE-SEC
       *
-      *    �ݸ��Ȥ߹�碌�����Խ�
+      *    保険組み合わせ情報編集
            PERFORM   VARYING   IDX2   FROM   1   BY   1
                       UNTIL    IDX2     >   31
               IF   WRK-DAY-HKNCOMBI(IDX2)  NOT =  ZERO
@@ -722,11 +722,11 @@
               END-IF
            END-PERFORM
       *
-      *    �ݸ��Ȥ߹�碌�����Խ����֤�������
+      *    保険組み合わせ情報編集（置き換え）
            INITIALIZE     WRK-CHECK2-TABLE
            PERFORM   2304-HKNCOMBI-OKIKAE-SEC
       *
-      *    ǯ���ʬ�Խ�
+      *    年齢区分編集
            PERFORM   VARYING   IDX2    FROM    1   BY  1
                       UNTIL    IDX2     >     31
               IF   WRK-DAY-HKNCOMBI(IDX2)  NOT =  ZERO
@@ -787,10 +787,10 @@
               END-IF
            END-PERFORM
       *
-      *    ������µ����о����ܤο��ť����å�
+      *    特定疾病給付対象療養の診療チェック
            INITIALIZE     WRK-CHECK-TABLE
            IF    FLG-CHECK  =  1
-      *      ���Ը������������ݸ��ֹ�966��967��956��957��
+      *      患者公費情報取得（保険番号966・967・956・957）
              PERFORM   2302-KOHINF-GET2-SEC
              PERFORM   VARYING   IDX2    FROM    1   BY  1
                         UNTIL    IDX2     >     31
@@ -804,7 +804,7 @@
              END-PERFORM
            END-IF
       *
-      *    �ڿ����ѡۿ�����ʬ����ǥå����ʥ쥻�ץ��ѡ�
+      *    【食事用】食事区分インデックス（レセプト用）
            MOVE      ZERO       TO    WRK-FIRST-DAY
            MOVE      SPACE      TO    WRK-FIRST-SKJKBN
            IF  LNK-SYOTOKU-HKNCOMBI(1)  NOT =  ZERO
@@ -833,7 +833,7 @@
              END-PERFORM
            END-IF
       *
-      *    �ڿ����ѡ�ǯ���ʬ
+      *    【食事用】年齢区分
            PERFORM   VARYING   IDX2    FROM    1   BY  1
                       UNTIL    IDX2     >     31
                 IF   WRK-DAY-NENREIFLG(IDX2)  =  "1" OR "2"
@@ -847,11 +847,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը������������ݸ��ֹ�968��976��
+      *    患者公費情報取得（保険番号968・976）
       *****************************************************************
        2301-KOHINF-GET1-SEC            SECTION.
       *
-      *    ����ñ�Ȥ�Ϸ���ݸ�����
+      *    公費単独の老人保険入力
            INITIALIZE                         PTKOHINF-REC
            MOVE    LNK-SYOTOKU-HOSPNUM    TO  PTKOH-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID       TO  PTKOH-PTID
@@ -887,7 +887,7 @@
            MOVE    "key4"                 TO  MCP-PATHNAME
            PERFORM  910-DB-CLOSE-SEC
       *
-      *    ������������
+      *    高齢非該当入力
            INITIALIZE                         PTKOHINF-REC
            MOVE    LNK-SYOTOKU-HOSPNUM    TO  PTKOH-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID       TO  PTKOH-PTID
@@ -928,11 +928,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը������������ݸ��ֹ�966��967��956��957��
+      *    患者公費情報取得（保険番号966・967・956・957）
       *****************************************************************
        2302-KOHINF-GET2-SEC            SECTION.
       *
-      *    ǧ�������
+      *    認定証入力
            INITIALIZE                         PTKOHINF-REC
            MOVE    LNK-SYOTOKU-HOSPNUM    TO  PTKOH-HOSPNUM
            MOVE    LNK-SYOTOKU-PTID       TO  PTKOH-PTID
@@ -1078,7 +1078,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������µ����о����ܤο��ť����å�
+      *    特定疾病給付対象療養の診療チェック
       *****************************************************************
        2303-TOKUSITU-CHECK-SEC            SECTION.
       *
@@ -1162,7 +1162,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�����Խ����֤�������
+      *    保険組み合わせ情報編集（置き換え）
       *****************************************************************
        2304-HKNCOMBI-OKIKAE-SEC            SECTION.
       *
@@ -1181,7 +1181,7 @@
            END-PERFORM
       *
            IF    FLG-CHECK  =  1
-      *      Ʊ�����������ݸ��Ȥ߹�碌����
+      *      同日再入院の保険組み合わせ取得
              INITIALIZE                        ORCSNYUINDAY-AREA
              MOVE     LNK-SYOTOKU-HOSPNUM  TO  LNK-NYUINDAY-HOSPNUM
              MOVE     LNK-SYOTOKU-PTID     TO  LNK-NYUINDAY-PTID
@@ -1195,7 +1195,7 @@
                                  TO  WRK-DAY-HKNCOMBI-DOU(IDX2)
                END-PERFORM
              END-IF
-      *      Ʊ�����������ݸ��Ȥ߹�碌�֤������Խ�
+      *      同日再入院の保険組み合わせ置き換え編集
              PERFORM   VARYING   IDX2    FROM    1   BY  1
                         UNTIL    IDX2     >     31
                IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
@@ -1242,7 +1242,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�����Խ����֤�������
+      *    保険組み合わせ情報編集（置き換え）
       *****************************************************************
        2305-HKNCOMBI-OKIKAE2-SEC            SECTION.
       *
@@ -1309,7 +1309,7 @@
            PERFORM  910-DB-CLOSE-SEC
       *
            IF    FLG-CHECK2  =  1
-      *      �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌����
+      *      入院料と異なる食事算定保険組み合わせ取得
              INITIALIZE                      ORCSSKJHKN-AREA
              MOVE   LNK-SYOTOKU-HOSPNUM  TO  LNK-SKJHKN-HOSPNUM
              MOVE   LNK-SYOTOKU-PTID     TO  LNK-SKJHKN-PTID
@@ -1330,7 +1330,7 @@
                  END-IF
                END-PERFORM
              END-IF
-      *      �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌�֤������Խ�
+      *      入院料と異なる食事算定保険組み合わせ置き換え編集
              PERFORM   VARYING   IDX2    FROM    1   BY  1
                         UNTIL    IDX2     >     31
                IF   WRK-DAY-HKNCOMBI(IDX2)      NOT =  ZERO
@@ -1371,7 +1371,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�����Խ����֤�������
+      *    保険組み合わせ情報編集（置き換え）
       *****************************************************************
        2306-HKNCOMBI-OKIKAE3-SEC            SECTION.
       *
@@ -1401,7 +1401,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌����
+      *    保険組み合わせ検索
       *****************************************************************
        900-HKNCOMBI-KENSAKU-SEC            SECTION.
       *
@@ -1468,7 +1468,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɤ߹���
+      *    低所得１マスタ読み込み
       *****************************************************************
        910-TNKRRK-READ-SEC        SECTION.
       *
@@ -1489,7 +1489,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɤ߹���
+      *    低所得２マスタ読み込み
       *****************************************************************
        910-TSYRRK-READ-SEC        SECTION.
       *
@@ -1510,7 +1510,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������ɹ�
+      *    患者公費情報読込
       *****************************************************************
        910-PTKOHINF-READ-SEC           SECTION.
       *
@@ -1531,7 +1531,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����ɹ�
+      *    患者情報読込
       *****************************************************************
        910-PTINF-READ-SEC           SECTION.
       *
@@ -1552,7 +1552,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ɹ�
+      *    入院会計読込
       *****************************************************************
        910-NYUINACCT-READ-SEC         SECTION.
       *
@@ -1573,7 +1573,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�ɹ�
+      *    保険組み合わせ読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -1594,7 +1594,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų���ɹ�
+      *    診療会計読込
       *****************************************************************
        910-SRYACCT-READ-SEC         SECTION.
       *
@@ -1615,7 +1615,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰��ɹ�
+      *    診療行為読込
       *****************************************************************
        910-SRYACT-READ-SEC         SECTION.
       *
@@ -1636,7 +1636,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

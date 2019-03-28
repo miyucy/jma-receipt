@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,30 +18,30 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSSYUBETUGET.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : �쥻�ץȼ����ֵѽ���
-      *  ������            : 
-      *  06/10/06    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : レセプト種別返却処理
+      *  管理者            : 
+      *  06/10/06    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.02.01    NACL-ƣ��    08/03/25  ʿ������ǯ��������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *
-      *  04.03.01    NACL-ƣ��    08/05/07  ���񣴼�ޤǤ�ʻ�Ѥε�Ͽ�б�
-      *  04.03.02    NACL-ƣ��    08/12/01  ����μ���������ν���
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-藤原    08/12/01  自費の種別設定条件の修正
       *
-      *  04.04.01    NACL-ƣ��    09/02/26  ʿ������ǯ����ʹߤˣ�������
-      *                                     ã���˳����˽����ͭ������
-      *                                     ���б�
+      *  04.04.01    NACL-藤原    09/02/26  平成２０年４月以降に７５歳到
+      *                                     達時に海外に住所を有する場合
+      *                                     の対応
       *
-      *  04.05.01    NACL-ƣ��    10/01/05  �����б�
-      *                                     ʿ������ǯ����ʬ��꼫��쥻
-      *                                     �Ȥ���
+      *  04.05.01    NACL-藤原    10/01/05  治験対応
+      *                                     平成２０年４月分より自費レセ
+      *                                     とする
       *
-      *  04.07.01    NACL-ƣ��    14/03/30  ʿ������ǯ��������б�
-      *  04.07.02    NACL-ƣ��    14/05/20  �軰�Թ԰��б�
-      *  04.07.03    NACL-ƣ��    14/08/18  �����аʾ�γ����ｻ�ԣ����б�
+      *  04.07.01    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *  04.07.02    NACL-藤原    14/05/20  第三者行為対応
+      *  04.07.03    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -54,7 +54,7 @@
       *
        01  INDEX-AREA.
            03  IDX                     PIC 9(03). 
-      *    �쥻�ץȼ���Ƚ�����ΰ�
+      *    レセプト種別判定用領域
        01  WK-RECESYUBETU-AREA.
            03  WK-KOKUHO               PIC X(01).
            03  WK-IHO                  PIC X(01).
@@ -63,13 +63,13 @@
            03  WK-HONKZKKBN            PIC X(01).
       *
        01  WRK-CONS-AREA.
-      *    ϫ���ݸ��ֹ� 
+      *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
-      *    �������ݸ��ֹ� 
+      *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
-      *    �����ݸ��ֹ� 
+      *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".
-      *    �軰�Թ԰�
+      *    第三者行為
            03  WRK-CONS-DAISANSYA-HKNNUM
                                        PIC X(03)   VALUE   "970".
       *
@@ -80,7 +80,7 @@
            03  WRK-CONS-SRYYM-201404   PIC 9(06)   VALUE   201404.      
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -91,7 +91,7 @@
                                     ORCSSYUBETUGETAREA.
      *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -107,7 +107,7 @@
            .
       *     
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -121,11 +121,11 @@
            .
       *     
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC               SECTION.
       *
-      *    ����������
+      *    条件設定処理
            IF      LNK-SYUBETUGET-SYOFLG   =   1
                PERFORM 2001-JYOKEN-HENSYU-SEC
                IF      LNK-SYUBETUGET-RECESYUBETU
@@ -146,7 +146,7 @@
       **   DISPLAY "KOHI-CNT  : " LNK-SYUBETUGET-KOHI-CNT
       **   DISPLAY "BIRTHDAY  : " LNK-SYUBETUGET-BIRTHDAY
       *
-      *    ʿ������ǯ����ޤ�
+      *    平成１４年９月まで
            IF      LNK-SYUBETUGET-SRYYM    <=  WRK-CONS-SRYYM-200209
              EVALUATE  LNK-SYUBETUGET-HONKZKKBN ALSO
                                     LNK-SYUBETUGET-NYUGAIKBN  ALSO
@@ -285,7 +285,7 @@
              END-EVALUATE
            END-IF
       *
-      *    ʿ������ǯ����������б�
+      *    平成１４年１０月改正対応
            IF    ( LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-200209 )
            AND   ( LNK-SYUBETUGET-SRYYM    <=  WRK-CONS-SRYYM-200609 )
              EVALUATE  LNK-SYUBETUGET-HONKZKKBN ALSO
@@ -294,7 +294,7 @@
                                     LNK-SYUBETUGET-KOKUHO     ALSO
                        LNK-SYUBETUGET-RJN  ALSO
                                     LNK-SYUBETUGET-KOHI-CNT
-      *        �ݸ�ñ��
+      *        保険単独
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
                    MOVE    1111     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -358,7 +358,7 @@
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1121     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣱼��ʻ��
+      *        保険と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
                    MOVE    1121     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -419,7 +419,7 @@
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
                    MOVE    1120     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣲼��ʻ��
+      *        保険と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
                    MOVE    1131     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -480,28 +480,28 @@
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
                    MOVE    1130     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        ����ñ��
+      *        公費単独
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1211     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1212     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       ����θ���ʻ��
+      *       ２種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1221     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1222     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       ����θ���ʻ��
+      *       ３種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1231     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1232     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       Ϸ��ñ��
+      *       老人単独
                WHEN    ANY   ALSO   "1"    ALSO
                        "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
                    MOVE    1317     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -526,7 +526,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
                    MOVE    1310     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       Ϸ�ͤȸ��񣱼��ʻ��
+      *       老人と公費１種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        "1"   ALSO   ANY    ALSO  "9"    ALSO   1
                    MOVE    1327     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -551,7 +551,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  "8"    ALSO   1
                    MOVE    1320     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       Ϸ�ͤȸ��񣲼��ʻ��
+      *       老人と公費２種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        "1"   ALSO   ANY    ALSO  "9"    ALSO   2
                    MOVE    1337     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -576,7 +576,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  "8"    ALSO   2
                    MOVE    1330     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       �࿦��ñ��
+      *       退職者単独
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1411     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -607,7 +607,7 @@
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1410     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       �࿦�Ԥȸ��񣱼��ʻ��
+      *       退職者と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1421     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -638,7 +638,7 @@
                WHEN    "8"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1420     TO  LNK-SYUBETUGET-RECESYUBETU
-      *       �࿦�Ԥȸ��񣲼��ʻ��
+      *       退職者と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1431     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -672,7 +672,7 @@
              END-EVALUATE
            END-IF
       *
-      *    ʿ������ǯ����������б�
+      *    平成１８年１０月改正対応
            IF    ( LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-200609 )
            AND   ( LNK-SYUBETUGET-SRYYM    <=  WRK-CONS-SRYYM-200803 )
              EVALUATE  LNK-SYUBETUGET-HONKZKKBN ALSO
@@ -681,7 +681,7 @@
                                     LNK-SYUBETUGET-KOKUHO     ALSO
                        LNK-SYUBETUGET-RJN  ALSO
                                     LNK-SYUBETUGET-KOHI-CNT
-      *        �ݸ�ñ��
+      *        保険単独
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
                    MOVE    1111     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -746,7 +746,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1110     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣱼��ʻ��
+      *        保険と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
                    MOVE    1121     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -811,7 +811,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
                    MOVE    1120     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�ݸ��ȸ��񣲼��ʻ��
+      *保険と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
                    MOVE    1131     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -876,28 +876,28 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
                    MOVE    1130     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����ñ��
+      *公費単独
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1211     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1212     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *２種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1221     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1222     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *３種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1231     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1232     TO  LNK-SYUBETUGET-RECESYUBETU
-      *Ϸ��ñ��
+      *老人単独
                WHEN    ANY   ALSO   "1"    ALSO
                        "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
                    MOVE    1317     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -922,7 +922,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  "7"    ALSO   ZERO
                    MOVE    1310     TO  LNK-SYUBETUGET-RECESYUBETU
-      *Ϸ�ͤȸ��񣱼��ʻ��
+      *老人と公費１種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        "1"   ALSO   ANY    ALSO  "9"    ALSO   1
                    MOVE    1327     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -947,7 +947,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  "7"    ALSO   1
                    MOVE    1320     TO  LNK-SYUBETUGET-RECESYUBETU
-      *Ϸ�ͤȸ��񣲼��ʻ��
+      *老人と公費２種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        "1"   ALSO   ANY    ALSO  "9"    ALSO   2
                    MOVE    1337     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -972,7 +972,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  "7"    ALSO   2
                    MOVE    1330     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦��ñ��
+      *退職者単独
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1411     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1007,7 +1007,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1410     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣱼��ʻ��
+      *退職者と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1421     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1042,7 +1042,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1420     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣲼��ʻ��
+      *退職者と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1431     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1080,7 +1080,7 @@
              END-EVALUATE
            END-IF
       *
-      *    ʿ������ǯ��������б�
+      *    平成２０年４月改正対応
            IF    ( LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-200803 )
            AND   ( LNK-SYUBETUGET-SRYYM    <=  WRK-CONS-SRYYM-201404 )
              EVALUATE  LNK-SYUBETUGET-HONKZKKBN ALSO
@@ -1089,7 +1089,7 @@
                                     LNK-SYUBETUGET-KOKUHO     ALSO
                        LNK-SYUBETUGET-RJN  ALSO
                                     LNK-SYUBETUGET-KOHI-CNT
-      *        �ݸ�ñ��
+      *        保険単独
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
                    MOVE    1111     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1154,7 +1154,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1110     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣱼��ʻ��
+      *        保険と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
                    MOVE    1121     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1219,7 +1219,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
                    MOVE    1120     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�ݸ��ȸ��񣲼��ʻ��
+      *保険と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
                    MOVE    1131     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1284,7 +1284,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
                    MOVE    1130     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣳼��ʻ��
+      *        保険と公費３種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  3
                    MOVE    1141     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1349,7 +1349,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  3
                    MOVE    1140     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣴼��ʻ��
+      *        保険と公費４種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  4
                    MOVE    1151     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1414,35 +1414,35 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  4
                    MOVE    1150     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����ñ��
+      *公費単独
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1211     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1212     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *２種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1221     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1222     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *３種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1231     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1232     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *４種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   4
                    MOVE    1241     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   4
                    MOVE    1242     TO  LNK-SYUBETUGET-RECESYUBETU
-      *��������ñ��
+      *後期高齢者単独
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   ZERO
                    MOVE    1317     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1455,7 +1455,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   ZERO
                    MOVE    1310     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣱼��ʻ��
+      *後期高齢者と公費１種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   1
                    MOVE    1327     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1468,7 +1468,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   1
                    MOVE    1320     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣲼��ʻ��
+      *後期高齢者と公費２種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   2
                    MOVE    1337     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1481,7 +1481,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   2
                    MOVE    1330     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣳼��ʻ��
+      *後期高齢者と公費３種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   3
                    MOVE    1347     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1494,7 +1494,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   3
                    MOVE    1340     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣴼��ʻ��
+      *後期高齢者と公費４種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   4
                    MOVE    1357     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1507,7 +1507,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   4
                    MOVE    1350     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦��ñ��
+      *退職者単独
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1411     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1526,7 +1526,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1416     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣱼��ʻ��
+      *退職者と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1421     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1545,7 +1545,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1426     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣲼��ʻ��
+      *退職者と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1431     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1564,7 +1564,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1436     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣳼��ʻ��
+      *退職者と公費３種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO    3
                    MOVE    1441     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1583,7 +1583,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO    3
                    MOVE    1446     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣴼��ʻ��
+      *退職者と公費４種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO    4
                    MOVE    1451     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1605,7 +1605,7 @@
              END-EVALUATE
            END-IF
       *
-      *    ʿ������ǯ��������б�
+      *    平成２６年４月改正対応
            IF    ( LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-201404 )
              EVALUATE  LNK-SYUBETUGET-HONKZKKBN ALSO
                                     LNK-SYUBETUGET-NYUGAIKBN  ALSO
@@ -1613,7 +1613,7 @@
                                     LNK-SYUBETUGET-KOKUHO     ALSO
                        LNK-SYUBETUGET-RJN  ALSO
                                     LNK-SYUBETUGET-KOHI-CNT
-      *        �ݸ�ñ��
+      *        保険単独
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
                    MOVE    1111     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1696,7 +1696,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1110     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣱼��ʻ��
+      *        保険と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
                    MOVE    1121     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1779,7 +1779,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
                    MOVE    1120     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�ݸ��ȸ��񣲼��ʻ��
+      *保険と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
                    MOVE    1131     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1862,7 +1862,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
                    MOVE    1130     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣳼��ʻ��
+      *        保険と公費３種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  3
                    MOVE    1141     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -1945,7 +1945,7 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  3
                    MOVE    1140     TO  LNK-SYUBETUGET-RECESYUBETU
-      *        �ݸ��ȸ��񣴼��ʻ��
+      *        保険と公費４種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        "1"   ALSO   SPACE  ALSO  SPACE  ALSO  4
                    MOVE    1151     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2028,35 +2028,35 @@
                WHEN    "7"   ALSO   "2"    ALSO
                        SPACE ALSO   "1"    ALSO  SPACE  ALSO  4
                    MOVE    1150     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����ñ��
+      *公費単独
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1211     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
                    MOVE    1212     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *２種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1221     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
                    MOVE    1222     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *３種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1231     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
                    MOVE    1232     TO  LNK-SYUBETUGET-RECESYUBETU
-      *����θ���ʻ��
+      *４種の公費併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   4
                    MOVE    1241     TO  LNK-SYUBETUGET-RECESYUBETU
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   SPACE  ALSO  SPACE  ALSO   4
                    MOVE    1242     TO  LNK-SYUBETUGET-RECESYUBETU
-      *��������ñ��
+      *後期高齢者単独
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   ZERO
                    MOVE    1317     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2069,7 +2069,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   ZERO
                    MOVE    1310     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣱼��ʻ��
+      *後期高齢者と公費１種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   1
                    MOVE    1327     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2082,7 +2082,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   1
                    MOVE    1320     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣲼��ʻ��
+      *後期高齢者と公費２種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   2
                    MOVE    1337     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2095,7 +2095,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   2
                    MOVE    1330     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣳼��ʻ��
+      *後期高齢者と公費３種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   3
                    MOVE    1347     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2108,7 +2108,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   3
                    MOVE    1340     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�������Ԥȸ��񣴼��ʻ��
+      *後期高齢者と公費４種の併用
                WHEN    ANY   ALSO   "1"    ALSO
                        SPACE ALSO   "3"    ALSO  "9"    ALSO   4
                    MOVE    1357     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2121,7 +2121,7 @@
                WHEN    ANY   ALSO   "2"    ALSO
                        SPACE ALSO   "3"    ALSO  "7"    ALSO   4
                    MOVE    1350     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦��ñ��
+      *退職者単独
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1411     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2140,7 +2140,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
                    MOVE    1416     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣱼��ʻ��
+      *退職者と公費１種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1421     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2159,7 +2159,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
                    MOVE    1426     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣲼��ʻ��
+      *退職者と公費２種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1431     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2178,7 +2178,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
                    MOVE    1436     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣳼��ʻ��
+      *退職者と公費３種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO    3
                    MOVE    1441     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2197,7 +2197,7 @@
                WHEN    "2"   ALSO   "2"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO    3
                    MOVE    1446     TO  LNK-SYUBETUGET-RECESYUBETU
-      *�࿦�Ԥȸ��񣴼��ʻ��
+      *退職者と公費４種の併用
                WHEN    "1"   ALSO   "1"    ALSO
                        SPACE ALSO   "2"    ALSO  SPACE  ALSO    4
                    MOVE    1451     TO  LNK-SYUBETUGET-RECESYUBETU
@@ -2221,7 +2221,7 @@
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU
                                         TO  LNK-SYUBETUGET-RECESYUBETU-Y 
-      *    ʿ������ǯ����ʹ߸���ʻ����ʻ�ΤȤ�
+      *    平成２０年４月以降公費３併・４併のとき
            IF      LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-200803
                EVALUATE    LNK-SYUBETUGET-RECESYUBETU-Y (3:1)
                    WHEN    "4"
@@ -2231,7 +2231,7 @@
                END-EVALUATE
            END-IF
       *     
-      *    ����������ΤȤ��Υ쥻�ץȼ��̤��Խ�
+      *    特別療養費のときのレセプト種別を編集
            IF      LNK-SYUBETUGET-HKNNUM        =   "068"   OR  "069"
                                                 OR  "040"
                MOVE    LNK-SYUBETUGET-RECESYUBETU-Y
@@ -2243,7 +2243,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    条件設定処理
       *****************************************************************
        2001-JYOKEN-HENSYU-SEC          SECTION.
       *
@@ -2272,7 +2272,7 @@
            MOVE    SPACE               TO  WK-RECESYUBETU-AREA
            INITIALIZE                      WK-RECESYUBETU-AREA
       *     
-      *    ϫ�ҡ������դΤȤ�
+      *    労災・自賠責のとき
            IF      LNK-SYUBETUGET-HKNNUM
                                        =   WRK-CONS-ROUSAI-HKNNUM  OR
                                            WRK-CONS-JIBAI-HKNNUM 
@@ -2300,7 +2300,7 @@
                    WHEN    "4"         ALSO    ANY     ALSO    ANY                     
                    WHEN    "6"         ALSO    ANY     ALSO    ANY                     
                        MOVE    7001    TO  LNK-SYUBETUGET-RECESYUBETU
-      *            ��̳�ҳ�
+      *            公務災害
                    WHEN    "5"         ALSO    ANY     ALSO    "1"                     
                        MOVE    7061    TO  LNK-SYUBETUGET-RECESYUBETU     
                    WHEN    "5"         ALSO    ANY     ALSO    "2"                     
@@ -2309,7 +2309,7 @@
                GO  TO  2001-JYOKEN-HENSYU-EXT
            END-IF
       *
-      *    �����ݸ��ΤȤ�
+      *    公害保険のとき
            IF      LNK-SYUBETUGET-HKNNUM     =   WRK-CONS-KOUGAI-HKNNUM
                EVALUATE    LNK-SYUBETUGET-NYUGAIKBN
                    WHEN    "1"
@@ -2320,7 +2320,7 @@
                GO  TO  2001-JYOKEN-HENSYU-EXT
            END-IF
       *     
-      *    ����ΤȤ�
+      *    自費のとき
            IF    ( LNK-SYUBETUGET-HKNNUM
                                    NOT =   SPACE )
            AND   ( LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
@@ -2330,7 +2330,7 @@
                GO  TO  2001-JYOKEN-HENSYU-EXT
            END-IF
       *     
-      *    �����ΤȤ�
+      *    治験のとき
            IF    ( LNK-SYUBETUGET-HKNNUM
                                    NOT =   SPACE )
            AND   ( LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
@@ -2380,7 +2380,7 @@
                END-IF
            END-PERFORM
       *
-      *    �������������б��ʣ�������ǯ�������
+      *    山形地方公費対応（２００５年１２月）
            IF    ( LNK-SYUBETUGET-PREFNUM  =   "06"     )
            AND   ( LNK-SYUBETUGET-SRYYM    <=  "200512" )
                IF      WK-KOKUHO               =   "1" OR  "2"
@@ -2397,7 +2397,7 @@
                END-IF
            END-IF
       *
-      *    ʡ����������ʣ�������ǯ���������
+      *    福岡地方公費（２００６年９月以前）
            IF    ( LNK-SYUBETUGET-PREFNUM  =   "40"                  )
            AND   ( LNK-SYUBETUGET-SRYYM    <=  WRK-CONS-SRYYM-200609 )
                IF      WK-KOKUHO               =   "1" OR  "2"
@@ -2445,7 +2445,7 @@
                    END-IF
                END-IF
       *
-      *        ʿ������ǯ����ʹ� 
+      *        平成２０年５月以降 
                IF      LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-201404
                    EVALUATE    LNK-SYUBETUGET-HKNNUM
                        WHEN    "002" 
@@ -2542,7 +2542,7 @@
                    END-EVALUATE
                END-IF
       *
-      *        ʿ������ǯ�����ʿ������ǯ����
+      *        平成２０年４月〜平成２６年４月
                IF    ( LNK-SYUBETUGET-SRYYM    >=
                                                WRK-CONS-SRYYM-200804 )
                AND   ( LNK-SYUBETUGET-SRYYM    <=
@@ -2642,7 +2642,7 @@
                      END-EVALUATE
                END-IF
       *
-      *        ʿ������ǯ�������ʿ������ǯ���� 
+      *        平成１８年１０月〜平成２０年３月 
                IF    ( LNK-SYUBETUGET-SRYYM    >=  "200610"          )
                AND   ( LNK-SYUBETUGET-SRYYM    <
                                                WRK-CONS-SRYYM-200804 )
@@ -2807,7 +2807,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *

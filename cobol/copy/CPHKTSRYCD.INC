@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,33 +16,33 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ť����ɥơ��֥�        COPY (CPHKTSRYCD.INC)
+      *    包括診療コードテーブル        COPY (CPHKTSRYCD.INC)
       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.08.00     NACL-��ƣ    16/03/13  Ϣ�֣��墪����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-伊藤    16/03/13  連番２桁→３桁
       ************************************************************
       *01  HKTSRYCD-REC.
            03  HKTSRYCD-KEY.
-      *�������ֹ�
+      *包括管理番号
                05  HKTSRYCD-KANRICD         PIC  9(03).
-      *�������ֹ�Ϣ��
+      *包括管理番号連番
                05  HKTSRYCD-RENNUM          PIC  9(03).
-      *ͭ��������
+      *有効開始日
                05  HKTSRYCD-YUKOSTYMD       PIC  X(08).
-      *ͭ����λ��
+      *有効終了日
                05  HKTSRYCD-YUKOEDYMD       PIC  X(08).
-      *����оݿ��Ź԰٥�����
+      *包括対象診療行為コード
            03  HKTSRYCD-SRYCD               PIC  X(09).
-      *ü���ɣ�
+      *端末ＩＤ
            03  HKTSRYCD-TERMID              PIC  X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  HKTSRYCD-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  HKTSRYCD-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  HKTSRYCD-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  HKTSRYCD-UPHMS               PIC  X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,34 +16,34 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ������������ѥ�᥿      COPY (CPORCHCM43.INC)
+      *    外来月別請求書パラメタ      COPY (CPORCHCM43.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL������   04/03/14  ��������ۤ��ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−太田   04/03/14  今回請求額を追加
       ************************************************************
       *
        01  ORCHCM43AREA.
       *
            03  ORCHCM43-IN.
       *
-      *        �ƽи���ʬ��1:���׶�̳/2:��Ǽ��̳��
+      *        呼出元区分（1:統計業務/2:収納業務）
                05  ORCHCM43-KBN            PIC X(01).
-      *        ���Ͽ���ǯ��
+      *        開始診療年月
                05  ORCHCM43-STSRYYM        PIC X(06).
-      *        ��λ����ǯ��
+      *        終了診療年月
                05  ORCHCM43-EDSRYYM        PIC X(06).
-      *        ȯ����ˡ
+      *        発行方法
                05  ORCHCM43-HAKUHOUFLG     PIC X(01).
-      *        ȯ����
+      *        発行日
                05  ORCHCM43-HAKYMD         PIC X(08).
       *
-      *        �����������ȯ�ԥե饰
+      *        ゼロ円請求書発行フラグ
                05  ORCHCM43-ZEROSKYFLG     PIC X(01).
       *
            03  ORCHCM43-OT.
-      *        �Խ��ڡ�����
+      *        編集ページ数
                05  ORCHCM43-PAGE           PIC 9(08).
-      *        �꥿���󥳡��ɡʣ���������ʳ����۾��
+      *        リターンコード（０：正常／０以外：異常）
                05  ORCHCM43-RC             PIC 9(02).

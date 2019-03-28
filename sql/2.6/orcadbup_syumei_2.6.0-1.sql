@@ -1,9 +1,9 @@
 --                                    --
---  ¼ıÇ¼ÌÀºÙ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹              --
+--  åç´æ˜ç´°ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´              --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     ÆüÊó¥­¡¼	      DAILYKEY        --
---     ºîÀ®»ş´Ö	      CREHMS          --
+-- é …ç›®ã®è¿½åŠ                          --
+--     æ—¥å ±ã‚­ãƒ¼	      DAILYKEY        --
+--     ä½œæˆæ™‚é–“	      CREHMS          --
 --                                    --
 -- Update Date : 2005/07/25           --
 --                                    --
@@ -126,7 +126,7 @@ upymd,
 uphms 
 from tbl_syumeiwk;
 
--- tbl_syumeiwk ºï½ü --
+-- tbl_syumeiwk å‰Šé™¤ --
 
 drop table tbl_syumeiwk;
 

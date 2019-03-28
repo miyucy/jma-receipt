@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        01  PUSHAC02-REC.
            03  PUSHAC02-EVENT                  PIC X(50).
            03  PUSHAC02-BODY.
-      *            �����⡼��
+      *            更新モード
              05  PUSHAC02-PMODE                PIC X(10).
-      *            �����ֹ�
+      *            患者番号
              05  PUSHAC02-PTNUM                PIC X(20).
-      *            ������
+      *            受付日
              05  PUSHAC02-UKEYMD               PIC X(10).
-      *            ���ջ���
+      *            受付時間
              05  PUSHAC02-UKETIME              PIC X(08).
-      *            ����ID
+      *            受付ID
              05  PUSHAC02-UKEID                PIC X(05).
-      *            ���Ųʥ�����
+      *            診療科コード
              05  PUSHAC02-SRYKA                PIC X(02).
-      *            �ɥ�����������
+      *            ドクターコード
              05  PUSHAC02-DRCD                 PIC X(05).
-      *            �ݸ��ȹ礻�ֹ�
+      *            保険組合せ番号
              05  PUSHAC02-HKNCOMBI             PIC X(04).
 

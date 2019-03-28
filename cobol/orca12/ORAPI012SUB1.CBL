@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORAPI012SUB1.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ¥µº‘≈–œø
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  :  ›∏± ‰Ωı∂Ë ¨ÃææŒºË∆¿•µ•÷
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  17/07/XX    NACL-¬ø°π«º   ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÊÇ£ËÄÖÁôªÈå≤
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ‰øùÈô∫Ë£úÂä©Âå∫ÂàÜÂêçÁß∞ÂèñÂæó„Çµ„Éñ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  17/07/XX    NACL-Â§ö„ÄÖÁ¥ç   Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,18 +39,18 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
       *01  CNT-AREA.
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
       *01  IDX-AREA.
       *    03  IDX                 PIC 9(04).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
       *01  WRK-AREA.
       *
        01  WRK-HENSYU-AREA.
@@ -68,35 +68,35 @@
                05  WRK-TMM         PIC 99.
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
       *
-      *    øÙª˙ —¥πŒŒ∞Ë
+      *    Êï∞Â≠óÂ§âÊèõÈ†òÂüü
       *    COPY    "CPORCSNUM.INC".
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
       *    COPY    "MCPDATA.INC".
       *
       *
       *    COPY    "MCPAREA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    •—•È•·•ø
+      *    „Éë„É©„É°„Çø
            COPY    "CPORAPI012SUB1.INC".
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -105,7 +105,7 @@
       *
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -113,77 +113,77 @@
       **   INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *
-      *     ‰Ωı∂Ë ¨ÃææŒºË∆¿
+      *    Ë£úÂä©Âå∫ÂàÜÂêçÁß∞ÂèñÂæó
            PERFORM 100-HOJOKBN-HEN-SEC
       *
            .
            EXIT    PROGRAM
            .
       *****************************************************************
-      *     ‰Ωı∂Ë ¨ÃææŒºË∆¿ΩËÕ˝
+      *    Ë£úÂä©Âå∫ÂàÜÂêçÁß∞ÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        100-HOJOKBN-HEN-SEC               SECTION.
       *
       *
            EVALUATE    API012SUB1-HKNNUM
-      *    ¡•∞˜
+      *    ËàπÂì°
                WHEN    "002"
                EVALUATE    API012SUB1-HOJOKBN
                    WHEN    "1"
-                       MOVE    "ø¶Ã≥" 
+                       MOVE    "ËÅ∑Âãô" 
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    "2"
-                       MOVE    "≤º¡•" 
+                       MOVE    "‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    "3"
-                       MOVE    "ƒÃ∂–" 
+                       MOVE    "ÈÄöÂã§" 
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    "7"
-                       MOVE    "£≥≥‰" 
+                       MOVE    "ÔºìÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    "8"
-                       MOVE    "£≤≥‰" 
+                       MOVE    "ÔºíÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "9"
-                       MOVE    "£±≥‰" 
+                       MOVE    "ÔºëÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "A"
-                       MOVE    "£±≥‰ø¶Ã≥" 
+                       MOVE    "ÔºëÂâ≤ËÅ∑Âãô" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "B"
-                       MOVE    "£±≥‰≤º¡•" 
+                       MOVE    "ÔºëÂâ≤‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "C"
-                       MOVE    "£±≥‰ƒÃ∂–" 
+                       MOVE    "ÔºëÂâ≤ÈÄöÂã§" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "D"
-                       MOVE    "£≤≥‰ø¶Ã≥" 
+                       MOVE    "ÔºíÂâ≤ËÅ∑Âãô" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "E"
-                       MOVE    "£≤≥‰≤º¡•" 
+                       MOVE    "ÔºíÂâ≤‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "F"
-                       MOVE    "£≤≥‰ƒÃ∂–" 
+                       MOVE    "ÔºíÂâ≤ÈÄöÂã§" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "G"
-                       MOVE    "£≥≥‰ø¶Ã≥" 
+                       MOVE    "ÔºìÂâ≤ËÅ∑Âãô" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    "H"
-                       MOVE    "£≥≥‰≤º¡•" 
+                       MOVE    "ÔºìÂâ≤‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    "I"
-                       MOVE    "£≥≥‰ƒÃ∂–" 
+                       MOVE    "ÔºìÂâ≤ÈÄöÂã§" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    SPACE
@@ -191,52 +191,52 @@
                    WHEN    OTHER
                        MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
-      *    ∏Â¥¸π‚Œº‘
+      *    ÂæåÊúüÈ´òÈΩ¢ËÄÖ
                WHEN    "039"
                WHEN    "040"
                EVALUATE    API012SUB1-HOJOKBN
                    WHEN    "1"
-                       MOVE    "£±≥‰" 
+                       MOVE    "ÔºëÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "3"
-                       MOVE    "£≥≥‰" 
+                       MOVE    "ÔºìÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    OTHER
                        MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
-      *        ∂¶∫—
+      *        ÂÖ±Ê∏à
                WHEN    "031"
                WHEN    "032"
                WHEN    "033"
                WHEN    "034"
                EVALUATE    API012SUB1-HOJOKBN
                    WHEN    "2"
-                       MOVE    "≤º¡•£≥∑Ó"
+                       MOVE    "‰∏ãËàπÔºìÊúà"
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    "7"
-                       MOVE    "£≥≥‰" 
+                       MOVE    "ÔºìÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    "8"
-                       MOVE    "£≤≥‰" 
+                       MOVE    "ÔºíÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "9"
-                       MOVE    "£±≥‰" 
+                       MOVE    "ÔºëÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "B"
-                       MOVE    "£±≥‰≤º¡•" 
+                       MOVE    "ÔºëÂâ≤‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "E"
-                       MOVE    "£≤≥‰≤º¡•" 
+                       MOVE    "ÔºíÂâ≤‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "H"
-                       MOVE    "£≥≥‰≤º¡•" 
+                       MOVE    "ÔºìÂâ≤‰∏ãËàπ" 
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    SPACE
@@ -244,36 +244,36 @@
                    WHEN    OTHER
                        MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
-      *        πÒ ›
+      *        ÂõΩ‰øù
                WHEN    "060"
                WHEN    "068"
                EVALUATE    API012SUB1-HOJOKBN
                    WHEN    "0"
-                       MOVE    "Ãµ§∑"
+                       MOVE    "ÁÑ°„Åó"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    00          TO  API012SUB1-RATE
                    WHEN    "1"
-                       MOVE    "£±≥‰"
+                       MOVE    "ÔºëÂâ≤"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "2"
-                       MOVE    "£≤≥‰"
+                       MOVE    "ÔºíÂâ≤"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "3"
-                       MOVE    "£≥≥‰"
+                       MOVE    "ÔºìÂâ≤"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    "4"
-                       MOVE    "≥∞£±≥‰ ∆˛£∞≥‰"
+                       MOVE    "Â§ñÔºëÂâ≤ ÂÖ•ÔºêÂâ≤"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    10          TO  API012SUB1-RATE
                    WHEN    "5"
-                       MOVE    "≥∞£≤≥‰ ∆˛£±≥‰"
+                       MOVE    "Â§ñÔºíÂâ≤ ÂÖ•ÔºëÂâ≤"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    20          TO  API012SUB1-RATE
                    WHEN    "6"
-                       MOVE    "≥∞£≥≥‰ ∆˛£≤≥‰"
+                       MOVE    "Â§ñÔºìÂâ≤ ÂÖ•ÔºíÂâ≤"
                                            TO  API012SUB1-HOJOKBN-NAME
                        MOVE    30          TO  API012SUB1-RATE
                    WHEN    SPACE
@@ -281,27 +281,27 @@
                    WHEN    OTHER
                        MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
-      *        º£∏≥
+      *        Ê≤ªÈ®ì
                WHEN    "900"
                WHEN    "901"
                EVALUATE    API012SUB1-HOJOKBN
                    WHEN    "1"
-                       MOVE    "≤›¿«"
+                       MOVE    "Ë™≤Á®é"
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    "2"
-                       MOVE    "»Û≤›¿«"
+                       MOVE    "ÈùûË™≤Á®é"
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    OTHER
                        MOVE    1           TO  API012SUB1-ERRCD
                END-EVALUATE
-      *        º´»Ò
+      *        Ëá™Ë≤ª
                WHEN    "980"   THRU   "989"
                EVALUATE    API012SUB1-HOJOKBN
                    WHEN    "1"
-                       MOVE    "≤›¿«"
+                       MOVE    "Ë™≤Á®é"
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    "2"
-                       MOVE    "»Û≤›¿«"
+                       MOVE    "ÈùûË™≤Á®é"
                                            TO  API012SUB1-HOJOKBN-NAME
                    WHEN    OTHER
                        MOVE    1           TO  API012SUB1-ERRCD
@@ -311,18 +311,18 @@
                    IF      API012SUB1-HKNNUM(1:1)  =   "9"
                        CONTINUE
                    ELSE
-      *            ∂®≤Ò≈˘
+      *            Âçî‰ºöÁ≠â
                    EVALUATE    API012SUB1-HOJOKBN
                        WHEN    "9"
-                           MOVE    "£±≥‰" 
+                           MOVE    "ÔºëÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                            MOVE    10      TO  API012SUB1-RATE
                        WHEN    "8"
-                           MOVE    "£≤≥‰" 
+                           MOVE    "ÔºíÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                            MOVE    20      TO  API012SUB1-RATE
                        WHEN    "7"
-                           MOVE    "£≥≥‰" 
+                           MOVE    "ÔºìÂâ≤" 
                                            TO  API012SUB1-HOJOKBN-NAME
                            MOVE    30      TO  API012SUB1-RATE
                        WHEN    SPACE

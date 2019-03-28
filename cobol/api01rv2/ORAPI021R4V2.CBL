@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI021R4V2.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ʻ�Ѷش����޾����ֵ�  (xml2)
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  16/07/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 併用禁忌薬剤情報返却  (xml2)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  16/07/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -38,10 +38,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TEND                PIC 9(01).
@@ -63,7 +63,7 @@
            03  FLG-KINKI-ARI           PIC 9(01).
            03  FLG-KINKI-CHK           PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -79,7 +79,7 @@
       *
            03  IDXR                PIC 9(02).
            03  IDXM                PIC 9(02).
-      *    ���Ź԰���
+      *    診療行為用
       *    03  IDX-ACT             PIC 9(02).
       *    03  IDX-REN             PIC 9(04).
       *    03  IDXA                PIC 9(04).
@@ -92,12 +92,12 @@
       *    03  TBL-MAX             PIC 9(04).
            03  IDX-MAX             PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYCNT              PIC 9(04).
            03  CNT-BYOCNT              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -109,7 +109,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -120,7 +120,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -136,7 +136,7 @@
            03  WRK-KNK-SRYCD           PIC X(09).
            03  WRK-SYOJYOUCD           PIC X(07).
       *
-      *    �����Ѵ���
+      *    数値変換用
            03  WRK-SURYO               PIC S9(08)V9(05).
            03  WRK-SURYO-S             PIC 9(08)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO-S.
@@ -163,121 +163,121 @@
            03  WRK-PTID                PIC 9(10).
            03  WRK-KIKAN               PIC 9(02).
       *
-      *    Ⱦ�������Ѵ�
+      *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
            03  WRK-MAX                 PIC 9(04).
            03  WRK-LEN                 PIC 9(04).
       *
-      *���������
+      *処理最大行
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
       *
-      *    �ѥ�᥿
+      *    パラメタ
            COPY    "CPORCSCKNKCHK.INC".
       *
-      *    ����ӣУ��Խ������ѥ�᥿
+      *    初期ＳＰＡ編集処理パラメタ
            COPY    "CPORCSC95.INC".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "K01COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "K02SCR-SPA".
       *
-      *    �ӣУ��ѥ�᥿
+      *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPCONTRACHECKV2REQ.INC".
       *
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPCONTRACHECKV2RES.INC".
       *ver.4.7
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
-      *    �ʿ��������
+      *    （職員情報）
            COPY    "CPSK1010.INC".
-      *    �ʿ��Ųʾ����
+      *    （診療科情報）
       ***  COPY    "CPSK1005.INC".
-      *    �ʰ��ŵ��ؾ����
+      *    （医療機関情報）
            COPY    "CPSK1001.INC".
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ɾ����ֵ����ޥ���
+      *    症状処置機序マスタ
        01  SSKIJYO-REC.
            COPY    "CPSSKIJYO.INC".
       *
-      *    ��ߺ��ѥ쥳����
+      *    相互作用レコード
        01  INTERACT-REC.
            COPY    "CPINTERACT.INC".
       *
-      *    �����å��ޥ���
+      *    チェックマスタ
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
-      *    ��������
+      *    受診履歴
       *01  JYURRK-REC.
       *    COPY    "CPJYURRK.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
       *01  HKNCOMBI-REC.
       *    COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ݸ�����
+      *    患者保険情報
       *01  PTHKNINF-REC.
       *    COPY    "CPPTHKNINF.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
       *01  PTKOHINF-REC.
       *    COPY    "CPPTKOHINF.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
       *01  SRYACT-REC.
       *    COPY    "CPSRYACT.INC".
-      *    ������
+      *    コメント
       *01  PTCOM-REC.
       *    COPY    "CPPTCOM.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
       *01  SRYACCT-REC.
       *    COPY    "CPSRYACCT.INC".
-      *    ���Ų�����þ���ޥ�����
+      *    診療会計附加情報マスタ−
       *01  SRYACCTPLUS-REC.
       *    COPY    "CPSRYACCTPLUS.INC".
       *
@@ -286,7 +286,7 @@
       *
            COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -302,7 +302,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -316,18 +316,18 @@
            INITIALIZE                      SPA-AREA
            INITIALIZE                      CNT-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST26-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
@@ -340,14 +340,14 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-CONTRA-CHECKV2REQ
            INITIALIZE                      XML-CONTRA-CHECKV2RES
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -356,14 +356,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  CHKRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  CHKRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -372,7 +372,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -390,11 +390,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -406,15 +406,15 @@
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    CHKREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        ���޶ش�����
+      *        薬剤禁忌情報
                MOVE    1                   TO  FLG-SYORI
            WHEN    "02"
-      *        �ɾ��ܵ�����
+      *        症状詳記明細
                MOVE    2                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -424,7 +424,7 @@
       *
            EVALUATE    CHKREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        ���޶ش�����
+      *        薬剤禁忌情報
                PERFORM 2002-SYORI-01-SEC
            END-EVALUATE
       *
@@ -433,7 +433,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -441,7 +441,7 @@
                DISPLAY "CHKRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-APIREQ
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_contraindication_checkv2req"
                                        TO  MCP-TABLE
@@ -487,20 +487,20 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-APTXMLMAKE-SEC   SECTION.
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
                MOVE    ZERO                TO  CHKRES-API-RESULT
-               MOVE    "������λ"          TO  CHKRES-API-RESULT-MSG
+               MOVE    "処理終了"          TO  CHKRES-API-RESULT-MSG
            ELSE
                IF      WRK-ERRMSG          =   SPACE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                MOVE    WRK-ERRCD           TO  CHKRES-API-RESULT
@@ -514,7 +514,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽����ʼ����������ơ�
+      *    XML情報書き込み処理（受診履歴内容）
       *****************************************************************
        3001-MDC01XMLMAKE-SEC        SECTION.
       *
@@ -562,7 +562,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -571,22 +571,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ����������ƥ����å�
+      *    患者基本情報設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
       *
-      *    �����������å�
+      *    診療日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PERFORM-CHK-SEC
            END-IF
-      *    �����ֹ�����å�
+      *    患者番号チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PTNUM-CHK-SEC
            END-IF
-      *    �ش����֥����å�
+      *    禁忌期間チェック
            IF     (WRK-ERRCD           =   SPACE  )
                PERFORM 20011-KIKAN-CHK-SEC
            END-IF
@@ -596,25 +596,25 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ����Ѵ��Խ�����
+      *    入力項目変換編集処理
       *****************************************************************
        20010-INPUT-HEN-SEC     SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    CHKREQ-PATIENTID        TO  WRK-PTNUM
-      *    ��������
+      *    診療日付
            MOVE    SPACE                   TO  WRK-HEN-DATE
            MOVE    CHKREQ-PERFORM-YM       TO  WRK-HEN-DATE(1:7)
            MOVE    SPACE                   TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD                TO  WRK-PERFORM-YMD
-      *    ̤������ϥ����ƥ��������
+      *    未設定時はシステム情報設定
            IF      WRK-PERFORM-YMD         =   SPACE
                MOVE    SMCNDATE-YMD        TO  WRK-PERFORM-YMD
            END-IF
            MOVE    "01"                    TO  WRK-PERFORM-DD
-      *    ɬ�����ϥ����å�
-      *    �����ֹ�
+      *    必須入力チェック
+      *    患者番号
            IF      WRK-PTNUM           =   SPACE
                MOVE    "01"                TO  WRK-ERRCD
            END-IF
@@ -623,11 +623,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ե����å�
+      *    診療日付チェック
       *****************************************************************
        20011-PERFORM-CHK-SEC    SECTION.
       *
-      *    ���ե����å�����
+      *    日付チェックサブ
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -648,11 +648,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�����å�
+      *    患者番号チェック
       *****************************************************************
        20011-PTNUM-CHK-SEC     SECTION.
       *
-      *    �����ֹ����
+      *    患者番号取得
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-PTNUM           TO  SPTID-PTNUM
@@ -680,11 +680,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݴ��ַ�������ɥ����å�
+      *    対象期間月数コードチェック
       *****************************************************************
        20011-KIKAN-CHK-SEC         SECTION.
       *
-      *    �оݴ��ַ��
+      *    対象期間月数
            IF      CHKREQ-CHECK-TUKI    =   SPACE
                MOVE    ZERO                TO  WRK-KIKAN
            ELSE
@@ -695,7 +695,7 @@
                IF     (SNUM-RC         NOT =   ZERO  )   OR
                       (SNUM-MINKBN     NOT =   SPACE )   OR
                       (SNUM-SYOKBN     NOT =   SPACE )
-      *            ���ͥ��顼
+      *            数値エラー
                    MOVE    "12"                TO  WRK-ERRCD
                ELSE
                    MOVE    SNUM-OUTNUM         TO  WRK-KIKAN
@@ -707,18 +707,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    受診履歴編集処理
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
-      *    ���Ծ��������Խ�
+      *    患者情報内容編集
            PERFORM 20021-CHKRES-HEN-SEC
       *
            MOVE    WRK-PERFORM-YMD     TO  SPA-SRYYMD
       *
            INITIALIZE                  SPA-K02
            INITIALIZE                  SPA-SCR-REC
-      *    �ӣУ��������
+      *    ＳＰＡ初期設定
            INITIALIZE                  ORCSC95AREA
            MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
            MOVE    "1"                 TO  LNK-SC95-KBN
@@ -729,11 +729,11 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
-      *    SPA���Ծ���
+      *    SPA患者情報
            MOVE    WRK-PTID            TO  SPA-PTID
            MOVE    WRK-PTNUM           TO  SPA-PTNUM
       *
-      *    API�δ��Է���
+      *    APIの患者決定
            INITIALIZE                  ORCSC95AREA
            MOVE    "@"                 TO  LNK-SC95-KBN
            MOVE    SPA-SRYYMD          TO  LNK-SC95-SRYYMD
@@ -744,9 +744,9 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
-      *    �����Ȥ���
+      *    入院とする
            MOVE    "1"                 TO  SPA-NYUGAIKBN
-      *    ��ߺ��ѥ����å�����
+      *    相互作用チェック期間
            IF      WRK-KIKAN       NOT =   ZERO
                MOVE    WRK-KIKAN           TO  SPA-INTERACT-KIKAN
            END-IF
@@ -754,12 +754,12 @@
                MOVE    "13"                TO  WRK-ERRCD
                GO      TO      2002-SYORI-01-EXT
            END-IF
-      *    ���ޥ������Խ�
+      *    薬剤コード編集
            PERFORM 20021-INPUTCD-HEN-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      2002-SYORI-01-EXT
            END-IF
-      *    ��ߺ��ѥ����å����֤������Խ�
+      *    相互作用チェック期間の投薬編集
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSCKNKCHKAREA
            MOVE    "4"                 TO  ORCSCKNKCHK-KBN 
@@ -768,13 +768,13 @@
                                        SPA-AREA
                                        SPA-K02
                                        SPA-SCR-REC
-      *    ʻ�Ѷش����ޥ����å�
+      *    併用禁忌薬剤チェック
            PERFORM 20022-KINKI-HEN-SEC
            .
        2002-SYORI-01-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ�����Ͼ����Խ�����
+      *    患者情報出力情報編集処理
       *****************************************************************
        20021-CHKRES-HEN-SEC     SECTION.
       *
@@ -794,11 +794,11 @@
        20021-CHKRES-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ޥ������Խ�����
+      *    薬剤コード編集処理
       *****************************************************************
        20021-INPUTCD-HEN-SEC          SECTION.
       *
-      *    �ơ��֥�����
+      *    テーブル最大行
            MOVE    MAX-LINE-VALUE      TO  SPA-MAX-LINE
       *
            INITIALIZE                  SPA-SCR-REC
@@ -808,7 +808,7 @@
                            OR (CHKREQ-PRSCRPT-CODE (IDX)   =   SPACE)
                MOVE    CHKREQ-PRSCRPT-CODE (IDX)   TO
                                                CHKRES-PRSCRPT-CODE(IDX)
-      *        �����ޥ�������
+      *        点数マスタ検索
                MOVE    CHKREQ-PRSCRPT-CODE (IDX)   TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF     (FLG-TENSU           =   ZERO )
@@ -838,7 +838,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʻ�Ѷش����ޥ����å�����
+      *    併用禁忌薬剤チェック処理
       *****************************************************************
        20022-KINKI-HEN-SEC        SECTION.
       *
@@ -857,18 +857,18 @@
                END-IF
            END-PERFORM
       *
-      *    �ɾ��ܵ������Խ�
+      *    症状詳記内容編集
            PERFORM 2002-SAYOKIJYO-HEN-SEC
            .
        20022-KINKI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ش��Խ�����
+      *    禁忌編集処理
       *****************************************************************
        2001-KNKYAK-CHK-SEC        SECTION.
       *
-      *    ��ߺ��ѥ쥳���ɤ�ꡢ�ش�̵ͭ�Υ����å���Ԥ�
+      *    相互作用レコードより、禁忌有無のチェックを行う
            INITIALIZE                  INTERACT-REC
            MOVE    SPA-COM-INPUTCD (IDX-Z)
                                        TO  INTERACT-DRUGCD
@@ -885,7 +885,7 @@
                MOVE    1                   TO  FLG-INTERACT
            END-IF
       *
-      *    �ش������å�
+      *    禁忌チェック
            MOVE    ZERO                TO  IDX-K2
            ADD     1                   TO  IDX-K1
            MOVE    ZERO                TO  FLG-ARI2
@@ -901,19 +901,19 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �����å��ޥ����ȤΥ����å�
+      *    チェックマスタとのチェック
            PERFORM 2009-KNKYKCHKMST-CHK-SEC
            .
        2001-KNKYAK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ش����ޥ����å�����
+      *    禁忌薬剤チェック処理
       *****************************************************************
        20011-KNKCHK-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-KINKI-ARI
            MOVE    ZERO                TO  FLG-KINKI-CHK
-      *    ���Ų�ץޥ����ȤΥ����å�
+      *    診療会計マスタとのチェック
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   SPA-KNK-MAX )  OR
                               (FLG-KINKI-ARI   =   1   ) OR
@@ -922,15 +922,15 @@
                MOVE    ZERO                    TO  FLG-KINKI-CHK
                IF    ( SPA-COM-INPUTCD (IDX-Z)
                                            NOT =   SPA-KNK-SRYCD(IDX-S))
-      *            ��
+      *            前
                    IF     (SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD2)
                        MOVE    1                   TO  FLG-KINKI-CHK
                    END-IF
-      *            ��
+      *            後
                    IF     (SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD)
                        MOVE    2                   TO  FLG-KINKI-CHK
                    END-IF
-      *            ��������ʬ���оݳ�
+      *            今回入力分は対象外
                    PERFORM 200111-INPUT-CHK-SEC
                END-IF
                IF      FLG-KINKI-CHK       NOT =   ZERO
@@ -943,35 +943,35 @@
                        MOVE    SPA-KNK-SRYCD (IDX-S)   TO  TNS-SRYCD
                        PERFORM 919-TENSU-READ2-SEC
                    END-IF
-      *            �ش���̾��
+      *            禁忌薬名称
                    MOVE    TNS-NAME            TO  CHKRES-DRUGCD-NAME
                                                         (IDX IDX-K2)
-      *            �ش���������
+      *            禁忌薬コード
                    MOVE    SPA-KNK-SRYCD (IDX-S)
                                                TO  CHKRES-DRUGCD-CODE
                                                         (IDX IDX-K2)
-      *            �ɾ��ܵ���ʬ
+      *            症状詳記区分
                    MOVE    INTERACT-SYOJYOUCD  TO  CHKRES-INTERACT-CODE
                                                         (IDX IDX-K2)
-      *            ��Ϳ��
+      *            投与日
                    MOVE    SPA-KNK-TOUYMD (IDX-S)  TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE        TO  CHKRES-ADMINISTE-DATE
                                                         (IDX IDX-K2)
-      *            ������
+      *            方向性
                    IF      FLG-KINKI-CHK       =   2
-      *                "��"
+      *                "←"
                        MOVE    "after"         TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
                    ELSE
-      *                "��"
+      *                "→"
                        MOVE    "before"        TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
                    END-IF
                END-IF
            END-PERFORM
       *
-      *    ��������ʬ�ȤΥ����å�
+      *    画面入力分とのチェック
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   SPA-MAX-LINE)  OR
                               (FLG-KINKI-ARI   =   1    ) OR
@@ -992,32 +992,32 @@
                    END-IF
       *
                    IF      FLG-ARI             =   ZERO
-      *                �ش���̾��
+      *                禁忌薬名称
                        MOVE    SPA-COM-NAME   (IDX-S)
                                                TO  CHKRES-DRUGCD-NAME
                                                         (IDX IDX-K2)
-      *                �ش���������
+      *                禁忌薬コード
                        MOVE    SPA-COM-INPUTCD (IDX-S)
                                                TO  CHKRES-DRUGCD-CODE
                                                         (IDX IDX-K2)
-      *                �ɾ��ܵ���ʬ
+      *                症状詳記区分
                        MOVE    INTERACT-SYOJYOUCD
                                                TO  CHKRES-INTERACT-CODE
                                                         (IDX IDX-K2)
-      *                ��������ʬ
+      *                今回入力分
                        MOVE    "1"             TO  CHKRES-ADMINISTE-KBN
                                                         (IDX IDX-K2)
-      *                ������
-      *                "��"
+      *                方向性
+      *                "→"
                        MOVE    "before"        TO  CHKRES-CONTEXT-CLASS
                                                         (IDX IDX-K2)
       *
                    ELSE
-      *            �������Ϥ�ͥ��Ȥ���
-      *                ��Ϳ���Ϻ��
+      *            今回入力を優先とする
+      *                投与日は削除
                        MOVE    SPACE           TO  CHKRES-ADMINISTE-DATE
                                                         (IDX IDX-K2)
-      *                ��������ʬ
+      *                今回入力分
                        MOVE    "1"             TO  CHKRES-ADMINISTE-KBN
                                                         (IDX IDX-K2)
       *
@@ -1031,7 +1031,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʣ�����å�����
+      *    重複チェック処理
       *****************************************************************
        200111-TBL-CHEK-SEC              SECTION.
       *
@@ -1061,7 +1061,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ʬ�����å�����
+      *    今回入力分チェック処理
       *****************************************************************
        200111-INPUT-CHK-SEC              SECTION.
       *
@@ -1082,7 +1082,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å��ޥ����ȤΥ����å�����
+      *    チェックマスタとのチェック処理
       *****************************************************************
        2009-KNKYKCHKMST-CHK-SEC              SECTION.
       *
@@ -1139,7 +1139,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ������Խ�����
+      *    症状詳記内容編集処理
       *****************************************************************
        2002-SAYOKIJYO-HEN-SEC              SECTION.
       *
@@ -1167,7 +1167,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ������Խ�����
+      *    症状詳記内容編集処理
       *****************************************************************
        20021-SYOJYOUCD-SYORI-SEC              SECTION.
       *
@@ -1177,7 +1177,7 @@
                IF      CHKRES-SYOJYOUCD (IDY)  =   SPACE
                    MOVE    WRK-SYOJYOUCD       TO  CHKRES-SYOJYOUCD
                                                                 (IDY)
-      *            �ɾ����ֵ�������
+      *            症状処置機序検索
                    INITIALIZE                  SSKIJYO-REC
                    MOVE    WRK-SYOJYOUCD       TO  SSKIJYO-SYOJYOUCD
                    PERFORM 910-SSKIJYO-READ-SEC
@@ -1195,7 +1195,7 @@
            END-PERFORM
       *
            IF      FLG-CHK             =   ZERO
-      *        �ɾ����������С�
+      *        症状機序オーバー
                MOVE    "K1"                TO  WRK-KEICD
            END-IF
       *
@@ -1203,7 +1203,7 @@
        20021-SYOJYOUCD-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1232,7 +1232,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1253,7 +1253,7 @@
        802-DAYHEN02-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    数値変換編集処理
       *****************************************************************
        810-NUMHENKAN-SEC             SECTION.
       *
@@ -1282,7 +1282,7 @@
            IF      WRK-SURYO-Z3        NOT =   SPACE
                MOVE    "."                 TO  WRK-SURYO-Z2
            END-IF
-      *    ����
+      *    左詰
            MOVE    SPACE              TO  WRK-SURYO-HX
            MOVE    1                  TO  IDXR
            MOVE    ZERO               TO  WRK-S-MAX
@@ -1292,7 +1292,7 @@
                    MOVE    WRK-SURYO-X (IDXM:1)    TO  WRK-SURYO-HX
                                                        (IDXR:1)
                    COMPUTE IDXR            =   IDXR    +   1
-      *            ���
+      *            桁数
                    ADD     1               TO  WRK-S-MAX
                END-IF
            END-PERFORM
@@ -1301,78 +1301,78 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "�����ֹ�����꤬����ޤ���"
+               MOVE    "患者番号の設定がありません"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "�����ֹ�˳������봵�Ԥ�¸�ߤ��ޤ���"
+               MOVE    "患者番号に該当する患者が存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "�������������ǤϤ���ޤ���"
+               MOVE    "診療日が暦日ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "�оݴ��ַ�������ͤǤϤ���ޤ���"
+               MOVE    "対象期間月数が数値ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "13"
-               MOVE    "�оݴ��ַ���������Ǥ��������å��Ǥ��ޤ���"
+               MOVE    "対象期間月数がゼロです。チェックできません"
                                                TO  WRK-ERRMSG
            WHEN    "14"
-               MOVE    "�оݤ�����ޤ���"
+               MOVE    "対象がありません"
                                                TO  WRK-ERRMSG
            WHEN    "20"
-               MOVE    "���ޥ����ɤ�¸�ߤ��ޤ���"
+               MOVE    "薬剤コードが存在しません。"
                                                TO  WRK-ERRMSG
-      *�ٹ�
+      *警告
            WHEN    "K1"
-               STRING  "�ٹ�"
-                       "�ɾ������ɤ�������ʾ�¸�ߤ��ޤ���"
+               STRING  "警告！"
+                       "症状コードが５０件以上存在します。"
                                                DELIMITED  BY  SIZE
                                                INTO  WRK-ERRMSG
                END-STRING
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "������ʬ̤����"        TO  WRK-ERRMSG
+               MOVE    "処理区分未設定"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "�������Ƥ˸��꤬����ޤ���"
+               MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE   "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1380,7 +1380,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ������
+      *    患者基本情報取得
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -1411,7 +1411,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ����ֵ�����������
+      *    症状処置機序取得処理
       *****************************************************************
        910-SSKIJYO-READ-SEC            SECTION.
       *
@@ -1441,7 +1441,7 @@
        910-SSKIJYO-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1473,7 +1473,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �������þ��󸡺�
+      *    点数附加情報検索
       *    IF     (FLG-TENSU           =   ZERO)
       *        PERFORM 9101-TENSUPLUS-READ-SEC
       *    ELSE
@@ -1483,7 +1483,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        919-TENSU-READ2-SEC         SECTION.
       *
@@ -1531,7 +1531,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-SEL-SEC         SECTION.
       *
@@ -1549,7 +1549,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1558,7 +1558,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1575,7 +1575,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ߺ��ѥޥ����ɹ�
+      *    相互作用マスタ読込
       *****************************************************************
        990-INTERACT-READ-SEC         SECTION.
       *
@@ -1594,7 +1594,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å��ޥ����ɹ�
+      *    チェックマスタ読込
       *****************************************************************
        950-CHK-READ-SEC         SECTION.
       *
@@ -1613,7 +1613,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1627,7 +1627,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -1641,7 +1641,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCM32.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ��ʧ������ʷ��̡�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/12/11    NACL�ݿ���    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 支払証明書（月別）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/12/11    NACL−森脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.01.01    NACL-����    03.03.18  ������ץ�󥿤��ѹ�
-      *  01.01.02    NACL-����    03/07/15  ������ץ�󥿥����ɲ�
-      *  02.01.01    NACL-����    03/12/10  ���Ͼ�､��
-      *  02.01.02    NACL-����    04/10/25  CLOSE�ɲ�
-      *  02.01.03    NACL-����    04/11/09  �ѥ�᥿�ѹ�,�Хå��������ѹ�
-      *  03.04.01    NACL-����    07/01/30  ���������H19ǯ4���б�
-      *  03.05.00    NACL-����    07/05/24  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    NACL-森脇    03.03.18  出力先プリンタの変更
+      *  01.01.02    NACL-森脇    03/07/15  出力先プリンタサブ追加
+      *  02.01.01    NACL-森脇    03/12/10  出力条件修正
+      *  02.01.02    NACL-森脇    04/10/25  CLOSE追加
+      *  02.01.03    NACL-森脇    04/11/09  パラメタ変更,バッチ処理に変更
+      *  03.04.01    NACL-森脇    07/01/30  自費消費税H19年4月対応
+      *  03.05.00    NACL-太田    07/05/24  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,7 +46,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    Ģɼ
+      *    帳票
            COPY    "HCM32GV02.INC" REPLACING   //HCM32GV02//
                                    BY          //HCM32G//.
            COPY    "HCM32NV02.INC" REPLACING   //HCM32NV02//
@@ -54,11 +54,11 @@
       *
            COPY    "CPFMSHIHARAI.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
@@ -69,7 +69,7 @@
            03  FLG-TAISYO          PIC 9(01).
            03  FLG-LOOP-END        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(05).
            03  IDY                 PIC 9(05).
@@ -82,17 +82,17 @@
            03  IDX-TJNISSU         PIC 9(05).
            03  IDX-DAY             PIC 9(05).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(03).
            03  CNT-LINE            PIC 9(03).
            03  CNT-OUT             PIC 9(03).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-TABLE           PIC X(64).
            03  WRK-PATHNAME        PIC X(64).
@@ -118,7 +118,7 @@
                05  WRK-KEY-YMD     PIC X(08).
                05  WRK-HEN-MAX     PIC 9(05).
                05  WRK-NYUIN       PIC 9(01).
-      *        ���磲����������������������ܤ��¤��ؤ���
+      *        最大２０００件・・・２００１件目は並び替え用
                05  WRK-HENSYU-OCC  OCCURS  2001.
                    07  WRK-HENSYU-KEY.
                        09  WRK-NYUGAIKBN  PIC X(01).
@@ -209,79 +209,79 @@
            03  CONST-H190401       PIC X(08)   VALUE   "20070401".
       *----(03.04.01)--ADD-END-----
       *
-      *    �ѥ�᥿���ꥢ
+      *    パラメタエリア
        01  TPARA-AREA.
            03  TPARA-API-DATA          PIC X(01).
            03  TPARA-API-CUSTOM-ID     PIC X(30).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            COPY    "CPSK1002.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
       *
-      *    ���ŵ���̾���Խ�����
+      *    医療機関名称編集情報
            COPY    "CPSK1901.INC".
       *
-      *    ���ŵ��ؽ����Խ�����
+      *    医療機関住所編集情報
            COPY    "CPSK1902.INC".
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ�
+      *    患者番号
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    API�б�
+      *    API対応
            COPY    "CPORCRPMAIN.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
-      *    ��ǡ��ƿǼ�������
+      *    初診・再診取得サブ
            COPY    "CPORCSS003.INC".
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "CPORCHCM31S01.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                    SECTION.
       *
@@ -295,20 +295,20 @@
                                                ORCHCM31AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
       *
            PERFORM UNTIL ( FLG-END     NOT =   ZERO )
       *
                IF    ( TPARA-API-DATA      =   "1" )
-      *            �������API�ǡ���������
+      *            主処理（APIデータ作成）
                    PERFORM 201-MAIN-SEC
                ELSE
-      *            �������Ģɼ������
+      *            主処理（帳票印刷）
                    PERFORM 200-MAIN-SEC
                END-IF
       *
@@ -322,7 +322,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -340,33 +340,33 @@
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
-      *    ��ǡ��ƿ�Ƚ�ꥵ�ֽ������
+      *    初診／再診判定サブ初期処理
            INITIALIZE                      SS003-AREA
            MOVE    ZERO            TO      SS003-SYORIKBN
            CALL    "ORCSS003"      USING   SS003-AREA
                                            SPA-AREA
       *
-      *    ���ŵ��ؾ���ݴ��ܾ����ɤ߹���
+      *    医療機関情報−基本情報読み込み
            PERFORM 900-SYS1001-READ-SEC
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSP-NAME (1)
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ�����ɤ߹���
+      *    医療機関情報−所在地、連絡先読み込み
            PERFORM 900-SYS1002-READ-SEC
            MOVE    SYS-1002-ADRS       TO  WRK-HOSP-ADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSP-TEL
            MOVE    SYS-1002-POST       TO  WRK-HOSP-POST
       *
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
            PERFORM 900-SYS1900-READ-SEC
            IF    ( SYS-1900-PRTKBN (24)    NOT =   SPACE )
-      *        ���ŵ���̾���Խ������ɤ߹���
+      *        医療機関名称編集情報読み込み
                PERFORM 900-SYS1901-READ-SEC
                IF    ( FLG-SYSKANRI    =   ZERO )
                    MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSP-NAME (1)
                    MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSP-NAME (2)
                    MOVE    SYS-1901-HOSPNAME3  TO  WRK-HOSP-NAME (3)
                END-IF
-      *        ���ŵ��ؽ����Խ������ɤ߹���
+      *        医療機関住所編集情報読み込み
                PERFORM 900-SYS1902-READ-SEC
                IF    ( FLG-SYSKANRI    =   ZERO )
                    MOVE    "1"             TO  WRK-HOSP-1902
@@ -378,16 +378,16 @@
                END-IF
            END-IF
       *
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
            PERFORM 900-PTINF-READ-SEC
       *
-      *    �����ֹ��ɤ߹���
+      *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
       *
-      *    �����ݸ��ȹ礻����
+      *    患者保険組合せ取得
            PERFORM 1001-HKNCOMBI-HEN-SEC
       *
-      *    �ץ�����४�ץ�������
+      *    プログラムオプション取得
            PERFORM 100-OPTION-SELECT-SEC
       *
            .
@@ -395,7 +395,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ȹ礻��������
+      *    患者保険組合せ取得処理
       *****************************************************************
        1001-HKNCOMBI-HEN-SEC       SECTION.
       *
@@ -432,7 +432,7 @@
        1001-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ�������߽���
+      *    プログラムオプション取込み処理
       *****************************************************************
        100-OPTION-SELECT-SEC           SECTION.
       *
@@ -455,7 +455,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ����ѥ�᥿��������
+      *    プログラムオプションパラメタ取得処理
       *****************************************************************
        1001-OPTION-CALL-SEC             SECTION.
       *
@@ -473,14 +473,14 @@
        1001-OPTION-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ���ץǡ����Խ�
+      *    統計データ編集
            PERFORM 210-HENSYU-SEC
       *
-      *    ���ץǡ����¤��ؤ�
+      *    統計データ並び替え
            PERFORM 230-NARABIKAE-SEC
       *
            MOVE    ZERO            TO  CNT-LINE
@@ -515,7 +515,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        2001-EDIT-SEC               SECTION.
       *
@@ -575,7 +575,7 @@
        2001-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    �оݳ��ǡ����ɤ����Ф�����
+      *    対象外データ読み飛ばし処理
       *****************************************************************
        20011-SKIP-SEC               SECTION.
       *
@@ -593,7 +593,7 @@
        20011-SKIP-EXT.
            EXIT.
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        210-HENSYU-SEC              SECTION.
       *
@@ -605,10 +605,10 @@
                MOVE    "key65"         TO  WRK-PATHNAME
            END-IF
       *
-      *    ��Ǽ�ޥ������ɤ߹���
+      *    収納マスター読み込み
            PERFORM 900-SYUNOU-SELECT-SEC
       *
-      *    ��Ǽ�ޥ��������ʤ��ʤ�ޤǷ����֤�
+      *    収納マスターがなくなるまで繰り返す
            PERFORM UNTIL   FLG-SYUNOU      =   1
       *
                PERFORM 2101-TAISYO-CHK-SEC
@@ -624,7 +624,7 @@
                    END-IF
                END-IF
       *
-      *        ��Ǽ�ޥ�����FETCH
+      *        収納マスターFETCH
                PERFORM 900-SYUNOU-READ-SEC
       *
            END-PERFORM
@@ -676,7 +676,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥǡ��������å�����
+      *    対象データチェック処理
       *****************************************************************
        2101-TAISYO-CHK-SEC             SECTION.
       *
@@ -699,11 +699,11 @@
        2101-TAISYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ŵ��֤���Խ�����
+      *    診療期間より編集処理
       *****************************************************************
        2101-SRYKIKAN-HEN-SEC           SECTION.
       *
-      *    �����Խ�����
+      *    入金編集処理
            PERFORM 220-NUKIN-HENSYU-SEC
            IF    ( ORCHCM31-DSPKBN =   "1" )
                    PERFORM 21011-SRYKIKAN-HEN-SEC
@@ -718,7 +718,7 @@
        2101-SRYKIKAN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ŵ��֤���Խ�����
+      *    診療期間より編集処理
       *****************************************************************
        21011-SRYKIKAN-HEN-SEC           SECTION.
       *
@@ -735,7 +735,7 @@
       *
            IF    ( SYU-SYUHKNNUM (1:2) =   "98" )
       *
-      *        �ݸ��ȹ礻����
+      *        保険組合せ取得
                MOVE    SYU-HKNCOMBINUM TO  SRH-CD
                PERFORM 21011-HKNCOMBI-HEN-SEC
                MOVE    SRH-DAT         TO  WRK-HOJOKBN
@@ -766,20 +766,20 @@
                END-IF
       *----(03.04.01)--UPD-END-----
            ELSE
-      *        �ݸ�����
+      *        保険点数
                COMPUTE WRK-HKNTEN      =   SYU-TOTAL-HKNTEN
       *
-      *        �ݸ�ʬ��ô��
+      *        保険分負担額
                COMPUTE WRK-FTNMONEY    =   SYU-HKNTEKMONEY
                                        +   SYU-RJN-FTN
                                        +   SYU-KOH-FTN
                                        +   SYU-RSI-TOTAL
       *
-      *        ������������ô��
+      *        食事・生活負担額
                COMPUTE WRK-SKJMONEY    =   SYU-SKYMONEY-SKJ-KEI
                                        +   SYU-SKYMONEY-LIFE-KEI
       *
-      *        ����ʬ��ô��
+      *        自費分負担額
                COMPUTE WRK-JIHIMONEY   =   SYU-RMSAGAKU
                                        +   SYU-SKYMONEY-SKJ-JIHI-KEI
                                        +   SYU-SKYMONEY-LIFE-JIHI-KEI
@@ -894,7 +894,7 @@
        21011-SRYKIKAN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    実日数編集処理
       *****************************************************************
        2101-TJNISSU-HEN-SEC            SECTION.
       *
@@ -949,7 +949,7 @@
        2101-TJNISSU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�����������
+      *    保険組合せ情報取得処理
       *****************************************************************
        21011-HKNCOMBI-HEN-SEC          SECTION.
       *
@@ -971,14 +971,14 @@
        21011-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ʧ���֤���Խ�����
+      *    支払期間より編集処理
       *****************************************************************
        2101-SIHKIKAN-HEN-SEC           SECTION.
       *
-      *    �����Խ�����
+      *    入金編集処理
            PERFORM 220-NUKIN-HENSYU-SEC
       *
-      *    ��Ǽ���٥ޥ��������ʤ��ʤ�ޤǷ����֤�
+      *    収納明細マスターがなくなるまで繰り返す
            PERFORM VARYING IDX3     FROM    1   BY  1
                    UNTIL ( IDX3     >   HCM31S01-OT-MAX )
       *
@@ -1027,22 +1027,22 @@
        2101-SIHKIKAN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    入金編集処理
       *****************************************************************
        220-NUKIN-HENSYU-SEC        SECTION.
       *
-      *    �Խ��ѥ��֥ץ��ɤ߹���
+      *    編集用サブプロ読み込み
            INITIALIZE                  HCM31S01-AREA
       *
            EVALUATE    ORCHCM31-KIKANKBN
                                ALSO    ORCHCM31-SYORIKBN
-      *      �������դǴ��ֳ��������ޤ����
+      *      診療日付で期間外の入金も含める場合
              WHEN      "1"     ALSO    "1"
                MOVE    "1"             TO  HCM31S01-PROCKBN
-      *      �������դǴ��ֳ�������ϴޤ�ʤ����
+      *      診療日付で期間外の入金は含めない場合
              WHEN      "1"     ALSO    "2"
                MOVE    "2"             TO  HCM31S01-PROCKBN
-      *      ��ʧ���դξ��
+      *      支払日付の場合
              WHEN      "2"     ALSO    ANY
                MOVE    "3"             TO  HCM31S01-PROCKBN
            END-EVALUATE
@@ -1058,7 +1058,7 @@
                                    TO  HCM31S01-EDYMD
            MOVE    ORCHCM31-SUMKBN
                                    TO  HCM31S01-SUMKBN
-      *    ��ʧ����ۥ��֥ץ��ƤӽФ�
+      *    支払い金額サブプロ呼び出し
            CALL    "ORCHCM31S01"       USING
                                        HCM31S01-AREA
                                        SPA-AREA
@@ -1068,7 +1068,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �¤��ؤ�����
+      *    並び替え処理
       *****************************************************************
        230-NARABIKAE-SEC           SECTION.
       *
@@ -1095,7 +1095,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥǡ��������å�����
+      *    対象データチェック処理
       *****************************************************************
        230-TAISYO-CHK-SEC              SECTION.
       *
@@ -1119,7 +1119,7 @@
        230-TAISYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �إå��Խ�����
+      *    ヘッダ編集処理
       *****************************************************************
        240-HEAD-HEN-SEC            SECTION.
       *
@@ -1127,29 +1127,29 @@
       *
            INITIALIZE                  HCM32N
       *
-      *    ���Ͽ�����
+      *    開始診療日
            MOVE    ORCHCM31-STRSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM32N-STRSRYYMD
       *
-      *    ��λ������
+      *    終了診療日
            MOVE    ORCHCM31-ENDSRYYMD  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM32N-ENDSRYYMD
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    PTNUM-PTNUM         TO  HCM32N-PTNUM
       *
-      *    ����̾��
+      *    患者名称
            MOVE    PTINF-NAME          TO  HCM32N-PTNAME
       *
-      *    ȯ����
+      *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM32N-HAKKOYMD
       *
       *
-      *    ���ŵ��ؽ���
+      *    医療機関住所
            IF    ( WRK-HOSP-ADRS (1)(81:)  NOT =   SPACE )
             AND  ( WRK-HOSP-1902               =   SPACE )
                MOVE    WRK-HOSP-ADRS (1)   TO  HCM32N-HOSPADRS2
@@ -1158,19 +1158,19 @@
                MOVE    WRK-HOSP-ADRS (2)   TO  HCM32N-HOSPADRS (2)
            END-IF
       *
-      *    ���ŵ���̾
+      *    医療機関名
            MOVE    WRK-HOSP-NAME (1)   TO  HCM32N-HOSPNAME (1)
            MOVE    WRK-HOSP-NAME (2)   TO  HCM32N-HOSPNAME (2)
       *
-      *    ���ŵ��أԣţ�
+      *    医療機関ＴＥＬ
            MOVE    WRK-HOSP-TEL        TO  HCM32N-HOSPTEL
       *
            IF    ( ORCHCM31-KIKANKBN   =   "2" )
-               MOVE    "��ʧ��"        TO  HCM32N-LABELYM
+               MOVE    "支払月"        TO  HCM32N-LABELYM
            ELSE
-               MOVE    "���ŷ�"        TO  HCM32N-LABELYM
-               MOVE    "������"        TO  HCM32N-LBLJNISSU1
-               MOVE    "��"            TO  HCM32N-LBLJNISSU2
+               MOVE    "診療月"        TO  HCM32N-LABELYM
+               MOVE    "実日数"        TO  HCM32N-LBLJNISSU1
+               MOVE    "日"            TO  HCM32N-LBLJNISSU2
                IF    ( KEY-NYUGAIKBN   =   "1" )
                    MOVE    TJNISSU-NYU TO  WRK-ZZZZ9
                    MOVE    WRK-ZZZZ9   TO  HCM32N-JNISSU
@@ -1183,7 +1183,7 @@
            IF    ( ORCHCM31-SUMKBN     =   "1" )
                MOVE    CNT-PAGE        TO  WRK-Z3
                STRING  WRK-Z3          DELIMITED   BY  SIZE
-                       "��"            DELIMITED   BY  SIZE
+                       "頁"            DELIMITED   BY  SIZE
                INTO    HCM32N-PAGE
                END-STRING
            END-IF
@@ -1192,7 +1192,7 @@
        240-HEAD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        240-MEISAI-HEN-SEC              SECTION.
       *
@@ -1202,7 +1202,7 @@
                PERFORM 240-HEAD-HEN-SEC
            END-IF
       *
-      *    ����
+      *    日付
            MOVE    WRK-MON-HIDUKE      TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1215,50 +1215,50 @@
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
             AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" OR "4" )
       *
-      *        �ݸ�����
+      *        保険点数
                IF      WRK-MON-TENSU   NOT =   ZERO
                    MOVE    WRK-MON-TENSU   TO WRK-Z7
                    MOVE    WRK-Z7          TO HCM32N-HKNTEN  (CNT-LINE)
-                   MOVE    "��"            TO HCM32N-TEN     (CNT-LINE)
+                   MOVE    "点"            TO HCM32N-TEN     (CNT-LINE)
                END-IF
       *
-      *        �ݸ�ʬ��ô��
+      *        保険分負担額
                IF      WRK-MON-HOKEN   NOT =   ZERO
                    MOVE    WRK-MON-HOKEN   TO WRK-Z9
                    MOVE    WRK-Z9          TO HCM32N-FTNMONEY(CNT-LINE)
-                   MOVE    "��"            TO HCM32N-HYEN    (CNT-LINE)
+                   MOVE    "円"            TO HCM32N-HYEN    (CNT-LINE)
                END-IF
       *
-      *        ������������ô��
+      *        食事・生活負担額
                IF      WRK-MON-SYOKUJI NOT =   ZERO
                    MOVE    WRK-MON-SYOKUJI TO  WRK-Z9
                    MOVE    WRK-Z9          TO HCM32N-SKJMONEY(CNT-LINE)
-                   MOVE    "��"            TO HCM32N-SYEN    (CNT-LINE)
+                   MOVE    "円"            TO HCM32N-SYEN    (CNT-LINE)
                END-IF
       *
-      *        ����ʬ��ô��
+      *        自費分負担額
                IF      WRK-MON-JIHI    NOT =   ZERO
                    MOVE    WRK-MON-JIHI    TO WRK-Z9
                    MOVE    WRK-Z9          TO HCM32N-JIHIMONEY(CNT-LINE)
-                   MOVE    "��"            TO HCM32N-JYEN     (CNT-LINE)
+                   MOVE    "円"            TO HCM32N-JYEN     (CNT-LINE)
                END-IF
            END-IF
       *
-      *    ���ֶ��
+      *    入返金額
            IF    ( WRK-MON-GAKU        NOT =   ZERO )
                MOVE    WRK-MON-GAKU    TO  WRK-Z9
                MOVE    WRK-Z9          TO  HCM32N-SKYMONEY(CNT-LINE)
-               MOVE    "��"            TO  HCM32N-YEN     (CNT-LINE)
+               MOVE    "円"            TO  HCM32N-YEN     (CNT-LINE)
            END-IF
       *
            IF    ( ORCHCM31-SUMKBN     =   "1" )
                IF    ( WRK-MON-BFGAKU  NOT =   ZERO )
-                   MOVE    "��������ʧ���"
+                   MOVE    "期間前支払金額"
                                        TO  HCM32N-BFNYUKINMSG(CNT-LINE)
                    MOVE    WRK-MON-BFGAKU
                                        TO  WRK-Z9
                    MOVE    WRK-Z9      TO  HCM32N-BFNYUKIN(CNT-LINE)
-                   MOVE    "��"        TO  HCM32N-BFYEN   (CNT-LINE)
+                   MOVE    "円"        TO  HCM32N-BFYEN   (CNT-LINE)
                END-IF
            END-IF
       *
@@ -1282,7 +1282,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��׹��Խ�����
+      *    合計行編集処理
       *****************************************************************
        240-GOKEI-HEN-SEC               SECTION.
       *
@@ -1303,7 +1303,7 @@
            END-IF
       *
       *
-      *    ������ֶ��
+      *    合計入返金額
            MOVE    WRK-GSKYMONEY   TO  WRK-Z9
            MOVE    WRK-Z9          TO  HCM32N-GSKYMONEY
       *
@@ -1311,7 +1311,7 @@
        240-GOKEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ���Ͻ���
+      *    帳票出力処理
       *****************************************************************
        250-PRINT-SEC                   SECTION.
       *
@@ -1340,7 +1340,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʧ�������Խ�����
+      *    外来支払証明書編集処理
       *****************************************************************
        2501-HCM32G-HEN-SEC             SECTION.
       *
@@ -1409,15 +1409,15 @@
        2501-HCM32G-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        201-MAIN-SEC                SECTION.
       *
       *
-      *    ���ץǡ����Խ�
+      *    統計データ編集
            PERFORM 210-HENSYU-SEC
       *
-      *    ���ץǡ����¤��ؤ�
+      *    統計データ並び替え
            PERFORM 230-NARABIKAE-SEC
       *
            MOVE    1               TO  IDX4
@@ -1489,7 +1489,7 @@
        201-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �إå��Խ�����
+      *    ヘッダ編集処理
       *****************************************************************
        241-HEAD-HEN-SEC            SECTION.
       *
@@ -1543,7 +1543,7 @@
        241-HEAD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        241-MEISAI-HEN-SEC                  SECTION.
       *
@@ -1557,27 +1557,27 @@
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
             AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" OR "4" )
       *
-      *        �ݸ�����
+      *        保険点数
                MOVE    WRK-MON-TENSU   TO  WRK-Z9M
                MOVE    WRK-Z9M         TO  FMSHIHARAI-TENSU (CNT-LINE)
       *
-      *        �ݸ�ʬ��ô��
+      *        保険分負担額
                MOVE    WRK-MON-HOKEN   TO  WRK-Z9M
                MOVE    WRK-Z9M         TO  FMSHIHARAI-HOKEN(CNT-LINE)
       *
-      *        ������������ô��
+      *        食事・生活負担額
                IF    ( KEY-NYUGAIKBN   =   "1" )
                    MOVE    WRK-MON-SYOKUJI
                                        TO  WRK-Z9M
                    MOVE    WRK-Z9M     TO  FMSHIHARAI-SHOKUJI(CNT-LINE)
                END-IF
       *
-      *        ����ʬ��ô��
+      *        自費分負担額
                MOVE    WRK-MON-JIHI    TO  WRK-Z9M
                MOVE    WRK-Z9M         TO  FMSHIHARAI-JIHI(CNT-LINE)
            END-IF
       *
-      *    ���ֶ��
+      *    入返金額
            MOVE    WRK-MON-GAKU        TO  WRK-Z9M
            MOVE    WRK-Z9M             TO  FMSHIHARAI-NYUKIN (CNT-LINE)
       *
@@ -1609,7 +1609,7 @@
        241-MEISAI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��׹��Խ�����
+      *    合計行編集処理
       *****************************************************************
        241-GOKEI-HEN-SEC               SECTION.
       *
@@ -1631,7 +1631,7 @@
                MOVE    WRK-GZ9M        TO  FMSHIHARAI-TTL-JIHI
            END-IF
       *
-      *    ������ֶ��
+      *    合計入返金額
            MOVE    WRK-GSKYMONEY       TO  WRK-GZ9M
            MOVE    WRK-GZ9M            TO  FMSHIHARAI-TTL-NYUKIN
       *
@@ -1639,7 +1639,7 @@
        241-GOKEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���У���������
+      *    ＡＰＩ送信処理
       *****************************************************************
        251-RPMAIN-SEC                  SECTION.
       *
@@ -1662,7 +1662,7 @@
        251-RPMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1673,7 +1673,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -1690,7 +1690,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -1719,7 +1719,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�������ܾ����ɤ߹���
+      *    システム管理基本情報読み込み
       *****************************************************************
        900-SYS1001-READ-SEC        SECTION.
       *
@@ -1753,7 +1753,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ����������ɤ߹���
+      *    システム管理所在地読み込み
       *****************************************************************
        900-SYS1002-READ-SEC        SECTION.
       *
@@ -1787,7 +1787,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
       *****************************************************************
        900-SYS1900-READ-SEC        SECTION.
       *
@@ -1804,7 +1804,7 @@
        900-SYS1900-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-SYS1901-READ-SEC        SECTION.
       *
@@ -1822,7 +1822,7 @@
        900-SYS1901-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
       *****************************************************************
        900-SYS1902-READ-SEC        SECTION.
       *
@@ -1840,7 +1840,7 @@
        900-SYS1902-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ��ɤ߹���
+      *    患者番号読み込み
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -1869,7 +1869,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -1898,7 +1898,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ޥ�����SELECT
+      *    収納マスターSELECT
       *****************************************************************
        900-SYUNOU-SELECT-SEC       SECTION.
       *
@@ -1938,7 +1938,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ޥ�����FETCH
+      *    収納マスターFETCH
       *****************************************************************
        900-SYUNOU-READ-SEC         SECTION.
       *
@@ -1978,7 +1978,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻��������(KEY2)
+      *    保険組合せ取得処理(KEY2)
       *****************************************************************
        900-HKNCOMBI-KEY2-SEL-SEC       SECTION.
       *
@@ -2002,7 +2002,7 @@
        900-HKNCOMBI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻FETCH����(KEY2)
+      *    保険組合せFETCH処理(KEY2)
       *****************************************************************
        900-HKNCOMBI-KEY2-FET-SEC       SECTION.
       *
@@ -2020,7 +2020,7 @@
        900-HKNCOMBI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ������������(KEY10)
+      *    システム管理検索処理(KEY10)
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -2046,7 +2046,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC          SECTION.
       *
@@ -2063,7 +2063,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        911-DBSELECT-SEC          SECTION.
       *
@@ -2077,7 +2077,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        910-DBFETCH-SEC            SECTION.
       *
@@ -2091,7 +2091,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

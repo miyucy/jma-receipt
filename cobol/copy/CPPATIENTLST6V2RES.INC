@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹴����ݸ��ȹ礻����(xml2)
+      *    ＡＰＩレスポンス患者保険組合せ取得(xml2)
       *                                   COPY (CPPATIENTLST6V2RES.INC)
       ******************************************************************
         01  XML-PATIENTLST6RES.
@@ -25,167 +25,167 @@
             02  PTRES-MODE             PIC S9(9)   BINARY.
             02  PTRES-RECORDNAME       PIC X(128).
             02  PTRES-PATIENTINFORES.
-      *       �»���
+      *       実施日
               03  PTRES-INFORMATION-DATE   PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  PTRES-INFORMATION-TIME   PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  PTRES-API-RESULT         PIC X(3).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  PTRES-API-RESULT-MSG     PIC X(100).
               03  PTRES-RESKEY             PIC X(100).
-      *       ���Ծ���
+      *       患者情報
               03  PTRES-PATIENT-INFOMATION.
-      *           �����ֹ�
+      *           患者番号
                   04  PTRES-PATIENTID          PIC X(20).
-      *           ������̾
+      *           漢字氏名
                   04  PTRES-NAME               PIC X(100).
-      *           ���ʻ�̾
+      *           カナ氏名
                   04  PTRES-KANANAME           PIC X(100).
-      *           ��ǯ����
+      *           生年月日
                   04  PTRES-BIRTHDAY           PIC X(10).
-      *           ����
+      *           性別
                   04  PTRES-SEX                PIC X(1).
-      *       �ݸ��ȹ礻����
+      *       保険組合せ情報
               03  PTRES-INSURANCE-INFOMATION.
-      *           �ݸ��ȹ礻����
+      *           保険組合せ情報
                   04  PTRES-INSURANCE-INFO     OCCURS  200 TIMES.
-      *               �ݸ��ȹ礻�ֹ�
+      *               保険組合せ番号
                       06  PTRES-COMB-NUMBER            PIC X(04).
-      *               �ݸ��ȹ礻����ô����������
+      *               保険組合せ　負担割合（入院）
                       06  PTRES-COMB-RATE-ADM          PIC X(04).
-      *               �ݸ��ȹ礻����ô���ʳ����
+      *               保険組合せ　負担割合（外来）
                       06  PTRES-COMB-RATE-OUT          PIC X(04).
-      *               �ݸ��ȹ礻������
+      *               保険組合せ開始日
                       06  PTRES-COMB-START-DATE        PIC X(10).
                       06  PTRES-COMB-END-DATE          PIC X(10).
-      *               ��ɽ����ʬ
+      *               非表示区分
                       06  PTRES-COMBINATION-HYOJI      PIC X(01).
       *
-      *               �ݸ��μ���
+      *               保険の種類
                       06  PTRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *               �ݸ����ֹ�
+      *               保険者番号
                       06  PTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *               �ݸ��μ���̾��
+      *               保険の種類名称
                       06  PTRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *               ����
+      *               記号
                       06  PTRES-MAIN-MARK              PIC X(80).
-      *               �ֹ�
+      *               番号
                       06  PTRES-MAIN-NUMBER            PIC X(80).
-      *               ��³��ʬ
+      *               継続区分
                       06  PTRES-MAIN-CONTINUATION      PIC X(01).
-      *               �����ʬ
+      *               補助区分
                       06  PTRES-MAIN-ASSISTANCE        PIC X(01).
-      *               �����ʬ̾��
+      *               補助区分名称
                       06  PTRES-MAIN-ASSISTANCE-NAME   PIC X(20).
-      *               �ܿͲ�²��ʬ
+      *               本人家族区分
                       06  PTRES-MAIN-FAMILY            PIC X(01).
-      *               ���ݸ���̾
+      *               被保険者名
                       06  PTRES-MAIN-POLICYHOLDER      PIC X(100).
-      *               ͭ��������
+      *               有効開始日
                       06  PTRES-MAIN-START-DATE        PIC X(10).
-      *               ͭ����λ��
+      *               有効終了日
                       06  PTRES-MAIN-END-DATE          PIC X(10).
-      *               ��ʼ�����
+      *               資格取得日
                       06  PTRES-MAIN-GET-DATE          PIC X(10).
-      *               �ǽ���ǧ��
+      *               最終確認日
                       06  PTRES-MAIN-CHECK-DATE        PIC X(10).
       *
-      *               �������
+      *               公費情報
                       06  PTRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *                 ����μ���
+      *                 公費の種類
                         07  PTRES-INSURANCE-CLASS         PIC X(03).
-      *                 ����μ���̾��
+      *                 公費の種類名称
                         07  PTRES-INSURANCE-NAME          PIC X(20).
-      *                 ��ô���ֹ�
+      *                 負担者番号
                         07  PTRES-PROVIDER-NUMBER         PIC X(08).
-      *                 ������ֹ�
+      *                 受給者番号
                         07  PTRES-RECIPIENT-NUMBER        PIC X(20).
-      *                 ��������ôΨ�ʳ��
+      *                 入院−負担率（割）
                         07  PTRES-RATE-ADMISSION          PIC X(04).
-      *                 �����ݸ����
+      *                 入院−固定額
                         07  PTRES-MONEY-ADMISSION         PIC X(06).
-      *                 �������ôΨ�ʳ��
+      *                 外来−負担率（割）
                         07  PTRES-RATE-OUTPATIENT         PIC X(04).
-      *                 ����ݸ����
+      *                 外来−固定額
                         07  PTRES-MONEY-OUTPATIENT        PIC X(06).
-      *                 ͭ��������
+      *                 有効開始日
                         07  PTRES-INSURANCE-START-DATE    PIC X(10).
-      *                 ͭ����λ��
+      *                 有効終了日
                         07  PTRES-INSURANCE-END-DATE      PIC X(10).
-      *ϫ�Ҿ���
+      *労災情報
                       06  PTRES-ACCIDENT-INF-G.
-      *                  ϫ���ݸ�̾�Ρʵ����Ʊ�����ơ�
+      *                  労災保険名称（記号と同じ内容）
                          07  PTRES-ACCIDENT-NAME           PIC X(50).
-      *                  ���¤����̡��ֹ��Ʊ�����ơ�
+      *                  傷病の部位（番号と同じ内容）
                          07  PTRES-DISEASE-LOCATION        PIC X(100).
-      *                  ����ǯ����
+      *                  傷病年月日
                          07  PTRES-DISEASE-DATE            PIC X(10).
-      *ϫ��
-      *                  ϫƯ�ݸ��ֹ�
+      *労災
+      *                  労働保険番号
                          07  PTRES-ACCIDENT-NUMBER         PIC X(14).
-      *                  ǯ��ڽ��ֹ�
+      *                  年金証書番号
                          07  PTRES-PENSIONCERTIFICATE      PIC X(09).
-      *                  �ҳ���ʬ
+      *                  災害区分
                          07  PTRES-ACCIDENT-CLASS          PIC X(01).
-      *                  �ҳ���ʬ��̾�Ρ�
+      *                  災害区分（名称）
                          07  PTRES-ACCIDENT-CLASS-NAME     PIC X(20).
-      *                  ϫƯ�����Ľ𥳡���
+      *                  労働基準監督署コード
                          07  PTRES-LABOR-ST-CODE           PIC X(05).
-      *                  ϫƯ�����Ľ𥳡���
+      *                  労働基準監督署コード
                          07  PTRES-LABOR-ST-NAME           PIC X(50).
       *
-      *                  ���Ѻ��̶�ʬ
+      *                  新継再別区分
                          07  PTRES-SINKEI                  PIC X(01).
                          07  PTRES-SINKEI-NAME             PIC X(10).
-      *                  ž����ͳ
+      *                  転帰事由
                          07  PTRES-TENKI                   PIC X(01).
                          07  PTRES-TENKI-NAME              PIC X(10).
-      *                  �ͻ������ʬ
+      *                  四肢特例区分
                          07  PTRES-SISIKBN                 PIC X(01).
                          07  PTRES-SISIKBN-NAME            PIC X(10).
       *
-      *                  ���Ƚ�̾��
+      *                  事業所名称
                          07  PTRES-RSI-JIGYOUNAME          PIC X(80).
-      *                  �������ƻ�ܸ�̾
+      *                  所在地都道府県名
                          07  PTRES-RSI-PREFNAME            PIC X(20).
-      *                  �������ƻ�ܸ���ʬ
+      *                  所在地都道府県区分
                          07  PTRES-RSI-PREFKBN             PIC X(01).
-      *                  �������ƻ�ܸ���ʬ̾��
+      *                  所在地都道府県区分名称
                          07  PTRES-RSI-PREFKBNNAME         PIC X(02).
-      *                  ����Ϸ��Զ�̾
+      *                  所在地郡市区名
                          07  PTRES-RSI-CITYNAME            PIC X(80).
-      *                  ����Ϸ��Զ��ʬ
+      *                  所在地郡市区区分
                          07  PTRES-RSI-CITYKBN             PIC X(01).
-      *                  ����Ϸ��Զ�̾��
+      *                  所在地郡市区名称
                          07  PTRES-RSI-CITYKBNNAME         PIC X(02).
-      *                  ϫ�ҥ쥻������� ���ǯ��
+      *                  労災レセ回数記載 基準年月
                          07  PTRES-RSI-KIJYUNYM            PIC X(07).
-      *                  ϫ�ҥ쥻������� ���
+      *                  労災レセ回数記載 回数
                          07  PTRES-RESEPUTO-COUNT          PIC X(03).
-      *������
-      *                  �����������ʬ
+      *自賠責
+      *                  自賠責請求区分
                          07  PTRES-JIBAISEIKBN             PIC X(01).
                          07  PTRES-JIBAISEIKBN-NAME        PIC X(20).
-      *                  �������ݸ����̾
+      *                  自賠責保険会社名
                          07  PTRES-RSI-HOKENNAME           PIC X(80).
-      *                  ������ô����
+      *                  自賠責担当医
                          07  PTRES-RSI-DRCD                PIC X(05).
-      *                  ������ô����̾��
+      *                  自賠責担当医名称
                          07  PTRES-RSI-DRCD-NAME           PIC X(100).
-      *���ե�������
-      *                  �򹯴�����Ģ�ֹ�
+      *アフターケア
+      *                  健康管理手帳番号
                          07  PTRES-RSI-KANRITCHO-NUMBER    PIC X(13).
-      *                  »����ʬ
+      *                  損傷区分
                          07  PTRES-DAMAGE-CLASS            PIC X(03).
-      *                  »����ʬ̾��
+      *                  損傷区分名称
                          07  PTRES-DAMAGE-CLASS-NAME       PIC X(100).
-      *�軰�Թ԰�
-      *                  ��ʪ�ٵ��ʬ
+      *第三者行為
+      *                  現物支給区分
                          07  PTRES-DS-GENBTKBN             PIC X(01).
                          07  PTRES-DS-GENBTKBN-NAME        PIC X(20).
-      *                  �õ������ʬ
+      *                  特記事項区分
                          07  PTRES-DS-TOKKIKBN             PIC X(01).
                          07  PTRES-DS-TOKKIKBN-NAME        PIC X(20).
       *

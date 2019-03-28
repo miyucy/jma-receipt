@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,26 +19,26 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBPRT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : Ģɼ�ģ¤ΰ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/04/16    MCC-ƣ��      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 帳票ＤＢの印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/04/16    MCC-藤原      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02/05/20  �ư������̤���ΰ����ˤ�뽤��  
-      *  01.00.02    NACL-ƣ��    02/09/12  �ǥ��쥯�ȥ�򥵥֥ץ���
-      *  01.01.01    NACL-ƣ��    02/10/10  �����ѥ��󥹥�����ΰ���ɲ�
-      *                                     �����ѥե�����˥����ȶ�ʬ���ɲ�
-      *  01.01.02    NACL-ƣ��    03/03/04  �����ģ¤ؤΥץ��̾�ɲäˤ��
-      *                                     ����
-      *  01.01.03    NACL-ƣ��    04/11/29  �����˥��顼�ե�����̾���ɲ�
-      *  01.01.04    NACL-��ƣ    06/03/08  ���ե��å��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02/05/20  再印刷画面からの印刷による修正  
+      *  01.00.02    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.01.01    NACL-藤原    02/10/10  印刷用コンスタント領域の追加
+      *                                     印刷用ファイルにサイト区分を追加
+      *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
+      *                                     修正
+      *  01.01.03    NACL-藤原    04/11/29  引数にエラーファイル名を追加
+      *  01.01.04    NACL-伊藤    06/03/08  オフセット対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  04.05.00    NACL-����    10/01/28  ��ĥ�����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,20 +46,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC.
            03  PRT-PRTID           PIC X(30).
@@ -69,7 +69,7 @@
            03  PRT-SITEKBN         PIC X(01).
            03  PRT-PRTDATA         PIC X(20000).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -77,35 +77,35 @@
 grpsys*
 grpsys COPY    "COMMON-SPA".
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
            COPY    "CPASGNPARA.INC".
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).    
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-PRT             PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
            03  FLG-PRTDATA         PIC 9(01).
            03  FLG-PRTKANRI        PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(04).
            03  CNT-OUT             PIC 9(10).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-HC01PARA-CNT    PIC  9(03).
       *
@@ -122,52 +122,52 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-EDPAGE     PIC 9(05).
            03  WRK-PARA-HOSPNUM    PIC X(02).
       *
-      *    �����ѥ��󥹥�����ΰ� 
+      *    印刷用コンスタント領域 
            COPY    "CPPRTCONST.INC".          
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *     
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    monpe�����ǡ����㤭�̤콤������
+      *    monpe印刷データ泣き別れ修正サブ
            COPY  "CPORCSFIXREDDATA.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���ե��åȾ���
+      *    オフセット情報
            COPY    "CPSK1044.INC".
       *
-      *    ���������ģ�
+      *    印刷管理ＤＢ
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ģ�
+      *    印刷ＤＢ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".          
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
@@ -181,7 +181,7 @@ grpsys COPY    "COMMON-SPA".
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -195,7 +195,7 @@ grpsys COPY    "COMMON-SPA".
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       * 
@@ -237,25 +237,25 @@ grpsys COPY    "COMMON-SPA".
                                            SPA-AREA
            MOVE    SPA-ENCODING        TO  WRK-ENCODING9
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBPRT"       TO  JOB-PGID
-           MOVE    "Ģɼ��������"  TO  JOB-SHELLMSG
+           MOVE    "帳票印刷処理"  TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    ���������ģ��ɤ߹��߽���
+      *    印刷管理ＤＢ読み込み処理
            PERFORM 900-PRTKANRI-SELECT-SEC
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �����ѥե��������  
+      *    印刷用ファイル作成  
            MOVE    "HC99"          TO  HC01PARA-FORM-ID
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  HC01PARA-HOSPNUM
@@ -277,7 +277,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            PERFORM                     UNTIL   FLG-PRTKANRI =   1
                                        OR      FLG-END      =   1   
-      *        �����ģ��Խ�����
+      *        印刷ＤＢ編集処理
                PERFORM 900-PRTDATA-SELECT-SEC
                PERFORM                     UNTIL   FLG-PRTDATA  =   1
                                            OR      FLG-END      =   1
@@ -295,7 +295,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            CLOSE                       PRT-FILE
       *     
-      *   �����ѥ�����ץȽ���
+      *   印刷用スクリプト処理
       *
            IF      CNT-OUT             >   ZERO
            AND     FLG-ERR             =   ZERO 
@@ -320,7 +320,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        2001-PRTDATA-PRINT-SEC          SECTION.
       *
@@ -331,7 +331,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    PRTDATA-PRTNM       TO  PRT-PRTNM
            END-IF
-      *    ���ե��å�
+      *    オフセット
            PERFORM 2002-OFFSET-GET-SEC
            MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
            MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
@@ -369,7 +369,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ե��åȼ�������
+      *    オフセット取得処理
       *****************************************************************
        2002-OFFSET-GET-SEC             SECTION.
       *
@@ -416,11 +416,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ե饰���åȽ���
+      *    印刷フラグセット処理
       *****************************************************************
        2002-PRTDATA-UPD-SEC          SECTION.
       *
-      *    �����ե饰���å�
+      *    印刷フラグセット
            MOVE    "1"                 TO  PRTDATA-PRTFLG
       *
            MOVE    PRTDATA-REC         TO  MCPDATA-REC
@@ -432,7 +432,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC             =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤ι����ǥ��顼�ˤʤ�ޤ���"
+               MOVE    "印刷ＤＢの更新でエラーになりました"
                                           TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
           END-IF    
@@ -441,7 +441,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ե饰���åȽ���
+      *    印刷フラグセット処理
       *****************************************************************
        2003-PRTKANRI-UPD-SEC          SECTION.
       *
@@ -455,7 +455,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC               =   ZERO
                CONTINUE
            ELSE
-               MOVE    "���������ģ¤ι����ǥ��顼�ˤʤ�ޤ���"
+               MOVE    "印刷管理ＤＢの更新でエラーになりました"
                                         TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF    
@@ -464,7 +464,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -478,7 +478,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -494,7 +494,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -502,7 +502,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-OUT         TO  JOB-UPDCNT                        
@@ -519,7 +519,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *     ���������ģ��ɤ߹���
+      *     印刷管理ＤＢ読み込み
       *****************************************************************
        900-PRTKANRI-SELECT-SEC          SECTION.
       *
@@ -545,7 +545,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *     ���������ģ��ɤ߹���
+      *     印刷管理ＤＢ読み込み
       *****************************************************************
        900-PRTKANRI-FET-SEC            SECTION.
       *
@@ -582,7 +582,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *     �����ģ��ɤ߹���
+      *     印刷ＤＢ読み込み
       *****************************************************************
        900-PRTDATA-SELECT-SEC          SECTION.
       *
@@ -611,7 +611,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *     �����ģ��ɤ߹���
+      *     印刷ＤＢ読み込み
       *****************************************************************
        900-PRTDATA-FET-SEC            SECTION.
       *
@@ -631,7 +631,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -648,7 +648,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -659,7 +659,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -671,7 +671,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -683,7 +683,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -696,7 +696,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -714,7 +714,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

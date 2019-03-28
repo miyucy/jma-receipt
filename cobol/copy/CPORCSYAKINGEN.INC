@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Ìë¶Ð»þ´ÖÄ¶²á¸º»»Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö¼èÆÀ¥µ¥Ö¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSYAKINGEN.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSYAKINGEN)
-      *    ÀßÄê¹àÌÜ
-      *      Æþ±¡ÎÁ¥³¡¼¥É
+      *    å¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–å–å¾—ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSYAKINGEN.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSYAKINGEN)
+      *    è¨­å®šé …ç›®
+      *      å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSYAKINGEN-AREA.
       *
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-YAKINGEN-SANTEIYM               PIC  X(06).
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
            03  LNK-YAKINGEN-BTU-NUM                PIC  X(02).
-      *Æþ±¡ÎÁ¥³¡¼¥É
+      *å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
            03  LNK-YAKINGEN-SRYCD                  PIC  X(09).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-YAKINGEN-HENKYAKU-AREA.
-      *·Ð²áÁ¼ÃÖÆþ±¡ÎÁ¥³¡¼¥É
+      *çµŒéŽæŽªç½®å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
               05  LNK-YAKINGEN-CHGSRYCD            PIC  X(09).
-      *Éüµ¢¥³¡¼¥É¡Ê£°¡§Ìë¶Ð¸º»»Æþ±¡ÎÁÊÖµÑ¤¢¤ê¡¡£±¡§Ìë¶Ð¸º»»Æþ±¡ÎÁÊÖµÑ¤Ê¤·¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼ï¼šå¤œå‹¤æ¸›ç®—å…¥é™¢æ–™è¿”å´ã‚ã‚Šã€€ï¼‘ï¼šå¤œå‹¤æ¸›ç®—å…¥é™¢æ–™è¿”å´ãªã—ï¼‰
            03  LNK-YAKINGEN-RC                     PIC S9(9) BINARY.
       *

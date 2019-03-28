@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI021SUB2V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���������Խ����֡ʰ��β���
-      *                      ��WKSRYACT �� API�ֵ��Խ���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  15/05/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 診療内容編集サブ（一体化）
+      *                      （WKSRYACT を API返却編集）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  15/05/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  16/12/XX  ���⡦������ʬ�б�
-      *  04.08.00    NACL-¿��Ǽ  17/05/XX  ��縡������ñ�̥������б�
-      *                                     �ե����ʬ������б�
-      *  05.00.00    NACL-¿��Ǽ  17/12/XX  �����б�
-      *  05.00.00    NACL-¿��Ǽ  18/03/XX  �ȣ���ǯ��������б�
-      *  05.00.00    NACL-¿��Ǽ  19/01/XX  ʣ���ݸ������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  16/12/XX  院内・院外区分対応
+      *  04.08.00    NACL-多々納  17/05/XX  包括検査数、単位コード対応
+      *                                     フィルム分画数等対応
+      *  05.00.00    NACL-多々納  17/12/XX  入院対応
+      *  05.00.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  05.00.00    NACL-多々納  19/01/XX  複数保険・科対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -46,7 +46,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
@@ -61,7 +61,7 @@
            03  FLG-INGAIKBN            PIC 9(01).
            03  FLG-INGAIKBN-ARI        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -76,14 +76,14 @@
       *
            03  IDY2                PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *01  CNT-AREA.
       *    03  CNT-SRYCNT              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
-      *    �����Ѵ���
+      *    数値変換用
            03  WRK-SURYO               PIC S9(08)V9(05).
            03  WRK-SURYO-S             PIC 9(08)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO-S.
@@ -103,7 +103,7 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBNMEI        PIC X(40).
            03  WRK-SRYCD               PIC X(09).
-      *    ��縡����
+      *    包括検査数
            03  WRK-HOUKNS-CNT          PIC 9(02).
       *
            03  WRK-HKNCOMBI            PIC X(04).
@@ -112,86 +112,86 @@
                05  WRK-DRCD-1          PIC X(01).
                05  WRK-DRCD            PIC X(04).
       *
-      *    Ⱦ�������Ѵ�
+      *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
            03  WRK-MAX                 PIC 9(04).
            03  WRK-LEN                 PIC 9(04).
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
       *
        01  LNK-WKSRYACT-MAX            PIC 9(04).
       *
-      *�ֵѺ޿�
+      *返却剤数
        01  COB-ZAI-OUTMAX          PIC 9(04)   VALUE   120.
-      *    ���ϥ����ɹ��ܷ��
+      *    入力コード項目桁数
        01  CONS-INPUT              PIC 9(02)   VALUE   54.
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *    COPY    "CPORCSMCNDATE.INC".
       *
       *    COPY    "CPORCXKANACONV.INC".
       *
       *    COPY    "CPORCSKANACHK.INC".
-      *    �����Ѵ�����
+      *    日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���Ź԰����Ϲ����Ѵ��ѥ�᥿�������λ������Ѵ���
+      *    診療行為入力項目変換パラメタ（入院の算定日変換）
       *    COPY    "CPORCSC97.INC".
       *
-      *    ������Ѵ��ѥ�᥿
+      *    一括日変換パラメタ
            COPY    "CPORCSNDAYCHG.INC".
       *
-      *    �ӣУ��ѥ�᥿��ORCSC97.CBL �Ѥ�DAMMY)
+      *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
       *2019.1
-      *    �ݸ��ȹ礻���å��ΰ�
+      *    保険組合せセット領域
            COPY    "CPORCSAPIHKN.INC".
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
       *2019.1
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
-      *    ���Ųʾ���
+      *    診療科情報
            COPY    "CPSK1005.INC".
-      *    ��������
+      *    職員情報
            COPY    "CPSK1010.INC".
       *!!!!!
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ����̾�ơ��֥�
+      *    一般名テーブル
        01  GENERICNAME-REC.
            COPY    "CPGENERICNAME.INC".
       *
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *     �ѥ�᥿�ơ��֥�
+      *     パラメタテーブル
       *01  PARA-REC.
       *    COPY    "CPPARA.INC".
       *
@@ -200,28 +200,28 @@
       *
       *    COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
       *
            COPY    "MCPAREA".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������Ź԰٥ǡ����Խ��ΰ�
+      *    ワーク診療行為データ編集領域
            COPY    "CPORAPI021SUB2V3.INC".
       *
-      *    ������Ź԰٥ޥ�����
+      *    ワーク診療行為マスタ−
        01  LNK-WKSRYACT-AREA.
            02  LNK-WKSRYACT-REC          OCCURS   400.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
-      *    ���þ�����ɲ�
+      *    附加情報を追加
            03  LNK-WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC"  REPLACING
                                      //WKSRYP-// BY //LNK-WKSRYP-//.
-      *    API�Ѻ޺��Ϣ��
+      *    API用剤削除連番
            03  LNK-WKSRYAPI-RENNUM         PIC 9(02).
-      *    �޺����ʬ
+      *    剤削除区分
            03  LNK-WKSRYAPI-DELKBN         PIC 9(01).
       *
        PROCEDURE                   DIVISION    USING
@@ -232,7 +232,7 @@
            .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -243,9 +243,9 @@
            INITIALIZE                  ORAPISUB2-ERRMSG
            INITIALIZE                  ORAPISUB2-HENSYU-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            PERFORM 200-MAIN-SEC
       *
       *
@@ -256,11 +256,11 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -271,7 +271,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -279,7 +279,7 @@
            MOVE    ZERO                TO  IDZ
            MOVE    ZERO                TO  FLG-HENCHK
       *H28.12
-      *    ����Ƚ��
+      *    投薬判定
            MOVE    ZERO                TO  FLG-INGAIKBN
            MOVE    ZERO                TO  FLG-INGAIKBN-ARI
            MOVE    ZERO                TO  WRK-HOUKNS-CNT
@@ -289,7 +289,7 @@
                        OR  (FLG-HENCHK NOT =   ZERO  )
       *!!!!
       *2019.1
-      *      ʣ���ʡ��ݸ��б�
+      *      複数科・保険対応
              IF    LNK-WKSRY-INPUTCD(IDX 1)(1:1)   =   "$"
                                                    OR  "#"
                PERFORM 2009-FUKU-KAHKN-SEC
@@ -301,7 +301,7 @@
                        (LNK-WKSRY-ZAINUM (IDX - 1)
                                    NOT =   LNK-WKSRY-ZAINUM(IDX)))
       *H29.5
-      *            ��縡���θ�����
+      *            包括検査の検査数
                    IF     (WRK-HOUKNS-CNT      >   ZERO )
                       AND (IDY                 >   ZERO )
                        MOVE    WRK-HOUKNS-CNT
@@ -322,7 +322,7 @@
                            OR  ((LNK-WKSRY-SRYCD  (IDX IDW) =   SPACE)
                            AND  (LNK-WKSRY-INPUTCD(IDX IDW) =   SPACE))
       *H29.12
-      *����
+      *入院
                    IF     (LNK-WKSRY-SRYCD (IDX IDW)   =   SPACE)
                        IF     (LNK-WKSRY-NYUGAIKBN (IDX)   =   "1" )
                           AND (LNK-WKSRY-INPUTCD(IDX IDW)(1:1) =   "*")
@@ -338,13 +338,13 @@
                        PERFORM 2002342-WKSRYMEI-HEN-SEC
                    END-IF
       *H28.12
-      *            ������Ƚ��
+      *            投薬の判定
                    IF     (FLG-HENCHK          =   ZERO )
                      AND  (LNK-WKSRY-SRYKBN(IDX)
                                                =   "21"
                                                OR  "22"
                                                OR  "23" )
-      *             ��ɾ�ʳ�
+      *             薬評以外
                      AND  (LNK-WKSRY-ZAIKBN (IDX)
                                            NOT =   1   )
                        PERFORM 2002343-INGAI-CHK-SEC
@@ -360,15 +360,15 @@
            END-PERFORM
       *
       *H28.12
-      *    ���⡦������ʬ
+      *    院内・院外区分
            IF      FLG-INGAIKBN-ARI    =   1
                MOVE    FLG-INGAIKBN        TO  ORAPISUB2-INGAIKBN
            END-IF
       *
            IF     (FLG-HENCHK          =   1     )
-      *        �޿������С�
+      *        剤数オーバー
                MOVE    "AP03"              TO  ORAPISUB2-ERRCD
-               MOVE    "�޿������ٿ����������ʾ�Ȥʤ�ޤ�"
+               MOVE    "剤数・明細数が最大件数以上となります"
                                            TO  ORAPISUB2-ERRMSG
            END-IF
       *
@@ -377,11 +377,11 @@
            EXIT.
       *
       *****************************************************************
-      *     ���Խ�����
+      *     剤編集処理
       *****************************************************************
        2002341-WKSRYHEAD-HEN-SEC          SECTION.
       *
-      *    ���
+      *    回数
            IF      LNK-WKSRY-ZAIKAIKEI(IDX) >   ZERO
                MOVE    LNK-WKSRY-ZAIKAIKEI(IDX) TO  WRK-SURYO
                PERFORM 810-NUMHENKAN-SEC
@@ -389,9 +389,9 @@
                                        TO  ORAPISUB2-MDC-CLASS-NUMBER
                                                              (IDY)
            END-IF
-      *    ������
+      *    剤点数
            IF      LNK-WKSRY-ZAITENKEI(IDX) NOT =   ZERO
-      *        ����
+      *        減点
                IF    ( LNK-WKSRYP-PLUSKBN (IDX) =   1 )
                OR    ( LNK-WKSRY-ZAIKBN   (IDX) =   2 )
                    COMPUTE WRK-SURYO       =   LNK-WKSRY-ZAITENKEI(IDX)
@@ -403,7 +403,7 @@
                MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                            TO  ORAPISUB2-MDC-POINT(IDY)
            END-IF
-      *    �޶��
+      *    剤金額
            IF      LNK-WKSRY-JIHIMONEYTOTAL(IDX)   >   ZERO
                MOVE    LNK-WKSRY-JIHIMONEYTOTAL(IDX)
                                            TO  WRK-SURYO
@@ -411,11 +411,11 @@
                MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                            TO  ORAPISUB2-MDC-MONEY(IDY)
            END-IF
-      *    �޶�ʬ�����ʬ��
+      *    剤区分（包括分）
            IF      LNK-WKSRY-CONTKBN (IDX) =   "H"
                 MOVE    "1"            TO  ORAPISUB2-MDC-CODE (IDY)
            END-IF
-      *    ���Ŷ�ʬ
+      *    診療区分
            MOVE    LNK-WKSRY-SRYKBN(IDX)   TO  WRK-SRYKBN
            MOVE    LNK-WKSRY-SRYSYUKBN(IDX)    TO  WRK-SRYSYUKBN
            IF      WRK-SRYSYUKBN       =   SPACE
@@ -427,14 +427,14 @@
            PERFORM 510-SRYKBN-MEI-SEC
            MOVE    WRK-SRYSYUKBNMEI    TO  ORAPISUB2-MDC-CLASS-NAME(IDY)
       *
-      *    ����о�Ϣ��
+      *    削除対象連番
            IF     (ORAPISUB2-SYORIKBN  =   "1"    )
              AND  (LNK-WKSRYAPI-RENNUM (IDX)   NOT =   ZERO )
                MOVE    LNK-WKSRYAPI-RENNUM (IDX)
                                            TO  ORAPISUB2-DEL-NUMBER
                                                              (IDY)
            END-IF
-      *    ����о�
+      *    削除対象
            IF      LNK-WKSRYAPI-DELKBN (IDX)   =   1
                MOVE    "1"                 TO  ORAPISUB2-DEL-INF
                                                              (IDY)
@@ -443,9 +443,9 @@
        2002341-WKSRYHEAD-HEN-EXT.
            EXIT.
       *H29.12
-      *����
+      *入院
       *****************************************************************
-      *    �������Խ�����
+      *    剤明細編集処理
       *****************************************************************
        2002342-NYUINDAY-HEN-SEC         SECTION.
       *
@@ -473,24 +473,24 @@
       *!
       *
       *****************************************************************
-      *    �������Խ�����
+      *    剤明細編集処理
       *****************************************************************
        2002342-WKSRYMEI-HEN-SEC          SECTION.
       *
-      *    ������
+      *    コード
            MOVE    LNK-WKSRY-SRYCD (IDX IDW)
                                    TO ORAPISUB2-PRSCRPT-CODE(IDY IDZ)
       *
            MOVE    LNK-WKSRY-SRYCD (IDX IDW)
                                        TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
-      *    ̾��
+      *    名称
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "8")
              OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:3) =   "008")
              OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:3) =   "001")
       *H30.4
              OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:7) =   "0992081")
-      *        �Խ�̾��
+      *        編集名称
                IF      LNK-WKSRY-INPUTCOMENT (IDX IDW) NOT =   SPACE
                    MOVE    LNK-WKSRY-INPUTCOMENT (IDX IDW) 
                                            TO  ORAPISUB2-PRSCRPT-NAME
@@ -498,17 +498,17 @@
                END-IF
            END-IF
            IF      ORAPISUB2-PRSCRPT-NAME (IDY IDZ)   =   SPACE
-      *        �����ޥ�����̾��
+      *        点数マスタの名称
                MOVE    TNS-NAME            TO  ORAPISUB2-PRSCRPT-NAME
                                                              (IDY IDZ)
            END-IF
       *
-      *    ����̾����
+      *    一般名記載
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "6")
               AND (LNK-WKSRY-INPUTCOMENT (IDX IDW)
                                        NOT =   SPACE  )
                IF      LNK-WKSRY-INPUTCOMENT (IDX IDW) =   "API+1"
-      *            ������̾�Τ�������ॳ����
+      *            コメント名称に薬価基準コード
                    PERFORM 9102-GENERICNAME-READ-SEC
                    IF      FLG-GENERICNAME     =   ZERO
                        MOVE    GENERIC-GENERICNAME
@@ -520,7 +520,7 @@
                ELSE
                    MOVE    "3"         TO  ORAPISUB2-PRSCRPT-GENERIC
                                                              (IDY IDZ)
-      *            �������þ��󸡺�
+      *            点数附加情報検索
                    PERFORM 9101-TENSUPLUS-READ-SEC
                    MOVE    TNSP-SHONAME
                                            TO  ORAPISUB2-PRSCRPT-GENNAME
@@ -528,10 +528,10 @@
                END-IF
            END-IF
       *
-      *    ����
+      *    数量
            MOVE    LNK-WKSRY-SRYSURYO(IDX IDW) TO  WRK-SURYO
            IF      WRK-SURYO           =   ZERO
-      *        ZERO �ϣ��Ȥ����CLAIM�ǥ��������
+      *        ZERO は１とする（CLAIMでゼロあり）
                MOVE    1                   TO  WRK-SURYO
            END-IF
            PERFORM 810-NUMHENKAN-SEC
@@ -539,10 +539,10 @@
                                        TO  ORAPISUB2-PRSCRPT-NUMBER
                                                              (IDY IDZ)
       *H29.5
-      *    ñ�̥�����
+      *    単位コード
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "6"
                                                    OR  "7" )
-      *        ���ޡ����
+      *        薬剤・器材
                MOVE    TNS-TANICD      TO  ORAPISUB2-PRSCRPT-TANICD
                                                              (IDY IDZ)
                MOVE    TNS-TANINAME    TO  ORAPISUB2-PRSCRPT-TANICD-NAME
@@ -562,7 +562,7 @@
                END-IF
            END-IF
       *
-      *    ʬ������Խ�
+      *    分画数を編集
            IF     (LNK-WKSRY-SRYKBN (IDX)  =   "70"   )
               AND (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "7" )
               AND (LNK-WKSRY-SRYKAISU(IDX IDW) NOT =   ZERO)
@@ -573,16 +573,16 @@
                                                              (IDY IDZ)
            END-IF
       *H29.5
-      *    �û���ư����ʤ�
+      *    加算自動算定なし
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "1")
              AND  (TNS-DATAKBN             =   "1"   )
-      *        ����û����μ�ư����ʤ�����
+      *        在宅加算等の自動算定なし設定
                IF      (TNS-CDKBN-KBN          =   "C"   )
                   AND  (TNS-CDKBN-KBNNUM       =   "002" )
                    MOVE    "Yes"           TO  ORAPISUB2-PRSCRPT-NOAUTO
                                                              (IDY IDZ)
                END-IF
-      *        �����̱��Σ�����̤���û��μ�ưȯ���ʤ�
+      *        精神通院の２０歳未満加算の自動発生なし
                IF      (TNS-CDKBN-KBN          =   "I"   )
                   AND  (TNS-CDKBN-KBNNUM       =   "002" )
                   AND  (TNS-AGEKSNSRYCD(1) NOT =   ZERO
@@ -591,7 +591,7 @@
                                                              (IDY IDZ)
                END-IF
       *H29.7
-      *        ������ˡ�Σ�����̤���û��μ�ưȯ���ʤ�
+      *        心身療法の２０歳未満加算の自動発生なし
                IF      (TNS-CDKBN-KBN          =   "I"   )
                   AND  (TNS-CDKBN-KBNNUM       =   "004" )
                   AND  (TNS-AGEKSNSRYCD(1) NOT =   ZERO
@@ -602,10 +602,10 @@
                END-IF
            END-IF
       *
-      *    ������
+      *    自費金額
            IF     (LNK-WKSRY-SRYKBN (IDX)  =   "96"
                                            OR  "95"   )
-      *        �����ն��
+      *        自賠責金額
            OR     (LNK-WKSRY-SRYSYUKBN (IDX)    =   "809" )
                IF      LNK-WKSRY-JIHIMONEY(IDX IDW) >   ZERO
                    MOVE    LNK-WKSRY-JIHIMONEY(IDX IDW) TO  WRK-SURYO
@@ -615,12 +615,12 @@
                                                              (IDY IDZ)
                END-IF
            END-IF
-      *    ���ξ���̾���Ϥ������
+      *    器材の商品名入力がある時
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1)  =   "7" )
              AND  (LNK-WKSRY-AUTOKBN (IDX IDW)     =   "T" )
                MOVE    "2"        TO  ORAPISUB2-PRSCRPT-CONTKBN(IDY IDZ)
            END-IF
-      *    ��ư�����ʬ
+      *    自動算定区分
            IF      LNK-WKSRY-AUTOKBN (IDX IDW) =   "2"
                                                OR  "3"
                                                OR  "4"
@@ -631,7 +631,7 @@
                                            TO  ORAPISUB2-PRSCRPT-AUTOKBN
                                                              (IDY IDZ)
            END-IF
-      *    ��³������
+      *    継続コメント
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "8")
              OR   (LNK-WKSRY-SRYCD (IDX IDW)(1:3) =   "008")
                IF     (LNK-WKSRY-INPUTKBN (IDX IDW)    =   "1" )
@@ -639,17 +639,17 @@
                                                              (IDY IDZ)
                END-IF
            END-IF
-      *    �����������ʬ
+      *    内服１種類区分
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "6")
                IF     (LNK-WKSRY-INPUTKBN (IDX IDW)    =   "2" )
                    MOVE    "1"        TO  ORAPISUB2-PRSCRPT-NAIFKBN
                                                              (IDY IDZ)
                END-IF
            END-IF
-      *    ������������
+      *    埋め込み入力値
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:2)  =   "84" )
               OR  (LNK-WKSRY-SRYCD (IDX IDW)(1:4)  =   "0084")
-      *       ��ˡ������
+      *       用法コメント
               OR  (LNK-WKSRY-SRYCD (IDX IDW)(1:3)  =   "001")
       *H30.4
               OR  (LNK-WKSRY-SRYCD (IDX IDW)(1:7)  =   "0992081")
@@ -664,7 +664,7 @@
                END-PERFORM
            END-IF
       *H29.5
-      *    ��縡����Ƚ��
+      *    包括検査の判定
            IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1) =   "1" )  AND
                   (LNK-WKSRY-SRYKBN (IDX)      =   "60" ) AND
                   (TNS-DATAKBN                 =   1    ) AND
@@ -678,11 +678,11 @@
            EXIT.
       *
       *****************************************************************
-      *     ���⡦����������Ƚ��
+      *     院内・院外投薬の判定
       *****************************************************************
        2002343-INGAI-CHK-SEC        SECTION.
       *
-      *    �����λ������ż��̤�̤���ϤǱ��������ޤ����ä���
+      *    訂正の時、診療種別が未入力で院外の薬剤があった時
            IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   SPACE
                                                OR  "210"
                                                OR  "220"
@@ -692,15 +692,15 @@
                                                OR  "296" )
                 MOVE    1                   TO  FLG-INGAIKBN-ARI
                 IF      LNK-WKSRY-ZAITENKEI (IDX)   =   ZERO
-      *            �������᥼��������
-      *            ��������ޤ�������Τ�
+      *            剤点数＝ゼロ　院外
+      *            剤内に薬剤がある時のみ
                    IF     (LNK-WKSRY-SRYCD (IDX IDW)(1:1)
                                                =   "6" )
                        IF      FLG-INGAIKBN    =   ZERO
                            MOVE    1               TO  FLG-INGAIKBN
                        END-IF
                    END-IF
-      *            �桼�����ǡ���ۡ䥼���λ��������Ȥ���
+      *            ユーザ器材で、金額＞ゼロの時、院外とする
                    IF      FLG-INGAIKBN    =   ZERO
                        IF     ( LNK-WKSRY-SRYCD (IDX IDW)(1:3)
                                                    =   "059" )
@@ -710,7 +710,7 @@
                        END-IF
                    END-IF
                ELSE
-      *            �������⥼��������
+      *            剤点数≠ゼロ　院内
                    MOVE    2               TO  FLG-INGAIKBN
                END-IF
            END-IF
@@ -722,7 +722,7 @@
       *!!!!
       *2019.1
       *****************************************************************
-      *     ʣ���ʡ�ʣ���ݸ��Խ��б�
+      *     複数科・複数保険編集対応
       *****************************************************************
        2009-FUKU-KAHKN-SEC            SECTION.
       *
@@ -736,13 +736,13 @@
       *
            EVALUATE    LNK-WKSRY-INPUTCD(IDX 1)(1:1)
            WHEN    "$"
-      *    ���Ų��ѹ�
+      *    診療科変更
                MOVE    "Dep"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
-      *        ���Ų�
+      *        診療科
                MOVE    LNK-WKSRY-INPUTCD(IDX 1)(2:2)
                                        TO  WRK-SRYKA
                MOVE    WRK-SRYKA       TO  ORAPISUB2-MDC-DEP-CODE(IDY)
-      *        �����ƥ��������
+      *        システム管理検索
                MOVE    SPACE               TO  SYS-1005-REC
                INITIALIZE                  SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
@@ -755,7 +755,7 @@
                                        TO  ORAPISUB2-MDC-DEP-CODE-NAME
                                                                 (IDY)
                END-IF
-      *        �ɥ�����
+      *        ドクター
                MOVE    SPACE               TO  WRK-DRCD-G
                MOVE    LNK-WKSRY-INPUTCD(IDX 1)(5:4)  TO  WRK-DRCD
                IF      WRK-DRCD        NOT =   SPACE
@@ -777,20 +777,20 @@
                END-IF
       *
            WHEN    "#"
-      *    �ݸ��ȹ礻�ѹ�
+      *    保険組合せ変更
                MOVE    "Com"           TO  ORAPISUB2-MDC-DATA-KBN(IDY)
-      *        �ݸ��ȹ礻�ֹ�
+      *        保険組合せ番号
                MOVE    LNK-WKSRY-INPUTCD(IDX 1)(2:4)
                                        TO  WRK-HKNCOMBI
                MOVE    WRK-HKNCOMBI    TO  ORAPISUB2-MDC-COMBINATION
                                                                  (IDY)
                IF      WRK-HKNCOMBI    =   "9999"
-                   MOVE    "���ʬ����"    TO
+                   MOVE    "包括分入力"    TO
                                            ORAPISUB2-MDC-MAIN-INS-NAME
                                                             (IDY)
                ELSE
       *
-      *            �ݸ��ȹ礻�Խ�����
+      *            保険組合せ編集処理
                    INITIALIZE                      ORCSAPIHKNAREA
                    MOVE    "2"                 TO  ORCSAPIHKN-KBN
                    MOVE    SPACE               TO  ORCSAPIHKN-KBN2
@@ -803,15 +803,15 @@
                    IF     (ORCSAPIHKN-ERRCD    =   ZERO  )
                       AND (ORCSAPIHKN-THKNCOMBI (1)
                                                 =   WRK-HKNCOMBI )
-      *                �ݸ���̾��
+      *                保険の名称
                        MOVE    ORCSAPIHKN-HKNNUM-NAME (01)
                                            TO
                                            ORAPISUB2-MDC-MAIN-INS-NAME
                                                             (IDY)
-      *                �����̾��
+      *                公費の名称
                        PERFORM VARYING     IDY2    FROM    1   BY  1
                            UNTIL       IDY2    >   4
-      *                    ����μ���̾��
+      *                    公費の種類名称
                            MOVE    ORCSAPIHKN-KOHNUM-NAME (01 IDY2)
                                        TO  ORAPISUB2-INSURANCE-NAME
                                                          (IDY IDY2)
@@ -826,7 +826,7 @@
       *!!!!
       *
       *****************************************************************
-      *     ���ż��̶�ʬ̾�Ρ����Ź԰ٶ�ʬ���å�
+      *     診療種別区分名称、診療行為区分セット
       *****************************************************************
        510-SRYKBN-MEI-SEC            SECTION.
       *
@@ -848,7 +848,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    数値変換編集処理
       *****************************************************************
        810-NUMHENKAN-SEC             SECTION.
       *
@@ -877,7 +877,7 @@
            IF      WRK-SURYO-Z3        NOT =   SPACE
                MOVE    "."                 TO  WRK-SURYO-Z2
            END-IF
-      *    ����
+      *    左詰
            MOVE    SPACE              TO  WRK-SURYO-HX
            MOVE    1                  TO  IDXR
            MOVE    ZERO               TO  WRK-S-MAX
@@ -887,7 +887,7 @@
                    MOVE    WRK-SURYO-X (IDXM:1)    TO  WRK-SURYO-HX
                                                        (IDXR:1)
                    COMPUTE IDXR            =   IDXR    +   1
-      *            ���
+      *            桁数
                    ADD     1               TO  WRK-S-MAX
                END-IF
            END-PERFORM
@@ -897,7 +897,7 @@
       *
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -933,7 +933,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ղþ��󸡺�����
+      *    点数マスタ付加情報検索処理
       *****************************************************************
        9101-TENSUPLUS-READ-SEC          SECTION.
       *
@@ -970,7 +970,7 @@
        9101-TENSUPLUS-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ղþ��󸡺�����
+      *    点数マスタ付加情報検索処理
       *****************************************************************
        9102-GENERICNAME-READ-SEC          SECTION.
       *
@@ -1005,7 +1005,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-SEL-SEC         SECTION.
       *
@@ -1031,7 +1031,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1040,7 +1040,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1054,7 +1054,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -1068,7 +1068,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

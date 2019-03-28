@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ��������䵽��ϥѥ�᥿         COPY (CPORCHC501.INC)
-      *                                        (ORCHC501 �ǻ��ѡ�
+      *    入院処方箋出力パラメタ         COPY (CPORCHC501.INC)
+      *                                        (ORCHC501 で使用）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCHC501AREA.
-      *    ������ʬ�ʣ���Ƭ���
+      *    処理区分（１：頭書）
            03  ORCHC501-SYORIKBN       PIC 9(01).
-      *  Ģɼ������������
+      *  帳票オーダーキー
            03  ORCHC501-ORDER-KEY.
-      *  �����ֹ�
+      *  患者番号
                05  ORCHC501-PTNUM         PIC  X(20).
-      *  ���Ų�
+      *  診療科
                05  ORCHC501-SRYKA         PIC  X(02).
-      *  �ݸ��ȹ礻
+      *  保険組合せ
                05  ORCHC501-HKNCOMBI      PIC  X(04).
-      *  ��������
+      *  診療日付
                05  ORCHC501-SRYYMD        PIC  X(08).
-      *  �����ƥ�����
+      *  システム日付
                05  ORCHC501-SYSYMD        PIC  X(08).
-      *  ȯ����
+      *  発行日
                05  ORCHC501-PRINTYMD      PIC X(08).
-      *  ȯ�Ի���
+      *  発行時間
                05  ORCHC501-PRINTHMS      PIC X(06).
-      *  �ɥ�������Ƭ��λ��Τߡ�
+      *  ドクター（頭書の時のみ）
            03  ORCHC501-DRCD           PIC X(05).
       *
-      *    ȯ�Զ�ʬ�����飴
+      *    発行区分１から４
            03  ORCHC501-CHKPRT         PIC 9(01)
                                        OCCURS   4.
       *
            03  ORCHC501-OUT-AREA.
-      *        �꥿���󥳡��ɡʣ���������ʳ����۾��
+      *        リターンコード（０：正常／０以外：異常）
                05  ORCHC501-RC             PIC 9(02).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÆü°ì³çÆþÎÏ¥Ñ¥é¥á¥¿  COPY (CPORCSNDAYCHG.INC)
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šæ—¥ä¸€æ‹¬å…¥åŠ›ãƒ‘ãƒ©ãƒ¡ã‚¿  COPY (CPORCSNDAYCHG.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCSNDAYCHGAREA.
-      *    ÆþÎÏÆâÍÆ
+      *    å…¥åŠ›å†…å®¹
            03  ORCSNDAYCHG-INPUTCD          PIC X(100).
-      *    ¿ÇÎÅÇ¯·îÆü
+      *    è¨ºç™‚å¹´æœˆæ—¥
            03  ORCSNDAYCHG-SRYYMD           PIC X(08).
-      *    ÆþÎÏ·å¿ô
+      *    å…¥åŠ›æ¡æ•°
            03  ORCSNDAYCHG-KETA             PIC 9(03).
-      *    ½èÍý¶èÊ¬¡Ê£±¡§Æþ±¡´ü´Ö¥Á¥§¥Ã¥¯¤¢¤ê¡Ë
+      *    å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢æœŸé–“ãƒã‚§ãƒƒã‚¯ã‚ã‚Šï¼‰
            03  ORCSNDAYCHG-KBN              PIC X(01).
-      *    Æþ±¡´ü´Ö
+      *    å…¥é™¢æœŸé–“
            03  ORCSNDAYCHG-NYUINYMD         PIC X(08).
            03  ORCSNDAYCHG-TAIINYMD         PIC X(08).
       *
-      *    ½ÐÎÏÎÎ°è
+      *    å‡ºåŠ›é ˜åŸŸ
            03  ORCSNDAYCHG-OUTAREA.
-      *        ²ó¿ô
+      *        å›žæ•°
                05  ORCSNDAYCHG-KAISU        PIC 9(03).
-      *        ²ó¿ô·å¿ô
+      *        å›žæ•°æ¡æ•°
                05  ORCSNDAYCHG-KAISUCNT     PIC 9(03).
-      *        Æþ±¡²ó¿ô
+      *        å…¥é™¢å›žæ•°
                05  ORCSNDAYCHG-NYUIN-KAISU.
                    07  ORCSNDAYCHG-NYU-DAY      PIC 9(02)
                                                 OCCURS   31.
-      *        ¥¨¥é¡¼¶èÊ¬
+      *        ã‚¨ãƒ©ãƒ¼åŒºåˆ†
                05  ORCSNDAYCHG-ERRCD        PIC X(04).
-      *        ¥¨¥é¡¼ÆâÍÆ
+      *        ã‚¨ãƒ©ãƒ¼å†…å®¹
                05  ORCSNDAYCHG-ERRMSG       PIC X(100).
       *

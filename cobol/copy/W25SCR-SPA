@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,15 +17,15 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄê ¶¦ÄÌ£Ó£Ð£Á(SPA-WORK ¤ÎÆâÍÆ)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®š å…±é€šï¼³ï¼°ï¼¡(SPA-WORK ã®å†…å®¹)
       *          
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        01  SPA-W25-GMN-AREA.
-      *    ¿ÇÎÅ¹Ô°Ù¸¡º÷²èÌÌ£Ó£Ð£Á
+      *    è¨ºç™‚è¡Œç‚ºæ¤œç´¢ç”»é¢ï¼³ï¼°ï¼¡
                05  SPA-W25GMN-AREA.
                    07  SPA-W25-GMN-MAX               PIC 9(03).
                    07  SPA-W25-NEXT                  PIC 9(04).
@@ -61,7 +61,7 @@
                        11  SPA-W25-GMN-SETCD      PIC X(10).
       *
                        11  SPA-W25-NAI-NO         PIC 9(03).
-      *        ¼«±¡ºÎÍÑ
+      *        è‡ªé™¢æŽ¡ç”¨
                    07  SPA-W25-JIIN-G.
                        09  SPA-W25-JIIN               PIC X(01).
                        09  SPA-W25-JIINF              PIC X(01).

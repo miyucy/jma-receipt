@@ -1,24 +1,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBMIGSRYCDCHG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���åȥ��å׽���
-      *  ����ݡ��ͥ��̾  : ����Ϸ���ִ��ޥ�������
-      *                    : ����Ϸ���ִ��ޥ���ʬΥ��ȼ���桼����������
-      *                    : �������ƤˤĤ��Ƥϥ桼�����ѤΥơ��֥�Ȥ���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/ 7/13    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : セットアップ処理
+      *  コンポーネント名  : 一般老人置換マスタ更新
+      *                    : 一般老人置換マスタ分離に伴いユーザーが訂正
+      *                    : した内容についてはユーザー用のテーブルとする
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/ 7/13    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PRF-FILE        ASSIGN
                                    ASS-PRF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -27,17 +27,17 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PRF-FILE.
        01  PRF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PRF                 PIC X(256).
        01  STS-AREA.
            03  STS-PRF                 PIC X(02).
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SRYCDCHGM           PIC 9(01).
@@ -45,12 +45,12 @@
            03  FLG-SRYCDCHGO           PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYCDCHGO           PIC 9(06).
            03  CNT-SRYCDCHGM           PIC 9(06).
            03  CNT-PRF                 PIC 9(06).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-HOSPNUM    PIC 9(02).
@@ -67,11 +67,11 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-PRFCD               PIC 9(02).
-      *    �ץ롼���Խ��ΰ�
+      *    プルーフ編集領域
        01  PRF-AREA.
            03  PRF-HEADER1.
                05  FILLER              PIC X(47) VALUE
-                   "����Ϸ���ִ��ޥ����ܹԽ�����ORCBMIGSRYCDCHG��".
+                   "一般老人置換マスタ移行処理【ORCBMIGSRYCDCHG】".
                05  PRF-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE "/".
                05  PRF-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -83,23 +83,23 @@
                05  FILLER              PIC X(01) VALUE "]".
                05  PRF-HOSPNAME        PIC X(120) VALUE SPACE.
            03  PRF-HEADER3.
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "処理".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "�оݥ�����".
+               05  FILLER              PIC X(10) VALUE "対象コード".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "̾��".
+               05  FILLER              PIC X(04) VALUE "名称".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(20) VALUE
-                               "�桼�������ִ�������".
+                               "ユーザ設定置換コード".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "̾��".
+               05  FILLER              PIC X(04) VALUE "名称".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(18) VALUE
-                               "ɸ�����ִ�������".
+                               "標準提供置換コード".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "̾��".
+               05  FILLER              PIC X(04) VALUE "名称".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "内容".
            03  PRF-DETAIL.
                05  PRF-COMMAND         PIC X(20).
                05  PRF-CODE1           PIC X(09).
@@ -111,50 +111,50 @@
                05  PRF-COMMENT         PIC X(200).
        01  CONST-AREA.
            03  CONST-COMM1             PIC X(44) VALUE
-           "�桼�������ִ������ɤ����Ƥ��ѹ�����ޤ�����".
+           "ユーザ設定置換コードの内容に変更されました。".
            03  CONST-COMM2.
                05  CONST-COMM2-1       PIC X(42) VALUE
-               "�桼�������ִ������ɤ����Ƥ��ɲä���ޤ���".
+               "ユーザ設定置換コードの内容を追加されました".
                05  CONST-COMM2-2       PIC X(28) VALUE
-               "��ɸ���󶡤ˤϤ���ޤ���ˡ�".
+               "（標準提供にはありません）。".
            03  CONST-COMM3             PIC X(42) VALUE
-           "ɸ�����ִ������ɤ����Ƥ�������ޤ�����".
+           "標準提供置換コードの内容を削除されました。".
       *****************************************************************
-      *    ���֥ץ������
+      *    サブプロ用定義
       *****************************************************************
-      *    �ޥ������ռ���
+      *    マシン日付取得
            COPY    "CPORCSMCNDATE.INC".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
       *     COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
-      *    Ϸ�Ͱ����ִ��ܹ����ơ��֥�
+      *    老人一般置換移行前テーブル
        01  SRYCDCHGO-REC.
            COPY    "CPSRYCDCHG.INC"    REPLACING
                                        //CHG-// BY //CHGO-//.
-      *    Ϸ�Ͱ����ִ��ޥ������ơ��֥�
+      *    老人一般置換マスターテーブル
        01  SRYCDCHGM-REC.
            COPY    "CPSRYCDCHG.INC"    REPLACING
                                        //CHG-// BY //CHGM-//.
-      *    Ϸ�Ͱ����ִ��桼�����ơ��֥�
+      *    老人一般置換ユーザーテーブル
        01  SRYCDCHGU-REC.
            COPY    "CPSRYCDCHG.INC"    REPLACING
                                        //CHG-// BY //CHGU-//.
-      *    Ϸ�Ͱ����ִ����
+      *    老人一般置換ワーク
        01  SRYCDCHGW-REC.
            COPY    "CPSRYCDCHG.INC"    REPLACING
                                        //CHG-// BY //CHGW-//.
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
@@ -163,7 +163,7 @@
        PROCEDURE                   DIVISION
                                    USING   COMMAND-PARAM.
       ****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
            PERFORM 100-INIT-SEC
@@ -172,10 +172,10 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-           DISPLAY "*(ORCBMIGSRYCDCHG)* ����Ϸ���ִ��ܹԽ�������"
+           DISPLAY "*(ORCBMIGSRYCDCHG)* 一般老人置換移行処理開始"
            MOVE    ZERO                TO  FLG-AREA
            MOVE    ZERO                TO  CNT-AREA
            INITIALIZE  WRK-AREA
@@ -227,24 +227,24 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
            INITIALIZE  PRF-DETAIL
-      *    �ޥ������ơ��֥�¸�߳�ǧ
+      *    マスターテーブル存在確認
            MOVE    "key"               TO  WRK-PATHNAME
            PERFORM 900-SRYCDCHGM-READ-SEC
            IF      FLG-SRYCDCHGM       =   ZERO
-      *        ɸ���ͭ��
+      *        標準に有る
                MOVE    ZERO                TO  WRK-PRFCD
            ELSE
-      *        �ޥ������ơ��֥�¸�߳�ǧ(IPNSRYCD�Τ�)
+      *        マスターテーブル存在確認(IPNSRYCDのみ)
                MOVE    "key2"              TO  WRK-PATHNAME
                PERFORM 900-SRYCDCHGM-READ-SEC
                IF      FLG-SRYCDCHGM       =   ZERO
                    MOVE    CHGM-RJNSRYCD       TO  PRF-CODE3
                END-IF
-      *        �桼�����ơ��֥���ɲä���
+      *        ユーザーテーブルに追加する
                MOVE    SRYCDCHGO-REC       TO  SRYCDCHGW-REC
                PERFORM 210-SRYCDCHGU-INSERT-SEC
            END-IF
@@ -254,15 +254,15 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ����Ϸ���ִ��桼�����ơ��֥��ɲ�
+      *    一般老人置換ユーザーテーブル追加
       *****************************************************************
        210-SRYCDCHGU-INSERT-SEC    SECTION.
            PERFORM 900-SRYCDCHGU-READ-SEC
            IF      FLG-SRYCDCHGU       =   ZERO
-      *        �桼�����ơ��֥��ͭ��
+      *        ユーザーテーブルに有る
                MOVE    ZERO                TO  WRK-PRFCD
            ELSE
-      *        �������ϸ��ΤޤޤȤ���
+      *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
       *                                        CHGW-UPYMD
       *        MOVE    LNK-MNTHMS          TO  CHGW-UPHMS
@@ -281,21 +281,21 @@
        210-SRYCDCHGU-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        290-PRF-SEC                 SECTION.
            EVALUATE    WRK-PRFCD
                WHEN    1
                    IF      PRF-CODE3       NOT =   SPACE
                        IF      PRF-CODE2           =   "999999999"
-                           MOVE    "���"              TO  PRF-COMMAND
+                           MOVE    "削除"              TO  PRF-COMMAND
                            MOVE    CONST-COMM3         TO  PRF-COMMENT
                        ELSE
-                           MOVE    "�ѹ�"              TO  PRF-COMMAND
+                           MOVE    "変更"              TO  PRF-COMMAND
                            MOVE    CONST-COMM1         TO  PRF-COMMENT
                        END-IF
                    ELSE
-                       MOVE    "�ɲ�"              TO  PRF-COMMAND
+                       MOVE    "追加"              TO  PRF-COMMAND
                        MOVE    CONST-COMM2         TO  PRF-COMMENT
                    END-IF
                    MOVE    CHGW-IPNSRYCD       TO  PRF-CODE1
@@ -320,7 +320,7 @@
                        END-IF
                    END-IF
                WHEN    91
-                   MOVE    "�ɲå��顼"        TO  PRF-COMMAND
+                   MOVE    "追加エラー"        TO  PRF-COMMAND
                    MOVE    CHGW-IPNSRYCD       TO  PRF-CODE1
                    MOVE    CHGW-IPNSRYCD       TO  WRK-SRYCD
                    PERFORM 900-TENSU-READ-SEC
@@ -343,7 +343,7 @@
        290-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        2901-PRF-SEC                SECTION.
            IF      CNT-PRF             =   ZERO
@@ -383,7 +383,7 @@
        2901-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
            MOVE    "tbl_srycdchg_org"  TO  MCP-TABLE
@@ -396,12 +396,12 @@
            MOVE    CNT-PRF             TO  WRK-MSG-CNT
            DISPLAY "*(ORCBMIGSRYCDCHG)* Proof Data [ " WRK-MSG-CNT " ]"
            DISPLAY " "
-           DISPLAY "*(ORCBMIGSRYCDCHG)* ����Ϸ���ִ��ܹԽ�����λ"
+           DISPLAY "*(ORCBMIGSRYCDCHG)* 一般老人置換移行処理終了"
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ����Ϸ���ִ��ܹ����ơ��֥��ɹ�
+      *    一般老人置換移行前テーブル読込
       *****************************************************************
        900-SRYCDCHGO-SELECT-SEC    SECTION.
            INITIALIZE  SRYCDCHGO-REC
@@ -417,7 +417,7 @@
        900-SRYCDCHGO-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ����Ϸ���ִ��ܹ����ơ��֥��ɹ�
+      *    一般老人置換移行前テーブル読込
       *****************************************************************
        900-SRYCDCHGO-FETCH-SEC     SECTION.
            MOVE    "tbl_srycdchg_org"  TO  MCP-TABLE
@@ -439,7 +439,7 @@
        900-SRYCDCHGO-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ����Ϸ���ִ��ޥ����ơ��֥��ɹ�
+      *    一般老人置換マスタテーブル読込
       *****************************************************************
        900-SRYCDCHGM-READ-SEC      SECTION.
            INITIALIZE  SRYCDCHGM-REC
@@ -472,7 +472,7 @@
        900-SRYCDCHGM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����Ϸ���ִ��桼�����ơ��֥��ɹ�
+      *    一般老人置換ユーザーテーブル読込
       *****************************************************************
        900-SRYCDCHGU-READ-SEC      SECTION.
            INITIALIZE  SRYCDCHGU-REC
@@ -502,7 +502,7 @@
        900-SRYCDCHGU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
            INITIALIZE  TNS-TENSU-REC
@@ -534,7 +534,7 @@
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
            INITIALIZE  SYS-1001-REC
@@ -567,7 +567,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -581,7 +581,7 @@
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �쥳������н���
+      *    レコード抽出処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -590,7 +590,7 @@
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -599,7 +599,7 @@
        900-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -614,7 +614,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -629,7 +629,7 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
            CALL    "ORCDBMAIN"     USING   MCPAREA
@@ -639,7 +639,7 @@
        900-ORCDBMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥빹�����顼������λ����
+      *    テーブル更新エラー強制終了処理
       *****************************************************************
        900-DBABORT-SEC             SECTION.
            MOVE    SPACE               TO  WRK-ERRMSG

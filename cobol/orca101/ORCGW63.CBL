@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGW63.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : �ǡ��������å���ǽ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/04/01    NACL�ݿ���    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : データチェック機能情報３
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/04/01    NACL−森脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,16 +40,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-      *    ���󥹥������
+      *    コンスタント値
            COPY    "ENUM-VALUE".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W63.
            03  SPA-GMN-AREA.
                05  SPA-GMN-CUR         PIC 9(03).
@@ -332,7 +332,7 @@
                    07  SPA-MOT-JYKNKBN         PIC X(01).
                    07  SPA-MOT-HKNNUM          PIC X(03).
       *
-      *    �ե饰���ꥢ
+      *    フラグエリア
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
@@ -346,14 +346,14 @@
            03  FLG-HIZUKE          PIC 9(01).
            03  FLG-KANACHK         PIC S9(9)   BINARY.
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
            03  IDX-CMB             PIC 9(05).
            03  IDX-LST             PIC 9(05).
            03  IDX-KGNM            PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-WIDMSG          PIC X(70).
       *
@@ -394,48 +394,48 @@
                                    BY          //WKCHK004-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    �����å��ӽ�����
+      *    チェック排除情報
            COPY  "CPSK1040.INC".
       *
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �ݸ��Ծ���
+      *    保険者情報
        01  HKNJAINF-REC.
            COPY    "CPHKNJAINF.INC".
       *
-      *    �����å��ޥ�����
+      *    チェックマスタ４
            COPY    "CPCHK004.INC".
       *
            COPY    "CPCK1102.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ʸ�������������å�
+      *    文字妥当性チェック
            COPY    "CPORCXKANACONV.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -453,7 +453,7 @@
                                            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -471,15 +471,15 @@
            EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
            WHEN    "LINK"      ALSO    ANY
                PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
            WHEN    "PUTG"      ALSO    "CLICKED"
                PERFORM 200-GMNSENI
-      *    ����
+      *    入力
            WHEN    OTHER
                PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF    ( FLG-END             =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -492,24 +492,24 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF    ( SPA-MOTOPG          =   "WERR" )
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END             =   1 )
                    GO  TO  100-INIT-EXT
                END-IF 
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
-      *            ���顼��å�����ɽ������
+      *            エラーメッセージ表示処理
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
@@ -520,7 +520,7 @@
            MOVE    SPACE           TO  MCP-PUTTYPE
            MOVE    "W63    "       TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -529,18 +529,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
       *
            EVALUATE    SPA-MOTOPG
            WHEN    "WID1"
-      *        ��ǧ���̣ϣ˽���
+      *        確認画面ＯＫ処理
                PERFORM 330-WID1-SET-SEC
                GO  TO  300-SCREEN-EXT
            END-EVALUATE
@@ -552,14 +552,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣףɣģ��ˣϣ˽���
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
            IF    ( SPA-WID1-FLG    =   "OK" )
                EVALUATE    SPA-WIDCD
                WHEN "3001"
-      *            �������
+      *            削除処理
                    PERFORM 481-SAKUJO-SEC
                END-EVALUATE
            END-IF
@@ -571,7 +571,7 @@
        330-WID1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -579,11 +579,11 @@
       *
            PERFORM 420-CLEAR-SEC
       *
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
            PERFORM 3101-CLIST-SET-SEC
            MOVE    1               TO  FLG-CLIST-ROW
       *
-      *    ����������֤򥻥å�
+      *    カーソル位置をセット
            IF    ( SPA-GMN-CLIST-MAX   >   ZERO )
                MOVE    001             TO  SPA-GMN-CUR
            ELSE
@@ -595,7 +595,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    コンボ設定処理
       *****************************************************************
        3101-COMBO-SET-SEC          SECTION.
       *
@@ -645,7 +645,7 @@
        3101-COMBO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���׾�拾����������
+      *    一致条件コンボ設定処理
       *****************************************************************
        31011-JYKNKBNLST-SET-SEC        SECTION.
       *
@@ -654,9 +654,9 @@
            MOVE    "0"             TO  SPA-GMN-JYKNKBNL(1)
            MOVE    "1"             TO  SPA-GMN-JYKNKBNL(2)
            MOVE    "2"             TO  SPA-GMN-JYKNKBNL(3)
-           MOVE    "��������"      TO  SPA-GMN-JYKNKBNMEIL(1)
-           MOVE    "��������"      TO  SPA-GMN-JYKNKBNMEIL(2)
-           MOVE    "����ʤ�"      TO  SPA-GMN-JYKNKBNMEIL(3)
+           MOVE    "完全一致"      TO  SPA-GMN-JYKNKBNMEIL(1)
+           MOVE    "前方一致"      TO  SPA-GMN-JYKNKBNMEIL(2)
+           MOVE    "指定なし"      TO  SPA-GMN-JYKNKBNMEIL(3)
       *
            MOVE    3               TO  SPA-GMN-JYKNKBN-MAX
       *
@@ -664,7 +664,7 @@
        31011-JYKNKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��μ��ॳ����������
+      *    保険の種類コンボ設定処理
       *****************************************************************
        31011-HKNNUMLST-SET-SEC         SECTION.
       *
@@ -679,15 +679,15 @@
                                            OR  "8" OR  "9" )
                    MOVE    SPA-GMN-HKNNUM-MAX
                                            TO  IDX-CMB
-      *            �ݸ�
+      *            保険
                    IF    ( IDX-CMB         >   ZERO )
                        IF    ( HKN-HKNNUM  NOT =   SPA-GMN-HKNNUML
                                                              (IDX-CMB))
-      *                    �ݸ������Խ�
+      *                    保険情報編集
                            PERFORM 310111-HKNNUM-SET-SEC
                        END-IF
                    ELSE
-      *                �ݸ������Խ�
+      *                保険情報編集
                        PERFORM 310111-HKNNUM-SET-SEC
                    END-IF
                END-IF
@@ -704,7 +704,7 @@
        31011-HKNNUMLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��μ����������
+      *    保険の種類設定処理
       *****************************************************************
        310111-HKNNUM-SET-SEC           SECTION.
       *
@@ -719,7 +719,7 @@
        310111-HKNNUM-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ����ȴ������ܥܥå����������
+      *    記号抜けコンボボックス設定処理
       *****************************************************************
        31011-KGCHKPTNLST-SET-SEC       SECTION.
       *
@@ -728,11 +728,11 @@
            MOVE    "0"             TO  SPA-GMN-KGCHKPTNL(1)
            MOVE    "1"             TO  SPA-GMN-KGCHKPTNL(2)
            MOVE    "2"             TO  SPA-GMN-KGCHKPTNL(3)
-           MOVE    "�����å�����"
+           MOVE    "チェックする"
                                    TO  SPA-GMN-KGCHKPTNMEIL(1)
-           MOVE    "�����å����ʤ�"
+           MOVE    "チェックしない"
                                    TO  SPA-GMN-KGCHKPTNMEIL(2)
-           MOVE    "�����å���������Ϥ�������ϥ��顼��"
+           MOVE    "チェックする（入力がある場合はエラー）"
                                    TO  SPA-GMN-KGCHKPTNMEIL(3)
       *
            MOVE    3               TO  SPA-GMN-KGCHKPTN-MAX
@@ -741,7 +741,7 @@
        31011-KGCHKPTNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ������������å�����ܥܥå����������
+      *    記号数字チェックコンボボックス設定処理
       *****************************************************************
        31011-KGSUJILST-SET-SEC       SECTION.
       *
@@ -749,8 +749,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGSUJIL(1)
            MOVE    "2"             TO  SPA-GMN-KGSUJIL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGSUJIMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGSUJIMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGSUJIMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGSUJIMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGSUJI-MAX
       *
@@ -758,7 +758,7 @@
        31011-KGSUJILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ������������å�����ܥܥå����������
+      *    記号漢字チェックコンボボックス設定処理
       *****************************************************************
        31011-KGKANJILST-SET-SEC       SECTION.
       *
@@ -766,8 +766,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGKANJIL(1)
            MOVE    "2"             TO  SPA-GMN-KGKANJIL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGKANJIMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGKANJIMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGKANJIMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGKANJIMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGKANJI-MAX
       *
@@ -775,7 +775,7 @@
        31011-KGKANJILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ����ѻ������å�����ܥܥå����������
+      *    記号英字チェックコンボボックス設定処理
       *****************************************************************
        31011-KGABTLST-SET-SEC              SECTION.
       *
@@ -783,8 +783,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGABTL(1)
            MOVE    "2"             TO  SPA-GMN-KGABTL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGABTMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGABTMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGABTMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGABTMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGABT-MAX
       *
@@ -792,7 +792,7 @@
        31011-KGABTLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ����ϥ��ե�����å�����ܥܥå����������
+      *    記号ハイフンチェックコンボボックス設定処理
       *****************************************************************
        31011-KGHYPNLST-SET-SEC              SECTION.
       *
@@ -800,8 +800,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGHYPNL(1)
            MOVE    "2"             TO  SPA-GMN-KGHYPNL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGHYPNMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGHYPNMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGHYPNMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGHYPNMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGHYPN-MAX
       *
@@ -809,7 +809,7 @@
        31011-KGHYPNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����̥���ܥܥå����������
+      *    記号括弧コンボボックス設定処理
       *****************************************************************
        31011-KGKAKKOLST-SET-SEC              SECTION.
       *
@@ -817,8 +817,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGKAKKOL(1)
            MOVE    "2"             TO  SPA-GMN-KGKAKKOL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGKAKKOMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGKAKKOMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGKAKKOMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGKAKKOMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGKAKKO-MAX
       *
@@ -826,7 +826,7 @@
        31011-KGKAKKOLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���椽��¾����ܥܥå����������
+      *    記号その他コンボボックス設定処理
       *****************************************************************
        31011-KGETCLST-SET-SEC              SECTION.
       *
@@ -834,8 +834,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGETCL(1)
            MOVE    "2"             TO  SPA-GMN-KGETCL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGETCMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGETCMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGETCMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGETCMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGETC-MAX
       *
@@ -843,7 +843,7 @@
        31011-KGETCLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �������̵������ܥܥå����������
+      *    記号漢字無しコンボボックス設定処理
       *****************************************************************
        31011-KGKANJINASHILST-SET-SEC              SECTION.
       *
@@ -851,8 +851,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-KGKANJINASHIL(1)
            MOVE    "2"             TO  SPA-GMN-KGKANJINASHIL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-KGKANJINASHIMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-KGKANJINASHIMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-KGKANJINASHIMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-KGKANJINASHIMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGKANJINASHI-MAX
       *
@@ -860,17 +860,17 @@
        31011-KGKANJINASHILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����������å�����ܥܥå����������
+      *    記号桁数チェックコンボボックス設定処理
       *****************************************************************
        31011-KGKETACHKLST-SET-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-KGKETACHKLST-G
       *
            MOVE    "0"             TO  SPA-GMN-KGKETACHKL(1)
-           MOVE    "�����å����ʤ�" TO SPA-GMN-KGKETACHKMEIL(1)
+           MOVE    "チェックしない" TO SPA-GMN-KGKETACHKMEIL(1)
       *
            MOVE    "1"             TO  SPA-GMN-KGKETACHKL(2)
-           MOVE    "�����å�����"
+           MOVE    "チェックする"
                                    TO  SPA-GMN-KGKETACHKMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGKETACHK-MAX
@@ -880,71 +880,71 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������¥���ܥܥå����������
+      *    記号桁数下限コンボボックス設定処理
       *****************************************************************
        31011-KGKETAMINLST-SET-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-KGKETAMINLST-G
       *
            MOVE    "01"            TO  SPA-GMN-KGKETAMINL(1)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(1)
+           MOVE    "１桁"          TO  SPA-GMN-KGKETAMINMEIL(1)
       *
            MOVE    "02"            TO  SPA-GMN-KGKETAMINL(2)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(2)
+           MOVE    "２桁"          TO  SPA-GMN-KGKETAMINMEIL(2)
       *
            MOVE    "03"            TO  SPA-GMN-KGKETAMINL(3)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(3)
+           MOVE    "３桁"          TO  SPA-GMN-KGKETAMINMEIL(3)
       *
            MOVE    "04"            TO  SPA-GMN-KGKETAMINL(4)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(4)
+           MOVE    "４桁"          TO  SPA-GMN-KGKETAMINMEIL(4)
       *
            MOVE    "05"            TO  SPA-GMN-KGKETAMINL(5)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(5)
+           MOVE    "５桁"          TO  SPA-GMN-KGKETAMINMEIL(5)
       *
            MOVE    "06"            TO  SPA-GMN-KGKETAMINL(6)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(6)
+           MOVE    "６桁"          TO  SPA-GMN-KGKETAMINMEIL(6)
       *
            MOVE    "07"            TO  SPA-GMN-KGKETAMINL(7)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(7)
+           MOVE    "７桁"          TO  SPA-GMN-KGKETAMINMEIL(7)
       *
            MOVE    "08"            TO  SPA-GMN-KGKETAMINL(8)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(8)
+           MOVE    "８桁"          TO  SPA-GMN-KGKETAMINMEIL(8)
       *
            MOVE    "09"            TO  SPA-GMN-KGKETAMINL(9)
-           MOVE    "����"          TO  SPA-GMN-KGKETAMINMEIL(9)
+           MOVE    "９桁"          TO  SPA-GMN-KGKETAMINMEIL(9)
       *
            MOVE    "10"            TO  SPA-GMN-KGKETAMINL(10)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(10)
+           MOVE    "１０桁"        TO  SPA-GMN-KGKETAMINMEIL(10)
       *
            MOVE    "11"            TO  SPA-GMN-KGKETAMINL(11)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(11)
+           MOVE    "１１桁"        TO  SPA-GMN-KGKETAMINMEIL(11)
       *
            MOVE    "12"            TO  SPA-GMN-KGKETAMINL(12)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(12)
+           MOVE    "１２桁"        TO  SPA-GMN-KGKETAMINMEIL(12)
       *
            MOVE    "13"            TO  SPA-GMN-KGKETAMINL(13)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(13)
+           MOVE    "１３桁"        TO  SPA-GMN-KGKETAMINMEIL(13)
       *
            MOVE    "14"            TO  SPA-GMN-KGKETAMINL(14)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(14)
+           MOVE    "１４桁"        TO  SPA-GMN-KGKETAMINMEIL(14)
       *
            MOVE    "15"            TO  SPA-GMN-KGKETAMINL(15)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(15)
+           MOVE    "１５桁"        TO  SPA-GMN-KGKETAMINMEIL(15)
       *
            MOVE    "16"            TO  SPA-GMN-KGKETAMINL(16)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(16)
+           MOVE    "１６桁"        TO  SPA-GMN-KGKETAMINMEIL(16)
       *
            MOVE    "17"            TO  SPA-GMN-KGKETAMINL(17)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(17)
+           MOVE    "１７桁"        TO  SPA-GMN-KGKETAMINMEIL(17)
       *
            MOVE    "18"            TO  SPA-GMN-KGKETAMINL(18)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(18)
+           MOVE    "１８桁"        TO  SPA-GMN-KGKETAMINMEIL(18)
       *
            MOVE    "19"            TO  SPA-GMN-KGKETAMINL(19)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(19)
+           MOVE    "１９桁"        TO  SPA-GMN-KGKETAMINMEIL(19)
       *
            MOVE    "20"            TO  SPA-GMN-KGKETAMINL(20)
-           MOVE    "������"        TO  SPA-GMN-KGKETAMINMEIL(20)
+           MOVE    "２０桁"        TO  SPA-GMN-KGKETAMINMEIL(20)
       *
            MOVE    20              TO  SPA-GMN-KGKETAMIN-MAX
       *
@@ -952,14 +952,14 @@
        31011-KGKETAMINLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ���������å�����ܥܥå����������
+      *    番号数字チェックコンボボックス設定処理
       *****************************************************************
        31011-NMSUJILST-SET-SEC       SECTION.
       *
            INITIALIZE              SPA-GMN-NMSUJILST-G
       *
            MOVE    "1"             TO  SPA-GMN-NMSUJIL(1)
-           MOVE    "ǧ���"        TO  SPA-GMN-NMSUJIMEIL(1)
+           MOVE    "認める"        TO  SPA-GMN-NMSUJIMEIL(1)
       *
            MOVE    1               TO  SPA-GMN-NMSUJI-MAX
       *
@@ -967,7 +967,7 @@
        31011-NMSUJILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ���������å�����ܥܥå����������
+      *    番号漢字チェックコンボボックス設定処理
       *****************************************************************
        31011-NMKANJILST-SET-SEC       SECTION.
       *
@@ -975,8 +975,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-NMKANJIL(1)
            MOVE    "2"             TO  SPA-GMN-NMKANJIL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-NMKANJIMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-NMKANJIMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-NMKANJIMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-NMKANJIMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-NMKANJI-MAX
       *
@@ -984,7 +984,7 @@
        31011-NMKANJILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ѻ������å�����ܥܥå����������
+      *    番号英字チェックコンボボックス設定処理
       *****************************************************************
        31011-NMABTLST-SET-SEC              SECTION.
       *
@@ -992,8 +992,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-NMABTL(1)
            MOVE    "2"             TO  SPA-GMN-NMABTL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-NMABTMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-NMABTMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-NMABTMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-NMABTMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-NMABT-MAX
       *
@@ -1001,7 +1001,7 @@
        31011-NMABTLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ϥ��ե�����å�����ܥܥå����������
+      *    番号ハイフンチェックコンボボックス設定処理
       *****************************************************************
        31011-NMHYPNLST-SET-SEC              SECTION.
       *
@@ -1009,8 +1009,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-NMHYPNL(1)
            MOVE    "2"             TO  SPA-GMN-NMHYPNL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-NMHYPNMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-NMHYPNMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-NMHYPNMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-NMHYPNMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-NMHYPN-MAX
       *
@@ -1018,7 +1018,7 @@
        31011-NMHYPNLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��̥���ܥܥå����������
+      *    番号括弧コンボボックス設定処理
       *****************************************************************
        31011-NMKAKKOLST-SET-SEC              SECTION.
       *
@@ -1026,8 +1026,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-NMKAKKOL(1)
            MOVE    "2"             TO  SPA-GMN-NMKAKKOL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-NMKAKKOMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-NMKAKKOMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-NMKAKKOMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-NMKAKKOMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-NMKAKKO-MAX
       *
@@ -1035,7 +1035,7 @@
        31011-NMKAKKOLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ椽��¾����ܥܥå����������
+      *    番号その他コンボボックス設定処理
       *****************************************************************
        31011-NMETCLST-SET-SEC              SECTION.
       *
@@ -1043,8 +1043,8 @@
       *
            MOVE    "1"             TO  SPA-GMN-NMETCL(1)
            MOVE    "2"             TO  SPA-GMN-NMETCL(2)
-           MOVE    "ǧ���"        TO  SPA-GMN-NMETCMEIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-NMETCMEIL(2)
+           MOVE    "認める"        TO  SPA-GMN-NMETCMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-NMETCMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-NMETC-MAX
       *
@@ -1052,14 +1052,14 @@
        31011-NMETCLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ����̵������ܥܥå����������
+      *    番号数字無しコンボボックス設定処理
       *****************************************************************
        31011-NMSUJINASHILST-SET-SEC    SECTION.
       *
            INITIALIZE              SPA-GMN-NMSUJINASHILST-G
       *
            MOVE    "2"             TO  SPA-GMN-NMSUJINASHIL(1)
-           MOVE    "���顼�Ȥ���"  TO  SPA-GMN-NMSUJINASHIMEIL(1)
+           MOVE    "エラーとする"  TO  SPA-GMN-NMSUJINASHIMEIL(1)
       *
            MOVE    1               TO  SPA-GMN-NMSUJINASHI-MAX
       *
@@ -1067,17 +1067,17 @@
        31011-NMSUJINASHILST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��������å�����ܥܥå����������
+      *    番号桁数チェックコンボボックス設定処理
       *****************************************************************
        31011-NMKETACHKLST-SET-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-NMKETACHKLST-G
       *
            MOVE    "0"             TO  SPA-GMN-NMKETACHKL(1)
-           MOVE    "�����å����ʤ�" TO SPA-GMN-NMKETACHKMEIL(1)
+           MOVE    "チェックしない" TO SPA-GMN-NMKETACHKMEIL(1)
       *
            MOVE    "1"             TO  SPA-GMN-NMKETACHKL(2)
-           MOVE    "�����å�����"
+           MOVE    "チェックする"
                                    TO  SPA-GMN-NMKETACHKMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-NMKETACHK-MAX
@@ -1087,41 +1087,41 @@
            EXIT.
       *
       *****************************************************************
-      *    �ֹ������¥���ܥܥå����������
+      *    番号桁数下限コンボボックス設定処理
       *****************************************************************
        31011-NMKETAMINLST-SET-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-NMKETAMINLST-G
       *
            MOVE    "01"            TO  SPA-GMN-NMKETAMINL(1)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(1)
+           MOVE    "１桁"          TO  SPA-GMN-NMKETAMINMEIL(1)
       *
            MOVE    "02"            TO  SPA-GMN-NMKETAMINL(2)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(2)
+           MOVE    "２桁"          TO  SPA-GMN-NMKETAMINMEIL(2)
       *
            MOVE    "03"            TO  SPA-GMN-NMKETAMINL(3)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(3)
+           MOVE    "３桁"          TO  SPA-GMN-NMKETAMINMEIL(3)
       *
            MOVE    "04"            TO  SPA-GMN-NMKETAMINL(4)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(4)
+           MOVE    "４桁"          TO  SPA-GMN-NMKETAMINMEIL(4)
       *
            MOVE    "05"            TO  SPA-GMN-NMKETAMINL(5)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(5)
+           MOVE    "５桁"          TO  SPA-GMN-NMKETAMINMEIL(5)
       *
            MOVE    "06"            TO  SPA-GMN-NMKETAMINL(6)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(6)
+           MOVE    "６桁"          TO  SPA-GMN-NMKETAMINMEIL(6)
       *
            MOVE    "07"            TO  SPA-GMN-NMKETAMINL(7)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(7)
+           MOVE    "７桁"          TO  SPA-GMN-NMKETAMINMEIL(7)
       *
            MOVE    "08"            TO  SPA-GMN-NMKETAMINL(8)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(8)
+           MOVE    "８桁"          TO  SPA-GMN-NMKETAMINMEIL(8)
       *
            MOVE    "09"            TO  SPA-GMN-NMKETAMINL(9)
-           MOVE    "����"          TO  SPA-GMN-NMKETAMINMEIL(9)
+           MOVE    "９桁"          TO  SPA-GMN-NMKETAMINMEIL(9)
       *
            MOVE    "10"            TO  SPA-GMN-NMKETAMINL(10)
-           MOVE    "������"        TO  SPA-GMN-NMKETAMINMEIL(10)
+           MOVE    "１０桁"        TO  SPA-GMN-NMKETAMINMEIL(10)
       *
            MOVE    10              TO  SPA-GMN-NMKETAMIN-MAX
       *
@@ -1129,7 +1129,7 @@
        31011-NMKETAMINLST-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
       *****************************************************************
        3101-CLIST-SET-SEC          SECTION.
       *
@@ -1158,11 +1158,11 @@
                                    TO  SPA-GMN-THKNJANUM(IDX-LST)
                EVALUATE    CK4-1102-JYKNKBN
                WHEN    "0"
-                   MOVE    "����"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
+                   MOVE    "完全"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
                WHEN    "1"
-                   MOVE    "����"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
+                   MOVE    "前方"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
                WHEN    "2"
-                   MOVE    "����"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
+                   MOVE    "　　"      TO  SPA-GMN-TJYKNKBN(IDX-LST)
                END-EVALUATE
                MOVE    CK4-1102-JYKNKBN
                                    TO  SPA-NAI-TJYKNKBN(IDX-LST)
@@ -1182,9 +1182,9 @@
                                    TO  SPA-NAI-THKNNUM   (IDX-LST)
       *
                IF    ( CK4-1102-KIGOCHK    =   "0" )
-                   MOVE    "����"    TO  SPA-GMN-TKIGOCHK  (IDX-LST)
+                   MOVE    "　○"    TO  SPA-GMN-TKIGOCHK  (IDX-LST)
                ELSE
-                   MOVE    "����"    TO  SPA-GMN-TKIGOCHK  (IDX-LST)
+                   MOVE    "　−"    TO  SPA-GMN-TKIGOCHK  (IDX-LST)
                END-IF
       *
                MOVE    CK4-1102-STYUKYMD   TO  WRK-YMD
@@ -1213,7 +1213,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
@@ -1241,7 +1241,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -1263,7 +1263,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    選択番号編集処理
       *****************************************************************
        4100-SELNUM-CHK-SEC         SECTION.
       *
@@ -1287,7 +1287,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å��ꥹ���Խ�����
+      *    チェックリスト編集処理
       *****************************************************************
        4100-CLIST-SET-SEC          SECTION.
       *
@@ -1309,7 +1309,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ꥹ�Ȥ����Ƥ򥻥åȽ���
+      *    リストの内容をセット処理
       *****************************************************************
        420-INPUT-LIST-SET-SEC      SECTION.
       *
@@ -1432,7 +1432,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å�����ܥܥå���������������
+      *    チェックコンボボックス初期値設定処理
       *****************************************************************
        4201-CHKCMB-DEFAULT-SET-SEC     SECTION.
       *
@@ -1517,7 +1517,7 @@
        4201-CHKCMB-DEFAULT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����å�����ܥܥå���������������
+      *    チェックコンボボックス初期値設定処理
       *****************************************************************
        4202-CHKCMB-DEFAULT-SET-SEC     SECTION.
       *
@@ -1627,7 +1627,7 @@
        4202-CHKCMB-DEFAULT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        4101-INPUT-SET-SEC          SECTION.
       *
@@ -1665,7 +1665,7 @@
            MOVE    W63-NM2KAKKO        TO  SPA-GMN-NM2KAKKO-G
            MOVE    W63-NM2ETC          TO  SPA-GMN-NM2ETC-G
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -1673,159 +1673,159 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *    �����ֹ�����å�
+      *    選択番号チェック
            PERFORM 4101-SELNUM-CHK-SEC
       *
-      *    ͭ�����ֳ����������å�
+      *    有効期間開始日チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-STYUKYMD-CHK-SEC
            END-IF
       *
-      *    ͭ�����ֽ�λ�������å�
+      *    有効期間終了日チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-EDYUKYMD-CHK-SEC
            END-IF
       *
-      *    ���׾������å�
+      *    一致条件チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-JYKNKBN-CHK-SEC
            END-IF
       *
-      *    �ݸ����ֹ�����å�
+      *    保険者番号チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-HKNJANUM-CHK-SEC
            END-IF
       *
-      *    �ݸ��μ�������å�
+      *    保険の種類チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-HKNNUM-CHK-SEC
            END-IF
       *
-      *    ����ȴ�������å�
+      *    記号抜けチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGCHKPTN-CHK-SEC
            END-IF
       *
-      *    ������������å�
+      *    記号数字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGSUJI-CHK-SEC
            END-IF
       *
-      *    ������������å�
+      *    記号漢字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGKANJI-CHK-SEC
            END-IF
       *
-      *    ����ѻ������å�
+      *    記号英字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGABT-CHK-SEC
            END-IF
       *
-      *    �����̥ϥ��ե�����å�
+      *    記号括弧ハイフンチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGHYPN-CHK-SEC
            END-IF
       *
-      *    �����̥����å�
+      *    記号括弧チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGKAKKO-CHK-SEC
            END-IF
       *
-      *    ���椽��¾�����å�
+      *    記号その他チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGETC-CHK-SEC
            END-IF
       *
-      *    �������̵�������å�
+      *    記号漢字無しチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGKANJINASHI-CHK-SEC
            END-IF
       *
-      *    �����������å������å�
+      *    記号桁数チェックチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGKETACHK-CHK-SEC
            END-IF
       *
-      *    ���������¥����å�
+      *    記号桁数下限チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KGKETAMIN-CHK-SEC
            END-IF
       *
-      *    �ֹ棱ʸ���ܿ��������å�
+      *    番号１文字目数字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1SUJI-CHK-SEC
            END-IF
       *
-      *    �ֹ棱ʸ���ܴ��������å�
+      *    番号１文字目漢字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1KANJI-CHK-SEC
            END-IF
       *
-      *    �ֹ棱ʸ���ܱѻ������å�
+      *    番号１文字目英字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1ABT-CHK-SEC
            END-IF
       *
-      *    �ֹ棱ʸ���ܳ�̥ϥ��ե�����å�
+      *    番号１文字目括弧ハイフンチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1HYPN-CHK-SEC
            END-IF
       *
-      *    �ֹ棱ʸ���ܳ�̥����å�
+      *    番号１文字目括弧チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1KAKKO-CHK-SEC
            END-IF
       *
-      *    �ֹ棱ʸ���ܤ���¾�����å�
+      *    番号１文字目その他チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM1ETC-CHK-SEC
            END-IF
       *
-      *    �ֹ����̵�������å�
+      *    番号数字無しチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NMSUJINASHI-CHK-SEC
            END-IF
       *
-      *    �ֹ��������å������å�
+      *    番号桁数チェックチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NMKETACHK-CHK-SEC
            END-IF
       *
-      *    �ֹ������¥����å�
+      *    番号桁数下限チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NMKETAMIN-CHK-SEC
            END-IF
       *
-      *    �ֹ棲ʸ���ܰʹ߿��������å�
+      *    番号２文字目以降数字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM2SUJI-CHK-SEC
            END-IF
       *
-      *    �ֹ棲ʸ���ܰʹߴ��������å�
+      *    番号２文字目以降漢字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM2KANJI-CHK-SEC
            END-IF
       *
-      *    �ֹ棲ʸ���ܰʹ߱ѻ������å�
+      *    番号２文字目以降英字チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM2ABT-CHK-SEC
            END-IF
       *
-      *    �ֹ棲ʸ���ܰʹ߳�̥ϥ��ե�����å�
+      *    番号２文字目以降括弧ハイフンチェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM2HYPN-CHK-SEC
            END-IF
       *
-      *    �ֹ棲ʸ���ܰʹ߳�̥����å�
+      *    番号２文字目以降括弧チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM2KAKKO-CHK-SEC
            END-IF
       *
-      *    �ֹ棲ʸ���ܰʹߤ���¾�����å�
+      *    番号２文字目以降その他チェック
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-NM2ETC-CHK-SEC
            END-IF
@@ -1835,7 +1835,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�����å�����
+      *    選択番号チェック処理
       *****************************************************************
        4101-SELNUM-CHK-SEC         SECTION.
       *
@@ -1854,11 +1854,11 @@
        4101-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ͭ�������������å�����
+      *    有効開始日チェック処理
       *****************************************************************
        4101-STYUKYMD-CHK-SEC      SECTION.
       *
-      *    ����ʤ��ALL"0"�򥻥åȤ���
+      *    空白ならばALL"0"をセットする
            IF    ( SPA-GMN-STYUKYMD       =   SPACE )
             OR   ( SPA-GMN-STYUKYMD (1:3) =  "000" )
                MOVE    "00000000"      TO  SPA-GMN-STYUKYMD
@@ -1876,7 +1876,7 @@
                MOVE    WRK-SYMD        TO  SPA-NAI-STYUKYMD
       *
                IF    ( WRK-MCP-WIDGET  =   "STYUKYMD" )
-      *            �ݸ��μ��ॳ��ܤ����Ƥ�ƥ��å�
+      *            保険の種類コンボの内容を再セット
                    PERFORM 31011-HKNNUMLST-SET-SEC
                END-IF
            ELSE
@@ -1895,7 +1895,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͭ����λ�������å�����
+      *    有効終了日チェック処理
       *****************************************************************
        4101-EDYUKYMD-CHK-SEC      SECTION.
       *
@@ -1927,7 +1927,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���׾���ʬ�����å�����
+      *    一致条件区分チェック処理
       *****************************************************************
        4101-JYKNKBN-CHK-SEC            SECTION.
       *
@@ -1950,7 +1950,7 @@
        4101-JYKNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ����ֹ�����å�����
+      *    保険者番号チェック処理
       *****************************************************************
        4101-HKNJANUM-CHK-SEC           SECTION.
       *
@@ -2013,7 +2013,7 @@
        4101-HKNJANUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��μ�������å�����
+      *    保険の種類チェック処理
       *****************************************************************
        4101-HKNNUM-CHK-SEC            SECTION.
       *
@@ -2056,7 +2056,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ȴ�������å�����
+      *    記号抜けチェック処理
       *****************************************************************
        4101-KGCHKPTN-CHK-SEC               SECTION.
       *
@@ -2085,7 +2085,7 @@
        4101-KGCHKPTN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������������å�����
+      *    記号数字チェック処理
       *****************************************************************
        4101-KGSUJI-CHK-SEC               SECTION.
       *
@@ -2104,7 +2104,7 @@
        4101-KGSUJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������������å�����
+      *    記号漢字チェック処理
       *****************************************************************
        4101-KGKANJI-CHK-SEC               SECTION.
       *
@@ -2127,7 +2127,7 @@
        4101-KGKANJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ѻ������å�����
+      *    記号英字チェック処理
       *****************************************************************
        4101-KGABT-CHK-SEC               SECTION.
       *
@@ -2146,7 +2146,7 @@
        4101-KGABT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ϥ��ե�����å�����
+      *    記号ハイフンチェック処理
       *****************************************************************
        4101-KGHYPN-CHK-SEC               SECTION.
       *
@@ -2165,7 +2165,7 @@
        4101-KGHYPN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����̥����å�����
+      *    記号括弧チェック処理
       *****************************************************************
        4101-KGKAKKO-CHK-SEC               SECTION.
       *
@@ -2184,7 +2184,7 @@
        4101-KGKAKKO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���椽��¾�����å�����
+      *    記号その他チェック処理
       *****************************************************************
        4101-KGETC-CHK-SEC               SECTION.
       *
@@ -2203,7 +2203,7 @@
        4101-KGETC-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �������̵�������å�����
+      *    記号漢字無しチェック処理
       *****************************************************************
        4101-KGKANJINASHI-CHK-SEC               SECTION.
       *
@@ -2223,7 +2223,7 @@
        4101-KGKANJINASHI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����������å������å�����
+      *    記号桁数チェックチェック処理
       *****************************************************************
        4101-KGKETACHK-CHK-SEC          SECTION.
       *
@@ -2240,7 +2240,7 @@
        4101-KGKETACHK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���������¥����å�����
+      *    記号桁数下限チェック処理
       *****************************************************************
        4101-KGKETAMIN-CHK-SEC          SECTION.
       *
@@ -2253,7 +2253,7 @@
        4101-KGKETAMIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ���������å�����
+      *    番号数字チェック処理
       *****************************************************************
        4101-NM1SUJI-CHK-SEC               SECTION.
       *
@@ -2273,7 +2273,7 @@
        4101-NM1SUJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ���������å�����
+      *    番号漢字チェック処理
       *****************************************************************
        4101-NM1KANJI-CHK-SEC               SECTION.
       *
@@ -2293,7 +2293,7 @@
        4101-NM1KANJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ѻ������å�����
+      *    番号英字チェック処理
       *****************************************************************
        4101-NM1ABT-CHK-SEC               SECTION.
       *
@@ -2313,7 +2313,7 @@
        4101-NM1ABT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ϥ��ե�����å�����
+      *    番号ハイフンチェック処理
       *****************************************************************
        4101-NM1HYPN-CHK-SEC               SECTION.
       *
@@ -2333,7 +2333,7 @@
        4101-NM1HYPN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��̥����å�����
+      *    番号括弧チェック処理
       *****************************************************************
        4101-NM1KAKKO-CHK-SEC               SECTION.
       *
@@ -2353,7 +2353,7 @@
        4101-NM1KAKKO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ椽��¾�����å�����
+      *    番号その他チェック処理
       *****************************************************************
        4101-NM1ETC-CHK-SEC               SECTION.
       *
@@ -2373,7 +2373,7 @@
        4101-NM1ETC-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ����̵�������å�����
+      *    番号数字無しチェック処理
       *****************************************************************
        4101-NMSUJINASHI-CHK-SEC            SECTION.
       *
@@ -2393,7 +2393,7 @@
        4101-NMSUJINASHI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��������å������å�����
+      *    番号桁数チェックチェック処理
       *****************************************************************
        4101-NMKETACHK-CHK-SEC          SECTION.
       *
@@ -2410,7 +2410,7 @@
        4101-NMKETACHK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ������¥����å�����
+      *    番号桁数下限チェック処理
       *****************************************************************
        4101-NMKETAMIN-CHK-SEC          SECTION.
       *
@@ -2423,7 +2423,7 @@
        4101-NMKETAMIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ���������å�����
+      *    番号数字チェック処理
       *****************************************************************
        4101-NM2SUJI-CHK-SEC               SECTION.
       *
@@ -2443,7 +2443,7 @@
        4101-NM2SUJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ���������å�����
+      *    番号漢字チェック処理
       *****************************************************************
        4101-NM2KANJI-CHK-SEC               SECTION.
       *
@@ -2463,7 +2463,7 @@
        4101-NM2KANJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ѻ������å�����
+      *    番号英字チェック処理
       *****************************************************************
        4101-NM2ABT-CHK-SEC               SECTION.
       *
@@ -2483,7 +2483,7 @@
        4101-NM2ABT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ϥ��ե�����å�����
+      *    番号ハイフンチェック処理
       *****************************************************************
        4101-NM2HYPN-CHK-SEC               SECTION.
       *
@@ -2503,7 +2503,7 @@
        4101-NM2HYPN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��̥����å�����
+      *    番号括弧チェック処理
       *****************************************************************
        4101-NM2KAKKO-CHK-SEC               SECTION.
       *
@@ -2523,7 +2523,7 @@
        4101-NM2KAKKO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ椽��¾�����å�����
+      *    番号その他チェック処理
       *****************************************************************
        4101-NM2ETC-CHK-SEC               SECTION.
       *
@@ -2543,7 +2543,7 @@
        4101-NM2ETC-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -2553,7 +2553,7 @@
            MOVE    "CHANGE"        TO  MCP-PUTTYPE
            MOVE    "W01"           TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -2563,7 +2563,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��說�ꥢ����
+      *    条件クリア処理
       *****************************************************************
        420-CLEAR-SEC                   SECTION.
       *
@@ -2572,18 +2572,18 @@
                                        SPA-NAI-INPUT-AREA
                                        SPA-MOT-AREA
       *
-      *    ͭ��������
+      *    有効開始日
            MOVE    SPA-SYSYMD      TO  WRK-YMD
            MOVE    "01"            TO  WRK-YMD (7:2)
            PERFORM 800-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-STYUKYMD
            MOVE    WRK-SYMD        TO  SPA-NAI-STYUKYMD
       *
-      *    ͭ����λ��
+      *    有効終了日
            MOVE    "99999999"      TO  SPA-GMN-EDYUKYMD
                                        SPA-NAI-EDYUKYMD
       *
-      *    ����ܹ����������
+      *    コンボ項目設定処理
            PERFORM 3101-COMBO-SET-SEC
       *
            MOVE    "0"             TO  WRK-CMB-CD
@@ -2598,7 +2598,7 @@
            PERFORM 4201-CHKCMB-DEFAULT-SET-SEC
            PERFORM 4202-CHKCMB-DEFAULT-SET-SEC
       *
-      *    ����������֥��å�
+      *    カーソル位置セット
            IF    ( SPA-GMN-CLIST-MAX   >   ZERO )
                MOVE    001         TO  SPA-GMN-CUR
            ELSE
@@ -2610,34 +2610,34 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɲý���
+      *    追加処理
       *****************************************************************
        480-TUIKA-SEC               SECTION.
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 4101-INPUT-SET-SEC
       *
            MOVE    CONST-INSERT    TO  WRK-UPDKBN
       *
-      *    ��Ϣ�����å�
+      *    関連チェック
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4900-KANRENCHK-SEC
            END-IF
       *
-      *    ��������å�
+      *    履歴チェック
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4901-RIREKI-CHK-SEC
            END-IF
       *
       *
-      *    �����å��ӽ����󥻥åȽ���
+      *    チェック排除情報セット処理
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4701-KOUMOKU-SET-SEC
            END-IF
       *
            PERFORM 800-MCNDATE-SEC
       *
-      *    ��¸�ǡ����ζ�ʬ�����ɤ򹹿�
+      *    既存データの区分コードを更新
            IF    ( SPA-ERRCD       =   SPACE )
       *
                INITIALIZE                  CHK004-REC
@@ -2674,7 +2674,7 @@
       *
            END-IF
       *
-      *    �����å��ӽ�����ޥ����ɲ�
+      *    チェック排除情報マスタ追加
            IF    ( SPA-ERRCD        =   SPACE )
                MOVE    CK4-1102-REC    TO  MCPDATA-REC
                MOVE    "tbl_chk004"    TO  MCP-TABLE
@@ -2703,7 +2703,7 @@
        480-TUIKA-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ӽ����󥻥åȽ���
+      *    チェック排除情報セット処理
       *****************************************************************
        4701-KOUMOKU-SET-SEC        SECTION.
       *
@@ -2770,31 +2770,31 @@
        4701-KOUMOKU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ѹ�����
+      *    変更処理
       *****************************************************************
        480-HENKOU-SEC              SECTION.
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 4101-INPUT-SET-SEC
       *
            MOVE    CONST-UPDATE    TO  WRK-UPDKBN
       *
-      *    ��Ϣ�����å�
+      *    関連チェック
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4900-KANRENCHK-SEC
            END-IF
       *
-      *    ��������å�
+      *    履歴チェック
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4901-RIREKI-CHK-SEC
            END-IF
       *
-      *    �����å��ӽ����󥻥åȽ���
+      *    チェック排除情報セット処理
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4701-KOUMOKU-SET-SEC
            END-IF
       *
-      *    �����ѥ����򥻥å�
+      *    更新用キーをセット
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  CK4-1102-UPYMD
@@ -2813,13 +2813,13 @@
                PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          =   ZERO )
       *
-      *            �����å��ӽ�����ꥹ���Խ�����
+      *            チェック排除情報リスト編集処理
                    PERFORM 3101-CLIST-SET-SEC
       *
-      *            ���Ϲ��ܤ���������
+      *            入力項目を初期化する
                    PERFORM 420-CLEAR-SEC
                ELSE
-      *            �������ԥ��顼
+      *            更新失敗エラー
                    MOVE   "4002"           TO  SPA-ERRCD
                    MOVE    002             TO  SPA-GMN-CUR
                END-IF
@@ -2829,26 +2829,26 @@
        480-HENKOU-EXT.
            EXIT.
       *****************************************************************
-      *    �����ǧ����
+      *    削除確認処理
       *****************************************************************
        480-SAKUJO-SEC              SECTION.
       *
            MOVE    CONST-DELETE    TO  WRK-UPDKBN
       *
-      *    ���Ϲ��ܤδ�Ϣ�����å�����
+      *    入力項目の関連チェック処理
            PERFORM 4900-KANRENCHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-SAKUJO-EXT
            END-IF
       *
-      *    ������뤫��ǧ����
+      *    削除するか確認する
            MOVE    "3001"          TO  SPA-WIDCD
       *
            .
        480-SAKUJO-EXT.
            EXIT.
       *****************************************************************
-      *    �ꥹ�ȹ��ܣգн���
+      *    リスト項目ＵＰ処理
       *****************************************************************
        480-CHECKLIST-ITEM-UP-SEC   SECTION.
       *
@@ -2863,7 +2863,7 @@
        480-CHECKLIST-ITEM-UP-EXT.
            EXIT.
       *****************************************************************
-      *    �ꥹ�ȹ��ܣģϣףν���
+      *    リスト項目ＤＯＷＮ処理
       *****************************************************************
        480-CHECKLIST-ITEM-DOWN-SEC   SECTION.
       *
@@ -2879,7 +2879,7 @@
        480-CHECKLIST-ITEM-DOWN-EXT.
            EXIT.
       *****************************************************************
-      *    �ꥹ�ȹ��ܹ�������
+      *    リスト項目更新処理
       *****************************************************************
        4801-CHECKLIST-ITEM-UPD-SEC     SECTION.
       *
@@ -2965,7 +2965,7 @@
        4801-CHECKLIST-ITEM-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        481-SAKUJO-SEC                  SECTION.
       *
@@ -2980,12 +2980,12 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC              =   ZERO )
-      *        �����å��ӽ�����ꥹ���Խ�����
+      *        チェック排除情報リスト編集処理
                PERFORM 3101-CLIST-SET-SEC
-      *        ���Ϲ��ܤ���������
+      *        入力項目を初期化する
                PERFORM 420-CLEAR-SEC
            ELSE
-      *        ������ԥ��顼
+      *        削除失敗エラー
                MOVE    "4003"          TO  SPA-ERRCD
                MOVE    002             TO  SPA-GMN-CUR
            END-IF
@@ -2995,7 +2995,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���׾�拾��ܥ����å�����
+      *    一致条件コンボチェック処理
       *****************************************************************
        4200-JYKNKBNLST-CHK-SEC         SECTION.
       *
@@ -3017,7 +3017,7 @@
        4200-JYKNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ楳��ܥ����å�����
+      *    保険番号コンボチェック処理
       *****************************************************************
        4200-HKNNUMLST-CHK-SEC         SECTION.
       *
@@ -3039,7 +3039,7 @@
        4200-HKNNUMLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ȴ������ܥܥå��������å�����
+      *    記号抜けコンボボックスチェック処理
       *****************************************************************
        4200-KGCHKPTNLST-CHK-SEC            SECTION.
       *
@@ -3061,7 +3061,7 @@
        4200-KGCHKPTNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����������ܥܥå��������å�����
+      *    記号数字コンボボックスチェック処理
       *****************************************************************
        4200-KGSUJILST-CHK-SEC            SECTION.
       *
@@ -3083,7 +3083,7 @@
        4200-KGSUJILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����������ܥܥå��������å�����
+      *    記号漢字コンボボックスチェック処理
       *****************************************************************
        4200-KGKANJILST-CHK-SEC            SECTION.
       *
@@ -3105,7 +3105,7 @@
        4200-KGKANJILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ѻ�����ܥܥå��������å�����
+      *    記号英字コンボボックスチェック処理
       *****************************************************************
        4200-KGABTLST-CHK-SEC            SECTION.
       *
@@ -3127,7 +3127,7 @@
        4200-KGABTLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ϥ��ե󥳥�ܥܥå��������å�����
+      *    記号ハイフンコンボボックスチェック処理
       *****************************************************************
        4200-KGHYPNLST-CHK-SEC            SECTION.
       *
@@ -3149,7 +3149,7 @@
        4200-KGHYPNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����̥���ܥܥå��������å�����
+      *    記号括弧コンボボックスチェック処理
       *****************************************************************
        4200-KGKAKKOLST-CHK-SEC            SECTION.
       *
@@ -3171,7 +3171,7 @@
        4200-KGKAKKOLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����̥���ܥܥå��������å�����
+      *    記号括弧コンボボックスチェック処理
       *****************************************************************
        4200-KGETCLST-CHK-SEC            SECTION.
       *
@@ -3193,7 +3193,7 @@
        4200-KGETCLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �������̵������ܥܥå��������å�����
+      *    記号漢字無しコンボボックスチェック処理
       *****************************************************************
        4200-KGKANJINASHILST-CHK-SEC            SECTION.
       *
@@ -3215,7 +3215,7 @@
        4200-KGKANJINASHILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�����ܥܥå��������å�����
+      *    桁数チェックコンボボックスチェック処理
       *****************************************************************
        4200-KGKETACHKLST-CHK-SEC            SECTION.
       *
@@ -3237,7 +3237,7 @@
        4200-KGKETACHKLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������¥���ܥܥå��������å�����
+      *    桁数下限コンボボックスチェック処理
       *****************************************************************
        4200-KGKETAMINLST-CHK-SEC            SECTION.
       *
@@ -3259,7 +3259,7 @@
        4200-KGKETAMINLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��������ܥܥå��������å�����
+      *    番号数字コンボボックスチェック処理
       *****************************************************************
        4200-NMSUJILST-CHK-SEC            SECTION.
       *
@@ -3281,7 +3281,7 @@
        4200-NMSUJILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��������ܥܥå��������å�����
+      *    番号漢字コンボボックスチェック処理
       *****************************************************************
        4200-NMKANJILST-CHK-SEC            SECTION.
       *
@@ -3303,7 +3303,7 @@
        4200-NMKANJILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ѻ�����ܥܥå��������å�����
+      *    番号英字コンボボックスチェック処理
       *****************************************************************
        4200-NMABTLST-CHK-SEC            SECTION.
       *
@@ -3325,7 +3325,7 @@
        4200-NMABTLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ�ϥ��ե󥳥�ܥܥå��������å�����
+      *    番号ハイフンコンボボックスチェック処理
       *****************************************************************
        4200-NMHYPNLST-CHK-SEC            SECTION.
       *
@@ -3347,7 +3347,7 @@
        4200-NMHYPNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��̥���ܥܥå��������å�����
+      *    番号括弧コンボボックスチェック処理
       *****************************************************************
        4200-NMKAKKOLST-CHK-SEC            SECTION.
       *
@@ -3369,7 +3369,7 @@
        4200-NMKAKKOLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ��̥���ܥܥå��������å�����
+      *    番号括弧コンボボックスチェック処理
       *****************************************************************
        4200-NMETCLST-CHK-SEC            SECTION.
       *
@@ -3391,7 +3391,7 @@
        4200-NMETCLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ����̵������ܥܥå��������å�����
+      *    番号漢字無しコンボボックスチェック処理
       *****************************************************************
        4200-NMSUJINASHILST-CHK-SEC            SECTION.
       *
@@ -3413,7 +3413,7 @@
        4200-NMSUJINASHILST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�����ܥܥå��������å�����
+      *    桁数チェックコンボボックスチェック処理
       *****************************************************************
        4200-NMKETACHKLST-CHK-SEC            SECTION.
       *
@@ -3435,7 +3435,7 @@
        4200-NMKETACHKLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������¥���ܥܥå��������å�����
+      *    桁数下限コンボボックスチェック処理
       *****************************************************************
        4200-NMKETAMINLST-CHK-SEC            SECTION.
       *
@@ -3457,7 +3457,7 @@
        4200-NMKETAMINLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *       ���Ϲ��ܤδ�Ϣ�����å�����
+      *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC          SECTION.
       *
@@ -3531,7 +3531,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������å�����
+      *    履歴チェック処理
       *****************************************************************
        4901-RIREKI-CHK-SEC             SECTION.
       *
@@ -3585,21 +3585,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-      *    �����Խ�����
+      *    画面編集処理
            PERFORM 500-GMNHEN-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
-      *        ���顼��å�����ɽ������
+      *        エラーメッセージ表示処理
                PERFORM 510-ERRSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
            IF      SPA-WIDCD       NOT =   SPACE
-      *        �����ɥ�å�����ɽ������
+      *        ガイドメッセージ表示処理
                PERFORM 520-WIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
@@ -3607,14 +3607,14 @@
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "W63    "           TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -3932,7 +3932,7 @@
                MOVE    ZERO               TO   W63-CHECKLIST-ROWATTR
            END-EVALUATE
       *
-      *    �������륻�å�
+      *    カーソルセット
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -3940,19 +3940,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
            IF     (SPA-ERRCD           =   SPACE)
               AND (SPA-GMN-CUR         =   ZERO )
-      *        ���ϸĽ�Υ��åȽ���
+      *        入力個所のセット処理
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
            PERFORM 5012-SKIP-CUR-SEC
       *
-      *    �������륻�å�
+      *    カーソルセット
            EVALUATE    SPA-GMN-CUR
            WHEN    001
                MOVE    "SELNUM"        TO  MCP-WIDGET
@@ -4033,11 +4033,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
-      *    ���ϲս꤫�饫������򥻥å�
+      *    入力箇所からカーソルをセット
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SELNUM"
                MOVE    002             TO  SPA-GMN-CUR
@@ -4114,7 +4114,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������륹���å׽���
+      *    カーソルスキップ処理
       *****************************************************************
        5012-SKIP-CUR-SEC           SECTION.
       *
@@ -4143,73 +4143,73 @@
        5012-SKIP-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
            MOVE    SPACE           TO  SPA-ERRMSG
       *
-      *    ���顼��å��������å�
+      *    エラーメッセージセット
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "�����ֹ����ϥ��顼"
+               MOVE    "選択番号入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "�ݸ����ֹ����ϥ��顼"
+               MOVE    "保険者番号入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "���׾�����ϥ��顼"
+               MOVE    "一致条件入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0004"
-               MOVE    "�ݸ��μ������ϥ��顼"
+               MOVE    "保険の種類入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "����ȴ�������å���ʬ���ϥ��顼"
+               MOVE    "記号抜けチェック区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0006"
-               MOVE    "ͭ�����ֳ��������ϥ��顼"
+               MOVE    "有効期間開始日入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "ͭ�����ֽ�λ�����ϥ��顼"
+               MOVE    "有効期間終了日入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0008"
-               MOVE    "�ֹ����ξ�¤����¤򲼲�äƤ��ޤ�"
+               MOVE    "番号桁数の上限が下限を下回っています"
                                            TO  SPA-ERRMSG
            WHEN    "1001"
-               MOVE    "�����ֹ�����Ϥ��Ƥ�������"
+               MOVE    "選択番号を入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "1002"
-               MOVE    "ͭ���������դ���������դˤʤäƤ��ޤ�"
+               MOVE    "有効開始日付より前の日付になっています"
                                            TO  SPA-ERRMSG
            WHEN    "1003"
-               MOVE    "�оݤΥǡ��������򤵤�Ƥ��ޤ�"
+               MOVE    "対象のデータが選択されています"
                                            TO  SPA-ERRMSG
            WHEN    "1004"
-               MOVE    "ͭ�����֤ν�ʣ����ǡ�����¸�ߤ��ޤ�"
+               MOVE    "有効期間の重複するデータが存在します"
                                            TO  SPA-ERRMSG
            WHEN    "1005"
-               MOVE    "�ɲò�ǽ��������ã���ޤ���"
+               MOVE    "追加可能最大件数に達しました"
                                            TO  SPA-ERRMSG
            WHEN    "1006"
-               MOVE    "��������ǡ���������¸�ߤ��ޤ�"
+               MOVE    "該当するデータが既に存在します"
                                            TO  SPA-ERRMSG
            WHEN    "1007"
-               MOVE   "�ݸ����ֹ�����Ϥ��뤫������ʤ������򤷤Ƥ�����"
+               MOVE   "保険者番号を入力するか、指定なしを選択してくだい"
                                            TO  SPA-ERRMSG
            WHEN    "1008"
-               MOVE    "���������ݸ��Ԥ�¸�ߤ��ޤ���"
+               MOVE    "該当する保険者が存在しません"
                                            TO  SPA-ERRMSG
            WHEN    "1009"
-               MOVE    "�ݸ��μ�������Ϥ��Ƥ�������"
+               MOVE    "保険の種類を入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "1010"
-               MOVE    "�����å����뵭���������Ϥ��Ƥ�������"
+               MOVE    "チェックする記号桁数を入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "1011"
-               MOVE    "�����å������ֹ��������Ϥ��Ƥ�������"
+               MOVE    "チェックする番号桁数を入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "4001"      THRU        "4999"
-               MOVE    "���������˼��Ԥ��ޤ���"
+               MOVE    "更新処理に失敗しました"
                                            TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -4224,7 +4224,7 @@
            MOVE    "NEW"           TO  MCP-PUTTYPE
            MOVE    "WERR"          TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -4234,14 +4234,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ������
+      *    ガイドメッセージ表示処理
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
-      *    ��ǧ��å��������å�
+      *    確認メッセージセット
            EVALUATE    SPA-WIDCD
            WHEN    "3001"
-               MOVE    "������ޤ�����������Ǥ���"
+               MOVE    "削除します。よろしいですか"
                                    TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -4258,7 +4258,7 @@
            MOVE    "NEW"           TO  MCP-PUTTYPE
            MOVE    "WID1"          TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -4267,7 +4267,7 @@
        520-WIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC             SECTION.
       *
@@ -4278,7 +4278,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        800-HIZUKE-CHK-SEC          SECTION.
       *
@@ -4310,7 +4310,7 @@
        800-HIZUKE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ⱦ�ѥ��å�
+      *    半角ェック
       *****************************************************************
        800-HANKAKU-CHK-SEC             SECTION.
       *
@@ -4332,7 +4332,7 @@
        800-HANKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ���󸡺�����(KEY3)
+      *    保険番号情報検索処理(KEY3)
       *****************************************************************
        900-HKNNUM-KEY3-SEL-SEC         SECTION.
       *
@@ -4358,7 +4358,7 @@
        900-HKNNUM-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ����FETCH����(KEY3)
+      *    保険番号情報FETCH処理(KEY3)
       *****************************************************************
        900-HKNNUM-KEY3-FET-SEC         SECTION.
       *
@@ -4378,7 +4378,7 @@
        900-HKNNUM-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ���󸡺�����(KEY)
+      *    保険番号情報検索処理(KEY)
       *****************************************************************
        900-HKNNUM-KEY-SEL-SEC          SECTION.
       *
@@ -4409,7 +4409,7 @@
        900-HKNNUM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ���󸡺�����(KEY)
+      *    保険番号情報検索処理(KEY)
       *****************************************************************
        900-HKNJAINF-KEY-SEL-SEC          SECTION.
       *
@@ -4437,7 +4437,7 @@
        900-HKNJAINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������(KEY)
+      *    チェックマスタ４検索処理(KEY)
       *****************************************************************
        900-CHK004-KEY-SEL-SEC           SECTION.
       *
@@ -4464,7 +4464,7 @@
        900-CHK004-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������(KEY3)
+      *    チェックマスタ４検索処理(KEY3)
       *****************************************************************
        900-CHK004-KEY3-SEL-SEC          SECTION.
       *
@@ -4487,7 +4487,7 @@
        900-CHK004-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������(KEY3)
+      *    チェックマスタ４検索処理(KEY3)
       *****************************************************************
        900-CHK004-KEY3-FET-SEC          SECTION.
       *
@@ -4507,7 +4507,7 @@
        900-CHK004-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������(KEY3)
+      *    チェックマスタ４検索処理(KEY3)
       *****************************************************************
        900-CHK004-KEY9-SEL-SEC          SECTION.
       *
@@ -4533,7 +4533,7 @@
        900-CHK004-KEY9-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������(KEY9)
+      *    チェックマスタ４検索処理(KEY9)
       *****************************************************************
        900-CHK004-KEY9-FET-SEC          SECTION.
       *
@@ -4553,7 +4553,7 @@
        900-CHK004-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -4570,7 +4570,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -4584,7 +4584,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -4598,7 +4598,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -4612,7 +4612,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ģţ̣ţԣŽ���
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -4626,7 +4626,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -4640,7 +4640,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£գУģ��ԣŽ���
+      *    ＤＢＵＰＤＡＴＥ処理
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -4654,7 +4654,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,47 +1,47 @@
 kanri_cd    : "2001"
-name        : "¥ì¥»¥×¥ÈºîÀ®»Ø¼¨¥³¡¼¥É"
+name        : "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆæŒ‡ç¤ºã‚³ãƒ¼ãƒ‰"
 class_cd    : "*"
 item_max    : 7
 item_list   :
 - item_no   : 1
   item      : "SYOKBN"
-  item_jp   : "½èÍı¶èÊ¬"
+  item_jp   : "å‡¦ç†åŒºåˆ†"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SRYYM"
-  item_jp   : "¿ÇÎÅÇ¯·î"
+  item_jp   : "è¨ºç™‚å¹´æœˆ"
   type      : "X"
   start     : 2
   length    : 6
 - item_no   : 3
   item      : "RECEKBN"
-  item_jp   : "¥ì¥»¥×¥È¼ïÎà¶èÊ¬"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®é¡åŒºåˆ†"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 4
   item      : "NYUGAIKBN"
-  item_jp   : "Æş³°¶èÊ¬"
+  item_jp   : "å…¥å¤–åŒºåˆ†"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 5
   item      : "SYOSBT"
-  item_jp   : "½èÍı¶èÊ¬"
+  item_jp   : "å‡¦ç†åŒºåˆ†"
   type      : "X"
   start     : 10
   length    : 1
 - item_no   : 6
   item      : "PRTKBN"
-  item_jp   : "¥ì¥»¥×¥ÈºîÀ®¶èÊ¬"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆåŒºåˆ†"
   type      : "X"
   start     : 11
   length    : 1
 - item_no   : 7
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 12
   length    : 489

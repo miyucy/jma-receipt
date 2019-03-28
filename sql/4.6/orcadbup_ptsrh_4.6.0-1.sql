@@ -1,6 +1,6 @@
 --
 -- tbl_ptsrh
--- hknnum,kohnum,totalten ди╡ц
+-- hknnum,kohnum,totalten Х©╫Е┼═
 --
 
 \set ON_ERROR_STOP

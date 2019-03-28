@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *  ���Ź԰����� ���̲��̣ӣУ� �ʣˣ�����
+      *  診療行為入力 共通画面ＳＰＡ （Ｋ０３）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.02.00    NACL-¿��Ǽ  06/09/XX  �ֶ�����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.00    NACL-多々納  06/09/XX  返金処理対応
       ************************************************************
       *
        01  SPA-K03.
@@ -116,7 +116,7 @@
                        09  SPA-GMN-SYOHOPRTLST      PIC X(18)
                                                     OCCURS   3.
                    07  SPA-SYOHOPRTFLG-MAX          PIC 9(04).
-      *            ���������ٽ�ȯ��
+      *            診療費明細書発行
                    07  SPA-GMN-MEIPRTFLG-G.
                        09  SPA-GMN-MEIPRTFLG        PIC X(01).
                        09  SPA-GMN-F2               PIC X(01).
@@ -125,7 +125,7 @@
                        09  SPA-GMN-MEIPRTFLGLST     PIC X(24)
                                                     OCCURS   3.
                    07  SPA-MEIPRTFLG-MAX            PIC 9(04).
-      *            ���޾���
+      *            薬剤情報
                    07  SPA-GMN-YAKJYOFLG-G.
                        09  SPA-GMN-YAKJYOFLG        PIC X(01).
                        09  SPA-GMN-YAKJYOH          PIC X(01).
@@ -134,7 +134,7 @@
                        09  SPA-GMN-YAKJYOLST        PIC X(18)
                                                     OCCURS   3.
                    07  SPA-YAKJYOFLG-MAX          PIC 9(04).
-      *            ������Ģ
+      *            お薬手帳
                    07  SPA-GMN-OKUSURIFLG-G.
                        09  SPA-GMN-OKUSURIFLG       PIC X(01).
                        09  SPA-GMN-OKUSURHH         PIC X(01).
@@ -143,7 +143,7 @@
                        09  SPA-GMN-OKUSURILST       PIC X(18)
                                                     OCCURS   3.
                    07  SPA-OKUSURIFLG-MAX           PIC 9(02).
-      *            ͽ��ɼȯ��
+      *            予約票発行
                    07  SPA-GMN-YYKHYOFLG-G.
                        09  SPA-GMN-YYKHYOFLG        PIC X(01).
                        09  SPA-GMN-YYKHYOHH         PIC X(01).
@@ -155,7 +155,7 @@
       *
                    07  SPA-GMN-JIHIMSG           PIC X(20)
                                                  OCCURS   10.
-      *            ����μ谷��
+      *            入金の取扱い
                    07  SPA-GMN-NYUKINKBN-G.
                        09  SPA-GMN-NYUKINKBN       PIC X(01).
                        09  SPA-GMN-NYUKINKBNF1     PIC X(01).
@@ -164,7 +164,7 @@
                        09  SPA-GMN-NYUKINKBN-LST   PIC X(40)
                                                    OCCURS  9.
                    07  SPA-NYUKINKBN-MAX           PIC 9(04).
-      *            �ݸ��ȹ礻
+      *            保険組合せ
                    07  SPA-GMN-HKNCOMBI-G.
                        09  SPA-GMN-HKNCOMBI        PIC X(04).
                        09  SPA-GMN-HKNCOMBIY1      PIC X(01).
@@ -180,7 +180,7 @@
                            11  SPA-NAI-TFTNRATEMEI     PIC X(05).
                            11  SPA-NAI-TFUKUKA         PIC X(01).
                        09  SPA-HKN-MAX                 PIC 9(04).
-      *            ���Ų�
+      *            診療科
                    07  SPA-GMN-SRYKA-G.
                        09  SPA-GMN-SRYKA           PIC X(02).
                        09  SPA-GMN-SRYKAY1         PIC X(01).
@@ -191,7 +191,7 @@
                            11  SPA-GMN-TSRYKAY1    PIC X(01).
                            11  SPA-GMN-TSRYKAMEI   PIC X(12).
                        09  SPA-GMN-SRYKA-MAX           PIC 9(04).
-      *            ������ˡ
+      *            入金方法
                    07  SPA-GMN-NYUKINHOU-G.
                        09  SPA-GMN-NYUKINHOU       PIC X(02).
                        09  SPA-GMN-NYUKINHOU1      PIC X(01).
@@ -200,7 +200,7 @@
                        09  SPA-GMN-NYUKINHOU-LIST  PIC X(30)
                                                    OCCURS  99.
                        09  SPA-NYUKINHOU-MAX           PIC 9(04).
-      *            �ա���
+      *            Ｕ・Ｐ
                    07  SPA-GMN-USERPG-G.
                        09  SPA-GMN-USERPG            PIC X(01).
                        09  SPA-GMN-UP1               PIC X(01).
@@ -210,33 +210,33 @@
                                                    OCCURS  2.
                    07  SPA-USERPG-MAX                 PIC 9(02).
       *
-      *            ʣ���ʽ���
+      *            複数科処理
                    07  SPA-GMN-FUKUSAGAKU        PIC S9(10).
                    07  SPA-GMN-FUKUMDS           PIC X(20).
-      *            �������ơʥƥ��ȡ�
+      *            前回内容（テスト）
                    07  SPA-GMN-FUKUZENMDS        PIC X(30).
                    07  SPA-GMN-FUKUZENMDS2       PIC X(50).
-      *            ������
+      *            入金合計
                    07  SPA-GMN-NYUKINMSG         PIC X(50).
-      *            ʣ���ʽ�����
+      *            複数科処理中
                    07  SPA-GMN-FUKUMSG           PIC X(50).
-      *            ʣ���ʤޤȤ������
+      *            複数科まとめ請求額
                    07  SPA-MAT-SKYMONEY          PIC 9(07).
-      *            �ʣ����ޤȤ��³�������ޤȤ�����
+      *            （１：まとめ継続、２：まとめ確定）
                    07  SPA-GMN-SYORI             PIC 9(01).
       *
-      *            ����̤������
+      *            入院未収金合計
                    07  SPA-GMN-NYUMISYU          PIC X(40).
                    07  SPA-NAI-NYUMIKBN          PIC 9(01).
       *
                    07  SPA-GMN-ZENMISYU          PIC S9(07).
                    07  SPA-GMN-CHOKAKIN          PIC S9(07).
-      *            ���������³�
+      *            今回入金上限額
                    07  SPA-NAI-JYOGENKIN         PIC S9(07).
                    07  SPA-GMN-JYOGENMSG         PIC X(50).
       *
                05  SPA-NAI-AREA.
-      *            ȯ����
+      *            発行日
                    07  SPA-NAI-HAKYMD            PIC X(08).
                    07  SPA-MAE-HAKYMD            PIC X(08).
                    07  SPA-HAKYMD-FLG            PIC X(01).
@@ -259,7 +259,7 @@
                    07  SPA-MAE-CHOSEI2           PIC S9(07).
                    07  SPA-MAE-NYUKIN            PIC S9(07).
                    07  SPA-MAE-HENKIN            PIC S9(07).
-      *            �������Ϥ���
+      *            入金入力あり
                    07  SPA-NAI-NYUKINFLG         PIC 9(01).
                    07  SPA-GOK-NYUKIN            PIC S9(07).
                    07  SPA-GOK-SKYMONEY          PIC S9(07).
@@ -269,52 +269,52 @@
                    07  SPA-GOK-HENKIN            PIC S9(07).
                    07  SPA-OLD-SKYMONEY          PIC S9(07).
                    07  SPA-OLD-SEIKYU            PIC S9(07).
-      *            ����̤���������
+      *            前回未収額入金額
                    07  SPA-NYU-ZENMISYU          PIC S9(07).
-      *            �����ֶ�۽�����
+      *            前回返金額充当額
                    07  SPA-NYU-ZENHENKIN         PIC S9(07).
       *
                    07  SPA-GOK-SRYKA             PIC X(02).
                    07  SPA-GOK-HKNCOMBI          PIC X(04).
-      *            ���Ź԰٤ʤ�
+      *            診療行為なし
                    07  SPA-IDX-KOUI              PIC 9(04).
-      *            �оݤʤ�
+      *            対象なし
                    07  SPA-NAI-FLG               PIC 9(01).
-      *            �ֶ����϶�ʬ
+      *            返金入力区分
                    07  SPA-NAI-HENFLG            PIC 9(01).
-      *            �ٹ�Ѥ�
+      *            警告済み
                    07  SPA-KEI-FLG               PIC 9(01).
-      *            ������ˡ�������
+      *            入金方法入金状態
                    07  SPA-NAI-NYUKIN-JYOTAI     PIC X(01).
                    07  SPA-NAI-NYUKINHOU-LSTG.
                        09  SPA-NAI-NYUKIN-JYOTAIL  PIC X(01)
                                                    OCCURS  99.
-      *            �桼���ץ�����൯ư
+      *            ユーザプログラム起動
                    07  SPA-NAI-GYOUMU-FLG             PIC X(01).
                    07  SPA-NAI-GYOUMU-ARI             PIC 9(01).
-      *            ��λ��
+      *            終了時
                    07  SPA-MCP-PUTTYPE                PIC X(16).
                    07  SPA-FLG-CLAIM                  PIC 9(01).
                    07  SPA-CLAIM-OK                   PIC 9(01).
                    07  SPA-USERPG-FLG                 PIC 9(01).
                    07  SPA-CLAIM-MULTIHOST            PIC 9(01).
-      *            ���������������
+      *            訂正時の請求書金額
                    07  SPA-NAI-TEIKINKBN              PIC X(01).
-      *            ���⡦�ֶ�������ʬ
+      *            入金・返金額設定区分
                    07  SPA-NAI-NYKHNKKBN              PIC X(01).
-      *            ������⡦�ֶ�
+      *            一括入金・返金
                    07  SPA-IKKATUKBN                  PIC X(01).
-      *            ����ޤȤ��ֵѶ�ʬ
+      *            入金まとめ返却区分
                    07  SPA-MATOME-NYUHENKIN-KBN       PIC X(02).
       *ver.4.7
-      *            �ãӣֶ�ʬ
+      *            ＣＳＶ区分
                    07  SPA-NAI-CSVKBN                 PIC X(01).
                    07  SPA-NAI-CSVKBN2                PIC X(01).
       *!!!
-      *        ��������С����顼
+      *        桁数オーバーエラー
                05  SPA-OVER-ERR                    PIC 9(01).
       *
-      *    �ạ̃��ɣͲ���
+      *    ＣＬＡＩＭ画面
            03  SPA-K03X-AREA.
                05  SPA-K03X-FLG                        PIC X(02).
                05  SPA-K03X-CODE                       PIC X(01).
@@ -338,26 +338,26 @@
                05  SPA-SYUNOU-IDX              PIC 9(04).
                05  SPA-SYUNOU-TBL              OCCURS  15.
                    07  SPA-SYUNOU-REC              PIC X(2000).
-      *            ��������������
+      *            請求金額訂正差額
                    07  SPA-TEI-SKYMONEY            PIC S9(07).
-      *            �����ǡʺƷǡ���������
+      *            消費税（再掲）訂正差額
                    07  SPA-TEI-SKYMONEY-TAX-SAI    PIC S9(07).
-      *            ������������
+      *            訂正前請求金額
                    07  SPA-MAE-SKYMONEY            PIC  9(07).
-      *            �����������ǡʺƷǡ�
+      *            訂正前消費税（再掲）
                    07  SPA-MAE-SKYMONEY-TAX-SAI    PIC  9(07).
-      *            �����������׳�
+      *            訂正前入金合計額
                    07  SPA-MAE-NYUKIN-TOTAL        PIC  9(07).
-      *            ������Ĵ����
+      *            訂正前調整金
                    07  SPA-TMAE-CHOSEI             PIC S9(07).
                    07  SPA-TMAE-CHOSEI1            PIC S9(07).
                    07  SPA-TMAE-CHOSEI2            PIC S9(07).
-      *            �������������
+      *            訂正今回請求額
                    07  SPA-TEIKEI-SKYMONEY         PIC  9(07).
-      *            ���������
+      *            今回入金額
                    07  SPA-TEI-NYUKIN-TOTAL        PIC S9(07).
       *H18/9
-      *            �����ֶ��
+      *            今回返金額
                    07  SPA-SYU-HENKIN          PIC S9(07).
                    07  SPA-SYU-HENKBN          PIC  X(01).
       *

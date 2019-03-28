@@ -1,17 +1,17 @@
 kanri_cd    : "1201"
-name        : "ÅÀ¿ô»»Äê´ğ½à"
+name        : "ç‚¹æ•°ç®—å®šåŸºæº–"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "DAKETUKBN"
-  item_jp   : "ÂÅ·ëÎ¨"
+  item_jp   : "å¦¥çµç‡"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 2
   length    : 499

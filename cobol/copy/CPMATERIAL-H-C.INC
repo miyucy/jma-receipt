@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,20 +16,20 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ÆÃÄê´ïºà¶È¼ÔÌ¾  COPY (CPMATERIAL-H-C.INC)      *
+      *         ç‰¹å®šå™¨ææ¥­è€…å  COPY (CPMATERIAL-H-C.INC)      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  MATERIAL-H-C-REC.
-      *    ¶È¼ÔÌ¾¥³¡¼¥É
+      *    æ¥­è€…åã‚³ãƒ¼ãƒ‰
            03  MATERH-C-COMPANYCD      PIC 9(05).
-      *    ¶È¼ÔÌ¾
+      *    æ¥­è€…å
            03  MATERH-C-NAME           PIC X(100).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  MATERH-C-CREYMD         PIC X(08).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  MATERH-C-UPYMD          PIC X(08).
-      *    ¹¹¿·»þ´Ö
+      *    æ›´æ–°æ™‚é–“
            03  MATERH-C-UPHMS          PIC X(06).

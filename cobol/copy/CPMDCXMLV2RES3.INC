@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    API ��ǻ�������Ͽ����(xml2)   COPY (CPMDCXMLV2RES3.INC)
+      *    API 初診算定日登録情報(xml2)   COPY (CPMDCXMLV2RES3.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  XML-MEDICALV2RES3.
            03  MDCRES-CONTEXT             PIC S9(9)   BINARY.
@@ -28,32 +28,32 @@
            03  MDCRES-MODE                PIC S9(9)   BINARY.
            03  MDCRES-RECORDNAME          PIC X(128).
            03  MDCRES-MEDICALRES.
-      *        ����
+      *        施日
                05  MDCRES-INFORMATION-DATE  PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                05  MDCRES-INFORMATION-TIME  PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                05  MDCRES-API-RESULT        PIC X(3).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                05  MDCRES-API-RESULT-MSG    PIC X(100).
       *
                05  MDCRES-RESKEY            PIC X(100).
-      *        ���Ծ���
+      *        患者情報
                05  MDCRES-PATIENT-INFOMATION.
-      *            �����ֹ�
+      *            患者番号
                    07  MDCRES-PATIENTID        PIC X(20).
-      *            ���Ի�̾
+      *            患者氏名
                    07  MDCRES-NAME             PIC X(100).
                    07  MDCRES-KANANAME         PIC X(100).
                    07  MDCRES-BIRTHDAY         PIC X(10).
                    07  MDCRES-SEX              PIC X(1).
-      *        ��ǻ�����
+      *        初診算定日
                05  MDCRES-FIRST-DATE       PIC X(10).
-      *        �ǽ��象��
+      *        最終来院日
                05  MDCRES-LAST-DATE        PIC X(10).
-      *        ���Ų�
+      *        診療科
                05  MDCRES-DEP-CODE         PIC X(2).
                05  MDCRES-DEP-NAME         PIC X(80).
-      *        �������������ʥꥯ�����ȡ�00 �Τߡ�
+      *        受診履歴初回日（リクエスト＝00 のみ）
                05  MDCRES-FIRST-VISIT-DATE  PIC X(10).
       *

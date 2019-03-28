@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ֹ��Ѵ��ѥ�᥿                         *
+      *    患者番号変換パラメタ                         *
       *                         COPY  (CPORCSPTNUM.INC)  *
       *
-      *     SPTNUM-RC    : ZERO �����ｪλ��
-      *                    99    (�ͥ��顼��
-      *                    10    (�ǡ����ʤ���
+      *     SPTNUM-RC    : ZERO （正常終了）
+      *                    99    (値エラー）
+      *                    10    (データなし）
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.04.00    NACL-¿��Ǽ  09/01/29  �ܱ�ʬ���б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.00    NACL-多々納  09/01/29  本院分院対応
       ************************************************************
        01  ORCSPTNUMAREA.
-      *������
+      *入力値
            03  SPTNUM-PTNUM              PIC X(20).
            03  SPTNUM-GRPHOSPNUM         PIC 9(02).
-      *������
+      *出力値
            03  SPTNUM-PTID               PIC 9(10).
       *
-      *���ϼ��̡ʣ���Ⱦ�ѡ��������ѡ�
+      *入力種別（１：半角、２：全角）
            03  SPTNUM-SYUBETU            PIC 9(01).
-      *����������
+      *復帰コード
            03  SPTNUM-RC                 PIC S9(9)   BINARY.
       *

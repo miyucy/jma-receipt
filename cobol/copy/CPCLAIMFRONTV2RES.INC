@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ì¥¹¥Ý¥ó¥¹£Ã£Ì£Á£É£Í¼õÉÕÁ÷¿®¼èÆÀ(xml2)
+      *    ï¼¡ï¼°ï¼©ãƒ¬ã‚¹ãƒãƒ³ã‚¹ï¼£ï¼¬ï¼¡ï¼©ï¼­å—ä»˜é€ä¿¡å–å¾—(xml2)
       *                                      COPY (CPCLAIMFRONTV2RES.INC)
       ******************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
        01  XML-CLAIM-FRONTV2RES.
            02  CLFRRES-CONTEXT           PIC S9(9)   BINARY.
@@ -29,435 +29,435 @@
            02  CLFRRES-MODE              PIC S9(9)   BINARY.
            02  CLFRRES-RECORDNAME        PIC X(128).
            02  CLFRRES-CLAIM-FRONT.
-      *        ¼Â»ÜÆü
+      *        å®Ÿæ–½æ—¥
                03  CLFRRES-INFORMATION-DATE    PIC X(10).
-      *        ¼Â»Ü»þ´Ö
+      *        å®Ÿæ–½æ™‚é–“
                03  CLFRRES-INFORMATION-TIME    PIC X(8).
-      *        ÊÖµÑ¥³¡¼¥É
+      *        è¿”å´ã‚³ãƒ¼ãƒ‰
                03  CLFRRES-API-RESULT          PIC X(2).
-      *        ÊÖµÑ¥á¥Ã¥»¡¼¥¸
+      *        è¿”å´ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                03  CLFRRES-API-RESULT-MSG      PIC X(100).
-      *        ´µ¼ÔÈÖ¹æ
+      *        æ‚£è€…ç•ªå·
                03  CLFRRES-PATIENTID           PIC X(20).
       *
-      * ¼Â»ÜÆü(CCYY-MM-DDTHH:MM:SS·Á¼°)
+      * å®Ÿæ–½æ—¥(CCYY-MM-DDTHH:MM:SSå½¢å¼)
                03  CLFRRES-INFORMATION-HEN     PIC X(19).
-      * ´µ¼Ô¼çID
+      * æ‚£è€…ä¸»ID
                03  CLFRRES-PTID1               PIC X(20).
-      * ID¤Î¼ïÎà¥³¡¼¥É
+      * IDã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-IDTYPE1             PIC X(08).
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                03  CLFRRES-CRE001-PERSONALID   PIC X(20).
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-FULLNAME     PIC X(100).
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-FAMILYNAME   PIC X(50).
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-GIVENNAME    PIC X(50).
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                03  CLFRRES-CRE001-MIDDLENAME   PIC X(50).
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                03  CLFRRES-CRE001-PREFIX       PIC X(50).
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                03  CLFRRES-CRE001-DEGREE       PIC X(50).
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                03  CLFRRES-CRE001-FACILITYNAME PIC X(50).
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                03  CLFRRES-CRE001-FACILITYID   PIC X(20).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                03  CLFRRES-CRE001-DPERTNAME    PIC X(50).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                03  CLFRRES-CRE001-DPERTID      PIC X(20).
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-ADRFULLNAME  PIC X(400).
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                03  CLFRRES-CRE001-ADRCLASS     PIC X(10).
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-ADRPREF      PIC X(20).
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-ADRCITY      PIC X(20).
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-ADRTOWN      PIC X(20).
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE001-ADRHOMENUM   PIC X(200).
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                03  CLFRRES-CRE001-ZIP          PIC X(8).
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                03  CLFRRES-CRE001-COUNTRY      PIC X(10).
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                03  CLFRRES-CRE001-EMAIL        PIC X(100).
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
                03  CLFRRES-CRE001-PHONEAREA    PIC X(10).
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
                03  CLFRRES-CRE001-PHONECITY    PIC X(10).
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
                03  CLFRRES-CRE001-PHONENUM     PIC X(10).
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                03  CLFRRES-CRE001-PHONEEXT     PIC X(10).
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                03  CLFRRES-CRE001-PHONECOUNTRY PIC X(10).
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                03  CLFRRES-CRE001-PHONEMEMO    PIC X(100).
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-CRE001-PHONEEQUIP   PIC X(10).
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
                03  CLFRRES-CRE001-LICENSE      PIC X(20).
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />)
                03  CLFRRES-M-RX001-I1          PIC X(20).
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ  (<accessRight permit="all" />) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤  (<accessRight permit="all" />) 
                03  CLFRRES-M-RI101-ACC1        PIC X(50).
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Regist) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Regist) 
                03  CLFRRES-M-RI101-TITLE       PIC X(20).
       *##
       *
-      * [´µ¼Ô¾ðÊó]
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * [æ‚£è€…æƒ…å ±]
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
                03  CLFRRES-UID1                PIC X(36).
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ç¢ºå®šæ—¥
                03  CLFRRES-CONFIRMDATE1        PIC X(10).
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                03  CLFRRES-CRE101-PERSONALID   PIC X(20).
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-FULLNAME     PIC X(100).
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-FAMILYNAME   PIC X(50).
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-GIVENNAME    PIC X(50).
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                03  CLFRRES-CRE101-MIDDLENAME   PIC X(50).
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                03  CLFRRES-CRE101-PREFIX       PIC X(50).
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                03  CLFRRES-CRE101-DEGREE       PIC X(50).
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                03  CLFRRES-CRE101-FACILITYNAME PIC X(50).
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                03  CLFRRES-CRE101-FACILITYID   PIC X(20).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                03  CLFRRES-CRE101-DPERTNAME    PIC X(50).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                03  CLFRRES-CRE101-DPERTID      PIC X(20).
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-ADRFULLNAME  PIC X(400).
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                03  CLFRRES-CRE101-ADRCLASS     PIC X(10).
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-ADRPREF      PIC X(20).
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-ADRCITY      PIC X(20).
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-ADRTOWN      PIC X(20).
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE101-ADRHOMENUM   PIC X(200).
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                03  CLFRRES-CRE101-ZIP          PIC X(8).
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                03  CLFRRES-CRE101-COUNTRY      PIC X(10).
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                03  CLFRRES-CRE101-EMAIL        PIC X(100).
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
                03  CLFRRES-CRE101-PHONEAREA    PIC X(10).
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
                03  CLFRRES-CRE101-PHONECITY    PIC X(10).
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
                03  CLFRRES-CRE101-PHONENUM     PIC X(10).
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                03  CLFRRES-CRE101-PHONEEXT     PIC X(10).
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                03  CLFRRES-CRE101-PHONECOUNTRY PIC X(10).
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                03  CLFRRES-CRE101-PHONEMEMO    PIC X(100).
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-CRE101-PHONEEQUIP   PIC X(10).
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼
                03  CLFRRES-CRE101-LICENSE      PIC X(20).
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />) 
                03  CLFRRES-M-RX101-I1          PIC X(20).
       *##
-      * ´µ¼Ô¼çID
+      * æ‚£è€…ä¸»ID
                03  CLFRRES-PTID2               PIC X(20).
-      * ´µ¼Ô¼çID¤Î¥Æ¡¼¥Ö¥ëÌ¾
+      * æ‚£è€…ä¸»IDã®ãƒ†ãƒ¼ãƒ–ãƒ«å
                03  CLFRRES-IDTYPE2             PIC X(08).
-      * »áÌ¾(¥«¥Ê)¤ÎÉ½µ­Ë¡
+      * æ°å(ã‚«ãƒŠ)ã®è¡¨è¨˜æ³•
                03  CLFRRES-KANANAME-REPCODE    PIC X(01).
-      * »áÌ¾(¥«¥Ê)¤Î¥Õ¥ë¥Í¡¼¥à
+      * æ°å(ã‚«ãƒŠ)ã®ãƒ•ãƒ«ãƒãƒ¼ãƒ 
                03  CLFRRES-KANANAME            PIC X(100).
-      * »áÌ¾(´Á»ú)¤ÎÉ½µ­Ë¡
+      * æ°å(æ¼¢å­—)ã®è¡¨è¨˜æ³•
                03  CLFRRES-NAME-REPCODE        PIC X(01).
-      * »áÌ¾(´Á»ú)¤Î¥Õ¥ë¥Í¡¼¥à
+      * æ°å(æ¼¢å­—)ã®ãƒ•ãƒ«ãƒãƒ¼ãƒ 
                03  CLFRRES-NAME                PIC X(100).
-      * À¸Ç¯·îÆü
+      * ç”Ÿå¹´æœˆæ—¥
                03  CLFRRES-BIRTHDAY            PIC X(10).
-      * À­ÊÌ
+      * æ€§åˆ¥
                03  CLFRRES-SEX                 PIC X(07).
-      * ½»½ê(¼«Âð)
+      * ä½æ‰€(è‡ªå®…)
                03  CLFRRES-HOME-ADRS           PIC X(400).
-      * ½»½ê(¼«Âð) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(è‡ªå®…) ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-HOME-KREPCODE       PIC X(09).
-      * ½»½ê(¼«Âð) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(è‡ªå®…) éƒµä¾¿ç•ªå·
                03  CLFRRES-HOME-POST           PIC X(08).
-      * ½»½ê(Ï¢ÍíÀè)
+      * ä½æ‰€(é€£çµ¡å…ˆ)
                03  CLFRRES-RENRAKU-ADRS        PIC X(400).
-      * ½»½ê(Ï¢ÍíÀè) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(é€£çµ¡å…ˆ) ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-RENRAKU-KREPCODE    PIC X(09).
-      * ½»½ê(Ï¢ÍíÀè) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(é€£çµ¡å…ˆ) éƒµä¾¿ç•ªå·
                03  CLFRRES-RENRAKU-POST        PIC X(08).
-      * ½»½ê(¶ÐÌ³Àè)
+      * ä½æ‰€(å‹¤å‹™å…ˆ)
                03  CLFRRES-OFFICE-ADRS         PIC X(400).
-      * ½»½ê(¶ÐÌ³Àè) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(å‹¤å‹™å…ˆ) ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-OFFICE-KREPCODE     PIC X(09).
-      * ½»½ê(¶ÐÌ³Àè) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(å‹¤å‹™å…ˆ) éƒµä¾¿ç•ªå·
                03  CLFRRES-OFFICE-POST         PIC X(08).
-      * ½»½ê(µ¢¾ÊÀè)
+      * ä½æ‰€(å¸°çœå…ˆ)
                03  CLFRRES-KISEI-ADRS          PIC X(400).
-      * ½»½ê(µ¢¾ÊÀè) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(å¸°çœå…ˆ) ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-KISEI-KREPCODE      PIC X(09).
-      * ½»½ê(µ¢¾ÊÀè) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(å¸°çœå…ˆ) éƒµä¾¿ç•ªå·
                03  CLFRRES-KISEI-POST          PIC X(08).
-      * »Ô³°¶ÉÈÖ
+      * å¸‚å¤–å±€ç•ª
                03  CLFRRES-PHONE-AREA          PIC X(10).
-      * ¶ÉÈÖ
+      * å±€ç•ª
                03  CLFRRES-PHONE-CITY          PIC X(10).
-      * ²ÃÆþÈÖ¹æ
+      * åŠ å…¥ç•ªå·
                03  CLFRRES-PHONE-NUM           PIC X(10).
-      * ÆâÀþÈÖ¹æ
+      * å†…ç·šç•ªå·
                03  CLFRRES-PHONE-EXT           PIC X(10).
-      * ¹ñÈÖ¹æ
+      * å›½ç•ªå·
                03  CLFRRES-PHONE-COUNTRY       PIC X(10).
-      * »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                03  CLFRRES-PHONE-MEMO          PIC X(100).
-      * ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É [¾ÊÎ¬²ÄÇ½¡¦Â°À­] (PH)
+      * è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰ [çœç•¥å¯èƒ½ãƒ»å±žæ€§] (PH)
                03  CLFRRES-PHONE-EQUIP         PIC X(10).
-      * »àË´¥Õ¥é¥°
+      * æ­»äº¡ãƒ•ãƒ©ã‚°
                03  CLFRRES-DEATHKBN            PIC X(05).
-      * [·ò¹¯ÊÝ¸±¾ðÊó]
+      * [å¥åº·ä¿é™ºæƒ…å ±]
                03  CLFRRES-TBL                OCCURS  20.
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<accessRight permit="all" />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<accessRight permit="all" />)
                    05  CLFRRES-M-RI2II-ACC1     PIC X(30).
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Regist)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Regist)
                    05  CLFRRES-M-RI2II-TITLE    PIC X(30).
       *##
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
                    05  CLFRRES-UID2           PIC X(36).
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
                    05  CLFRRES-CONFIRMDATE2   PIC X(10).
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                    05  CLFRRES-CRE201-PERSONALID   PIC X(20).
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-FULLNAME     PIC X(100).
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-FAMILYNAME   PIC X(50).
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-GIVENNAME    PIC X(50).
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                    05  CLFRRES-CRE201-MIDDLENAME   PIC X(50).
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                    05  CLFRRES-CRE201-PREFIX       PIC X(50).
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                    05  CLFRRES-CRE201-DEGREE       PIC X(50).
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                    05  CLFRRES-CRE201-FACILITYNAME PIC X(50).
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                    05  CLFRRES-CRE201-FACILITYID   PIC X(20).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                    05  CLFRRES-CRE201-DPERTNAME    PIC X(50).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                    05  CLFRRES-CRE201-DPERTID      PIC X(20).
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-ADRFULLNAME  PIC X(400).
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                    05  CLFRRES-CRE201-ADRCLASS     PIC X(10).
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-ADRPREF      PIC X(20).
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-ADRCITY      PIC X(20).
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-ADRTOWN      PIC X(20).
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                    05  CLFRRES-CRE201-ADRHOMENUM   PIC X(200).
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                    05  CLFRRES-CRE201-ZIP          PIC X(8).
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                    05  CLFRRES-CRE201-COUNTRY      PIC X(10).
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                    05  CLFRRES-CRE201-EMAIL        PIC X(100).
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
                    05  CLFRRES-CRE201-PHONEAREA    PIC X(10).
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
                    05  CLFRRES-CRE201-PHONECITY    PIC X(10).
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
                    05  CLFRRES-CRE201-PHONENUM     PIC X(10).
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                    05  CLFRRES-CRE201-PHONEEXT     PIC X(10).
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                    05  CLFRRES-CRE201-PHONECOUNTRY PIC X(10).
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                    05  CLFRRES-CRE201-PHONEMEMO    PIC X(100).
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                    05  CLFRRES-CRE201-PHONEEQUIP   PIC X(10).
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
                    05  CLFRRES-CRE201-LICENSE      PIC X(20).
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ  (<extRefs />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤  (<extRefs />)
                    05  CLFRRES-M-RX2II-I1     PIC X(20).
       *##
-      * ·ò¹¯ÊÝ¸±¼ïÊÌÌ¾¾Î
+      * å¥åº·ä¿é™ºç¨®åˆ¥åç§°
                    05  CLFRRES-HKNSBT              PIC X(20).
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ¥³¡¼¥É
+      * å¥åº·ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰
                    05  CLFRRES-HKNSBTCODE          PIC X(2).
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ¥³¡¼¥É¥Æ¡¼¥Ö¥ëÌ¾
+      * å¥åº·ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«å
                    05  CLFRRES-HKNSBTTBL           PIC X(7).
-      *ÊÝ¸±¼ÔÈÖ¹æ
+      *ä¿é™ºè€…ç•ªå·
                    05  CLFRRES-HKNJANUM       PIC  X(08).
-      *µ­¹æ
+      *è¨˜å·
                    05  CLFRRES-KIGO           PIC  X(80).
-      *ÈÖ¹æ
+      *ç•ªå·
                    05  CLFRRES-NUM            PIC  X(80).
-      *ËÜ¿Í²ÈÂ²¶èÊ¬
+      *æœ¬äººå®¶æ—åŒºåˆ†
                    05  CLFRRES-HONKZKKBN      PIC  X(05).
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                    05  CLFRRES-TEKSTYMD       PIC  X(10).
-      *Å¬ÍÑ½ªÎ»Ç¯·îÆü
+      *é©ç”¨çµ‚äº†å¹´æœˆæ—¥
                    05  CLFRRES-TEKEDYMD       PIC  X(10).
-      * Æþ±¡»þ¤ÎÉéÃ´Î¨
+      * å…¥é™¢æ™‚ã®è² æ‹…çŽ‡
                    05  CLFRRES-INRATIO        PIC X(5).
-      * ³°Íè»þ¤ÎÉéÃ´Î¨
+      * å¤–æ¥æ™‚ã®è² æ‹…çŽ‡
                    05  CLFRRES-OUTRATIO       PIC X(5).
-      *¸øÈñ¾ðÊó
+      *å…¬è²»æƒ…å ±
                    05  CLFRRES-KOHINF       OCCURS  6.
-      *Í¥Àè½ç°Ì
+      *å„ªå…ˆé †ä½
                        07  CLFRRES-PRIORITY   PIC  X(01).
-      *¸øÈñÌ¾¾Î
+      *å…¬è²»åç§°
                        07  CLFRRES-KOHINAME   PIC  X(50).
-      *ÉéÃ´¼ÔÈÖ¹æ
+      *è² æ‹…è€…ç•ªå·
                        07  CLFRRES-FTNJANUM   PIC  X(08).
-      *¼õµë¼ÔÈÖ¹æ
+      *å—çµ¦è€…ç•ªå·
                        07  CLFRRES-JKYSNUM    PIC  X(20).
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                        07  CLFRRES-TTEKSTYMD  PIC  X(10).
-      *Å¬ÍÑ½ªÎ»Ç¯·îÆü
+      *é©ç”¨çµ‚äº†å¹´æœˆæ—¥
                        07  CLFRRES-TTEKEDYMD  PIC  X(10).
-      * ÉéÃ´¶â¤Þ¤¿¤ÏÉéÃ´Î¨
+      * è² æ‹…é‡‘ã¾ãŸã¯è² æ‹…çŽ‡
                        07  CLFRRES-RATIO-CODE PIC X(10).
                        07  CLFRRES-RATIO      PIC X(10).
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<accessRight permit="all" />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<accessRight permit="all" />)
                03  CLFRRES-M-RI301-ACC1     PIC X(50).
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Regist) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Regist) 
                03  CLFRRES-M-RI301-TITLE     PIC X(20).
       *##
       *[CLAIM]
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
                03  CLFRRES-UID3                PIC X(36).
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
                03  CLFRRES-CONFIRMDATE3        PIC X(10).
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                03  CLFRRES-CRE301-PERSONALID   PIC X(20).
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-FULLNAME     PIC X(100).
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-FAMILYNAME   PIC X(50).
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-GIVENNAME    PIC X(50).
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                03  CLFRRES-CRE301-MIDDLENAME   PIC X(50).
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                03  CLFRRES-CRE301-PREFIX       PIC X(50).
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                03  CLFRRES-CRE301-DEGREE       PIC X(50).
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                03  CLFRRES-CRE301-FACILITYNAME PIC X(50).
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                03  CLFRRES-CRE301-FACILITYID   PIC X(20).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                03  CLFRRES-CRE301-DPERTNAME    PIC X(50).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                03  CLFRRES-CRE301-DPERTID      PIC X(20).
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-ADRFULLNAME  PIC X(400).
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                03  CLFRRES-CRE301-ADRCLASS     PIC X(10).
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-ADRPREF      PIC X(20).
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-ADRCITY      PIC X(20).
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-ADRTOWN      PIC X(20).
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLFRRES-CRE301-ADRHOMENUM   PIC X(200).
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                03  CLFRRES-CRE301-ZIP          PIC X(8).
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                03  CLFRRES-CRE301-COUNTRY      PIC X(10).
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                03  CLFRRES-CRE301-EMAIL        PIC X(100).
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
                03  CLFRRES-CRE301-PHONEAREA    PIC X(10).
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
                03  CLFRRES-CRE301-PHONECITY    PIC X(10).
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
                03  CLFRRES-CRE301-PHONENUM     PIC X(10).
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                03  CLFRRES-CRE301-PHONEEXT     PIC X(10).
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                03  CLFRRES-CRE301-PHONECOUNTRY PIC X(10).
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                03  CLFRRES-CRE301-PHONEMEMO    PIC X(100).
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-CRE301-PHONEEQUIP   PIC X(10).
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
                03  CLFRRES-CRE301-LICENSE      PIC X(20).
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />)                  const
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />)                  const
                03  CLFRRES-M-RX301-I1          PIC X(20).
-      * Í½ÌóÀÁµá¥â¥¸¥å¡¼¥ë¤Î¾õÂÖ (claim:status)
+      * äºˆç´„è«‹æ±‚ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®çŠ¶æ…‹ (claim:status)
                03  CLFRRES-UKEYMD-KREPCODE    PIC  X(07).
-      * ¥ª¡¼¥À¡¼È¯¹ÔÆü»þ (claim:oderTime)
+      * ã‚ªãƒ¼ãƒ€ãƒ¼ç™ºè¡Œæ—¥æ™‚ (claim:oderTime)
                03  CLFRRES-CONFIRMDATE4       PIC  X(19).
-      * ¼õÉÕÆü»þ (claim:registTime)
+      * å—ä»˜æ—¥æ™‚ (claim:registTime)
                03  CLFRRES-UKEYMD             PIC  X(19).
-      * Æþ±¡³°Íè¶èÊ¬ (claim:admitFlag)
+      * å…¥é™¢å¤–æ¥åŒºåˆ† (claim:admitFlag)
                03  CLFRRES-NYUGAIKBN          PIC  X(05).
-      * »ÈÍÑÊÝ¸± (claim:insuranceUid)
+      * ä½¿ç”¨ä¿é™º (claim:insuranceUid)
                03  CLFRRES-FIL1               PIC  X(36).
-      * ¶¦ÄÌ°å»öÀÁµá¥³¡¼¥ÉÂÎ·Ï
+      * å…±é€šåŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»
                03  CLFRRES-IJISKYCOD          PIC  X(100).
-      * Í½Ìó
+      * äºˆç´„
                03  CLFRRES-YYK                PIC  X(20).
-      * Í½Ìó¥³¡¼¥É (claim:appCode)
+      * äºˆç´„ã‚³ãƒ¼ãƒ‰ (claim:appCode)
                03  CLFRRES-YYKCOD             PIC  X(14).
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (claim:appCodeId="Claim009"")
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (claim:appCodeId="Claim009"")
                03  CLFRRES-C-B3                PIC X(30).
-      * Í½Ìó¥á¥â
+      * äºˆç´„ãƒ¡ãƒ¢
                03  CLFRRES-YYKMEMO            PIC  X(100).
-      *¿ÇÎÅ²ÊÌ¾¾Î
+      *è¨ºç™‚ç§‘åç§°
                03  CLFRRES-SRYNAME            PIC  X(12).
-      *¿ÇÎÅ²ÊÉ½µ­
+      *è¨ºç™‚ç§‘è¡¨è¨˜
                03  CLFRRES-SRYREP             PIC  X(1).
-      * ¿ÇÎÅ²ÊID
+      * è¨ºç™‚ç§‘ID
                03  CLFRRES-SRYID              PIC  X(2).
-      * ¿ÇÎÅ²ÊID¤Î¥Æ¡¼¥Ö¥ëÌ¾
+      * è¨ºç™‚ç§‘IDã®ãƒ†ãƒ¼ãƒ–ãƒ«å
                03  CLFRRES-SRYIDTBL           PIC  X(7).
-      * ÉÂÅï¿ÇÎÅ²ÊÌ¾¾Î
+      * ç—…æ£Ÿè¨ºç™‚ç§‘åç§°
                03  CLFRRES-SNRNAME            PIC  X(12).
-      * ÉÂÅï¿ÇÎÅ²Ê É½µ­Ë¡
+      * ç—…æ£Ÿè¨ºç™‚ç§‘ è¡¨è¨˜æ³•
                03  CLFRRES-SNRREP             PIC  X(1).
-      * ÉÂÅï¿ÇÎÅ²ÊÌ¾¾Î
+      * ç—…æ£Ÿè¨ºç™‚ç§‘åç§°
                03  CLFRRES-SNRID              PIC  X(2).
-      * ÉÂÅï¿ÇÎÅ²Ê ID¤Î¼ïÎà¥³¡¼¥É
+      * ç—…æ£Ÿè¨ºç™‚ç§‘ IDã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLFRRES-SNRIDTBL           PIC  X(7).
-      * ¿ÇÎÅ¼ïÊÌ¥³¡¼¥É (claim:classCode)
+      * è¨ºç™‚ç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ (claim:classCode)
                03  CLFRRES-BUNDLE-CLASSCODE   PIC  X(3).
-      *°å»öÀÁµá¥³¡¼¥É  
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰  
                03  CLFRRES-IJICD             PIC  X(10).
-      * °å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+      * åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
                03  CLFRRES-ID                PIC  X(20).
-      * °å»öÀÁµáÌ¾¾Î
+      * åŒ»äº‹è«‹æ±‚åç§°
                03  CLFRRES-HOSPSBT           PIC  X(40).
-      * ¼õÉÕ¥á¥â
+      * å—ä»˜ãƒ¡ãƒ¢
                03  CLFRRES-UKE-MEMO          PIC  X(1000).
       *

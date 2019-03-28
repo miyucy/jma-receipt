@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,51 +16,51 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5110.INC)   *
-      *         ¡Ê£µ£±£±£°¡Ë                            *
-      *         ÆÃÄêÆþ±¡ÎÁ¡ÊÉÂÅï¡Ë                      *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5110.INC)   *
+      *         ï¼ˆï¼•ï¼‘ï¼‘ï¼ï¼‰                            *
+      *         ç‰¹å®šå…¥é™¢æ–™ï¼ˆç—…æ£Ÿï¼‰                      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-5110-REC.
            03  SYS-5110-KEY.
                05  SYS-5110-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5110-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-5110-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5110-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5110-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5110-TBL.
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SYS-5110-SRYCD       PIC  X(09).
-      *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î
+      *ç‰¹å®šå…¥é™¢æ–™åç§°
                05  SYS-5110-BTU-TOKUTEINYUIN-NM
                                         PIC  X(60).
-      *ÆÃÄêÆþ±¡ÎÁÌ¾¾Î£²
+      *ç‰¹å®šå…¥é™¢æ–™åç§°ï¼’
                05  SYS-5110-BTU-TOKUTEINYUIN-NM2
                                         PIC  X(24).
-      *À¸³èÎÅÍÜ¶èÊ¬
+      *ç”Ÿæ´»ç™‚é¤ŠåŒºåˆ†
                05  SYS-5110-SEIKATU-RYOKBN
                                         PIC  X(01).
-      *Í½È÷
+      *äºˆå‚™
                05  SYS-5110-YOBI        PIC  X(406).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5110-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5110-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5110-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5110-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5110-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5110-UPD-KEY.
                05  SYS-5110-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5110-UPD-KANRICD     PIC X(04).

@@ -1,65 +1,65 @@
 kanri_cd    : "3004"
-name        : "¸©Ã±ÆÈ»ö¶È¾ğÊó"
+name        : "çœŒå˜ç‹¬äº‹æ¥­æƒ…å ±"
 class_cd    : "*"
 item_max    : 10
 item_list   :
 - item_no   : 1
   item      : "SHELLID"
-  item_jp   : "¥·¥§¥ëÌ¾"
+  item_jp   : "ã‚·ã‚§ãƒ«å"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "SHORIMSG"
-  item_jp   : "½èÍıÌ¾¾Î"
+  item_jp   : "å‡¦ç†åç§°"
   type      : "X"
   start     : 21
   length    : 40
 - item_no   : 3
   item      : "CHKFLG1"
-  item_jp   : "½èÍıÂĞ¾İ£±"
+  item_jp   : "å‡¦ç†å¯¾è±¡ï¼‘"
   type      : "X"
   start     : 61
   length    : 1
 - item_no   : 4
   item      : "CHKFLG2"
-  item_jp   : "½èÍıÂĞ¾İ£²"
+  item_jp   : "å‡¦ç†å¯¾è±¡ï¼’"
   type      : "X"
   start     : 62
   length    : 1
 - item_no   : 5
   item      : "CHKFLG3"
-  item_jp   : "½èÍıÂĞ¾İ£³"
+  item_jp   : "å‡¦ç†å¯¾è±¡ï¼“"
   type      : "X"
   start     : 63
   length    : 1
 - item_no   : 6
   item      : "CHKFLG4"
-  item_jp   : "½èÍıÂĞ¾İ£´"
+  item_jp   : "å‡¦ç†å¯¾è±¡ï¼”"
   type      : "X"
   start     : 64
   length    : 1
 - item_no   : 7
   item      : "PARAKBN"
-  item_jp   : "¥Ñ¥é¥á¥¿¼ïÊÌ"
+  item_jp   : "ãƒ‘ãƒ©ãƒ¡ã‚¿ç¨®åˆ¥"
   type      : "X"
   start     : 65
   length    : 1
 - item_no   : 8
   item      : "PRTNM"
-  item_jp   : "¥×¥ê¥ó¥¿Ì¾"
+  item_jp   : "ãƒ—ãƒªãƒ³ã‚¿å"
   type      : "X"
   start     : 66
   length    : 16
 - item_no   : 9
   item      : "NAME"
-  item_jp   : "¥ì¥İ¥¸¥È¥êÌ¾"
+  item_jp   : "ãƒ¬ãƒã‚¸ãƒˆãƒªå"
   type      : "X"
   start     : 82
   length    : 128
 - item_no   : 10
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 210
   length    : 290

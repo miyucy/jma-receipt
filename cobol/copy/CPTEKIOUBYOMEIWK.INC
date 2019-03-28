@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  Å¬±þÉÂÌ¾¥Þ¥¹¥¿       (CPTEKIOUBYOMEIWK.INC)
+      *  é©å¿œç—…åãƒžã‚¹ã‚¿       (CPTEKIOUBYOMEIWK.INC)
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  TEKIOUBYOMEIWK-REC.
       *
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
            03  TEKBYOWK-SYORIKBN          PIC X(01).
            03  TEKBYOWK-KEY.
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
                05  TEKBYOWK-CHKKBN        PIC X(01).
-      *¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  TEKBYOWK-SRYCD         PIC X(09).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  TEKBYOWK-RENNUM        PIC 9(04).
-      *Å¬±þÉÂÌ¾
+      *é©å¿œç—…å
            03  TEKBYOWK-BYOMEI            PIC X(400).
-      *ÉÂÌ¾¥³¡¼¥É¿ô
+      *ç—…åã‚³ãƒ¼ãƒ‰æ•°
            03  TEKBYOWK-BYOMEICDSU        PIC 9(02).
-      *ÉÂÌ¾¥³¡¼¥É
+      *ç—…åã‚³ãƒ¼ãƒ‰
            03  TEKBYOWK-BYOMEICD-G.
                05  TEKBYOWK-BYOMEICD-1    PIC X(07).
                05  TEKBYOWK-BYOMEICD-2    PIC X(07).
@@ -64,23 +64,23 @@
            03  TEKBYOWK-BYOMEICD-R        REDEFINES TEKBYOWK-BYOMEICD-G.
                05  TEKBYOWK-BYOMEICD      PIC X(07)
                                           OCCURS   21.
-      *ÉÂÌ¾ÊÔ½¸¥Õ¥é¥°
+      *ç—…åç·¨é›†ãƒ•ãƒ©ã‚°
            03  TEKBYOWK-BYOMEIHENFLG      PIC X(01).
-      *´ðËÜÉÂÌ¾¥³¡¼¥É
+      *åŸºæœ¬ç—…åã‚³ãƒ¼ãƒ‰
            03  TEKBYOWK-KHNBYOMEICD       PIC X(07).
-      *´ðËÜÉô°Ì¥³¡¼¥É£±
+      *åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ï¼‘
            03  TEKBYOWK-KHNBUICD-1        PIC X(07).
-      *´ðËÜÉô°Ì¥³¡¼¥É£²
+      *åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ï¼’
            03  TEKBYOWK-KHNBUICD-2        PIC X(07).
-      *´ðËÜÉô°Ì¥³¡¼¥É£³
+      *åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ï¼“
            03  TEKBYOWK-KHNBUICD-3        PIC X(07).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  TEKBYOWK-TERMID            PIC X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  TEKBYOWK-OPID              PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  TEKBYOWK-CREYMD            PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  TEKBYOWK-UPYMD             PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  TEKBYOWK-UPHMS             PIC X(06).

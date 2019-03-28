@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSRNYURECEDEN.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ϫ�ҥ쥻����������׼�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  12/12/13    NACL�ݾ�Ʀ��  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院
+      *  コンポーネント名  : 労災レセ電用入院会計取得サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  12/12/13    NACL−小豆沢  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *ʿ������ǯ��������б�
-      *  05.00.00    NACL-��Ʀ��  18/02/27  �������������ܤζ���ѹ��б�
-      *  05.00.00    NACL-��Ʀ��  18/04/4   ��ִǸ����������������б�
-      *  05.00.00    NACL-��Ʀ��  18/04/11  ¾������б�
-      *  05.00.00    NACL-��Ʀ��  18/04/12  �������û��֤������б�
-      *  05.00.00    NACL-��Ʀ��  18/04/16  ���Ŷ�ʬ�����ģ����������
-      *                                     ��Ͽ��ʿ������ǯ�������Ȥ���
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *平成３０年４月改正対応
+      *  05.00.00    NACL-小豆沢  18/02/27  入院時食事療養の金額変更対応
+      *  05.00.00    NACL-小豆沢  18/04/4   夜間看護体制特定日減算対応
+      *  05.00.00    NACL-小豆沢  18/04/11  他医受診対応
+      *  05.00.00    NACL-小豆沢  18/04/12  入院料加算置き換え対応
+      *  05.00.00    NACL-小豆沢  18/04/16  医療区分、ＡＤＬ点数情報の
+      *                                     記録を平成３０年３月迄とする
       *****************************************************************
       *
       *
@@ -48,7 +48,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
@@ -65,7 +65,7 @@
            03  FLG-TENSUWRK                PIC 9(01).
            03  FLG-TOKU-SET                PIC 9(01).
            03  FLG-TOKU-SHOKU              PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
@@ -94,44 +94,44 @@
            03  IDX-CHUKSN2S                PIC 9(02).
            03  IDX-CHUKSN2SS               PIC 9(02).
       *
-      *    ���󥹥������
+      *    コンスタント値
        01  CONSTANT-AREA.
-      *    �����ޥ����ɤ߹��ߥ����
+      *    点数マスタ読み込みワーク用
            03  TTNS-CONST-MAX              PIC 9(03) VALUE 200.
       *
-      *    ɸ��ʣ�����ʬ�Σ������ۡ�
+      *    標欠（１００分の１０減額）
            03  CONS-HYOKETU1               PIC X(09) VALUE "190107890".
-      *    ɸ��ʣ�����ʬ�Σ������ۡ�
+      *    標欠（１００分の１５減額）
            03  CONS-HYOKETU2               PIC X(09) VALUE "190107990".
-      *    ɸ��ʣ�����ʬ�Σ����ۡˡ�Υ������
+      *    標欠（１００分の３減額）（離島等）
            03  CONS-HYOKETU3               PIC X(09) VALUE "190108590".
-      *    ɸ��ʣ�����ʬ�Σ����ۡˡ�Υ������
+      *    標欠（１００分の２減額）（離島等）
            03  CONS-HYOKETU4               PIC X(09) VALUE "190108690".
-      *    ���Ķ���������������ۡʣ�����ʬ�Σ�����
+      *    定数超過入院基本料減額（１００分の１０）
            03  CONS-TEISU1                 PIC X(09) VALUE "190107690".
-      *    ���Ķ���������������ۡʣ�����ʬ�Σ�����
+      *    定数超過入院基本料減額（１００分の２０）
            03  CONS-TEISU2                 PIC X(09) VALUE "190107790".
-      *    ���Ķ���������������ۡʣ�����ʬ�Σ����ˡ�������������
+      *    定数超過入院基本料減額（１００分の１０）（特定入院料）
            03  CONS-TEISU3                 PIC X(09) VALUE "190122990".
-      *    ���Ķ���������������ۡʣ�����ʬ�Σ����ˡ�������������
+      *    定数超過入院基本料減額（１００分の２０）（特定入院料）
            03  CONS-TEISU4                 PIC X(09) VALUE "190123090".
       *
-      *    ϫ�Ҽ��ŷײ�û�
+      *    労災治療計画加算
            03  CONS-ROUSAI-CHIRYOU         PIC X(09) VALUE "101910050".
-      *    �°���Ϳ��
+      *    病衣貸与料
            03  CONS-ROUSAI-BYOUI           PIC X(09) VALUE "101910060".
       *
-      *    ʿ������ǯ�ٿ�������
-      *    �������������ܡʣ��ˡ�ήư���ʳ���
+      *    平成２８年度食事療養
+      *    入院時食事療養（１）（流動食以外）
            03  CONS-SKJ-RYOYO-1-1          PIC X(09) VALUE "197000110".
-      *    �������������ܡʣ��ˡ�ήư���ʳ���
+      *    入院時食事療養（２）（流動食以外）
            03  CONS-SKJ-RYOYO-2-1          PIC X(09) VALUE "197000710".
-      *    �������������ܡʣ��ˡ�ήư����
+      *    入院時食事療養（１）（流動食）
            03  CONS-SKJ-RYOYO-1-2          PIC X(09) VALUE "197003110".
-      *    �������������ܡʣ��ˡ�ήư����
+      *    入院時食事療養（２）（流動食）
            03  CONS-SKJ-RYOYO-2-2          PIC X(09) VALUE "197003210".
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-MM-X                    PIC X(02).
@@ -143,14 +143,14 @@
            03  WRK-CHUKSNCD-XXX            PIC X(04).
            03  WRK-NYUKHNKBN-XXX           PIC 9(03).
       *
-      *    Ʊ��������������
+      *    同日再入院処理用
            03  WRK-GETSUMATSU-YMD.
                05  WRK-GETSUMATSU-YY       PIC 9(04).
                05  WRK-GETSUMATSU-MM       PIC 9(02).
                05  WRK-GETSUMATSU-DD       PIC 9(02).
            03  WRK-DOUJITSU-KBN            PIC X(01).
       *
-      *    ������ץ��
+      *    入院会計ワーク
            03  WRK-NYUIN-TABLE.
                05  WRK-NYUIN-TBL           OCCURS  31.
                    07  WRK-HKNCOMBI-DAY    PIC 9(03).
@@ -166,7 +166,7 @@
                    07  WRK-CHUKSNCD        PIC X(04).
                    07  WRK-NYUKHNKBN       PIC 9(03).
       *
-      *    ��������¤��ؤ����
+      *    入院会計並び替えワーク
            03  WRK-NYUIN-SORT-TABLE.
                05  WRK-NYUIN-SORT-TBL      OCCURS  31.
                    07  WRK-SO-MEISAISU     PIC 9(02).
@@ -183,7 +183,7 @@
                      09  WRK-SO-GAIHAKU-KBN  PIC 9(02)  OCCURS 31.
                    07  WRK-SO-IRYOADL-DAY  PIC 9(02).
       *
-      *    Ʊ��ޤޤȤ�����ӥ���
+      *    同一剤まとめ用比較キー
            03  WRK-OLD-KEY.
                05  WRK-OLD-MEISAISU        PIC 9(02).
                05  WRK-OLD-HKNCOMBI-DAY    PIC 9(03).
@@ -195,7 +195,7 @@
                05  WRK-NEW-SRYCDTOTAL      PIC 9(14).
                05  WRK-NEW-TEN             PIC 9(07).
       *
-      *    �����¾��������¤��ؤ����
+      *    療養病床コメント並び替えワーク
            03  WRK-IRYOADL-TABLE.
                05  WRK-IRYOADL-SORT-TBL      OCCURS  31.
                    07  WRK-IRYOADL-DAY          PIC 9(02).
@@ -212,9 +212,9 @@
                      09  WRK-IRYOADL-GAITOU-KBN   PIC 9(01)  OCCURS 31.
       *
       *-------------------------------------------------------------
-      *  ʿ������ǯ��������ʬ��������û������ΰ�
+      *  平成２４年４月入院分からの注加算退避領域
       *
-      *    ϫ�Ҿ�����оݤȤʤ��������û�������
+      *    労災乗数の対象となる入院料加算退避用
            03  WRK-CHUKSN-AREA-0.
              05   WRK-CHUKSN-TBL-0      OCCURS  50.
                07  WRK-CHUKSN-SRYCD-0          PIC X(09).
@@ -224,7 +224,7 @@
                07  WRK-CHUKSN-ZAITEN-0         PIC 9(08).
                07  WRK-CHUKSN-DAY-0            PIC 9(03)  OCCURS 31.
       *
-      *    �������ʣ�����������ˡ������������ʣ�����������ˤ����û�������
+      *    入院料（Ａ１００番台）、特定入院料（Ａ３００番台）の注加算退避用
            03  WRK-CHUKSN-AREA-1.
              05   WRK-CHUKSN-TBL-1      OCCURS  50.
                07  WRK-CHUKSN-SRYCD-1          PIC X(09).
@@ -234,7 +234,7 @@
                07  WRK-CHUKSN-ZAITEN-1         PIC 9(08).
                07  WRK-CHUKSN-DAY-1            PIC 9(03)  OCCURS 31.
       *
-      *    �������������û��ʣ�����������ˤ����û�������
+      *    入院基本料等加算（Ａ２００番台）の注加算退避用
            03  WRK-CHUKSN-AREA-2.
              05   WRK-CHUKSN-TBL-2      OCCURS  50.
                07  WRK-CHUKSN-SRYCD-2          PIC X(09).
@@ -244,14 +244,14 @@
                07  WRK-CHUKSN-ZAITEN-2         PIC 9(08).
                07  WRK-CHUKSN-DAY-2            PIC 9(03)  OCCURS 31.
       *
-      *    ���û��ʳ��βû�������
+      *    注加算以外の加算退避用
            03  WRK-NYUKSN-AREA-1.
              05   WRK-NYUKSN-TBL-1             OCCURS  50.
                07  WRK-NYUKSN-SRYCD-1          PIC X(09).
                07  WRK-NYUKSN-ZAITEN-1         PIC 9(08).
                07  WRK-NYUKSN-DAY-1            PIC 9(03)  OCCURS 31.
       *
-      *    �¤��ؤ�����������
+      *    並び替え時の退避用
            03  WRK-CHUKSN-TAIHI.
              05  WRK-CHUKSN-SRYCD-T          PIC X(09).
              05  WRK-CHUKSN-CHUCD-T.
@@ -261,41 +261,41 @@
              05  WRK-CHUKSN-DAY-T            PIC 9(03)  OCCURS 31.
       *-------------------------------------------------------------
       *
-      *    ���ť����ɷ׽�����
+      *    診療コード計集計用
            03  WRK-SRYCD-X                 PIC X(09).
            03  WRK-SRYCD-9    REDEFINES    WRK-SRYCD-X
                                            PIC 9(09).
       *
-      *    �����ƥ�������������ΰ�
+      *    システム管理食事退避領域
            03  WRK-SYS5000-SKJ             OCCURS  5.
                05  WRK-SYS5000-SHOKUCD     PIC X(09) OCCURS 31.
-      *    �������
+      *    食事ワーク
            03  WRK-SKJ-HKNCOMBI-ASA        PIC 9(03) OCCURS 31.
            03  WRK-SKJ-HKNCOMBI-HIRU       PIC 9(03) OCCURS 31.
            03  WRK-SKJ-HKNCOMBI-YORU       PIC 9(03) OCCURS 31.
-      *    ��Ʋ�û�Ƚ���ѿ������
+      *    食堂加算判定用食事ワーク
            03  WRK-SKJ-ASA-ARI             PIC 9(03) OCCURS 31.
            03  WRK-SKJ-HIRU-ARI            PIC 9(03) OCCURS 31.
       *
-      *    ����������ʿ���������ˡ�ʿ������ǯ����ʹߡ�
+      *    食事ワーク４（食事療養費）（平成１８年４月以降）
            03  WRK-SKJ4-TABLE.
                05  WRK-SKJ4-TBL          OCCURS  93.
                    07  WRK-SKJ4-HKNCOMBI-DAY   PIC 9(03).
                    07  WRK-SKJ4-RYOYO          PIC X(09).
                    07  WRK-SKJ4-KAISU          PIC 9(02).
-      *    ��������������̿��û��ˡ�ʿ������ǯ����ʹߡ�
+      *    食事ワーク５（特別食加算）（平成１８年４月以降）
            03  WRK-SKJ5-TABLE.
                05  WRK-SKJ5-TBL          OCCURS  93.
                    07  WRK-SKJ5-HKNCOMBI-DAY   PIC 9(03).
                    07  WRK-SKJ5-TOKU-SHOKU     PIC X(09).
                    07  WRK-SKJ5-KAISU          PIC 9(02).
-      *    ����������ʿ�Ʋ�û��ˡ�ʿ������ǯ����ʹߡ�
+      *    食事ワーク６（食堂加算）（平成１８年４月以降）
            03  WRK-SKJ6-TABLE.
                05  WRK-SKJ6-TBL          OCCURS  31.
                    07  WRK-SKJ6-HKNCOMBI-DAY   PIC 9(03).
                    07  WRK-SKJ6-SHOKUDOU       PIC X(09).
                    07  WRK-SKJ6-KAISU          PIC 9(02).
-      *    ���������
+      *    食事ワーク７
            03  WRK-SKJ7-TABLE.
                05  WRK-SKJ7-TBL           OCCURS  31.
                    07  WRK-SKJ7-HKNCOMBI-DAY   PIC 9(03).
@@ -318,7 +318,7 @@
                        09  WRK-SKJ7-DAY         PIC 9(01)  OCCURS  31.
       *
       *
-      *    �����ޥ���������
+      *    点数マスタ退避ワーク
            03  WRK-TENSU-OCC                   OCCURS  200.
                05  WRK-TENSU-SRYCD             PIC X(09).
                05  WRK-TENSU-DATA              PIC X(2000).
@@ -327,142 +327,142 @@
            03  TTNS-MAX                        PIC 9(03).
       *
       *
-      *    ���񥳥��������������ΰ�
+      *    外泊コメント用日付退避領域
            03  WRK-GAIHAKU-DAY-TABLE.
                05  WRK-GAIHAKU-DAY             OCCURS  31.
                    07  WRK-GAIHAKU-DAY-ST      PIC  9(02).
                    07  WRK-GAIHAKU-DAY-ED      PIC  9(02).
       *
-      *    ���ܥ����������������ΰ�
+      *    療養コメント用日付退避領域
            03  WRK-RYOYO-DAY-TABLE.
                05  WRK-RYOYO-DAY               OCCURS  31.
                    07  WRK-RYOYO-DAY-ST        PIC  9(02).
                    07  WRK-RYOYO-DAY-ED        PIC  9(02).
       *
-      *    ¾�ݸ��Ǥο�Ʋ�û�Ƚ�����ΰ�
+      *    他保険での食堂加算判定用領域
            03  WRK-TAHOKEN-SHOKUDOU-TABLE.
                05  WRK-TAHOKEN-SHOKUDOU-FLG    PIC  X(01)  OCCURS 31.
       *
-      *    �����������Ƚ�����ΰ�
+      *    入院料算定の判定用領域
            03  WRK-NACCT-DAY-TBL.
                05  WRK-NACCT-DAY               PIC  9(03)  OCCURS 31.
       *
-      *    ��ִǸ����������������ΰ�
+      *    夜間看護体制特定日減算領域
            03  WRK-KANGOGEN                    PIC X(09)   OCCURS 31.
       *
-      *    ���������Ѵ��ΰ�
+      *    日付全角変換領域
        01  TBL-DAY-AREA.
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
+           03  FILLER              PIC X(04)  VALUE "０１".
+           03  FILLER              PIC X(04)  VALUE "０２".
+           03  FILLER              PIC X(04)  VALUE "０３".
+           03  FILLER              PIC X(04)  VALUE "０４".
+           03  FILLER              PIC X(04)  VALUE "０５".
+           03  FILLER              PIC X(04)  VALUE "０６".
+           03  FILLER              PIC X(04)  VALUE "０７".
+           03  FILLER              PIC X(04)  VALUE "０８".
+           03  FILLER              PIC X(04)  VALUE "０９".
+           03  FILLER              PIC X(04)  VALUE "１０".
+           03  FILLER              PIC X(04)  VALUE "１１".
+           03  FILLER              PIC X(04)  VALUE "１２".
+           03  FILLER              PIC X(04)  VALUE "１３".
+           03  FILLER              PIC X(04)  VALUE "１４".
+           03  FILLER              PIC X(04)  VALUE "１５".
+           03  FILLER              PIC X(04)  VALUE "１６".
+           03  FILLER              PIC X(04)  VALUE "１７".
+           03  FILLER              PIC X(04)  VALUE "１８".
+           03  FILLER              PIC X(04)  VALUE "１９".
+           03  FILLER              PIC X(04)  VALUE "２０".
+           03  FILLER              PIC X(04)  VALUE "２１".
+           03  FILLER              PIC X(04)  VALUE "２２".
+           03  FILLER              PIC X(04)  VALUE "２３".
+           03  FILLER              PIC X(04)  VALUE "２４".
+           03  FILLER              PIC X(04)  VALUE "２５".
+           03  FILLER              PIC X(04)  VALUE "２６".
+           03  FILLER              PIC X(04)  VALUE "２７".
+           03  FILLER              PIC X(04)  VALUE "２８".
+           03  FILLER              PIC X(04)  VALUE "２９".
+           03  FILLER              PIC X(04)  VALUE "３０".
+           03  FILLER              PIC X(04)  VALUE "３１".
        01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
            03  TBL-DAY             PIC X(04)   OCCURS   31.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
            COPY    "CPSK5000.INC".
       *
-      *    �������Ų�ץޥ�����
+      *    入院診療会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �������Ź԰٥ޥ�����
+      *    入院診療行為マスター
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰�
+      *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
            COPY    "CPTENSU.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ݸ�������ǯ�𡦳��׻�����
+      *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
-      *    ���ܥ쥻�����ȼ�������
+      *    療養レセコメント取得サブ
            COPY    "CPORCSRYOCOM.INC".
       *
-      *    ������̤��������������
+      *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    ϫ��������׺�������
+      *    労災入院会計作成サブ
            COPY    "CPORCSROUNYUIN.INC".
       *
-      *    �����ݸ���������
+      *    食事保険取得サブ
            COPY    "CPORCSSKJHKN.INC".
       *
-      *    ��ִǸ�����������������������
+      *    夜間看護体制特定日減算取得サブ
            COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������׺����ѥѥ�᥿
+      *    入院会計作成用パラメタ
            COPY    "CPORCSRNYURECEDEN.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -471,7 +471,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -481,10 +481,10 @@
            INITIALIZE                  LNK-RNYURECEDEN-HENKYAKU-AREA
            MOVE    ZERO                TO  LNK-RNYURECEDEN-RC
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
       *
-      *    �����
+      *    主処理
            IF      LNK-RNYURECEDEN-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -496,17 +496,17 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ����ǯ������å�
+      *    算定年月チェック
            IF    ( LNK-RNYURECEDEN-SANTEIYM    =   SPACE )
                MOVE    1               TO  LNK-RNYURECEDEN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
            INITIALIZE                      PTINF-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID     TO  PTINF-PTID
@@ -516,7 +516,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻�ֹ�����å�
+      *    保険組合せ番号チェック
            IF     LNK-RNYURECEDEN-HKNCOMBI  NOT =   ZERO
                CONTINUE
            ELSE
@@ -524,7 +524,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ������Υ����å���������ץޥ��������ݸ��ȹ礻������
+      *    入院中のチェック（入院会計マスターの保険組合せ検索）
            INITIALIZE                      NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID     TO  NACCT-PTID
@@ -553,12 +553,12 @@
                END-IF
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ���ŵ��ؾ���μ����ʥ����ƥ�����ơ��֥����
+      *    医療機関情報の取得（システム管理テーブルより）
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1001"              TO  SYS-KANRICD
@@ -582,12 +582,12 @@
                                        TO  SPA-HOSPSBT
                END-IF
            END-IF
-      *    �����ƥ������������
+      *    システム管理クローズ
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    �ݸ���ʬ�˸����ͤ򥻥å�
+      *    保険区分に固定値をセット
            MOVE    "4"                 TO  LNK-RNYURECEDEN-HKNKBN
       *
            .
@@ -595,7 +595,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
@@ -607,11 +607,11 @@
       *
       *
       *****************************************************************
-      *    �������ϫ�ҥ쥻���ֵѥ��ꥢ�Խ���
+      *    主取得（労災レセ電返却エリア編集）
       *****************************************************************
        200-MAIN-1-SEC            SECTION.
       *
-      *û���ں߼�Ѵ��������ȣ���������̤�������ˤĤ��Ƽ���
+      *短期滞在手術基本料２と３の入院料未算定日について取得
            INITIALIZE                             ORCSNYUINDAY-AREA
            MOVE    LNK-RNYURECEDEN-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID       TO  LNK-NYUINDAY-PTID
@@ -619,7 +619,7 @@
            CALL    "ORCSNYUINDAY"         USING   ORCSNYUINDAY-AREA
                                                   SPA-AREA
       *
-      *�������ݸ��ȹ礻����
+      *食事の保険組合せ取得
            INITIALIZE                             ORCSSKJHKN-AREA
            MOVE    LNK-RNYURECEDEN-HOSPNUM    TO  LNK-SKJHKN-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID       TO  LNK-SKJHKN-PTID
@@ -628,7 +628,7 @@
                                                   ORCSNYUINDAY-AREA
                                                   SPA-AREA
       *
-      *��ִǸ�������������������
+      *夜間看護体制特定日減算取得
            IF      LNK-RNYURECEDEN-SANTEIYM   >=  "201804"
              INITIALIZE                           ORCSKANGOGEN-AREA
              MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
@@ -644,9 +644,9 @@
              END-IF
            END-IF
       *
-      *ϫ�Ҥ���ϫ�Ҥؤ�Ʊ�����������ݸ��ȹ礻���ѹ��Ȥʤ�ʤ�����
-      *Ʊ�������������Ȥ���ɬ�פ��ʤ��Τǡ�"ORCSNYUINDAY"���ֵ��ͤ�
-      *���ꥢ���뤳�ȤȤ���
+      *労災から労災への同日再入院で保険組合せが変更とならない場合は
+      *同日再入院扱いとする必要がないので、"ORCSNYUINDAY"の返却値を
+      *クリアすることとする
       **     PERFORM    VARYING   IDX1   FROM   1   BY   1
       **                UNTIL     IDX1   >   31
       **         IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = "1")
@@ -655,12 +655,12 @@
       **                         LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX1))
       **         AND (LNK-RNYURECEDEN-HKNCOMBI  =
       **                         LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX1))
-      *            Ʊ����������ʬ���ݸ���ư��ʬ�򥯥ꥢ
+      *            同日再入院区分と保険変動区分をクリア
       **             MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-KBN(IDX1)
       **             MOVE  SPACE TO LNK-NYUINDAY-DOUJITSU-HKNHENKBN(IDX1)
       **         END-IF
       **     END-PERFORM
-      *���������Ѥ��ݸ��ȹ礻Ƚ���ΰ�˥��å�
+      *食事算定用の保険組合せ判定領域にセット
            PERFORM    VARYING   IDX   FROM   1   BY   1
                       UNTIL      IDX  >    31
                IF     WRK-HKNCOMBI-DAY(IDX)   NOT =   ZERO
@@ -674,11 +674,11 @@
                END-IF
            END-PERFORM
       *
-      *Ʊ�������������ݸ��ȹ礻�Խ�
+      *同日再入院日の保険組合せ編集
            PERFORM    VARYING   IDX   FROM   1   BY   1
                       UNTIL      IDX  >    31
                IF     LNK-NYUINDAY-DOUJITSU-KBN(IDX)   =   "1"
-      *            �ౡʬ
+      *            退院分
                    IF (LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI(IDX) =
                                  LNK-RNYURECEDEN-HKNCOMBI)
                        IF     LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX) = "0"
@@ -705,7 +705,7 @@
                                              WRK-SKJ-HKNCOMBI-YORU(IDX)
                        END-IF
                    END-IF
-      *            ������ʬ
+      *            再入院分
                    IF (LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX) =
                                  LNK-RNYURECEDEN-HKNCOMBI)
                        IF     LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX) = "1"
@@ -727,8 +727,8 @@
                END-IF
            END-PERFORM
       *
-      *������Ʊ�����������Υ쥻���о��ݸ��ȹ礻�ֹ�μ���
-      *    �����������
+      *月末に同日再入院時のレセ電対象保険組合せ番号の取得
+      *    月末日を取得
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
            MOVE    "71"                TO  LNK-DAY7-IRAI
@@ -748,7 +748,7 @@
            END-IF
       *
       *
-      *�����ݸ�����ǵ�Ͽ�оݤȤʤ����Ϥ����뤫��ǧ
+      *食事保険指定で記録対象となる入力があるか確認
            PERFORM    VARYING  IDX1   FROM  1  BY  1
              UNTIL    IDX1     >   31
                 IF LNK-RNYURECEDEN-HKNCOMBI  =  LNK-SKJHKN-HKNCOMBINUM
@@ -761,7 +761,7 @@
                 END-IF
            END-PERFORM
       *
-      *�����ݸ�����ǵ�Ͽ�оݤȤʤ����Ϥ�������ݸ��ȹ礻�ֹ�򥻥å�
+      *食事保険指定で記録対象となる入力があれば保険組合せ番号をセット
            PERFORM    VARYING  IDX1   FROM  1  BY  1
              UNTIL    IDX1     >   31
       **          DISPLAY "IDX1 = " IDX1 
@@ -769,30 +769,30 @@
       **                  LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)
       **                  " SAI-SKJKBN = " 
       **                  LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)
-      *         ����ʬ���ౡʬ��
+      *         入院分（退院分）
                 IF  LNK-SKJHKN-HKNCOMBINUM(IDX1 1) NOT = SPACE
                     IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 1)  =
                                  LNK-RNYURECEDEN-HKNCOMBI
       *
-      *                 Ʊ�����������ʳ�
+      *                 同日再入院日以外
                         IF   LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = SPACE
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                                              WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
-      *                 ī���ޤ�
+      *                 朝食まで
                         IF   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)  = "1"
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                         END-IF
-      *                 �뿩�ޤ�
+      *                 昼食まで
                         IF   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)  = "2"
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                                              WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                         END-IF
-      *                 ͼ���ޤ�
+      *                 夕食まで
                         IF   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)  = "3"
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 1)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
@@ -800,26 +800,26 @@
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
                     ELSE
-      *                 ���ꥢ����
-      *                 Ʊ�����������ʳ�
+      *                 クリア処理
+      *                 同日再入院日以外
                         IF   LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = SPACE
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                                              WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
-      *                 ī���ޤ�
+      *                 朝食まで
                         IF   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)  = "1"
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                         END-IF
-      *                 �뿩�ޤ�
+      *                 昼食まで
                         IF   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)  = "2"
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                                              WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                         END-IF
-      *                 ͼ���ޤ�
+      *                 夕食まで
                         IF   LNK-NYUINDAY-DOUJITSU-T-SKJKBN(IDX1)  = "3"
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
@@ -828,45 +828,45 @@
                         END-IF
                     END-IF
                 END-IF
-      *         Ʊ��������ʬ
+      *         同日再入院分
                 IF  LNK-SKJHKN-HKNCOMBINUM(IDX1 2) NOT = SPACE
                     IF   LNK-SKJHKN-HKNCOMBINUM(IDX1 2)  =
                                  LNK-RNYURECEDEN-HKNCOMBI
       *
-      *                 ī������
+      *                 朝食から
                         IF   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)  = "1"
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 2)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                                              WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
-      *                 �뿩����
+      *                 昼食から
                         IF   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)  = "2"
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 2)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
-      *                 ͼ������
+      *                 夕食から
                         IF   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)  = "3"
                             MOVE  LNK-SKJHKN-HKNCOMBINUM(IDX1 2)(2:3)
                                          TO  WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
                     ELSE
-      *                 ���ꥢ����
-      *                 ī������
+      *                 クリア処理
+      *                 朝食から
                         IF   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)  = "1"
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-ASA(IDX1)
                                              WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
-      *                 �뿩����
+      *                 昼食から
                         IF   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)  = "2"
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-HIRU(IDX1)
                                              WRK-SKJ-HKNCOMBI-YORU(IDX1)
                         END-IF
-      *                 ͼ������
+      *                 夕食から
                         IF   LNK-NYUINDAY-DOUJITSU-SKJKBN(IDX1)  = "3"
                             MOVE  ZERO
                                          TO  WRK-SKJ-HKNCOMBI-YORU(IDX1)
@@ -885,14 +885,14 @@
       **                  WRK-SKJ-HKNCOMBI-YORU(IDX1)
       **     END-PERFORM
       *
-      *ϫ��������׺������֤θƤӽФ������������������û��μ�����
-      *    ���ť����ɼ���  (LNK-SROUNYUIN-SRYCD-SK)
-      *      ����������
-      *      ���������¾���ŵ��ؼ��Ǵޤ��
-      *      �����������û���ϫ�Ҿ���о�ʬ��
-      *      ����ϫ�Ҿ��
-      *      ��������û���Ĺ��������
-      *      ����ɸ�硢���Ķ��
+      *労災入院会計作成サブの呼び出し（入院料と入院料加算の取得）
+      *    診療コード識別  (LNK-SROUNYUIN-SRYCD-SK)
+      *      １：入院料
+      *      ２：外泊（他医療機関受診含む）
+      *      ３：入院料加算（労災乗数対象分）
+      *      ４：労災乗数
+      *      ５：初期加算（長期減算）
+      *      ６：標欠、定数超過
            INITIALIZE                      ORCSROUNYUIN-AREA
            MOVE    LNK-RNYURECEDEN-HOSPNUM
                                            TO  LNK-SROUNYUIN-HOSPNUM
@@ -942,7 +942,7 @@
       **     END-IF
       *
       *
-      *�������μ���
+      *入院料の取得
            MOVE    ZERO                    TO  FLG-OK
            MOVE    SPACE                   TO  WRK-NACCT-DAY-TBL
            INITIALIZE                          WRK-NACCT-DAY-TBL
@@ -966,9 +966,9 @@
                    IF    NACCT-SRYCDTOTAL     =    99999916
                        CONTINUE
                    ELSE
-      *                ���������԰٥ơ��֥���ɤ߹���
+      *                該当入院行為テーブルの読み込み
                        PERFORM    210-NYUINACT-GET-SEC
-      *                �����������Ƚ���û���Ĺ�������ˤ�����
+      *                入院基本料と初期加算（長期減算）の退避
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF     NACCT-DAY(IDX1)  NOT =  ZERO
@@ -980,7 +980,7 @@
                              MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX1)
       *
-      *                      �����δ��ֲû�
+      *                      入院の期間加算
                              IF  (NSRY-SRYCD(2) NOT =  SPACE)  AND
                                  (NSRY-SRYCD(2) NOT = CONS-HYOKETU1 AND
                                                       CONS-HYOKETU2 AND
@@ -995,7 +995,7 @@
                                    MOVE   NSRY-SRYCD(2)  TO
                                                    WRK-SHOKIKSN(IDX1)
                              END-IF
-      *                      ɸ�祳����
+      *                      標欠コード
                              IF  (NSRY-SRYCD(2)  NOT =   SPACE)  AND
                                  (NSRY-SRYCD(2)  =   CONS-HYOKETU1 OR
                                                      CONS-HYOKETU2 OR
@@ -1004,7 +1004,7 @@
                                  MOVE   NSRY-SRYCD(2)  TO
                                                  WRK-HYOUKETSU(IDX1)
                              END-IF
-      *                      ɸ�祳����
+      *                      標欠コード
                              IF  (NSRY-SRYCD(3)  NOT =   SPACE)  AND
                                  (NSRY-SRYCD(3)  =   CONS-HYOKETU1 OR
                                                      CONS-HYOKETU2 OR
@@ -1013,7 +1013,7 @@
                                  MOVE   NSRY-SRYCD(3)  TO
                                                    WRK-HYOUKETSU(IDX1)
                              END-IF
-      *                      ���Ķ�ᥳ����
+      *                      定数超過コード
                              IF  (NSRY-SRYCD(2)  NOT =   SPACE)  AND
                                  (NSRY-SRYCD(2)  =   CONS-TEISU1 OR
                                                      CONS-TEISU2 OR
@@ -1022,7 +1022,7 @@
                                  MOVE   NSRY-SRYCD(2)  TO
                                                  WRK-TEISU(IDX1)
                              END-IF
-      *                      ���Ķ�ᥳ����
+      *                      定数超過コード
                              IF  (NSRY-SRYCD(3)  NOT =   SPACE)  AND
                                  (NSRY-SRYCD(3)  =   CONS-TEISU1 OR
                                                      CONS-TEISU2 OR
@@ -1031,13 +1031,13 @@
                                  MOVE   NSRY-SRYCD(3)  TO
                                                  WRK-TEISU(IDX1)
                              END-IF
-      *                      ���Ŷ�ʬ
+      *                      診療区分
                              MOVE    NACCT-SRYKBN
                                               TO  WRK-SRYKBN(IDX1)
                              IF   FLG-RYAKU   =   ZERO
       *
-      *                         ���񥳡����Խ��Ѥ������������û���ʬ
-      *                         ������
+      *                         外泊コード編集用に入院基本料加算区分
+      *                         の退避
                                 PERFORM   210-GAIHAKU-MAE-SEC
       *
                                 MOVE    1     TO    FLG-RYAKU
@@ -1065,7 +1065,7 @@
                IF  (FLG-OK     =   ZERO)   AND
                    (WRK-DOUJITSU-KBN   =   SPACE)
                    MOVE     4      TO      LNK-RNYURECEDEN-RC
-      *            ������ץ�������
+      *            入院会計クローズ
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                    MOVE    "key17"                 TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC
@@ -1073,18 +1073,18 @@
                END-IF
            ELSE
                MOVE     4      TO      LNK-RNYURECEDEN-RC
-      *        ������ץ�������
+      *        入院会計クローズ
                MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                MOVE    "key17"                 TO  MCP-PATHNAME
                PERFORM   900-CLOSE-SEC
                GO   TO    200-MAIN-1-EXT
            END-IF
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    �������λ��̵꤬�����Ͽ����ݸ��򥯥ꥢ
+      *    入院料の算定が無い日は食事保険をクリア
            PERFORM    VARYING  IDX1   FROM  1  BY  1
              UNTIL    IDX1     >   31
               IF  (WRK-NYUINKHN(IDX1)    =    SPACE)    AND
@@ -1097,7 +1097,7 @@
            END-PERFORM
       *
       *
-      *�������γ������
+      *入院時の外泊取得
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID     TO  NACCT-PTID
@@ -1111,7 +1111,7 @@
                MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-      *            �����ʬ������
+      *            外泊区分の退避
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
@@ -1124,13 +1124,13 @@
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
       *
-      *�������ܾ���μ����ʥ����ƥ�����ơ��֥����
+      *食事療養情報の取得（システム管理テーブルより）
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
@@ -1149,23 +1149,23 @@
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM  910-SYSKANRI-READ-SEC
-      *        �������������
+      *        食事情報の退避
                PERFORM    VARYING   IDX  FROM  1  BY  1
                           UNTIL     IDX   >    31
-      *            ����������������
+      *            入院時食事療養費
                    IF     SYS-5000-SHOKUJIRYOYOCD  NOT =  SPACE
                        MOVE  SYS-5000-SHOKUJIRYOYOCD
                                           TO WRK-SYS5000-SHOKUCD(1 IDX)
                    END-IF
                END-PERFORM
            END-IF
-      *    �����ƥ������������
+      *    システム管理クローズ
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
       *
-      *��Ʋ�û�������������פ���
+      *食堂加算取得（入院会計より）
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
@@ -1180,14 +1180,14 @@
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
                  IF   NACCT-SRYCDTOTAL     =   197000570
-      *            ��Ʋ�û�������
+      *            食堂加算の退避
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF    (WRK-HKNCOMBI-DAY(IDX1) NOT = ZERO)
                        AND  ((WRK-GAIHAKU-KBN(IDX1)  =  ZERO) OR
                              (WRK-GAIHAKU-KBN(IDX1) >=  4))
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
-      *                  �������������ܡʣ��ˤξ��Τߥ��å�
+      *                  入院時食事療養（１）の場合のみセット
                            IF  WRK-SYS5000-SHOKUCD(1 IDX1)  =
                                                           "197000110"
                                MOVE  "197000570"
@@ -1196,7 +1196,7 @@
                            END-IF
                        END-IF
                    END-PERFORM
-      *            ��Ʋ�û��������Ʊ������������
+      *            食堂加算の退避（同日再入院日）
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF  (LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  = "1")
@@ -1205,7 +1205,7 @@
                        AND (LNK-RNYURECEDEN-HKNKBN  =
                                      LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX1))
                        AND (NACCT-DAY(IDX1)    NOT =  ZERO)
-      *                  �������������ܡʣ��ˤξ��Τߥ��å�
+      *                  入院時食事療養（１）の場合のみセット
                            IF  WRK-SYS5000-SHOKUCD(1 IDX1)  =
                                                           "197000110"
                                MOVE  "197000570"
@@ -1214,14 +1214,14 @@
                            END-IF
                        END-IF
                    END-PERFORM
-      *            ��Ʋ�û�������ʿ������ݸ�������������
+      *            食堂加算の退避（食事の保険指定入力日）
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF ((WRK-SKJ-HKNCOMBI-ASA(IDX1)  NOT =  ZERO) OR
                            (WRK-SKJ-HKNCOMBI-HIRU(IDX1) NOT =  ZERO) OR
                            (WRK-SKJ-HKNCOMBI-YORU(IDX1) NOT =  ZERO))
                        AND (NACCT-DAY(IDX1)    NOT =  ZERO)
-      *                  �������������ܡʣ��ˤξ��Τߥ��å�
+      *                  入院時食事療養（１）の場合のみセット
                            IF  WRK-SYS5000-SHOKUCD(1 IDX1)  =
                                                           "197000110"
                                MOVE  "197000570"
@@ -1235,13 +1235,13 @@
                  PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key43"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
       *
-      *    �������û�������������ס�
+      *    入院料加算取得（入院会計）
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
@@ -1257,9 +1257,9 @@
              PERFORM   910-NYUINACCT-READ-SEC
              PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
               IF       NACCT-ZAIKAISU   NOT =    ZERO
-      *        ���������԰٥ơ��֥���ɤ߹���
+      *        該当入院行為テーブルの読み込み
                PERFORM    210-NYUINACT-GET-SEC
-      *        �����ޥ���������û���Ƚ��
+      *        点数マスタより注加算の判定
                INITIALIZE                      TNS-TENSU-REC
                MOVE    LNK-RNYURECEDEN-HOSPNUM
                                            TO  TNS-HOSPNUM
@@ -1270,8 +1270,8 @@
                MOVE    TNS-YUKOSTYMD       TO  TNS-YUKOEDYMD
                PERFORM   910-TENSU-READ-SEC
       *
-      *        �°���Ϳ����ϫ�Ҽ��ŷײ�û���"ORCSRNYURECEDEN"���ֵ�
-      *        �оݳ��Ȥ���
+      *        病衣貸与料と労災治療計画加算は"ORCSRNYURECEDEN"の返却
+      *        対象外とする
                IF    NSRY-SRYCD(1)     =    "101910050"  OR
                      NSRY-SRYCD(2)     =    "101910050"  OR
                      NSRY-SRYCD(3)     =    "101910050"  OR
@@ -1286,8 +1286,8 @@
                    MOVE   999          TO   TNS-CDKBN-KBNNUM
                END-IF
       *
-      *        �������û������Ƥ�ϫ�ҥޥ��������Ƥ��֤�������
-      *        ��������Ǹ�ɬ����ɾ���û��ʰ�������ˡ�ϫ���ѡ�
+      *        入院料加算の内容を労災マスタの内容に置き換える
+      *        一般病棟看護必要度評価加算（一般病棟）（労災用）
                IF    NSRY-SRYCD(1)  =  "190131570"
                  IF  LNK-RNYURECEDEN-SANTEIYM  >=  "201404"
                    MOVE   "9017"       TO   TNS-CHUKSNCD
@@ -1299,7 +1299,7 @@
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                  END-IF
                END-IF
-      *        ��������Ǹ�ɬ����ɾ���û��������±��ˡ�ϫ���ѡ�
+      *        一般病棟看護必要度評価加算（専門病院）（労災用）
                IF    NSRY-SRYCD(1)  =  "190134970"
                  IF  LNK-RNYURECEDEN-SANTEIYM  >=  "201404"
                    MOVE   "9030"       TO   TNS-CHUKSNCD
@@ -1311,41 +1311,41 @@
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                  END-IF
                END-IF
-      *        ����ǧ�ξɲû�����������ˡ�ϫ���ѡ�
+      *        重度認知症加算（精神病棟）（労災用）
                IF   (NSRY-SRYCD(1)  =  "190118570")   AND
                     (LNK-RNYURECEDEN-SANTEIYM  <=  "201803")
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
-      *        �����ݻ�Ʃ�ϴ����û����������������������ˡ�ϫ���ѡ�
+      *        慢性維持透析管理加算（療養病棟入院基本料）（労災用）
                IF    NSRY-SRYCD(1)  =  "190167970"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
-      *        ����������ǽ�����û����������������������ˡ�ϫ���ѡ�
+      *        在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
                IF    NSRY-SRYCD(1)  =  "190168070"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
-      *        ��ִǸ�û����������������������ˡ�ϫ���ѡ�
+      *        夜間看護加算（療養病棟入院基本料）（労災用）
                IF    NSRY-SRYCD(1)  =  "190204570"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
       *
       *-------------------------------------------------------------
-      *        ���ܴ��������������곺����ϫ���ѥޥ����Ϲ�������
-      *        ��ʬ�ʣ��ˤϣ�����§�û����ܡˤ������¤��ؤ��ΰ�
-      *        ���ʲû����ܡˤ򥻥åȤ��Ƥ���
+      *        栄養管理体制減算規定該当の労災用マスタは告示等識別
+      *        区分（１）は９（通則加算項目）だが、並べ替えの為
+      *        ７（加算項目）をセットしておく
       *-------------------------------------------------------------
-      *        ���ܴ��������������곺���������������ˡ�ϫ���ѡ�
+      *        栄養管理体制減算規定該当（入院基本料）（労災用）
                IF    NSRY-SRYCD(1)  =  "190182590"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
-      *        ���ܴ��������������곺��������������û���ں߼�Ѵ𣲡ˡ�ϫ���ѡ�
+      *        栄養管理体制減算規定該当（特定入院料短期滞在手術基２）（労災用）
                IF    NSRY-SRYCD(1)  =  "190182690"
                    MOVE   7            TO   TNS-KOKUJISKBKBN1
                END-IF
       *-------------------------------------------------------------
-      *        �������û��ǹ������̶�ʬ�����������û����ܡˤΤ�Τǡ�
-      *        ���û��Ȥʤ�û��ˤĤ��Ƥϡ����ʴ��ܹ��ܡˤ򥻥å�
-      *        ���Ƥ���
+      *        入院料加算で告示等識別区分１が７（注加算項目）のもので、
+      *        注加算となる加算については、１（基本項目）をセット
+      *        しておく
       *-------------------------------------------------------------
                IF   (TNS-KOKUJISKBKBN1   =   7)     AND
                     (TNS-CDKBN-KBN       =  "A")    AND
@@ -1356,9 +1356,9 @@
                    MOVE   1            TO   TNS-KOKUJISKBKBN1
                END-IF
       *
-      *        �������̶�ʬ�ʣ��ˤ����ʲû����ܡ˰ʳ����������û�������
+      *        告示等識別区分（１）が７（加算項目）以外の入院料加算の退避
                IF   TNS-KOKUJISKBKBN1   NOT =   7
-      *          �°���Ϳ����ϫ�Ҽ��ŷײ�û��Ͻ����оݳ�
+      *          病衣貸与料と労災治療計画加算は処理対象外
                  IF    NSRY-SRYCD(1)     =    "101910050"  OR
                        NSRY-SRYCD(2)     =    "101910050"  OR
                        NSRY-SRYCD(3)     =    "101910050"  OR
@@ -1399,7 +1399,7 @@
                END-IF
       *
       *
-      *        �������̶�ʬ�ʣ��ˤ����ʲû����ܡˤ��������û�������
+      *        告示等識別区分（１）が７（加算項目）の入院料加算の退避
       *
                IF   TNS-CHUKSNCD     =   "0000"
                    ADD    1         TO  IDX-NYUKSN
@@ -1482,13 +1482,13 @@
       *
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
       *
-      *    �������û������ʿ��Ų�ס�
+      *    入院料加算取得（診療会計）
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1523,7 +1523,7 @@
                         MOVE     "key"          TO  MCP-PATHNAME
                         PERFORM   910-SRYACT-READ-SEC
                         IF  FLG-SRYACT    =    ZERO
-      *                    �����ޥ���������û���Ƚ��
+      *                    点数マスタより注加算の判定
                            INITIALIZE                TNS-TENSU-REC
                            MOVE    LNK-RNYURECEDEN-HOSPNUM
                                                  TO  TNS-HOSPNUM
@@ -1534,8 +1534,8 @@
                            MOVE    TNS-YUKOSTYMD TO  TNS-YUKOEDYMD
                            PERFORM   910-TENSU-READ-SEC
       *
-      *                   �°���Ϳ����ϫ�Ҽ��ŷײ�û���
-      *                   "ORCSRNYURECEDEN"���ֵ��оݳ��Ȥ���
+      *                   病衣貸与料と労災治療計画加算は
+      *                   "ORCSRNYURECEDEN"の返却対象外とする
                            IF    SRY-SRYCD(1)     =    "101910050"  OR
                                  SRY-SRYCD(2)     =    "101910050"  OR
                                  SRY-SRYCD(3)     =    "101910050"  OR
@@ -1550,8 +1550,8 @@
                                MOVE   999         TO   TNS-CDKBN-KBNNUM
                            END-IF
       *
-      *                   �������û������Ƥ�ϫ�ҥޥ��������Ƥ��֤�������
-      *                   ��������Ǹ�ɬ����ɾ���û��ʰ�������ˡ�ϫ���ѡ�
+      *                   入院料加算の内容を労災マスタの内容に置き換える
+      *                   一般病棟看護必要度評価加算（一般病棟）（労災用）
                           IF     SRY-SRYCD(1)     =    "190131570"
                             IF  LNK-RNYURECEDEN-SANTEIYM  >=  "201404"
                               MOVE   "9017"       TO   TNS-CHUKSNCD
@@ -1563,7 +1563,7 @@
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                             END-IF
                           END-IF
-      *                   ��������Ǹ�ɬ����ɾ���û��������±��ˡ�ϫ���ѡ�
+      *                   一般病棟看護必要度評価加算（専門病院）（労災用）
                           IF     SRY-SRYCD(1)     =    "190134970"
                             IF  LNK-RNYURECEDEN-SANTEIYM  >=  "201404"
                               MOVE   "9030"       TO   TNS-CHUKSNCD
@@ -1575,77 +1575,77 @@
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                             END-IF
                           END-IF
-      *                   ����ǧ�ξɲû�����������ˡ�ϫ���ѡ�
+      *                   重度認知症加算（精神病棟）（労災用）
                           IF    (SRY-SRYCD(1)     =    "190118570")  AND
                                 (LNK-RNYURECEDEN-SANTEIYM <= "201803")
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                           END-IF
-      *                   �����ݻ�Ʃ�ϴ����û����������������������ˡ�ϫ���ѡ�
+      *                   慢性維持透析管理加算（療養病棟入院基本料）（労災用）
                           IF     SRY-SRYCD(1)     =    "190167970"
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                           END-IF
-      *                   ����������ǽ�����û����������������������ˡ�ϫ���ѡ�
+      *                   在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
                           IF     SRY-SRYCD(1)     =    "190168070"
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                           END-IF
-      *                   ��ִǸ�û����������������������ˡ�ϫ���ѡ�
+      *                   夜間看護加算（療養病棟入院基本料）（労災用）
                           IF     SRY-SRYCD(1)     =    "190204570"
                               MOVE   7            TO   TNS-KOKUJISKBKBN1
                           END-IF
       *
-      *                   ��������Ǹ�ɬ����ɾ���û��ʰ�������ˡ�ϫ���ѡ�
-      *                   ��ľ�����Ϥ��줿���˥�����ɽ���ֹ���ֹ椬
-      *                   �󶡥ޥ�����̤����ΰ١����åȤ�Ԥ�
+      *                   一般病棟看護必要度評価加算（一般病棟）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
                           IF     SRY-SRYCD(1)     =    "101900100"
                               MOVE   100          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
-      *                   ��������Ǹ�ɬ����ɾ���û��������±��ˡ�ϫ���ѡ�
-      *                   ��ľ�����Ϥ��줿���˥�����ɽ���ֹ���ֹ椬
-      *                   �󶡥ޥ�����̤����ΰ١����åȤ�Ԥ�
+      *                   一般病棟看護必要度評価加算（専門病院）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
                           IF     SRY-SRYCD(1)     =    "101900120"
                               MOVE   105          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
-      *                   ����ǧ�ξɲû�����������ˡ�ϫ���ѡ�
-      *                   ��ľ�����Ϥ��줿���˥�����ɽ���ֹ���ֹ椬
-      *                   �󶡥ޥ�����̤����ΰ١����åȤ�Ԥ�
+      *                   重度認知症加算（精神病棟）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
                           IF     SRY-SRYCD(1)     =    "101900110"
                               MOVE   103          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
-      *                   �����ݻ�Ʃ�ϴ����û����������������������ˡ�ϫ���ѡ�
-      *                   ��ľ�����Ϥ��줿���˥�����ɽ���ֹ���ֹ椬
-      *                   �󶡥ޥ�����̤����ΰ١����åȤ�Ԥ�
+      *                   慢性維持透析管理加算（療養病棟入院基本料）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
                           IF     SRY-SRYCD(1)     =    "101900130"
                               MOVE   101          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
-      *                   ����������ǽ�����û����������������������ˡ�ϫ���ѡ�
-      *                   ��ľ�����Ϥ��줿���˥�����ɽ���ֹ���ֹ椬
-      *                   �󶡥ޥ�����̤����ΰ١����åȤ�Ԥ�
+      *                   在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
                           IF     SRY-SRYCD(1)     =    "101900140"
                               MOVE   101          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
-      *                   ��ִǸ�û����������������������ˡ�ϫ���ѡ�
-      *                   ��ľ�����Ϥ��줿���˥�����ɽ���ֹ���ֹ椬
-      *                   �󶡥ޥ�����̤����ΰ١����åȤ�Ԥ�
+      *                   夜間看護加算（療養病棟入院基本料）（労災用）
+      *                   を直接入力された場合にコード表用番号の番号が
+      *                   提供マスタに未設定の為、セットを行う
                           IF    SRY-SRYCD(1)      =   "101900170"
                               MOVE   101          TO   TNS-CDKBN-KBNNUM
                           END-IF
       *
                         END-IF
                      END-IF
-      *              ���Ź԰٥�������
+      *              診療行為クローズ
                      MOVE     "tbl_sryact"   TO  MCP-TABLE
                      MOVE     "key"          TO  MCP-PATHNAME
                      PERFORM   900-CLOSE-SEC
       *
       *-------------------------------------------------------------
-      *             �������û��ǹ������̶�ʬ�����������û����ܡˤΤ�Τǡ�
-      *             ���û��Ȥʤ�û��ˤĤ��Ƥϡ����ʴ��ܹ��ܡˤ򥻥å�
-      *             ���Ƥ���
+      *             入院料加算で告示等識別区分１が７（注加算項目）のもので、
+      *             注加算となる加算については、１（基本項目）をセット
+      *             しておく
       *-------------------------------------------------------------
                      IF   (TNS-KOKUJISKBKBN1   =   7)     AND
                           (TNS-CDKBN-KBN       =  "A")    AND
@@ -1656,9 +1656,9 @@
                          MOVE   1            TO   TNS-KOKUJISKBKBN1
                      END-IF
       *
-      *              �������̶�ʬ�ʣ��ˤ����ʲû����ܡ˰ʳ����������û�������
+      *              告示等識別区分（１）が７（加算項目）以外の入院料加算の退避
                      IF   TNS-KOKUJISKBKBN1   NOT =   7
-      *                �°���Ϳ����ϫ�Ҽ��ŷײ�û��Ͻ����оݳ�
+      *                病衣貸与料と労災治療計画加算は処理対象外
                        IF    SRY-SRYCD(1)     =    "101910050"  OR
                              SRY-SRYCD(2)     =    "101910050"  OR
                              SRY-SRYCD(3)     =    "101910050"  OR
@@ -1698,7 +1698,7 @@
                       END-IF
                      END-IF
       *
-      *             �������̶�ʬ�ʣ��ˤ����ʲû����ܡˤ��������û�������
+      *             告示等識別区分（１）が７（加算項目）の入院料加算の退避
                     IF  TNS-CHUKSNCD         =   "0000"
                        ADD    1              TO  IDX-NYUKSN
                        MOVE   SRY-SRYCD(1)   TO  WRK-NYUKSN-SRYCD-1
@@ -1793,13 +1793,13 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ���Ų�ץ�������
+      *    診療会計クローズ
            MOVE     "tbl_sryacct"   TO  MCP-TABLE
            MOVE     "key30"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
       *
-      *    ���������������û������û������ɡ����û����ֽ���¤��ؤ�
+      *    取得した入院料加算を注加算コード、注加算通番順に並び替え
            PERFORM      VARYING    IDX-CHUKSN0   FROM   1  BY  1
              UNTIL     (IDX-CHUKSN0   >   50)   OR
                        (WRK-CHUKSN-SRYCD-0(IDX-CHUKSN0)  =   SPACE)
@@ -1861,10 +1861,10 @@
                END-PERFORM
            END-PERFORM
       *
-      *    ���������������󤫤���ñ�̤�������׾����ƹ���
+      *    取得した入院情報から日単位の入院会計情報を再構築
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-      *        ���Ŷ�ʬ
+      *        診療区分
                MOVE   WRK-SRYKBN(IDX1)  TO  WRK-SO-SRYKBN(IDX1)
                IF    (LNK-NYUINDAY-KBN(IDX1)   =    "1")   AND
                      (LNK-NYUINDAY-TANKI2-KBN(IDX1)  NOT =    SPACE)
@@ -1874,27 +1874,27 @@
                      (LNK-NYUINDAY-TANKI2-KBN(IDX1)  =    SPACE)
                    MOVE   "90"     TO       WRK-SO-SRYKBN(IDX1)
                END-IF
-      *        �ݸ��ȹ礻
+      *        保険組合せ
                MOVE   WRK-HKNCOMBI-DAY(IDX1)
                                         TO  WRK-SO-HKNCOMBI-DAY(IDX1)
                MOVE     ZERO                TO  WRK-MEISAISU
-      *        ����������
+      *        入院基本料
                IF         WRK-NYUINKHN(IDX1)  NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-NYUINKHN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
-      *        ��ִǸ���������������
+      *        夜間看護体制特定日減算
                IF         WRK-KANGOGEN(IDX1)  NOT =        SPACE
                    ADD      1                TO  WRK-MEISAISU
                    MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
-      *        ¾���ŵ��ؼ��ǡʣ����󸺻��ȣ����󸺻���
-      *        ��������ౡ����
-      *        �����������ౡ����
+      *        他医療機関受診（３０％減算と７０％減算）
+      *        特定時間退院減算
+      *        特定曜日入退院減算
                IF     ((WRK-GAIHAKU(IDX1)        =
                                     "190142190" OR  "190142090" OR
                                     "190142290" OR  "190141590" OR
@@ -1926,7 +1926,7 @@
                    END-IF
                END-IF
       *
-      *        ����û���Ĺ��������
+      *        初期加算（長期減算）
                IF     ((WRK-GAIHAKU(IDX1)       =   SPACE       OR
                                     "190142190" OR  "190142090" OR
                                     "190142290" OR  "190141590" OR
@@ -1953,7 +1953,7 @@
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
-      *        ɸ��
+      *        標欠
                IF     ((WRK-GAIHAKU(IDX1)       =   SPACE       OR
                                     "190142190" OR  "190142090" OR
                                     "190142290" OR  "190141590" OR
@@ -1980,7 +1980,7 @@
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
-      *        ���Ķ��
+      *        定数超過
                IF     ((WRK-GAIHAKU(IDX1)       =   SPACE       OR
                                     "190142190" OR  "190142090" OR
                                     "190142290" OR  "190141590" OR
@@ -2007,7 +2007,7 @@
                                            (IDX1 WRK-MEISAISU)
                END-IF
       *
-      *        ����
+      *        外泊
                IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
                  IF     ((WRK-GAIHAKU(IDX1)     =
                                     "190142190" OR  "190142090" OR
@@ -2040,8 +2040,8 @@
                  END-IF
                END-IF
       *
-      *        �������̶�ʬ�ʣ��ˤ����ʲû����ܡˤ��������û����å�
-      *       �ʣ����������桢�������������
+      *        告示等識別区分（１）が７（加算項目）の入院料加算セット
+      *       （Ａ１００番台、Ａ３００番台）
                PERFORM    VARYING   IDX-CHUKSN1  FROM  1   BY  1
                  UNTIL    (IDX-CHUKSN1    >   50)    OR
                           (WRK-CHUKSN-SRYCD-1(IDX-CHUKSN1)  =  SPACE)
@@ -2054,8 +2054,8 @@
                    END-IF
                END-PERFORM
       *
-      *        �������̶�ʬ�ʣ��ˤ����ʲû����ܡˤ��������û����å�
-      *       �ʣ������������
+      *        告示等識別区分（１）が７（加算項目）の入院料加算セット
+      *       （Ａ２００番台）
                PERFORM    VARYING   IDX-CHUKSN2  FROM  1   BY  1
                  UNTIL    (IDX-CHUKSN2    >   50)    OR
                           (WRK-CHUKSN-SRYCD-2(IDX-CHUKSN2)  =  SPACE)
@@ -2068,7 +2068,7 @@
                    END-IF
                END-PERFORM
       *
-      *        ����¾�������û����å�
+      *        その他入院料加算セット
                PERFORM   VARYING   IDX-NYUKSN   FROM   1  BY   1
                  UNTIL  (IDX-NYUKSN    >     50)    OR
                         (WRK-NYUKSN-SRYCD-1(IDX-NYUKSN)  =  SPACE)
@@ -2081,7 +2081,7 @@
                   END-IF
                END-PERFORM
       *
-      *        ϫ�Ҿ�����å�
+      *        労災乗数セット
                IF    WRK-SO-SRYKBN(IDX1)    =     "90"
                  IF         LNK-SROUNYUIN-JOUSU-KBN(IDX1)   =    "1"
                      ADD      1               TO  WRK-MEISAISU
@@ -2095,7 +2095,7 @@
                  END-IF
                END-IF
       *
-      *        �������̶�ʬ�ʣ��ˤ����ʲû����ܡ˰ʳ����������û����å�
+      *        告示等識別区分（１）が７（加算項目）以外の入院料加算セット
                PERFORM    VARYING   IDX-CHUKSN0  FROM  1   BY  1
                  UNTIL    (IDX-CHUKSN0    >   50)    OR
                           (WRK-CHUKSN-SRYCD-0(IDX-CHUKSN0)  =  SPACE)
@@ -2110,22 +2110,22 @@
       *
            END-PERFORM
       *
-      *    �ƹ��ۤ���������׾��󤫤������λ���
+      *    再構築した入院会計情報から点数の算定
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-      *        �����ޥ������ɤ߹���
+      *        点数マスタの読み込み
                PERFORM   VARYING   IDX2    FROM   1  BY   1
                          UNTIL (WRK-SO-SRYCD(IDX1 IDX2) = SPACE)
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
       *
-      *        ϫ�������κƥ��å�
+      *        労災点数の再セット
                    COMPUTE    WRK-SO-TEN(IDX1)    =
                               LNK-SROUNYUIN-ZAITEN(IDX1)  +
                               LNK-SROUNYUIN-ZAITEN-NACCT(IDX1)  +
                               LNK-SROUNYUIN-ZAITEN-ACCT(IDX1)
-      *        �������Υ��å�
+      *        回数情報のセット
                IF    WRK-SO-SRYCD(IDX1 1) NOT  =   SPACE
                    MOVE     1      TO    WRK-SO-DAY(IDX1 IDX1)
                END-IF
@@ -2148,7 +2148,7 @@
       *          DISPLAY  "WRK-SO-KAISU    = " WRK-SO-KAISU(IDX1)
       *     END-PERFORM
       *
-      *    ���Ŷ�ʬ�����ģ���������μ�����ʿ������ǯ��������
+      *    医療区分、ＡＤＬ点数情報の取得（平成３０年３月迄）
            IF      LNK-RNYURECEDEN-SANTEIYM <=  "201803"
                INITIALIZE                          ORCSRYOCOM-AREA
                MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  LNK-RYOCOM-HOSPNUM
@@ -2193,7 +2193,7 @@
       *
            MOVE      ZERO      TO   MATOME-IDX
       *
-      *    �ƹ��ۤ���������׾��󤫤�Ʊ��ޤΤޤȤ����
+      *    再構築した入院会計情報から同一剤のまとめ処理
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
                IF   (WRK-SO-MEISAISU(IDX1)  NOT =   ZERO)   AND
@@ -2244,10 +2244,10 @@
       **         DISPLAY "DAY = " WRK-SO-DAY-TBL(IDX1)
       **     END-PERFORM
       *
-      *    ���ܥ쥻�����Ȥ�Ʊ��ޤޤȤ����
+      *    療養レセコメントの同一剤まとめ処理
            IF    (MATOME-IDX     NOT =   ZERO)   AND
                  (LNK-RYOCOM-RC  =       ZERO)
-      *      ���ܥ쥻�����ȼ������֤��ֵѷ�̤�ޤȤ�����ž��
+      *      療養レセコメント取得サブの返却結果をまとめワークに転送
              PERFORM      VARYING    IDX1   FROM   1  BY  1
                UNTIL      IDX1   >   31
                  IF   (LNK-RYOCOM-NYUINKBN(IDX1)  NOT =   ZERO)   AND
@@ -2297,7 +2297,7 @@
                  END-IF
              END-PERFORM
       *
-      *      ���ܥ쥻�����ȤޤȤ�
+      *      療養レセコメントまとめ
              PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
                IF   (WRK-IRYOADL-DAY(IDX1)  NOT =   ZERO)   AND
@@ -2344,7 +2344,7 @@
                END-IF
              END-PERFORM
            END-IF
-      *    �ޤȤ��̳�ǧ
+      *    まとめ結果確認
       *     PERFORM    VARYING   IDX1   FROM  1  BY  1
       *                UNTIL     (IDX1   >     31)
       *          DISPLAY  "IDX1 = " IDX1
@@ -2360,7 +2360,7 @@
       *                    WRK-IRYOADL-GAITOU-TBL(IDX1)
       *     END-PERFORM
       *
-      *    ������פޤȤ��̤����ܥ쥻�����ȤΥ�󥯤��ǧ
+      *    入院会計まとめ結果と療養レセコメントのリンクを確認
       *     PERFORM    VARYING   IDX1   FROM  1  BY  1
       *                UNTIL     (IDX1   >     31)
       *          DISPLAY  "IDX1 = " IDX1
@@ -2370,7 +2370,7 @@
       *                    WRK-SO-IRYOADL-DAY(IDX1)
       *     END-PERFORM
       *
-      *   ���ɽ��
+      *   結果表示
       *     PERFORM    VARYING   IDX1   FROM  1  BY  1
       *                UNTIL     (IDX1   >     31)
       *          DISPLAY  "IDX1 = " IDX1
@@ -2394,7 +2394,7 @@
       *          END-PERFORM
       *     END-PERFORM
       *
-      *    �쥻�ť����ֵѥ��ꥢ�ؤΥ��åȡ������������Ŷ�ʬ������
+      *    レセ電サブ返却エリアへのセット（入院料　診療区分９０）
            MOVE       ZERO      TO     IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
@@ -2416,39 +2416,39 @@
                                MOVE   WRK-SO-SRYKBN(IDX1)  TO   
                                     LNK-RNYURECEDEN-SRYSKB(1 IDX2 IDX3)
                          END-IF
-      *                �������û���ϫ�����֤�����
-      *                  ��������Ǹ�ɬ����ɾ���û��ʰ�������ˡ�ϫ���ѡ�
+      *                入院料加算の労災用置き換え
+      *                  一般病棟看護必要度評価加算（一般病棟）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190131570"
                             MOVE "101900100" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
-      *                  ��������Ǹ�ɬ����ɾ���û��������±��ˡ�ϫ���ѡ�
+      *                  一般病棟看護必要度評価加算（専門病院）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190134970"
                             MOVE "101900120" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
-      *                  ����ǧ�ξɲû�����������ˡ�ϫ���ѡ�
+      *                  重度認知症加算（精神病棟）（労災用）
                          IF   (WRK-SO-SRYCD(IDX1 IDX3)  =  "190118570")
                          AND  (LNK-RNYURECEDEN-SANTEIYM <= "201803")
                             MOVE "101900110" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
       *
-      *                �������û���ϫ�����֤�������ʿ������ǯ�ɲá�
-      *                  �����ݻ�Ʃ�ϴ����û����������������������ˡ�ϫ���ѡ�
+      *                入院料加算の労災用置き換え（平成２６年追加）
+      *                  慢性維持透析管理加算（療養病棟入院基本料）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190167970"
                             MOVE "101900130" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
-      *                  ����������ǽ�����û����������������������ˡ�ϫ���ѡ�
+      *                  在宅復帰機能強化加算（療養病棟入院基本料）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190168070"
                             MOVE "101900140" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
       *
-      *                �������û���ϫ�����֤�������ʿ������ǯ�ɲá�
-      *                  ��ִǸ�û����������������������ˡ�ϫ���ѡ�
+      *                入院料加算の労災用置き換え（平成３０年追加）
+      *                  夜間看護加算（療養病棟入院基本料）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190204570"
                             MOVE "101900170" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
       *
-      *                ���ܴ��������������곺����ϫ�����֤�������ʿ������ǯ�����ɲá�
-      *                  ���ܴ��������������곺���������������ˡ�ϫ���ѡ�
+      *                栄養管理体制減算規定該当の労災用置き換え（平成２６年７月追加）
+      *                  栄養管理体制減算規定該当（入院基本料）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190182590"
                             MOVE "101900150" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
@@ -2465,7 +2465,7 @@
                          END-IF
                      END-PERFORM
       *
-      *              ���񥳥��ȥ��åȽ���
+      *              外泊コメントセット処理
                      INITIALIZE    WRK-GAIHAKU-DAY-TABLE
                      IF   WRK-SO-GAIHAKU-TBL(IDX1)   =  ALL"0"
                          CONTINUE
@@ -2530,8 +2530,8 @@
                      END-IF
       *
                      IF  LNK-RYOCOM-RC  =       ZERO
-      *              ���ܥ쥻�ץȥ����ȥ��åȽ���
-      *              �������å�
+      *              療養レセプトコメントセット処理
+      *              月日セット
                      PERFORM   VARYING  CIDX   FROM   1  BY  1
                        UNTIL   CIDX     >   31
                       IF   WRK-SO-IRYOADL-DAY(IDX1)  =
@@ -2567,8 +2567,8 @@
                                  END-IF
                                END-IF
                          END-PERFORM
-      *                  ʿ������ǯ�����국Ͽ�����Ȥ��ѹ�
-      *                  �ʵ�Ͽ�����ȥ�����810000001  ->  840000125 840000134��
+      *                  平成２２年４月より記録コメントの変更
+      *                  （記録コメントコード810000001  ->  840000125 840000134）
                          IF  LNK-RNYURECEDEN-SANTEIYM    <=   "201003"
                           PERFORM   VARYING  IDX5  FROM  1  BY  1
                           UNTIL   (IDX5  >  31)   OR
@@ -2582,7 +2582,7 @@
                                     LNK-RNYURECEDEN-RECSKB(1 IDX2 IDX3)
                                 MOVE  "810000001"  TO
                                       LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
-                                MOVE   "���������"  TO
+                                MOVE   "　　月　　日"  TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                                 MOVE   LNK-RNYURECEDEN-SANTEIYM(5:2)
                                                        TO  WRK-MM-X
@@ -2599,7 +2599,7 @@
                                     LNK-RNYURECEDEN-RECSKB(1 IDX2 IDX3)
                                 MOVE  "810000001"  TO
                                       LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
-                                MOVE   "��������������������"  TO
+                                MOVE   "　　月　　日〜　　月　　日"  TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                                 MOVE   LNK-RNYURECEDEN-SANTEIYM(5:2)
                                                        TO  WRK-MM-X
@@ -2670,7 +2670,7 @@
                           END-PERFORM
                          END-IF
       *
-      *                  ���Ŷ�ʬ������
+      *                  医療区分コメント
                          PERFORM   VARYING  IDX5  FROM  1  BY  1
                          UNTIL   (IDX5  >  30)   OR
                            (WRK-IRYOADL-SRYCD(CIDX IDX5) =  SPACE)
@@ -2685,7 +2685,7 @@
                            END-IF
                          END-PERFORM
       *
-      *                  ���ģ̥����ȡ�ʿ������ǯ�����국Ͽ�����Ȥ��ѹ���
+      *                  ＡＤＬコメント（平成２２年４月より記録コメントの変更）
                          IF  LNK-RNYURECEDEN-SANTEIYM    <=   "201003"
                           IF   LNK-RNYURECEDEN-MEISAISU(1 IDX2) < 300
                            ADD    1     TO
@@ -2695,7 +2695,7 @@
                            MOVE  "840000103"   TO
                                   LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
                            IF   WRK-IRYOADL-TEN(CIDX)   =   ZERO
-                             MOVE  "����"    TO
+                             MOVE  "００"    TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                            ELSE
                              MOVE   WRK-IRYOADL-TEN(CIDX) TO IDX6
@@ -2705,7 +2705,7 @@
                            ADD    1     TO   IDX3
                           END-IF
                          ELSE
-      *                   ���ģ̣�
+      *                   ＡＤＬａ
                           IF   LNK-RNYURECEDEN-MEISAISU(1 IDX2) < 300
                            ADD    1     TO
                                    LNK-RNYURECEDEN-MEISAISU(1 IDX2)
@@ -2714,7 +2714,7 @@
                            MOVE  "840000126"   TO
                                   LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
                            IF   WRK-IRYOADL-TEN-H22(CIDX 1)   =   ZERO
-                             MOVE  "����"    TO
+                             MOVE  "００"    TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                            ELSE
                              MOVE   WRK-IRYOADL-TEN-H22(CIDX 1) TO IDX6
@@ -2723,7 +2723,7 @@
                            END-IF
                            ADD    1     TO   IDX3
                           END-IF
-      *                   ���ģ̣�
+      *                   ＡＤＬｂ
                           IF   LNK-RNYURECEDEN-MEISAISU(1 IDX2) < 300
                            ADD    1     TO
                                    LNK-RNYURECEDEN-MEISAISU(1 IDX2)
@@ -2732,7 +2732,7 @@
                            MOVE  "840000127"   TO
                                   LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
                            IF   WRK-IRYOADL-TEN-H22(CIDX 2)   =   ZERO
-                             MOVE  "����"    TO
+                             MOVE  "００"    TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                            ELSE
                              MOVE   WRK-IRYOADL-TEN-H22(CIDX 2) TO IDX6
@@ -2741,7 +2741,7 @@
                            END-IF
                            ADD    1     TO   IDX3
                           END-IF
-      *                   ���ģ̣�
+      *                   ＡＤＬｃ
                           IF   LNK-RNYURECEDEN-MEISAISU(1 IDX2) < 300
                            ADD    1     TO
                                    LNK-RNYURECEDEN-MEISAISU(1 IDX2)
@@ -2750,7 +2750,7 @@
                            MOVE  "840000128"   TO
                                   LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
                            IF   WRK-IRYOADL-TEN-H22(CIDX 3)   =   ZERO
-                             MOVE  "����"    TO
+                             MOVE  "００"    TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                            ELSE
                              MOVE   WRK-IRYOADL-TEN-H22(CIDX 3) TO IDX6
@@ -2759,7 +2759,7 @@
                            END-IF
                            ADD    1     TO   IDX3
                           END-IF
-      *                   ���ģ̣�
+      *                   ＡＤＬｄ
                           IF   LNK-RNYURECEDEN-MEISAISU(1 IDX2) < 300
                            ADD    1     TO
                                    LNK-RNYURECEDEN-MEISAISU(1 IDX2)
@@ -2768,7 +2768,7 @@
                            MOVE  "840000129"   TO
                                   LNK-RNYURECEDEN-SRYCD(1 IDX2 IDX3)
                            IF   WRK-IRYOADL-TEN-H22(CIDX 4)   =   ZERO
-                             MOVE  "����"    TO
+                             MOVE  "００"    TO
                                     LNK-RNYURECEDEN-COMMENT(1 IDX2 IDX3)
                            ELSE
                              MOVE   WRK-IRYOADL-TEN-H22(CIDX 4) TO IDX6
@@ -2787,7 +2787,7 @@
       *
                END-IF
            END-PERFORM
-      *    �쥻�ť����ֵѥ��ꥢ�ؤΥ��åȡ����������������Ŷ�ʬ������
+      *    レセ電サブ返却エリアへのセット（特定入院料　診療区分９２）
            MOVE      ZERO     TO   IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
@@ -2810,8 +2810,8 @@
                                     LNK-RNYURECEDEN-SRYSKB(2 IDX2 IDX3)
                          END-IF
       *
-      *                ���ܴ��������������곺����ϫ�����֤�������ʿ������ǯ�����ɲá�
-      *                  ���ܴ��������������곺��������������û���ں߼�Ѵ𣲡ˡ�ϫ���ѡ�
+      *                栄養管理体制減算規定該当の労災用置き換え（平成２６年７月追加）
+      *                  栄養管理体制減算規定該当（特定入院料短期滞在手術基２）（労災用）
                          IF    WRK-SO-SRYCD(IDX1 IDX3)  =  "190182690"
                             MOVE "101900160" TO WRK-SO-SRYCD(IDX1 IDX3)
                          END-IF
@@ -2827,7 +2827,7 @@
                                       LNK-RNYURECEDEN-TEN(2 IDX2 IDX3)
                          END-IF
                      END-PERFORM
-      *              ���񥳥��ȥ��åȽ���
+      *              外泊コメントセット処理
                      INITIALIZE    WRK-GAIHAKU-DAY-TABLE
                      IF   WRK-SO-GAIHAKU-TBL(IDX1)   =  ALL"0"
                          CONTINUE
@@ -2894,7 +2894,7 @@
            END-PERFORM
       *
       *
-      *    ����������Խ�
+      *    食事情報の編集
            PERFORM   2103-SHOKUJI-HENSHU-SEC
       *
            .
@@ -2902,7 +2902,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰ټ���
+      *    入院診療行為取得
       *****************************************************************
        210-NYUINACT-GET-SEC            SECTION.
       *
@@ -2921,7 +2921,7 @@
                PERFORM   910-NYUINACT-READ-SEC
            END-IF
       *
-      *    �����԰٥�������
+      *    入院行為クローズ
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -2931,11 +2931,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    外泊前処理
       *****************************************************************
        210-GAIHAKU-MAE-SEC            SECTION.
       *
-      *    ���񥳡����Խ��Ѥ������������û���ʬ�ȿ��Ŷ�ʬ������
+      *    外泊コード編集用に入院基本料加算区分と診療区分の退避
            INITIALIZE                      TNS-TENSU-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM
                                        TO  TNS-HOSPNUM
@@ -2949,14 +2949,14 @@
            MOVE    TNS-CHUKSNCD        TO  WRK-CHUKSNCD-XXX
            MOVE    TNS-NYUKHNKBN       TO  WRK-NYUKHNKBN-XXX
       *
-      *    �����������û���ʬ�֤�����
+      *    入院基本料加算区分置き換え
            IF  LNK-RNYURECEDEN-SANTEIYM >= "201804"
-      *        ������������������������������������
+      *        療養病棟入院基本料（特別入院基本料）
                IF   (TNS-NYUKHNKSNKBN = 27 )
                AND  (TNS-CDKBN-KBNNUM = 101)
                     MOVE   901   TO   WRK-KSNKBN
                END-IF
-      *        ͭ�����Ž������¾�����������������������������
+      *        有床診療所療養病床入院基本料（特別入院基本料）
                IF   (TNS-NYUKHNKSNKBN = 27 )
                AND  (TNS-CDKBN-KBNNUM = 109)
                     MOVE   909   TO   WRK-KSNKBN
@@ -2968,7 +2968,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ť����ɼ���
+      *    外泊診療コード取得
       *****************************************************************
        210-GAIHAKU-SET-SEC            SECTION.
       *
@@ -3028,7 +3028,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ť����ɼ���
+      *    外泊診療コード取得
       *****************************************************************
        2101-GAIHAKU-TAKIKAN-SEC           SECTION.
       *
@@ -3047,7 +3047,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ť����ɼ�����
+      *    外泊診療コード取得１
       *****************************************************************
        2101-GAIHAKU-TAKIKAN1-SEC           SECTION.
       *
@@ -3212,12 +3212,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ť����ɼ�����  201604
+      *    外泊診療コード取得２  201604
       *****************************************************************
        2101-GAIHAKU-TAKIKAN2-SEC           SECTION.
       *
            EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-      *        ����������
+      *        特定入院料
                WHEN   201  THRU  206
                WHEN   208  THRU  210
                WHEN   212  THRU  217
@@ -3230,8 +3230,8 @@
                WHEN   257  THRU  267
       *        --- H28.4 TUIKA ---
                WHEN   268  THRU  270
-      *          ǧ�ξɼ���������������������������������
-      *          �ϰ�ܹԵ�ǽ��������������
+      *          認知症治療病棟入院料、精神療養病棟入院料
+      *          地域移行機能強化病棟入院料
                  IF  WRK-NYUKHNKSNKBN(IDX1) = 221 OR 232 OR 217 OR 268
                    EVALUATE   NACCT-DAY(IDX1)
                     WHEN     4
@@ -3249,7 +3249,7 @@
                       MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
                    END-EVALUATE
                  END-IF
-      *        ������������������
+      *        療養病棟入院基本料
                WHEN   004  THRU  008
                WHEN   010  THRU  012
                WHEN   152
@@ -3266,7 +3266,7 @@
                   WHEN     5
                     MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        ͭ�����Ž������¾�����������
+      *        有床診療所療養病床入院基本料
                WHEN   153  THRU  158
                  EVALUATE   NACCT-DAY(IDX1)
                   WHEN     4
@@ -3276,7 +3276,7 @@
                   WHEN     6
                     MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        û���ں߼�Ѵ���������û���ں߼�Ѵ�������
+      *        短期滞在手術基本料２・短期滞在手術基本料３
                WHEN   226
                WHEN   240
                  CONTINUE
@@ -3292,16 +3292,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ť����ɼ�����  201804
+      *    外泊診療コード取得３  201804
       *****************************************************************
        2101-GAIHAKU-TAKIKAN3-SEC           SECTION.
       *
            EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-      *        ����������
+      *        特定入院料
                WHEN   200  THRU  257
                WHEN   260  THRU  263
-      *          ǧ�ξɼ���������������������������������
-      *          �ϰ�ܹԵ�ǽ��������������
+      *          認知症治療病棟入院料、精神療養病棟入院料
+      *          地域移行機能強化病棟入院料
                  IF  WRK-NYUKHNKSNKBN(IDX1) = 255 OR 254 OR 257
                    EVALUATE   NACCT-DAY(IDX1)
                     WHEN     4
@@ -3329,7 +3329,7 @@
                       MOVE   "190213990"    TO   WRK-GAIHAKU(IDX1)
                    END-EVALUATE
                  END-IF
-      *        ������������������
+      *        療養病棟入院基本料
                WHEN    11  THRU   14
                WHEN    51
                WHEN   901
@@ -3343,7 +3343,7 @@
                   WHEN    15
                     MOVE   "190213890"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        ͭ�����Ž������¾�����������
+      *        有床診療所療養病床入院基本料
                WHEN    26
                WHEN    53
                WHEN   909
@@ -3361,7 +3361,7 @@
                   WHEN    16
                     MOVE   "190214090"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        û���ں߼�Ѵ���������û���ں߼�Ѵ�������
+      *        短期滞在手術基本料２・短期滞在手術基本料３
                WHEN   258  THRU  259
                  CONTINUE
                WHEN   OTHER
@@ -3378,7 +3378,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɼ���
+      *    減算コード取得
       *****************************************************************
        2101-GAIHAKU-GENSAN-SEC           SECTION.
       *
@@ -3397,7 +3397,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɼ�����
+      *    減算コード取得１
       *****************************************************************
        2101-GAIHAKU-GENSAN1-SEC           SECTION.
       *
@@ -3467,7 +3467,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɼ�����  201604
+      *    減算コード取得２  201604
       *****************************************************************
        2101-GAIHAKU-GENSAN2-SEC           SECTION.
       *
@@ -3527,7 +3527,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɼ�����  201804
+      *    減算コード取得３  201804
       *****************************************************************
        2101-GAIHAKU-GENSAN3-SEC           SECTION.
       *
@@ -3585,7 +3585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻�����
+      *    点数計算処理
       *****************************************************************
        210-TENSU-KEISAN-SEC            SECTION.
       *
@@ -3617,24 +3617,24 @@
                PERFORM 910-TTNS-HEN-SEC
            END-IF
       *
-      *    ��������
+      *    点数算定
            EVALUATE    TNS-TENSIKIBETU
-      *        �����ʥץ饹��
+      *        点数（プラス）
                WHEN    3
                    ADD   TNS-TEN     TO  WRK-SO-TEN(IDX1)
-      *        ��û�
+      *        ％加算
                WHEN    5
                    COMPUTE    WRK-SO-TEN(IDX1)  =
                               WRK-SO-TEN(IDX1)  +
                             ((WRK-SO-TEN(IDX1)  *
                               (TNS-TEN   /  100))  + 0.5)
-      *        �󸺻�
+      *        ％減算
                WHEN    6
                    COMPUTE    WRK-SO-TEN(IDX1)  =
                             ( WRK-SO-TEN(IDX1)  -
                              (WRK-SO-TEN(IDX1)  *
                              (TNS-TEN   /  100)))        +  0.5
-      *        �����ʥޥ��ʥ���
+      *        点数（マイナス）
                WHEN    8
                    COMPUTE  WRK-SO-TEN(IDX1)  =
                             WRK-SO-TEN(IDX1)  -  TNS-TEN
@@ -3642,7 +3642,7 @@
       *            ADD   TNS-TEN     TO  WRK-SO-TEN(IDX1)
            END-EVALUATE
       *
-      *    ���ť����ɷ�
+      *    診療コード計
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
            COMPUTE WRK-SO-SRYCDTOTAL(IDX1)  =
                    WRK-SO-SRYCDTOTAL(IDX1)  +   WRK-SRYCD-9
@@ -3653,7 +3653,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���������������������
+      *    外泊時の入院基本料取得
       **************************************************************
        2101-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
       *
@@ -3800,13 +3800,13 @@
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190813870"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
-      *        ���Ž�Ϸ�Ͱ��Ŵ�����
+      *        診療所老人医療管理料
                WHEN  "190774210"
                      MOVE  "190774110"      TO   WRK-GAIHAKU-SRYCD
-      *        Ϸ����ǧ�ξɼ�������������������
+      *        老人性認知症疾患治療病棟入院料１
                WHEN  "190740010"
                      MOVE  "190739910"      TO   WRK-GAIHAKU-SRYCD
-      *        Ϸ����ǧ�ξɼ�������������������
+      *        老人性認知症疾患治療病棟入院料２
                WHEN  "190813510"
                      MOVE  "190813410"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
@@ -3827,8 +3827,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������Խ��ʿ��������񿩿��١�����
-      *    ʿ������ǯ�ٿ�������������ήư���б���
+      *    食事情報の編集（食事療養費食数ベース）
+      *    平成２８年度食事療養費改定（流動食対応）
       *****************************************************************
        2103-SHOKUJI-HENSHU-SEC        SECTION.
       *
@@ -3836,7 +3836,7 @@
       **     DISPLAY "LNK-RNYURECEDEN-HKNCOMBI = "
       **              LNK-RNYURECEDEN-HKNCOMBI
       *
-      *�������ݸ��ȹ礻�����åȤ���Ƥ����������������Ȥ���
+      *食事の保険組合せがセットされている日は入院扱いとする
            PERFORM   VARYING   IDX1   FROM  1   BY  1
                      UNTIL     IDX1   >    31
                 IF   (WRK-SKJ-HKNCOMBI-ASA(IDX1) NOT = ZERO) OR
@@ -3846,7 +3846,7 @@
                 END-IF
            END-PERFORM
       *
-      *��������μ�����ī���ˡ�������ס�
+      *食事情報の取得（朝食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID     TO  NACCT-PTID
@@ -3880,27 +3880,27 @@
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                               TO  WRK-SKJ4-RYOYO(IDX1)
-      *                        ���̿��û����������������ܡʣ��ˤξ��
-      *                        �Τߥ��å�
+      *                        特別食加算は入院時食事療養（１）の場合
+      *                        のみセット
                                IF   WRK-SYS5000-SHOKUCD(1 IDX1)  =
                                                             "197000110"
                                    MOVE   "197000470"
                                            TO  WRK-SKJ5-TOKU-SHOKU(IDX1)
                                END-IF
-      *                    ήư��
+      *                    流動食
                            WHEN   3
                                EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
-      *                            ����������������ʣ���
+      *                            入院時食事療養費（１）
                                    WHEN   "197000110"
                                       MOVE   "197003110"
                                               TO  WRK-SKJ4-RYOYO(IDX1)
-      *                            ����������������ʣ���
+      *                            入院時食事療養費（２）
                                    WHEN   "197000710"
                                       MOVE   "197003210"
                                               TO  WRK-SKJ4-RYOYO(IDX1)
                                END-EVALUATE
                        END-EVALUATE
-      *                ��Ʋ�û�
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
@@ -3910,12 +3910,12 @@
                END-PERFORM
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key30"                     TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *��������μ������뿩�ˡ�������ס�
+      *食事情報の取得（昼食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID     TO  NACCT-PTID
@@ -3950,27 +3950,27 @@
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                               TO  WRK-SKJ4-RYOYO(IDX2)
-      *                        ���̿��û����������������ܡʣ��ˤξ��
-      *                        �Τߥ��å�
+      *                        特別食加算は入院時食事療養（１）の場合
+      *                        のみセット
                                IF   WRK-SYS5000-SHOKUCD(1 IDX1)  =
                                                             "197000110"
                                    MOVE   "197000470"
                                            TO  WRK-SKJ5-TOKU-SHOKU(IDX2)
                                END-IF
-      *                    ήư��
+      *                    流動食
                            WHEN   3
                                EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
-      *                            ����������������ʣ���
+      *                            入院時食事療養費（１）
                                    WHEN   "197000110"
                                       MOVE   "197003110"
                                               TO  WRK-SKJ4-RYOYO(IDX2)
-      *                            ����������������ʣ���
+      *                            入院時食事療養費（２）
                                    WHEN   "197000710"
                                       MOVE   "197003210"
                                               TO  WRK-SKJ4-RYOYO(IDX2)
                                END-EVALUATE
                        END-EVALUATE
-      *                ��Ʋ�û�
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
@@ -3980,12 +3980,12 @@
                END-PERFORM
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key31"                     TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *��������μ�����ͼ���ˡ�������ס�
+      *食事情報の取得（夕食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-RNYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-RNYURECEDEN-PTID     TO  NACCT-PTID
@@ -4018,27 +4018,27 @@
                            WHEN   2
                                MOVE   WRK-SYS5000-SHOKUCD(1 IDX1)
                                               TO  WRK-SKJ4-RYOYO(IDX3)
-      *                        ���̿��û����������������ܡʣ��ˤξ��
-      *                        �Τߥ��å�
+      *                        特別食加算は入院時食事療養（１）の場合
+      *                        のみセット
                                IF   WRK-SYS5000-SHOKUCD(1 IDX1)  =
                                                             "197000110"
                                    MOVE   "197000470"
                                            TO  WRK-SKJ5-TOKU-SHOKU(IDX3)
                                END-IF
-      *                    ήư��
+      *                    流動食
                            WHEN   3
                                EVALUATE   WRK-SYS5000-SHOKUCD(1 IDX1)
-      *                            ����������������ʣ���
+      *                            入院時食事療養費（１）
                                    WHEN   "197000110"
                                       MOVE   "197003110"
                                               TO  WRK-SKJ4-RYOYO(IDX3)
-      *                            ����������������ʣ���
+      *                            入院時食事療養費（２）
                                    WHEN   "197000710"
                                       MOVE   "197003210"
                                               TO  WRK-SKJ4-RYOYO(IDX3)
                                END-EVALUATE
                        END-EVALUATE
-      *                ��Ʋ�û�
+      *                食堂加算
                        IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
                                           TO  WRK-SKJ6-SHOKUDOU(IDX1)
@@ -4048,7 +4048,7 @@
                END-PERFORM
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key32"                     TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -4063,8 +4063,8 @@
       *                    WRK-SKJ5-HKNCOMBI-DAY(IDX1)
       *     END-PERFORM
       *
-      *    �����ǥ��åȤ��줿�ݸ��ȹ礻�ֹ�ʳ���SKJ4,SKJ5�ΰ��
-      *    ���å����Ƥ򥯥ꥢ����
+      *    引数でセットされた保険組合せ番号以外はSKJ4,SKJ5領域の
+      *    セット内容をクリアする
            PERFORM    VARYING  IDX1   FROM 1 BY 1
              UNTIL    IDX1 > 93
                  IF   WRK-SKJ4-HKNCOMBI-DAY(IDX1)  NOT =  ZERO
@@ -4096,18 +4096,18 @@
       *                    WRK-SKJ5-HKNCOMBI-DAY(IDX1)
       *     END-PERFORM
       *
-      *    Ʊ������������¾�ݸ��ǿ����λ��꤬�������
-      *    ��Ʋ�û��򥯥ꥢ����
+      *    同日再入院日に他保険で食事の算定がある場合に
+      *    食堂加算をクリアする
            PERFORM      VARYING   IDX1   FROM   1  BY  1
              UNTIL      IDX1     >    31
                 IF   LNK-NYUINDAY-DOUJITSU-KBN(IDX1)  =  "1"
-      *            ī����¾�ݸ��ǻ���
+      *            朝食を他保険で算定
                    IF  WRK-SKJ-ASA-ARI(IDX1)  NOT =  ZERO
                       IF   WRK-SKJ-HKNCOMBI-ASA(IDX1)   =  ZERO
                           MOVE   "1"  TO  WRK-TAHOKEN-SHOKUDOU-FLG(IDX1)
                       END-IF
                    END-IF
-      *            ī�������뿩��¾�ݸ��ǻ���
+      *            朝食又は昼食を他保険で算定
                    IF (WRK-SKJ-ASA-ARI(IDX1)   NOT =  ZERO)  OR
                       (WRK-SKJ-HIRU-ARI(IDX1)  NOT =  ZERO)
                       IF  (WRK-SKJ-HKNCOMBI-ASA(IDX1)   =  ZERO) AND
@@ -4118,7 +4118,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��Ʋ�û����ꥢ�ե饰�ˤ�뿩Ʋ�û��ΰ�Υ��ꥢ
+      *    食堂加算クリアフラグによる食堂加算領域のクリア
            PERFORM      VARYING   IDX1   FROM   1  BY  1
              UNTIL      IDX1     >    31
       **       DISPLAY "IDX1 = " IDX1 " WRK-TAHOKEN-SHOKUDOU-FLG = "
@@ -4132,10 +4132,10 @@
            END-PERFORM
       *
       *
-      *    ������������Խ���Ʊ��ޤޤȤ��ѡ�
+      *    食事ワーク７の編集（同一剤まとめ用）
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-      *        �����������ī��
+      *        食事療養費（朝）
                IF    WRK-SKJ4-RYOYO(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ4-HKNCOMBI-DAY(IDX1)
                                        TO  WRK-SKJ7-HKNCOMBI-DAY(IDX1)
@@ -4152,13 +4152,13 @@
                         ADD   1     TO  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
                    END-IF
                END-IF
-      *        ���̿��û���ī��
+      *        特別食加算（朝）
                IF    WRK-SKJ5-TOKU-SHOKU(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX1)
                                        TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
                    ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
                END-IF
-      *        ��������������
+      *        食事療養費（昼）
                MOVE      ZERO          TO  IDX2
                COMPUTE   IDX2     =    IDX1    +   31
                IF    WRK-SKJ4-RYOYO(IDX2)  NOT =   SPACE
@@ -4177,13 +4177,13 @@
                         ADD   1     TO  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
                    END-IF
                END-IF
-      *        ���̿��û������
+      *        特別食加算（昼）
                IF    WRK-SKJ5-TOKU-SHOKU(IDX2)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX2)
                                        TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
                    ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
                END-IF
-      *        �����������ͼ��
+      *        食事療養費（夕）
                MOVE      ZERO          TO  IDX3
                COMPUTE   IDX3     =    IDX1    +   62
                IF    WRK-SKJ4-RYOYO(IDX3)  NOT =   SPACE
@@ -4202,26 +4202,26 @@
                         ADD   1     TO  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
                    END-IF
                END-IF
-      *        ���̿��û���ͼ��
+      *        特別食加算（夕）
                IF    WRK-SKJ5-TOKU-SHOKU(IDX3)  NOT =   SPACE
                    MOVE  WRK-SKJ5-TOKU-SHOKU(IDX3)
                                        TO  WRK-SKJ7-TOKU-SHOKU(IDX1)
                    ADD   1             TO  WRK-SKJ7-TOKU-SHOKU-SU(IDX1)
                END-IF
-      *        �������
+      *        食事回数
       **         IF    (WRK-SKJ4-RYOYO(IDX1)  NOT =   SPACE)   AND
       **               (WRK-SKJ4-RYOYO(IDX2)  NOT =   SPACE)   AND
       **               (WRK-SKJ4-RYOYO(IDX3)  NOT =   SPACE)
       **             MOVE      1         TO   WRK-SKJ7-KAISU(IDX1)
       **         END-IF
-      *        ��Ʋ�û�
+      *        食堂加算
                IF    WRK-SKJ6-SHOKUDOU(IDX1)  NOT =   SPACE
                    MOVE  WRK-SKJ6-SHOKUDOU(IDX1)
                                        TO  WRK-SKJ7-SHOKUDOU(IDX1)
                END-IF
            END-PERFORM
       *
-      *    �����ο��ť����ɷ�
+      *    食事の診療コード計
            PERFORM    VARYING   IDX1    FROM  1  BY  1
                       UNTIL     IDX1    >   31
                IF   WRK-SKJ7-RYOYO(IDX1)  NOT =  SPACE
@@ -4299,8 +4299,8 @@
       *                   WRK-SKJ7-SRYCDTOTAL (IDX1)
       *     END-PERFORM
       *
-      *    �ƹ��ۤ����������󤫤�Ʊ��ޤΤޤȤ����
-      *    �������
+      *    再構築した食事情報から同一剤のまとめ処理
+      *    食事ワーク
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
                IF    WRK-SKJ7-SRYCDTOTAL(IDX1)  NOT =   ZERO
@@ -4340,7 +4340,7 @@
                END-IF
            END-PERFORM
       *
-      *    �쥻�ť����ֵѥ��ꥢ�ؤο������å�
+      *    レセ電サブ返却エリアへの食事セット
            MOVE       ZERO    TO   IDX2
            MOVE       ZERO    TO   IDX3
            PERFORM    VARYING   IDX1   FROM  1  BY  1
@@ -4393,11 +4393,11 @@
                                   LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
       *
                     EVALUATE  WRK-SKJ7-RYOYO(IDX1)
-      *               �������������ܡʣ���
+      *               入院時食事療養（１）
                       WHEN  "197000110"
                         EVALUATE  WRK-SKJ7-RYOYO-SU(IDX1)
                             WHEN  1
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4408,7 +4408,7 @@
                                 MOVE   770     TO  
                                     LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4419,7 +4419,7 @@
                                 MOVE  1540     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4430,11 +4430,11 @@
                                 MOVE  2310     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                         END-EVALUATE
-      *               �������������ܡʣ���
+      *               入院時食事療養（２）
                       WHEN  "197000710"
                         EVALUATE  WRK-SKJ7-RYOYO-SU(IDX1)
                             WHEN  1
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4445,7 +4445,7 @@
                                 MOVE   610     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4456,7 +4456,7 @@
                                 MOVE  1220     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4489,11 +4489,11 @@
                     MOVE  WRK-SKJ7-KAISU(IDX1)  TO
                                   LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
                     EVALUATE  WRK-SKJ7-RYOYO-RYU(IDX1)
-      *               �������������ܡʣ��ˡ�ήư����
+      *               入院時食事療養（１）（流動食）
                       WHEN  "197003110"
                         EVALUATE  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
                             WHEN  1
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4504,7 +4504,7 @@
                                 MOVE   690     TO  
                                     LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4515,7 +4515,7 @@
                                 MOVE  1380     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4526,12 +4526,12 @@
                                 MOVE  2070     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                         END-EVALUATE
-      *               �������������ܡʣ��ˡ�ήư����
+      *               入院時食事療養（２）（流動食）
                       WHEN  "197003210"
                         IF   LNK-RNYURECEDEN-SANTEIYM   <=  "201803"
                           EVALUATE  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
                             WHEN  1
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4542,7 +4542,7 @@
                                 MOVE   550     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4553,7 +4553,7 @@
                                 MOVE  1100     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4567,7 +4567,7 @@
                         ELSE
                           EVALUATE  WRK-SKJ7-RYOYO-RYU-SU(IDX1)
                             WHEN  1
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4578,7 +4578,7 @@
                                 MOVE   550     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  2
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4589,7 +4589,7 @@
                                 MOVE  1100     TO  
                                       LNK-RNYURECEDEN-TEN(3 IDX2 IDX4)
                             WHEN  3
-      *                         ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                         労災（１．２倍）（食事療養）
                                 ADD     1     TO    IDX4
                                 MOVE   "RI"   TO
                                     LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4605,7 +4605,7 @@
                     MOVE  WRK-SKJ7-KAISU(IDX1)  TO
                                 LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
                  END-IF
-      *             ��Ʋ�û�
+      *             食堂加算
                     IF   WRK-SKJ7-SHOKUDOU(IDX1)  NOT =  SPACE
                          ADD     1     TO    IDX4
                          MOVE   "RI"   TO
@@ -4614,7 +4614,7 @@
                                   LNK-RNYURECEDEN-SRYCD(3 IDX2 IDX4)
                          MOVE  WRK-SKJ7-KAISU(IDX1)  TO
                                 LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
-      *                  ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                  労災（１．２倍）（食事療養）
                          ADD     1     TO    IDX4
                          MOVE   "RI"   TO
                               LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4626,7 +4626,7 @@
                                 LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
                     END-IF
       *
-      *             ���̿��û�
+      *             特別食加算
                     IF   WRK-SKJ7-TOKU-SHOKU(IDX1)   =  SPACE
                           CONTINUE
                     ELSE
@@ -4640,7 +4640,7 @@
                                   LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
                          MOVE  WRK-SKJ7-TOKU-SHOKU-KAISU1(IDX1)  TO
                                 LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
-      *                  ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                  労災（１．２倍）（食事療養）
                          ADD     1     TO    IDX4
                          MOVE   "RI"   TO
                               LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4663,7 +4663,7 @@
                                   LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
                          MOVE  WRK-SKJ7-TOKU-SHOKU-KAISU2(IDX1)  TO
                                 LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
-      *                  ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                  労災（１．２倍）（食事療養）
                          ADD     1     TO    IDX4
                          MOVE   "RI"   TO
                               LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4686,7 +4686,7 @@
                                   LNK-RNYURECEDEN-SURYO(3 IDX2 IDX4)
                          MOVE  WRK-SKJ7-TOKU-SHOKU-KAISU3(IDX1)  TO
                                 LNK-RNYURECEDEN-KAISU(3 IDX2 IDX4)
-      *                  ϫ�ҡʣ������ܡˡʿ������ܡ�
+      *                  労災（１．２倍）（食事療養）
                          ADD     1     TO    IDX4
                          MOVE   "RI"   TO
                               LNK-RNYURECEDEN-RECSKB(3 IDX2 IDX4)
@@ -4709,7 +4709,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ��������������å�����
+      *    点数マスタ退避ワークチェック処理
       *****************************************************************
        910-TENSUWRK-CHK-SEC               SECTION.
       *
@@ -4731,7 +4731,7 @@
        910-TENSUWRK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����������Խ�����
+      *    点数マスタ退避ワーク編集処理
       *****************************************************************
        910-TTNS-HEN-SEC               SECTION.
       *
@@ -4748,7 +4748,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ɹ�
+      *    システム管理マスター読込
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -4768,7 +4768,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -4801,7 +4801,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ���������
+      *    入院会計マスター検索
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -4818,7 +4818,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ������ɹ�
+      *    入院会計マスター読込
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -4836,7 +4836,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰٥ޥ���������
+      *    入院診療行為マスター検索
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
@@ -4853,7 +4853,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰٥ޥ������ɹ�
+      *    入院診療行為マスター読込
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
@@ -4871,7 +4871,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ���������
+      *    診療会計マスター検索
       *****************************************************************
        910-SRYACCT-SELECT-SEC        SECTION.
       *
@@ -4888,7 +4888,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        910-SRYACCT-READ-SEC        SECTION.
       *
@@ -4906,7 +4906,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ���������
+      *    診療行為マスター検索
       *****************************************************************
        910-SRYACT-SELECT-SEC        SECTION.
       *
@@ -4923,7 +4923,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        910-SRYACT-READ-SEC        SECTION.
       *
@@ -4941,7 +4941,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ���������
+      *    保険組合せマスター検索
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -4958,7 +4958,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɹ�
+      *    保険組合せマスター読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -4976,7 +4976,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʼ祭����
+      *    点数マスター読込（主キー）
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -4991,17 +4991,17 @@
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
       *
-      *            ʿ������ǯ����ǿ��ߤ��줿�������û������βû���
-      *            �������̶�ʬ���򣷤��飱���֤�������
-      *            ��ִǸ������û��ʵ������Ǹ���������û���
+      *            平成２８年改定で新設された入院料加算の注の加算を
+      *            告示等識別区分１を７から１に置き換える
+      *            夜間看護体制加算（急性期看護補助体制加算）
                    IF      TNS-SRYCD       =   "190190770"
                       MOVE   1             TO   TNS-KOKUJISKBKBN1
                    END-IF
-      *            ��֣����У��Ǹ�����û�
+      *            夜間７５対１看護補助加算
                    IF      TNS-SRYCD       =   "190191170"
                       MOVE   1             TO   TNS-KOKUJISKBKBN1
                    END-IF
-      *            ��ִǸ������û��ʴǸ�����û���
+      *            夜間看護体制加算（看護補助加算）
                    IF      TNS-SRYCD       =   "190191270"
                       MOVE   1             TO   TNS-KOKUJISKBKBN1
                    END-IF
@@ -5024,7 +5024,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -5041,7 +5041,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -5053,7 +5053,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -5066,7 +5066,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *

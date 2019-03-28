@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,103 +16,103 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ǡ����ʿ��ž����         COPY (CPCDF002.INC)    *
+      *    収集データ（診療情報）         COPY (CPCDF002.INC)    *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.00    NACL-��ƣ    10/01/28  ���̾���������
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-伊藤    10/01/28  数量小数点５桁
       ************************************************************
       *01  COLDAT02-REC.
            03  COLDAT02-KEY.
                05  COLDAT02-KEY1.
-      *            ���ŵ��أɣ�
+      *            医療機関ＩＤ
                    07  COLDAT02-HOSPID     PIC  X(24).
-      *            ����ǯ��
+      *            診療年月
                    07  COLDAT02-SRYYM      PIC  9(06).
-      *            ������ʬ
+      *            入外区分
                    07  COLDAT02-NYUGAIKBN  PIC  X(01).
-      *            ���ԣɣ�
+      *            患者ＩＤ
                    07  COLDAT02-PTID       PIC  9(10).
-      *            �쥻�ץȿ��Ų�
+      *            レセプト診療科
                    07  COLDAT02-RECEKA     PIC  X(02).
-      *            ���ݸ��ݸ��ֹ�
+      *            主保険保険番号
                    07  COLDAT02-HKNNUM     PIC  X(03).
-      *            ����ɣ�
+      *            公費ＩＤ
                    07  COLDAT02-KOHID      PIC  9(10).
-      *            �ݸ����ֹ�        
+      *            保険者番号        
                    07  COLDAT02-HKNJANUM   PIC  X(08).
-      *            �ܿͲ�²��ʬ
+      *            本人家族区分
                    07  COLDAT02-HONKZKKBN  PIC  X(01).
-      *            �����ʬ
+      *            補助区分
                    07  COLDAT02-HOJOKBN    PIC  X(01).
-      *        ���Ų�
+      *        診療科
                05  COLDAT02-SRYKA          PIC  X(02).
-      *        ���Ŷ�ʬ
+      *        診療区分
                05  COLDAT02-SRYKBN         PIC  X(02).
-      *        ���ֹ�
+      *        剤番号
                05  COLDAT02-ZAINUM         PIC  9(08).
-      *        Ϣ��
+      *        連番
                05  COLDAT02-SEQNO          PIC  9(03).
-      *Ϣ�ֹ�
+      *連番号
            03  COLDAT02-RENNUM             PIC  9(02).
-      *�ݸ��ȹ礻
+      *保険組合せ
            03  COLDAT02-HKNCOMBI           PIC  9(04).
       *
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
            03  COLDAT02-HKNID              PIC  9(10).
-      *����ɣ�
+      *公費ＩＤ
            03  COLDAT02-KOHID-AREA.
                05  COLDAT02-TKOHID         PIC  9(10)   OCCURS  4.
-      *�쥻�ſ��Ų�
+      *レセ電診療科
            03  COLDAT02-RECESRYKA          PIC  X(02).
-      *���ݶ�ʬ
+      *自保区分
            03  COLDAT02-JIHOKBN            PIC  X(01).
-      *������
+      *剤点数
            03  COLDAT02-ZAITEN             PIC  9(08).
-      *�޲��
+      *剤回数
            03  COLDAT02-ZAIKAISU           PIC  9(04).
-      *���ٿ�
+      *明細数
            03  COLDAT02-MEISAISU           PIC  9(04).
-      *�굻������
+      *手技点数１
            03  COLDAT02-SYUTEN1            PIC  9(07).
-      *�굻������
+      *手技点数２
            03  COLDAT02-SYUTEN2            PIC  9(07).
-      *��������
+      *薬剤点数
            03  COLDAT02-YKZTEN             PIC  9(07).
-      *�������
+      *器材点数
            03  COLDAT02-KIZAITEN           PIC  9(07).
-      *��������ơ��֥�
+      *日数回数テーブル
            03  COLDAT02-DAY-AREA.
-      *        ���Ų���ơ��֥�
+      *        診療回数テーブル
                05  COLDAT02-KAISUINF       OCCURS  31.
                    07  COLDAT02-KAISU      PIC  9(03).
-      *���Ź԰پ���
+      *診療行為情報
            03  COLDAT02-SRYACTINF.
-      *���ż��̶�ʬ
+      *診療種別区分
                05  COLDAT02-SRYSYUKBN      PIC  X(03).
-      *���ť�����
+      *診療コード
                05  COLDAT02-SRYCD          PIC  X(09).
-      *����
+      *数量
                05  COLDAT02-SRYSURYO       PIC  9(05)V9(05).
-      *���
+      *回数
                05  COLDAT02-SRYKAISU       PIC  9(03).
-      *�������̶�ʬ
+      *点数識別区分
                05  COLDAT02-TENSIKIBETU    PIC  9(01).
-      *����
+      *点数
                05  COLDAT02-TEN            PIC  9(09)V9(02).
-      *̾�������ֹ�
+      *名称入力番号
                05  COLDAT02-INPUTNUM       PIC  9(03).
-      *������
+      *自費金額
                05  COLDAT02-JIHIMONEY      PIC  9(07).
-      *ñ�̥�����
+      *単位コード
                05  COLDAT02-TANICD         PIC  X(03).
-      *ñ��̾��
+      *単位名称
                05  COLDAT02-TANINAME       PIC  X(24).
-      *����̾��
+      *漢字名称
                05  COLDAT02-NAME           PIC  X(200).
-      *����̾��
+      *正式名称
                05  COLDAT02-FORMALNAME     PIC  X(400).
-      *������ॳ����
+      *薬価基準コード
                05  COLDAT02-YAKKAKJNCD     PIC  X(12).
-      *�����󽸷��輱��
+      *点数欄集計先識別
                05  COLDAT02-TENTTLKBN      PIC  9(03).

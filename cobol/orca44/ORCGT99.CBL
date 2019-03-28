@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,38 +18,38 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGT99.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���硦�����
-      *  ����ݡ��ͥ��̾  : �������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 総括・請求書
+      *  コンポーネント名  : 処理結果
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    03.07.05  �����ޡ���ǽ���ɲ�
-      *  01.00.02    NACL-��ƣ    04.02.17  �쥻�ťե������ž�����顼
-      *                                     ��å��������ɲ�
-      * �������ȯ�Ե�ǽ�б�
-      *  01.06.01    NACL-ƣ��    04/10/25  �������ȯ�Ե�ǽ���ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.07.05  タイマー機能の追加
+      *  01.00.02    NACL-伊藤    04.02.17  レセ電ファイルの転送エラー
+      *                                     メッセージの追加
+      * 公費個別発行機能対応
+      *  01.06.01    NACL-藤原    04/10/25  公費個別発行機能の追加
       *
-      *  02.07.01    NACL-ƣ��    05/10/31  MONFUNC�б�
-      *  02.07.02    NACL-ƣ��    05/12/02  �쥻�ťǡ���ʣ�����б�
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.02    NACL-藤原    05/12/02  レセ電データ複数枚対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/08/01  ���饤�������¸�б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
       *
-      *  04.06.01    NACL-ƣ��    12/12/04  ����ãӣ֡��л����������
-      *                                     ���饤�������¸�ʣãġݣҡ��б�
+      *  04.06.01    NACL-藤原    12/12/04  公費ＣＳＶ、出産育児一時金の
+      *                                     クライアント保存（ＣＤ−Ｒ）対応
       *
-      *  04.07.01    NACL-ƣ��    12/08/01  �쥻�ťǡ��������å���ǽ�б�
-      *  04.07.02    NACL-ƣ��    13/10/07  ϫ�ҥ쥻�ťǡ��������å���ǽ
-      *                                     �б�
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.02    NACL-藤原    13/10/07  労災レセ電データチェック機能
+      *                                     対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-ƣ��    14/08/26  fdd �ѻߤ�ȼ���б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
       *
-      *  05.00.01    NACL-ƣ��    17/11/29  ���饤����Ȱ����б�
+      *  05.00.01    NACL-藤原    17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -63,17 +63,17 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
                                    BY          //RECEERR//.
       *
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPERRFL.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "T01SCR-SPA".
            COPY    "CPORCSPRTLNK.INC"
                                    REPLACING  //LNK-//
@@ -84,17 +84,17 @@
                                    REPLACING  //LNK-//
                                    BY         //SPA-6-LNK-//.
       *
-      *    �쥻�ץȺ����ؼ����̥ѥ�᥿
+      *    レセプト作成指示共通パラメタ
            COPY    "T01COMMON-SPA".
       *
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
@@ -118,7 +118,7 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    �ץ�ӥ塼�Ѿ���
+      *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
       *
        01  WRK-LNK-AREA.
@@ -134,70 +134,70 @@
       *
            03  WRK-T99-MSG.
                05  WRK-T99-MSG1    PIC X(24)   VALUE
-                   "����������˽�λ���ޤ���".
+                   "処理は正常に終了しました".
                05  FILLER          PIC X(10)   VALUE
-                   "���쥻�ץ�".
+                   "　レセプト".
                05  WRK-T99-MSG-KENSU
                                    PIC ZZZZZ9.
-               05  FILLER          PIC X(02)   VALUE   "��".
+               05  FILLER          PIC X(02)   VALUE   "件".
       *
        01  WRK-CONS-AREA.
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����  
+      *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "044".
-      *    ���������ģ¤Υ�����  
+      *    印刷管理ＤＢのキー値  
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                    PIC X(08)   VALUE   "SOKATU".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
-      *    ����ִ����ģ¤Υ�����  
+      *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
       *****03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *     
-      *    �ѥ�᥿�ģ¤Υ����͡ʥ쥻�ź�����  
+      *    パラメタＤＢのキー値（レセ電作成）  
            03  WRK-CONS-BTPARA-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
            03  WRK-CONS-BTPARA-SCRIPTID
                                    PIC X(10)   VALUE   "recept4.sh".
       *
-      *    ���顼�ե�����ɣ�
+      *    エラーファイルＩＤ
            03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR044ERR".
       *    
-      *    ����ü���ɣ�
+      *    固定端末ＩＤ
            03  WRK-CONS-TERMID.
                05  FILLER          PIC X(08)   VALUE   "0100007F". 
                05  FILLER          PIC X(56)   VALUE   ALL "Z".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSK3003.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -216,7 +216,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -242,7 +242,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN      OTHER
                    PERFORM 200-GMNSENI
            END-EVALUATE
@@ -263,7 +263,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -282,7 +282,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
@@ -290,14 +290,14 @@
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ��������
+      *    処理状態
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-      *    �ץ�ӥ塼���̤�
+      *    プレビュー画面へ
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
@@ -306,7 +306,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -333,7 +333,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�ӥ塼���̤�����
+      *    プレビュー画面へ遷移
       *****************************************************************
        4501-NEXT-GMN-SEC            SECTION.
       *
@@ -354,7 +354,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
@@ -371,7 +371,7 @@
            IF    ( SPA-TID1-FLG    =   "PV" ) 
            OR    ( SPA-RECEDEN-FLG =   "PV" ) 
                IF      SPA-T99-MOTOPG  NOT =   "T04"
-                   MOVE    "F12:�ץ�ӥ塼"    TO  T99-B12-LABEL
+                   MOVE    "F12:プレビュー"    TO  T99-B12-LABEL
                END-IF
            END-IF 
       *        
@@ -389,7 +389,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -417,16 +417,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    WRK-PAGE        TO  T99-PAGE     (IDX)
                        MOVE    JOB-YOBI        TO  T99-ERRMSG   (IDX)
                        IF      JOB-ENDYMD      =   SPACE
-                           MOVE    "������Ǥ�"    TO  T99-MSG
+                           MOVE    "処理中です"    TO  T99-MSG
                        ELSE
                            IF      JOB-ERRCD       =   SPACE
                                IF      JOB-PGID        =   "ORCBPRT1"
                                    CONTINUE
                                ELSE
-      *                            �쥻�ťǡ��������å��ꥹ�Ȥ�̵ͭ
+      *                            レセ電データチェックリストの有無
                                    IF      JOB-UPDCNT1 >   ZERO
                                        MOVE
-                                   "�ڥ����å��ꥹ�Ȥ���������ޤ�����"
+                                   "【チェックリストが作成されました】"
                                                  TO  T99-ERRMSG   (IDX)
                                    END-IF  
                                END-IF
@@ -436,9 +436,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                MOVE    9           TO  SPA-T01-SYORIFLG
                                IF      T99-MSG     =   SPACE
                                  STRING  JOB-YOBI    DELIMITED BY SPACE
-                                         "��"        DELIMITED BY SIZE
+                                         "【"        DELIMITED BY SIZE
                                         JOB-SHELLMSG DELIMITED BY SPACE
-                                        "��"         DELIMITED BY SIZE
+                                        "】"         DELIMITED BY SIZE
                                                      INTO  T99-MSG
                                  END-STRING   
                                END-IF
@@ -447,12 +447,12 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    IDX                     TO  T99-COUNT
       *
                        IF    ( JOB-PGID        =   "ORCBPRT1" )
-      *                    Ģɼ���������ǽ����������
+      *                    帳票印刷処理で処理した枚数
                            MOVE    JOB-UPDCNT  TO  WRK-PRT-PAGE
                        ELSE
-      *                    �쥻�ťǡ��������å��ꥹ�Ȥ����
+      *                    レセ電データチェックリストの枚数
                            MOVE    JOB-UPDCNT1 TO  WRK-PRT-PAGE1
-      *                    �쥻�ťǡ����Υ쥻�ץȷ��
+      *                    レセ電データのレセプト件数
                            MOVE    JOB-UPDCNT2 TO  WRK-PRT-PAGE2
                        END-IF
                    END-IF
@@ -463,7 +463,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "B01"                TO  MCP-WIDGET
                IF      T99-COUNT            >   ZERO
                    IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
-      *                ��å������Խ�����
+      *                メッセージ編集処理
                        PERFORM 4900-MSG-HENSYU-SEC
                    ELSE
       ***              IF      SPA-RECEDEN-FLG =   "OK"
@@ -473,17 +473,17 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                            IF    ( SPA-RECEDEN-FLG     =   "PV"
                                                        OR  "OK" )
                            AND   ( SPA-T01-SYORIFLG    =   1    )
-      *                        �쥻�Ž�����ΰ�������
+      *                        レセ電処理後の印刷処理
                                PERFORM 4903-PRINT-SEC
                            END-IF
                            MOVE    9       TO  SPA-T01-SYORIFLG
-      *                    ��å������Խ�����
+      *                    メッセージ編集処理
                            PERFORM 4900-MSG-HENSYU-SEC
                            GO  TO  490-KAKUNIN-EXT
       ***              END-IF
                    END-IF
                ELSE
-                   MOVE    "������������Ϥ���ޤ���"
+                   MOVE    "該当する処理はありません"
                                                 TO  T99-MSG
                END-IF                                 
                MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
@@ -536,7 +536,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        IF      SPA-T99-FILESV-CHK-FLG  =   ZERO
                            PERFORM 4902-FILE-INFO-CHK-SEC
                        ELSE
-      *                    �ե����륨��ȥ����(���饤�������¸)
+      *                    ファイルエントリ処理(クライアント保存)
                            IF      SPA-T99-MOTOPG  =   "T04"
                                CONTINUE
                            ELSE
@@ -562,7 +562,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��å������Խ�����
+      *    メッセージ編集処理
       *****************************************************************
        4900-MSG-HENSYU-SEC         SECTION.
       *
@@ -570,13 +570,13 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            AND   ( WRK-PRT-PAGE2   =   ZERO )
                MOVE    WRK-T99-MSG1    TO  T99-MSG
            ELSE
-      *        �쥻�ťǡ����������Υ쥻�ץȷ��
+      *        レセ電データ作成時のレセプト件数
                IF      WRK-PRT-PAGE2   >   ZERO
                    MOVE    WRK-PRT-PAGE2   TO  WRK-T99-MSG-KENSU
                    MOVE    WRK-T99-MSG     TO  T99-MSG
                END-IF
       *
-      *        �쥻�ťǡ��������å����Υ��顼�ꥹ�Ȥ�̵ͭ
+      *        レセ電データチェック時のエラーリストの有無
                IF      WRK-PRT-PAGE1   >   ZERO
                    MOVE    "red"           TO  T99-MSG-STYLE
                END-IF
@@ -587,11 +587,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���饤�������¸��������å�����
+      *    クライアント保存情報チェック処理
       *****************************************************************
        4902-FILE-INFO-CHK-SEC          SECTION.
       *
-      *    �ãӣְ����������ܤ����Ȥ�
+      *    ＣＳＶ一覧から遷移したとき
            IF      SPA-T99-MOTOPG  =   "T04"
                MOVE    1                   TO  SPA-T99-FILESV-CHK-FLG
                MOVE    1                   TO  T99-DURATION
@@ -642,11 +642,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�Ž�����ΰ�������
+      *    レセ電処理後の印刷処理
       *****************************************************************
        4903-PRINT-SEC            SECTION.
       *
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
            ADD     1               TO  SPA-T01-JOB-JOBID
       *       
            MOVE    "DEL"           TO  SJOBKANRI-MODE
@@ -679,14 +679,14 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-LNK-PRTKANRI-AREA
                                    TO  LNK-PRTKANRI-AREA
       *
-      *    ��������
+      *    印刷処理
            PERFORM 49031-PRINT-SYORI-SEC
       *
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *
            PERFORM 49032-JIBID-UPD-SEC
       *
-      *    �����ǡ����������
+      *    印刷データ削除処理
            MOVE    SPACE               TO  SHELLTBL
       *
            MOVE    "prtdbdel.sh"       TO  SHELLTBL-NAME
@@ -707,7 +707,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        49031-PRINT-SYORI-SEC           SECTION.
       *
@@ -715,7 +715,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    99999               TO  WRK-EDPAGE
       *             
            MOVE    SPACE               TO  SHELLTBL
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルデイレクトリ位置指定
            MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
       *
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
@@ -779,7 +779,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *****************************************************************
        49032-JIBID-UPD-SEC    SECTION.
       *
@@ -830,7 +830,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨��ȥ����(���饤�������¸)
+      *    ファイルエントリ処理(クライアント保存)
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
@@ -842,7 +842,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            MOVE    1                    TO  SPA-T01-TIMER-FLG
       *
-      *    �ãӣְ����������ܤ����Ȥ�
+      *    ＣＳＶ一覧から遷移したとき
            IF      SPA-T99-MOTOPG  =   "T04"
                INITIALIZE                      ORCA-BLOB
                MOVE    "BLOBIMPORT"        TO  MCP-FUNC
@@ -914,7 +914,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���饤�������¸���󹹿��ʽ������˽���
+      *    クライアント保存情報更新（処理日）処理
       *****************************************************************
        4903-FILESV-UPDATE-SEC          SECTION.
       *
@@ -953,39 +953,39 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������åȽ���
+      *    エラーメッセージセット処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
            EVALUATE    JOB-ERRCD
                WHEN    "0001"
-                   MOVE    "�ڥե����뤬����ޤ����" 
+                   MOVE    "【ファイルがありません】" 
                                                TO  T99-MSG
                WHEN    "0002"
-                   MOVE    "�ڣ��䤬��ư����Ƥ��ޤ����" 
+                   MOVE    "【ｆｄｄが起動されていません】" 
                                                TO  T99-MSG
                WHEN    "0003"
                WHEN    "0004"
-                   MOVE    "�ڣ���ǽ��������Ԥ��ޤ�����" 
+                   MOVE    "【ｆｄｄで処理が失敗しました】" 
                                                TO  T99-MSG
                WHEN    "0011"
-                   MOVE    "�����Τ��ޥ���ȤǤ��ޤ���Ǥ�����" 
+                   MOVE    "【媒体がマウントできませんでした】" 
                                                TO  T99-MSG
                WHEN    "0012"
-                   MOVE    "�����Τ�����ޥ���ȤǤ��ޤ���Ǥ�����" 
+                   MOVE    "【媒体がアンマウントできませんでした】" 
                                                TO  T99-MSG
                WHEN    "0021"
-                   MOVE    "�ڥե����륳�ԡ��ǥ��顼��ȯ�����ޤ�����" 
+                   MOVE    "【ファイルコピーでエラーが発生しました】" 
                                                TO  T99-MSG
                WHEN    "0077"
-                   MOVE    "������ե�����κ����˼��Ԥ��ޤ�����" 
+                   MOVE    "【履歴フォルダの作成に失敗しました】" 
                                                TO  T99-MSG
                WHEN    "0127"
-                   MOVE    "�ڥ�����ץȤ��¹ԤǤ��ޤ���Ǥ�����" 
+                   MOVE    "【スクリプトが実行できませんでした】" 
                                                TO  T99-MSG
                WHEN    "0099"
                    MOVE
-                   "�ڥ쥻�ťǡ��������å������ǥ��顼��ȯ�����ޤ�����"
+                   "【レセ電データチェック処理でエラーが発生しました】"
                                                TO  T99-MSG
            END-EVALUATE
       *
@@ -994,7 +994,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        520-ERRSET-SEC              SECTION.
       *
@@ -1002,10 +1002,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�оݤΥѥ�᥿�ģ¤�¸�ߤ��ޤ���" 
+                   MOVE    "対象のパラメタＤＢが存在しません" 
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "�ѥ�᥿�ģ¤ι��������ǥ��顼�Ȥʤ�ޤ���" 
+                   MOVE    "パラメタＤＢの更新処理でエラーとなりました" 
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -1029,7 +1029,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -1058,7 +1058,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1072,7 +1072,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1089,7 +1089,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1102,7 +1102,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1114,7 +1114,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1127,7 +1127,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

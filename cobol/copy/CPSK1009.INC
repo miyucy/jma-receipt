@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,79 +16,79 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK1009.INC)   *
-      *         �ʣ���������                            *
-      *         �����ֹ湽������                        *
+      *         システム管理マスタ     (CPSK1009.INC)   *
+      *         （１００９）                            *
+      *         患者番号構成管理                        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-¿��Ǽ   01/11/27  ��ͳ������ʬ�ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-多々納   01/11/27  自由構成区分追加
       ************************************************************
        01  SYS-1009-REC.
            03  SYS-1009-KEY.
                05  SYS-1009-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-1009-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-1009-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-1009-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-1009-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-1009-TBL.
-      *�����ֹ湽����ʬ
+      *患者番号構成区分
                05  SYS-1009-PTNUMKSIKBN             PIC X(01).
-      *��ͳ����
+      *自由構成
                05  SYS-1009-JIYKSI.
-      *    ��ͳ������ʬ
+      *    自由構成区分
                    07  SYS-1009-JIYKSIKBN           PIC X(01).
-      *    ��ͳ�������
+      *    自由構成桁数
                    07  SYS-1009-JIYKSIKETA          PIC 9(02).
-      *ɸ�๽����ʬ
+      *標準構成区分
                05  SYS-1009-HJNKSI.
-      *    ɸ�๽����ʬ
+      *    標準構成区分
                    07  SYS-1009-HJNKSIKBN           PIC X(01).
-      *    ɸ�๽��ǯ��ʬ
+      *    標準構成年区分
                    07  SYS-1009-HJNKSINENKBN        PIC X(01).
-      *    ɸ�๽��Ϣ�ֽ������ʬ
+      *    標準構成連番初期化区分
                    07  SYS-1009-HJNKSIRENNUMKBN     PIC X(01).
-      *    ɸ�๽��Ϣ�ֹ���
+      *    標準構成連番号桁数
                    07  SYS-1009-HJNKSIRENNUMKETA    PIC 9(02).
-      *��ĥ������ʬ
+      *拡張構成区分
                05  SYS-1009-KKCYKSI.
-      *    ��ĥ������ʬ
+      *    拡張構成区分
                    07  SYS-1009-KKCKSIKBN           PIC X(01).
-      *    ��ĥ���������
+      *    拡張構成前桁数
                    07  SYS-1009-KKCKSIMAEKETA       PIC 9(02).
-      *    ��ĥ����Ϣ�ֹ���
+      *    拡張構成連番号桁数
                    07  SYS-1009-KKCKSIRENNUMKETA    PIC 9(02).
-      *    ��ĥ��������
+      *    拡張構成後桁数
                    07  SYS-1009-KKCKSIATOKETA       PIC 9(02).
-      *ǯ
+      *年
                05  SYS-1009-NEN                 PIC X(04).
-      *Ϣ�ֹ�
+      *連番号
                05  SYS-1009-RENNUM              PIC 9(10).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SYS-1009-PTID                PIC 9(10).
-      *ǯ���ؤ���
+      *年切替え月
                05  SYS-1009-NENTUKI             PIC X(02).
-      *ͽ��
+      *予備
       *********05                           PIC  X(461).
       *******  05                           PIC  X(460).
                05  SYS-1009-YOBI            PIC  X(458).
-      *ü���ɣ�
+      *端末ＩＤ
                05  SYS-1009-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
                05  SYS-1009-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
                05  SYS-1009-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
                05  SYS-1009-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
                05  SYS-1009-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-1009-UPD-KEY.
                05  SYS-1009-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1009-UPD-KANRICD     PIC X(04).

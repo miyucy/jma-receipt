@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,43 +16,43 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÎò¥Á¥§¥Ã¥¯¡¡   COPY (CPORCSC91.INC)
-      *                              (ORCSC91 ¤Ç»ÈÍÑ¡Ë
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šæ­´ãƒã‚§ãƒƒã‚¯ã€€   COPY (CPORCSC91.INC)
+      *                              (ORCSC91 ã§ä½¿ç”¨ï¼‰
       *
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     NACL-Â¿¡¹Ç¼  02/09/02  Ê»ÍÑ»»ÄêÊ¬¤òÉ½¼¨
-      * 04.07.00     NACL-Â¿¡¹Ç¼  11/11/29  Æþ±¡´ü´ÖÊ¬ÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     NACL-å¤šã€…ç´  02/09/02  ä½µç”¨ç®—å®šåˆ†ã‚’è¡¨ç¤º
+      * 04.07.00     NACL-å¤šã€…ç´  11/11/29  å…¥é™¢æœŸé–“åˆ†è¿½åŠ 
       ************************************************************
       *
        01  ORCSC91AREA.
-      *ÆþÎÏ
-      *    1:ÆþÎÏÊ¬   2:¼«Æ°ÄÉ²ÃÊ¬ 3¡§¥Á¥§¥Ã¥¯Ê¬
-      *    9:Æþ±¡´ü´Ö 8:·ÑÂ³Æþ±¡´ü´Ö¡Ê·ÑÂ³½é²óÆþ±¡Æü¤«¤é¡Ë
+      *å…¥åŠ›
+      *    1:å…¥åŠ›åˆ†   2:è‡ªå‹•è¿½åŠ åˆ† 3ï¼šãƒã‚§ãƒƒã‚¯åˆ†
+      *    9:å…¥é™¢æœŸé–“ 8:ç¶™ç¶šå…¥é™¢æœŸé–“ï¼ˆç¶™ç¶šåˆå›žå…¥é™¢æ—¥ã‹ã‚‰ï¼‰
            03  LNK-SC91-KBN            PIC X(01).
-      *    ÄûÀµ¥Õ¥é¥°¡Ê£±¡§ÄûÀµ¡Ë
+      *    è¨‚æ­£ãƒ•ãƒ©ã‚°ï¼ˆï¼‘ï¼šè¨‚æ­£ï¼‰
            03  LNK-SC91-SYORIFLG       PIC 9(01).
-      *    ¿ÇÎÅ¥³¡¼¥É
+      *    è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  LNK-SC91-SRYCD          PIC X(09).
-      *    ¸½ºß£Ó£Ð£Á£É£Ä£Ø¡Ê1:ÆþÎÏÊ¬¤Î»þ¡Ë
+      *    ç¾åœ¨ï¼³ï¼°ï¼¡ï¼©ï¼¤ï¼¸ï¼ˆ1:å…¥åŠ›åˆ†ã®æ™‚ï¼‰
            03  LNK-SC91-GMN-IDX        PIC 9(04).
-      *    ²ó¿ô
+      *    å›žæ•°
            03  LNK-SC91-KAISU          PIC 9(03).
-      *    ¿ôÎÌ
+      *    æ•°é‡
            03  LNK-SC91-SURYO          PIC 9(03).
-      *    ÄûÀµ»þ¤Î¿ÇÎÅ¥³¡¼¥É
+      *    è¨‚æ­£æ™‚ã®è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  LNK-SC91-TEISEI-AREA.
                05  LNK-SC91-TEISEI-OCC      OCCURS   400.
                    07  LNK-SC91-TEI-SRYCD   PIC X(09).
                    07  LNK-SC91-TEI-KAISU   PIC 9(03).
-      *    Ï«ºÒ¤Î¥ê¥Ï¥Ó¥ê¡Ê£°¡§¥Á¥§¥Ã¥¯¤¢¤ê¡¢£±¡§£³·î°ÊÆâ¤Ê¤·¡Ë
+      *    åŠ´ç½ã®ãƒªãƒãƒ“ãƒªï¼ˆï¼ï¼šãƒã‚§ãƒƒã‚¯ã‚ã‚Šã€ï¼‘ï¼šï¼“æœˆä»¥å†…ãªã—ï¼‰
            03  LNK-SC91-CHKFLG         PIC 9(01).
-      *    Æþ±¡´ü´Ö»»Äê²ó¿ô
+      *    å…¥é™¢æœŸé–“ç®—å®šå›žæ•°
            03  LNK-SC91-NYUCNT         PIC 9(03).
       *
-      *³°Íè¤Þ¤È¤á»»ÄêÍúÎòÎÎ°è
+      *å¤–æ¥ã¾ã¨ã‚ç®—å®šå±¥æ­´é ˜åŸŸ
            03  LNK-SC91-KT01-AREA.
                05  LNK-SC91-KT01FLG         PIC X(01).
                05  LNK-SC91-KT01-OCC        OCCURS   100.
@@ -61,31 +61,31 @@
                        09  LNK-SC91-KT01-DAY     PIC 9(03)
                                                   OCCURS   31.
       *
-      *½ÐÎÏ
-      *    ºÇÂç·ï¿ô
+      *å‡ºåŠ›
+      *    æœ€å¤§ä»¶æ•°
            03  LNK-SC91-MAXCNT         PIC 9(04).
-      *    ¸½ºß·ï¿ô
+      *    ç¾åœ¨ä»¶æ•°
            03  LNK-SC91-CNT            PIC 9(04).
       *
-      *    ºÇÂç·ï¿ô(Æü¡Ë
+      *    æœ€å¤§ä»¶æ•°(æ—¥ï¼‰
            03  LNK-SC91-DAYMAXCNT      PIC 9(04).
-      *    ¸½ºß·ï¿ô¡ÊÆü¡Ë
+      *    ç¾åœ¨ä»¶æ•°ï¼ˆæ—¥ï¼‰
            03  LNK-SC91-DAYCNT         PIC 9(04).
-      *    ÄûÀµ¸å²ó¿ô
+      *    è¨‚æ­£å¾Œå›žæ•°
            03  LNK-SC91-ATO-CNT        PIC 9(04).
       *
-      *    ºÇÂç·ï¿ô(½µ¡Ë
+      *    æœ€å¤§ä»¶æ•°(é€±ï¼‰
            03  LNK-SC91-WEEKMAXCNT     PIC 9(04).
-      *    ¸½ºß·ï¿ô¡Ê½µ¡Ë
+      *    ç¾åœ¨ä»¶æ•°ï¼ˆé€±ï¼‰
            03  LNK-SC91-WEEKCNT        PIC 9(04).
       *
-      *    Æþ±¡ÆüÁ°·ï¿ô
+      *    å…¥é™¢æ—¥å‰ä»¶æ•°
            03  LNK-SC91-NYUZCNT        PIC 9(03).
       *
-      *    ¥¨¥é¡¼¥³¡¼¥É
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  LNK-SC91-ERRCD          PIC X(04).
-      *    ¥¨¥é¡¼¿ÇÎÅ¥á¥Ã¥»¡¼¥¸
+      *    ã‚¨ãƒ©ãƒ¼è¨ºç™‚ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
            03  LNK-SC91-ERRMSG         PIC X(200).
-      *    ¥¨¥é¡¼¥³¡¼¥É£²
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰ï¼’
            03  LNK-SC91-ERRCD2         PIC X(04).
       *

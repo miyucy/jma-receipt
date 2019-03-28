@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORAPI052BR4V3.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���Դ��ܾ������ֵ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  17/10/XX    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 患者基本情報一括返却
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  17/10/XX    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 05.00.00     NACL-¿��Ǽ  18/10/XX  ǧ�ξ��ϰ��������ʤ��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  18/10/XX  認知症地域包括設定など追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,14 +35,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
@@ -50,11 +50,11 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYORI-END       PIC 9(01).
@@ -74,27 +74,27 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-CONFCHK         PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT             PIC 9(10).
            03  CNT-OUT1            PIC 9(10).
            03  CNT-XMLCOUNT        PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDY2                PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -102,21 +102,21 @@
            03  WRK-PARA-HOSPNUM    PIC X(02).
            03  WRK-PARA-TERMID     PIC X(64).
            03  WRK-PARA-ERRFILE    PIC X(64).
-      *    1:������������2:����
+      *    1:更新、新規、2:新規
            03  WRK-PARA-SYORIKBN   PIC X(01).
-      *    ���Ծ��󹹿������о�
+      *    患者情報更新日付対象
            03  WRK-PARA-START-YMD  PIC X(08).
            03  WRK-PARA-END-YMD    PIC X(08).
            03  WRK-PARA-SYS-YMD.
                05  WRK-SYSYM       PIC X(06).
                05  WRK-SYSDD       PIC X(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
       *
            03  WRK-MCP-PATHNAME        PIC X(64).
-      *    ���Ψ
+      *    割引率
            03  WRK-RATE-EDIT.
                05  WRK-RATE-EDITZ      PIC ZZZZZZZ.
                05  WRK-RATE-TANI       PIC X(04).
@@ -150,80 +150,80 @@
        01  PTINFLST-MAX            PIC 9(02)   VALUE   39.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ��������
+      *    職員情報
            COPY  "CPSK1010.INC".
       *
            COPY  "CPSK4002.INC".
-      *    ���־���
+      *    状態情報
            COPY    "CPSK1018.INC".
-      *    ���Ȼ�ͳ����
+      *    減免事由情報
            COPY    "CPSK1026.INC".
-      *    ���Ψ����
+      *    割引率情報
            COPY    "CPSK1027.INC".
-      *    ������ˡ
+      *    入金方法
            COPY    "CPSK1041.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ϰ�Ϣ�ȥơ��֥�
+      *    患者地域連携テーブル
       *01  PTPUBLIC-REC.
       *    COPY    "CPPTNUM-PUBLIC.INC".
-      *    ���Բ���ݸ�����ơ��֥�
+      *    患者介護保険情報テーブル
       *01  PTCARE-HKNINF-REC.
       *    COPY    "CPPTCARE-HKNINF.INC".
-      *    ���Բ��ǧ��Ծ���ơ��֥�
+      *    患者介護認定者情報テーブル
       *01  PTCARE-NINTEI-REC.
       *    COPY    "CPPTCARE-NINTEI.INC".
-      *    ���Ը�������ơ��֥�
+      *    患者個別設定テーブル
       *01  PTCONF-REC.
       *    COPY    "CPPTCONF.INC".
-      *    ��������
+      *    受診履歴
       *01  JYURRK-REC.
       *    COPY    "CPJYURRK.INC".
       *
-      *    ���ԸĿ��ֹ�ơ��֥�
+      *    患者個人番号テーブル
       *01  PTMYNUMBER-REC.
       *    COPY    "CPPTMYNUMBER.INC".
       *
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ݸ��ȹ礻���å��ΰ�
+      *    保険組合せセット領域
            COPY    "CPORCSAPIHKNALL.INC".
       *
-      *    �����象������ѥ�᥿
+      *    前回来院日設定パラメタ
            COPY    "CPORCSLASTYMD.INC".
       *
-      *    �����ϰ�Ϣ�����Խ��ѥ�᥿
+      *    患者地域連携等編集パラメタ
            COPY    "CPORAPI012RSUB1.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -237,7 +237,7 @@
            COPY    "CPORCSAPIFILE.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -251,7 +251,7 @@
                                    COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -266,7 +266,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -316,32 +316,32 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORAPI052BR4V3"     TO  JOB-PGID
-           MOVE    "���Դ��ܾ����ֵ�"  TO  JOB-SHELLMSG
+           MOVE    "患者基本情報返却"  TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                      PTNUM-REC
            MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
-      *    ����ǯ����
+      *    作成年月日
            MOVE    WRK-PARA-START-YMD      TO  PTNUM-CREYMD
-      *    ����ǯ����
+      *    更新年月日
            MOVE    WRK-PARA-START-YMD      TO  PTNUM-UPYMD
            IF      WRK-PARA-SYORIKBN   =   "1"
-      *        ��������Ͽ
+      *        更新・登録
                MOVE    "key6"              TO  WRK-MCP-PATHNAME
            ELSE
-      *        ��Ͽ
+      *        登録
                MOVE    "key7"              TO  WRK-MCP-PATHNAME
            END-IF
       *
@@ -367,7 +367,7 @@
                    MOVE    ZERO                TO  FLG-SYORI-END
       *
                    IF      WRK-PARA-SYORIKBN   =   "1"
-      *                ��������Ͽ�����о�Ƚ��
+      *                更新・登録日　対象判定
                        MOVE    1               TO  FLG-SYORI-END
                        IF     (PTNUM-CREYMD    NOT =   SPACE      )
                           IF      (PTNUM-CREYMD
@@ -382,7 +382,7 @@
                            MOVE    ZERO            TO  FLG-SYORI-END
                        END-IF
                    ELSE
-      *                ��ϿȽ��
+      *                登録判定
                        IF     (PTNUM-CREYMD        >   WRK-PARA-END-YMD)
                            MOVE    1               TO  FLG-SYORI-END
                        END-IF
@@ -413,7 +413,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ����Խ�����
+      *    患者基本情報編集処理
       *****************************************************************
        2001-PTINFLST-SYORI-SEC         SECTION.
       *
@@ -429,23 +429,23 @@
                                            CNT-OUT
            MOVE    CNT-OUT1            TO  IDZ
       *
-      *    ���Ծ���
+      *    患者情報
            PERFORM 20011-PTINF-HEN-SEC
       *
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
            PERFORM 20012-HKNCOMBI-HEN-SEC
-      *    �ϰ�Ϣ�Ȥʤ��Խ�����
+      *    地域連携など編集処理
            PERFORM 20013-ETC-HEN-SEC
            .
        2001-PTINFLST-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����Խ�����
+      *    患者情報編集処理
       *****************************************************************
        20011-PTINF-HEN-SEC                SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    PTNUM-PTNUM         TO  PTINFLST-PATIENTID      (IDZ)
       *
            MOVE    PTINF-NAME          TO  PTINFLST-NAME           (IDZ)
@@ -461,24 +461,24 @@
            MOVE    PTINF-HOME-TEL1     TO  PTINFLST-HOME-HPONE1    (IDZ)
            MOVE    PTINF-HOME-TEL2     TO  PTINFLST-HOME-HPONE2    (IDZ)
       *
-      *    ���Ӽ�̾
+      *    世帯主名
            MOVE    PTINF-SETAINUSI     TO  PTINFLST-SETAI-NAME     (IDZ)
-      *    ³��
+      *    続柄
            MOVE    PTINF-ZOKUGARA      TO  PTINFLST-ZOKUGARA       (IDZ)
-      *    �ش�
+      *    禁忌
            MOVE    PTINF-TABOO-1       TO  PTINFLST-TABOO-1        (IDZ)
            MOVE    PTINF-TABOO-2       TO  PTINFLST-TABOO-2        (IDZ)
-      *    ����륮��
+      *    アレルギー
            MOVE    PTINF-ALLERGY-1     TO  PTINFLST-ALLERGY-1      (IDZ)
            MOVE    PTINF-ALLERGY-2     TO  PTINFLST-ALLERGY-2      (IDZ)
-      *    ������
+      *    感染症
            MOVE    PTINF-KANSENSYO-1   TO  PTINFLST-KANSENSYO-1    (IDZ)
            MOVE    PTINF-KANSENSYO-2   TO  PTINFLST-KANSENSYO-2    (IDZ)
-      *    ������
+      *    コメント
            MOVE    PTINF-COMMENT-1     TO  PTINFLST-COMMENT-1      (IDZ)
            MOVE    PTINF-COMMENT-2     TO  PTINFLST-COMMENT-2      (IDZ)
       *
-      *    ��̳�����
+      *    勤務先情報
            MOVE    PTINF-OFFICE-NAME   TO  PTINFLST-OFFICE-NAME    (IDZ)
            MOVE    PTINF-OFFICE-POST   TO  PTINFLST-OFFICE-ZIP-CODE(IDZ)
            MOVE    PTINF-OFFICE-ADRS   TO  PTINFLST-OFFICE-ADDRESSES1
@@ -486,7 +486,7 @@
            MOVE    PTINF-OFFICE-BANTI  TO  PTINFLST-OFFICE-ADDRESSES2
                                                                    (IDZ)
            MOVE    PTINF-OFFICE-TEL    TO  PTINFLST-OFFICE-HPONE   (IDZ)
-      *    Ϣ�������
+      *    連絡先情報
            MOVE    PTINF-RENRAKU-NAME  TO  PTINFLST-RENRAKU-NAME   (IDZ)
            MOVE    PTINF-RENRAKU-ZOKUGARA
                                        TO  PTINFLST-RENRAKU-ZOKUGARA
@@ -499,7 +499,7 @@
                                                                    (IDZ)
            MOVE    PTINF-RENRAKU-TEL1  TO  PTINFLST-RENRAKU-HPONE1 (IDZ)
            MOVE    PTINF-RENRAKU-TEL2  TO  PTINFLST-RENRAKU-HPONE2 (IDZ)
-      *    ������
+      *    帰省先
            MOVE    PTINF-KISEI-NAME    TO  PTINFLST-KISEI-NAME     (IDZ)
            MOVE    PTINF-KISEI-POST    TO  PTINFLST-KISEI-ZIP-CODE (IDZ)
            MOVE    PTINF-KISEI-ADRS    TO  PTINFLST-KISEI-ADDRESSES1
@@ -508,26 +508,26 @@
                                                                    (IDZ)
            MOVE    PTINF-KISEI-TEL     TO  PTINFLST-KISEI-HPONE    (IDZ)
       *
-      *    �ƥ��ȴ����ֹ��ʬ
+      *    テスト患者番号区分
            MOVE    PTINF-TSTPTNUMKBN   TO  PTMODRES-TEST-PATIENT   (IDZ)
            IF      PTINF-TSTPTNUMKBN   =   SPACE
                MOVE    "0"                 TO  PTMODRES-TEST-PATIENT
                                                                    (IDZ)
            END-IF
-      *    ��˴��ʬ
+      *    死亡区分
            MOVE    PTINF-DEATHKBN      TO  PTMODRES-DEATHKBN       (IDZ)
       *
-      *    �̾�̾
+      *    通称名
            MOVE    PTINF-NICKNAME      TO  PTINFLST-NICKNAME       (IDZ)
-      *    ����
+      *    職業
            MOVE    PTINF-JOB           TO  PTINFLST-JOB            (IDZ)
-      *    �ƣ����ֹ�
+      *    ＦＡＸ番号
            MOVE    PTINF-FAX           TO  PTINFLST-FAX            (IDZ)
-      *    ����
+      *    携帯
            MOVE    PTINF-KEITAI-TEL    TO  PTINFLST-KEITAI-TEL     (IDZ)
-      *    �᡼��
+      *    メール
            MOVE    PTINF-EMAIL         TO  PTINFLST-EMAIL          (IDZ)
-      *    ���Ȼ�ͳ
+      *    減免事由
            MOVE    PTINF-DISCOUNT-KBN  TO  PTINFLST-DISCOUNTKBN    (IDZ)
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1026"              TO  SYS-KANRICD
@@ -539,7 +539,7 @@
                                            TO  PTINFLST-DISCOUNTKBN-NAME
                                                                    (IDZ)
            END-IF
-      *    ���Ψ
+      *    割引率
            MOVE    PTINF-DISCOUNT      TO  PTINFLST-DISCOUNT       (IDZ)
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1027"              TO  SYS-KANRICD
@@ -553,19 +553,19 @@
                                        TO  WRK-RATE-EDITZ
                EVALUATE    SYS-1027-TEIRITU
                WHEN    "0"
-                   MOVE    "�����ʤ�"      TO  PTINFLST-DISCOUNT-NAME
+                   MOVE    "該当なし"      TO  PTINFLST-DISCOUNT-NAME
                                                                    (IDZ)
                WHEN    "1"
                    MOVE    "(%)"           TO  WRK-RATE-TANI
                    MOVE    WRK-RATE-EDIT   TO  PTINFLST-DISCOUNT-NAME
                                                                    (IDZ)
                WHEN    "2"
-                   MOVE    "(��)"          TO  WRK-RATE-TANI
+                   MOVE    "(円)"          TO  WRK-RATE-TANI
                    MOVE    WRK-RATE-EDIT   TO  PTINFLST-DISCOUNT-NAME
                                                                    (IDZ)
                END-EVALUATE
            END-IF
-      *    ���֣�����
+      *    状態１〜３
            PERFORM VARYING   IDX       FROM    1   BY  1
                    UNTIL    (IDX       >  3        )
                INITIALIZE                      SYSKANRI-REC
@@ -597,7 +597,7 @@
                                                                (IDZ IDX)
                END-IF
            END-PERFORM
-      *    ������ˡ
+      *    入金方法
            MOVE    PTINF-NYUKIN-HOHO   TO  PTINFLST-IC-CODE        (IDZ)
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1041"              TO  SYS-KANRICD
@@ -614,12 +614,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
       *****************************************************************
        20012-HKNCOMBI-HEN-SEC                SECTION.
       *
            MOVE    PTINF-PTID          TO  SPA-PTID
-      *    �ݸ��ȹ礻�Խ������������
+      *    保険組合せ編集処理（全件）
            INITIALIZE                      ORCSAPIHKNALLAREA
            MOVE    SPACE               TO  ORCSAPIHKN-KBN
            CALL    "ORCSAPIHKNALL"     USING
@@ -627,18 +627,18 @@
                                        ORCSAPIHKNALLAREA
       *
            IF      ORCSAPIHKN-ERRCD    =   1
-      *        200��ʾ夢��ϡ����ǯ��Τ��о�
+      *        200件以上ありは、基準年月のみ対象
                INITIALIZE                      ORCSAPIHKNALLAREA
                MOVE    SPACE               TO  ORCSAPIHKN-KBN
                MOVE    WRK-PARA-SYS-YMD          TO  ORCSAPIHKN-SYSYMD
-      *        ����ǯ��
+      *        基準始年月
                MOVE    WRK-PARA-SYS-YMD(1:6)     TO  ORCSAPIHKN-START-YM
                MOVE    WRK-PARA-SYS-YMD(1:6)     TO  ORCSAPIHKN-END-YM
                CALL    "ORCSAPIHKNALL"     USING
                                            SPA-AREA
                                            ORCSAPIHKNALLAREA
            END-IF
-      *    �����ΰ��ݸ������Խ�
+      *    出力領域保険情報編集
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   ORCSAPIHKN-OT-MAX)
@@ -648,7 +648,7 @@
                                            <=  WRK-PARA-SYS-YMD(1:6))
                       AND (ORCSAPIHKN-COMBN-TEKEDYMD(IDX)(1:6)
                                            >=  WRK-PARA-SYS-YMD(1:6))
-      *                �о�  
+      *                対象  
                        MOVE    1               TO  FLG-OK
                    ELSE
                        MOVE    ZERO            TO  FLG-OK
@@ -665,213 +665,213 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
       *****************************************************************
        200121-HKNHEN-TBL-SEC                SECTION.
       *
            ADD     1               TO  IDY
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            MOVE    ORCSAPIHKN-THKNCOMBI  (IDX)
                                    TO  PTINFLST-COMB-NUMBER    (IDZ IDY)
-      *    �ݸ��ȹ礻ͭ��������
+      *    保険組合せ有効開始日
            MOVE    ORCSAPIHKN-COMB-TEKSTYMD (IDX)
                                    TO  PTINFLST-COMB-START-DATE
                                                                (IDZ IDY)
            MOVE    ORCSAPIHKN-COMB-TEKEDYMD (IDX)
                                    TO  PTINFLST-COMB-END-DATE
                                                                (IDZ IDY)
-      *    �ݸ��ȹ礻��ô����������
+      *    保険組合せ負担割合（入院）
            MOVE    ORCSAPIHKN-COMB-RATEN (IDX)
                                    TO  PTINFLST-COMB-RATE-ADM
                                                                (IDZ IDY)
-      *    �ݸ��ȹ礻��ô���ʳ����
+      *    保険組合せ負担割合（外来）
            MOVE    ORCSAPIHKN-COMB-RATEG (IDX)
                                    TO  PTINFLST-COMB-RATE-OUT
                                                                (IDZ IDY)
-      *    �ݸ��ȹ礻��ɽ��
+      *    保険組合せ非表示
            EVALUATE    ORCSAPIHKN-HYOJIKBN (IDX)
                WHEN    "2"
-      *            ������ɽ��
+      *            入院非表示
                    MOVE    "I"         TO  PTINFLST-COMB-HYOJI (IDZ IDY)
                WHEN    "3"
-      *            ������ɽ��
+      *            外来非表示
                    MOVE    "O"         TO  PTINFLST-COMB-HYOJI (IDZ IDY)
                WHEN    OTHER
-      *            ��ɽ���ʤ�
+      *            非表示なし
                    MOVE    "N"         TO  PTINFLST-COMB-HYOJI (IDZ IDY)
            END-EVALUATE
       *
-      *    �ݸ��μ���
+      *    保険の種類
            MOVE    ORCSAPIHKN-HKNNUM (IDX)
                                    TO  PTINFLST-MAIN-CLASS
                                                                (IDZ IDY)
-      *    �ݸ����ֹ�
+      *    保険者番号
            MOVE    ORCSAPIHKN-HKNJANUM (IDX)
                                    TO  PTINFLST-INSURANCE-NUMBER
                                                                (IDZ IDY)
-      *    �ݸ���̾��
+      *    保険の名称
            MOVE    ORCSAPIHKN-HKNNUM-NAME (IDX)
                                    TO  PTINFLST-MAIN-NAME
                                                                (IDZ IDY)
-      *    ����
+      *    記号
            MOVE    ORCSAPIHKN-KIGO  (IDX)
                                    TO  PTINFLST-MAIN-MARK      (IDZ IDY)
-      *    �ֹ�
+      *    番号
            MOVE    ORCSAPIHKN-NUM  (IDX)
                                    TO  PTINFLST-MAIN-NUMBER    (IDZ IDY)
-      *    ��³��ʬ
+      *    継続区分
            MOVE    ORCSAPIHKN-CONTKBN  (IDX)
                                    TO  PTINFLST-MAIN-CONTINUATION
                                                                (IDZ IDY)
-      *    �����ʬ
+      *    補助区分
            MOVE    ORCSAPIHKN-HOJOKBN  (IDX)
                                    TO  PTINFLST-MAIN-ASSISTANCE
                                                                (IDZ IDY)
-      *    �����ʬ̾��
+      *    補助区分名称
            MOVE    ORCSAPIHKN-HOJOKBN-NAME  (IDX)
                                    TO  PTINFLST-MAIN-ASSISTANCE-NAME
                                                                (IDZ IDY)
-      *    �ܿͲ�²��ʬ
+      *    本人家族区分
            MOVE    ORCSAPIHKN-HONKZKKBN  (IDX)
                                    TO  PTINFLST-MAIN-FAMILY    (IDZ IDY)
-      *    ���ݸ���̾
+      *    被保険者名
            MOVE    ORCSAPIHKN-HIHKNJANAME  (IDX)
                                    TO  PTINFLST-MAIN-POLICYHOLDER
                                                                (IDZ IDY)
-      *    ͭ��������
+      *    有効開始日
            MOVE    ORCSAPIHKN-TEKSTYMD  (IDX)
                                    TO  PTINFLST-MAIN-START-DATE(IDZ IDY)
-      *    ͭ����λ��
+      *    有効終了日
            MOVE    ORCSAPIHKN-TEKEDYMD  (IDX)
                                    TO  PTINFLST-MAIN-END-DATE  (IDZ IDY)
-      *    ��ǧǯ����
+      *    確認年月日
            MOVE    ORCSAPIHKN-KAKUNINYMD  (IDX)
                                    TO  PTINFLST-MAIN-CHECK-DATE
                                                                (IDZ IDY)
            MOVE    ORCSAPIHKN-SKKGETYMD (IDX)
                                    TO  PTINFLST-MAIN-GET-DATE  (IDZ IDY)
       *
-      *    �������
+      *    公費情報
            PERFORM VARYING     IDY2    FROM    1   BY  1
                    UNTIL       IDY2    >   4
-      *        ����μ���
+      *        公費の種類
                MOVE    ORCSAPIHKN-KOHNUM (IDX IDY2)
                                        TO  PTINFLST-PUBLIC-CLASS
                                                        (IDZ IDY IDY2)
-      *        ����μ���̾��
+      *        公費の種類名称
                MOVE    ORCSAPIHKN-KOHNUM-NAME (IDX IDY2)
                                        TO  PTINFLST-PUBLIC-NAME
                                                        (IDZ IDY IDY2)
-      *        ��ô���ֹ�
+      *        負担者番号
                MOVE    ORCSAPIHKN-FTNJANUM (IDX IDY2)
                                        TO  PTINFLST-PROVIDER-NUMBER
                                                        (IDZ IDY IDY2)
-      *        ������ֹ�
+      *        受給者番号
                MOVE    ORCSAPIHKN-JKYSNUM (IDX IDY2)
                                        TO  PTINFLST-RECIPIENT-NUMBER
                                                        (IDZ IDY IDY2)
-      *        ͭ��������
+      *        有効開始日
                MOVE    ORCSAPIHKN-KOH-TEKSTYMD (IDX IDY2)
                                        TO  PTINFLST-PUBLIC-START-DATE
                                                        (IDZ IDY IDY2)
-      *        ͭ����λ��
+      *        有効終了日
                MOVE    ORCSAPIHKN-KOH-TEKEDYMD (IDX IDY2)
                                        TO  PTINFLST-PUBLIC-END-DATE
                                                        (IDZ IDY IDY2)
-      *        ��������ôΨ�ʳ��
+      *        入院−負担率（割）
                MOVE    ORCSAPIHKN-RATE-ADMISSION (IDX IDY2)
                                        TO  PTINFLST-RATE-ADMISSION
                                                        (IDZ IDY IDY2)
-      *        �����ݸ����
+      *        入院−固定額
                MOVE    ORCSAPIHKN-MONEY-ADMISSION (IDX IDY2)
                                        TO  PTINFLST-MONEY-ADMISSION
                                                        (IDZ IDY IDY2)
-      *        �������ôΨ�ʳ��
+      *        外来−負担率（割）
                MOVE    ORCSAPIHKN-RATE-OUTPATIENT (IDX IDY2)
                                        TO  PTINFLST-RATE-OUTPATIENT
                                                        (IDZ IDY IDY2)
-      *        ����ݸ����
+      *        外来−固定額
                MOVE    ORCSAPIHKN-MONEY-OUTPATIENT (IDX IDY2)
                                        TO  PTINFLST-MONEY-OUTPATIENT
                                                        (IDZ IDY IDY2)
            END-PERFORM
       *
-      *    ϫ���ݸ�̾��
+      *    労災保険名称
            MOVE    ORCSAPIHKN-ACCIDENT-NAME (IDX)
                                        TO  PTINFLST-ACCIDENT-NAME
                                                                (IDZ IDY)
-      *    ���¤�����
+      *    傷病の部位
            MOVE    ORCSAPIHKN-DISEASE-LOCATION (IDX)
                                        TO  PTINFLST-DISEASE-LOCATION
                                                                (IDZ IDY)
-      *    ����ǯ����
+      *    傷病年月日
            MOVE    ORCSAPIHKN-DISEASE-DATE (IDX)
                                        TO  PTINFLST-DISEASE-DATE
                                                                (IDZ IDY)
-      *ϫ��
-      *    ϫƯ�ݸ��ֹ�
+      *労災
+      *    労働保険番号
            MOVE    ORCSAPIHKN-ACCIDENT-NUMBER (IDX)
                                        TO  PTINFLST-ACCIDENT-NUMBER
                                                                (IDZ IDY)
-      *    ǯ��ڽ��ֹ�
+      *    年金証書番号
            MOVE    ORCSAPIHKN-PENSIONCERTIFICATE (IDX)
                                        TO  PTINFLST-PENSIONCERTIFICATE
                                                                (IDZ IDY)
-      *    �ҳ���ʬ��̾�Ρ�
+      *    災害区分（名称）
            MOVE    ORCSAPIHKN-ACCIDENT-CLASS (IDX)
                                        TO  PTINFLST-ACCIDENT-CLASS
                                                                (IDZ IDY)
-      *    ϫƯ�����Ľ𥳡���
+      *    労働基準監督署コード
            MOVE    ORCSAPIHKN-LABOR-ST-CODE (IDX)
                                        TO  PTINFLST-LABOR-ST-CODE
                                                                (IDZ IDY)
            MOVE    ORCSAPIHKN-LABOR-ST-NAME (IDX)
                                        TO  PTINFLST-LABOR-ST-NAME
                                                                (IDZ IDY)
-      *    ���Ƚ�̾��
+      *    事業所名称
            MOVE    ORCSAPIHKN-RSI-JIGYOUNAME (IDX)
                                        TO  PTINFLST-RSI-JIGYOUNAME
                                                                (IDZ IDY)
-      *    �������ƻ�ܸ�̾
+      *    所在地都道府県名
            MOVE    ORCSAPIHKN-RSI-PREFNAME (IDX)
                                        TO  PTINFLST-RSI-PREFNAME
                                                                (IDZ IDY)
-      *    �������ƻ�ܸ���ʬ
+      *    所在地都道府県区分
            MOVE    ORCSAPIHKN-RSI-PREFKBN (IDX)
                                        TO  PTINFLST-RSI-PREFKBN
                                                                (IDZ IDY)
-      *    �������ƻ�ܸ���ʬ̾��
+      *    所在地都道府県区分名称
            MOVE    ORCSAPIHKN-RSI-PREFKBNNAME (IDX)
                                        TO  PTINFLST-RSI-PREFKBNNAME
                                                                (IDZ IDY)
-      *    ����Ϸ��Զ�̾
+      *    所在地郡市区名
            MOVE    ORCSAPIHKN-RSI-CITYNAME (IDX)
                                        TO  PTINFLST-RSI-CITYNAME
                                                                (IDZ IDY)
-      *    ����Ϸ��Զ��ʬ
+      *    所在地郡市区区分
            MOVE    ORCSAPIHKN-RSI-CITYKBN (IDX)
                                        TO  PTINFLST-RSI-CITYKBN
                                                                (IDZ IDY)
-      *    ����Ϸ��Զ�̾��
+      *    所在地郡市区名称
            MOVE    ORCSAPIHKN-RSI-CITYKBNNAME (IDX)
                                        TO  PTINFLST-RSI-CITYKBNNAME
                                                                (IDZ IDY)
-      *������
-      *    �������ݸ����̾
+      *自賠責
+      *    自賠責保険会社名
            MOVE    ORCSAPIHKN-RSI-HOKENNAME (IDX)
                                        TO  PTINFLST-RSI-HOKENNAME
                                                                (IDZ IDY)
-      *���ե�������
-      *    �򹯴�����Ģ�ֹ�
+      *アフターケア
+      *    健康管理手帳番号
            MOVE    ORCSAPIHKN-RSI-KANRITCHO-NUMBER (IDX)
                                        TO  PTINFLST-RSI-KANRITCHO-NUMBER
                                                                (IDZ IDY)
-      *    »����ʬ
+      *    損傷区分
            MOVE    ORCSAPIHKN-DAMAGE-CLASS (IDX)
                                        TO  PTINFLST-DAMAGE-CLASS
                                                                (IDZ IDY)
-      *    »����ʬ̾��
+      *    損傷区分名称
            MOVE    ORCSAPIHKN-DAMAGE-CLASS-NAME (IDX)
                                        TO  PTINFLST-DAMAGE-CLASS-NAME
                                                                (IDZ IDY)
@@ -880,7 +880,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ϰ�Ϣ�Ȥʤ��Խ�����
+      *    地域連携など編集処理
       *****************************************************************
        20013-ETC-HEN-SEC       SECTION.
       *
@@ -890,29 +890,29 @@
                                        SPA-AREA
                                        ORAPI012RSUB1AREA
       *
-      *    �ϰ�Ϣ��ID
+      *    地域連携ID
            MOVE    API12SUB-COMMUNITY-CID
                                        TO  PTINFLST-COMMUNITY-CID  (IDZ)
-      *    ������Ʊ��̵ͭ
+      *    情報提供同意有無
            MOVE    API12SUB-COMMUNITY-CID-AGREE
                                        TO  PTINFLST-COMMUNITY-CID-AGREE
                                                                    (IDZ)
-      *    ����象��
+      *    初回来院日
            MOVE    API12SUB-FIRST-DATE TO  PTINFLST-FIRST-DATE     (IDZ)
-      *    �ǽ��象�����ౡ����
+      *    最終来院日（退院日）
            MOVE    API12SUB-LAST-DATE  TO  PTINFLST-LAST-DATE      (IDZ)
-      *    �������ʬ�ʣ����������
+      *    入院中区分（１：入院中）
            MOVE    API12SUB-OUTPATIENT-CLASS
                                        TO  PTINFLST-OUTPATIENT-CLASS
                                                                    (IDZ)
-      *    ��������������Τߡ�
+      *    入院日（入院中のみ）
            MOVE    API12SUB-ADMISSION-DATE
                                        TO  PTINFLST-ADMISSION-DATE (IDZ)
-      *    �ౡ���������ౡ���Τߡ�
+      *    退院日（当日退院時のみ）
            MOVE    API12SUB-DISCHARGE-DATE
                                        TO  PTINFLST-DISCHARGE-DATE (IDZ)
       *
-      *    ���Բ���ݸ�����
+      *    患者介護保険情報
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
                MOVE    API12SUB-CARE-INSURANCE-NUMBER (IDX)
@@ -928,49 +928,49 @@
                                        TO  PTINFLST-CARE-END-DATE
                                                               (IDZ IDX)
            END-PERFORM
-      *    �ײ��ǧ�����
+      *    要介護認定情報
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   50
-      *        �ײ����ֶ�ʬ
+      *        要介護状態区分
                MOVE    API12SUB-NEED-CARE-STATE-CODE (IDX)
                                    TO  PTINFLST-NEED-CARE-STATE-CODE
                                                                (IDZ IDX)
-      *        �ײ�����̾��
+      *        要介護状態名称
                MOVE    API12SUB-NEED-CARE-STATE (IDX)
                                        TO  PTINFLST-NEED-CARE-STATE
                                                                (IDZ IDX)
-      *        ǧ������
+      *        認定日付
                MOVE    API12SUB-NEED-DATE (IDX)
                                        TO  PTINFLST-NEED-DATE
                                                                (IDZ IDX)
-      *        ͭ��������
+      *        有効開始日
                MOVE    API12SUB-NEED-START-DATE (IDX)
                                        TO  PTINFLST-NEED-START-DATE
                                                                (IDZ IDX)
-      *        ͭ����λ��
+      *        有効終了日
                MOVE    API12SUB-NEED-END-DATE (IDX)
                                        TO  PTINFLST-NEED-END-DATE
                                                                (IDZ IDX)
            END-PERFORM
-      *    �ϰ��������оݼ���
+      *    地域包括診療対象疾病
            MOVE    API12SUB-COMMUNITY-DISEASE
                                        TO  PTINFLST-COMMUNITY-DISEASE
                                                                    (IDZ)
-      *    ���ԸĿ��ֹ����
+      *    患者個人番号情報
            MOVE    API12SUB-PTMYNUMBER-G
                                        TO  PTINFLST-PTMYNUMBER-G   (IDZ)
       *
       *H30.10
-      *    ǥ�زû�
+      *    妊婦加算
            MOVE    API12SUB-NINPUKBN   TO  PTINFLST-NINPUKBN(IDZ)
-      *    ǧ�ξ��ϰ�������
+      *    認知症地域包括診療
            MOVE    API12SUB-NINTIHOKATU
                                        TO  PTINFLST-NINTIHOKATU(IDZ)
-      *    ����������Ĥ�����
+      *    小児かかりつけ診療
            MOVE    API12SUB-SYOUNIKAKARI
                                        TO  PTINFLST-SYOUNIKAKARI(IDZ)
       *
-      *    ����������ư����
+      *    管理料等自動算定
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
                MOVE    API12SUB-AUTO-SRYCD(IDX)
@@ -984,22 +984,22 @@
                                                            (IDZ IDX)
            END-PERFORM
       *
-      *    ���Զش�����
+      *    患者禁忌薬剤
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   100  )
                            OR (API12SUB-DRUGCD-CODE (IDX)  =   SPACE )
-      *        �ش����ޥ�����
+      *        禁忌薬剤コード
                MOVE    API12SUB-DRUGCD-CODE (IDX)
                                        TO  PTINFLST-DRUGCD-CODE
                                                            (IDZ IDX)
                MOVE    API12SUB-DRUGCD-NAME (IDX)
                                        TO  PTINFLST-DRUGCD-NAME
                                                            (IDZ IDX)
-      *        ͭ����λ���ʥޥ�����λ����
+      *        有効終了日（マスタ終了日）
                MOVE    API12SUB-DRUGCD-END-DATE (IDX)
                                        TO  PTINFLST-DRUGCD-END-DATE
                                                            (IDZ IDX)
-      *        �ش�������
+      *        禁忌開始日
                MOVE    API12SUB-START-DATE (IDX)
                                        TO  PTINFLST-START-DATE
                                                            (IDZ IDX)
@@ -1010,7 +1010,7 @@
            EXIT.
       *
       *****************************************************************
-      *    EXPORT ����
+      *    EXPORT 処理
       *****************************************************************
        910-XMLEXPORT-SEC          SECTION.
       *
@@ -1050,7 +1050,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1079,7 +1079,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1101,12 +1101,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-OUT         =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
@@ -1128,7 +1128,7 @@
                IF      SAPIFILE-RC     =   0
                    CONTINUE
                ELSE
-                   STRING   "������ե�����������顼 RC="
+                   STRING   "ｘｍｌファイル作成エラー RC="
                                            DELIMITED   BY  SIZE
                             SAPIFILE-RC    DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -1137,7 +1137,7 @@
                END-IF
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-OUT         TO  JOB-UPDCNT
@@ -1153,7 +1153,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1167,7 +1167,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1182,7 +1182,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1199,7 +1199,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ޥ������ɹ�����
+      *    患者番号マスター読込処理
       *****************************************************************
        900-PTNUM-READ-SEC            SECTION.
       *
@@ -1217,7 +1217,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ������
+      *    患者基本情報取得
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -1247,7 +1247,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����祭���ɤ߹��߽���
+      *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEYREAD-SEC        SECTION.
       *
@@ -1283,7 +1283,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1297,7 +1297,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1313,7 +1313,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -1328,7 +1328,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1352,7 +1352,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

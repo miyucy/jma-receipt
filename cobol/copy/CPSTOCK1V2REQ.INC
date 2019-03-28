@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����Ⱥ߸˴������� (xml2)
+      *    ＡＰＩリクエスト在庫管理取得 (xml2)
       *                                        COPY (CPSTOK1V02REQ.INC)
       ******************************************************************
         01  XML-STOCKREQ.
@@ -29,15 +29,15 @@
             02  STOCKREQ-MODE              PIC S9(9)   BINARY.
             02  STOCKREQ-RECORDNAME        PIC X(128).
             02  STOCKREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               03  STOCKREQ-REQUEST-NUMBER    PIC X(2).
-      *       UID���Żҥ���ơ�
+      *       UID（電子カルテ）
               03  STOCKREQ-KARTE-UID         PIC X(36).
-      *       ���륫UID
+      *       オルカUID
               03  STOCKREQ-ORCA-UID          PIC X(36).
-      *       �����
+      *       基準日
               03  STOCKREQ-BASE-DATE         PIC X(10).
-      *       �ƥ��ȴ��Զ�ʬ(True:�ޤ��
+      *       テスト患者区分(True:含む）
               03  STOCKREQ-CONTAIN-TESTPATIENT
                                              PIC X(04).
       *

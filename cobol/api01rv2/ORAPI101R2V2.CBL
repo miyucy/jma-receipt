@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI101R2V2.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : �����ƥ������������Ͽ�����Ź԰�����������
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/11/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : システム管理　患者登録・診療行為設定情報取得
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/11/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -38,7 +38,7 @@
       *FILE                    SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -47,12 +47,12 @@
       *
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -64,7 +64,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -75,7 +75,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -84,7 +84,7 @@
            03  WRK-ZZ9                 PIC ZZZ9.
       *
            03  WRK-CNT                 PIC 9(04).
-      *    �ꥯ�������ֹ�
+      *    リクエスト番号
            03  WRK-REQUEST-NUMBER      PIC X(02).
       *
        01  WRK-XML-AREA.
@@ -94,34 +94,34 @@
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPAPISYSDAY01V2REQ.INC".
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPAPISYSDAY01V2RES.INC".
       *
       *ver.4.7
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���Ųʾ���
+      *    診療科情報
            COPY    "CPSK1005.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
       *
            COPY    "CPSK1010.INC".
@@ -139,7 +139,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -156,7 +156,7 @@
       *
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -170,19 +170,19 @@
       ***  INITIALIZE                      CNT-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST35-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-PTXMLMAKE-SEC
            END-IF
       *
@@ -195,13 +195,13 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-SYSTEMDAILYRES
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -210,14 +210,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  SYSDAYRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  SYSDAYRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -226,7 +226,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -244,11 +244,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTLSTREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -262,21 +262,21 @@
       *
            EVALUATE    SYSDAYREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        �����ƥ��������
+      *        システム管理設定
                MOVE    1                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
       *
-      *    ��������
+      *    一覧処理
            IF      WRK-ERRCD           =   SPACE
                EVALUATE    SYSDAYREQ-REQUEST-NUMBER
                WHEN    "01"
-      *            �����ƥ��������
+      *            システム管理設定
                    PERFORM 2002-SYSKANRI-HEN-SEC
                END-EVALUATE
            END-IF
@@ -286,7 +286,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTLSTREAD-SEC   SECTION.
       *
@@ -295,7 +295,7 @@
            END-IF
            INITIALIZE                      XML-APIREQ
            INITIALIZE                      XML-SYSTEMDAILYREQ
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_system01_dailyv2req"
                                        TO  MCP-TABLE
@@ -338,7 +338,7 @@
        1000-APTLSTREAD-EXT.
            EXIT.
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -347,17 +347,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ƥ����å�
+      *    設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
            MOVE    SYSDAYREQ-BASE-DATE TO  WRK-IN-DATE
-      *    ������
+      *    処理日
            MOVE    SYSDAYREQ-BASE-DATE TO  WRK-HEN-DATE
            MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD            TO  WRK-IN-YMD
-      *    ������̤����ϥ����ƥ�����
+      *    開始日未設定はシステム日付
            IF      WRK-IN-DATE         =   SPACE
                MOVE    SPA-SYSYMD          TO  WRK-IN-YMD
                MOVE    WRK-IN-YMD          TO  WRK-SYMD
@@ -371,26 +371,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ��������������
+      *    システム管理設定情報処理
       *****************************************************************
        2002-SYSKANRI-HEN-SEC             SECTION.
       *
-      *    ������Ͽ����
+      *    患者登録情報
            PERFORM 20021-SYS1017-SET-SEC
       *
-      *    ���Ź԰پ���
-      *    1001 ���ŵ��ؾ���
+      *    診療行為情報
+      *    1001 医療機関情報
            PERFORM 20022-SYS1001-SET-SEC
-      *    1007 ��ư���ꡦ�����å���ǽ����
+      *    1007 自動算定・チェック機能情報
            PERFORM 20023-SYS1007-SET-SEC
-      *    1038 ���Ź԰ٵ�ǽ����
+      *    1038 診療行為機能情報
            PERFORM 20024-SYS1038-SET-SEC
            .
        2002-SYSKANRI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ������Ͽ�������
+      *    患者登録情報処理
       *****************************************************************
        20021-SYS1017-SET-SEC             SECTION.
       *
@@ -402,14 +402,14 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-IN-YMD          TO  SYS-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1017-REC
            ELSE
                INITIALIZE                  SYS-1017-REC
            END-IF
-      *    �����Ͽ������ʬ
+      *    二重登録疑い区分
            IF      SYS-1017-JYUFUKU-CHKKBN =   SPACE
                MOVE    "0"             TO  SYS-1017-JYUFUKU-CHKKBN
            END-IF
@@ -417,16 +417,16 @@
                                        TO  SYSDAYRES-JYUFUKU-CHKKBN
            EVALUATE    SYS-1017-JYUFUKU-CHKKBN
                WHEN    "0"
-                   MOVE    "���ʻ�̾�����̡���ǯ����" 
+                   MOVE    "カナ氏名＋性別＋生年月日" 
                                        TO  SYSDAYRES-JYUFUKU-CHK-MEI
                WHEN    "1"
-                   MOVE    "���ʻ�̾�ܴ�����̾�����̡���ǯ����" 
+                   MOVE    "カナ氏名＋漢字氏名＋性別＋生年月日" 
                                        TO  SYSDAYRES-JYUFUKU-CHK-MEI
                WHEN    "2"
-                   MOVE    "���̡���ǯ����" 
+                   MOVE    "性別＋生年月日" 
                                        TO  SYSDAYRES-JYUFUKU-CHK-MEI
            END-EVALUATE
-      *    ͹���ֹ漫ư���ܶ�ʬ
+      *    郵便番号自動記載区分
            IF      SYS-1017-POSTKBN-FLG    =   SPACE
                MOVE    "1"             TO  SYS-1017-POSTKBN-FLG
            END-IF
@@ -434,16 +434,16 @@
                                        TO  SYSDAYRES-POSTKBN-FLG
            EVALUATE    SYS-1017-POSTKBN-FLG
                WHEN    "0"
-                   MOVE    "��ư���ܤ��ʤ�" 
+                   MOVE    "自動記載しない" 
                                        TO  SYSDAYRES-POSTKBN-MEI
                WHEN    "1"
-                   MOVE    "��ư���ܤ���" 
+                   MOVE    "自動記載する" 
                                        TO  SYSDAYRES-POSTKBN-MEI
                WHEN    "2"
-                   MOVE    "��ư���ܤ����͹���ֹ�̤�����" 
+                   MOVE    "自動記載する（郵便番号未設定）" 
                                        TO  SYSDAYRES-POSTKBN-MEI
            END-EVALUATE
-      *    ��ƻ�ܸ�̾���ܶ�ʬ
+      *    都道府県名記載区分
            IF      SYS-1017-KENMEIKBN-FLG  =   SPACE
                MOVE    "1"             TO  SYS-1017-KENMEIKBN-FLG
            END-IF
@@ -451,10 +451,10 @@
                                        TO  SYSDAYRES-KENMEIKBN-FLG
            EVALUATE    SYS-1017-KENMEIKBN-FLG
                WHEN    "0"
-                   MOVE    "���ܤ��ʤ�" 
+                   MOVE    "記載しない" 
                                        TO  SYSDAYRES-KENMEIKBN-MEI
                WHEN    "1"
-                   MOVE    "���ܤ���" 
+                   MOVE    "記載する" 
                                        TO  SYSDAYRES-KENMEIKBN-MEI
            END-EVALUATE
            .
@@ -462,7 +462,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؾ���������
+      *    医療機関情報情報処理
       *****************************************************************
        20022-SYS1001-SET-SEC             SECTION.
       *
@@ -473,51 +473,51 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-IN-YMD          TO  SYS-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1001-REC
            ELSE
                INITIALIZE                  SYS-1001-REC
            END-IF
-      *    ������ʬ
+      *    処方区分
            MOVE    SYS-1001-SYOHOKBN   TO  SYSDAYRES-SYOHOKBN
            EVALUATE    SYS-1001-SYOHOKBN
                WHEN    "0"
-                   MOVE    "����"      TO  SYSDAYRES-SYOHOKBN-MEI
+                   MOVE    "院内"      TO  SYSDAYRES-SYOHOKBN-MEI
                WHEN    "1"
-                   MOVE    "����"      TO  SYSDAYRES-SYOHOKBN-MEI
+                   MOVE    "院外"      TO  SYSDAYRES-SYOHOKBN-MEI
            END-EVALUATE
-      *    ������ü������
+      *    消費税端数設定
            MOVE    SYS-1001-TAX-HASU-KBN   TO  SYSDAYRES-TAX-HASU-KBN
            EVALUATE    SYS-1001-TAX-HASU-KBN
                WHEN    "1"
-                   MOVE    "����̤���ͼθ���"
+                   MOVE    "１円未満四捨五入"
                                            TO  SYSDAYRES-TAX-HASU-MEI
                WHEN    "3"
-                   MOVE    "����̤���ڤ�夲"
+                   MOVE    "１円未満切り上げ"
                                            TO  SYSDAYRES-TAX-HASU-MEI
                WHEN    OTHER
                    MOVE    "2"             TO  SYSDAYRES-TAX-HASU-KBN
-                   MOVE    "����̤���ڤ�Τ�"
+                   MOVE    "１円未満切り捨て"
                                            TO  SYSDAYRES-TAX-HASU-MEI
            END-EVALUATE
-      *    ���񥳡���ü������
+      *    自費コード端数設定
            IF      WRK-IN-YMD          <   "20170901"
                MOVE    "2"                 TO  SYS-1001-JIHI-HASU-KBN
            END-IF
            MOVE    SYS-1001-JIHI-HASU-KBN  TO  SYSDAYRES-JIHI-HASU-KBN
            EVALUATE    SYS-1001-JIHI-HASU-KBN
                WHEN    "1"
-                   MOVE    "����̤���ͼθ���"
+                   MOVE    "１円未満四捨五入"
                                            TO  SYSDAYRES-JIHI-HASU-MEI
                WHEN    "3"
-                   MOVE    "����̤���ڤ�夲"
+                   MOVE    "１円未満切り上げ"
                                            TO  SYSDAYRES-JIHI-HASU-MEI
                WHEN    OTHER
-      *            ��ü���ڤ�ΤƤ������
+      *            （端数切り捨てが初期）
                    MOVE    "2"             TO  SYSDAYRES-JIHI-HASU-KBN
-                   MOVE    "����̤���ڤ�Τ�"
+                   MOVE    "１円未満切り捨て"
                                            TO  SYSDAYRES-JIHI-HASU-MEI
            END-EVALUATE
            .
@@ -525,7 +525,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư���ꡦ�����å���ǽ�������
+      *    自動算定・チェック機能情報処理
       *****************************************************************
        20023-SYS1007-SET-SEC             SECTION.
       *
@@ -536,36 +536,36 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-IN-YMD          TO  SYS-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1007-REC
            ELSE
                INITIALIZE                  SYS-1007-REC
            END-IF
-      *    Ĵ�޵��Ѵ�����
+      *    調剤技術基本料
            IF      SYS-1007-SANTEI (1:1)   =   "1"
                MOVE    "1"                 TO  SYSDAYRES-CHOKI-FLG
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-CHOKI-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-CHOKI-MEI
            ELSE
                MOVE    "0"                 TO  SYSDAYRES-CHOKI-FLG
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-CHOKI-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-CHOKI-MEI
            END-IF
-      *    ���޾��������ʰ��̡�
+      *    薬剤情報提供料（一般）
            EVALUATE    SYS-1007-SANTEI (2:1)
            WHEN   "1"
                MOVE    "1"                 TO  SYSDAYRES-YAKJYO1-FLG
-               MOVE    "���ꤹ��ʷ���"
+               MOVE    "算定する（月１回）"
                                            TO  SYSDAYRES-YAKJYO1-MEI
            WHEN   "2"
                MOVE    "2"                 TO  SYSDAYRES-YAKJYO1-FLG
-               MOVE    "���ꤹ�������"  TO  SYSDAYRES-YAKJYO1-MEI
+               MOVE    "算定する（毎回）"  TO  SYSDAYRES-YAKJYO1-MEI
            WHEN    OTHER
                MOVE    "0"                 TO  SYSDAYRES-YAKJYO1-FLG
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-YAKJYO1-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-YAKJYO1-MEI
            END-EVALUATE
-      *    ���޾���������Ϸ�͡�
-      *    �ʤɤ��餫�ˤΤ����꤬�����
+      *    薬剤情報提供料（老人）
+      *    （どちらかにのみ設定がある）
            IF      SYS-1007-SANTEI (3:1)   =   SPACE
                                            OR  "0"
                IF      SYS-1007-SANTEI (4:1)   =   SPACE
@@ -581,31 +581,31 @@
            END-IF
            EVALUATE    SYSDAYRES-YAKJYO2-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-YAKJYO2-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-YAKJYO2-MEI
            WHEN   "1"
-               MOVE    "���ꤹ��ʷ���"
+               MOVE    "算定する（月１回）"
                                            TO  SYSDAYRES-YAKJYO2-MEI
            WHEN   "2"
-               MOVE    "���ꤹ�������"  TO  SYSDAYRES-YAKJYO2-MEI
+               MOVE    "算定する（毎回）"  TO  SYSDAYRES-YAKJYO2-MEI
            END-EVALUATE
-      *    ����ô������
+      *    療養担当手当
            IF      SYS-1007-SANTEI (5:1)   =   "1"
                MOVE    "1"                 TO  SYSDAYRES-RYOYOU-FLG
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-RYOYOU-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-RYOYOU-MEI
            ELSE
                MOVE    "0"                 TO  SYSDAYRES-RYOYOU-FLG
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-RYOYOU-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-RYOYOU-MEI
            END-IF
-      *    �������޼��Ŵ�����̵ͭ
+      *    特定薬剤治療管理料有無
            IF      SYS-1007-SANTEI (6:1)   =   "1"
                MOVE    "1"                 TO  SYSDAYRES-TOKUTEI-FLG
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-TOKUTEI-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-TOKUTEI-MEI
            ELSE
                MOVE    "0"                 TO  SYSDAYRES-TOKUTEI-FLG
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-TOKUTEI-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-TOKUTEI-MEI
            END-IF
       *
-      *    �����ƥ���������ʥ����å���ǽ��������
+      *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
@@ -613,7 +613,7 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-IN-YMD          TO  SYS-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1008-REC
@@ -621,7 +621,7 @@
                INITIALIZE                  SYS-1008-REC
            END-IF
       *
-      *    ��������û������å�
+      *    外来管理加算チェック
            IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
                MOVE    "1"             TO  SYS-1008-GAIKANRIKBN-CHK
            END-IF
@@ -629,20 +629,20 @@
                                        TO  SYSDAYRES-GAIKANRIKBN-CHK
            EVALUATE    SYS-1008-GAIKANRIKBN-CHK
            WHEN    "0"
-               MOVE    "�����å��ʤ�"      TO  SYSDAYRES-GAIKANRIKBN-MEI
+               MOVE    "チェックなし"      TO  SYSDAYRES-GAIKANRIKBN-MEI
            WHEN    "1"
-               MOVE    "�����å�����"      TO  SYSDAYRES-GAIKANRIKBN-MEI
+               MOVE    "チェックあり"      TO  SYSDAYRES-GAIKANRIKBN-MEI
            WHEN    "2"
-               MOVE    "�����μ�ưȯ���ʤ�"
+               MOVE    "削除後の自動発生なし"
                                            TO  SYSDAYRES-GAIKANRIKBN-MEI
            WHEN    "3"
-               MOVE    "��ưȯ���ʤ�"      TO  SYSDAYRES-GAIKANRIKBN-MEI
+               MOVE    "自動発生なし"      TO  SYSDAYRES-GAIKANRIKBN-MEI
            WHEN    "4"
-               MOVE    "�����μ�ưȯ������ǧ�ʤ�"
+               MOVE    "削除後の自動発生・確認なし"
                                            TO  SYSDAYRES-GAIKANRIKBN-MEI
            END-EVALUATE
       *
-      *    ������ܲû���ư����
+      *    育児栄養加算自動算定
            IF      SYS-1008-IKUJIEIYO-FLG  =   SPACE
                MOVE    "0"                 TO  SYS-1008-IKUJIEIYO-FLG
            END-IF
@@ -650,17 +650,17 @@
                                            TO  SYSDAYRES-IKUJIEIYO-FLG
            EVALUATE    SYS-1008-IKUJIEIYO-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-IKUJIEIYO-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-IKUJIEIYO-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-IKUJIEIYO-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-IKUJIEIYO-MEI
            END-EVALUATE
-      *    ������ܲû���ư�����
+      *    育児栄養加算自動算定科
            MOVE    SYS-1008-IKUJIEIYO-SRYKA
                                        TO  SYSDAYRES-IKUJIEIYO-SRYKA
            IF      SYS-1008-IKUJIEIYO-SRYKA    =   "00"
-               MOVE    "����"          TO  SYSDAYRES-IKUJIEIYO-KAMEI
+               MOVE    "全科"          TO  SYSDAYRES-IKUJIEIYO-KAMEI
            ELSE
-      *        ���Ų�̾
+      *        診療科名
                MOVE    SPACE               TO  SYSKANRI-REC 
                INITIALIZE                      SYSKANRI-REC
                MOVE    "1005"              TO  SYS-KANRICD
@@ -668,7 +668,7 @@
                MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
                MOVE    WRK-IN-YMD          TO  SYS-STYUKYMD
                MOVE    WRK-IN-YMD          TO  SYS-EDYUKYMD
-      *       �����ƥ��������
+      *       システム管理検索
                PERFORM 9001-SYSKANRI-KEYREAD-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    SYSKANRI-REC        TO  SYS-1005-REC
@@ -677,7 +677,7 @@
                END-IF
            END-IF
       *
-      *    ���ֳ��û����������Ļ���
+      *    時間外加算（特例乳幼児）
            IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
                MOVE    "0"             TO  SYS-1008-JIKANTOKU-NYU-FLG
            END-IF
@@ -685,24 +685,24 @@
                                        TO  SYSDAYRES-JIKANTOKU-NYU-FLG
            EVALUATE    SYS-1008-JIKANTOKU-NYU-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"    TO  SYSDAYRES-JIKANTOKU-NYU-MEI
+               MOVE    "算定しない"    TO  SYSDAYRES-JIKANTOKU-NYU-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"      TO  SYSDAYRES-JIKANTOKU-NYU-MEI
+               MOVE    "算定する"      TO  SYSDAYRES-JIKANTOKU-NYU-MEI
            END-EVALUATE
       *
-      *    �������Ǵ����û����ʼ̿����ǡ�
+      *    画像診断管理加算１（写真診断）
            IF      SYS-1008-GAZOUKSN1-FLG =   SPACE
                MOVE    "1"                 TO  SYS-1008-GAZOUKSN1-FLG
            END-IF
            MOVE    SYS-1008-GAZOUKSN1-FLG  TO  SYSDAYRES-GAZOUKSN1-FLG
            EVALUATE    SYS-1008-GAZOUKSN1-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-GAZOUKSN1-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-GAZOUKSN1-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-GAZOUKSN1-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-GAZOUKSN1-MEI
            END-EVALUATE
       *
-      *    �ǽ��象������δ���
+      *    最終来院日からの期間
            IF      SYS-1008-LAST-KIKAN-X   =   SPACE
                MOVE    ZERO                TO  SYSDAYRES-LAST-KIKAN
            ELSE
@@ -710,147 +710,147 @@
                                            TO  SYSDAYRES-LAST-KIKAN
            END-IF
       *
-      *    ���޾������������å�
+      *    薬剤情報提供料チェック
            IF      SYS-1008-YAKJYOCHK-FLG =   SPACE
                MOVE    "1"                 TO  SYS-1008-YAKJYOCHK-FLG
            END-IF
            MOVE    SYS-1008-YAKJYOCHK-FLG TO  SYSDAYRES-YAKJYOCHK-FLG
            EVALUATE    SYS-1008-YAKJYOCHK-FLG
            WHEN    "0"
-               MOVE    "�����å����ʤ�"   TO  SYSDAYRES-YAKJYOCHK-MEI
+               MOVE    "チェックしない"   TO  SYSDAYRES-YAKJYOCHK-MEI
            WHEN    "1"
-               MOVE    "�����å�����"     TO  SYSDAYRES-YAKJYOCHK-MEI
+               MOVE    "チェックする"     TO  SYSDAYRES-YAKJYOCHK-MEI
            END-EVALUATE
-      *    �������μ�ưȯ��
-      *    ����
+      *    訂正時の自動発生
+      *    外来
            IF      SYS-1008-TEISEIAUTO-FLG =   SPACE
                MOVE    "1"                 TO  SYS-1008-TEISEIAUTO-FLG
            END-IF
            MOVE    SYS-1008-TEISEIAUTO-FLG TO  SYSDAYRES-TEISEIAUTO-FLG
            EVALUATE    SYS-1008-TEISEIAUTO-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-TEISEIAUTO-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-TEISEIAUTO-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-TEISEIAUTO-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-TEISEIAUTO-MEI
            END-EVALUATE
       *
-      *    �������μ�ưȯ���������������������
+      *    訂正時の自動発生（特定疾患処方管理）
            IF      SYS-1008-TEISEITOKU-FLG =   SPACE
                MOVE    "0"                 TO  SYS-1008-TEISEITOKU-FLG
            END-IF
            MOVE    SYS-1008-TEISEITOKU-FLG TO  SYSDAYRES-TEISEITOKU-FLG
            EVALUATE    SYS-1008-TEISEITOKU-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-TEISEITOKU-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-TEISEITOKU-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-TEISEITOKU-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-TEISEITOKU-MEI
            END-EVALUATE
       *
-      *    ���θ����û���ưȯ��
+      *    検体検査加算自動発生
            IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
                MOVE    "0"                 TO  SYS-1008-KENSAAUTO-FLG
            END-IF
            MOVE    SYS-1008-KENSAAUTO-FLG  TO  SYSDAYRES-KENSAAUTO-FLG
            EVALUATE    SYS-1008-KENSAAUTO-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-KENSAAUTO-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-KENSAAUTO-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-KENSAAUTO-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-KENSAAUTO-MEI
            WHEN    "2"
-               MOVE    "���ꤹ��������"  TO  SYSDAYRES-KENSAAUTO-MEI
+               MOVE    "算定する（設定）"  TO  SYSDAYRES-KENSAAUTO-MEI
            END-EVALUATE
       *
-      *    �����ݸ��ȹ礻�������å�
+      *    前回保険組合せ相違チェック
            IF      SYS-1008-ZENHKNCHK-FLG   =   SPACE
               MOVE    "0"                  TO  SYS-1008-ZENHKNCHK-FLG
            END-IF
            MOVE    SYS-1008-ZENHKNCHK-FLG  TO  SYSDAYRES-ZENHKNCHK-FLG
            EVALUATE    SYS-1008-ZENHKNCHK-FLG
            WHEN    "0"
-               MOVE    "�����å����ʤ�"    TO  SYSDAYRES-ZENHKNCHK-MEI
+               MOVE    "チェックしない"    TO  SYSDAYRES-ZENHKNCHK-MEI
            WHEN    "1"
-               MOVE    "�����å�����"      TO  SYSDAYRES-ZENHKNCHK-MEI
+               MOVE    "チェックする"      TO  SYSDAYRES-ZENHKNCHK-MEI
            WHEN    "2"
-               MOVE    "�����å�����ʤ��٤ơ�"
+               MOVE    "チェックする（すべて）"
                                            TO  SYSDAYRES-ZENHKNCHK-MEI
            END-EVALUATE
       *
-      *    ��̾������ʬ����μ�ưȯ��
+      *    病名疾患区分からの自動発生
            IF      SYS-1008-BYOMEIAUTO-FLG =   SPACE
-      *        ̤����ϻ��ꤹ��
+      *        未設定は算定する
                MOVE    "1"                 TO  SYS-1008-BYOMEIAUTO-FLG
            END-IF
            MOVE    SYS-1008-BYOMEIAUTO-FLG TO  SYSDAYRES-BYOMEIAUTO-FLG
            EVALUATE    SYS-1008-BYOMEIAUTO-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-BYOMEIAUTO-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-BYOMEIAUTO-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-BYOMEIAUTO-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-BYOMEIAUTO-MEI
            END-EVALUATE
-      *    �ǻ�����ưȯ��
+      *    診察料自動発生
            IF      SYS-1008-INITAUTO-FLG   =   SPACE
                MOVE    "1"                 TO  SYS-1008-INITAUTO-FLG
            END-IF
            MOVE    SYS-1008-INITAUTO-FLG   TO  SYSDAYRES-INITAUTO-FLG
            EVALUATE    SYS-1008-INITAUTO-FLG
            WHEN    "0"
-               MOVE    "���ꤷ�ʤ�"        TO  SYSDAYRES-INITAUTO-MEI
+               MOVE    "算定しない"        TO  SYSDAYRES-INITAUTO-MEI
            WHEN    "1"
-               MOVE    "���ꤹ��"          TO  SYSDAYRES-INITAUTO-MEI
+               MOVE    "算定する"          TO  SYSDAYRES-INITAUTO-MEI
            END-EVALUATE
-      *    ��Ģ�û���ǧ�����å�
+      *    手帳加算確認チェック
            IF      SYS-1008-TECHOKBN-FLG   =   SPACE
                MOVE    "0"                 TO  SYS-1008-TECHOKBN-FLG
            END-IF
            MOVE    SYS-1008-TECHOKBN-FLG   TO  SYSDAYRES-TECHOKBN-FLG
            EVALUATE    SYS-1008-TECHOKBN-FLG
            WHEN    "0"
-               MOVE    "�����å����ʤ�"    TO  SYSDAYRES-TECHOKBN-MEI
+               MOVE    "チェックしない"    TO  SYSDAYRES-TECHOKBN-MEI
            WHEN    "1"
-               MOVE    "�����å�����"      TO  SYSDAYRES-TECHOKBN-MEI
+               MOVE    "チェックする"      TO  SYSDAYRES-TECHOKBN-MEI
            END-EVALUATE
-      *    ���ֳ��۵ޱ�������å�
+      *    時間外緊急院内チェック
            IF      SYS-1008-JGAIKEIKBN-FLG =   SPACE
                MOVE    "1"                 TO  SYS-1008-JGAIKEIKBN-FLG
            END-IF
            MOVE    SYS-1008-JGAIKEIKBN-FLG TO  SYSDAYRES-JGAIKEIKBN-FLG
            EVALUATE    SYS-1008-JGAIKEIKBN-FLG
            WHEN    "0"
-               MOVE    "�����å����ʤ�"    TO  SYSDAYRES-JGAIKEIKBN-MEI
+               MOVE    "チェックしない"    TO  SYSDAYRES-JGAIKEIKBN-MEI
            WHEN    "1"
-               MOVE    "�����å�����"      TO  SYSDAYRES-JGAIKEIKBN-MEI
+               MOVE    "チェックする"      TO  SYSDAYRES-JGAIKEIKBN-MEI
            END-EVALUATE
       *
-      *    ������Ϳ�̥����å�
+      *    薬剤投与量チェック
            IF      SYS-1008-TOUYOCHK-FLG   =   SPACE
                MOVE    "0"                 TO  SYS-1008-TOUYOCHK-FLG
            END-IF
            MOVE    SYS-1008-TOUYOCHK-FLG   TO  SYSDAYRES-TOUYOCHK-FLG
            EVALUATE    SYS-1008-TOUYOCHK-FLG
            WHEN    "0"
-               MOVE    "�������������ͤ��о�"
+               MOVE    "在宅・投薬・注射を対象"
                                            TO  SYSDAYRES-TOUYOCHK-MEI
            WHEN    "1"
-               MOVE    "���٤Ƥ��о�"      TO  SYSDAYRES-TOUYOCHK-MEI
+               MOVE    "すべてを対象"      TO  SYSDAYRES-TOUYOCHK-MEI
            END-EVALUATE
       *
-      *    ����������Ķ�����å�
+      *    投薬３０日超チェック
            IF      SYS-1008-SHOHOU30CHK    =   SPACE
                MOVE    "0"                 TO  SYS-1008-SHOHOU30CHK
            END-IF
            MOVE    SYS-1008-SHOHOU30CHK    TO  SYSDAYRES-SHOHOU30CHK
            EVALUATE    SYS-1008-SHOHOU30CHK
            WHEN    "0"
-               MOVE    "�����å����ʤ�"    TO  SYSDAYRES-SHOHOU30CHK-MEI
+               MOVE    "チェックしない"    TO  SYSDAYRES-SHOHOU30CHK-MEI
            WHEN    "1"
-               MOVE    "�����å�����"      TO  SYSDAYRES-SHOHOU30CHK-MEI
+               MOVE    "チェックする"      TO  SYSDAYRES-SHOHOU30CHK-MEI
            END-EVALUATE
            .
        20023-SYS1007-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰ٵ�ǽ�������
+      *    診療行為機能情報処理
       *****************************************************************
        20024-SYS1038-SET-SEC             SECTION.
       *
@@ -861,7 +861,7 @@
            MOVE    "*"                 TO  SYS-KBNCD
            MOVE    WRK-IN-YMD          TO  SYS-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1038-REC
@@ -869,127 +869,127 @@
                INITIALIZE                  SYS-1038-REC
            END-IF
       *
-      *    �鲼�����������Ѵ�����
+      *    皮下筋肉注射料変換選択
            IF      SYS-1038-CHG310FLG  =   SPACE
                MOVE    "0"                 TO  SYS-1038-CHG310FLG
            END-IF
            MOVE    SYS-1038-CHG310FLG      TO  SYSDAYRES-CHG310FLG
            EVALUATE    SYS-1038-CHG310FLG
            WHEN    "0"
-               MOVE    "�Ѵ�����"          TO  SYSDAYRES-CHG310FLG-MEI
+               MOVE    "変換する"          TO  SYSDAYRES-CHG310FLG-MEI
            WHEN    "1"
-               MOVE    "�Ѵ����ʤ�"        TO  SYSDAYRES-CHG310FLG-MEI
+               MOVE    "変換しない"        TO  SYSDAYRES-CHG310FLG-MEI
            END-EVALUATE
       *
-      *    �������Ŷ�ʬ�Ѵ�����
+      *    投薬診療区分変換選択
            IF      SYS-1038-CHGSRYSYU-FLG  =   SPACE
                MOVE    "0"                 TO  SYS-1038-CHGSRYSYU-FLG
            END-IF
            MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SYSDAYRES-CHGSRYSYU-FLG
            EVALUATE    SYS-1038-CHGSRYSYU-FLG
            WHEN    "0"
-               MOVE    "�Ѵ�����"          TO  SYSDAYRES-CHGSRYSYU-MEI
+               MOVE    "変換する"          TO  SYSDAYRES-CHGSRYSYU-MEI
            WHEN    "1"
-               MOVE    "�Ѵ����ʤ�"        TO  SYSDAYRES-CHGSRYSYU-MEI
+               MOVE    "変換しない"        TO  SYSDAYRES-CHGSRYSYU-MEI
            END-EVALUATE
       *
-      *    �����Ѵ���ʬ
+      *    残量廃棄区分
            IF      SYS-1038-HAIKIKBN    =   SPACE
                MOVE    "1"                 TO  SYS-1038-HAIKIKBN
            END-IF
            MOVE    SYS-1038-HAIKIKBN       TO  SYSDAYRES-HAIKIKBN
            EVALUATE    SYS-1038-HAIKIKBN
            WHEN    "1"
-               MOVE    "���ͤΤ�"          TO  SYSDAYRES-HAIKIKBN-MEI
+               MOVE    "注射のみ"          TO  SYSDAYRES-HAIKIKBN-MEI
            WHEN    "2"
-               MOVE    "���٤Ƥο��Ŷ�ʬ"  TO  SYSDAYRES-HAIKIKBN-MEI
+               MOVE    "すべての診療区分"  TO  SYSDAYRES-HAIKIKBN-MEI
            END-EVALUATE
       *
-      *    ������ˡ����̤���û���ʬ
+      *    精神療法２０未満加算区分
            IF      SYS-1038-SEI20KSNKBN    =   SPACE
                MOVE    "0"                 TO  SYS-1038-SEI20KSNKBN
            END-IF
            MOVE    SYS-1038-SEI20KSNKBN    TO  SYSDAYRES-SEI20KSNKBN
            EVALUATE    SYS-1038-SEI20KSNKBN
            WHEN    "0"
-               MOVE    "��ư���ꤹ��"      TO  SYSDAYRES-SEI20KSNKBN-MEI
+               MOVE    "自動算定する"      TO  SYSDAYRES-SEI20KSNKBN-MEI
            WHEN    "1"
-               MOVE    "��ư���ꤷ�ʤ�"    TO  SYSDAYRES-SEI20KSNKBN-MEI
+               MOVE    "自動算定しない"    TO  SYSDAYRES-SEI20KSNKBN-MEI
            END-EVALUATE
       *
-      *    ������ˡ����̤���û���ʬ
+      *    心身療法２０未満加算区分
            IF      SYS-1038-SIN20KSNKBN    =   SPACE
                MOVE    "0"                 TO  SYS-1038-SIN20KSNKBN
            END-IF
            MOVE    SYS-1038-SIN20KSNKBN    TO  SYSDAYRES-SIN20KSNKBN
            EVALUATE    SYS-1038-SIN20KSNKBN
            WHEN    "0"
-               MOVE    "��ư���ꤹ��"      TO  SYSDAYRES-SIN20KSNKBN-MEI
+               MOVE    "自動算定する"      TO  SYSDAYRES-SIN20KSNKBN-MEI
            WHEN    "1"
-               MOVE    "��ư���ꤷ�ʤ�"    TO  SYSDAYRES-SIN20KSNKBN-MEI
+               MOVE    "自動算定しない"    TO  SYSDAYRES-SIN20KSNKBN-MEI
            END-EVALUATE
       *
-      *    ���å�Ÿ����ʬ
+      *    セット展開区分
            IF      SYS-1038-SETALLKBN      =   SPACE
                MOVE    "0"                 TO  SYS-1038-SETALLKBN
            END-IF
            MOVE    SYS-1038-SETALLKBN      TO  SYSDAYRES-SETALLKBN
            EVALUATE    SYS-1038-SETALLKBN
            WHEN    "0"
-               MOVE    "�̾�Ÿ��"          TO  SYSDAYRES-SETALLKBN-MEI
+               MOVE    "通常展開"          TO  SYSDAYRES-SETALLKBN-MEI
            WHEN    "1"
-               MOVE    "��Ÿ��"            TO  SYSDAYRES-SETALLKBN-MEI
+               MOVE    "全展開"            TO  SYSDAYRES-SETALLKBN-MEI
            END-EVALUATE
       *
       *
-      *    ����μ谷��
+      *    入金の取扱い
            IF      SYS-1038-NYKNKNRKBN     =   SPACE
                MOVE    "1"                 TO  SYS-1038-NYKNKNRKBN
            END-IF
            MOVE    SYS-1038-NYKNKNRKBN     TO  SYSDAYRES-NYKNKNRKBN
            EVALUATE    SYS-1038-NYKNKNRKBN
            WHEN    "1"
-               MOVE    "��������ʬ�Τ�����"
+               MOVE    "今回請求分のみ入金"
                                            TO  SYSDAYRES-NYKNKNRKBN-MEI
            WHEN    "2"
-               MOVE    "����ʬ����ɼ�θŤ�̤���������"
+               MOVE    "今回分・伝票の古い未収順に入金"
                                            TO  SYSDAYRES-NYKNKNRKBN-MEI
            WHEN    "3"
-               MOVE    "����ʬ����ɼ�ο�����̤���������"
+               MOVE    "今回分・伝票の新しい未収順に入金"
                                            TO  SYSDAYRES-NYKNKNRKBN-MEI
            WHEN    "4"
-               MOVE    "��ɼ�θŤ�̤���������"
+               MOVE    "伝票の古い未収順に入金"
                                            TO  SYSDAYRES-NYKNKNRKBN-MEI
            WHEN    "5"
-               MOVE    "��ɼ�ο�����̤���������"
+               MOVE    "伝票の新しい未収順に入金"
                                            TO  SYSDAYRES-NYKNKNRKBN-MEI
            END-EVALUATE
       *
-      *    �������������
+      *    訂正の請求書金額
            IF      SYS-1038-TEIKINKBN      =   SPACE
                MOVE    "0"                 TO  SYS-1038-TEIKINKBN
            END-IF
            MOVE    SYS-1038-TEIKINKBN      TO  SYSDAYRES-TEIKINKBN
            EVALUATE    SYS-1038-TEIKINKBN
            WHEN    "0"
-               MOVE    "����ʬ�ʺ��ۡ�"    TO  SYSDAYRES-TEIKINKBN-MEI
+               MOVE    "訂正分（差額）"    TO  SYSDAYRES-TEIKINKBN-MEI
            WHEN    "1"
-               MOVE    "���"              TO  SYSDAYRES-TEIKINKBN-MEI
+               MOVE    "合計"              TO  SYSDAYRES-TEIKINKBN-MEI
            END-EVALUATE
-      *    ���⡦�ֶ�������ʬ
+      *    入金・返金額設定区分
            IF      SYS-1038-NYKHNKKBN      =   SPACE
                MOVE    "0"                 TO  SYS-1038-NYKHNKKBN
            END-IF
            MOVE    SYS-1038-NYKHNKKBN      TO  SYSDAYRES-NYKHNKKBN
            EVALUATE    SYS-1038-NYKHNKKBN
            WHEN    "0"
-               MOVE    "��������ۤΤ�"    TO  SYSDAYRES-NYKHNKKBN-MEI
+               MOVE    "今回請求額のみ"    TO  SYSDAYRES-NYKHNKKBN-MEI
            WHEN    "1"
-               MOVE    "�������ȿ��"      TO  SYSDAYRES-NYKHNKKBN-MEI
+               MOVE    "一括入金反映"      TO  SYSDAYRES-NYKHNKKBN-MEI
            WHEN    "2"
-               MOVE    "����ֶ�ȿ��"      TO  SYSDAYRES-NYKHNKKBN-MEI
+               MOVE    "一括返金反映"      TO  SYSDAYRES-NYKHNKKBN-MEI
            WHEN    "3"
-               MOVE    "������⡦�ֶ�ȿ��"
+               MOVE    "一括入金・返金反映"
                                            TO  SYSDAYRES-NYKHNKKBN-MEI
            END-EVALUATE
            .
@@ -997,14 +997,14 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
            EVALUATE    FLG-SYORI
                WHEN    1
                WHEN    0
-      *            �����ƥ��������
+      *            システム管理設定
                    PERFORM 3001-SYSTEMDAY01-MAKE-SEC
            END-EVALUATE
       *
@@ -1013,19 +1013,19 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽����ʥ����ƥ���������
+      *    XML情報書き込み処理（システム管理設定）
       *****************************************************************
        3001-SYSTEMDAY01-MAKE-SEC       SECTION.
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
-               MOVE    "������λ"          TO  SYSDAYRES-API-RESULT-MSG
+      *        正常終了
+               MOVE    "処理終了"          TO  SYSDAYRES-API-RESULT-MSG
            ELSE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  SYSDAYRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  SYSDAYRES-API-RESULT-MSG
@@ -1074,7 +1074,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1103,7 +1103,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1125,51 +1125,51 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "�ꥯ�������ֹ椬����ޤ���"
+               MOVE    "リクエスト番号がありません"
                                                TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE    "�������Ƥ˸��꤬����ޤ���"
+               MOVE    "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE    "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE    "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1177,7 +1177,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�����
+      *    システム管理読込処理
       *****************************************************************
        9001-SYSKANRI-KEYREAD-SEC            SECTION.
       *
@@ -1202,7 +1202,7 @@
       *
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�����
+      *    システム管理読込処理
       *****************************************************************
        900-SYSKANRI-READ-SEC            SECTION.
       *
@@ -1220,7 +1220,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1234,7 +1234,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1248,7 +1248,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

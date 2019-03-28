@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,65 +16,65 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ÌôºÞ¾ðÊó½ÐÎÏ¥Ñ¥é¥á¥¿              COPY (CPORCHC30.INC)
-      *                                          (ORCHC30 ¤Ç»ÈÍÑ¡Ë
+      *    è–¬å‰¤æƒ…å ±å‡ºåŠ›ãƒ‘ãƒ©ãƒ¡ã‚¿              COPY (CPORCHC30.INC)
+      *                                          (ORCHC30 ã§ä½¿ç”¨ï¼‰
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     NACL-Â¿¡¹Ç¼  06/01/24  ÍÑÎÌ³ä¹ç¥³¡¼¥ÉÄÉ²Ã
-      * 04.01.00     NACL-Â¿¡¹Ç¼  07/12/11  µ¯¾²ÄÉ²Ã
-      * 04.05.00     NACL-¿¹ÏÆ    09/06/22  ¾®¿ôÅÀ°Ê²¼£µ·å¤ËÊÑ¹¹
-      * 04.05.00     NACL-Â¿¡¹Ç¼  09/07/23  ºßÂðÌôºÞ¡¢¥³¥á¥ó¥ÈÄÉ²Ã
-      * 04.06.00     NACL-Â¿¡¹Ç¼  11/02/22  ÍÑË¡¥³¥á¥ó¥ÈÂÐ±þÄÉ²Ã
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/10/XX  ÍÑË¡¥³¡¼¥É¿ôÎÌÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     NACL-å¤šã€…ç´  06/01/24  ç”¨é‡å‰²åˆã‚³ãƒ¼ãƒ‰è¿½åŠ 
+      * 04.01.00     NACL-å¤šã€…ç´  07/12/11  èµ·åºŠè¿½åŠ 
+      * 04.05.00     NACL-æ£®è„‡    09/06/22  å°æ•°ç‚¹ä»¥ä¸‹ï¼•æ¡ã«å¤‰æ›´
+      * 04.05.00     NACL-å¤šã€…ç´  09/07/23  åœ¨å®…è–¬å‰¤ã€ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ 
+      * 04.06.00     NACL-å¤šã€…ç´  11/02/22  ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆå¯¾å¿œè¿½åŠ 
+      * 04.08.00     NACL-å¤šã€…ç´  16/10/XX  ç”¨æ³•ã‚³ãƒ¼ãƒ‰æ•°é‡è¿½åŠ 
       ************************************************************
       *
        01  ORCHC30AREA.
       *
-      *    ºÇÂç·ï¿ô
+      *    æœ€å¤§ä»¶æ•°
            03  ORCHC30-MAX             PIC 9(04).
       *
            03  ORCHC30-DATA-TBL        OCCURS   99.
-      *        ÌôºÞ¥³¡¼¥É
+      *        è–¬å‰¤ã‚³ãƒ¼ãƒ‰
                05  ORCHC30-SRYCD       PIC X(09).
-      *        ÍÑË¡¥³¡¼¥É¡Ê¶õÇò¤¢¤ê¡Ë
+      *        ç”¨æ³•ã‚³ãƒ¼ãƒ‰ï¼ˆç©ºç™½ã‚ã‚Šï¼‰
                05  ORCHC30-YSRYCD      PIC X(09).
-      *        ÍÑË¡¥³¥á¥ó¥ÈÌ¾¾Î
+      *        ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆåç§°
                05  ORCHC30-YSRYCD-NAME PIC X(80).
       *
-      *        ¿ôÎÌ¡Ê£±ÆüÎÌ¡¿³°ÍÑ¤ÏÁíÎÌ¡Ë
+      *        æ•°é‡ï¼ˆï¼‘æ—¥é‡ï¼å¤–ç”¨ã¯ç·é‡ï¼‰
                05  ORCHC30-SURYO       PIC 9(05)V9(05).
-      *        Æü¿ô¡Ê²ó¿ô¡Ë¡Ê³°ÍÑ¤Ï£±²ó¡Ë
+      *        æ—¥æ•°ï¼ˆå›žæ•°ï¼‰ï¼ˆå¤–ç”¨ã¯ï¼‘å›žï¼‰
                05  ORCHC30-KAISU       PIC 9(03).
-      *        ¡Ê£±¡§ÆâÉþ¡¢£²¡§ÆÜÉþ¡¢£³¡§³°ÍÑ¡¢£´¡§ºßÂð¡Ë
+      *        ï¼ˆï¼‘ï¼šå†…æœã€ï¼’ï¼šé “æœã€ï¼“ï¼šå¤–ç”¨ã€ï¼”ï¼šåœ¨å®…ï¼‰
                05  ORCHC30-ZAIKBN      PIC X(01).
-      *        ÍÑË¡Ëè¤ÎÍÑÎÌ¡Ê£±¡§Ä«¡¢£²¡§Ãë¡¢£³¡§Ìë¡¢£´¡§¿²¡¢£µ¡§µ¯¾²¡Ë
+      *        ç”¨æ³•æ¯Žã®ç”¨é‡ï¼ˆï¼‘ï¼šæœã€ï¼’ï¼šæ˜¼ã€ï¼“ï¼šå¤œã€ï¼”ï¼šå¯ã€ï¼•ï¼šèµ·åºŠï¼‰
                05  ORCHC30-YOURYOU-TBL.
                    07  ORCHC30-YOURYOU     PIC 9(05)V9(05)
                                            OCCURS   5.
-      *        ³°ÍÑÆü¿ô¡ÊÆü¿ôÆþÎÏ¤¬¤¢¤Ã¤¿»þ¤Î¤ß¡Ë
+      *        å¤–ç”¨æ—¥æ•°ï¼ˆæ—¥æ•°å…¥åŠ›ãŒã‚ã£ãŸæ™‚ã®ã¿ï¼‰
                05  ORCHC30-SRYKAISU        PIC 9(03).
-      *        ´¹»»ÃÍ¿ôÎÌ¡Ê£±ÆüÎÌ¡Ë
+      *        æ›ç®—å€¤æ•°é‡ï¼ˆï¼‘æ—¥é‡ï¼‰
                05  ORCHC30-KANSURYO        PIC 9(05)V9(05).
       *H28.10
-      *        ÍÑË¡¥³¡¼¥É¤Î¿ôÎÌ
-      *           ¡Ê£±¡§Ä«¡¢£²¡§Ãë¡¢£³¡§Ìë¡¢£´¡§¿²¡¢£µ¡§µ¯¾²¡Ë
+      *        ç”¨æ³•ã‚³ãƒ¼ãƒ‰ã®æ•°é‡
+      *           ï¼ˆï¼‘ï¼šæœã€ï¼’ï¼šæ˜¼ã€ï¼“ï¼šå¤œã€ï¼”ï¼šå¯ã€ï¼•ï¼šèµ·åºŠï¼‰
                05  ORCHC30-INPUTSURYOU-TBL.
                    07  ORCHC30-INPUTSURYOU     PIC 9(05)V9(05)
                                                OCCURS   5.
-      *        ÍÑË¡¥³¡¼¥É£²¡ÊÉ½¼¨¤Î¤ß¡Ë
+      *        ç”¨æ³•ã‚³ãƒ¼ãƒ‰ï¼’ï¼ˆè¡¨ç¤ºã®ã¿ï¼‰
                05  ORCHC30-YOHOU-G.
                    07  ORCHC30-YOHOU-TBL   OCCURS  5.
                        09  ORCHC30-YOHOU       PIC X(09).
-      *                ÍÑË¡¥³¥á¥ó¥ÈÌ¾¾Î
+      *                ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆåç§°
                        09  ORCHC30-YOHOU-NAME  PIC X(80).
-      *        ¥³¥á¥ó¥È¥³¡¼¥É
+      *        ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰
                05  ORCHC30-COMMENT-G.
                    07  ORCHC30-COMMENT-OCCURS  OCCURS  10.
                        09  ORCHC30-COMMENT-CD   PIC X(09).
                        09  ORCHC30-COMMENT-MEI  PIC X(80).
       *H28.10
-      *                1:ÍÑË¡¥³¡¼¥É¤Î¿ôÎÌÊÔ½¸Ê¬
+      *                1:ç”¨æ³•ã‚³ãƒ¼ãƒ‰ã®æ•°é‡ç·¨é›†åˆ†
                        09  ORCHC30-COMHENKBN    PIC X(01).
       *

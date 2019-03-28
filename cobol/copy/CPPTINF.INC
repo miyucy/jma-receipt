@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,137 +16,137 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô                           COPY (CPPTINF.INC)     *
+      *    æ‚£è€…                           COPY (CPPTINF.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     NACL-Â¿¡¹Ç¼  05/09/13  Æþ¶âÊýË¡ÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     NACL-å¤šã€…ç´  05/09/13  å…¥é‡‘æ–¹æ³•è¿½åŠ 
       ************************************************************
       *01  PTINF-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTINF-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTINF-HOSPNUM              PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTINF-PTID                PIC  9(10).
-      *¥«¥Ê»áÌ¾
+      *ã‚«ãƒŠæ°å
            03  PTINF-KANANAME                PIC  X(100).
-      *´Á»ú»áÌ¾
+      *æ¼¢å­—æ°å
            03  PTINF-NAME                    PIC  X(100).
-      *ÄÌ¾Î
+      *é€šç§°
            03  PTINF-NICKNAME                PIC  X(100).
-      *À­ÊÌ
+      *æ€§åˆ¥
            03  PTINF-SEX                     PIC  X(01).
-      *À¸Ç¯·îÆü
+      *ç”Ÿå¹´æœˆæ—¥
            03  PTINF-BIRTHDAY                PIC  X(08).
-      *»àË´¶èÊ¬
+      *æ­»äº¡åŒºåˆ†
            03  PTINF-DEATHKBN                PIC  X(01).
-      *¼«Âð¡ÝÍ¹ÊØÈÖ¹æ
+      *è‡ªå®…âˆ’éƒµä¾¿ç•ªå·
            03  PTINF-HOME-POST               PIC  X(07).
-      *¼«Âð¡Ý½»½ê
+      *è‡ªå®…âˆ’ä½æ‰€
            03  PTINF-HOME-ADRS               PIC  X(200).
-      *¼«Âð¡ÝÈÖÃÏÊý½ñ
+      *è‡ªå®…âˆ’ç•ªåœ°æ–¹æ›¸
            03  PTINF-HOME-BANTI              PIC  X(200).
-      *¼«Âð¡ÝÃëÅÅÏÃÈÖ¹æ
+      *è‡ªå®…âˆ’æ˜¼é›»è©±ç•ªå·
            03  PTINF-HOME-TEL1               PIC  X(015).
-      *¼«Âð¡ÝÌëÅÅÏÃÈÖ¹æ
+      *è‡ªå®…âˆ’å¤œé›»è©±ç•ªå·
            03  PTINF-HOME-TEL2               PIC  X(015).
-      *À¤ÂÓ¼çÌ¾
+      *ä¸–å¸¯ä¸»å
            03  PTINF-SETAINUSI               PIC  X(100).
-      *Â³ÊÁ
+      *ç¶šæŸ„
            03  PTINF-ZOKUGARA                PIC  X(060).
-      *¿¦¶È
+      *è·æ¥­
            03  PTINF-JOB                     PIC  X(040).
-      *·ÈÂÓÅÅÏÃÈÖ¹æ
+      *æºå¸¯é›»è©±ç•ªå·
            03  PTINF-KEITAI-TEL              PIC  X(015).
-      *£Æ£Á£ØÈÖ¹æ
+      *ï¼¦ï¼¡ï¼¸ç•ªå·
            03  PTINF-FAX                     PIC  X(015).
-      *ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+      *é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            03  PTINF-EMAIL                   PIC  X(050).
-      *ÉÂ±¡¸ºÌÈ»öÍ³¶èÊ¬
+      *ç—…é™¢æ¸›å…äº‹ç”±åŒºåˆ†
            03  PTINF-DISCOUNT-KBN            PIC  X(02).
-      *³ä°úÎ¨
+      *å‰²å¼•çŽ‡
            03  PTINF-DISCOUNT                PIC  X(02).
-      *¾õÂÖ¶èÊ¬£±
+      *çŠ¶æ…‹åŒºåˆ†ï¼‘
            03  PTINF-CONDITION-1             PIC  X(02).
-      *¾õÂÖ¶èÊ¬£²
+      *çŠ¶æ…‹åŒºåˆ†ï¼’
            03  PTINF-CONDITION-2             PIC  X(02).
-      *¾õÂÖ¶èÊ¬£³
+      *çŠ¶æ…‹åŒºåˆ†ï¼“
            03  PTINF-CONDITION-3             PIC  X(02).
-      *¥³¥á¥ó¥È£±
+      *ã‚³ãƒ¡ãƒ³ãƒˆï¼‘
            03  PTINF-COMMENT-1               PIC  X(200).
-      *¥³¥á¥ó¥È£²
+      *ã‚³ãƒ¡ãƒ³ãƒˆï¼’
            03  PTINF-COMMENT-2               PIC  X(200).
-      *¶Ø´÷£±
+      *ç¦å¿Œï¼‘
            03  PTINF-TABOO-1                 PIC  X(200).
-      *¶Ø´÷£²
+      *ç¦å¿Œï¼’
            03  PTINF-TABOO-2                 PIC  X(200).
-      *¥¢¥ì¥ë¥®¡¼£±
+      *ã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼‘
            03  PTINF-ALLERGY-1               PIC  X(200).
-      *¥¢¥ì¥ë¥®¡¼£²
+      *ã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼’
            03  PTINF-ALLERGY-2               PIC  X(200).
-      *´¶À÷¾É£±
+      *æ„ŸæŸ“ç—‡ï¼‘
            03  PTINF-KANSENSYO-1             PIC  X(200).
-      *´¶À÷¾É£²
+      *æ„ŸæŸ“ç—‡ï¼’
            03  PTINF-KANSENSYO-2             PIC  X(200).
-      *Ï¢ÍíÀè¡ÝÌ¾¾Î
+      *é€£çµ¡å…ˆâˆ’åç§°
            03  PTINF-RENRAKU-NAME            PIC  X(100).
-      *Ï¢ÍíÀè¡ÝÂ³ÊÁ
+      *é€£çµ¡å…ˆâˆ’ç¶šæŸ„
            03  PTINF-RENRAKU-ZOKUGARA        PIC  X(60).
-      *Ï¢ÍíÀè¡ÝÍ¹ÊØÈÖ¹æ
+      *é€£çµ¡å…ˆâˆ’éƒµä¾¿ç•ªå·
            03  PTINF-RENRAKU-POST            PIC  X(07).
-      *Ï¢ÍíÀè¡Ý½»½ê
+      *é€£çµ¡å…ˆâˆ’ä½æ‰€
            03  PTINF-RENRAKU-ADRS            PIC  X(200).
-      *Ï¢ÍíÀè¡ÝÈÖÃÏÊý½ñ
+      *é€£çµ¡å…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            03  PTINF-RENRAKU-BANTI           PIC  X(200).
-      *Ï¢ÍíÀè¡ÝÃëÅÅÏÃÈÖ¹æ
+      *é€£çµ¡å…ˆâˆ’æ˜¼é›»è©±ç•ªå·
            03  PTINF-RENRAKU-TEL1            PIC  X(015).
-      *Ï¢ÍíÀè¡ÝÌëÅÅÏÃÈÖ¹æ
+      *é€£çµ¡å…ˆâˆ’å¤œé›»è©±ç•ªå·
            03  PTINF-RENRAKU-TEL2            PIC  X(015).
-      *¶ÐÌ³Àè¡ÝÌ¾¾Î
+      *å‹¤å‹™å…ˆâˆ’åç§°
            03  PTINF-OFFICE-NAME             PIC  X(100).
-      *¶ÐÌ³Àè¡ÝÍ¹ÊØÈÖ¹æ
+      *å‹¤å‹™å…ˆâˆ’éƒµä¾¿ç•ªå·
            03  PTINF-OFFICE-POST             PIC  X(07).
-      *¶ÐÌ³Àè¡Ý½»½ê
+      *å‹¤å‹™å…ˆâˆ’ä½æ‰€
            03  PTINF-OFFICE-ADRS             PIC  X(200).
-      *¶ÐÌ³Àè¡ÝÈÖÃÏÊý½ñ
+      *å‹¤å‹™å…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            03  PTINF-OFFICE-BANTI            PIC  X(200).
-      *¶ÐÌ³Àè¡ÝÅÅÏÃÈÖ¹æ
+      *å‹¤å‹™å…ˆâˆ’é›»è©±ç•ªå·
            03  PTINF-OFFICE-TEL              PIC  X(015).
-      *µ¢¾ÊÀè¡ÝÌ¾¾Î
+      *å¸°çœå…ˆâˆ’åç§°
            03  PTINF-KISEI-NAME              PIC  X(100).
-      *µ¢¾ÊÀè¡ÝÍ¹ÊØÈÖ¹æ
+      *å¸°çœå…ˆâˆ’éƒµä¾¿ç•ªå·
            03  PTINF-KISEI-POST              PIC  X(07).
-      *µ¢¾ÊÀè¡Ý½»½ê
+      *å¸°çœå…ˆâˆ’ä½æ‰€
            03  PTINF-KISEI-ADRS              PIC  X(200).
-      *µ¢¾ÊÀè¡ÝÈÖÃÏÊý½ñ
+      *å¸°çœå…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            03  PTINF-KISEI-BANTI             PIC  X(200).
-      *µ¢¾ÊÀè¡ÝÅÅÏÃÈÖ¹æ
+      *å¸°çœå…ˆâˆ’é›»è©±ç•ªå·
            03  PTINF-KISEI-TEL               PIC  X(015).
-      *¥Æ¥¹¥È´µ¼ÔÈÖ¹æ¶èÊ¬
+      *ãƒ†ã‚¹ãƒˆæ‚£è€…ç•ªå·åŒºåˆ†
            03  PTINF-TSTPTNUMKBN             PIC  X(01).
-      *Æþ¶âÊýË¡
+      *å…¥é‡‘æ–¹æ³•
            03  PTINF-NYUKIN-HOHO             PIC  X(02).
-      *ºÇÂçºÞÈÖ¹æ
+      *æœ€å¤§å‰¤ç•ªå·
            03  PTINF-MAXZAINUM               PIC  9(08).
-      *Æþ±¡ÍúÎòÈÖ¹æ
+      *å…¥é™¢å±¥æ­´ç•ªå·
            03  PTINF-RRKNUM                  PIC  9(03).
-      *Æþ±¡ÍúÎò»ÞÈÖ¹æ
+      *å…¥é™¢å±¥æ­´æžç•ªå·
            03  PTINF-RRKEDANUM               PIC  9(03).
-      *ÀÁµá½ñÈ¯¹Ô¶èÊ¬
+      *è«‹æ±‚æ›¸ç™ºè¡ŒåŒºåˆ†
            03  PTINF-SKYPRTFLG               PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTINF-TERMID                  PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTINF-OPID                    PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTINF-CREYMD                  PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTINF-UPYMD                   PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTINF-UPHMS                   PIC  X(06).
-      *virtual¹àÌÜ
+      *virtualé …ç›®
            03  PTINF-ST-SRYYMD               PIC  X(08).
            03  PTINF-ED-SRYYMD               PIC  X(08).
            03  PTINF-NYUGAIKBN               PIC  X(01).

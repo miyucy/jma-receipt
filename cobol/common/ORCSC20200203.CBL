@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC20200203.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¿ÇÎÅ¹Ô°ÙÆþÎÏ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯¡¢»»Äê¡ÊÌôºÞ¡Ë
-      *                      £È£±£´¡¥£´²þÀµ¤Þ¤Ç
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  00/12/01    MCC¡ÝÂ¿¡¹Ç¼   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : è¨ºç™‚è¡Œç‚ºå…¥åŠ›
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : è¨ºç™‚è¡Œç‚ºãƒã‚§ãƒƒã‚¯ã€ç®—å®šï¼ˆè–¬å‰¤ï¼‰
+      *                      ï¼¨ï¼‘ï¼”ï¼Žï¼”æ”¹æ­£ã¾ã§
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  00/12/01    MCCâˆ’å¤šã€…ç´   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    Â¿¡¹Ç¼       01/04/18  ËãÆÇ¤ÎÈ½Äê¡¢ÌôºÞ¿ô¥«¥¦¥ó¥È
-      *                                     ¤Î½¤ÀµÅù
-      *  01.00.02    Â¿¡¹Ç¼       01/05/21  ¿ÇÎÅ¼ïÊÌ¤ÎÈ½Äê¤ÎÄÉ²Ã
-      *  02.00.06    NACL-Â¿¡¹Ç¼  05/12/14  MONFUNC ÂÐ±þ Â¾
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    å¤šã€…ç´       01/04/18  éº»æ¯’ã®åˆ¤å®šã€è–¬å‰¤æ•°ã‚«ã‚¦ãƒ³ãƒˆ
+      *                                     ã®ä¿®æ­£ç­‰
+      *  01.00.02    å¤šã€…ç´       01/05/21  è¨ºç™‚ç¨®åˆ¥ã®åˆ¤å®šã®è¿½åŠ 
+      *  02.00.06    NACL-å¤šã€…ç´  05/12/14  MONFUNC å¯¾å¿œ ä»–
+      *  03.05.00    NACL-å¤šã€…ç´  07/04/XX  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -46,7 +46,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
@@ -77,10 +77,10 @@
            03  FLG-TOKUSYO2         PIC 9(01).
            03  FLG-SYOHORYO         PIC 9(01).
            03  FLG-SYOHOSENN        PIC 9(01).
-      *    ÆâÉþ
+      *    å†…æœ
            03  FLG-NAIFUKU          PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -103,7 +103,7 @@
            03  IDX-T2              PIC 9(04).
       *
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
            03  WRK-SRYCD2          PIC X(09).
@@ -147,11 +147,11 @@
                05  WRK-ZAITEN          PIC 9(08).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
-      *    Ç¯ÎðÈ½ÄêÍÑ
+      *    å¹´é½¢åˆ¤å®šç”¨
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
       *
-      *    ·ÑÂ³¤Î»þ¡¢¼«Æ°È¯À¸¤Î¥Á¥§¥Ã¥¯
+      *    ç¶™ç¶šã®æ™‚ã€è‡ªå‹•ç™ºç”Ÿã®ãƒã‚§ãƒƒã‚¯
        01  WRK-CONTCHK-TBL.
            03  WRK-CONTCHK-OCC         OCCURS  30.
                05  WRK-TBL-SRYCD       PIC X(09).
@@ -159,50 +159,50 @@
            03  IDX-TBL                 PIC 9(04).
            03  FLG-CNTCHK              PIC 9(01).
       *
-      *    ÊÝÂ¸ÍÑ
+      *    ä¿å­˜ç”¨
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HOZ-//.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    »»ÄêÍúÎò
+      *    ç®—å®šå±¥æ­´
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¡Ý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿âˆ’
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
-      *    ¼õ¿ÇÍúÎò
+      *    å—è¨ºå±¥æ­´
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡Ý
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿âˆ’
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
       *
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÊÔ½¸¥Ñ¥é¥á¥¿
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSC90.INC".
       *
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÎò¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šæ­´ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSC91.INC".
       *
-      *    ¿ÇÎÅ¹Ô°ÙÅÀ¿ôÊÔ½¸¡¦´ðËÜ¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚è¡Œç‚ºç‚¹æ•°ç·¨é›†ãƒ»åŸºæœ¬ãƒã‚§ãƒƒã‚¯
            COPY    "CPORCSC92.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
@@ -210,20 +210,20 @@
       *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
       *
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSC00.INC".
       *
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -234,7 +234,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -243,13 +243,13 @@
            INITIALIZE                  IDX-AREA
       *
            EVALUATE    LNK-ORCSC-KBN
-      *        ºÞÊÌ¡¡¥Á¥§¥Ã¥¯¡¢ÊÔ½¸¡¢¼«Æ°»»Äê
+      *        å‰¤åˆ¥ã€€ãƒã‚§ãƒƒã‚¯ã€ç·¨é›†ã€è‡ªå‹•ç®—å®š
                WHEN    "1"
                    PERFORM 100-SEL-SYORI-SEC
-      *        Á´ÂÎ¤Î¥Á¥§¥Ã¥¯
+      *        å…¨ä½“ã®ãƒã‚§ãƒƒã‚¯
                WHEN    "2"
                    PERFORM 200-ALL-SYORI-SEC
-      *        ¼«Æ°»»Äê
+      *        è‡ªå‹•ç®—å®š
                WHEN    "3"
                    PERFORM 300-AUTO-SYORI-SEC
                WHEN    OTHER
@@ -260,11 +260,11 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ºÞÊÌ¤Î¥Á¥§¥Ã¥¯¡¢ÊÔ½¸¡¢¼«Æ°»»Äê½èÍý
+      *    å‰¤åˆ¥ã®ãƒã‚§ãƒƒã‚¯ã€ç·¨é›†ã€è‡ªå‹•ç®—å®šå‡¦ç†
       *****************************************************************
        100-SEL-SYORI-SEC                SECTION.
       *
-      *    ¥Á¥§¥Ã¥¯¡¢¼«Æ°»»Äê
+      *    ãƒã‚§ãƒƒã‚¯ã€è‡ªå‹•ç®—å®š
            PERFORM 1001-NAI-CHK-SEC
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
@@ -272,7 +272,7 @@
                GO      TO      100-SEL-SYORI-EXT
            END-IF
       *
-      *    ÅÀ¿ô·×»»
+      *    ç‚¹æ•°è¨ˆç®—
            PERFORM 1002-TENSU-KEI-SEC
       *
            .
@@ -280,7 +280,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌÀºÙÊÌÆâÍÆ¥Á¥§¥Ã¥¯¡¢¼«Æ°»»ÄêÊÔ½¸½èÍý
+      *    æ˜Žç´°åˆ¥å†…å®¹ãƒã‚§ãƒƒã‚¯ã€è‡ªå‹•ç®—å®šç·¨é›†å‡¦ç†
       *****************************************************************
        1001-NAI-CHK-SEC                  SECTION.
       *
@@ -301,7 +301,7 @@
                    IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "059"
                        MOVE    "7"                     TO  WRK-MOJI
                    END-IF
-      *            Ê´ºÕ¤Î»þ¡¢£¹¤È¤¹¤ë
+      *            ç²‰ç •ã®æ™‚ã€ï¼™ã¨ã™ã‚‹
                    IF      WRK-COM-INPUTCD(IDX-Z)      =   "099209901"
                        MOVE    "9"                     TO  WRK-MOJI
                    END-IF
@@ -317,7 +317,7 @@
                        PERFORM 10010-SRYKBN-CHK-SEC
       *
                    WHEN    OTHER
-      *                ÊÔ½¸¥Á¥§¥Ã¥¯¤Ø
+      *                ç·¨é›†ãƒã‚§ãƒƒã‚¯ã¸
                        PERFORM 10011-CHK-SEC
                END-EVALUATE
            END-PERFORM
@@ -329,7 +329,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅêÌô¤Î½èÊý¤Î¤ß¥Á¥§¥Ã¥¯½èÍý
+      *    æŠ•è–¬ã®å‡¦æ–¹ã®ã¿ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        10010-SRYKBN-CHK-SEC             SECTION.
       *
@@ -337,7 +337,7 @@
                WHEN    "213"
                WHEN    "223"
                WHEN    "233"
-      *            ÅêÌô¤Î½èÊý¤Î¤ß¤Ï¡¢ÅêÌô¤¬»»Äê¤Ç¤­¤Ê¤¤»þ¤Î¤ß
+      *            æŠ•è–¬ã®å‡¦æ–¹ã®ã¿ã¯ã€æŠ•è–¬ãŒç®—å®šã§ããªã„æ™‚ã®ã¿
                    IF      (LNK-ORCSC-ROUMANSEI-ARI    =   ZERO) AND
                            (LNK-ORCSC-ROUMANSEI-ARI2   =   ZERO) AND
                            (LNK-ORCSC-NETAKIRI-ARI     =   ZERO) AND
@@ -353,16 +353,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌÀºÙÊÌÆâÍÆ¥Á¥§¥Ã¥¯¡¢¼«Æ°»»ÄêÊÔ½¸½èÍý
+      *    æ˜Žç´°åˆ¥å†…å®¹ãƒã‚§ãƒƒã‚¯ã€è‡ªå‹•ç®—å®šç·¨é›†å‡¦ç†
       *****************************************************************
        10011-CHK-SEC                  SECTION.
       *
-      *    ³Æ¥Á¥§¥Ã¥¯½èÍý
+      *    å„ãƒã‚§ãƒƒã‚¯å‡¦ç†
            EVALUATE    WRK-MOJI
                WHEN    "1"
-      *            ÆýÍÄ»ù¤Î¼«Æ°²Ã»»¤òÄÉ²Ã¤¹¤ë
+      *            ä¹³å¹¼å…ã®è‡ªå‹•åŠ ç®—ã‚’è¿½åŠ ã™ã‚‹
                    PERFORM 10011-NENREI-SET-SEC
-      *            Ê´ºÕ¤Î¥Á¥§¥Ã¥¯
+      *            ç²‰ç •ã®ãƒã‚§ãƒƒã‚¯
                WHEN    "9"
                    IF      WRK-COM-INPUTCD(IDX-Z + 1)  NOT =   SPACE
                        IF     (WRK-COM-INPUTCD(IDX-Z + 1)(1:1)
@@ -383,7 +383,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ç¯Îð²Ã»»ÄÉ²Ã½èÍý¡Ê¶¦ÄÌ¡Ë
+      *    å¹´é½¢åŠ ç®—è¿½åŠ å‡¦ç†ï¼ˆå…±é€šï¼‰
       *****************************************************************
        10011-NENREI-SET-SEC            SECTION.
       *
@@ -392,11 +392,11 @@
                               (WRK-COM-AGEKSNSRYCD(IDX-Z IDX2)
                                                =   SPACE  OR
                                                    ZERO )
-      *        ²Ã»»ÄÉ²Ã
+      *        åŠ ç®—è¿½åŠ 
                MOVE    WRK-COM-AGEKSNSRYCD (IDX-Z IDX2)  TO  WRK-SRYCD
-      *        ²Ã»»ÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *        åŠ ç®—æ–™ãƒã‚§ãƒƒã‚¯å‡¦ç†
                PERFORM 100111-KASAN-CHK-SEC
-      *        ²Ã»»ÎÁÄÉ²Ã½èÍý
+      *        åŠ ç®—æ–™è¿½åŠ å‡¦ç†
                MOVE    IDX-Z               TO  IDX-S
                PERFORM 1002-KASAN-SET-SEC
                IF      FLG-ADD             =   1
@@ -409,11 +409,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼«Æ°²Ã»»¡¡Â¸ºß¥Á¥§¥Ã¥¯²Ã½èÍý
+      *    è‡ªå‹•åŠ ç®—ã€€å­˜åœ¨ãƒã‚§ãƒƒã‚¯åŠ å‡¦ç†
       *****************************************************************
        100111-KASAN-CHK-SEC        SECTION.
       *
-      *    »þ´Ö¼«Æ°²Ã»»¡¡Â¸ºß¥Á¥§¥Ã¥¯
+      *    æ™‚é–“è‡ªå‹•åŠ ç®—ã€€å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -431,7 +431,7 @@
       *
       *
       *****************************************************************
-      *    ²Ã»»ÎÁÄÉ²Ã½èÍý
+      *    åŠ ç®—æ–™è¿½åŠ å‡¦ç†
       *****************************************************************
        1002-KASAN-SET-SEC              SECTION.
       *
@@ -443,7 +443,7 @@
                MOVE    IDX-T           TO  IDX-S
            END-IF
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÔ½¸¡¦´ðËÜ¥Á¥§¥Ã¥¯
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ç·¨é›†ãƒ»åŸºæœ¬ãƒã‚§ãƒƒã‚¯
            MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
            INITIALIZE                  ORCSC92AREA
            IF      FLG-ARI             =   ZERO
@@ -466,7 +466,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ¥¨¥é¡¼¤Î»þ¡¢ÄÉ²Ã¤Ê¤·
+      *    ã‚¨ãƒ©ãƒ¼ã®æ™‚ã€è¿½åŠ ãªã—
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE               TO  SPA-ERRCD
@@ -484,7 +484,7 @@
            MOVE    WRK-COM-SRYSYUKBN (IDX-S - 1)
                                        TO  WRK-COM-SRYSYUKBN(IDX-S)
       *
-      *    ¼«Æ°ÄÉ²ÃÊ¬¡ÊÆþÎÏ»þ¤ËÄÉ²Ã¡Ë
+      *    è‡ªå‹•è¿½åŠ åˆ†ï¼ˆå…¥åŠ›æ™‚ã«è¿½åŠ ï¼‰
            MOVE    "2"                 TO  WRK-COM-AUTOKBN (IDX-S)
       *
            ADD     1                   TO  WRK-GMN-MAX
@@ -496,7 +496,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô·×»»ÊÔ½¸½èÍý
+      *    ç‚¹æ•°è¨ˆç®—ç·¨é›†å‡¦ç†
       *****************************************************************
        1002-TENSU-KEI-SEC                  SECTION.
       *
@@ -535,40 +535,40 @@
                        CONTINUE
       *
                    WHEN    OTHER
-      *                ÊÔ½¸¥Á¥§¥Ã¥¯¤Ø
+      *                ç·¨é›†ãƒã‚§ãƒƒã‚¯ã¸
                        PERFORM 10021-KEISAN-SEC
                END-EVALUATE
            END-PERFORM
       *
-      *    ºÇ½ª¹Ô
-      *    ÌôºÞÅÀ¿ô·×»»
+      *    æœ€çµ‚è¡Œ
+      *    è–¬å‰¤ç‚¹æ•°è¨ˆç®—
            MOVE    "2"                 TO  LNK-SC90-KBN
            MOVE    IDX-MAX             TO  LNK-SC90-IDX
            CALL    "ORCSC90"           USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    ³ä¹ç²Ã»»
+      *    å‰²åˆåŠ ç®—
       *****PERFORM 1006-KASAN-SET-SEC
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   LNK-SC90-TENGAKEI
-      *    ³ÆÅÀ¿ôÊÔ½¸
+      *    å„ç‚¹æ•°ç·¨é›†
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1 (IDX-MAX)
            COMPUTE WRK-COM-YKZTEN (IDX-MAX)
                                        =   LNK-SC90-ZAITEN
                                        +   LNK-SC90-GAITEN
-      *    ´ïºàÅÀ¿ô
+      *    å™¨æç‚¹æ•°
            MOVE    ZERO                TO  WRK-COM-KIZAITEN (IDX-MAX)
       *
       *
-      *    ÅÀ¿ô·×¡¡·×»»
+      *    ç‚¹æ•°è¨ˆã€€è¨ˆç®—
            COMPUTE WRK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
                                            +   LNK-SC90-ZAITEN
                                            +   LNK-SC90-GAITEN
                                            +   LNK-SC90-KIZTEN
-      *    ·×
-      *    ³°ÍÑÌô»þ¡¢²ó¿ô¤Ï£±¤È¤¹¤ë
+      *    è¨ˆ
+      *    å¤–ç”¨è–¬æ™‚ã€å›žæ•°ã¯ï¼‘ã¨ã™ã‚‹
            IF      WRK-COM-SRYKBN (IDX-MAX)    =   "23"
                MOVE   1                    TO  LNK-ORCSC-KAISU
                MOVE    WRK-COM-TENSU  (IDX-MAX)
@@ -579,7 +579,7 @@
                                            *   LNK-ORCSC-KAISU
            END-IF
       *
-      *    ±¡³°¤Î»þ¡¢ÅÀ¿ô¤ò¥¼¥í¤È¤¹¤ë
+      *    é™¢å¤–ã®æ™‚ã€ç‚¹æ•°ã‚’ã‚¼ãƒ­ã¨ã™ã‚‹
            MOVE    WRK-COM-SRYSYUKBN(IDX-MAX)  TO  WRK-CHK-SRYSYUKBN
       *----(01.00.01) LINE ADD START ----------------------------------
            IF      WRK-CHK-SRYSYUKBN       =   SPACE
@@ -609,7 +609,7 @@
                MOVE    ZERO            TO  WRK-COM-YKZTEN (IDX-MAX)
            END-IF
       *
-      *    ¥»¥Ã¥ÈÍÑ¹ç·×ÅÀ¿ô
+      *    ã‚»ãƒƒãƒˆç”¨åˆè¨ˆç‚¹æ•°
            MOVE    WRK-COM-KEI  (IDX-MAX)  TO  LNK-ORCSC-ZAIKEI
            MOVE    WRK-COM-TENSU(IDX-MAX)  TO  LNK-ORCSC-ZAITEN
       *
@@ -618,11 +618,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô·×»»½èÍý
+      *    ç‚¹æ•°è¨ˆç®—å‡¦ç†
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
-      *    ³°ÍÑÌô»þ¡¢²ó¿ô¤Ï£±²ó¤È¤¹¤ë¡Ê¿ôÎÌ¡ö²ó¿ô¤ò¿ôÎÌ¤È¤¹¤ë¡Ë
+      *    å¤–ç”¨è–¬æ™‚ã€å›žæ•°ã¯ï¼‘å›žã¨ã™ã‚‹ï¼ˆæ•°é‡ï¼Šå›žæ•°ã‚’æ•°é‡ã¨ã™ã‚‹ï¼‰
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "23"
       *********IF      WRK-COM-SURYO2(IDX-Z)   =   ZERO
       *            MOVE    WRK-COM-SURYO (IDX-Z)   TO
@@ -645,7 +645,7 @@
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    ¼êµ»ÎÁÈ½Äê
+      *    æ‰‹æŠ€æ–™åˆ¤å®š
            IF      (WRK-MOJI                   =   "1"  )  AND
                    (WRK-COM-DATAKBN (IDX-Z)    =   "1"  )
                MOVE    IDX-Z               TO  IDX-SYU
@@ -656,7 +656,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´¿ÇÎÅ¹Ô°Ù¥Á¥§¥Ã¥¯½èÍý
+      *    å…¨è¨ºç™‚è¡Œç‚ºãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
@@ -666,13 +666,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼«Æ°»»Äê½èÍý
+      *    è‡ªå‹•ç®—å®šå‡¦ç†
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
            INITIALIZE                      WRK-CONTCHK-TBL
       *
-      *    ·ÑÂ³¤Î»þ¡¢»»ÄêÊ¬¤ÎÊÔ½¸
+      *    ç¶™ç¶šã®æ™‚ã€ç®—å®šåˆ†ã®ç·¨é›†
            IF      LNK-ORCSC-CONTKBN    =   "1"  OR  "2"
                PERFORM 30010-JYURRK-SYORI-SEC
            END-IF
@@ -707,7 +707,7 @@
                END-IF
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-      *        ±¡³°¤Î»þ
+      *        é™¢å¤–ã®æ™‚
                IF      LNK-ORCSC-INGAIKBN     =   "1"
                    EVALUATE    WRK-CHK-SRYSYUKBN
                        WHEN    "210"
@@ -749,7 +749,7 @@
                        MOVE     1              TO  FLG-GAIYAK2
                END-EVALUATE
       *
-      *     ½èÊý¤Î¤ß¤Î»þ°Ê²¼¡¢»»Äê¤Ê¤·
+      *     å‡¦æ–¹ã®ã¿ã®æ™‚ä»¥ä¸‹ã€ç®—å®šãªã—
                IF      WRK-CHK-SRYSYUKBN       =   "213" OR
                                                    "223" OR
                                                    "233"
@@ -761,7 +761,7 @@
                    WHEN    "221"
                    WHEN    "231"
                    WHEN    "291"
-      *                ËãÆÇ¶èÊ¬È½Äê
+      *                éº»æ¯’åŒºåˆ†åˆ¤å®š
                        IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
       *----(01.00.01) LINE UPD START ----------------------------------
       *********************IF      WRK-COM-MADOKUKBN (IDX)     =   1
@@ -772,8 +772,8 @@
                        END-IF
                END-EVALUATE
       *
-      *        ÆâÉþÌô¥Á¥§¥Ã¥¯
-      *          Î×»þ¤Ç£±£´Æü°ÊÆâ¤Î»þ¤ÏÂÐ¾Ý³°
+      *        å†…æœè–¬ãƒã‚§ãƒƒã‚¯
+      *          è‡¨æ™‚ã§ï¼‘ï¼”æ—¥ä»¥å†…ã®æ™‚ã¯å¯¾è±¡å¤–
                IF      (WRK-CHK-SRYSYUKBN (1:2)   =   "21" ) OR
                        (WRK-CHK-SRYSYUKBN (1:2)   =   "29" AND
                         WRK-COM-KAISU (IDX)       >=  14    )
@@ -783,14 +783,14 @@
                END-IF
                IF      (FLG-NAIFUKU            =   1  )   AND
                        (WRK-COM-INPUTCD(IDX)(1:1) =   "6"   )
-      *            ºÞ¿ô²Ã»»
+      *            å‰¤æ•°åŠ ç®—
                    IF      WRK-COM-ZAIGATAKBN (IDX)    =   1  OR
                                                            2  OR
                                                            3
                        MOVE    1               TO  WRK-KONGO
                    ELSE
       *****************ADD     1               TO  WRK-SONOTA
-      *                Ê´ºÕ¥³¡¼¥É¤¬¤¢¤ë»þ¡¢º®¹ç¤È¤¹¤ë
+      *                ç²‰ç •ã‚³ãƒ¼ãƒ‰ãŒã‚ã‚‹æ™‚ã€æ··åˆã¨ã™ã‚‹
                        IF      (IDX            >   1   )  AND
                                (WRK-COM-INPUTCD (IDX - 1)
                                                =   "099209901" )
@@ -799,7 +799,7 @@
                            ADD     1               TO  WRK-SONOTA
                        END-IF
                    END-IF
-      *            ÅÀ¿ô
+      *            ç‚¹æ•°
                    COMPUTE WRK-SYOKEIS2        =   WRK-COM-KISOTEN(IDX)
                                                *   WRK-COM-SURYO  (IDX)
                    ADD     WRK-SYOKEIS2        TO  WRK-ZAITEN
@@ -827,7 +827,7 @@
                                                    +   WRK-SONOTA
                        END-IF 
                    END-IF
-      *            ÅÀ¿ô²Ã»»
+      *            ç‚¹æ•°åŠ ç®—
                    IF      WRK-CHK-SRYSYUKBN   =   "211"
                                                OR  "291"
                        ADD     WRK-COM-KEI (IDX)   TO  WRK-KEIKEI
@@ -842,12 +842,12 @@
       *
                END-IF
       *
-      *        ÆÃÄê¼À´µ½èÊýäµ
+      *        ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®‹
                IF      WRK-COM-INPUTCD (IDX)   =   "120002570"
                    MOVE    1                   TO  FLG-TOKUSYO1
                    MOVE    IDX                 TO  IDX-T1
                END-IF
-      *        ÆÃÄê¼À´µ½èÊýÎÁ
+      *        ç‰¹å®šç–¾æ‚£å‡¦æ–¹æ–™
                IF      WRK-COM-INPUTCD (IDX)   =   "120002270"
                    MOVE    1                   TO  FLG-TOKUSYO2
                    MOVE    IDX                 TO  IDX-T2
@@ -855,19 +855,19 @@
            END-PERFORM
       *
            MOVE    ZERO                TO  IDXS
-      *    ±¡³°Ê¬
+      *    é™¢å¤–åˆ†
            PERFORM 3001-INGAI-SYORI-SEC
-      *    ±¡ÆâÊ¬
+      *    é™¢å†…åˆ†
            PERFORM 3002-INNAI-SYORI-SEC
       *
-      *     ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»½èÊýäµÎÁ¤¬¤¢¤ë»þ¡¢½èÊýäµÎÁ¤¬¤¢¤ë¤³¤È
+      *     ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†åŠ ç®—å‡¦æ–¹ç®‹æ–™ãŒã‚ã‚‹æ™‚ã€å‡¦æ–¹ç®‹æ–™ãŒã‚ã‚‹ã“ã¨
            IF      FLG-TOKUSYO1        =   1
                IF      FLG-SYOHOSENN       =   ZERO
                    MOVE    "1014"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T1)
                END-IF
            ELSE
-      *        ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»¤¬»»Äê¤Ç¤­¤ë»þ¡¢³ÎÇ§¥á¥Ã¥»¡¼¥¸
+      *        ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†åŠ ç®—ãŒç®—å®šã§ãã‚‹æ™‚ã€ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                IF     (LNK-ORCSC-TOKUTEI       =   1   )  AND
                       (LNK-ORCSC-TOKUTEIFLG    =   ZERO)
                    IF      FLG-SYOHOSENN       =   1
@@ -876,14 +876,14 @@
                END-IF
            END-IF
       *
-      *    ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»½èÊýÎÁ¤¬¤¢¤ë»þ¤Î¡¢½èÊýÎÁ¤¬¤¢¤ë¤³¤È
+      *    ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†åŠ ç®—å‡¦æ–¹æ–™ãŒã‚ã‚‹æ™‚ã®ã€å‡¦æ–¹æ–™ãŒã‚ã‚‹ã“ã¨
            IF      FLG-TOKUSYO2        =   1
                IF      FLG-SYOHORYO        =   ZERO
                    MOVE    "1015"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
                END-IF
            ELSE
-      *        ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»¤¬»»Äê¤Ç¤­¤ë»þ¡¢³ÎÇ§¥á¥Ã¥»¡¼¥¸
+      *        ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†åŠ ç®—ãŒç®—å®šã§ãã‚‹æ™‚ã€ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                IF     (LNK-ORCSC-TOKUTEI       =   1   )  AND
                       (LNK-ORCSC-TOKUTEIFLG    =   ZERO)
                    IF      FLG-SYOHORYO        =   1
@@ -897,13 +897,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ±¡³°¡¡»»Äê½èÍý
+      *    é™¢å¤–ã€€ç®—å®šå‡¦ç†
       *****************************************************************
        3001-INGAI-SYORI-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOHOSENN
       *
-      *    ½èÊýäµ¤ò¸òÉÕ¤¹¤ë¿Ç»¡ÎÁ¤ò»»Äê¤·¤Æ¤¤¤ë¾ì¹ç¡¢»»Äê¤Ê¤·
+      *    å‡¦æ–¹ç®‹ã‚’äº¤ä»˜ã™ã‚‹è¨ºå¯Ÿæ–™ã‚’ç®—å®šã—ã¦ã„ã‚‹å ´åˆã€ç®—å®šãªã—
            IF      (LNK-ORCSC-ROUMANSEI-ARI    =   1  )  OR
                    (LNK-ORCSC-ROUMANSEI-ARI2   >   ZERO) OR
                    (LNK-ORCSC-NETAKIRI-ARI     =   1  )  OR
@@ -912,7 +912,7 @@
                GO      TO      3001-INGAI-SYORI-EXT
            END-IF
       *
-      *    ½èÊýäµÎÁ
+      *    å‡¦æ–¹ç®‹æ–™
            IF     (FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    )
@@ -930,7 +930,7 @@
                                                          (02 IDXS)
                    MOVE    "80"            TO  LNK-ORCSC-SRYKBN
                                                      (02 IDXS)
-      *            Â¾²Ê¼õ¿Ç¤Î»þ¡¢¥á¥Ã¥»¡¼¥¸¤òÄÉ²Ã
+      *            ä»–ç§‘å—è¨ºã®æ™‚ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿½åŠ 
                    IF      LNK-ORCSC-FUKU-SRYKA      =   1
                        MOVE    "099999901"     TO  LNK-ORCSC-SRYCD-KS
                                                        (02 IDXS)
@@ -939,7 +939,7 @@
                    END-IF
                END-IF
            ELSE
-      *        ½èÊýäµÎÁ¤ò»»Äê¤·¤Ê¤¤¾ì¹ç¤Î½èÊýäµÎÁ¤ÎÍ­Ìµ
+      *        å‡¦æ–¹ç®‹æ–™ã‚’ç®—å®šã—ãªã„å ´åˆã®å‡¦æ–¹ç®‹æ–™ã®æœ‰ç„¡
                MOVE    "180001110"         TO  WRK-SRYCD
                MOVE    "180016410"         TO  WRK-SRYCD2
                PERFORM 3002-KASAN-CHK-SEC
@@ -947,7 +947,7 @@
                    MOVE    1               TO  FLG-SYOHOSENN
                END-IF
            END-IF
-      *    Â¾²Ê¼õ¿Ç¤Î»þ¡¢¥á¥Ã¥»¡¼¥¸¤òÄÉ²Ã
+      *    ä»–ç§‘å—è¨ºã®æ™‚ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿½åŠ 
            IF     (FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    )
@@ -964,7 +964,7 @@
                END-IF
            END-IF
       *
-      *    ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»¤Î¥Á¥§¥Ã¥¯
+      *    ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†åŠ ç®—ã®ãƒã‚§ãƒƒã‚¯
            IF     (FLG-SYOHOSENN       =   1  )  AND
                   (LNK-ORCSC-TOKUTEI   =   1)
                IF      LNK-ORCSC-TOKUTEIFLG     =   1
@@ -972,7 +972,7 @@
                END-IF
                MOVE    "120002570"         TO  WRK-SRYCD
                PERFORM 3003-YAKJYO-CHK-SEC
-      *        ÆþÎÏ¤¢¤ê
+      *        å…¥åŠ›ã‚ã‚Š
                IF      FLG-YAKJYO          =   1
                    MOVE    1                   TO  FLG-TOKUSYO1
                ELSE
@@ -995,14 +995,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ±¡Æâ »»Äê½èÍý
+      *    é™¢å†… ç®—å®šå‡¦ç†
       *****************************************************************
        3002-INNAI-SYORI-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOHORYO
       *
            IF      WRK-ZAICNT          >=  7
-      *        ÌôºÞÎÁÄþ¸º¤¢¤ê
+      *        è–¬å‰¤æ–™é€“æ¸›ã‚ã‚Š
                COMPUTE WRK-SANTEN-9    =   WRK-KEIKEI
                                        *   90
                                        /   100
@@ -1011,7 +1011,7 @@
                PERFORM 3001-GENHEN-SEC
            END-IF
       *
-      *    ÌôºÞÎÁÄþ¸º
+      *    è–¬å‰¤æ–™é€“æ¸›
            IF      WRK-ZAICNT          >=  7
                MOVE    "630010002"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
@@ -1024,14 +1024,14 @@
                END-IF
            END-IF
       *
-      *    ±¡³°½èÊý¤¬Í­¤ì¤Ð¼«Æ°²Ã»»¤ò¤·¤Ê¤¤
+      *    é™¢å¤–å‡¦æ–¹ãŒæœ‰ã‚Œã°è‡ªå‹•åŠ ç®—ã‚’ã—ãªã„
            IF     (FLG-NAIYAK2         =   1    )  OR
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    )
                GO      TO      3002-INNAI-SYORI-EXT
            END-IF
       *
-      *    ÆâÉþÄ´ºÞÎÁ²Ã»»
+      *    å†…æœèª¿å‰¤æ–™åŠ ç®—
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )
                MOVE    "120000710"         TO  WRK-SRYCD
@@ -1044,7 +1044,7 @@
                                                          (02 IDXS)
                END-IF
            END-IF
-      *    ³°ÍÑÄ´ºÞÎÁ²Ã»»
+      *    å¤–ç”¨èª¿å‰¤æ–™åŠ ç®—
            IF      FLG-GAIYAK          =   1
                MOVE    "120001010"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
@@ -1056,7 +1056,7 @@
                                                          (02 IDXS)
                END-IF
            END-IF
-      *    ½èÊýÎÁ
+      *    å‡¦æ–¹æ–™
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
@@ -1076,9 +1076,9 @@
                    MOVE    1               TO  FLG-SYOHORYO
                END-IF
            END-IF
-      *    ËãÆÇ²Ã»»ÎÁ
+      *    éº»æ¯’åŠ ç®—æ–™
            IF      FLG-MADOKU          =   1
-      *        ËãÆÇÄ´ºÞÎÁ
+      *        éº»æ¯’èª¿å‰¤æ–™
                MOVE    "120000110"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
                PERFORM 3002-KASAN-SYORI-SEC
@@ -1088,7 +1088,7 @@
                    MOVE    "26"            TO  LNK-ORCSC-SRYKBN
                                                          (02 IDXS)
                END-IF
-      *        ËãÆÇ½èÊýÎÁ
+      *        éº»æ¯’å‡¦æ–¹æ–™
                MOVE    "120001310"         TO  WRK-SRYCD
                MOVE    SPACE               TO  WRK-SRYCD2
                PERFORM 3002-KASAN-SYORI-SEC
@@ -1100,12 +1100,12 @@
                END-IF
            END-IF
       *
-      *    Ä´ºÞµ»½Ñ´ðËÜÎÁ¡ÊÆþ±¡³°¡Ë
+      *    èª¿å‰¤æŠ€è¡“åŸºæœ¬æ–™ï¼ˆå…¥é™¢å¤–ï¼‰
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
       *----(01.00.02) LINE ADD START ----------------------------------
-      *           Ä´´ð¤¬£±¤Ç¤¢¤ë¤³¤È
+      *           èª¿åŸºãŒï¼‘ã§ã‚ã‚‹ã“ã¨
              IF      LNK-ORCSC-CHOKI-FLG   =   1
       *----(01.00.02) LINE ADD END   ----------------------------------
                MOVE    "120001810"         TO  WRK-SRYCD
@@ -1121,12 +1121,12 @@
            END-IF
       *
       *----(01.00.02) LINE ADD START ----------------------------------
-      *    ÌôºÞ¾ðÊóÄó¶¡ÎÁ
+      *    è–¬å‰¤æƒ…å ±æä¾›æ–™
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
                MOVE    SPACE               TO  WRK-SRYCD
-      *        Ï·¿Í¶èÊ¬È½Äê
+      *        è€äººåŒºåˆ†åˆ¤å®š
                IF      LNK-ORCSC-ROUJIN    =   0
                    IF      LNK-ORCSC-YAKJYO-1      =    1
                        MOVE    "120002370"         TO  WRK-SRYCD
@@ -1140,7 +1140,7 @@
                        END-IF
                    END-IF
                ELSE
-      *            Ï·¿Í¤Î»þ¡¢¼êÄ¢µ­ºÜ¤¢¤ê¡¢¤Ê¤·¤ÎÎ¾Êý¤Î»»Äê¥Á¥§¥Ã¥¯
+      *            è€äººã®æ™‚ã€æ‰‹å¸³è¨˜è¼‰ã‚ã‚Šã€ãªã—ã®ä¸¡æ–¹ã®ç®—å®šãƒã‚§ãƒƒã‚¯
                    MOVE    "113701310"         TO  WRK-SRYCD
                    PERFORM 3003-YAKJYO-CHK-SEC
                    IF      FLG-YAKJYO          =   ZERO
@@ -1171,7 +1171,7 @@
                END-IF
            END-IF
       *
-      *    Â¾²Ê¼õ¿Ç¤Î»þ¡¢¥á¥Ã¥»¡¼¥¸¤òÄÉ²Ã
+      *    ä»–ç§‘å—è¨ºã®æ™‚ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¿½åŠ 
            IF     (FLG-NAIYAK          =   1    )  OR
                   (FLG-TONPUK          =   1    )  OR
                   (FLG-GAIYAK          =   1    )
@@ -1188,7 +1188,7 @@
                END-IF
            END-IF
       *
-      *    ÆÃÄê¼À´µ½èÊý´ÉÍý²Ã»»¤Î¥Á¥§¥Ã¥¯
+      *    ç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†åŠ ç®—ã®ãƒã‚§ãƒƒã‚¯
            IF     (FLG-SYOHORYO            =   1  )  AND
                   (LNK-ORCSC-TOKUTEI       =   1  )
                IF      LNK-ORCSC-TOKUTEIFLG    =   1
@@ -1196,7 +1196,7 @@
                END-IF
                MOVE    "120002270"         TO  WRK-SRYCD
                PERFORM 3003-YAKJYO-CHK-SEC
-      *        ÆþÎÏ¤¢¤ê
+      *        å…¥åŠ›ã‚ã‚Š
                IF      FLG-YAKJYO          =   1
                    MOVE    1                   TO  FLG-TOKUSYO2
                ELSE
@@ -1220,7 +1220,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞÎÁÄþ¸º¼«Æ°»»Äê½èÍý
+      *    è–¬å‰¤æ–™é€“æ¸›è‡ªå‹•ç®—å®šå‡¦ç†
       *****************************************************************
        3001-GENHEN-SEC              SECTION.
       *
@@ -1242,8 +1242,8 @@
                            MOVE    "230"       TO  WRK-CHK-SRYSYUKBN
                    END-EVALUATE
                END-IF
-      *        ÆâÉþÌô¥Á¥§¥Ã¥¯
-      *          Î×»þ¤Ç£±£´Æü°ÊÆâ¤Î»þ¤ÏÂÐ¾Ý³°
+      *        å†…æœè–¬ãƒã‚§ãƒƒã‚¯
+      *          è‡¨æ™‚ã§ï¼‘ï¼”æ—¥ä»¥å†…ã®æ™‚ã¯å¯¾è±¡å¤–
                IF     ( WRK-CHK-SRYSYUKBN      =   "210"
                                                OR  "211" )  OR
                       ((WRK-CHK-SRYSYUKBN      =   "290"
@@ -1259,7 +1259,7 @@
                IF     (FLG-NAIFUKU             =   1     )  AND
                       (FLG-ZAI                 =   ZERO  )
                    IF      WRK-GMN-INPUTCD(IDX)(1:1)   =   "."
-      *                ÌóÂ«¥»¥Ã¥È¤Î»þ¡¢ÌóÂ«¥»¥Ã¥È¤Î¸å¤ËÄÉ²Ã
+      *                ç´„æŸã‚»ãƒƒãƒˆã®æ™‚ã€ç´„æŸã‚»ãƒƒãƒˆã®å¾Œã«è¿½åŠ 
                        IF      WRK-GMN-INPUTCD(IDX + 1)(1:1)   =   "S"
                            COMPUTE IDX-Z           =   IDX     +   2
                        ELSE
@@ -1290,13 +1290,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞÎÁÄþ¸ºÄÉ²Ã½èÍý
+      *    è–¬å‰¤æ–™é€“æ¸›è¿½åŠ å‡¦ç†
       *****************************************************************
        30011-GENTUIKA-SEC         SECTION.
       *
            MOVE    IDX-Z               TO  IDX-S
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÔ½¸¡¦´ðËÜ¥Á¥§¥Ã¥¯
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ç·¨é›†ãƒ»åŸºæœ¬ãƒã‚§ãƒƒã‚¯
            INITIALIZE                  ORCSC92AREA
            IF      WRK-COM-INPUTCD (IDX-Z) =   WRK-SRYCD
                MOVE    SPACE               TO  LNK-SC92-KBN
@@ -1318,7 +1318,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ¥¨¥é¡¼¤Î»þ¡¢ÄÉ²Ã¤Ê¤·
+      *    ã‚¨ãƒ©ãƒ¼ã®æ™‚ã€è¿½åŠ ãªã—
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
@@ -1341,20 +1341,20 @@
                                            TO  WRK-COM-SRYSYUKBN(IDX-S)
            END-IF
       *
-      *    ¼«Æ°ÄÉ²ÃÊ¬¡ÊÆþÎÏ»þ¤ËÄÉ²Ã¡Ë
+      *    è‡ªå‹•è¿½åŠ åˆ†ï¼ˆå…¥åŠ›æ™‚ã«è¿½åŠ ï¼‰
            MOVE    "3"                 TO  WRK-COM-AUTOKBN (IDX-S)
            .
        30011-GENTUIKA-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ²Ã»»ÎÁ»»Äê½èÍý
+      *    åŠ ç®—æ–™ç®—å®šå‡¦ç†
       *****************************************************************
        3002-KASAN-SYORI-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
       *
-      *    º£²óÆþÎÏ¤Ë¤Ê¤¤¤³¤È
+      *    ä»Šå›žå…¥åŠ›ã«ãªã„ã“ã¨
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
                               (FLG-ERR              =   1    )   OR
@@ -1370,7 +1370,7 @@
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
       *
-      *    ·ÑÂ³Ê¬¤Ë¤Ê¤¤¤³¤È
+      *    ç¶™ç¶šåˆ†ã«ãªã„ã“ã¨
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   30      )  OR
                               (FLG-ERR              =   1    )   OR
@@ -1394,7 +1394,7 @@
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
       *
-      *        »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *        ç®—å®šå±¥æ­´ãƒã‚§ãƒƒã‚¯å‡¦ç†
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
            END-IF
@@ -1410,7 +1410,7 @@
                                            -   WRK-SANTEN
                END-IF
       *
-      *        Ç¯Îð²Ã»»½èÍý
+      *        å¹´é½¢åŠ ç®—å‡¦ç†
                PERFORM 3002-NENREI-KASAN-SEC
            END-IF
       *
@@ -1419,13 +1419,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ²Ã»»ÎÁ»»Äê½èÍý
+      *    åŠ ç®—æ–™ç®—å®šå‡¦ç†
       *****************************************************************
        3002-KASAN-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
       *
-      *    º£²óÆþÎÏ¤Ë¤Ê¤¤¤³¤È
+      *    ä»Šå›žå…¥åŠ›ã«ãªã„ã“ã¨
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
                               (FLG-ERR              =   1    )   OR
@@ -1443,14 +1443,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ²Ã»»ÎÁ»»Äê¥Á¥§¥Ã¥¯¡ÊÌôºÞ¾ðÊóÄó¶¡ÎÁ¡¡Ï·¿Í¡Ë½èÍý
+      *    åŠ ç®—æ–™ç®—å®šãƒã‚§ãƒƒã‚¯ï¼ˆè–¬å‰¤æƒ…å ±æä¾›æ–™ã€€è€äººï¼‰å‡¦ç†
       *****************************************************************
        3003-YAKJYO-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
            MOVE    ZERO                TO  FLG-YAKJYO
       *
-      *    º£²óÆþÎÏ¤Ë¤Ê¤¤¤³¤È
+      *    ä»Šå›žå…¥åŠ›ã«ãªã„ã“ã¨
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE   )  OR
                               (FLG-ERR              =   1    )   OR
@@ -1472,7 +1472,7 @@
                GO      TO      3003-YAKJYO-CHK-EXT
            END-IF
       *
-      *        »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *        ç®—å®šå±¥æ­´ãƒã‚§ãƒƒã‚¯å‡¦ç†
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
            END-IF
@@ -1485,7 +1485,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ç¯Îð²Ã»»ÄÉ²Ã½èÍý
+      *    å¹´é½¢åŠ ç®—è¿½åŠ å‡¦ç†
       *****************************************************************
        3002-NENREI-KASAN-SEC            SECTION.
       *
@@ -1497,11 +1497,11 @@
                MOVE    WRK-SRYCD           TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
-      *            Ç¯Îð¥Á¥§¥Ã¥¯
+      *            å¹´é½¢ãƒã‚§ãƒƒã‚¯
                    PERFORM 30021-NENREI-CHK-SEC
                    IF      FLG-CHK              =   ZERO
       *
-      *                ²Ã»»ÎÁ·×»»
+      *                åŠ ç®—æ–™è¨ˆç®—
                        MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD-KS
                                                        (02 IDXS)
                        MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU-KS
@@ -1516,7 +1516,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ç¯Îð¥Á¥§¥Ã¥¯½èÍý
+      *    å¹´é½¢ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        30021-NENREI-CHK-SEC             SECTION.
       *
@@ -1526,7 +1526,7 @@
            MOVE    TNS-KGNAGE          TO  WRK-KGNAGE(2:2)
            MOVE    TNS-JGNAGE          TO  WRK-JGNAGE(2:2)
       *
-      *    ²¼¸ÂÇ¯Îð¥Á¥§¥Ã¥¯
+      *    ä¸‹é™å¹´é½¢ãƒã‚§ãƒƒã‚¯
            IF      TNS-KGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
@@ -1537,12 +1537,12 @@
                END-IF
            END-IF
       *
-      *    ¾å¸ÂÇ¯Îð¥Á¥§¥Ã¥¯
+      *    ä¸Šé™å¹´é½¢ãƒã‚§ãƒƒã‚¯
            IF      TNS-JGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
                IF      TNS-JGNAGE          =   "AA"
-      *            ¿·À¸»ùÈ½Äê
+      *            æ–°ç”Ÿå…åˆ¤å®š
                    IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-DD    <=  28   )
@@ -1564,7 +1564,7 @@
            EXIT.
       *
       *****************************************************************
-      *    »»ÄêÍúÎò¥Á¥§¥Ã¥¯½èÍý
+      *    ç®—å®šå±¥æ­´ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        3001-SANTEI-CHK-SEC         SECTION.
       *
@@ -1581,10 +1581,10 @@
                                        TNS-TENSU-REC
       *
            IF      LNK-SC91-ERRCD      =   SPACE
-      *        ÄÉ²Ã¤¢¤ê
+      *        è¿½åŠ ã‚ã‚Š
                MOVE    ZERO            TO  FLG-ERR
            ELSE
-      *        ÄÉ²Ã¤Ê¤·
+      *        è¿½åŠ ãªã—
                MOVE    1               TO  FLG-ERR
            END-IF
       *
@@ -1593,11 +1593,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ·ÑÂ³¤Î»þ¡¢»»ÄêÊ¬¤ÎÊÔ½¸½èÍý
+      *    ç¶™ç¶šã®æ™‚ã€ç®—å®šåˆ†ã®ç·¨é›†å‡¦ç†
       *****************************************************************
        30010-JYURRK-SYORI-SEC         SECTION.
       *
-      *    ·ÑÂ³Ê¬¤Î»þ¡¢»»Äê
+      *    ç¶™ç¶šåˆ†ã®æ™‚ã€ç®—å®š
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
@@ -1630,7 +1630,7 @@
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX                 >   15  )  OR
                                   (JYURRK-ZAINUM(IDX)  =   SPACE)
-      *            ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *            è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
                    MOVE    SPACE               TO  SRYACCT-REC
                    INITIALIZE                      SRYACCT-REC
                    MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
@@ -1664,7 +1664,7 @@
                                                    >   ZERO  ) AND
                               (ACCT-SRYKBN(1:1)    =   "2"   OR
                                ACCT-SRYKBN         =   "80"  )
-      *                    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÊÔ½¸
+      *                    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼ç·¨é›†
                            PERFORM 300011-YAKFTN-SRYACT-SEC
                        END-IF
       *
@@ -1693,11 +1693,11 @@
       *
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÊÔ½¸½èÍý
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼ç·¨é›†å‡¦ç†
       *****************************************************************
        300011-YAKFTN-SRYACT-SEC            SECTION.
       *
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤«¤é¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¤ò¸¡º÷¤¹¤ë
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼ã‹ã‚‰è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼ã‚’æ¤œç´¢ã™ã‚‹
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
@@ -1723,17 +1723,17 @@
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
       *
-      *            ÅêÌô¤Î¼«Æ°È¯À¸¥Á¥§¥Ã¥¯ÍÑ
+      *            æŠ•è–¬ã®è‡ªå‹•ç™ºç”Ÿãƒã‚§ãƒƒã‚¯ç”¨
                    IF     ( SRY-SRYCD (IDX2)(1:1)  =   "1"   )  AND
                           ( SRY-SRYKBN(1:1)        =   "2"   OR
                             SRY-SRYSYUKBN          =   "820" )
                        ADD     1                   TO  IDX-TBL
                        EVALUATE     SRY-SRYCD (IDX2)
-      *                ½èÊýäµÎÁ
+      *                å‡¦æ–¹ç®‹æ–™
                            WHEN    "180016410"
                            WHEN    "180011110"
                                MOVE    "180011110"     TO  WRK-SRYCD
-      *                 ½èÊýÎÁ
+      *                 å‡¦æ–¹æ–™
                            WHEN    "120002610"
                            WHEN    "120001210"
                                MOVE    "120001210"     TO  WRK-SRYCD
@@ -1760,7 +1760,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1797,7 +1797,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-SRYACT-NEXT-SEC         SECTION.
       *
@@ -1815,7 +1815,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
       *****************************************************************
        940-SINACCT-READ-SEC         SECTION.
       *
@@ -1832,7 +1832,7 @@
        940-SINACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¼õ¿ÇÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å—è¨ºå±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -1849,7 +1849,7 @@
        970-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1862,7 +1862,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1877,7 +1877,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

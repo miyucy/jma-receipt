@@ -1,17 +1,17 @@
 kanri_cd    : "9800"
-name        : "ÇÓÂ¾À©¸æ¾ðÊó"
+name        : "æŽ’ä»–åˆ¶å¾¡æƒ…å ±"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "HAITA"
-  item_jp   : "ÇÓÂ¾À©¸æ"
+  item_jp   : "æŽ’ä»–åˆ¶å¾¡"
   type      : "9"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 149
   length    : 352

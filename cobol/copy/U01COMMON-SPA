@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,24 +17,24 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ¼õÉÕ°ìÍ÷²èÌÌ ¶¦ÄÌ£Ó£Ð£Á   
+      *    å—ä»˜ä¸€è¦§ç”»é¢ å…±é€šï¼³ï¼°ï¼¡   
       *
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
-      *    ¶¦ÄÌ£Ó£Ð£Á¥¨¥ê¥¢
+      *    å…±é€šï¼³ï¼°ï¼¡ã‚¨ãƒªã‚¢
       *
        01  SPA-U01KYOUTU.
-      *    ¥·¥¹¥Æ¥àÆüÉÕÉ½¼¨
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜è¡¨ç¤º
            03  SPA-GMN-DATE                PIC X(30).
-      *    Á«°Ü¸µ
+      *    é·ç§»å…ƒ
            03  SPA-NAI-MOTOPG              PIC X(08).
-      *    ³ÎÇ§²èÌÌ
+      *    ç¢ºèªç”»é¢
            03  SPA-U1ID1-AREA.
                05  SPA-U1IDCD                  PIC X(04).
                05  SPA-U1ID1-FLG               PIC X(02).
-      *   ÁªÂò°ìÍ÷¤Ø
+      *   é¸æŠžä¸€è¦§ã¸
            03  SPA-U012-AREA.
                05  SPA-U012-MOTOPG              PIC X(08).
       *

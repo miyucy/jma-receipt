@@ -1,7 +1,7 @@
 \set ON_ERROR_STOP
 --
--- Æş±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯
--- ²şÀµÂĞ±ş
+-- å…¥é™¢æ–™åŠ ç®—ãƒã‚§ãƒƒã‚¯
+-- æ”¹æ­£å¯¾å¿œ
 -- Create Date : 2010/03/15
 
 update tbl_nyuksnchk set yukoedymd ='20100331' where yukoedymd = '99999999';

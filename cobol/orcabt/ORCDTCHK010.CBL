@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCDTCHK010.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ǡ��������å�
-      *  ����ݡ��ͥ��̾  : ���顼���Ծ�����Ͽ
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  07/02/    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : データチェック
+      *  コンポーネント名  : エラー患者情報登録
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  07/02/    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����    07/06/04  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -36,7 +36,7 @@
        FILE-CONTROL.
       *
       *
-      *    �ǡ��������å���֥ե�����ʥ����å���̡�
+      *    データチェック中間ファイル（チェック結果）
            SELECT  DTCHK004-FILE
                                    ASSIGN  DTCHK004PARA
                                    ORGANIZATION    IS  INDEXED
@@ -44,33 +44,33 @@
                                    RECORD  KEY     IS  DTCHK004-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *    �ǡ��������å���֥ե�����ʥ����å���̡�
+      *    データチェック中間ファイル（チェック結果）
        FD  DTCHK004-FILE.
            COPY    "CPDTCHK004.INC".
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    ���顼�ե�����ե�����̾���ΰ� 
+      *    エラーファイルファイル名称領域 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
-      *    ��֥ե�����ե�����̾���ΰ� 
+      *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHK004PARA//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
@@ -80,7 +80,7 @@
            03  FLG-ERR                                 PIC 9(01).
            03  FLG-DTCHK004                            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-CHK004                              PIC 9(08).
       *
@@ -102,66 +102,66 @@
            03  KEY-ERRSBT                              PIC X(01).
            03  KEY-PTID                                PIC 9(10).
       *
-      *    �������ΰ�
+      *    固定値領域
       *01  CONST-AREA.
       *
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �����å��ޥ�����
+      *    チェックマスタ４
            COPY    "CPCHK004.INC".
       *
-      *    ���̽������ܾ���
+      *    個別処理基本情報
            COPY    "CPCK2000.INC".
       *
-      *    ���̽������Ծ���
+      *    個別処理患者情報
            COPY    "CPCK2001.INC".
       *
-      *    ���󥨥顼���� 
+      *    前回エラー情報 
            COPY    "CPCK1200.INC".
       *
-      *    ���顼����ܺ�
+      *    エラー情報詳細
            COPY    "CPCK1201.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
-      *    ���顼�ե�����ե�����̾���ΰ� 
+      *    エラーファイルファイル名称領域 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
-      *    �ǡ��������å��������ѥ�᡼��
+      *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
       ****************************************************************
        PROCEDURE                       DIVISION
@@ -172,7 +172,7 @@
                                                ORCBSD01PARA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -192,7 +192,7 @@
       *
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -211,13 +211,13 @@
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
                PERFORM 900-DBSTART-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
                MOVE    "STS"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
                MOVE    "ORCDTCHK010"       TO  JOB-PGID
-               MOVE    "���顼���Ծ�����Ͽ"
+               MOVE    "エラー患者情報登録"
                                            TO  JOB-SHELLMSG
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
@@ -226,7 +226,7 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-      *    �ǡ��������å���֥ե�����̾
+      *    データチェック中間ファイル名
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
@@ -259,7 +259,7 @@
            MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "�����������κ���˼��Ԥ��ޤ���"
+               MOVE    "前回処理情報の削除に失敗しました"
                                        TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -276,7 +276,7 @@
                MOVE    "del1"              TO  MCP-PATHNAME
                PERFORM 910-DBDELETE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "���顼���Ծ���κ���˼��Ԥ��ޤ���"
+                   MOVE    "エラー患者情報の削除に失敗しました"
                                        TO  WRK-DTCHKERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
@@ -295,7 +295,7 @@
                MOVE    "del2"              TO  MCP-PATHNAME
                PERFORM 910-DBDELETE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "���󥨥顼����κ���˼��Ԥ��ޤ���"
+                   MOVE    "前回エラー情報の削除に失敗しました"
                                        TO  WRK-DTCHKERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
@@ -311,7 +311,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������������
+      *    初期値設定処理
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
       *
@@ -324,7 +324,7 @@
        1001-INIT-VAL-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -343,7 +343,7 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    "��������������Ͽ�˼��Ԥ��ޤ���"
+               MOVE    "前回処理情報の登録に失敗しました"
                                    TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -358,7 +358,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼�����Խ�����
+      *    エラー患者編集処理
       *****************************************************************
        2001-PTID-EDIT-SEC              SECTION.
       *
@@ -418,7 +418,7 @@
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBINSERT-SEC
                        IF    ( MCP-RC      NOT =   ZERO )
-                           MOVE    "���顼���Ծ������Ͽ�˼��Ԥ��ޤ���"
+                           MOVE    "エラー患者情報の登録に失敗しました"
                                                TO  WRK-DTCHKERR
                            PERFORM 500-ERR-HENSYU-SEC
                            MOVE    1           TO  FLG-DTCHK004
@@ -437,7 +437,7 @@
        2001-PTID-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼�����Խ�����
+      *    エラー情報編集処理
       *****************************************************************
        20011-ERRINF-EDIT-SEC           SECTION.
       *
@@ -464,7 +464,7 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    "���顼�������Ͽ�˼��Ԥ��ޤ���"
+               MOVE    "エラー情報の登録に失敗しました"
                                    TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -511,7 +511,7 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
-               MOVE    "���顼����ܺ���Ͽ�˼��Ԥ��ޤ���"
+               MOVE    "エラー情報詳細登録に失敗しました"
                                    TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -520,7 +520,7 @@
        20011-ERRINF-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -535,7 +535,7 @@
                CLOSE   DTCHKERR-FILE
              IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -555,12 +555,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -578,7 +578,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -589,7 +589,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -604,7 +604,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    �����å���̥ե������ɹ�����
+      *    チェック結果ファイル読込処理
       *****************************************************************
        900-DTCHK004-READ-SEC           SECTION.
       *
@@ -620,7 +620,7 @@
        900-DTCHK004-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -638,7 +638,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -653,7 +653,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -668,7 +668,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC               SECTION.
       *
@@ -683,7 +683,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ģţ̣ţԣŽ���
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -698,7 +698,7 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -713,7 +713,7 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£գУģ��ԣŽ���
+      *    ＤＢＵＰＤＡＴＥ処理
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -728,7 +728,7 @@
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
@@ -743,7 +743,7 @@
        900-DBSTART-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *

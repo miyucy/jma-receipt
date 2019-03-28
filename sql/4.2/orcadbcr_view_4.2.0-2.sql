@@ -85,5 +85,5 @@ CREATE VIEW view_q001 AS
        AND (tbl_jyurrk.sryymd <= tbl_ptkohinf.tekedymd));
 
 COMMENT 
-        ON VIEW view_q001 IS '���ԾȲ�ӥ塼';
+        ON VIEW view_q001 IS '患者照会ビュー';
 

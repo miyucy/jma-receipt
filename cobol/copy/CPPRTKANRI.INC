@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,52 +16,52 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ��������                       (CPPRTKANRI.INC)       *
+      *    印刷管理                       (CPPRTKANRI.INC)       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PRTKANRI-REC.
       *
            03  PRTKANRI-KEY.
                05  PRTKANRI-HOSPNUM   PIC 9(2).
-      *�ˣţ�
+      *ＫＥＹ
                05  PRTKANRI-TBL-KEY    PIC X(08).
-      *Ϣ��
+      *連番
                05  PRTKANRI-RENNUM     PIC 9(04).
-      *���롼��
+      *グループ
                05  PRTKANRI-TBL-GROUP  PIC X(14).
       *UUID
                05  PRTKANRI-TBL-UUID   PIC X(36).
-      *������Ϣ��
+      *処理内連番
                05  PRTKANRI-SHORI-RENNUM
                                        PIC 9(04).
-      *��̳������
+      *業務コード
                05  PRTKANRI-GYOUMU-CD  PIC 9(03).                        
-      *������ɣ�
+      *シェルＩＤ
            03  PRTKANRI-SHELLID        PIC X(20).
-      *����ǯ��
+      *診療年月
            03  PRTKANRI-SRYYM          PIC X(06).
-      *����ǯ����
+      *請求年月日
            03  PRTKANRI-SKYYMD         PIC X(08).
-      *������Ϣ��
+      *印刷順連番
            03  PRTKANRI-PRIORITY       PIC 9(04).
-      *��
+      *頁
            03  PRTKANRI-PAGE           PIC 9(05).
-      *�����ե饰
+      *印刷フラグ
            03  PRTKANRI-PRTFLG         PIC X(01).
-      *Ģɼ�����ȥ�
+      *帳票タイトル
            03  PRTKANRI-TITLE          PIC X(100).
-      *�ץ��̾
+      *プリンタ名
            03  PRTKANRI-PRTNM          PIC X(16).
-      *���Уɡݣɣ�
+      *ＡＰＩ−ＩＤ
            03  PRTKANRI-API-ID         PIC X(20).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PRTKANRI-TERMID         PIC X(32).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  PRTKANRI-OPID           PIC X(16).
-      *������
+      *作成日
            03  PRTKANRI-CREYMD         PIC X(8).
       *LIMIT
            03  PRTKANRI-LIMIT          PIC 9(8).

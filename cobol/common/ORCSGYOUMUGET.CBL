@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       * 
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSGYOUMUGET.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶ÈÌ³¥³¡¼¥É¼èÆÀ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¶ÈÌ³¥³¡¼¥É¼èÆÀ½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/08/08    MCC¡ÝÃÝÅÄ¡¡   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ¥­å‹™ã‚³ãƒ¼ãƒ‰å–å¾—
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ¥­å‹™ã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/08/08    MCCâˆ’ç«¹ç”°ã€€   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -36,7 +36,7 @@
 007000 DATA                    DIVISION.
 010200 WORKING-STORAGE         SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -44,7 +44,7 @@
            03  FLG-MAP                                 PIC 9(01).
            03  WRK-LOCK-MATCH-FLG                      PIC S9(09).
            03  FLG-ALLCHK                              PIC 9(01).
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
       *
@@ -59,7 +59,7 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
-      *¥·¥§¥ë£É£Ä
+      *ã‚·ã‚§ãƒ«ï¼©ï¼¤
            03  WRK-LDNAME              PIC X(40).
            03  WRK-LD                  PIC X(20).
            03  WRK-WINDOW              PIC X(10).
@@ -69,19 +69,19 @@
            COPY    "CPLOCKCONST.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
       **************************************************************************
       *
        LINKAGE                 SECTION.
-      *   ÇÓÂ¾À©¸æ£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   æŽ’ä»–åˆ¶å¾¡ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "COMMON-SPA".
        01  SGYOUMU-CODE                PIC 9(03).
       *
@@ -92,7 +92,7 @@
                SGYOUMU-CODE.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -103,7 +103,7 @@
       *
            MOVE    ZERO            TO  SGYOUMU-CODE
       *
-      *    ²èÌÌ£É£Ä¤è¤ê¶ÈÌ³£Ì£Ä¤ò¸¡º÷¤¹¤ë
+      *    ç”»é¢ï¼©ï¼¤ã‚ˆã‚Šæ¥­å‹™ï¼¬ï¼¤ã‚’æ¤œç´¢ã™ã‚‹
            PERFORM 1101-LD-GET-SEC
       *
            .
@@ -111,7 +111,7 @@
            EXIT PROGRAM
            .
       *****************************************************************
-      *    ¶ÈÌ³LD¼èÆÀ¡¡½èÍý
+      *    æ¥­å‹™LDå–å¾—ã€€å‡¦ç†
       *****************************************************************
        1101-LD-GET-SEC               SECTION.
       *

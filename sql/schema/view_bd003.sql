@@ -15,5 +15,5 @@ CREATE VIEW view_bd003 AS
            denpnum));
 
 
-COMMENT ON VIEW view_bd003 IS '��Ǽ�ӥ塼3';
+COMMENT ON VIEW view_bd003 IS '収納ビュー3';
 

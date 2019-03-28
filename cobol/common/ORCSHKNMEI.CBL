@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSHKNMEI.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ∂¶ƒÃ
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  :  ›∏±¡»πÁÃææŒ ‘Ω∏ΩËÕ˝
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  11/04/30    NACL°›¬ø°π«º  ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÂÖ±ÈÄö
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ‰øùÈô∫ÁµÑÂêàÂêçÁß∞Á∑®ÈõÜÂá¶ÁêÜ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  11/04/30    NACL‚àíÂ§ö„ÄÖÁ¥ç  Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       *
       *
@@ -42,7 +42,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
@@ -50,11 +50,11 @@
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -79,69 +79,69 @@
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
       *
-      *∂®≤Ò≥´ªœ∆¸
+      *Âçî‰ºöÈñãÂßãÊó•
        01  CONST-H201001               PIC X(08)   VALUE   "20081001".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„Çø
       *    COPY    "CPSYSKANRI.INC".
-      *    •¡•ß•√•Øµ°«Ω¿©∏Ê
+      *    „ÉÅ„Çß„ÉÉ„ÇØÊ©üËÉΩÂà∂Âæ°
       *    COPY  "CPSK1008.INC".
       *
-      *    œ´∫“∞ÂŒ≈µ°¥ÿæ Û
+      *    Âä¥ÁÅΩÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±
       *    COPY    "CPSK4001.INC".
       *
-      *     ›∏±¡»§ﬂπÁ§Ô§ª
+      *    ‰øùÈô∫ÁµÑ„ÅøÂêà„Çè„Åõ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ¥µº‘œ´∫“ ›∏±æ Û
+      *    ÊÇ£ËÄÖÂä¥ÁÅΩ‰øùÈô∫ÊÉÖÂ†±
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *     ›∏±æ Û
+      *    ‰øùÈô∫ÊÉÖÂ†±
       *01  HKNNUM-REC.
       *    COPY    "CPHKNNUM.INC".
       *
-      *    ¥µº‘ ›∏±æ Û
+      *    ÊÇ£ËÄÖ‰øùÈô∫ÊÉÖÂ†±
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ¥µº‘∏¯»Òæ Û
+      *    ÊÇ£ËÄÖÂÖ¨Ë≤ªÊÉÖÂ†±
       *01  PTKOHINF-REC.
       *    COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    øÙª˙ —¥πŒŒ∞Ë
+      *    Êï∞Â≠óÂ§âÊèõÈ†òÂüü
            COPY    "CPORCSNUM.INC".
       *
-      *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
+      *    ÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØ„Éë„É©„É°„Çø
            COPY    "CPORCSKANACHK.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *    COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
-      *     ›∏±¡»πÁ§ª•ª•√•»ŒŒ∞Ë
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ„Çª„ÉÉ„ÉàÈ†òÂüü
            COPY    "CPORCSHKNMEI.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -150,7 +150,7 @@
            .
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -164,7 +164,7 @@
                MOVE    SPA-SRYYMD          TO  ORCSHKNMEI-SRYYMD
            END-IF
       *
-      *     ›∏±¡»πÁ§ª ‘Ω∏ΩËÕ˝
+      *    ‰øùÈô∫ÁµÑÂêà„ÅõÁ∑®ÈõÜÂá¶ÁêÜ
            PERFORM 100-HKNCOMBI-HENSYU-SEC
       *
            .
@@ -174,11 +174,11 @@
            .
       *
       *****************************************************************
-      *     ›∏±¡»πÁ§ª ‘Ω∏ΩËÕ˝
+      *    ‰øùÈô∫ÁµÑÂêà„ÅõÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        100-HKNCOMBI-HENSYU-SEC            SECTION.
       *
-      *     ›∏±¡»πÁ•ﬁ•π•ø°º ‘Ω∏
+      *    ‰øùÈô∫ÁµÑÂêà„Éû„Çπ„Çø„ÉºÁ∑®ÈõÜ
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                      HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
@@ -189,7 +189,7 @@
            IF      FLG-HKNCOMBI        =   1
                 MOVE    1                  TO  ORCSHKNMEI-ERRCD
            END-IF
-      *    œ´∫“§Œ∏¯Ã≥∫“≥≤»ΩƒÍ
+      *    Âä¥ÁÅΩ„ÅÆÂÖ¨ÂãôÁÅΩÂÆ≥Âà§ÂÆö
            IF      COMB-HKNNUM         =   "971"
                                        OR  "973"
                PERFORM 1002-PTRSIINF-HEN-SEC
@@ -198,7 +198,7 @@
            END-IF
       *
            MOVE    WRK-HKNCOMBIMEI     TO  ORCSHKNMEI-HKNCOMBIMEI
-      *     ›∏±¡»πÁ§ªæ Û
+      *    ‰øùÈô∫ÁµÑÂêà„ÅõÊÉÖÂ†±
            MOVE    COMB-HKNNUM         TO  ORCSHKNMEI-HKNNUM
            MOVE    COMB-TEKSTYMD       TO  ORCSHKNMEI-TEKSTYMD
            MOVE    COMB-TEKEDYMD       TO  ORCSHKNMEI-TEKEDYMD
@@ -207,7 +207,7 @@
        100-HKNCOMBI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±¡»πÁ§ªÃææŒ ‘Ω∏ΩËÕ˝
+      *    ‰øùÈô∫ÁµÑÂêà„ÅõÂêçÁß∞Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        1001-HKNCOMBIMEI-HEN-SEC         SECTION.
       *
@@ -216,29 +216,29 @@
            IF    ( ORCSHKNMEI-SRYYMD   >=      CONST-H201001 )
             AND  ( COMB-HKNNUM         =      "001" )
                    INSPECT COMB-SYU-TANSEIDONAME
-                           REPLACING    ALL    "¿Ø¥…"   BY  "∂®≤Ò"
+                           REPLACING    ALL    "ÊîøÁÆ°"   BY  "Âçî‰ºö"
            END-IF
       *
            STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                   "°°"                    DELIMITED  BY  SIZE
+                   "„ÄÄ"                    DELIMITED  BY  SIZE
                    COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "°°"                    DELIMITED  BY  SIZE
+                   "„ÄÄ"                    DELIMITED  BY  SIZE
                    COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "°°"                    DELIMITED  BY  SIZE
+                   "„ÄÄ"                    DELIMITED  BY  SIZE
                    COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                   "°°"                    DELIMITED  BY  SIZE
+                   "„ÄÄ"                    DELIMITED  BY  SIZE
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBIMEI
            END-STRING
-      *    ºÁ ›∏±§ §∑
+      *    ‰∏ª‰øùÈô∫„Å™„Åó
            IF      COMB-HKNNUM         =   SPACE
                MOVE    SPACE               TO  WRK-HKNCOMBIMEI
                STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                       "°°"                    DELIMITED  BY  SIZE
+                       "„ÄÄ"                    DELIMITED  BY  SIZE
                        COMB-KOH2-TANSEIDONAME  DELIMITED  BY  SPACE
-                       "°°"                    DELIMITED  BY  SIZE
+                       "„ÄÄ"                    DELIMITED  BY  SIZE
                        COMB-KOH3-TANSEIDONAME  DELIMITED  BY  SPACE
-                       "°°"                    DELIMITED  BY  SIZE
+                       "„ÄÄ"                    DELIMITED  BY  SIZE
                        COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                              INTO              WRK-HKNCOMBIMEI
                END-STRING
@@ -247,7 +247,7 @@
        1001-HKNCOMBIMEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    œ´∫“ ›∏±¡»πÁ§ªÃææŒ ‘Ω∏ΩËÕ˝
+      *    Âä¥ÁÅΩ‰øùÈô∫ÁµÑÂêà„ÅõÂêçÁß∞Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        1002-PTRSIINF-HEN-SEC             SECTION.
       *
@@ -272,7 +272,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      PTRSI-HKNKBN        =   "5"
-      *        ∏¯Ã≥∫“≥≤
+      *        ÂÖ¨ÂãôÁÅΩÂÆ≥
                INITIALIZE                      PTHKNINF-REC
                MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
                MOVE    COMB-PTID           TO  PTHKN-PTID
@@ -282,17 +282,17 @@
                   MOVE    PTHKN-KIGO           TO  WRK-HKNCOMBIMEI
                END-IF
            ELSE
-      *        ∏¯Ã≥∫“≥≤∞ ≥∞
+      *        ÂÖ¨ÂãôÁÅΩÂÆ≥‰ª•Â§ñ
                PERFORM 1001-HKNCOMBIMEI-HEN-SEC
            END-IF
-      *    œ´∫“∂Ë ¨
+      *    Âä¥ÁÅΩÂå∫ÂàÜ
            MOVE    PTRSI-HKNKBN        TO  ORCSHKNMEI-RSI-HKNKBN
            .
        40013-PTRSIINF-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ¿æŒÒœ¬ŒÒ ‘Ω∏ΩËÕ˝
+      *    Ë•øÊö¶ÂíåÊö¶Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        800-SEIWA-HEN-SEC             SECTION.
       *
@@ -315,7 +315,7 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±¡»πÁ§ª•ﬁ•π•ø°º∆…§ﬂπ˛§ﬂ
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ„Éû„Çπ„Çø„ÉºË™≠„ÅøËæº„Åø
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -345,7 +345,7 @@
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘œ´∫“ ›∏±æ Û∆…§ﬂπ˛§ﬂ
+      *    ÊÇ£ËÄÖÂä¥ÁÅΩ‰øùÈô∫ÊÉÖÂ†±Ë™≠„ÅøËæº„Åø
       *****************************************************************
        940-PTRSIINF-READ-SEC        SECTION.
       *
@@ -363,7 +363,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ›∏±•ﬁ•π•ø°º∆…§ﬂπ˛§ﬂ
+      *    ‰øùÈô∫„Éû„Çπ„Çø„ÉºË™≠„ÅøËæº„Åø
       *****************************************************************
        950-PTHKNINF-READ-SEC         SECTION.
       *
@@ -394,7 +394,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -407,7 +407,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -421,7 +421,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•πΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„ÇπÂá¶ÁêÜ
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

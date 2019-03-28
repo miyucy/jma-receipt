@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,104 +16,104 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�ץ����ٽ�     COPY (CPRCF045.INC)                *
+      *    レセプト明細書     COPY (CPRCF045.INC)                *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    03.01.22  �ǡ�����ʬ���ɲ�
-      *  01.00.02    NACL-����    03.03.03  ���ֹ�彤��
-      *  01.00.03    NACL-����    03.09.29  ����оݸ���������ɲ�
-      *                                     �������»�Ƚ�Ǿ�����ɲ�
-      *                                     �Ƽ��ֹ���������ɲ�
-      *  01.00.04    NACL-����    04.06.07  �����֤����Ĺ��ܤ��ѹ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.01.22  データ区分の追加
+      *  01.00.02    NACL-門脇    03.03.03  剤番号桁修正
+      *  01.00.03    NACL-門脇    03.09.29  包括対象検査情報の追加
+      *                                     検査等実施判断情報の追加
+      *                                     各種番号等情報の追加
+      *  01.00.04    NACL-門脇    04.06.07  繰り返しを集団項目へ変更
       *
-      *  02.06.01    NACL-ƣ��    05/08/22  ���θ��������Ȥ��ɲ�
+      *  02.06.01    NACL-藤原    05/08/22  検体検査コメントの追加
       *
-      *  02.09.01    NACL-ƣ��    06/04/13  �������ͷ׻�����
-      *                                     �������»�Ƚ�ǥ��롼�פ��ɲ�
-      *  03.05.01    NACL-����    07/05/28  ���롼�׿����б�
-      *  04.01.01    NACL-����    07/11/26  �����ྦ��̾�����б�
+      *  02.09.01    NACL-藤原    06/04/13  きざみ値計算識別
+      *                                     検査等実施判断グループの追加
+      *  03.05.01    NACL-門脇    07/05/28  グループ診療対応
+      *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       *
-      *  04.05.01    NACL-ƣ��    09/07/14  �������ʲ������б�
+      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *
-      *  04.07.01    NACL-����    13/01/21  ϫ�ҥ쥻���б�
-      *  04.07.02    NACL-����    14/09/11  �����ޥ����ο��Ŷ�ʬ�ɲ�
+      *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
+      *  04.07.02    NACL-門脇    14/09/11  点数マスタの診療区分追加
       *
-      *  04.08.01    NACL-����    16/01/12  �����ѥ쥻�ץȱ�������
-      *                                     ����̾�����б�
-      *  04.08.02    NACL-����    16/04/20  ʿ������ǯ��������б�
+      *  04.08.01    NACL-門脇    16/01/12  点検用レセプト院外処方
+      *                                     一般名記載対応
+      *  04.08.02    NACL-門脇    16/04/20  平成２８年４月改正対応
       ************************************************************
       *01  RECE45-REC.
            03  RECE45-KEY.
                05  RECE45-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                    07  RECE45-HOSPNUM     PIC  9(02).
-      *����ǯ��
+      *診療年月
                    07  RECE45-SRYYM       PIC  9(06).
-      *������ʬ
+      *入外区分
                    07  RECE45-NYUGAIKBN   PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  RECE45-PTID        PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                    07  RECE45-RECEKA      PIC  X(02).
-      *�ݸ��ɣ�        
+      *保険ＩＤ        
                    07  RECE45-HKNID       PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  RECE45-TEKSTYMD    PIC  X(08). 
-      *���ֹ�
+      *剤番号
                05  RECE45-ZAINUM          PIC  9(08).
-      *Ϣ�ֹ�
+      *連番号
                05  RECE45-RENNUM          PIC  9(02).
-      *�����ֹ�
+      *患者番号
            03  RECE45-PTNUM               PIC  X(20).
-      *���Ų�
+      *診療科
            03  RECE45-SRYKA               PIC  X(02).
-      *���Ŷ�ʬ
+      *診療区分
            03  RECE45-SRYKBN              PIC  X(02).
-      *���ż��̶�ʬ
+      *診療種別区分
            03  RECE45-SRYSYUKBN           PIC  X(03).
-      *������
+      *自費金額
            03  RECE45-JIHIMONEY           PIC  9(07).
       *
            03  RECE45-SRYACT-TBL          OCCURS  5.
-      *���Ź԰پ���
+      *診療行為情報
              05  RECE45-SRYACTINF.
-      *���ť�����
+      *診療コード
                  07  RECE45-SRYCD         PIC  X(09).
-      *���ż��̶�ʬ
+      *診療種別区分
                  07  RECE45-SRYSYUKBN-X   PIC  X(03).
-      *����
+      *数量
                  07  RECE45-SRYSURYO      PIC  9(05)V9(05).
-      *���
+      *回数
                  07  RECE45-SRYKAISU      PIC  9(03).
-      *ñ�̥�����
+      *単位コード
                  07  RECE45-TANICD        PIC  9(03).
-      *ñ��̾��ͭ�����
+      *単位名称有効桁数
                  07  RECE45-TANIMOJISU    PIC  9(01).
-      *ñ��̾��
+      *単位名称
                  07  RECE45-TANINAME      PIC  X(24).
-      *�������̶�ʬ
+      *点数識別区分
                  07  RECE45-TENSIKIBETU   PIC  9(01).
-      *����
+      *点数
                  07  RECE45-TEN           PIC  9(09)V9(02).
-      *��������ե饰
+      *明細請求フラグ
                  07  RECE45-MEISKYFLG     PIC  X(01).
-      *��ư�����ʬ
+      *自動算定区分
                  07  RECE45-AUTOKBN       PIC  X(01).
-      *̾�������ֹ�
+      *名称入力番号
                  07  RECE45-INPUTNUM      PIC  9(03).
-      *�����󽸷��輱��
+      *点数欄集計先識別
                  07  RECE45-TENTTLKBN     PIC  9(03).
-      *�ǡ�����ʬ
+      *データ区分
                  07  RECE45-DATAKBN       PIC  9(01).
-      *����оݸ���
+      *包括対象検査
                  07  RECE45-HOUKNSKBN     PIC  9(02).
-      *�������»�Ƚ��
+      *検査等実施判断
                  07  RECE45-KNSJISKBN     PIC  9(01).
-      *�������»�Ƚ�ǥ��롼��
+      *検査等実施判断グループ
                  07  RECE45-KNSJISGRPKBN  PIC  9(02).
-      *�Ƽ��ֹ���
+      *各種番号等
                  07  RECE45-CDKBNINF.
                      09  RECE45-CDKBN-KBN        PIC  X(01).
                      09  RECE45-CDKBN-SYO        PIC  9(01).
@@ -122,77 +122,77 @@
                      09  RECE45-CDKBN-KBNNUM-EDA PIC  9(02).
                      09  RECE45-CDKBN-KOUBAN     PIC  9(02).
                      09  RECE45-KOUHYOJYUNNUM    PIC  9(09).
-      *�������̶�ʬ��
+      *告示等識別区分１
                  07  RECE45-KOKUJISKBKBN1 PIC  9(01).
-      *�������̶�ʬ��
+      *告示等識別区分２
                  07  RECE45-KOKUJISKBKBN2 PIC  9(01).
-      *��§�û��оݳ���ʬ
+      *通則加算対象外区分
                  07  RECE45-TUSOKUGAIKBN  PIC  9(01).
-      *���ֳ��û���ʬ
+      *時間外加算区分
                  07  RECE45-TIMEKSNKBN    PIC  9(01).
-      *�������ͷ׻�����
+      *きざみ値計算識別
                  07  RECE45-KZMCOMPSIKIBETU
                                           PIC  9(01).
-      *���û�������
+      *注加算コード
                  07  RECE45-CHUKSNINF.
-      *������
+      *コード
                      09  RECE45-CHUKSNCD         PIC  X(04).
-      *����
+      *通番
                      09  RECE45-CHUKSNTUBAN      PIC  X(01).
-      *���θ���������
+      *検体検査コメント
                  07  RECE45-KENTAICOMMENT        PIC  9(01).
-      *���ϥ�����
+      *入力コメント
                  07  RECE45-INPUTCOMENT          PIC  X(80).
-      *̾�ξ���
+      *名称情報
              05  RECE45-NAMEINF.
-      *����ͭ�����
+      *漢字有効桁数
                  07  RECE45-YUKOKETA      PIC  9(03).
-      *����̾��
+      *漢字名称
                  07  RECE45-NAME          PIC  X(200).
-      *���̥ե饰����
+      *識別フラグ情報
              05  RECE45-SIKFLGINF.
-      *���̥ե饰
+      *識別フラグ
                  07  RECE45-SIKFLG        PIC  X(01).
-      *��������̣�
+      *特定器材種別１
              05  RECE45-TOKUKIZAISBT1     PIC  9(01).
-      *��������ʬ
+      *酸素等区分
              05  RECE45-SANSOKBN          PIC  9(01).
-      *�쥻�ץ��Խ�����
+      *レセプト編集情報
              05  RECE45-SSTKIJUNCDTBL     OCCURS 10.
                  07  RECE45-SSTKIJUNCD    PIC  9(03).
-      *����¾����
+      *その他情報
              05  RECE45-SONOTAINF.
-      *�쥻�ץ��Ż��оݳ��ե饰
+      *レセプト電算対象外フラグ
                  07  RECE45-RECEDENFLG       PIC  X(01).
-      *�쥻�ץ��оݳ��ե饰
+      *レセプト対象外フラグ
                  07  RECE45-RECEPTFLG        PIC  X(01).
-      *�쥻���������ྦ��̾
+      *レセ電用特定器材商品名
                  07  RECE45-RECEDENNAME      PIC  X(300).
-      *�쥻�������ྦ��̾�Խ��ե饰
+      *レセ用特定器材商品名編集フラグ
                  07  RECE45-RECEHENFLG       PIC  X(01).
-      *�ط������ȴ�Ϣ����ե饰
+      *関係コメント関連設定フラグ
                  07  RECE45-SETCOMATFLG      PIC  9(03).
-      *�����ޥ����ο��Ŷ�ʬ
+      *点数マスタの診療区分
                  07  RECE45-TNSSRYKBN        PIC  X(02).
       *
-      *���ž���Ϣ���Ѿ���
+      *医療情報連携用情報
              05  RECE45-IRYORENKEIINF.
-      *����̾���ܱ��������ե饰
+      *一般名記載院外処方フラグ
                  07  RECE45-INGAIFLG         PIC  X(01).
-      *����̾���ܱ��������ե饰�ʥ쥻�ץ��ѡ�
+      *一般名記載院外処方フラグ（レセプト用）
                  07  RECE45-INGAIFLG-RECE    PIC  X(01).
-      *����̾���ܱ��������ե饰�ʼ������������ѡ�
+      *一般名記載院外処方フラグ（湿布薬コメント用）
                  07  RECE45-INGAIFLG-SIPPU   PIC  X(01).
-      *����̾�����ɡ�������ॳ���ɡ�
+      *一般名コード（薬価基準コード）
                  07  RECE45-YAKKAKJNCD       PIC  X(12).
-      *����̾�����û���ʬ
+      *一般名処方加算区分
                  07  RECE45-GENERIC-KBN      PIC  X(01).
-      *����̾��
+      *一般名称
                  07  RECE45-GENERICNAME      PIC  X(200).
-      *����ͭ�����
+      *漢字有効桁数
                  07  RECE45-GENERICYUKOKETA  PIC  9(03).
       *
-      *����������
+      *湿布薬情報
              05  RECE45-SIPPUINF.
                  07  RECE45-SIPPUFLG         PIC  X(01).
       *

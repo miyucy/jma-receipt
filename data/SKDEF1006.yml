@@ -1,704 +1,704 @@
 kanri_cd    : "1006"
-name        : "ª‹¿ﬂ¥Ω‡æ Û"
+name        : "ÊñΩË®≠Âü∫Ê∫ñÊÉÖÂ†±"
 class_cd    : "*"
 item_max    : 500
 item_list   :
 - item_no   : 1
   item      : "SSTKIJUN1"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºë"
   type      : "9"
   start     : 1
   length    : 1
   precision : 0
 - item_no   : 2
   item      : "SSTKIJUN2"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºí"
   type      : "9"
   start     : 2
   length    : 1
   precision : 0
 - item_no   : 3
   item      : "SSTKIJUN3"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºì"
   type      : "9"
   start     : 3
   length    : 1
   precision : 0
 - item_no   : 4
   item      : "SSTKIJUN4"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºî"
   type      : "9"
   start     : 4
   length    : 1
   precision : 0
 - item_no   : 5
   item      : "SSTKIJUN5"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºï"
   type      : "9"
   start     : 5
   length    : 1
   precision : 0
 - item_no   : 6
   item      : "SSTKIJUN6"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºñ"
   type      : "9"
   start     : 6
   length    : 1
   precision : 0
 - item_no   : 7
   item      : "SSTKIJUN7"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºó"
   type      : "9"
   start     : 7
   length    : 1
   precision : 0
 - item_no   : 8
   item      : "SSTKIJUN8"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºò"
   type      : "9"
   start     : 8
   length    : 1
   precision : 0
 - item_no   : 9
   item      : "SSTKIJUN9"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞Ôºô"
   type      : "9"
   start     : 9
   length    : 1
   precision : 0
 - item_no   : 10
   item      : "SSTKIJUN10"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºê"
   type      : "9"
   start     : 10
   length    : 1
   precision : 0
 - item_no   : 11
   item      : "SSTKIJUN11"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºë"
   type      : "9"
   start     : 11
   length    : 1
   precision : 0
 - item_no   : 12
   item      : "SSTKIJUN12"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºí"
   type      : "9"
   start     : 12
   length    : 1
   precision : 0
 - item_no   : 13
   item      : "SSTKIJUN13"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºì"
   type      : "9"
   start     : 13
   length    : 1
   precision : 0
 - item_no   : 14
   item      : "SSTKIJUN14"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºî"
   type      : "9"
   start     : 14
   length    : 1
   precision : 0
 - item_no   : 15
   item      : "SSTKIJUN15"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºï"
   type      : "9"
   start     : 15
   length    : 1
   precision : 0
 - item_no   : 16
   item      : "SSTKIJUN16"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñ"
   type      : "9"
   start     : 16
   length    : 1
   precision : 0
 - item_no   : 17
   item      : "SSTKIJUN17"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºó"
   type      : "9"
   start     : 17
   length    : 1
   precision : 0
 - item_no   : 18
   item      : "SSTKIJUN18"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºò"
   type      : "9"
   start     : 18
   length    : 1
   precision : 0
 - item_no   : 19
   item      : "SSTKIJUN19"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºô"
   type      : "9"
   start     : 19
   length    : 1
   precision : 0
 - item_no   : 20
   item      : "SSTKIJUN20"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºê"
   type      : "9"
   start     : 20
   length    : 1
   precision : 0
 - item_no   : 21
   item      : "SSTKIJUN21"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºë"
   type      : "9"
   start     : 21
   length    : 1
   precision : 0
 - item_no   : 22
   item      : "SSTKIJUN22"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºí"
   type      : "9"
   start     : 22
   length    : 1
   precision : 0
 - item_no   : 23
   item      : "SSTKIJUN23"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºì"
   type      : "9"
   start     : 23
   length    : 1
   precision : 0
 - item_no   : 24
   item      : "SSTKIJUN24"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºî"
   type      : "9"
   start     : 24
   length    : 1
   precision : 0
 - item_no   : 25
   item      : "SSTKIJUN25"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºï"
   type      : "9"
   start     : 25
   length    : 1
   precision : 0
 - item_no   : 26
   item      : "SSTKIJUN26"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñ"
   type      : "9"
   start     : 26
   length    : 1
   precision : 0
 - item_no   : 27
   item      : "SSTKIJUN27"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºó"
   type      : "9"
   start     : 27
   length    : 1
   precision : 0
 - item_no   : 28
   item      : "SSTKIJUN28"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºò"
   type      : "9"
   start     : 28
   length    : 1
   precision : 0
 - item_no   : 29
   item      : "SSTKIJUN29"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºô"
   type      : "9"
   start     : 29
   length    : 1
   precision : 0
 - item_no   : 30
   item      : "SSTKIJUN30"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºê"
   type      : "9"
   start     : 30
   length    : 1
   precision : 0
 - item_no   : 31
   item      : "SSTKIJUN31"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºë"
   type      : "9"
   start     : 31
   length    : 1
   precision : 0
 - item_no   : 32
   item      : "SSTKIJUN32"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºí"
   type      : "9"
   start     : 32
   length    : 1
   precision : 0
 - item_no   : 33
   item      : "SSTKIJUN33"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºì"
   type      : "9"
   start     : 33
   length    : 1
   precision : 0
 - item_no   : 34
   item      : "SSTKIJUN34"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºî"
   type      : "9"
   start     : 34
   length    : 1
   precision : 0
 - item_no   : 35
   item      : "SSTKIJUN35"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºï"
   type      : "9"
   start     : 35
   length    : 1
   precision : 0
 - item_no   : 36
   item      : "SSTKIJUN36"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñ"
   type      : "9"
   start     : 36
   length    : 1
   precision : 0
 - item_no   : 37
   item      : "SSTKIJUN37"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºó"
   type      : "9"
   start     : 37
   length    : 1
   precision : 0
 - item_no   : 38
   item      : "SSTKIJUN38"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºò"
   type      : "9"
   start     : 38
   length    : 1
   precision : 0
 - item_no   : 39
   item      : "SSTKIJUN39"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºô"
   type      : "9"
   start     : 39
   length    : 1
   precision : 0
 - item_no   : 40
   item      : "SSTKIJUN40"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºê"
   type      : "9"
   start     : 40
   length    : 1
   precision : 0
 - item_no   : 41
   item      : "SSTKIJUN41"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºë"
   type      : "9"
   start     : 41
   length    : 1
   precision : 0
 - item_no   : 42
   item      : "SSTKIJUN42"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºí"
   type      : "9"
   start     : 42
   length    : 1
   precision : 0
 - item_no   : 43
   item      : "SSTKIJUN43"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºì"
   type      : "9"
   start     : 43
   length    : 1
   precision : 0
 - item_no   : 44
   item      : "SSTKIJUN44"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºî"
   type      : "9"
   start     : 44
   length    : 1
   precision : 0
 - item_no   : 45
   item      : "SSTKIJUN45"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºï"
   type      : "9"
   start     : 45
   length    : 1
   precision : 0
 - item_no   : 46
   item      : "SSTKIJUN46"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñ"
   type      : "9"
   start     : 46
   length    : 1
   precision : 0
 - item_no   : 47
   item      : "SSTKIJUN47"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºó"
   type      : "9"
   start     : 47
   length    : 1
   precision : 0
 - item_no   : 48
   item      : "SSTKIJUN48"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºò"
   type      : "9"
   start     : 48
   length    : 1
   precision : 0
 - item_no   : 49
   item      : "SSTKIJUN49"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºô"
   type      : "9"
   start     : 49
   length    : 1
   precision : 0
 - item_no   : 50
   item      : "SSTKIJUN50"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºê"
   type      : "9"
   start     : 50
   length    : 1
   precision : 0
 - item_no   : 51
   item      : "SSTKIJUN51"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºë"
   type      : "9"
   start     : 51
   length    : 1
   precision : 0
 - item_no   : 52
   item      : "SSTKIJUN52"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºí"
   type      : "9"
   start     : 52
   length    : 1
   precision : 0
 - item_no   : 53
   item      : "SSTKIJUN53"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºì"
   type      : "9"
   start     : 53
   length    : 1
   precision : 0
 - item_no   : 54
   item      : "SSTKIJUN54"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºî"
   type      : "9"
   start     : 54
   length    : 1
   precision : 0
 - item_no   : 55
   item      : "SSTKIJUN55"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºï"
   type      : "9"
   start     : 55
   length    : 1
   precision : 0
 - item_no   : 56
   item      : "SSTKIJUN56"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºñ"
   type      : "9"
   start     : 56
   length    : 1
   precision : 0
 - item_no   : 57
   item      : "SSTKIJUN57"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºó"
   type      : "9"
   start     : 57
   length    : 1
   precision : 0
 - item_no   : 58
   item      : "SSTKIJUN58"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºò"
   type      : "9"
   start     : 58
   length    : 1
   precision : 0
 - item_no   : 59
   item      : "SSTKIJUN59"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºô"
   type      : "9"
   start     : 59
   length    : 1
   precision : 0
 - item_no   : 60
   item      : "SSTKIJUN60"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºê"
   type      : "9"
   start     : 60
   length    : 1
   precision : 0
 - item_no   : 61
   item      : "SSTKIJUN61"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºë"
   type      : "9"
   start     : 61
   length    : 1
   precision : 0
 - item_no   : 62
   item      : "SSTKIJUN62"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºí"
   type      : "9"
   start     : 62
   length    : 1
   precision : 0
 - item_no   : 63
   item      : "SSTKIJUN63"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºì"
   type      : "9"
   start     : 63
   length    : 1
   precision : 0
 - item_no   : 64
   item      : "SSTKIJUN64"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºî"
   type      : "9"
   start     : 64
   length    : 1
   precision : 0
 - item_no   : 65
   item      : "SSTKIJUN65"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºï"
   type      : "9"
   start     : 65
   length    : 1
   precision : 0
 - item_no   : 66
   item      : "SSTKIJUN66"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºñ"
   type      : "9"
   start     : 66
   length    : 1
   precision : 0
 - item_no   : 67
   item      : "SSTKIJUN67"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºó"
   type      : "9"
   start     : 67
   length    : 1
   precision : 0
 - item_no   : 68
   item      : "SSTKIJUN68"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºò"
   type      : "9"
   start     : 68
   length    : 1
   precision : 0
 - item_no   : 69
   item      : "SSTKIJUN69"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∂£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºñÔºô"
   type      : "9"
   start     : 69
   length    : 1
   precision : 0
 - item_no   : 70
   item      : "SSTKIJUN70"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºê"
   type      : "9"
   start     : 70
   length    : 1
   precision : 0
 - item_no   : 71
   item      : "SSTKIJUN71"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºë"
   type      : "9"
   start     : 71
   length    : 1
   precision : 0
 - item_no   : 72
   item      : "SSTKIJUN72"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºí"
   type      : "9"
   start     : 72
   length    : 1
   precision : 0
 - item_no   : 73
   item      : "SSTKIJUN73"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºì"
   type      : "9"
   start     : 73
   length    : 1
   precision : 0
 - item_no   : 74
   item      : "SSTKIJUN74"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºî"
   type      : "9"
   start     : 74
   length    : 1
   precision : 0
 - item_no   : 75
   item      : "SSTKIJUN75"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºï"
   type      : "9"
   start     : 75
   length    : 1
   precision : 0
 - item_no   : 76
   item      : "SSTKIJUN76"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºñ"
   type      : "9"
   start     : 76
   length    : 1
   precision : 0
 - item_no   : 77
   item      : "SSTKIJUN77"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºó"
   type      : "9"
   start     : 77
   length    : 1
   precision : 0
 - item_no   : 78
   item      : "SSTKIJUN78"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºò"
   type      : "9"
   start     : 78
   length    : 1
   precision : 0
 - item_no   : 79
   item      : "SSTKIJUN79"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∑£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºóÔºô"
   type      : "9"
   start     : 79
   length    : 1
   precision : 0
 - item_no   : 80
   item      : "SSTKIJUN80"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºê"
   type      : "9"
   start     : 80
   length    : 1
   precision : 0
 - item_no   : 81
   item      : "SSTKIJUN81"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºë"
   type      : "9"
   start     : 81
   length    : 1
   precision : 0
 - item_no   : 82
   item      : "SSTKIJUN82"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºí"
   type      : "9"
   start     : 82
   length    : 1
   precision : 0
 - item_no   : 83
   item      : "SSTKIJUN83"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºì"
   type      : "9"
   start     : 83
   length    : 1
   precision : 0
 - item_no   : 84
   item      : "SSTKIJUN84"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºî"
   type      : "9"
   start     : 84
   length    : 1
   precision : 0
 - item_no   : 85
   item      : "SSTKIJUN85"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºï"
   type      : "9"
   start     : 85
   length    : 1
   precision : 0
 - item_no   : 86
   item      : "SSTKIJUN86"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºñ"
   type      : "9"
   start     : 86
   length    : 1
   precision : 0
 - item_no   : 87
   item      : "SSTKIJUN87"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºó"
   type      : "9"
   start     : 87
   length    : 1
   precision : 0
 - item_no   : 88
   item      : "SSTKIJUN88"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºò"
   type      : "9"
   start     : 88
   length    : 1
   precision : 0
 - item_no   : 89
   item      : "SSTKIJUN89"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£∏£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºòÔºô"
   type      : "9"
   start     : 89
   length    : 1
   precision : 0
 - item_no   : 90
   item      : "SSTKIJUN90"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºê"
   type      : "9"
   start     : 90
   length    : 1
   precision : 0
 - item_no   : 91
   item      : "SSTKIJUN91"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºë"
   type      : "9"
   start     : 91
   length    : 1
   precision : 0
 - item_no   : 92
   item      : "SSTKIJUN92"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºí"
   type      : "9"
   start     : 92
   length    : 1
   precision : 0
 - item_no   : 93
   item      : "SSTKIJUN93"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºì"
   type      : "9"
   start     : 93
   length    : 1
   precision : 0
 - item_no   : 94
   item      : "SSTKIJUN94"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºî"
   type      : "9"
   start     : 94
   length    : 1
   precision : 0
 - item_no   : 95
   item      : "SSTKIJUN95"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºï"
   type      : "9"
   start     : 95
   length    : 1
   precision : 0
 - item_no   : 96
   item      : "SSTKIJUN96"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºñ"
   type      : "9"
   start     : 96
   length    : 1
   precision : 0
 - item_no   : 97
   item      : "SSTKIJUN97"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºó"
   type      : "9"
   start     : 97
   length    : 1
   precision : 0
 - item_no   : 98
   item      : "SSTKIJUN98"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºò"
   type      : "9"
   start     : 98
   length    : 1
   precision : 0
 - item_no   : 99
   item      : "SSTKIJUN99"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£π£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºôÔºô"
   type      : "9"
   start     : 99
   length    : 1
   precision : 0
 - item_no   : 100
   item      : "SSTKIJUN100"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºê"
   type      : "9"
   start     : 100
   length    : 1
@@ -706,700 +706,700 @@ item_list   :
 
 - item_no   : 101
   item      : "SSTKIJUN101"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºë"
   type      : "9"
   start     : 101
   length    : 1
   precision : 0
 - item_no   : 102
   item      : "SSTKIJUN102"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºí"
   type      : "9"
   start     : 102
   length    : 1
   precision : 0
 - item_no   : 103
   item      : "SSTKIJUN103"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºì"
   type      : "9"
   start     : 103
   length    : 1
   precision : 0
 - item_no   : 104
   item      : "SSTKIJUN104"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºî"
   type      : "9"
   start     : 104
   length    : 1
   precision : 0
 - item_no   : 105
   item      : "SSTKIJUN105"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºï"
   type      : "9"
   start     : 105
   length    : 1
   precision : 0
 - item_no   : 106
   item      : "SSTKIJUN106"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºñ"
   type      : "9"
   start     : 106
   length    : 1
   precision : 0
 - item_no   : 107
   item      : "SSTKIJUN107"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºó"
   type      : "9"
   start     : 107
   length    : 1
   precision : 0
 - item_no   : 108
   item      : "SSTKIJUN108"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºò"
   type      : "9"
   start     : 108
   length    : 1
   precision : 0
 - item_no   : 109
   item      : "SSTKIJUN109"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∞£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºêÔºô"
   type      : "9"
   start     : 109
   length    : 1
   precision : 0
 - item_no   : 110
   item      : "SSTKIJUN110"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºê"
   type      : "9"
   start     : 110
   length    : 1
   precision : 0
 - item_no   : 111
   item      : "SSTKIJUN111"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºë"
   type      : "9"
   start     : 111
   length    : 1
   precision : 0
 - item_no   : 112
   item      : "SSTKIJUN112"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºí"
   type      : "9"
   start     : 112
   length    : 1
   precision : 0
 - item_no   : 113
   item      : "SSTKIJUN113"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºì"
   type      : "9"
   start     : 113
   length    : 1
   precision : 0
 - item_no   : 114
   item      : "SSTKIJUN114"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºî"
   type      : "9"
   start     : 114
   length    : 1
   precision : 0
 - item_no   : 115
   item      : "SSTKIJUN115"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºï"
   type      : "9"
   start     : 115
   length    : 1
   precision : 0
 - item_no   : 116
   item      : "SSTKIJUN116"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºñ"
   type      : "9"
   start     : 116
   length    : 1
   precision : 0
 - item_no   : 117
   item      : "SSTKIJUN117"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºó"
   type      : "9"
   start     : 117
   length    : 1
   precision : 0
 - item_no   : 118
   item      : "SSTKIJUN118"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºò"
   type      : "9"
   start     : 118
   length    : 1
   precision : 0
 - item_no   : 119
   item      : "SSTKIJUN119"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£±£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºëÔºô"
   type      : "9"
   start     : 119
   length    : 1
   precision : 0
 - item_no   : 120
   item      : "SSTKIJUN120"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºê"
   type      : "9"
   start     : 120
   length    : 1
   precision : 0
 - item_no   : 121
   item      : "SSTKIJUN121"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºë"
   type      : "9"
   start     : 121
   length    : 1
   precision : 0
 - item_no   : 122
   item      : "SSTKIJUN122"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºí"
   type      : "9"
   start     : 122
   length    : 1
   precision : 0
 - item_no   : 123
   item      : "SSTKIJUN123"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºì"
   type      : "9"
   start     : 123
   length    : 1
   precision : 0
 - item_no   : 124
   item      : "SSTKIJUN124"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºî"
   type      : "9"
   start     : 124
   length    : 1
   precision : 0
 - item_no   : 125
   item      : "SSTKIJUN125"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºï"
   type      : "9"
   start     : 125
   length    : 1
   precision : 0
 - item_no   : 126
   item      : "SSTKIJUN126"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºñ"
   type      : "9"
   start     : 126
   length    : 1
   precision : 0
 - item_no   : 127
   item      : "SSTKIJUN127"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºó"
   type      : "9"
   start     : 127
   length    : 1
   precision : 0
 - item_no   : 128
   item      : "SSTKIJUN128"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºò"
   type      : "9"
   start     : 128
   length    : 1
   precision : 0
 - item_no   : 129
   item      : "SSTKIJUN129"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≤£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºíÔºô"
   type      : "9"
   start     : 129
   length    : 1
   precision : 0
 - item_no   : 130
   item      : "SSTKIJUN130"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºê"
   type      : "9"
   start     : 130
   length    : 1
   precision : 0
 - item_no   : 131
   item      : "SSTKIJUN131"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºë"
   type      : "9"
   start     : 131
   length    : 1
   precision : 0
 - item_no   : 132
   item      : "SSTKIJUN132"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºí"
   type      : "9"
   start     : 132
   length    : 1
   precision : 0
 - item_no   : 133
   item      : "SSTKIJUN133"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºì"
   type      : "9"
   start     : 133
   length    : 1
   precision : 0
 - item_no   : 134
   item      : "SSTKIJUN134"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºî"
   type      : "9"
   start     : 134
   length    : 1
   precision : 0
 - item_no   : 135
   item      : "SSTKIJUN135"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºï"
   type      : "9"
   start     : 135
   length    : 1
   precision : 0
 - item_no   : 136
   item      : "SSTKIJUN136"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºñ"
   type      : "9"
   start     : 136
   length    : 1
   precision : 0
 - item_no   : 137
   item      : "SSTKIJUN137"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºó"
   type      : "9"
   start     : 137
   length    : 1
   precision : 0
 - item_no   : 138
   item      : "SSTKIJUN138"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºò"
   type      : "9"
   start     : 138
   length    : 1
   precision : 0
 - item_no   : 139
   item      : "SSTKIJUN139"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£≥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºìÔºô"
   type      : "9"
   start     : 139
   length    : 1
   precision : 0
 - item_no   : 140
   item      : "SSTKIJUN140"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºê"
   type      : "9"
   start     : 140
   length    : 1
   precision : 0
 - item_no   : 141
   item      : "SSTKIJUN141"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºë"
   type      : "9"
   start     : 141
   length    : 1
   precision : 0
 - item_no   : 142
   item      : "SSTKIJUN142"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºí"
   type      : "9"
   start     : 142
   length    : 1
   precision : 0
 - item_no   : 143
   item      : "SSTKIJUN143"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºì"
   type      : "9"
   start     : 143
   length    : 1
   precision : 0
 - item_no   : 144
   item      : "SSTKIJUN144"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºî"
   type      : "9"
   start     : 144
   length    : 1
   precision : 0
 - item_no   : 145
   item      : "SSTKIJUN145"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºï"
   type      : "9"
   start     : 145
   length    : 1
   precision : 0
 - item_no   : 146
   item      : "SSTKIJUN146"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºñ"
   type      : "9"
   start     : 146
   length    : 1
   precision : 0
 - item_no   : 147
   item      : "SSTKIJUN147"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºó"
   type      : "9"
   start     : 147
   length    : 1
   precision : 0
 - item_no   : 148
   item      : "SSTKIJUN148"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºò"
   type      : "9"
   start     : 148
   length    : 1
   precision : 0
 - item_no   : 149
   item      : "SSTKIJUN149"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£¥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºîÔºô"
   type      : "9"
   start     : 149
   length    : 1
   precision : 0
 - item_no   : 150
   item      : "SSTKIJUN150"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºê"
   type      : "9"
   start     : 150
   length    : 1
   precision : 0
 - item_no   : 151
   item      : "SSTKIJUN151"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºë"
   type      : "9"
   start     : 151
   length    : 1
   precision : 0
 - item_no   : 152
   item      : "SSTKIJUN152"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºí"
   type      : "9"
   start     : 152
   length    : 1
   precision : 0
 - item_no   : 153
   item      : "SSTKIJUN153"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºì"
   type      : "9"
   start     : 153
   length    : 1
   precision : 0
 - item_no   : 154
   item      : "SSTKIJUN154"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºî"
   type      : "9"
   start     : 154
   length    : 1
   precision : 0
 - item_no   : 155
   item      : "SSTKIJUN155"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºï"
   type      : "9"
   start     : 155
   length    : 1
   precision : 0
 - item_no   : 156
   item      : "SSTKIJUN156"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºñ"
   type      : "9"
   start     : 156
   length    : 1
   precision : 0
 - item_no   : 157
   item      : "SSTKIJUN157"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºó"
   type      : "9"
   start     : 157
   length    : 1
   precision : 0
 - item_no   : 158
   item      : "SSTKIJUN158"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºò"
   type      : "9"
   start     : 158
   length    : 1
   precision : 0
 - item_no   : 159
   item      : "SSTKIJUN159"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£µ£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºïÔºô"
   type      : "9"
   start     : 159
   length    : 1
   precision : 0
 - item_no   : 160
   item      : "SSTKIJUN160"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºê"
   type      : "9"
   start     : 160
   length    : 1
   precision : 0
 - item_no   : 161
   item      : "SSTKIJUN161"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºë"
   type      : "9"
   start     : 161
   length    : 1
   precision : 0
 - item_no   : 162
   item      : "SSTKIJUN162"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºí"
   type      : "9"
   start     : 162
   length    : 1
   precision : 0
 - item_no   : 163
   item      : "SSTKIJUN163"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºì"
   type      : "9"
   start     : 163
   length    : 1
   precision : 0
 - item_no   : 164
   item      : "SSTKIJUN164"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºî"
   type      : "9"
   start     : 164
   length    : 1
   precision : 0
 - item_no   : 165
   item      : "SSTKIJUN165"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºï"
   type      : "9"
   start     : 165
   length    : 1
   precision : 0
 - item_no   : 166
   item      : "SSTKIJUN166"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºñ"
   type      : "9"
   start     : 166
   length    : 1
   precision : 0
 - item_no   : 167
   item      : "SSTKIJUN167"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºó"
   type      : "9"
   start     : 167
   length    : 1
   precision : 0
 - item_no   : 168
   item      : "SSTKIJUN168"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºò"
   type      : "9"
   start     : 168
   length    : 1
   precision : 0
 - item_no   : 169
   item      : "SSTKIJUN169"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∂£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºñÔºô"
   type      : "9"
   start     : 169
   length    : 1
   precision : 0
 - item_no   : 170
   item      : "SSTKIJUN170"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºê"
   type      : "9"
   start     : 170
   length    : 1
   precision : 0
 - item_no   : 171
   item      : "SSTKIJUN171"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºë"
   type      : "9"
   start     : 171
   length    : 1
   precision : 0
 - item_no   : 172
   item      : "SSTKIJUN172"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºí"
   type      : "9"
   start     : 172
   length    : 1
   precision : 0
 - item_no   : 173
   item      : "SSTKIJUN173"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºì"
   type      : "9"
   start     : 173
   length    : 1
   precision : 0
 - item_no   : 174
   item      : "SSTKIJUN174"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºî"
   type      : "9"
   start     : 174
   length    : 1
   precision : 0
 - item_no   : 175
   item      : "SSTKIJUN175"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºï"
   type      : "9"
   start     : 175
   length    : 1
   precision : 0
 - item_no   : 176
   item      : "SSTKIJUN176"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºñ"
   type      : "9"
   start     : 176
   length    : 1
   precision : 0
 - item_no   : 177
   item      : "SSTKIJUN177"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºó"
   type      : "9"
   start     : 177
   length    : 1
   precision : 0
 - item_no   : 178
   item      : "SSTKIJUN178"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºò"
   type      : "9"
   start     : 178
   length    : 1
   precision : 0
 - item_no   : 179
   item      : "SSTKIJUN179"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∑£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºóÔºô"
   type      : "9"
   start     : 179
   length    : 1
   precision : 0
 - item_no   : 180
   item      : "SSTKIJUN180"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºê"
   type      : "9"
   start     : 180
   length    : 1
   precision : 0
 - item_no   : 181
   item      : "SSTKIJUN181"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºë"
   type      : "9"
   start     : 181
   length    : 1
   precision : 0
 - item_no   : 182
   item      : "SSTKIJUN182"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºí"
   type      : "9"
   start     : 182
   length    : 1
   precision : 0
 - item_no   : 183
   item      : "SSTKIJUN183"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºì"
   type      : "9"
   start     : 183
   length    : 1
   precision : 0
 - item_no   : 184
   item      : "SSTKIJUN184"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºî"
   type      : "9"
   start     : 184
   length    : 1
   precision : 0
 - item_no   : 185
   item      : "SSTKIJUN185"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºï"
   type      : "9"
   start     : 185
   length    : 1
   precision : 0
 - item_no   : 186
   item      : "SSTKIJUN186"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºñ"
   type      : "9"
   start     : 186
   length    : 1
   precision : 0
 - item_no   : 187
   item      : "SSTKIJUN187"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºó"
   type      : "9"
   start     : 187
   length    : 1
   precision : 0
 - item_no   : 188
   item      : "SSTKIJUN188"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºò"
   type      : "9"
   start     : 188
   length    : 1
   precision : 0
 - item_no   : 189
   item      : "SSTKIJUN189"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£∏£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºòÔºô"
   type      : "9"
   start     : 189
   length    : 1
   precision : 0
 - item_no   : 190
   item      : "SSTKIJUN190"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºê"
   type      : "9"
   start     : 190
   length    : 1
   precision : 0
 - item_no   : 191
   item      : "SSTKIJUN191"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºë"
   type      : "9"
   start     : 191
   length    : 1
   precision : 0
 - item_no   : 192
   item      : "SSTKIJUN192"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºí"
   type      : "9"
   start     : 192
   length    : 1
   precision : 0
 - item_no   : 193
   item      : "SSTKIJUN193"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºì"
   type      : "9"
   start     : 193
   length    : 1
   precision : 0
 - item_no   : 194
   item      : "SSTKIJUN194"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºî"
   type      : "9"
   start     : 194
   length    : 1
   precision : 0
 - item_no   : 195
   item      : "SSTKIJUN195"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºï"
   type      : "9"
   start     : 195
   length    : 1
   precision : 0
 - item_no   : 196
   item      : "SSTKIJUN196"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºñ"
   type      : "9"
   start     : 196
   length    : 1
   precision : 0
 - item_no   : 197
   item      : "SSTKIJUN197"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºó"
   type      : "9"
   start     : 197
   length    : 1
   precision : 0
 - item_no   : 198
   item      : "SSTKIJUN198"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºò"
   type      : "9"
   start     : 198
   length    : 1
   precision : 0
 - item_no   : 199
   item      : "SSTKIJUN199"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£±£π£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºëÔºôÔºô"
   type      : "9"
   start     : 199
   length    : 1
   precision : 0
 - item_no   : 200
   item      : "SSTKIJUN200"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºê"
   type      : "9"
   start     : 200
   length    : 1
@@ -1407,700 +1407,700 @@ item_list   :
 
 - item_no   : 201
   item      : "SSTKIJUN201"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºë"
   type      : "9"
   start     : 201
   length    : 1
   precision : 0
 - item_no   : 202
   item      : "SSTKIJUN202"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºí"
   type      : "9"
   start     : 202
   length    : 1
   precision : 0
 - item_no   : 203
   item      : "SSTKIJUN203"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºì"
   type      : "9"
   start     : 203
   length    : 1
   precision : 0
 - item_no   : 204
   item      : "SSTKIJUN204"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºî"
   type      : "9"
   start     : 204
   length    : 1
   precision : 0
 - item_no   : 205
   item      : "SSTKIJUN205"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºï"
   type      : "9"
   start     : 205
   length    : 1
   precision : 0
 - item_no   : 206
   item      : "SSTKIJUN206"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºñ"
   type      : "9"
   start     : 206
   length    : 1
   precision : 0
 - item_no   : 207
   item      : "SSTKIJUN207"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºó"
   type      : "9"
   start     : 207
   length    : 1
   precision : 0
 - item_no   : 208
   item      : "SSTKIJUN208"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºò"
   type      : "9"
   start     : 208
   length    : 1
   precision : 0
 - item_no   : 209
   item      : "SSTKIJUN209"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∞£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºêÔºô"
   type      : "9"
   start     : 209
   length    : 1
   precision : 0
 - item_no   : 210
   item      : "SSTKIJUN210"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºê"
   type      : "9"
   start     : 210
   length    : 1
   precision : 0
 - item_no   : 211
   item      : "SSTKIJUN211"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºë"
   type      : "9"
   start     : 211
   length    : 1
   precision : 0
 - item_no   : 212
   item      : "SSTKIJUN212"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºí"
   type      : "9"
   start     : 212
   length    : 1
   precision : 0
 - item_no   : 213
   item      : "SSTKIJUN213"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºì"
   type      : "9"
   start     : 213
   length    : 1
   precision : 0
 - item_no   : 214
   item      : "SSTKIJUN214"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºî"
   type      : "9"
   start     : 214
   length    : 1
   precision : 0
 - item_no   : 215
   item      : "SSTKIJUN215"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºï"
   type      : "9"
   start     : 215
   length    : 1
   precision : 0
 - item_no   : 216
   item      : "SSTKIJUN216"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºñ"
   type      : "9"
   start     : 216
   length    : 1
   precision : 0
 - item_no   : 217
   item      : "SSTKIJUN217"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºó"
   type      : "9"
   start     : 217
   length    : 1
   precision : 0
 - item_no   : 218
   item      : "SSTKIJUN218"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºò"
   type      : "9"
   start     : 218
   length    : 1
   precision : 0
 - item_no   : 219
   item      : "SSTKIJUN219"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£±£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºëÔºô"
   type      : "9"
   start     : 219
   length    : 1
   precision : 0
 - item_no   : 220
   item      : "SSTKIJUN220"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºê"
   type      : "9"
   start     : 220
   length    : 1
   precision : 0
 - item_no   : 221
   item      : "SSTKIJUN221"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºë"
   type      : "9"
   start     : 221
   length    : 1
   precision : 0
 - item_no   : 222
   item      : "SSTKIJUN222"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºí"
   type      : "9"
   start     : 222
   length    : 1
   precision : 0
 - item_no   : 223
   item      : "SSTKIJUN223"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºì"
   type      : "9"
   start     : 223
   length    : 1
   precision : 0
 - item_no   : 224
   item      : "SSTKIJUN224"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºî"
   type      : "9"
   start     : 224
   length    : 1
   precision : 0
 - item_no   : 225
   item      : "SSTKIJUN225"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºï"
   type      : "9"
   start     : 225
   length    : 1
   precision : 0
 - item_no   : 226
   item      : "SSTKIJUN226"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºñ"
   type      : "9"
   start     : 226
   length    : 1
   precision : 0
 - item_no   : 227
   item      : "SSTKIJUN227"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºó"
   type      : "9"
   start     : 227
   length    : 1
   precision : 0
 - item_no   : 228
   item      : "SSTKIJUN228"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºò"
   type      : "9"
   start     : 228
   length    : 1
   precision : 0
 - item_no   : 229
   item      : "SSTKIJUN229"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≤£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºíÔºô"
   type      : "9"
   start     : 229
   length    : 1
   precision : 0
 - item_no   : 230
   item      : "SSTKIJUN230"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºê"
   type      : "9"
   start     : 230
   length    : 1
   precision : 0
 - item_no   : 231
   item      : "SSTKIJUN231"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºë"
   type      : "9"
   start     : 231
   length    : 1
   precision : 0
 - item_no   : 232
   item      : "SSTKIJUN232"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºí"
   type      : "9"
   start     : 232
   length    : 1
   precision : 0
 - item_no   : 233
   item      : "SSTKIJUN233"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºì"
   type      : "9"
   start     : 233
   length    : 1
   precision : 0
 - item_no   : 234
   item      : "SSTKIJUN234"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºî"
   type      : "9"
   start     : 234
   length    : 1
   precision : 0
 - item_no   : 235
   item      : "SSTKIJUN235"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºï"
   type      : "9"
   start     : 235
   length    : 1
   precision : 0
 - item_no   : 236
   item      : "SSTKIJUN236"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºñ"
   type      : "9"
   start     : 236
   length    : 1
   precision : 0
 - item_no   : 237
   item      : "SSTKIJUN237"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºó"
   type      : "9"
   start     : 237
   length    : 1
   precision : 0
 - item_no   : 238
   item      : "SSTKIJUN238"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºò"
   type      : "9"
   start     : 238
   length    : 1
   precision : 0
 - item_no   : 239
   item      : "SSTKIJUN239"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£≥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºìÔºô"
   type      : "9"
   start     : 239
   length    : 1
   precision : 0
 - item_no   : 240
   item      : "SSTKIJUN240"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºê"
   type      : "9"
   start     : 240
   length    : 1
   precision : 0
 - item_no   : 241
   item      : "SSTKIJUN241"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºë"
   type      : "9"
   start     : 241
   length    : 1
   precision : 0
 - item_no   : 242
   item      : "SSTKIJUN242"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºí"
   type      : "9"
   start     : 242
   length    : 1
   precision : 0
 - item_no   : 243
   item      : "SSTKIJUN243"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºì"
   type      : "9"
   start     : 243
   length    : 1
   precision : 0
 - item_no   : 244
   item      : "SSTKIJUN244"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºî"
   type      : "9"
   start     : 244
   length    : 1
   precision : 0
 - item_no   : 245
   item      : "SSTKIJUN245"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºï"
   type      : "9"
   start     : 245
   length    : 1
   precision : 0
 - item_no   : 246
   item      : "SSTKIJUN246"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºñ"
   type      : "9"
   start     : 246
   length    : 1
   precision : 0
 - item_no   : 247
   item      : "SSTKIJUN247"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºó"
   type      : "9"
   start     : 247
   length    : 1
   precision : 0
 - item_no   : 248
   item      : "SSTKIJUN248"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºò"
   type      : "9"
   start     : 248
   length    : 1
   precision : 0
 - item_no   : 249
   item      : "SSTKIJUN249"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£¥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºîÔºô"
   type      : "9"
   start     : 249
   length    : 1
   precision : 0
 - item_no   : 250
   item      : "SSTKIJUN250"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºê"
   type      : "9"
   start     : 250
   length    : 1
   precision : 0
 - item_no   : 251
   item      : "SSTKIJUN251"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºë"
   type      : "9"
   start     : 251
   length    : 1
   precision : 0
 - item_no   : 252
   item      : "SSTKIJUN252"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºí"
   type      : "9"
   start     : 252
   length    : 1
   precision : 0
 - item_no   : 253
   item      : "SSTKIJUN253"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºì"
   type      : "9"
   start     : 253
   length    : 1
   precision : 0
 - item_no   : 254
   item      : "SSTKIJUN254"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºî"
   type      : "9"
   start     : 254
   length    : 1
   precision : 0
 - item_no   : 255
   item      : "SSTKIJUN255"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºï"
   type      : "9"
   start     : 255
   length    : 1
   precision : 0
 - item_no   : 256
   item      : "SSTKIJUN256"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºñ"
   type      : "9"
   start     : 256
   length    : 1
   precision : 0
 - item_no   : 257
   item      : "SSTKIJUN257"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºó"
   type      : "9"
   start     : 257
   length    : 1
   precision : 0
 - item_no   : 258
   item      : "SSTKIJUN258"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºò"
   type      : "9"
   start     : 258
   length    : 1
   precision : 0
 - item_no   : 259
   item      : "SSTKIJUN259"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£µ£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºïÔºô"
   type      : "9"
   start     : 259
   length    : 1
   precision : 0
 - item_no   : 260
   item      : "SSTKIJUN260"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºê"
   type      : "9"
   start     : 260
   length    : 1
   precision : 0
 - item_no   : 261
   item      : "SSTKIJUN261"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºë"
   type      : "9"
   start     : 261
   length    : 1
   precision : 0
 - item_no   : 262
   item      : "SSTKIJUN262"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºí"
   type      : "9"
   start     : 262
   length    : 1
   precision : 0
 - item_no   : 263
   item      : "SSTKIJUN263"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºì"
   type      : "9"
   start     : 263
   length    : 1
   precision : 0
 - item_no   : 264
   item      : "SSTKIJUN264"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºî"
   type      : "9"
   start     : 264
   length    : 1
   precision : 0
 - item_no   : 265
   item      : "SSTKIJUN265"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºï"
   type      : "9"
   start     : 265
   length    : 1
   precision : 0
 - item_no   : 266
   item      : "SSTKIJUN266"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºñ"
   type      : "9"
   start     : 266
   length    : 1
   precision : 0
 - item_no   : 267
   item      : "SSTKIJUN267"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºó"
   type      : "9"
   start     : 267
   length    : 1
   precision : 0
 - item_no   : 268
   item      : "SSTKIJUN268"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºò"
   type      : "9"
   start     : 268
   length    : 1
   precision : 0
 - item_no   : 269
   item      : "SSTKIJUN269"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∂£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºñÔºô"
   type      : "9"
   start     : 269
   length    : 1
   precision : 0
 - item_no   : 270
   item      : "SSTKIJUN270"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºê"
   type      : "9"
   start     : 270
   length    : 1
   precision : 0
 - item_no   : 271
   item      : "SSTKIJUN271"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºë"
   type      : "9"
   start     : 271
   length    : 1
   precision : 0
 - item_no   : 272
   item      : "SSTKIJUN272"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºí"
   type      : "9"
   start     : 272
   length    : 1
   precision : 0
 - item_no   : 273
   item      : "SSTKIJUN273"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºì"
   type      : "9"
   start     : 273
   length    : 1
   precision : 0
 - item_no   : 274
   item      : "SSTKIJUN274"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºî"
   type      : "9"
   start     : 274
   length    : 1
   precision : 0
 - item_no   : 275
   item      : "SSTKIJUN275"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºï"
   type      : "9"
   start     : 275
   length    : 1
   precision : 0
 - item_no   : 276
   item      : "SSTKIJUN276"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºñ"
   type      : "9"
   start     : 276
   length    : 1
   precision : 0
 - item_no   : 277
   item      : "SSTKIJUN277"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºó"
   type      : "9"
   start     : 277
   length    : 1
   precision : 0
 - item_no   : 278
   item      : "SSTKIJUN278"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºò"
   type      : "9"
   start     : 278
   length    : 1
   precision : 0
 - item_no   : 279
   item      : "SSTKIJUN279"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∑£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºóÔºô"
   type      : "9"
   start     : 279
   length    : 1
   precision : 0
 - item_no   : 280
   item      : "SSTKIJUN280"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºê"
   type      : "9"
   start     : 280
   length    : 1
   precision : 0
 - item_no   : 281
   item      : "SSTKIJUN281"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºë"
   type      : "9"
   start     : 281
   length    : 1
   precision : 0
 - item_no   : 282
   item      : "SSTKIJUN282"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºí"
   type      : "9"
   start     : 282
   length    : 1
   precision : 0
 - item_no   : 283
   item      : "SSTKIJUN283"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºì"
   type      : "9"
   start     : 283
   length    : 1
   precision : 0
 - item_no   : 284
   item      : "SSTKIJUN284"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºî"
   type      : "9"
   start     : 284
   length    : 1
   precision : 0
 - item_no   : 285
   item      : "SSTKIJUN285"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºï"
   type      : "9"
   start     : 285
   length    : 1
   precision : 0
 - item_no   : 286
   item      : "SSTKIJUN286"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºñ"
   type      : "9"
   start     : 286
   length    : 1
   precision : 0
 - item_no   : 287
   item      : "SSTKIJUN287"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºó"
   type      : "9"
   start     : 287
   length    : 1
   precision : 0
 - item_no   : 288
   item      : "SSTKIJUN288"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºò"
   type      : "9"
   start     : 288
   length    : 1
   precision : 0
 - item_no   : 289
   item      : "SSTKIJUN289"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£∏£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºòÔºô"
   type      : "9"
   start     : 289
   length    : 1
   precision : 0
 - item_no   : 290
   item      : "SSTKIJUN290"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºê"
   type      : "9"
   start     : 290
   length    : 1
   precision : 0
 - item_no   : 291
   item      : "SSTKIJUN291"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºë"
   type      : "9"
   start     : 291
   length    : 1
   precision : 0
 - item_no   : 292
   item      : "SSTKIJUN292"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºí"
   type      : "9"
   start     : 292
   length    : 1
   precision : 0
 - item_no   : 293
   item      : "SSTKIJUN293"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºì"
   type      : "9"
   start     : 293
   length    : 1
   precision : 0
 - item_no   : 294
   item      : "SSTKIJUN294"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºî"
   type      : "9"
   start     : 294
   length    : 1
   precision : 0
 - item_no   : 295
   item      : "SSTKIJUN295"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºï"
   type      : "9"
   start     : 295
   length    : 1
   precision : 0
 - item_no   : 296
   item      : "SSTKIJUN296"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºñ"
   type      : "9"
   start     : 296
   length    : 1
   precision : 0
 - item_no   : 297
   item      : "SSTKIJUN297"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºó"
   type      : "9"
   start     : 297
   length    : 1
   precision : 0
 - item_no   : 298
   item      : "SSTKIJUN298"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºò"
   type      : "9"
   start     : 298
   length    : 1
   precision : 0
 - item_no   : 299
   item      : "SSTKIJUN299"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≤£π£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºíÔºôÔºô"
   type      : "9"
   start     : 299
   length    : 1
   precision : 0
 - item_no   : 300
   item      : "SSTKIJUN300"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºê"
   type      : "9"
   start     : 300
   length    : 1
@@ -2108,700 +2108,700 @@ item_list   :
 
 - item_no   : 301
   item      : "SSTKIJUN301"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºë"
   type      : "9"
   start     : 301
   length    : 1
   precision : 0
 - item_no   : 302
   item      : "SSTKIJUN302"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºí"
   type      : "9"
   start     : 302
   length    : 1
   precision : 0
 - item_no   : 303
   item      : "SSTKIJUN303"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºì"
   type      : "9"
   start     : 303
   length    : 1
   precision : 0
 - item_no   : 304
   item      : "SSTKIJUN304"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºî"
   type      : "9"
   start     : 304
   length    : 1
   precision : 0
 - item_no   : 305
   item      : "SSTKIJUN305"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºï"
   type      : "9"
   start     : 305
   length    : 1
   precision : 0
 - item_no   : 306
   item      : "SSTKIJUN306"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºñ"
   type      : "9"
   start     : 306
   length    : 1
   precision : 0
 - item_no   : 307
   item      : "SSTKIJUN307"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºó"
   type      : "9"
   start     : 307
   length    : 1
   precision : 0
 - item_no   : 308
   item      : "SSTKIJUN308"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºò"
   type      : "9"
   start     : 308
   length    : 1
   precision : 0
 - item_no   : 309
   item      : "SSTKIJUN309"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∞£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºêÔºô"
   type      : "9"
   start     : 309
   length    : 1
   precision : 0
 - item_no   : 310
   item      : "SSTKIJUN310"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºê"
   type      : "9"
   start     : 310
   length    : 1
   precision : 0
 - item_no   : 311
   item      : "SSTKIJUN311"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºë"
   type      : "9"
   start     : 311
   length    : 1
   precision : 0
 - item_no   : 312
   item      : "SSTKIJUN312"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºí"
   type      : "9"
   start     : 312
   length    : 1
   precision : 0
 - item_no   : 313
   item      : "SSTKIJUN313"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºì"
   type      : "9"
   start     : 313
   length    : 1
   precision : 0
 - item_no   : 314
   item      : "SSTKIJUN314"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºî"
   type      : "9"
   start     : 314
   length    : 1
   precision : 0
 - item_no   : 315
   item      : "SSTKIJUN315"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºï"
   type      : "9"
   start     : 315
   length    : 1
   precision : 0
 - item_no   : 316
   item      : "SSTKIJUN316"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºñ"
   type      : "9"
   start     : 316
   length    : 1
   precision : 0
 - item_no   : 317
   item      : "SSTKIJUN317"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºó"
   type      : "9"
   start     : 317
   length    : 1
   precision : 0
 - item_no   : 318
   item      : "SSTKIJUN318"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºò"
   type      : "9"
   start     : 318
   length    : 1
   precision : 0
 - item_no   : 319
   item      : "SSTKIJUN319"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£±£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºëÔºô"
   type      : "9"
   start     : 319
   length    : 1
   precision : 0
 - item_no   : 320
   item      : "SSTKIJUN320"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºê"
   type      : "9"
   start     : 320
   length    : 1
   precision : 0
 - item_no   : 321
   item      : "SSTKIJUN321"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºë"
   type      : "9"
   start     : 321
   length    : 1
   precision : 0
 - item_no   : 322
   item      : "SSTKIJUN322"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºí"
   type      : "9"
   start     : 322
   length    : 1
   precision : 0
 - item_no   : 323
   item      : "SSTKIJUN323"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºì"
   type      : "9"
   start     : 323
   length    : 1
   precision : 0
 - item_no   : 324
   item      : "SSTKIJUN324"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºî"
   type      : "9"
   start     : 324
   length    : 1
   precision : 0
 - item_no   : 325
   item      : "SSTKIJUN325"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºï"
   type      : "9"
   start     : 325
   length    : 1
   precision : 0
 - item_no   : 326
   item      : "SSTKIJUN326"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºñ"
   type      : "9"
   start     : 326
   length    : 1
   precision : 0
 - item_no   : 327
   item      : "SSTKIJUN327"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºó"
   type      : "9"
   start     : 327
   length    : 1
   precision : 0
 - item_no   : 328
   item      : "SSTKIJUN328"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºò"
   type      : "9"
   start     : 328
   length    : 1
   precision : 0
 - item_no   : 329
   item      : "SSTKIJUN329"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≤£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºíÔºô"
   type      : "9"
   start     : 329
   length    : 1
   precision : 0
 - item_no   : 330
   item      : "SSTKIJUN330"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºê"
   type      : "9"
   start     : 330
   length    : 1
   precision : 0
 - item_no   : 331
   item      : "SSTKIJUN331"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºë"
   type      : "9"
   start     : 331
   length    : 1
   precision : 0
 - item_no   : 332
   item      : "SSTKIJUN332"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºí"
   type      : "9"
   start     : 332
   length    : 1
   precision : 0
 - item_no   : 333
   item      : "SSTKIJUN333"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºì"
   type      : "9"
   start     : 333
   length    : 1
   precision : 0
 - item_no   : 334
   item      : "SSTKIJUN334"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºî"
   type      : "9"
   start     : 334
   length    : 1
   precision : 0
 - item_no   : 335
   item      : "SSTKIJUN335"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºï"
   type      : "9"
   start     : 335
   length    : 1
   precision : 0
 - item_no   : 336
   item      : "SSTKIJUN336"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºñ"
   type      : "9"
   start     : 336
   length    : 1
   precision : 0
 - item_no   : 337
   item      : "SSTKIJUN337"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºó"
   type      : "9"
   start     : 337
   length    : 1
   precision : 0
 - item_no   : 338
   item      : "SSTKIJUN338"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºò"
   type      : "9"
   start     : 338
   length    : 1
   precision : 0
 - item_no   : 339
   item      : "SSTKIJUN339"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£≥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºìÔºô"
   type      : "9"
   start     : 339
   length    : 1
   precision : 0
 - item_no   : 340
   item      : "SSTKIJUN340"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºê"
   type      : "9"
   start     : 340
   length    : 1
   precision : 0
 - item_no   : 341
   item      : "SSTKIJUN341"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºë"
   type      : "9"
   start     : 341
   length    : 1
   precision : 0
 - item_no   : 342
   item      : "SSTKIJUN342"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºí"
   type      : "9"
   start     : 342
   length    : 1
   precision : 0
 - item_no   : 343
   item      : "SSTKIJUN343"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºì"
   type      : "9"
   start     : 343
   length    : 1
   precision : 0
 - item_no   : 344
   item      : "SSTKIJUN344"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºî"
   type      : "9"
   start     : 344
   length    : 1
   precision : 0
 - item_no   : 345
   item      : "SSTKIJUN345"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºï"
   type      : "9"
   start     : 345
   length    : 1
   precision : 0
 - item_no   : 346
   item      : "SSTKIJUN346"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºñ"
   type      : "9"
   start     : 346
   length    : 1
   precision : 0
 - item_no   : 347
   item      : "SSTKIJUN347"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºó"
   type      : "9"
   start     : 347
   length    : 1
   precision : 0
 - item_no   : 348
   item      : "SSTKIJUN348"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºò"
   type      : "9"
   start     : 348
   length    : 1
   precision : 0
 - item_no   : 349
   item      : "SSTKIJUN349"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£¥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºîÔºô"
   type      : "9"
   start     : 349
   length    : 1
   precision : 0
 - item_no   : 350
   item      : "SSTKIJUN350"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºê"
   type      : "9"
   start     : 350
   length    : 1
   precision : 0
 - item_no   : 351
   item      : "SSTKIJUN351"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºë"
   type      : "9"
   start     : 351
   length    : 1
   precision : 0
 - item_no   : 352
   item      : "SSTKIJUN352"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºí"
   type      : "9"
   start     : 352
   length    : 1
   precision : 0
 - item_no   : 353
   item      : "SSTKIJUN353"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºì"
   type      : "9"
   start     : 353
   length    : 1
   precision : 0
 - item_no   : 354
   item      : "SSTKIJUN354"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºî"
   type      : "9"
   start     : 354
   length    : 1
   precision : 0
 - item_no   : 355
   item      : "SSTKIJUN355"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºï"
   type      : "9"
   start     : 355
   length    : 1
   precision : 0
 - item_no   : 356
   item      : "SSTKIJUN356"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºñ"
   type      : "9"
   start     : 356
   length    : 1
   precision : 0
 - item_no   : 357
   item      : "SSTKIJUN357"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºó"
   type      : "9"
   start     : 357
   length    : 1
   precision : 0
 - item_no   : 358
   item      : "SSTKIJUN358"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºò"
   type      : "9"
   start     : 358
   length    : 1
   precision : 0
 - item_no   : 359
   item      : "SSTKIJUN359"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£µ£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºïÔºô"
   type      : "9"
   start     : 359
   length    : 1
   precision : 0
 - item_no   : 360
   item      : "SSTKIJUN360"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºê"
   type      : "9"
   start     : 360
   length    : 1
   precision : 0
 - item_no   : 361
   item      : "SSTKIJUN361"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºë"
   type      : "9"
   start     : 361
   length    : 1
   precision : 0
 - item_no   : 362
   item      : "SSTKIJUN362"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºí"
   type      : "9"
   start     : 362
   length    : 1
   precision : 0
 - item_no   : 363
   item      : "SSTKIJUN363"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºì"
   type      : "9"
   start     : 363
   length    : 1
   precision : 0
 - item_no   : 364
   item      : "SSTKIJUN364"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºî"
   type      : "9"
   start     : 364
   length    : 1
   precision : 0
 - item_no   : 365
   item      : "SSTKIJUN365"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºï"
   type      : "9"
   start     : 365
   length    : 1
   precision : 0
 - item_no   : 366
   item      : "SSTKIJUN366"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºñ"
   type      : "9"
   start     : 366
   length    : 1
   precision : 0
 - item_no   : 367
   item      : "SSTKIJUN367"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºó"
   type      : "9"
   start     : 367
   length    : 1
   precision : 0
 - item_no   : 368
   item      : "SSTKIJUN368"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºò"
   type      : "9"
   start     : 368
   length    : 1
   precision : 0
 - item_no   : 369
   item      : "SSTKIJUN369"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∂£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºñÔºô"
   type      : "9"
   start     : 369
   length    : 1
   precision : 0
 - item_no   : 370
   item      : "SSTKIJUN370"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºê"
   type      : "9"
   start     : 370
   length    : 1
   precision : 0
 - item_no   : 371
   item      : "SSTKIJUN371"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºë"
   type      : "9"
   start     : 371
   length    : 1
   precision : 0
 - item_no   : 372
   item      : "SSTKIJUN372"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºí"
   type      : "9"
   start     : 372
   length    : 1
   precision : 0
 - item_no   : 373
   item      : "SSTKIJUN373"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºì"
   type      : "9"
   start     : 373
   length    : 1
   precision : 0
 - item_no   : 374
   item      : "SSTKIJUN374"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºî"
   type      : "9"
   start     : 374
   length    : 1
   precision : 0
 - item_no   : 375
   item      : "SSTKIJUN375"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºï"
   type      : "9"
   start     : 375
   length    : 1
   precision : 0
 - item_no   : 376
   item      : "SSTKIJUN376"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºñ"
   type      : "9"
   start     : 376
   length    : 1
   precision : 0
 - item_no   : 377
   item      : "SSTKIJUN377"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºó"
   type      : "9"
   start     : 377
   length    : 1
   precision : 0
 - item_no   : 378
   item      : "SSTKIJUN378"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºò"
   type      : "9"
   start     : 378
   length    : 1
   precision : 0
 - item_no   : 379
   item      : "SSTKIJUN379"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∑£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºóÔºô"
   type      : "9"
   start     : 379
   length    : 1
   precision : 0
 - item_no   : 380
   item      : "SSTKIJUN380"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºê"
   type      : "9"
   start     : 380
   length    : 1
   precision : 0
 - item_no   : 381
   item      : "SSTKIJUN381"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºë"
   type      : "9"
   start     : 381
   length    : 1
   precision : 0
 - item_no   : 382
   item      : "SSTKIJUN382"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºí"
   type      : "9"
   start     : 382
   length    : 1
   precision : 0
 - item_no   : 383
   item      : "SSTKIJUN383"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºì"
   type      : "9"
   start     : 383
   length    : 1
   precision : 0
 - item_no   : 384
   item      : "SSTKIJUN384"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºî"
   type      : "9"
   start     : 384
   length    : 1
   precision : 0
 - item_no   : 385
   item      : "SSTKIJUN385"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºï"
   type      : "9"
   start     : 385
   length    : 1
   precision : 0
 - item_no   : 386
   item      : "SSTKIJUN386"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºñ"
   type      : "9"
   start     : 386
   length    : 1
   precision : 0
 - item_no   : 387
   item      : "SSTKIJUN387"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºó"
   type      : "9"
   start     : 387
   length    : 1
   precision : 0
 - item_no   : 388
   item      : "SSTKIJUN388"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºò"
   type      : "9"
   start     : 388
   length    : 1
   precision : 0
 - item_no   : 389
   item      : "SSTKIJUN389"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£∏£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºòÔºô"
   type      : "9"
   start     : 389
   length    : 1
   precision : 0
 - item_no   : 390
   item      : "SSTKIJUN390"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºê"
   type      : "9"
   start     : 390
   length    : 1
   precision : 0
 - item_no   : 391
   item      : "SSTKIJUN391"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºë"
   type      : "9"
   start     : 391
   length    : 1
   precision : 0
 - item_no   : 392
   item      : "SSTKIJUN392"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºí"
   type      : "9"
   start     : 392
   length    : 1
   precision : 0
 - item_no   : 393
   item      : "SSTKIJUN393"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºì"
   type      : "9"
   start     : 393
   length    : 1
   precision : 0
 - item_no   : 394
   item      : "SSTKIJUN394"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºî"
   type      : "9"
   start     : 394
   length    : 1
   precision : 0
 - item_no   : 395
   item      : "SSTKIJUN395"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºï"
   type      : "9"
   start     : 395
   length    : 1
   precision : 0
 - item_no   : 396
   item      : "SSTKIJUN396"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºñ"
   type      : "9"
   start     : 396
   length    : 1
   precision : 0
 - item_no   : 397
   item      : "SSTKIJUN397"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºó"
   type      : "9"
   start     : 397
   length    : 1
   precision : 0
 - item_no   : 398
   item      : "SSTKIJUN398"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºò"
   type      : "9"
   start     : 398
   length    : 1
   precision : 0
 - item_no   : 399
   item      : "SSTKIJUN399"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£≥£π£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºìÔºôÔºô"
   type      : "9"
   start     : 399
   length    : 1
   precision : 0
 - item_no   : 400
   item      : "SSTKIJUN400"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºê"
   type      : "9"
   start     : 400
   length    : 1
@@ -2809,700 +2809,700 @@ item_list   :
 
 - item_no   : 401
   item      : "SSTKIJUN401"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºë"
   type      : "9"
   start     : 401
   length    : 1
   precision : 0
 - item_no   : 402
   item      : "SSTKIJUN402"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºí"
   type      : "9"
   start     : 402
   length    : 1
   precision : 0
 - item_no   : 403
   item      : "SSTKIJUN403"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºì"
   type      : "9"
   start     : 403
   length    : 1
   precision : 0
 - item_no   : 404
   item      : "SSTKIJUN404"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºî"
   type      : "9"
   start     : 404
   length    : 1
   precision : 0
 - item_no   : 405
   item      : "SSTKIJUN405"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºï"
   type      : "9"
   start     : 405
   length    : 1
   precision : 0
 - item_no   : 406
   item      : "SSTKIJUN406"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºñ"
   type      : "9"
   start     : 406
   length    : 1
   precision : 0
 - item_no   : 407
   item      : "SSTKIJUN407"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºó"
   type      : "9"
   start     : 407
   length    : 1
   precision : 0
 - item_no   : 408
   item      : "SSTKIJUN408"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºò"
   type      : "9"
   start     : 408
   length    : 1
   precision : 0
 - item_no   : 409
   item      : "SSTKIJUN409"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∞£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºêÔºô"
   type      : "9"
   start     : 409
   length    : 1
   precision : 0
 - item_no   : 410
   item      : "SSTKIJUN410"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºê"
   type      : "9"
   start     : 410
   length    : 1
   precision : 0
 - item_no   : 411
   item      : "SSTKIJUN411"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºë"
   type      : "9"
   start     : 411
   length    : 1
   precision : 0
 - item_no   : 412
   item      : "SSTKIJUN412"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºí"
   type      : "9"
   start     : 412
   length    : 1
   precision : 0
 - item_no   : 413
   item      : "SSTKIJUN413"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºì"
   type      : "9"
   start     : 413
   length    : 1
   precision : 0
 - item_no   : 414
   item      : "SSTKIJUN414"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºî"
   type      : "9"
   start     : 414
   length    : 1
   precision : 0
 - item_no   : 415
   item      : "SSTKIJUN415"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºï"
   type      : "9"
   start     : 415
   length    : 1
   precision : 0
 - item_no   : 416
   item      : "SSTKIJUN416"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºñ"
   type      : "9"
   start     : 416
   length    : 1
   precision : 0
 - item_no   : 417
   item      : "SSTKIJUN417"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºó"
   type      : "9"
   start     : 417
   length    : 1
   precision : 0
 - item_no   : 418
   item      : "SSTKIJUN418"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºò"
   type      : "9"
   start     : 418
   length    : 1
   precision : 0
 - item_no   : 419
   item      : "SSTKIJUN419"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£±£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºëÔºô"
   type      : "9"
   start     : 419
   length    : 1
   precision : 0
 - item_no   : 420
   item      : "SSTKIJUN420"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºê"
   type      : "9"
   start     : 420
   length    : 1
   precision : 0
 - item_no   : 421
   item      : "SSTKIJUN421"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºë"
   type      : "9"
   start     : 421
   length    : 1
   precision : 0
 - item_no   : 422
   item      : "SSTKIJUN422"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºí"
   type      : "9"
   start     : 422
   length    : 1
   precision : 0
 - item_no   : 423
   item      : "SSTKIJUN423"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºì"
   type      : "9"
   start     : 423
   length    : 1
   precision : 0
 - item_no   : 424
   item      : "SSTKIJUN424"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºî"
   type      : "9"
   start     : 424
   length    : 1
   precision : 0
 - item_no   : 425
   item      : "SSTKIJUN425"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºï"
   type      : "9"
   start     : 425
   length    : 1
   precision : 0
 - item_no   : 426
   item      : "SSTKIJUN426"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºñ"
   type      : "9"
   start     : 426
   length    : 1
   precision : 0
 - item_no   : 427
   item      : "SSTKIJUN427"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºó"
   type      : "9"
   start     : 427
   length    : 1
   precision : 0
 - item_no   : 428
   item      : "SSTKIJUN428"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºò"
   type      : "9"
   start     : 428
   length    : 1
   precision : 0
 - item_no   : 429
   item      : "SSTKIJUN429"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≤£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºíÔºô"
   type      : "9"
   start     : 429
   length    : 1
   precision : 0
 - item_no   : 430
   item      : "SSTKIJUN430"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºê"
   type      : "9"
   start     : 430
   length    : 1
   precision : 0
 - item_no   : 431
   item      : "SSTKIJUN431"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºë"
   type      : "9"
   start     : 431
   length    : 1
   precision : 0
 - item_no   : 432
   item      : "SSTKIJUN432"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºí"
   type      : "9"
   start     : 432
   length    : 1
   precision : 0
 - item_no   : 433
   item      : "SSTKIJUN433"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºì"
   type      : "9"
   start     : 433
   length    : 1
   precision : 0
 - item_no   : 434
   item      : "SSTKIJUN434"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºî"
   type      : "9"
   start     : 434
   length    : 1
   precision : 0
 - item_no   : 435
   item      : "SSTKIJUN435"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºï"
   type      : "9"
   start     : 435
   length    : 1
   precision : 0
 - item_no   : 436
   item      : "SSTKIJUN436"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºñ"
   type      : "9"
   start     : 436
   length    : 1
   precision : 0
 - item_no   : 437
   item      : "SSTKIJUN437"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºó"
   type      : "9"
   start     : 437
   length    : 1
   precision : 0
 - item_no   : 438
   item      : "SSTKIJUN438"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºò"
   type      : "9"
   start     : 438
   length    : 1
   precision : 0
 - item_no   : 439
   item      : "SSTKIJUN439"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£≥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºìÔºô"
   type      : "9"
   start     : 439
   length    : 1
   precision : 0
 - item_no   : 440
   item      : "SSTKIJUN440"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºê"
   type      : "9"
   start     : 440
   length    : 1
   precision : 0
 - item_no   : 441
   item      : "SSTKIJUN441"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºë"
   type      : "9"
   start     : 441
   length    : 1
   precision : 0
 - item_no   : 442
   item      : "SSTKIJUN442"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºí"
   type      : "9"
   start     : 442
   length    : 1
   precision : 0
 - item_no   : 443
   item      : "SSTKIJUN443"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºì"
   type      : "9"
   start     : 443
   length    : 1
   precision : 0
 - item_no   : 444
   item      : "SSTKIJUN444"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºî"
   type      : "9"
   start     : 444
   length    : 1
   precision : 0
 - item_no   : 445
   item      : "SSTKIJUN445"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºï"
   type      : "9"
   start     : 445
   length    : 1
   precision : 0
 - item_no   : 446
   item      : "SSTKIJUN446"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºñ"
   type      : "9"
   start     : 446
   length    : 1
   precision : 0
 - item_no   : 447
   item      : "SSTKIJUN447"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºó"
   type      : "9"
   start     : 447
   length    : 1
   precision : 0
 - item_no   : 448
   item      : "SSTKIJUN448"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºò"
   type      : "9"
   start     : 448
   length    : 1
   precision : 0
 - item_no   : 449
   item      : "SSTKIJUN449"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£¥£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºîÔºô"
   type      : "9"
   start     : 449
   length    : 1
   precision : 0
 - item_no   : 450
   item      : "SSTKIJUN450"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºê"
   type      : "9"
   start     : 450
   length    : 1
   precision : 0
 - item_no   : 451
   item      : "SSTKIJUN451"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºë"
   type      : "9"
   start     : 451
   length    : 1
   precision : 0
 - item_no   : 452
   item      : "SSTKIJUN452"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºí"
   type      : "9"
   start     : 452
   length    : 1
   precision : 0
 - item_no   : 453
   item      : "SSTKIJUN453"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºì"
   type      : "9"
   start     : 453
   length    : 1
   precision : 0
 - item_no   : 454
   item      : "SSTKIJUN454"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºî"
   type      : "9"
   start     : 454
   length    : 1
   precision : 0
 - item_no   : 455
   item      : "SSTKIJUN455"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºï"
   type      : "9"
   start     : 455
   length    : 1
   precision : 0
 - item_no   : 456
   item      : "SSTKIJUN456"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºñ"
   type      : "9"
   start     : 456
   length    : 1
   precision : 0
 - item_no   : 457
   item      : "SSTKIJUN457"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºó"
   type      : "9"
   start     : 457
   length    : 1
   precision : 0
 - item_no   : 458
   item      : "SSTKIJUN458"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºò"
   type      : "9"
   start     : 458
   length    : 1
   precision : 0
 - item_no   : 459
   item      : "SSTKIJUN459"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£µ£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºïÔºô"
   type      : "9"
   start     : 459
   length    : 1
   precision : 0
 - item_no   : 460
   item      : "SSTKIJUN460"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºê"
   type      : "9"
   start     : 460
   length    : 1
   precision : 0
 - item_no   : 461
   item      : "SSTKIJUN461"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºë"
   type      : "9"
   start     : 461
   length    : 1
   precision : 0
 - item_no   : 462
   item      : "SSTKIJUN462"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºí"
   type      : "9"
   start     : 462
   length    : 1
   precision : 0
 - item_no   : 463
   item      : "SSTKIJUN463"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºì"
   type      : "9"
   start     : 463
   length    : 1
   precision : 0
 - item_no   : 464
   item      : "SSTKIJUN464"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºî"
   type      : "9"
   start     : 464
   length    : 1
   precision : 0
 - item_no   : 465
   item      : "SSTKIJUN465"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºï"
   type      : "9"
   start     : 465
   length    : 1
   precision : 0
 - item_no   : 466
   item      : "SSTKIJUN466"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºñ"
   type      : "9"
   start     : 466
   length    : 1
   precision : 0
 - item_no   : 467
   item      : "SSTKIJUN467"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºó"
   type      : "9"
   start     : 467
   length    : 1
   precision : 0
 - item_no   : 468
   item      : "SSTKIJUN468"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºò"
   type      : "9"
   start     : 468
   length    : 1
   precision : 0
 - item_no   : 469
   item      : "SSTKIJUN469"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∂£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºñÔºô"
   type      : "9"
   start     : 469
   length    : 1
   precision : 0
 - item_no   : 470
   item      : "SSTKIJUN470"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºê"
   type      : "9"
   start     : 470
   length    : 1
   precision : 0
 - item_no   : 471
   item      : "SSTKIJUN471"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºë"
   type      : "9"
   start     : 471
   length    : 1
   precision : 0
 - item_no   : 472
   item      : "SSTKIJUN472"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºí"
   type      : "9"
   start     : 472
   length    : 1
   precision : 0
 - item_no   : 473
   item      : "SSTKIJUN473"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºì"
   type      : "9"
   start     : 473
   length    : 1
   precision : 0
 - item_no   : 474
   item      : "SSTKIJUN474"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºî"
   type      : "9"
   start     : 474
   length    : 1
   precision : 0
 - item_no   : 475
   item      : "SSTKIJUN475"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºï"
   type      : "9"
   start     : 475
   length    : 1
   precision : 0
 - item_no   : 476
   item      : "SSTKIJUN476"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºñ"
   type      : "9"
   start     : 476
   length    : 1
   precision : 0
 - item_no   : 477
   item      : "SSTKIJUN477"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºó"
   type      : "9"
   start     : 477
   length    : 1
   precision : 0
 - item_no   : 478
   item      : "SSTKIJUN478"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºò"
   type      : "9"
   start     : 478
   length    : 1
   precision : 0
 - item_no   : 479
   item      : "SSTKIJUN479"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∑£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºóÔºô"
   type      : "9"
   start     : 479
   length    : 1
   precision : 0
 - item_no   : 480
   item      : "SSTKIJUN480"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºê"
   type      : "9"
   start     : 480
   length    : 1
   precision : 0
 - item_no   : 481
   item      : "SSTKIJUN481"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºë"
   type      : "9"
   start     : 481
   length    : 1
   precision : 0
 - item_no   : 482
   item      : "SSTKIJUN482"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºí"
   type      : "9"
   start     : 482
   length    : 1
   precision : 0
 - item_no   : 483
   item      : "SSTKIJUN483"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºì"
   type      : "9"
   start     : 483
   length    : 1
   precision : 0
 - item_no   : 484
   item      : "SSTKIJUN484"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºî"
   type      : "9"
   start     : 484
   length    : 1
   precision : 0
 - item_no   : 485
   item      : "SSTKIJUN485"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºï"
   type      : "9"
   start     : 485
   length    : 1
   precision : 0
 - item_no   : 486
   item      : "SSTKIJUN486"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºñ"
   type      : "9"
   start     : 486
   length    : 1
   precision : 0
 - item_no   : 487
   item      : "SSTKIJUN487"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºó"
   type      : "9"
   start     : 487
   length    : 1
   precision : 0
 - item_no   : 488
   item      : "SSTKIJUN488"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºò"
   type      : "9"
   start     : 488
   length    : 1
   precision : 0
 - item_no   : 489
   item      : "SSTKIJUN489"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£∏£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºòÔºô"
   type      : "9"
   start     : 489
   length    : 1
   precision : 0
 - item_no   : 490
   item      : "SSTKIJUN490"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºê"
   type      : "9"
   start     : 490
   length    : 1
   precision : 0
 - item_no   : 491
   item      : "SSTKIJUN491"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£±"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºë"
   type      : "9"
   start     : 491
   length    : 1
   precision : 0
 - item_no   : 492
   item      : "SSTKIJUN492"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£≤"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºí"
   type      : "9"
   start     : 492
   length    : 1
   precision : 0
 - item_no   : 493
   item      : "SSTKIJUN493"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£≥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºì"
   type      : "9"
   start     : 493
   length    : 1
   precision : 0
 - item_no   : 494
   item      : "SSTKIJUN494"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£¥"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºî"
   type      : "9"
   start     : 494
   length    : 1
   precision : 0
 - item_no   : 495
   item      : "SSTKIJUN495"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£µ"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºï"
   type      : "9"
   start     : 495
   length    : 1
   precision : 0
 - item_no   : 496
   item      : "SSTKIJUN496"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£∂"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºñ"
   type      : "9"
   start     : 496
   length    : 1
   precision : 0
 - item_no   : 497
   item      : "SSTKIJUN497"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£∑"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºó"
   type      : "9"
   start     : 497
   length    : 1
   precision : 0
 - item_no   : 498
   item      : "SSTKIJUN498"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£∏"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºò"
   type      : "9"
   start     : 498
   length    : 1
   precision : 0
 - item_no   : 499
   item      : "SSTKIJUN499"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£¥£π£π"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºîÔºôÔºô"
   type      : "9"
   start     : 499
   length    : 1
   precision : 0
 - item_no   : 500
   item      : "SSTKIJUN500"
-  item_jp   : "ª‹¿ﬂ¥Ω‡•≥°º•…•’•È•∞£µ£∞£∞"
+  item_jp   : "ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ„Éï„É©„Ç∞ÔºïÔºêÔºê"
   type      : "9"
   start     : 500
   length    : 1

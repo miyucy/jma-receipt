@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCVTPTHKNINF02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ãӣ֥ե����륳��С��Ƚ���
-      *                     �ʴ����ݸ�������Ͽ������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/11/05    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : ＣＳＶファイルコンバート処理
+      *                     （患者保険情報登録処理）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/11/05    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
-      *  04.02.00    NACL-¿��Ǽ   08/04/28  ���������б�
-      *  04.07.00    NACL-¿��Ǽ   14/04/14  �ȣ���ǯ��������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
+      *  04.02.00    NACL-多々納   08/04/28  後期高齢者対応
+      *  04.07.00    NACL-多々納   14/04/14  Ｈ２６年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,19 +37,19 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  PARA-FILE       ASSIGN
                                    ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-LST.
       *
-      *    ʬ��ե�����
+      *    分割ファイル
            SELECT  ISAM-FILE       ASSIGN
                                    ASS-ISAM
                                    ORGANIZATION    IS  INDEXED
@@ -59,7 +59,7 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  PARA-FILE.
        01  PARA-REC.
            03  PARA-RECKBN             PIC X(01).
@@ -67,11 +67,11 @@
            03  FILLER                  PIC X(01).
            03  PARA-DATA               PIC X(100).
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
       *
-      *    ʬ��쥳����
+      *    分割レコード
        FD  ISAM-FILE.
        01  ISAM-REC.
            03  ISAM-KEY.
@@ -87,24 +87,24 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256)  VALUE   SPACE.
            03  ASS-ERR                 PIC X(256)  VALUE   SPACE.
            03  ASS-ISAM                PIC X(256)  VALUE
                "/tmp/ORCVTPTHKNINF_ISAM".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
            03  STS-LST                 PIC X(02).
            03  STS-ISAM                PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-END                 PIC 9(01).
@@ -132,7 +132,7 @@
            03  FLG-OK                  PIC 9(01).
            03  FLG-ARI                 PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
@@ -143,7 +143,7 @@
            03  CNT-PTHKNINF            PIC 9(06).
            03  CNT-IN                  PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -155,7 +155,7 @@
            03  IDH                     PIC 9(04).
            03  IDX-C                   PIC 9(04).
       *
-      *    �ѥ�᡼����¸
+      *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-05-1               PIC X(02).
            03  PARA-06-1               PIC X(08).
@@ -164,7 +164,7 @@
            03  PARA-11-2               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -211,7 +211,7 @@
            03  WRK-HEN-FTNKBN          PIC X(01).
            03  WRK-HEN-HOJOKBN         PIC X(01).
       *
-      *    �ơ��֥�
+      *    テーブル
        01  TBL-DATA-AREA.
            03  TBL-DATA-REC            OCCURS   20.
                05  TBL-ISAM-PTNUM          PIC X(20).
@@ -222,13 +222,13 @@
                05  TBL-ISAM-SYORI          PIC X(01).
                05  TBL-ISAM-ERR            PIC X(01).
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  TBL-PTHKNINF-AREA.
            02  TBL-PTHKNINF-REC        OCCURS   20.
            COPY    "CPPTHKNINF.INC"   REPLACING
                                       //PTHKN-// BY //TBL-PTHKN-//.
       *
-      *    �ݸ��ֹ�ơ��֥�
+      *    保険番号テーブル
        01  TBL-HKNNUM-AREA.
            02  TBL-HKNNUM-REC          OCCURS  300.
            COPY    "CPHKNNUM.INC"      REPLACING
@@ -240,11 +240,11 @@
            COPY    "CPHKNNUM.INC"      REPLACING
                                        //HKN-// BY //HZN-HKN-//.
       *
-      *    Ģɼ�����ΰ�
+      *    帳票出力領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(28) VALUE
-                                       "��PGID:ORCVTPTHKNINF02.CBL��".
+                                       "【PGID:ORCVTPTHKNINF02.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -254,15 +254,15 @@
                05  MES-TITLE2-L1.
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
-                   " [1]���Ծ����������  [2]�ݸ����ֽ�ʣ ".
+                   " [1]患者情報取得失敗  [2]保険期間重複 ".
                    07  FILLER          PIC X(36) VALUE
-                   " [3]�ݸ��ֹ�ʤ� [4]�����ݸ���Ͽ��".
+                   " [3]保険番号なし [4]患者保険登録済".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(42) VALUE
-                   " [5]�����ʬ���顼 [6]��������������ǯ��".
+                   " [5]補助区分エラー [6]開始日＞後期高齢年齢".
                    07  FILLER          PIC X(42) VALUE
-                   " [7]�����ֹ湹������[8]�����ݸ����ϼ���".
+                   " [7]患者番号更新失敗[8]患者保険出力失敗".
                05  MES-TITLE2-L4.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -294,45 +294,45 @@
                05  ERR2-TEKEDYMD       PIC X(08).
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ƥ�����ʰ��ŵ��ؾ����
+      *    システム管理（医療機関情報）
            COPY    "CPSK1001.INC".
-      *    �����ƥ�����ʴ����ֹ湽��������
+      *    システム管理（患者番号構成管理）
            COPY    "CPSK1009.INC".
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
            COPY    "CPORCXKANACONV.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
-      *    LIKE����KEY�б�
+      *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
       ****************************************************************
@@ -344,7 +344,7 @@
                USING
            COMMAND-PARAM.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -359,7 +359,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -369,18 +369,18 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    ASS-PARA
            END-UNSTRING
       *
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
            IF  FLG-PARA            =   2
                MOVE    1           TO  FLG-END
                GO  TO  100-INIT-EXT
            END-IF
-      *    ���ŵ����ֹ�
+      *    医療機関番号
            IF      PARA-HOSPNUM    NUMERIC
                MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
            ELSE
@@ -397,13 +397,13 @@
            MOVE    SPA-SYSYMD(1:4) TO  MES-TITLE1-YY
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
-      *    ü���ɣĸ���
+      *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    �ǡ����١��������ץ�
+      *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
            PERFORM 120-CP1001-KENSAKU-SEC
            IF  FLG-END             =   1
                GO  TO  100-INIT-EXT
@@ -414,7 +414,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ISAM�ե�����  OPEN
+      *    ISAMファイル  OPEN
            OPEN    INPUT           ISAM-FILE
            IF      STS-ISAM        NOT =   ZERO
                MOVE    1               TO  FLG-END
@@ -423,7 +423,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
            PERFORM 2710-ERRLST-INIT-SEC
            IF  FLG-END             =   1
                GO  TO  100-INIT-EXT
@@ -433,7 +433,7 @@
            MOVE    PARA-09-2       TO  WRK-COMMIT
            MOVE    PARA-11-2       TO  WRK-ERR
       *
-      *    �ݸ��ֹ�ơ��֥�����
+      *    保険番号テーブル設定
            PERFORM 1009-HKNNUM-TBL-SEC
       *
            .
@@ -441,7 +441,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
       *****************************************************************
        101-PARA-GET-SEC            SECTION.
       *
@@ -466,7 +466,7 @@
       *
            CLOSE                       PARA-FILE
       *
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
            IF    ( PARA-05-1           IS  NUMERIC )   AND
                  ( PARA-09-2           IS  NUMERIC )   AND
                  ( PARA-11-2           IS  NUMERIC )
@@ -480,7 +480,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼����������ʣ���
+      *    パラメータ情報取得（１）
       *****************************************************************
        101-PARA-GET1-SEC           SECTION.
       *
@@ -510,7 +510,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        120-CP1001-KENSAKU-SEC      SECTION.
       *
@@ -548,7 +548,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        120-CP1009-KENSAKU-SEC      SECTION.
       *
@@ -585,7 +585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -607,16 +607,16 @@
       *
            PERFORM UNTIL ( FLG-ISAM    =   1 )
       *
-      *    1000�老�Ȥ˥�å�������ɽ��
+      *    1000件ごとにメッセージを表示
                IF      CNT-ISAM(4:3)       =   ZERO
                    DISPLAY "***(ORCVTPTHKNINF02)*** CNT-ISAM[" 
                                                CNT-ISAM "]"
                END-IF
-      *        ������˽�����Ԥ�
+      *        患者毎に処理を行う
                IF    (WRK-PTID         NOT =   ISAM-PTID ) AND
                      (IDX-T                >   ZERO    )
                    PERFORM 5001-PTHKNINF-SYORI-SEC
-      *            DISPLAYɽ��
+      *            DISPLAY表示
                    PERFORM 2001-DISPLAY-SEC
                    INITIALIZE                  TBL-PTHKNINF-AREA
                    INITIALIZE                  TBL-DATA-AREA
@@ -639,23 +639,23 @@
            IF      IDX-T            >   ZERO
                PERFORM 5001-PTHKNINF-SYORI-SEC
            END-IF
-      *    ������λ
+      *    処理終了
            MOVE    1                   TO  FLG-END
       *
            .
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    DISPLAYɽ������
+      *    DISPLAY表示処理
       *****************************************************************
        2001-DISPLAY-SEC        SECTION.
       *
-      *    ���ꤷ������ˤʤä��饳�ߥåȽ���
+      *    指定した件数になったらコミット処理
            IF      CNT-COMMIT          =   WRK-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
-      *    ���顼�����ꤷ������ˤʤä��������λ
+      *    エラーが指定した件数になったら処理終了
            IF    ( WRK-ERR         NOT =   ZERO )  AND
                  ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-END
@@ -666,20 +666,20 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ�����Ͽ����
+      *    患者保険マスタ登録処理
       *****************************************************************
        5001-PTHKNINF-SYORI-SEC        SECTION.
       *
-      *    Ʊ���ݸ��ν�ʣ�����å�
+      *    同一保険の重複チェック
            IF      IDX-T            >   1
                PERFORM 50011-PTHKNINF-JUFUKU-SEC
            END-IF
       *
-      *    �ݸ��ֹ���֥����å�
+      *    保険番号期間チェック
            IF      FLG-ERR              =   ZERO
                PERFORM 50012-HKNNUM-CHK-SEC
            END-IF
-      *    �����ݸ��ޥ�����Ͽ����
+      *    患者保険マスタ登録処理
            IF      FLG-ERR              =   ZERO
                PERFORM 5001-PTHKNINF-INS-SYORI-SEC
            END-IF
@@ -690,7 +690,7 @@
        5001-PTHKNINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    Ʊ���ݸ��ν�ʣ�����å�����
+      *    同一保険の重複チェック処理
       *****************************************************************
        50011-PTHKNINF-JUFUKU-SEC        SECTION.
       *
@@ -718,7 +718,7 @@
        50011-PTHKNINF-JUFUKU-EXT.
            EXIT.
       *****************************************************************
-      *    ��ʣ�����å�����
+      *    重複チェック処理
       *****************************************************************
        500211-JUFUKU-CHK-SEC        SECTION.
       *
@@ -749,7 +749,7 @@
        500211-JUFUKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ�ޥ����δ��֥����å�����
+      *    保険番号マスタの期間チェック処理
       *****************************************************************
        50012-HKNNUM-CHK-SEC        SECTION.
       *
@@ -774,7 +774,7 @@
                                                              (IDH))
                            MOVE    1            TO  FLG-OK
                        ELSE
-      *                ��λ�����оݤλ����оݤȤ���
+      *                終了日が対象の時、対象とする
                            IF      PTHKN-TEKEDYMD  <=  TBL-HKN-TEKEDYMD
                                                                 (IDH)
                                MOVE    TBL-HKNNUM-REC(IDH)
@@ -788,12 +788,12 @@
                END-PERFORM
       *
                IF      FLG-ARI             =   ZERO
-      *            �оݤʤ�
+      *            対象なし
                    MOVE    3               TO  FLG-ERR
                    MOVE    "3"             TO  TBL-ISAM-ERR (IDX)
                ELSE
                    IF      FLG-OK              =   ZERO
-      *               �����ѹ�
+      *               期間変更
                       PERFORM 50013-HKNNUM-HENKAN-SEC
                    END-IF
                END-IF
@@ -803,14 +803,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ������֤ˤ������ѹ�����
+      *    患者保険マスタ期間による期間変更処理
       *****************************************************************
        50013-HKNNUM-HENKAN-SEC        SECTION.
       *
-      *    �ݸ��ѹ������ä�������λ�����ѹ�����
+      *    保険変更があった時、終了日を変更する
            IF     (HZN-HKN-TEKSTYMD (2)    NOT =   SPACE )
               AND (HZN-HKN-TEKEDYMD (2)    >=  PTHKN-TEKSTYMD )
-      *        �������ݸ����ɲä���
+      *        新しい保険を追加する
                IF      HZN-HKN-TEKSTYMD (1)    NOT =   SPACE
                    ADD     1                   TO  IDX-T
                    MOVE    TBL-DATA-REC (IDX)  TO  TBL-DATA-REC (IDX-T)
@@ -822,21 +822,21 @@
                ELSE
                    MOVE    "C"             TO  TBL-ISAM-ERR (IDX)
                END-IF
-      *        ��λ�����ѹ�����
+      *        終了日を変更する
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTHKN-TEKEDYMD
-      *        ���������ݸ�������λ������������ݸ��γ������ˤ���
+      *        開始日が保険より前の時、開始日を保険の開始日にする
                IF      HZN-HKN-TEKSTYMD (2)    >   PTHKN-TEKSTYMD
                    MOVE    HZN-HKN-TEKSTYMD(2) TO  PTHKN-TEKSTYMD
                END-IF
                MOVE    PTHKNINF-REC        TO  TBL-PTHKNINF-REC (IDX)
            ELSE
-      *        �ݸ��γ��������ѹ�����
+      *        保険の開始日を変更する
                IF      HZN-HKN-TEKSTYMD(1) <   TBL-PTHKN-TEKEDYMD(IDX)
                    MOVE    HZN-HKN-TEKSTYMD(1) TO  TBL-PTHKN-TEKSTYMD
                                                                 (IDX)
                    MOVE    "B"                 TO  TBL-ISAM-ERR (IDX)
                ELSE
-      *            �оݤʤ�
+      *            対象なし
                    MOVE    3               TO  FLG-ERR
                    MOVE    "3"             TO  TBL-ISAM-ERR (IDX)
                END-IF
@@ -846,13 +846,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ�����Ͽ����
+      *    患者保険マスタ登録処理
       *****************************************************************
        5001-PTHKNINF-INS-SYORI-SEC        SECTION.
       *
            MOVE    TBL-PTHKN-PTID (1)  TO  SPA-PTID
       *
-      *    �����ֹ��ɤ߹���
+      *    患者番号読み込み
            MOVE    SPACE           TO  PTNUM-REC
            INITIALIZE                  PTNUM-REC
            MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
@@ -875,23 +875,23 @@
                GO  TO  5001-PTHKNINF-INS-SYORI-EXT
            END-IF
       *
-      *    �����ݸ���Ͽ�Ѥߤϥ��顼
+      *    既に保険登録済みはエラー
            IF      PTNUM-HKNID         >   ZERO
                MOVE    4               TO  FLG-ERR
                GO  TO  5001-PTHKNINF-INS-SYORI-EXT
            END-IF
       *
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF       NOT =   ZERO
                MOVE    1               TO  FLG-ERR
                GO  TO  5001-PTHKNINF-INS-SYORI-EXT
            END-IF
       *
-      *    ���������Ƚ��
+      *    前期高齢者判定
            MOVE    ZERO                TO  FLG-ROUJIN
-      *    ��ǯ�������飷������ã�������
-      *    �����ʤ����ǯ�����������ʳ��ʤ����ǯ����������
+      *    生年月日から７０歳到達日を求める
+      *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
            MOVE    ZERO                TO  WRK-BASEYMD
            MOVE    ZERO                TO  WRK-BYMD-70
            MOVE    ZERO                TO  WRK-BYMD-75
@@ -904,10 +904,10 @@
                END-IF
                MOVE    01              TO  WRK-BDD
            END-IF
-      *    �����Ф�ޤ�����
+      *    ７０歳を迎える日
            MOVE    WRK-BASEYMD         TO  WRK-BYMD-70
            COMPUTE WRK-B70-YY          =   WRK-B70-YY  +   70
-      *    ����
+      *    前日
            MOVE    SPACE                TO  STS-AREA-DAY
            INITIALIZE                       STS-AREA-DAY
            INITIALIZE                       LNK-DAY6-AREA
@@ -918,12 +918,12 @@
            CALL    "ORCSDAY"    USING   STS-AREA-DAY
                                         LNK-DAY6-AREA
            MOVE    LNK-DAY6-KEISAN      TO  WRK-BYMD-70-1
-      *    ���������
+      *    前期高齢者
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                   (WRK-BYMD-70         <=  WRK-SYSYMD )
                MOVE    1                   TO  FLG-ROUJIN
            END-IF
-      *    �����Ф�ޤ�����
+      *    ７５歳を迎える日
            MOVE    WRK-BASEYMD         TO  WRK-BYMD-75
            COMPUTE WRK-B75-YY          =   WRK-B75-YY  +   75
       *
@@ -939,25 +939,25 @@
       *
                EVALUATE    PTHKN-HKNNUM
                    WHEN    "980"
-      *            ����
+      *            自費
                        PERFORM 5004-HKNNUM980-HEN-SEC
                    WHEN    "039"
                    WHEN    "040"
-      *            ��������
+      *            後期高齢者
                        PERFORM 5004-HKNNUM039-HEN-SEC
                    WHEN    OTHER
                        IF     (FLG-ROUJIN          =   1       )
                          AND  (PTHKN-CONTKBN       =   SPACE   )
-      *                    ���������
+      *                    前期高齢者
                            PERFORM 5002-ROUJIN-CHK-SEC
                        ELSE
-      *                    �����ʬ�ƥ��å�
+      *                    補助区分再セット
                            PERFORM 5003-HOJYOKBN-HEN-SEC
                        END-IF
                END-EVALUATE
            END-PERFORM
       *
-      *    �����ݸ��ޥ�������Ͽ
+      *    患者保険マスター登録
            MOVE    ZERO                TO  WRK-HKNID
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   20     )  OR
@@ -966,7 +966,7 @@
                MOVE    TBL-PTHKNINF-REC (IDX)  TO  PTHKNINF-REC
                PERFORM 5009-PTHKNINF-INS-SEC
            END-PERFORM
-      *    �����ֹ��Ѵ��ޥ�������������
+      *    患者番号変換マスタ　更新処理
            IF      FLG-ERR             =   ZERO
                PERFORM 5010-PTNUM-UPDATE-SEC
            END-IF
@@ -975,18 +975,18 @@
        5001-PTHKNINF-INS-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����ʬ�ƥ��åȽ�������������԰ʳ���
+      *    補助区分再セット処理（前期高齢者以外）
       *****************************************************************
        5003-HOJYOKBN-HEN-SEC        SECTION.
       *
            EVALUATE    PTHKN-HKNNUM
-      *    ����
+      *    国保
            WHEN    "060"
-      *    ���ݡ������������
+      *    国保（特別療養費）
            WHEN    "068"
                IF    ( PTHKN-HKNJANUM(7:)      =   SPACE ) AND
                      ( PTHKN-HKNJANUM(3:1)     =   "3" )
-      *            �ȹ����
+      *            組合国保
                    EVALUATE    WRK-HEN-GAIFTN  ALSO  WRK-HEN-NYUFTN
                    WHEN    10      ALSO    0
                        MOVE    "4"             TO  PTHKN-HOJOKBN
@@ -998,16 +998,16 @@
       *
                    MOVE    PTHKNINF-REC    TO  TBL-PTHKNINF-REC (IDX)
                END-IF
-      *        �����ʬ̤����ϥ��顼
+      *        補助区分未設定はエラー
                IF      PTHKN-HOJOKBN       =   SPACE
                    MOVE    5               TO  FLG-ERR
                    MOVE    "5"             TO  TBL-ISAM-ERR (IDX)
                END-IF
-      *    ����
+      *    船員
            WHEN    "002"
                IF      (PTINF-BIRTHDAY     <=  "19320930" )
                   AND  (PTHKN-HONKZKKBN    =   "1"    )
-      *            ��������ԤǤʤ�����Ԥ������ʬ����
+      *            前期高齢者でない高齢者の補助区分設定
                    IF      WRK-HEN-FTNKBN  =   SPACE
                                            OR  "0"
                        MOVE    "1"         TO  WRK-HEN-FTNKBN
@@ -1024,7 +1024,7 @@
                    PERFORM 5003-ROJIN-HOJYOKBN-HEN-SEC
                    MOVE    PTHKNINF-REC    TO  TBL-PTHKNINF-REC (IDX)
                END-IF
-      *    �����ȹ�
+      *    共済組合
            WHEN    "031"
            WHEN    "032"
            WHEN    "033"
@@ -1037,7 +1037,7 @@
                END-IF
            END-EVALUATE
       *
-      *    �ȣ����������鳫�����������аʾ�����ϥ��顼
+      *    Ｈ２０．４から開始日が７５歳以上の日はエラー
            IF      (PTHKN-HKNNUM       =   "002"  )
               AND  (PTHKN-HONKZKKBN    =   "1"    )
                CONTINUE
@@ -1052,14 +1052,14 @@
        5003-HOJYOKBN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ԥ��åȽ���
+      *    前期高齢者セット処理
       *****************************************************************
        5002-ROUJIN-CHK-SEC        SECTION.
       *
-      *    �����������ã��
+      *    前期高齢者到達前
            IF     (PTHKN-TEKEDYMD      <    "20021001" ) OR
                   (PTHKN-TEKEDYMD      <   WRK-BYMD-70 ) 
-      *        ���̤������ʬ�ƥ��å�
+      *        一般の補助区分再セット
                PERFORM 5003-HOJYOKBN-HEN-SEC
            END-IF
       *
@@ -1067,28 +1067,28 @@
                                        OR  "0"
                MOVE    "1"             TO  WRK-HEN-FTNKBN
            END-IF
-      *    �����������ã��
+      *    前期高齢者到達後
            IF     (PTHKN-TEKEDYMD      >=   "20021001" ) AND
                   (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
-      *        �ȣ����������ʹߤ����������
+      *        Ｈ１８．１０以降に前期高齢者
                IF      (PTHKN-TEKSTYMD     >=   "20061001" )
                    IF      (PTHKN-TEKSTYMD     <    WRK-BYMD-70 )
-      *                �����������ã�����ڤ��ؤ�
+      *                前期高齢者到達日で切り替え
                        PERFORM 50022-HKNINF-BYMD-SEC
                    ELSE
       *H26.5
-      *                H26.5.1�ʹߤ�S19.4.2���ʹߤι������ô���
+      *                H26.5.1以降のS19.4.2生以降の高齢者負担割合
                        IF      (PTINF-BIRTHDAY     >=  "19440402")
                            PERFORM 50024-FTNKBN-201405-SEC
                        ELSE
       *
-      *                ����ϣ����
+      *                ２割は３割へ
                        IF      WRK-HEN-FTNKBN      =   "2"
                            MOVE    "3"             TO  WRK-HEN-FTNKBN
                        END-IF
       *
                        END-IF
-      *                �������������аʾ�����ϥ��顼
+      *                開始日が７５歳以上の日はエラー
                        IF      (PTHKN-TEKSTYMD     <    "20080401" )
                           OR   (PTHKN-TEKSTYMD     <    WRK-BYMD-75 )
                           OR  ((PTHKN-HKNNUM       =   "002"  ) AND
@@ -1100,22 +1100,22 @@
                        END-IF
                    END-IF
                ELSE
-      *            �ȣ����������ʹߤ����������
+      *            Ｈ１８．１０以降に前期高齢者
                    IF      (PTHKN-TEKSTYMD     >=   WRK-BYMD-70 )
                       AND  (PTHKN-TEKSTYMD     >=   "20021001"  )
                        IF      (PTHKN-TEKEDYMD     <    "20061001" )
-      *               �ȣ�������������ȣ��������ޤ�
-      *                    ����ϣ����
+      *               Ｈ１４．１０からＨ１８．９まで
+      *                    ３割は２割へ
                            IF      WRK-HEN-FTNKBN  =   "3"
                                MOVE    "2"         TO  WRK-HEN-FTNKBN
                            END-IF
                            PERFORM 5003-ROJIN-HOJYOKBN-HEN-SEC
                        ELSE
-      *                    �ȣ��������Ǵ������ؤ�
+      *                    Ｈ１８．９で期間切替え
                            PERFORM 50021-HKNINF-H1810-SEC
                        END-IF
                    ELSE
-      *                �����������ã�����ڤ��ؤ�
+      *                前期高齢者到達日で切り替え
                        PERFORM 50022-HKNINF-BYMD-SEC
                    END-IF
                END-IF
@@ -1126,18 +1126,18 @@
        5002-ROUJIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    S19.4.2���ʹߤι������ô������
+      *    S19.4.2生以降の高齢者負担割合処理
       *****************************************************************
        50024-FTNKBN-201405-SEC        SECTION.
       *
            IF      (PTHKN-TEKSTYMD     >=   WRK-BYMD-70 )
-      *        ����ϣ����
+      *        １割は２割へ
                IF      WRK-HEN-FTNKBN      =   "1"
                    MOVE    "2"             TO  WRK-HEN-FTNKBN
                END-IF
            ELSE
       *
-      *        ����ϣ����
+      *        ２割は３割へ
                IF      WRK-HEN-FTNKBN      =   "2"
                    MOVE    "3"             TO  WRK-HEN-FTNKBN
                END-IF
@@ -1146,11 +1146,11 @@
        50024-FTNKBN-201405-EXT.
            EXIT.
       *****************************************************************
-      *    �ȣ�����������������ؤ�����
+      *    Ｈ１８．１０からの切替え処理
       *****************************************************************
        50021-HKNINF-H1810-SEC        SECTION.
       *
-      *    ����ϣ����
+      *    ３割は２割へ
            IF      WRK-HEN-FTNKBN  =   "3"
                MOVE    "2"         TO  WRK-HEN-FTNKBN
            END-IF
@@ -1160,10 +1160,10 @@
                                        OR  "D"
                                        OR  "E"
                                        OR  "F"
-      *        ����ϴ����ѹ����ơ������
+      *        ２割は期間変更して、３割へ
                MOVE    "20060930"          TO  WRK-HEN-TEKEDYMD
                MOVE    WRK-HEN-TEKEDYMD    TO  PTHKN-TEKEDYMD
-      *        �ɲ�
+      *        追加
                ADD     1                   TO  IDX-T
                MOVE    TBL-DATA-REC (IDX)  TO  TBL-DATA-REC (IDX-T)
                MOVE    TBL-PTHKNINF-REC (IDX)
@@ -1174,12 +1174,12 @@
        50021-HKNINF-H1810-EXT.
            EXIT.
       *****************************************************************
-      *    �����������ã�������ؤ�����
+      *    前期高齢者到達日で切替え処理
       *****************************************************************
        50022-HKNINF-BYMD-SEC        SECTION.
       *
            IF     (PTHKN-TEKSTYMD      <   WRK-BYMD-70 )
-      *        �ɲ�
+      *        追加
                ADD     1                   TO  IDX-T
                MOVE    TBL-DATA-REC (IDX)  TO  TBL-DATA-REC (IDX-T)
                MOVE    TBL-PTHKNINF-REC (IDX)
@@ -1187,14 +1187,14 @@
                                                                (IDX-T)
                MOVE    WRK-BYMD-70         TO  TBL-PTHKN-TEKSTYMD
                                                                (IDX-T)
-      *        ��ã������
+      *        到達日前日
                MOVE    WRK-BYMD-70-1       TO  PTHKN-TEKEDYMD
-      *        ���̤������ʬ�ƥ��å�
+      *        一般の補助区分再セット
                PERFORM 5003-HOJYOKBN-HEN-SEC
            ELSE
-      *        �ȣ�����������
+      *        Ｈ１４．１０で
                IF      PTHKN-TEKSTYMD      <   "20021001"
-      *            �ɲ�
+      *            追加
                    ADD     1                   TO  IDX-T
                    MOVE    TBL-DATA-REC (IDX)  TO  TBL-DATA-REC
                                                                (IDX-T)
@@ -1203,9 +1203,9 @@
                                                                (IDX-T)
                    MOVE    "20021001"          TO  TBL-PTHKN-TEKSTYMD
                                                                (IDX-T)
-      *            ��ã������
+      *            到達日前日
                    MOVE    "20020930"          TO  PTHKN-TEKEDYMD
-      *            ���̤������ʬ�ƥ��å�
+      *            一般の補助区分再セット
                    PERFORM 5003-HOJYOKBN-HEN-SEC
                END-IF
            END-IF
@@ -1213,15 +1213,15 @@
        50022-HKNINF-BYMD-EXT.
            EXIT.
       *****************************************************************
-      *    ���������ʬ�����ʬ���åȽ���
+      *    前期高齢者分補助区分セット処理
       *****************************************************************
        5003-ROJIN-HOJYOKBN-HEN-SEC        SECTION.
       *
            EVALUATE    PTHKN-HKNNUM
-      *    ����
+      *    船員
            WHEN    "002"
                EVALUATE  WRK-HEN-FTNKBN    ALSO    WRK-HEN-HOJOKBN
-      *        ��ô��磱
+      *        負担割合１
                    WHEN    "1"     ALSO    SPACE
                    WHEN    "1"     ALSO    "0"
                        MOVE    "9"             TO  PTHKN-HOJOKBN
@@ -1231,7 +1231,7 @@
                        MOVE    "B"             TO  PTHKN-HOJOKBN
                    WHEN    "1"     ALSO    "3"
                        MOVE    "C"             TO  PTHKN-HOJOKBN
-      *        ��ô��磲
+      *        負担割合２
                    WHEN    "2"     ALSO    SPACE
                    WHEN    "2"     ALSO    "0"
                        MOVE    "8"             TO  PTHKN-HOJOKBN
@@ -1241,7 +1241,7 @@
                        MOVE    "E"             TO  PTHKN-HOJOKBN
                    WHEN    "2"     ALSO    "3"
                        MOVE    "F"             TO  PTHKN-HOJOKBN
-      *        ��ô��磳
+      *        負担割合３
                    WHEN    "3"     ALSO    SPACE
                    WHEN    "3"     ALSO    "0"
                        MOVE    "7"             TO  PTHKN-HOJOKBN
@@ -1252,7 +1252,7 @@
                    WHEN    "3"     ALSO    "3"
                        MOVE    "I"             TO  PTHKN-HOJOKBN
                END-EVALUATE
-      *    ����
+      *    共済
            WHEN    "031"   THRU    "034"
                EVALUATE    WRK-HEN-FTNKBN  ALSO    WRK-HEN-HOJOKBN
                    WHEN    "1"     ALSO    "2"
@@ -1263,15 +1263,15 @@
                        MOVE    "9"             TO  PTHKN-HOJOKBN
                    WHEN    "2"     ALSO    ANY
                        MOVE    "8"             TO  PTHKN-HOJOKBN
-      *            ����
+      *            ３割
                    WHEN    "3"     ALSO    "2"
                        MOVE    "H"             TO  PTHKN-HOJOKBN
                    WHEN    "3"     ALSO    ANY
                        MOVE    "7"             TO  PTHKN-HOJOKBN
                END-EVALUATE
-      *    ����
+      *    国保
            WHEN    "060"
-      *    ���ݡ������������
+      *    国保（特別療養費）
            WHEN    "068"
                IF    ( PTHKN-HKNJANUM(7:)      =   SPACE ) AND
                      ( PTHKN-HKNJANUM(3:1)     =   "3" )
@@ -1283,47 +1283,47 @@
                        WHEN    30      ALSO    20
                            MOVE    "6"             TO  PTHKN-HOJOKBN
                        WHEN    OTHER
-      *                ��ô�������ʤ��λ�����ô��ʬ��Ƚ��
+      *                負担割合設定なしの時、負担区分の判定
                            EVALUATE    WRK-HEN-FTNKBN
-      *                ��ô��磱
+      *                負担割合１
                            WHEN    "1"
                                MOVE    "1"             TO  PTHKN-HOJOKBN
-      *                ��ô��磲
+      *                負担割合２
                            WHEN    "2"
                                MOVE    "2"             TO  PTHKN-HOJOKBN
-      *                ��ô��磳
+      *                負担割合３
                            WHEN    "3"
                                MOVE    "3"             TO  PTHKN-HOJOKBN
                            END-EVALUATE
                    END-EVALUATE
                ELSE
                    EVALUATE    WRK-HEN-FTNKBN
-      *            ��ô��磱
+      *            負担割合１
                        WHEN    "1"
                            MOVE    "1"             TO  PTHKN-HOJOKBN
-      *            ��ô��磲
+      *            負担割合２
                        WHEN    "2"
                            MOVE    "2"             TO  PTHKN-HOJOKBN
-      *            ��ô��磳
+      *            負担割合３
                        WHEN    "3"
                            MOVE    "3"             TO  PTHKN-HOJOKBN
                    END-EVALUATE
                END-IF
            WHEN    OTHER
-      *    �̾�ξ��
+      *    通常の場合
                EVALUATE    WRK-HEN-FTNKBN
-      *        ��ô��磱
+      *        負担割合１
                    WHEN    "1"
                        MOVE    "9"             TO  PTHKN-HOJOKBN
-      *        ��ô��磲
+      *        負担割合２
                    WHEN    "2"
                        MOVE    "8"             TO  PTHKN-HOJOKBN
-      *        ��ô��磳
+      *        負担割合３
                    WHEN    "3"
                        MOVE    "7"             TO  PTHKN-HOJOKBN
                END-EVALUATE
            END-EVALUATE
-      *    �����ʬ̤����ϥ��顼
+      *    補助区分未設定はエラー
            IF      PTHKN-HOJOKBN       =   SPACE
                MOVE    5               TO  FLG-ERR
                MOVE    "5"             TO  TBL-ISAM-ERR(IDX)
@@ -1333,7 +1333,7 @@
        5003-ROJIN-HOJYOKBN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ���
+      *    後期高齢者処理
       *****************************************************************
        5004-HKNNUM039-HEN-SEC            SECTION.
       *
@@ -1343,14 +1343,14 @@
            END-IF
       *
            EVALUATE    WRK-HEN-FTNKBN
-      *    ��ô��磱
+      *    負担割合１
                WHEN    "1"
                    MOVE    "1"             TO  PTHKN-HOJOKBN
-      *    ��ô��磳
+      *    負担割合３
                WHEN    "3"
                    MOVE    "3"             TO  PTHKN-HOJOKBN
                WHEN    OTHER
-      *            �������ʳ��ϥ��顼
+      *            １、３以外はエラー
                    MOVE    5               TO  FLG-ERR
                    MOVE    "5"             TO  TBL-ISAM-ERR(IDX)
            END-EVALUATE
@@ -1360,15 +1360,15 @@
        5004-HKNNUM039-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ݸ�����
+      *    自費保険処理
       *****************************************************************
        5004-HKNNUM980-HEN-SEC            SECTION.
       *
-      *    ��ô���
+      *    負担割合
            IF      PTHKN-HOJOKBN       =   SPACE
                MOVE    "1"             TO  PTHKN-HOJOKBN
            END-IF
-      *    �ܿͲ�²��ʬ�Ϥ��٤��ܿͤȤ���
+      *    本人家族区分はすべて本人とする
            IF      PTHKN-HONKZKKBN NOT =   "1"
                MOVE    "1"             TO  PTHKN-HONKZKKBN
            END-IF
@@ -1378,7 +1378,7 @@
        5004-HKNNUM980-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ݸ��ޥ�������Ͽ����
+      *    患者保険マスター登録処理
       *****************************************************************
        5009-PTHKNINF-INS-SEC            SECTION.
       *
@@ -1403,11 +1403,11 @@
        5009-PTHKNINF-INS-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ�������������
+      *    患者番号変換マスタ　更新処理
       *****************************************************************
        5010-PTNUM-UPDATE-SEC        SECTION.
       *
-      *    �����ݸ��ɣĤǴ����ֹ��Ѵ��ޥ����򹹿�
+      *    最大保険ＩＤで患者番号変換マスタを更新
            IF      PTNUM-HKNID         <   WRK-HKNID
                MOVE    WRK-HKNID       TO  PTNUM-HKNID
                MOVE    SPA-SYSYMD      TO  PTNUM-UPYMD
@@ -1428,7 +1428,7 @@
        5010-PTNUM-UPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ�ơ��֥�����
+      *    保険番号テーブル設定
       *****************************************************************
        1009-HKNNUM-TBL-SEC            SECTION.
       *
@@ -1451,13 +1451,13 @@
            END-IF
            PERFORM UNTIL      (FLG-HKNNUM  =   1 )
                            OR (IDX-HKN-MAX >=  300 )
-      *       ���ݤλ�ʧ��ʬ�������оݳ�
+      *       国保の支払区分＝空白は対象外
               IF      (HKN-HKNNUM              =   "060" )
                  AND  (HKN-PAYKBN          NOT =   "00"  )
                    CONTINUE
               ELSE
       *
-      *       �ݸ��Τ��
+      *       保険のもの
               IF       HKN-HKNKOHSBTKBN        =   "1"  OR  "4"
                                                OR  "8"  OR  "9"
                    ADD     1                   TO  IDX-HKN-MAX
@@ -1483,7 +1483,7 @@
        1009-HKNNUM-TBL-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼�ꥹ���Խ�����
+      *    エラーリスト編集処理
       *****************************************************************
        290-ERRR-SYORI-SEC         SECTION.
       *
@@ -1491,11 +1491,11 @@
            MOVE    "["                 TO  ERR2-ERRNO (1:1)
            MOVE    FLG-ERR(1:1)        TO  ERR2-ERRNO (2:1)
            MOVE    "]"                 TO  ERR2-ERRNO (3:1)
-           MOVE    "�����ֹ�:"         TO  ERR2-PTNUMMES
-           MOVE    "���ԣɣ�:"         TO  ERR2-PTIDMES
-           MOVE    "�ݸ��ֹ�:"         TO  ERR2-HKNNUMMES
-           MOVE    "Ϣ��:"             TO  ERR2-HKNIDMES
-           MOVE    "����:"             TO  ERR2-TEKSTEDMES
+           MOVE    "患者番号:"         TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"         TO  ERR2-PTIDMES
+           MOVE    "保険番号:"         TO  ERR2-HKNNUMMES
+           MOVE    "連番:"             TO  ERR2-HKNIDMES
+           MOVE    "期間:"             TO  ERR2-TEKSTEDMES
       *
            MOVE    TBL-ISAM-PTNUM (1)  TO  ERR2-PTNUM
            MOVE    TBL-PTHKN-PTID (1)  TO  ERR2-PTID
@@ -1515,7 +1515,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ�����
+      *    エラーリスト編集処理
       *****************************************************************
        2902-ERRTBL-OUT-SEC         SECTION.
       *
@@ -1541,7 +1541,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ�Ƚ��Ͻ���
+      *    エラーリスト出力処理
       *****************************************************************
        2901-ERRLST-OUT-SEC          SECTION.
       *
@@ -1555,7 +1555,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
       *****************************************************************
        2710-ERRLST-INIT-SEC        SECTION.
       *
@@ -1583,15 +1583,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    Ģɼ���ϡ���λ����
+      *    帳票出力　終了処理
            CLOSE                       ISAM-FILE
            CLOSE                       ERR-FILE
       *
-      *    ISAM�ե�������
+      *    ISAMファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    ASS-ISAM        TO  IF-FILENAME
            CALL    "orcfiledel"        USING
@@ -1612,7 +1612,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ƣţԣãȽ���
+      *    システム管理マスタＦＥＴＣＨ処理
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
@@ -1631,7 +1631,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ���ޥ����ɹ�
+      *    患者情報マスタ読込
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -1669,7 +1669,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        900-PTHKNINF-READ-SEC       SECTION.
       *
@@ -1693,7 +1693,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        900-PTHKNINF-FETCH-SEC      SECTION.
       *
@@ -1709,7 +1709,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        930-PTNUM-DBFETCH-SEC      SECTION.
       *
@@ -1726,7 +1726,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        930-PTNUM-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        950-HKNNUM-NEXT-SEC      SECTION.
       *
@@ -1743,7 +1743,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        950-HKNNUM-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1756,7 +1756,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1771,7 +1771,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -1785,7 +1785,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ʬ��쥳���ɥե�������ɹ�
+      *    分割レコードファイル順読込
       *****************************************************************
        900-ISAM-NEXT-SEC           SECTION.
       *
@@ -1802,7 +1802,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ե������ɤ߹��߽���
+      *    パラメータファイル読み込み処理
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -1820,7 +1820,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *      
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1841,7 +1841,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -1863,7 +1863,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

@@ -1,23 +1,23 @@
 kanri_cd    : "5106"
-name        : "Ìë´Ö¶ÐÌ³´Ç¸î²Ã»»"
+name        : "å¤œé–“å‹¤å‹™çœ‹è­·åŠ ç®—"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "BTU-YAKANKNGKSN-NM"
-  item_jp   : "Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»"
+  item_jp   : "å¤œé–“å‹¤å‹™ç­‰çœ‹è­·åŠ ç®—"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "BTU-YAKANKNGKSN-NM2"
-  item_jp   : "Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»£²"
+  item_jp   : "å¤œé–“å‹¤å‹™ç­‰çœ‹è­·åŠ ç®—ï¼’"
   type      : "X"
   start     : 21
   length    : 10
 - item_no   : 3
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 31
   length    : 470

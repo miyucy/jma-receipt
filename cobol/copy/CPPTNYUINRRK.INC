@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,126 +16,126 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò              COPY (CPPTNYUINRRK.INC)     *
+      *    æ‚£è€…å…¥é™¢å±¥æ­´              COPY (CPPTNYUINRRK.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTNYUINRRK-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTNYUINRRK-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTNYUINRRK-HOSPNUM              PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTNYUINRRK-PTID                PIC  9(10).
-      *Æþ±¡ÍúÎòÈÖ¹æ¡ÊÆþ±¡£±²ó¤Ç¡Ü£±¤º¤ÄºÎÈÖ¡Ë
+      *å…¥é™¢å±¥æ­´ç•ªå·ï¼ˆå…¥é™¢ï¼‘å›žã§ï¼‹ï¼‘ãšã¤æŽ¡ç•ªï¼‰
                05  PTNYUINRRK-RRKNUM              PIC  9(03).
-      *Æþ±¡ÍúÎò»ÞÈÖ¹æ¡ÊÅ¾²Ê¡¦Å¾¼¼¡¦Å¾Åï»þ¤ËºÎÈÖ¡Ë
+      *å…¥é™¢å±¥æ­´æžç•ªå·ï¼ˆè»¢ç§‘ãƒ»è»¢å®¤ãƒ»è»¢æ£Ÿæ™‚ã«æŽ¡ç•ªï¼‰
                05  PTNYUINRRK-RRKEDANUM           PIC  9(03).
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
            03  PTNYUINRRK-BTUNUM                  PIC  X(02).
-      *ÉÂÅïÌ¾¾Î
+      *ç—…æ£Ÿåç§°
            03  PTNYUINRRK-BTUNAME                 PIC  X(20).
-      *ÉÂ¼¼ÈÖ¹æ
+      *ç—…å®¤ç•ªå·
            03  PTNYUINRRK-BRMNUM                  PIC  X(08).
-      *Æþ±¡²Ê
+      *å…¥é™¢ç§‘
            03  PTNYUINRRK-NYUINKA                 PIC  X(02).
-      *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *ä¿é™ºçµ„åˆã›ç•ªå·
            03  PTNYUINRRK-HKNCOMBINUM             PIC  X(04).
-      *Æþ±¡Æü
+      *å…¥é™¢æ—¥
            03  PTNYUINRRK-NYUINYMD                PIC  X(08).
-      *Âà±¡Æü
+      *é€€é™¢æ—¥
            03  PTNYUINRRK-TAIINYMD                PIC  X(08).
-      *Âà±¡»öÍ³
+      *é€€é™¢äº‹ç”±
            03  PTNYUINRRK-TAIINCD                 PIC  X(02).
-      *ÆÃÄêÆþ±¡ÎÁ¶èÊ¬¡Ê£±¡§°åÎÅµ¡´Ø¡¿£²¡§ÉÂÅï¡¿£³¡§ÉÂ¼¼¡Ë
+      *ç‰¹å®šå…¥é™¢æ–™åŒºåˆ†ï¼ˆï¼‘ï¼šåŒ»ç™‚æ©Ÿé–¢ï¼ï¼’ï¼šç—…æ£Ÿï¼ï¼“ï¼šç—…å®¤ï¼‰
            03  PTNYUINRRK-TOKUTEI-KBN             PIC  X(01).
-      *ÆÃÄêÆþ±¡ÎÁ
+      *ç‰¹å®šå…¥é™¢æ–™
            03  PTNYUINRRK-TOKUTEI-NYUIN           PIC  X(02).
-      *ÆÃÄêÆþ±¡ÎÁ»»ÄêÍ×·ï¶èÊ¬¡Ê¶õÇò¡§³ºÅö¤¹¤ë¡¿£±¡§³ºÅö¤·¤Ê¤¤¡Ë
+      *ç‰¹å®šå…¥é™¢æ–™ç®—å®šè¦ä»¶åŒºåˆ†ï¼ˆç©ºç™½ï¼šè©²å½“ã™ã‚‹ï¼ï¼‘ï¼šè©²å½“ã—ãªã„ï¼‰
            03  PTNYUINRRK-TOKU-SANTEIYOUKENKBN    PIC  X(01).
-      *Æþ±¡²Ã»»¥³¡¼¥É
+      *å…¥é™¢åŠ ç®—ã‚³ãƒ¼ãƒ‰
            03  PTNYUINRRK-KSNSRYCD-G.
                05  PTNYUINRRK-KSNSRYCD-OCC        OCCURS   3.
                    07  PTNYUINRRK-KSNSRYCD        PIC  X(09).
-      *¼¼ÎÁº¹³Û
+      *å®¤æ–™å·®é¡
            03  PTNYUINRRK-RM-SAGAKU               PIC  X(02).
-      *Äê´üÀÁµá¶èÊ¬
+      *å®šæœŸè«‹æ±‚åŒºåˆ†
            03  PTNYUINRRK-TEIKI-SEIKYUKBN         PIC  X(01).
-      *¸¡º÷É½¼¨¶èÊ¬
+      *æ¤œç´¢è¡¨ç¤ºåŒºåˆ†
            03  PTNYUINRRK-KENSAKU-DISPKBN         PIC  X(01).
-      *½é²ó·ÑÂ³¶èÊ¬
+      *åˆå›žç¶™ç¶šåŒºåˆ†
            03  PTNYUINRRK-SHOKAIKBN               PIC  X(01).
-      *½é²óÈÖ¹æ
+      *åˆå›žç•ªå·
            03  PTNYUINRRK-SHONUM                  PIC  9(03).
-      *Ã´Åö°å£±¡Ê¼ç¼£°å¡Ë
+      *æ‹…å½“åŒ»ï¼‘ï¼ˆä¸»æ²»åŒ»ï¼‰
            03  PTNYUINRRK-DRCD1                   PIC  X(05).
-      *Ã´Åö°å£²
+      *æ‹…å½“åŒ»ï¼’
            03  PTNYUINRRK-DRCD2                   PIC  X(05).
-      *Ã´Åö°å£³
+      *æ‹…å½“åŒ»ï¼“
            03  PTNYUINRRK-DRCD3                   PIC  X(05).
-      *¾õÂÖ¶èÊ¬¡Ê£±:Æþ±¡/£²:Å¾²Ê/£³:Å¾Åï/
-      *          £´:Å¾¼¼/£µ:Â¾±¡Æþ±¡¡¿£¶:¼«±¡Îò/£·:Æþ±¡ÎÁÊÑ¹¹¡Ë
+      *çŠ¶æ…‹åŒºåˆ†ï¼ˆï¼‘:å…¥é™¢/ï¼’:è»¢ç§‘/ï¼“:è»¢æ£Ÿ/
+      *          ï¼”:è»¢å®¤/ï¼•:ä»–é™¢å…¥é™¢ï¼ï¼–:è‡ªé™¢æ­´/ï¼—:å…¥é™¢æ–™å¤‰æ›´ï¼‰
            03  PTNYUINRRK-JTIKBN                  PIC  X(01).
-      *»»ÄêÉÂÅï
+      *ç®—å®šç—…æ£Ÿ
            03  PTNYUINRRK-SANTEI-BTUNUM           PIC  X(02).
-      *»»ÄêÉÂ¼¼
+      *ç®—å®šç—…å®¤
            03  PTNYUINRRK-SANTEI-BRMNUM           PIC  X(08).
-      *Å¾ÆþÆü
+      *è»¢å…¥æ—¥
            03  PTNYUINRRK-TENNYUYMD               PIC  X(08).
-      *Å¾½ÐÆü
+      *è»¢å‡ºæ—¥
            03  PTNYUINRRK-TENSTUYMD               PIC  X(08).
-      *ÄÌ»»ÂÐ¾ÝÆü¿ô¡ÊÂ¾±¡Îò¤Ç¹ÍÎ¸¤¹¤ëÆü¿ô¡Ë
+      *é€šç®—å¯¾è±¡æ—¥æ•°ï¼ˆä»–é™¢æ­´ã§è€ƒæ…®ã™ã‚‹æ—¥æ•°ï¼‰
            03  PTNYUINRRK-TAISYONISSU             PIC  9(05).
-      *ÄÌ»»Æü¿ô£±¡Ê£¹£°Æü±Û¤¨»»ÄêÍÑ¡Ë
+      *é€šç®—æ—¥æ•°ï¼‘ï¼ˆï¼™ï¼æ—¥è¶Šãˆç®—å®šç”¨ï¼‰
            03  PTNYUINRRK-TUSANNISSU1             PIC  9(05).
-      *ÄÌ»»Æü¿ô£²¡Ê£±£¸£°Æü±Û¤¨»»ÄêÍÑ¡Ë
+      *é€šç®—æ—¥æ•°ï¼’ï¼ˆï¼‘ï¼˜ï¼æ—¥è¶Šãˆç®—å®šç”¨ï¼‰
            03  PTNYUINRRK-TUSANNISSU2             PIC  9(05).
-      *ÆÃÄêÆþ±¡¡ÝÄÌ»»ÂÐ¾ÝÆü¿ô
+      *ç‰¹å®šå…¥é™¢âˆ’é€šç®—å¯¾è±¡æ—¥æ•°
            03  PTNYUINRRK-TOKU-TAISYONISSU        PIC  9(05).
-      *¼«±¡Îò¡ÝÆþ±¡Ãæ¶èÊ¬
-      *  ¼«±¡Îò¤ÇºîÀ®¤·¤¿Îò¤È
-      *  Æþ±¡ÅÐÏ¿¤ÇºîÀ®¤·¤¿Îò¤ò¥ì¥»¥×¥È¾å£±¤Ä¤ÎÆþ±¡´ü´Ö¤È¤·¤¿¤¤
-      *  ¾ì¹ç¡¢¼«±¡Îò¤Î¥Ç¡¼¥¿¤ËÃÍ¤òÀßÄê¤¹¤ë¡£
-      *  ¡Ê£°¡§Âà±¡ºÑ¡¿£±¡§Æþ±¡Ãæ¡Ë
+      *è‡ªé™¢æ­´âˆ’å…¥é™¢ä¸­åŒºåˆ†
+      *  è‡ªé™¢æ­´ã§ä½œæˆã—ãŸæ­´ã¨
+      *  å…¥é™¢ç™»éŒ²ã§ä½œæˆã—ãŸæ­´ã‚’ãƒ¬ã‚»ãƒ—ãƒˆä¸Šï¼‘ã¤ã®å…¥é™¢æœŸé–“ã¨ã—ãŸã„
+      *  å ´åˆã€è‡ªé™¢æ­´ã®ãƒ‡ãƒ¼ã‚¿ã«å€¤ã‚’è¨­å®šã™ã‚‹ã€‚
+      *  ï¼ˆï¼ï¼šé€€é™¢æ¸ˆï¼ï¼‘ï¼šå…¥é™¢ä¸­ï¼‰
            03  PTNYUINRRK-NYUINCHUKBN             PIC  X(01).
-      *Æ±ÆüºÆÆþ±¡¶èÊ¬¡Ê£±¡§¼«±¡Âà±¡¤«¤é¤ÎºÆÆþ±¡¡¿£²¡§Â¾±¡Îò¤«¤é¤ÎºÆÆþ±¡¡Ë
+      *åŒæ—¥å†å…¥é™¢åŒºåˆ†ï¼ˆï¼‘ï¼šè‡ªé™¢é€€é™¢ã‹ã‚‰ã®å†å…¥é™¢ï¼ï¼’ï¼šä»–é™¢æ­´ã‹ã‚‰ã®å†å…¥é™¢ï¼‰
            03  PTNYUINRRK-DOUJITSUKBN             PIC  X(01).
-      *Æþ±¡ÍúÎòºÇÂç»ÞÈÖ¹æ
+      *å…¥é™¢å±¥æ­´æœ€å¤§æžç•ªå·
            03  PTNYUINRRK-MAXEDANUM               PIC  9(03).
-      *Æþ±¡¿©»ö¶èÊ¬¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§¿©¤¢¤ê¡¿£²¡§ÆÃ¿©¡¿£³¡§Î®Æ°¿©¡Ë
-      *¡¡¡¡¡¡¡¡¡¡¡¡¡Ê£Á¡§ÊÑ¹¹¤Ê¤·¡¿£Ã¡§¸ÄÊÌ»Ø¼¨¡¿£Â¡§¸ÄÊÌ»Ø¼¨ÊÑ¹¹¤Ê¤·¡Ë
+      *å…¥é™¢é£Ÿäº‹åŒºåˆ†ï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šé£Ÿã‚ã‚Šï¼ï¼’ï¼šç‰¹é£Ÿï¼ï¼“ï¼šæµå‹•é£Ÿï¼‰
+      *ã€€ã€€ã€€ã€€ã€€ã€€ï¼ˆï¼¡ï¼šå¤‰æ›´ãªã—ï¼ï¼£ï¼šå€‹åˆ¥æŒ‡ç¤ºï¼ï¼¢ï¼šå€‹åˆ¥æŒ‡ç¤ºå¤‰æ›´ãªã—ï¼‰
            03  PTNYUINRRK-SKJKBN                  PIC  X(01).
            03  PTNYUINRRK-SKJKBN-KOBETSU-G.
-      *Æþ±¡¿©»ö¶èÊ¬¡¡Ä«¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§¿©¤¢¤ê¡¿£²¡§ÆÃ¿©¡¿£³¡§Î®Æ°¿©¡Ë
+      *å…¥é™¢é£Ÿäº‹åŒºåˆ†ã€€æœï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šé£Ÿã‚ã‚Šï¼ï¼’ï¼šç‰¹é£Ÿï¼ï¼“ï¼šæµå‹•é£Ÿï¼‰
                05  PTNYUINRRK-SKJKBN-ASA              PIC  X(01).
-      *Æþ±¡¿©»ö¶èÊ¬¡¡Ãë¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§¿©¤¢¤ê¡¿£²¡§ÆÃ¿©¡¿£³¡§Î®Æ°¿©¡Ë
+      *å…¥é™¢é£Ÿäº‹åŒºåˆ†ã€€æ˜¼ï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šé£Ÿã‚ã‚Šï¼ï¼’ï¼šç‰¹é£Ÿï¼ï¼“ï¼šæµå‹•é£Ÿï¼‰
                05  PTNYUINRRK-SKJKBN-HIRU             PIC  X(01).
-      *Æþ±¡¿©»ö¶èÊ¬¡¡Í¼¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§¿©¤¢¤ê¡¿£²¡§ÆÃ¿©¡¿£³¡§Î®Æ°¿©¡Ë
+      *å…¥é™¢é£Ÿäº‹åŒºåˆ†ã€€å¤•ï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šé£Ÿã‚ã‚Šï¼ï¼’ï¼šç‰¹é£Ÿï¼ï¼“ï¼šæµå‹•é£Ÿï¼‰
                05  PTNYUINRRK-SKJKBN-YU               PIC  X(01).
            03  PTNYUINRRK-SKJKBN-KOBETSU-R
                            REDEFINES PTNYUINRRK-SKJKBN-KOBETSU-G.
                05  PTNYUINRRK-SKJKBN-KOBETSU      PIC  X(01)
                                                   OCCURS 3.
-      *Æþ±¡Æü¿©»ö³«»Ï»þ´Ö¶èÊ¬
-      *¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§Ä«¤«¤é¡¿£²¡§Ãë¤«¤é¡¿£³¡§Í¼¤«¤é¡Ë
+      *å…¥é™¢æ—¥é£Ÿäº‹é–‹å§‹æ™‚é–“åŒºåˆ†
+      *ï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šæœã‹ã‚‰ï¼ï¼’ï¼šæ˜¼ã‹ã‚‰ï¼ï¼“ï¼šå¤•ã‹ã‚‰ï¼‰
            03  PTNYUINRRK-TIMEKBN-IN              PIC  X(01).
-      *ÁªÄêÆþ±¡¶èÊ¬¡Ê£±¡§ÁªÄêÂÐ¾Ý¡¿£²¡§ÁªÄêÂÐ¾Ý³°¡Ë
+      *é¸å®šå…¥é™¢åŒºåˆ†ï¼ˆï¼‘ï¼šé¸å®šå¯¾è±¡ï¼ï¼’ï¼šé¸å®šå¯¾è±¡å¤–ï¼‰
            03  PTNYUINRRK-SENTEIKBN               PIC  X(01).
-      *Â¾±¡´Ø·¸¶èÊ¬¡Ê£±¡§ÆÃÊÌ¤Ê´Ø·¸¤Ë¤¢¤ë°åÎÅµ¡´Ø¡Ë
+      *ä»–é™¢é–¢ä¿‚åŒºåˆ†ï¼ˆï¼‘ï¼šç‰¹åˆ¥ãªé–¢ä¿‚ã«ã‚ã‚‹åŒ»ç™‚æ©Ÿé–¢ï¼‰
            03  PTNYUINRRK-TAINRELKBN              PIC  X(01).
-      *²ð¸î°ÛÆ°¶èÊ¬¡Ê£±¡§²ð¸î»ÜÀß¤«¤é¤ÎµÞÀ­Áý°­¤Ë¤è¤ë°ÛÆ°¡Ë
+      *ä»‹è­·ç•°å‹•åŒºåˆ†ï¼ˆï¼‘ï¼šä»‹è­·æ–½è¨­ã‹ã‚‰ã®æ€¥æ€§å¢—æ‚ªã«ã‚ˆã‚‹ç•°å‹•ï¼‰
            03  PTNYUINRRK-KAIGOKBN                PIC  X(01).
-      *Æþ±¡¥«¥ì¥ó¥À¡¼ÀßÄê¶èÊ¬¡Ê£±¡§Æþ±¡ÎÁ¤ò»»Äê¤·¤Ê¤¤¡¿£²¡§Æþ±¡ÎÁ¤ò»»Äê¤¹¤ë¡Ë
+      *å…¥é™¢ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼è¨­å®šåŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢æ–™ã‚’ç®—å®šã—ãªã„ï¼ï¼’ï¼šå…¥é™¢æ–™ã‚’ç®—å®šã™ã‚‹ï¼‰
            03  PTNYUINRRK-NYUCALKBN               PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTNYUINRRK-TERMID                  PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTNYUINRRK-OPID                    PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTNYUINRRK-CREYMD                  PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTNYUINRRK-UPYMD                   PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTNYUINRRK-UPHMS                   PIC  X(06).

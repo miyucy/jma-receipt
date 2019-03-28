@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBC020.
       *****************************************************************
-      *  °˙Ω§¿µª˛§À§œ…¨§∫•◊•Ì•∞•È•‡º± Ã»÷πÊ§Ú•Í•ª•√•»§π§Î§≥§»
+      *  ‚òÖ‰øÆÊ≠£ÊôÇ„Å´„ÅØÂøÖ„Åö„Éó„É≠„Ç∞„É©„É†Ë≠òÂà•Áï™Âè∑„Çí„É™„Çª„ÉÉ„Éà„Åô„Çã„Åì„Å®
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : •«°º•øº˝Ω∏
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : £√£”£÷•«°º•ø∫Ó¿Æ
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  06/09/12    NACL°›∞À∆£    ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : „Éá„Éº„ÇøÂèéÈõÜ
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Ôº£Ôº≥Ôº∂„Éá„Éº„Çø‰ΩúÊàê
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  06/09/12    NACL‚àí‰ºäËó§    Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  01.01.01    NACL-∞À∆£    08/ 4/28  D•´•Ï•Û•¿°º•Ï•≥°º•…ƒ…≤√
-      *  04.05.01    NACL-∞À∆£    10/01/28  æÆøÙ≈¿£µ∑Â¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  01.01.01    NACL-‰ºäËó§    08/ 4/28  D„Ç´„É¨„É≥„ÉÄ„Éº„É¨„Ç≥„Éº„ÉâËøΩÂä†
+      *  04.05.01    NACL-‰ºäËó§    10/01/28  Â∞èÊï∞ÁÇπÔºïÊ°ÅÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,7 +38,7 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    º˝Ω∏•«°º•ø° …¬±°¥À‹æ Û°À
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàÁóÖÈô¢Âü∫Êú¨ÊÉÖÂ†±Ôºâ
            SELECT  COLDAT91-FILE   ASSIGN  COLDAT91
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
@@ -51,41 +51,41 @@
                                    RECORD  KEY     IS  COLDAT911-KEY
                                    FILE    STATUS  IS  STS-COLDAT91.
       *
-      *    º˝Ω∏•«°º•ø° ¥µº‘¥À‹æ Û°À
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàÊÇ£ËÄÖÂü∫Êú¨ÊÉÖÂ†±Ôºâ
            SELECT  COLDAT01-FILE   ASSIGN  COLDAT01
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  COLDAT01-KEY
                                    FILE    STATUS  IS  STS-COLDAT01.
       *
-      *    º˝Ω∏•«°º•ø° ø«Œ≈æ Û°À
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàË®∫ÁôÇÊÉÖÂ†±Ôºâ
            SELECT  COLDAT02-FILE   ASSIGN  COLDAT02
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  COLDAT02-KEY
                                    FILE    STATUS  IS  STS-COLDAT02.
       *
-      *    º˝Ω∏•«°º•ø° …¬Ãææ Û°À
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàÁóÖÂêçÊÉÖÂ†±Ôºâ
            SELECT  COLDAT03-FILE   ASSIGN  COLDAT03
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  COLDAT03-KEY
                                    FILE    STATUS  IS  STS-COLDAT03.
       *
-      *    £√£”£÷•«°º•ø
+      *    Ôº£Ôº≥Ôº∂„Éá„Éº„Çø
            SELECT  COLDAT04-FILE   ASSIGN  WRK-PARA-COLFILENM
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-COLDAT04.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
            SELECT  COLDATERR-FILE  ASSIGN  WRK-PARA-ERRFILENM
                                    FILE    STATUS  IS  STS-COLDATERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    …¬±°¥À‹æ Û•«°º•ø
+      *    ÁóÖÈô¢Âü∫Êú¨ÊÉÖÂ†±„Éá„Éº„Çø
        FD  COLDAT91-FILE.
        01  COLDAT91-REC. 
            COPY    "CPCDF901.INC".
@@ -95,26 +95,26 @@
            COPY    "CPCDF901.INC"  REPLACING  //COLDAT91//
                                    BY         //COLDAT911//.
       *
-      *    ¥µº‘¥À‹æ Û•«°º•ø
+      *    ÊÇ£ËÄÖÂü∫Êú¨ÊÉÖÂ†±„Éá„Éº„Çø
        FD  COLDAT01-FILE.
        01  COLDAT01-REC. 
            COPY    "CPCDF001.INC".
       *
-      *    ø«Œ≈æ Û•«°º•ø
+      *    Ë®∫ÁôÇÊÉÖÂ†±„Éá„Éº„Çø
        FD  COLDAT02-FILE.
        01  COLDAT02-REC. 
            COPY    "CPCDF002.INC".
       *
-      *    …¬Ãææ Û•«°º•ø
+      *    ÁóÖÂêçÊÉÖÂ†±„Éá„Éº„Çø
        FD  COLDAT03-FILE.
        01  COLDAT03-REC. 
            COPY    "CPCDF003.INC".
       *
-      *    £√£”£÷•«°º•ø
+      *    Ôº£Ôº≥Ôº∂„Éá„Éº„Çø
        FD  COLDAT04-FILE.
        01  COLDAT04-REC            PIC X(3000). 
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
        FD  COLDATERR-FILE.
        01  COLDATERR-REC           PIC X(200). 
       *
@@ -125,27 +125,27 @@
       *01  PRGSKBNO                PIC X(08)  VALUE "20090327".
        01  PRGSKBNO                PIC X(08)  VALUE "20100128".
       *
-      *    …¬±°¥À‹æ Û•«°º•ø
+      *    ÁóÖÈô¢Âü∫Êú¨ÊÉÖÂ†±„Éá„Éº„Çø
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //COLDAT91//.
       *
-      *    ¥µº‘¥À‹æ Û•«°º•ø
+      *    ÊÇ£ËÄÖÂü∫Êú¨ÊÉÖÂ†±„Éá„Éº„Çø
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //COLDAT01//.
       *
-      *    ø«Œ≈æ Û•«°º•ø
+      *    Ë®∫ÁôÇÊÉÖÂ†±„Éá„Éº„Çø
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //COLDAT02//.
       *
-      *    …¬Ãææ Û•«°º•ø
+      *    ÁóÖÂêçÊÉÖÂ†±„Éá„Éº„Çø
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //COLDAT03//.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  STS-AREA.
            03  STS-COLDAT91                    PIC X(02).
            03  STS-COLDAT01                    PIC X(02).
@@ -162,7 +162,7 @@
            03  FLG-KOIHEAD                     PIC 9(01).
            03  FLG-SANSO                       PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-COLDAT91                    PIC 9(06).
            03  CNT-COLDAT01                    PIC 9(06).
@@ -179,7 +179,7 @@
            03  IDX2                            PIC 9(03).
            03  IDX3                            PIC 9(03).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
       *
        01  WRK-AREA.
            03  WRK-PARA.
@@ -205,11 +205,11 @@
       *
            03  WRK-KOH-MAX             PIC 9(03).
       *
-      *     ±¶§∫§· ‘Ω∏Õ—
+      *     Âè≥„Åö„ÇÅÁ∑®ÈõÜÁî®
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
-      *    Ω–Œœ•«°º•ø ‘Ω∏Õ—
+      *    Âá∫Âäõ„Éá„Éº„ÇøÁ∑®ÈõÜÁî®
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
@@ -220,92 +220,92 @@
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
       *
-      *    •Ô°º•ØºÁ ›∏±æ Û
+      *    „ÉØ„Éº„ÇØ‰∏ª‰øùÈô∫ÊÉÖÂ†±
            03  WRK-HKN-AREA.
-      *        ºÁ ›∏±°› ›∏±£…£ƒ
+      *        ‰∏ª‰øùÈô∫‚àí‰øùÈô∫Ôº©Ôº§
                05  WRK-HKN-HKNID       PIC  9(10).
-      *        ºÁ ›∏±°›µ≠πÊ
+      *        ‰∏ª‰øùÈô∫‚àíË®òÂè∑
                05  WRK-HKN-KIGO        PIC  X(80).
-      *        ºÁ ›∏±°›»÷πÊ
+      *        ‰∏ª‰øùÈô∫‚àíÁï™Âè∑
                05  WRK-HKN-NUM         PIC  X(80).
-      *        »Ô ›∏±º‘Ãæ
+      *        Ë¢´‰øùÈô∫ËÄÖÂêç
                05  WRK-HKN-HIHKNJANAME
                                        PIC  X(100).
-      *        ªÒ≥ ºË∆¿«Ø∑Ó∆¸
+      *        Ë≥áÊ†ºÂèñÂæóÂπ¥ÊúàÊó•
                05  WRK-HKN-SKKGETYMD   PIC  X(08).
-      *        ≈¨Õ—≥´ªœ«Ø∑Ó∆¸
+      *        ÈÅ©Áî®ÈñãÂßãÂπ¥ÊúàÊó•
                05  WRK-HKN-TEKSTYMD    PIC  X(08).
-      *        ≈¨Õ—Ω™Œª«Ø∑Ó∆¸
+      *        ÈÅ©Áî®ÁµÇ‰∫ÜÂπ¥ÊúàÊó•
                05  WRK-HKN-TEKEDYMD    PIC  X(08).
-      *        ºÁ ›∏±°›∑—¬≥∂Ë ¨
+      *        ‰∏ª‰øùÈô∫‚àíÁ∂ôÁ∂öÂå∫ÂàÜ
                05  WRK-HKN-CONTKBN     PIC  X(01).
-      *        ºÁ ›∏±°› ‰Ωı∂Ë ¨
+      *        ‰∏ª‰øùÈô∫‚àíË£úÂä©Âå∫ÂàÜ
                05  WRK-HKN-HOJOKBN     PIC X(01).
-      *        ºÁ ›∏±°›À‹øÕ≤»¬≤∂Ë ¨
+      *        ‰∏ª‰øùÈô∫‚àíÊú¨‰∫∫ÂÆ∂ÊóèÂå∫ÂàÜ
                05  WRK-HKN-HONKZKKBN   PIC  X(01).
       * 
-      *    •Ô°º•Ø∏¯»Òæ Û
+      *    „ÉØ„Éº„ÇØÂÖ¨Ë≤ªÊÉÖÂ†±
            03  WRK-KOHI-AREA.
-      *        ∏¯»Ò£…£ƒ
+      *        ÂÖ¨Ë≤ªÔº©Ôº§
                07  WRK-KOHID          PIC  9(10).
-      *        ∏¯»Ò ›∏±»÷πÊ
+      *        ÂÖ¨Ë≤ª‰øùÈô∫Áï™Âè∑
                07  WRK-KOHHKNNUM      PIC  X(03).
-      *        ∏¯»ÒªŸ ß∂Ë ¨
+      *        ÂÖ¨Ë≤ªÊîØÊâïÂå∫ÂàÜ
                07  WRK-KOHPAYKBN      PIC  X(02).
-      *        ∏¯»Ò°›À° Ã»÷πÊ
+      *        ÂÖ¨Ë≤ª‚àíÊ≥ïÂà•Áï™Âè∑
                07  WRK-KOHHBTNUM      PIC  X(02).
-      *        ∏¯»Ò°›…È√¥º‘»÷πÊ
+      *        ÂÖ¨Ë≤ª‚àíË≤†ÊãÖËÄÖÁï™Âè∑
                07  WRK-KOHFTNJANUM    PIC  X(08).
-      *        ∏¯»Ò°›ºıµÎº‘»÷πÊ
+      *        ÂÖ¨Ë≤ª‚àíÂèóÁµ¶ËÄÖÁï™Âè∑
                07  WRK-KOHJKYSNUM     PIC  X(20).
-      *        ∏¯»Ò°›•Ï•ª•◊•»¿¡µ·∂Ë ¨
+      *        ÂÖ¨Ë≤ª‚àí„É¨„Çª„Éó„ÉàË´ãÊ±ÇÂå∫ÂàÜ
                07  WRK-RECESKYKBN     PIC  X(01).
-      *        ≈¨Õ—≥´ªœ«Ø∑Ó∆¸
+      *        ÈÅ©Áî®ÈñãÂßãÂπ¥ÊúàÊó•
                07  WRK-KOHTEKSTYMD    PIC  X(08).
-      *        ≈¨Õ—Ω™Œª«Ø∑Ó∆¸
+      *        ÈÅ©Áî®ÁµÇ‰∫ÜÂπ¥ÊúàÊó•
                07  WRK-KOHTEKEDYMD    PIC  X(08).
       *  
        01  WRK-CONS-AREA.
-      *    •≥•Û•ﬁ
+      *    „Ç≥„É≥„Éû
            03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
-      *    ≤˛π‘•≥°º•…
+      *    ÊîπË°å„Ç≥„Éº„Éâ
            03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
-      *    ¿∏≥Ë ›∏Ó ›∏±»÷πÊ
+      *    ÁîüÊ¥ª‰øùË≠∑‰øùÈô∫Áï™Âè∑
            03  WRK-CONS-SEIHO-HKNNUM   PIC X(03)   VALUE   "012".
-      *    º´»Ò ›∏±»÷πÊ
+      *    Ëá™Ë≤ª‰øùÈô∫Áï™Âè∑
            03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980".
-      *    œ´∫“ ›∏±»÷πÊ
+      *    Âä¥ÁÅΩ‰øùÈô∫Áï™Âè∑
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
-      *    º´«Â¿’ ›∏±»÷πÊ
+      *    Ëá™Ë≥†Ë≤¨‰øùÈô∫Áï™Âè∑
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
-      *    ∏∂«˙ ›∏±»÷πÊ
+      *    ÂéüÁàÜ‰øùÈô∫Áï™Âè∑
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ª¿¡«
+      *    ÈÖ∏Á¥†
            COPY    "CMSANSOTBL.INC".
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®È†òÂüü
       *****************************************************************
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    øÙª˙ —¥πŒŒ∞Ë
+      *    Êï∞Â≠óÂ§âÊèõÈ†òÂüü
            COPY    "CPORCSNUM.INC".
-      *   •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *   „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -320,7 +320,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -333,7 +333,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -354,7 +354,7 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -370,7 +370,7 @@
            CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                            LNK-DAY2-AREA
            STRING  LNK-DAY2-EDTYMD3(5:12)       DELIMITED BY SIZE
-                   " ¨º˝Ω∏•«°º•ø∫Ó¿Æ° £√£”£÷°À" DELIMITED BY SIZE
+                   "ÂàÜÂèéÈõÜ„Éá„Éº„Çø‰ΩúÊàêÔºàÔº£Ôº≥Ôº∂Ôºâ" DELIMITED BY SIZE
                                  INTO  JOB-SHELLMSG
            END-STRING
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -417,7 +417,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î° …¬±°¥À‹°ÀΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´ÔºàÁóÖÈô¢Âü∫Êú¨ÔºâÂá¶ÁêÜ
       *****************************************************************
        1001-FILE-HENSYU-SEC         SECTION.
       *
@@ -425,121 +425,121 @@
            MOVE    ZERO                TO  WRK-REC-LENGTH
            EVALUATE  COLDAT91-RECKBN
              WHEN    "1"
-      *        •Ï•≥°º•…º± Ã
+      *        „É¨„Ç≥„Éº„ÉâË≠òÂà•
                MOVE    "I"               TO  WRK-DATA
                MOVE    1                 TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ≈‘∆ª…‹∏©
+      *        ÈÉΩÈÅìÂ∫úÁúå
                MOVE    COLDAT91-PREFNUM  TO  WRK-NUM
                MOVE    2                 TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        ∞ÂŒ≈µ°¥ÿºÔ Ã
+      *        ÂåªÁôÇÊ©üÈñ¢Á®ÆÂà•
                MOVE    COLDAT91-HOSPSBT  TO  WRK-NUM
                MOVE    1                 TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        µÏ¡ÌπÁ…¬±°
+      *        ÊóßÁ∑èÂêàÁóÖÈô¢
                MOVE    COLDAT91-HOSPSBT1 TO  WRK-NUM
                MOVE    1                 TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        …¬æ≤øÙ° µˆ≤ƒ°À
+      *        ÁóÖÂ∫äÊï∞ÔºàË®±ÂèØÔºâ
                MOVE    COLDAT91-BEDSU    TO  WRK-NUM
                MOVE    4                 TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        …¬æ≤øÙ° ∞Ï»Ã°À
+      *        ÁóÖÂ∫äÊï∞Ôºà‰∏ÄËà¨Ôºâ
                MOVE    COLDAT91-BEDSUIPN TO  WRK-NUM
                MOVE    4                 TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        ∆˛≥∞∂Ë ¨
+      *        ÂÖ•Â§ñÂå∫ÂàÜ
                MOVE    COLDAT91-NYUGAIKBN    TO  WRK-DATA
                MOVE    1                     TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        •«°º•ø«Ø∑Ó
+      *        „Éá„Éº„ÇøÂπ¥Êúà
                MOVE    COLDAT91-DATAYM   TO  WRK-DATA
                MOVE    6                 TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ∞ÂŒ≈µ°¥ÿ£…£ƒ
+      *        ÂåªÁôÇÊ©üÈñ¢Ôº©Ôº§
                MOVE    COLDAT91-HOSPID   TO  WRK-DATA
                MOVE    24                TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        •◊•Ì•∞•È•‡º± Ã»÷πÊ° √ÍΩ–°À
+      *        „Éó„É≠„Ç∞„É©„É†Ë≠òÂà•Áï™Âè∑ÔºàÊäΩÂá∫Ôºâ
                MOVE    COLDAT91-PRGSKBNO TO  WRK-DATA
                MOVE    8                 TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        •◊•Ì•∞•È•‡º± Ã»÷πÊ° £√£”£÷°À
+      *        „Éó„É≠„Ç∞„É©„É†Ë≠òÂà•Áï™Âè∑ÔºàÔº£Ôº≥Ôº∂Ôºâ
                MOVE    PRGSKBNO          TO  WRK-DATA
                MOVE    8                 TO  WRK-NAGASA
                MOVE    1                 TO  WRK-END
                PERFORM 5004-MOJI-HENSYU-SEC
              WHEN    "2"
-      *        •Ï•≥°º•…º± Ã
+      *        „É¨„Ç≥„Éº„ÉâË≠òÂà•
                MOVE    "K"             TO  WRK-DATA
                MOVE    1               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ø«Œ≈≤ •≥°º•…
+      *        Ë®∫ÁôÇÁßë„Ç≥„Éº„Éâ
                MOVE    COLDAT91-SRYKA  TO  WRK-DATA
                MOVE    2               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        •Ï•ª≈≈ø«Œ≈≤ •≥°º•…
+      *        „É¨„ÇªÈõªË®∫ÁôÇÁßë„Ç≥„Éº„Éâ
                MOVE    COLDAT91-RECEKA TO  WRK-DATA
                MOVE    2               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ø«Œ≈≤ Ãæ
+      *        Ë®∫ÁôÇÁßëÂêç
                MOVE    COLDAT91-SRYKANAME  TO  WRK-DATA
                MOVE    40                  TO  WRK-NAGASA
                MOVE    1                   TO  WRK-END
                PERFORM 5004-MOJI-HENSYU-SEC
              WHEN    "3"
-      *        •Ï•≥°º•…º± Ã
+      *        „É¨„Ç≥„Éº„ÉâË≠òÂà•
                MOVE    "T"             TO  WRK-DATA
                MOVE    1               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ª‹¿ﬂ¥Ω‡•≥°º•…
+      *        ÊñΩË®≠Âü∫Ê∫ñ„Ç≥„Éº„Éâ
                MOVE    COLDAT91-SSTKIJUNCD TO  WRK-DATA
                MOVE    3                   TO  WRK-NAGASA
                MOVE    1                   TO  WRK-END
                PERFORM 5004-MOJI-HENSYU-SEC
              WHEN    "4"
-      *        •Ï•≥°º•…º± Ã
+      *        „É¨„Ç≥„Éº„ÉâË≠òÂà•
                MOVE    "N"             TO  WRK-DATA
                MOVE    1               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *         ›∏±»÷πÊ
+      *        ‰øùÈô∫Áï™Âè∑
                MOVE    COLDAT91-HKNNUM TO  WRK-DATA
                MOVE    3               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ªŸ ß∂Ë ¨
+      *        ÊîØÊâïÂå∫ÂàÜ
                MOVE    COLDAT91-PAYKBN TO  WRK-DATA
                MOVE    2               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        À° Ã»÷πÊ
+      *        Ê≥ïÂà•Áï™Âè∑
                MOVE    COLDAT91-HBTNUM TO  WRK-DATA
                MOVE    2               TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ¿©≈ŸÃæ
+      *        Âà∂Â∫¶Âêç
                MOVE    COLDAT91-SEIDONAME  TO  WRK-DATA
                MOVE    100                 TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *         ›∏±∏¯»ÒºÔ Ã∂Ë ¨
+      *        ‰øùÈô∫ÂÖ¨Ë≤ªÁ®ÆÂà•Âå∫ÂàÜ
                MOVE    COLDAT91-HKNKOHSBTKBN TO  WRK-DATA
                MOVE    1                     TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ∏¯»ÒºÁ ›∂Ë ¨
+      *        ÂÖ¨Ë≤ª‰∏ª‰øùÂå∫ÂàÜ
                MOVE    COLDAT91-HKNKOHKBN  TO  WRK-DATA
                MOVE    1                   TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        æÚ∑Ô°›«ØŒ≥´ªœ
+      *        Êù°‰ª∂‚àíÂπ¥ÈΩ¢ÈñãÂßã
                MOVE    COLDAT91-JOKEN-STYEAR TO  WRK-NUM
                MOVE    3                     TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        æÚ∑Ô°›«ØŒΩ™Œª
+      *        Êù°‰ª∂‚àíÂπ¥ÈΩ¢ÁµÇ‰∫Ü
                MOVE    COLDAT91-JOKEN-EDYEAR TO  WRK-NUM
                MOVE    3                     TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        ≈¿øÙ√±≤¡
+      *        ÁÇπÊï∞Âçò‰æ°
                MOVE    COLDAT91-TENTNK TO  WRK-NUM
                MOVE    3               TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        •Ï•ª•◊•»¿¡µ·∂Ë ¨
+      *        „É¨„Çª„Éó„ÉàË´ãÊ±ÇÂå∫ÂàÜ
                MOVE    COLDAT91-RECESKYKBN TO  WRK-DATA
                MOVE    1                   TO  WRK-NAGASA
                MOVE    1                   TO  WRK-END
@@ -552,7 +552,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -560,7 +560,7 @@
            PERFORM 20011-FILE-HENSYU-SEC
            PERFORM 2002-FILE-HENSYU-SEC
       *
-      *    ø«Œ≈æ Û° £±∑ÔÃ‹¿Ë∆…§ﬂ°À
+      *    Ë®∫ÁôÇÊÉÖÂ†±ÔºàÔºë‰ª∂ÁõÆÂÖàË™≠„ÅøÔºâ
            INITIALIZE                          COLDAT02-REC
            MOVE    COLDAT01-KEY            TO  COLDAT02-KEY1
       *
@@ -572,7 +572,7 @@
                        PERFORM 900-COLDAT02-READ-SEC
            END-START
       *
-      *    …¬Ãææ Û
+      *    ÁóÖÂêçÊÉÖÂ†±
            INITIALIZE                          COLDAT03-REC
            MOVE    COLDAT01-HOSPID         TO  COLDAT03-HOSPID
            MOVE    COLDAT01-SRYYM          TO  COLDAT03-SRYYM
@@ -595,7 +595,7 @@
                    PERFORM 900-COLDAT03-READ-SEC
            END-PERFORM
       *
-      *    ø«Œ≈æ Û
+      *    Ë®∫ÁôÇÊÉÖÂ†±
            PERFORM     UNTIL   FLG-COLDAT02        =   1
                        OR      COLDAT01-KEY    NOT =   COLDAT02-KEY1
                    PERFORM 2004-FILE-HENSYU-SEC
@@ -608,51 +608,51 @@
            EXIT.
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î° ¥µº‘¥À‹°ÀΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´ÔºàÊÇ£ËÄÖÂü∫Êú¨ÔºâÂá¶ÁêÜ
       *****************************************************************
        2001-FILE-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
-      *    •Ï•≥°º•…º± Ã
+      *    „É¨„Ç≥„Éº„ÉâË≠òÂà•
            MOVE    "P"                 TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ø≥∫∫ªŸ ßµ°¥ÿ
+      *    ÂØ©ÊüªÊîØÊâïÊ©üÈñ¢
            MOVE    COLDAT01-TEISYUTUSAKI
                                        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    •Ï•ª•◊•»ºÔ Ã
+      *    „É¨„Çª„Éó„ÉàÁ®ÆÂà•
            MOVE    COLDAT01-RECESYUBETU
                                        TO  WRK-DATA
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ø«Œ≈«Ø∑Ó
+      *    Ë®∫ÁôÇÂπ¥Êúà
            MOVE    WRK-PARA-SRYYM      TO  WRK-DATA
            MOVE    6                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ¿≠ Ã
+      *    ÊÄßÂà•
            MOVE    COLDAT01-SEX        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ¿∏«Ø∑Ó∆¸
+      *    ÁîüÂπ¥ÊúàÊó•
            MOVE    COLDAT01-BIRTHDAY   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ∆˛±°«Ø∑Ó∆¸
+      *    ÂÖ•Èô¢Âπ¥ÊúàÊó•
            MOVE    COLDAT01-NYUINYMD   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ¬‡±°«Ø∑Ó∆¸
+      *    ÈÄÄÈô¢Âπ¥ÊúàÊó•
            MOVE    COLDAT01-TAIINYMD   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ¥µº‘£…£ƒ
+      *    ÊÇ£ËÄÖÔº©Ôº§
            MOVE    SPACE               TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    Õπ ÿ»÷πÊ
+      *    ÈÉµ‰æøÁï™Âè∑
            MOVE    COLDAT01-HOME-POST      TO  WRK-DATA
            MOVE    7                       TO  WRK-NAGASA
            MOVE    1                       TO  WRK-END
@@ -664,25 +664,25 @@
            EXIT.
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î°  ›∏±¡»πÁ§ª°ÀΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´Ôºà‰øùÈô∫ÁµÑÂêà„ÅõÔºâÂá¶ÁêÜ
       *****************************************************************
        20011-FILE-HENSYU-SEC       SECTION.
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
-      *    •Ï•≥°º•…º± Ã
+      *    „É¨„Ç≥„Éº„ÉâË≠òÂà•
            MOVE    "G"                 TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *     ›∏±»÷πÊ
+      *    ‰øùÈô∫Áï™Âè∑
            MOVE    COLDAT01-HKNNUM     TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *     ›∏±»÷πÊ° œ∑øÕ ›∑Ú°À
+      *    ‰øùÈô∫Áï™Âè∑ÔºàËÄÅ‰∫∫‰øùÂÅ•Ôºâ
            MOVE    COLDAT01-RJNHKNNUM  TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    º¬∆¸øÙ°  ›∏±°À
+      *    ÂÆüÊó•Êï∞Ôºà‰øùÈô∫Ôºâ
            IF        COLDAT01-HKNJNISSU    =   0
              MOVE    SPACE                 TO  WRK-DATA
              MOVE    1                     TO  WRK-NAGASA
@@ -692,7 +692,7 @@
              MOVE    2                     TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *    πÁ∑◊≈¿øÙ°  ›∏±°À
+      *    ÂêàË®àÁÇπÊï∞Ôºà‰øùÈô∫Ôºâ
            IF        COLDAT01-HKNTOTALTENSU  =   0
              MOVE    SPACE                   TO  WRK-DATA
              MOVE    1                       TO  WRK-NAGASA
@@ -702,7 +702,7 @@
              MOVE    8                       TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *    ø©ªˆŒ≈Õ‹≤ÛøÙ°  ›∏±°À
+      *    È£ü‰∫ãÁôÇÈ§äÂõûÊï∞Ôºà‰øùÈô∫Ôºâ
            IF        COLDAT01-HKNSKJNISSU  =   0
              MOVE    SPACE                 TO  WRK-DATA
              MOVE    1                     TO  WRK-NAGASA
@@ -712,7 +712,7 @@
              MOVE    2                     TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *    ø©ªˆŒ≈Õ‹»Ò°  ›∏±°À
+      *    È£ü‰∫ãÁôÇÈ§äË≤ªÔºà‰øùÈô∫Ôºâ
            IF        COLDAT01-HKNSKJRYOYOHI  =   0
              MOVE    SPACE                   TO  WRK-DATA
              MOVE    1                       TO  WRK-NAGASA
@@ -722,7 +722,7 @@
              MOVE    8                       TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *    ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€°  ›∏±°À
+      *    È£ü‰∫ãÁôÇÈ§äË≤ªÊ®ôÊ∫ñË≤†ÊãÖÈ°çÔºà‰øùÈô∫Ôºâ
            IF        COLDAT01-HKNSKJFTN    =   0
              MOVE    SPACE                 TO  WRK-DATA
              MOVE    1                     TO  WRK-NAGASA
@@ -732,14 +732,14 @@
              MOVE    8                     TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *∏¯»Òæ Û
+      *ÂÖ¨Ë≤ªÊÉÖÂ†±
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       4
-      *      ∏¯»Ò»÷πÊ
+      *      ÂÖ¨Ë≤ªÁï™Âè∑
              MOVE    COLDAT01-TKOHHKNNUM (IDX1)    TO  WRK-DATA
              MOVE    3                             TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *      º¬∆¸øÙ
+      *      ÂÆüÊó•Êï∞
              IF        COLDAT01-TKOHJNISSU (IDX1)  =   0
                MOVE    SPACE                       TO  WRK-DATA
                MOVE    1                           TO  WRK-NAGASA
@@ -749,7 +749,7 @@
                MOVE    2                           TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
              END-IF
-      *      πÁ∑◊≈¿øÙ
+      *      ÂêàË®àÁÇπÊï∞
              IF        COLDAT01-TKOHTOTALTENSU (IDX1)  =   0
                MOVE    SPACE                       TO  WRK-DATA
                MOVE    1                           TO  WRK-NAGASA
@@ -760,7 +760,7 @@
                MOVE    8                           TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
              END-IF
-      *      ø©ªˆŒ≈Õ‹≤ÛøÙ
+      *      È£ü‰∫ãÁôÇÈ§äÂõûÊï∞
              IF        COLDAT01-TKOHSKJNISSU (IDX1)  =   0
                MOVE    SPACE                       TO  WRK-DATA
                MOVE    1                           TO  WRK-NAGASA
@@ -771,7 +771,7 @@
                MOVE    2                           TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
              END-IF
-      *      ø©ªˆŒ≈Õ‹»Ò
+      *      È£ü‰∫ãÁôÇÈ§äË≤ª
              IF        COLDAT01-TKOHSKJRYOYOHI (IDX1)  =   0
                MOVE    SPACE                       TO  WRK-DATA
                MOVE    1                           TO  WRK-NAGASA
@@ -782,7 +782,7 @@
                MOVE    8                           TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
              END-IF
-      *      ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€
+      *      È£ü‰∫ãÁôÇÈ§äË≤ªÊ®ôÊ∫ñË≤†ÊãÖÈ°ç
              IF        COLDAT01-TKOHSKJFTN (IDX1)  =   0
                MOVE    SPACE                       TO  WRK-DATA
                MOVE    1                           TO  WRK-NAGASA
@@ -806,7 +806,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î°  ›∏±¡»πÁ§ª°ÀΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´Ôºà‰øùÈô∫ÁµÑÂêà„ÅõÔºâÂá¶ÁêÜ
       *****************************************************************
        2002-FILE-HENSYU-SEC         SECTION.
       *
@@ -816,28 +816,28 @@
       *
              MOVE    SPACE               TO  WRK-REC
              MOVE    ZERO                TO  WRK-REC-LENGTH
-      *      •Ï•≥°º•…º± Ã
+      *      „É¨„Ç≥„Éº„ÉâË≠òÂà•
              MOVE    "H"                 TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *       ›∏±¡»πÁ§ª
+      *      ‰øùÈô∫ÁµÑÂêà„Åõ
              MOVE    COLDAT01-HKNCOMBI (IDX)   TO  WRK-NUM
              MOVE    4                         TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
-      *       ›∏±»÷πÊ
+      *      ‰øùÈô∫Áï™Âè∑
              MOVE    COLDAT01-HKNNUM     TO  WRK-DATA
              MOVE    3                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *      À‹øÕ≤»¬≤∂Ë ¨
+      *      Êú¨‰∫∫ÂÆ∂ÊóèÂå∫ÂàÜ
              MOVE    COLDAT01-HONKZKKBN  TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *       ‰Ωı∂Ë ¨
+      *      Ë£úÂä©Âå∫ÂàÜ
              MOVE    COLDAT01-HOJOKBN    TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *∏¯»Òæ Û
+      *ÂÖ¨Ë≤ªÊÉÖÂ†±
       *
              MOVE    ZERO                TO  WRK-KOH-MAX
       *
@@ -878,9 +878,9 @@
                PERFORM 20021-KOH-HENSYU-SEC
              END-PERFORM
       *
-      *œ´∫“æ Û
+      *Âä¥ÁÅΩÊÉÖÂ†±
       *
-      *       ›∏±∂Ë ¨
+      *      ‰øùÈô∫Âå∫ÂàÜ
              MOVE    COLDAT01-HKNKBN         TO  WRK-DATA
              MOVE    1                       TO  WRK-NAGASA
              MOVE    1                       TO  WRK-END
@@ -893,11 +893,11 @@
            EXIT. 
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î° ¥À‹•«°º•ø°À∏¯»Òæ Û ‘Ω∏ΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´ÔºàÂü∫Êú¨„Éá„Éº„ÇøÔºâÂÖ¨Ë≤ªÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        20021-KOH-HENSYU-SEC        SECTION.
       *
-      *    ∏¯»Ò ›∏±»÷πÊ
+      *    ÂÖ¨Ë≤ª‰øùÈô∫Áï™Âè∑
            MOVE    WRK-KOHHKNNUM       TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -908,11 +908,11 @@
            EXIT.
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î° …¬Ãæ•«°º•ø°ÀΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´ÔºàÁóÖÂêç„Éá„Éº„ÇøÔºâÂá¶ÁêÜ
       *****************************************************************
        2003-FILE-HENSYU-SEC         SECTION.
       *
-      *    œ´∫“°¶º´«Â¿’§Œ§»§≠§œ ›∏±¡»πÁ§ª§«•¡•ß•√•Ø
+      *    Âä¥ÁÅΩ„ÉªËá™Ë≥†Ë≤¨„ÅÆ„Å®„Åç„ÅØ‰øùÈô∫ÁµÑÂêà„Åõ„Åß„ÉÅ„Çß„ÉÉ„ÇØ
            EVALUATE    COLDAT01-HKNNUM
                WHEN    WRK-CONS-ROUSAI-HKNNUM
                WHEN    WRK-CONS-JIBAI-HKNNUM
@@ -935,44 +935,44 @@
                    END-IF
            END-EVALUATE
       *
-      *…¬Ãææ Û
+      *ÁóÖÂêçÊÉÖÂ†±
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
-      *    •Ï•≥°º•…º± Ã
+      *    „É¨„Ç≥„Éº„ÉâË≠òÂà•
            MOVE    "B"                 TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ø«Œ≈≤ 
+      *    Ë®∫ÁôÇÁßë
            MOVE    COLDAT03-SRYKA      TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ø«Œ≈≥´ªœ∆¸
+      *    Ë®∫ÁôÇÈñãÂßãÊó•
            MOVE    COLDAT03-SRYYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ≈æµ¢∂Ë ¨
+      *    Ëª¢Â∏∞Âå∫ÂàÜ
            MOVE    COLDAT03-TENKIKBN   TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ≈æµ¢∆¸…’
+      *    Ëª¢Â∏∞Êó•‰ªò
            MOVE    COLDAT03-TENKIYMD   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ºÁ…¬Ãæ•’•È•∞
+      *    ‰∏ªÁóÖÂêç„Éï„É©„Ç∞
            MOVE    COLDAT03-SYUBYOFLG  TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    µø§§•’•È•∞
+      *    Áñë„ÅÑ„Éï„É©„Ç∞
            MOVE    COLDAT03-UTAGAIFLG  TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *     ›∏±…¬Ãæ•’•È•∞
+      *    ‰øùÈô∫ÁóÖÂêç„Éï„É©„Ç∞
            MOVE    COLDAT03-HKNBYOMEIFLG
                                        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *     ›∏±¡»πÁ§ª
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ
            IF      COLDAT03-HKNCOMBI   =   0
              MOVE    SPACE             TO  WRK-DATA
              MOVE    1                 TO  WRK-NAGASA
@@ -982,15 +982,15 @@
              MOVE    4                 TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
            END-IF
-      *    …¬Ãæ
+      *    ÁóÖÂêç
            MOVE    COLDAT03-BYOMEI     TO  WRK-DATA
            MOVE    200                 TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    …¬Ãæ•≥°º•…øÙ
+      *    ÁóÖÂêç„Ç≥„Éº„ÉâÊï∞
            MOVE    COLDAT03-BYOMEICDSU TO  WRK-NUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    …¬Ãæ•≥°º•…
+      *    ÁóÖÂêç„Ç≥„Éº„Éâ
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       21
                MOVE    COLDAT03-BYOMEICD  (IDX1)   TO  WRK-DATA
@@ -1007,24 +1007,24 @@
            EXIT.
       *
       *****************************************************************
-      *    £√£”£÷•’•°•§•Î° ø«Œ≈•«°º•ø°ÀΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éï„Ç°„Ç§„É´ÔºàË®∫ÁôÇ„Éá„Éº„ÇøÔºâÂá¶ÁêÜ
       *****************************************************************
        2004-FILE-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
       *
-      *    Õ—À°•≥°º•…§œµ≠œø§∑§ §§
+      *    Áî®Ê≥ï„Ç≥„Éº„Éâ„ÅØË®òÈå≤„Åó„Å™„ÅÑ
            IF      COLDAT02-SRYCD(1:3) =   "001"
                    GO    TO    2004-FILE-HENSYU-EXT
            END-IF
       *
-      *    ¿Ë∆¨§¨•≥•·•Û•»•Ï•≥°º•…§ŒæÏπÁ§œ≈¿øÙ≤ÛøÙ§Œµ≠œø§¨∆√ºÏ
+      *    ÂÖàÈ†≠„Åå„Ç≥„É°„É≥„Éà„É¨„Ç≥„Éº„Éâ„ÅÆÂ†¥Âêà„ÅØÁÇπÊï∞ÂõûÊï∞„ÅÆË®òÈå≤„ÅåÁâπÊÆä
            IF      COLDAT02-SEQNO      =   1
                MOVE  ZERO              TO  FLG-KOIHEAD
            END-IF
       *
-      *    •Ï•≥°º•…º± Ã
+      *    „É¨„Ç≥„Éº„ÉâË≠òÂà•
            EVALUATE  COLDAT02-SRYCD (1:1)
                WHEN  "6"
                    MOVE    "Y"         TO  WRK-DATA
@@ -1050,60 +1050,60 @@
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ø«Œ≈æ Û
+      *    Ë®∫ÁôÇÊÉÖÂ†±
       *
            IF      COLDAT02-SEQNO      =   1
-      *      ø«Œ≈≤ 
+      *      Ë®∫ÁôÇÁßë
              MOVE    COLDAT02-SRYKA      TO  WRK-DATA
              MOVE    2                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *       ›∏±¡»πÁ§ª
+      *      ‰øùÈô∫ÁµÑÂêà„Åõ
              MOVE    COLDAT02-HKNCOMBI   TO  WRK-NUM
              MOVE    4                   TO  WRK-NAGASA
              PERFORM 5005-NUM-HENSYU-SEC
-      *      ø«Œ≈π‘∞Ÿ∂Ë ¨
+      *      Ë®∫ÁôÇË°åÁÇ∫Âå∫ÂàÜ
              MOVE    COLDAT02-SRYKBN     TO  WRK-DATA
              MOVE    2                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *      ø«Œ≈ºÔ Ã∂Ë ¨
+      *      Ë®∫ÁôÇÁ®ÆÂà•Âå∫ÂàÜ
              MOVE    COLDAT02-SRYSYUKBN  TO  WRK-DATA
              MOVE    3                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
            ELSE
-      *      ø«Œ≈≤ 
+      *      Ë®∫ÁôÇÁßë
              MOVE    SPACE               TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *       ›∏±¡»πÁ§ª
+      *      ‰øùÈô∫ÁµÑÂêà„Åõ
              MOVE    SPACE               TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *      ø«Œ≈π‘∞Ÿ∂Ë ¨
+      *      Ë®∫ÁôÇË°åÁÇ∫Âå∫ÂàÜ
              MOVE    SPACE               TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
-      *      ø«Œ≈ºÔ Ã∂Ë ¨
+      *      Ë®∫ÁôÇÁ®ÆÂà•Âå∫ÂàÜ
              MOVE    SPACE               TO  WRK-DATA
              MOVE    1                   TO  WRK-NAGASA
              PERFORM 5004-MOJI-HENSYU-SEC
            END-IF
-      *    ø«Œ≈π‘∞Ÿ•≥°º•…
+      *    Ë®∫ÁôÇË°åÁÇ∫„Ç≥„Éº„Éâ
            MOVE    COLDAT02-SRYCD      TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
            IF      WRK-REC(1:1)    NOT =   "C"
-      *      øÙŒÃ
+      *      Êï∞Èáè
              MOVE    COLDAT02-SRYSURYO   TO  WRK-NUM
              MOVE    5                   TO  WRK-NAGASA
              MOVE    5                   TO  WRK-SYOSUU
              PERFORM 5005-NUM-HENSYU-SEC
              IF      FLG-KOIHEAD       =   ZERO
-      *        ∫ﬁ≈¿øÙ
+      *        Ââ§ÁÇπÊï∞
                MOVE  COLDAT02-ZAITEN     TO  WRK-NUM
                MOVE  8                   TO  WRK-NAGASA
                PERFORM 5005-NUM-HENSYU-SEC
-      *        ∫ﬁ≤ÛøÙ
+      *        Ââ§ÂõûÊï∞
                MOVE  COLDAT02-ZAIKAISU   TO  WRK-NUM
                MOVE  7                   TO  WRK-NAGASA
                IF    WRK-REC(1:1)        =   "Y"
@@ -1115,11 +1115,11 @@
                    MOVE    1                 TO  FLG-KOIHEAD
                END-IF
              ELSE
-      *        ∫ﬁ≈¿øÙ
+      *        Ââ§ÁÇπÊï∞
                MOVE  SPACE               TO  WRK-DATA
                MOVE  1                   TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ∫ﬁ≤ÛøÙ
+      *        Ââ§ÂõûÊï∞
                MOVE  SPACE               TO  WRK-DATA
                MOVE  1                   TO  WRK-NAGASA
                IF    WRK-REC(1:1)        =   "Y"
@@ -1131,7 +1131,7 @@
       *
            IF      WRK-REC(1:1)        =   "S"  OR  "O"
              IF      FLG-KOIHEAD       =   ZERO
-      *        ºÍµª≈¿øÙ£±
+      *        ÊâãÊäÄÁÇπÊï∞Ôºë
                IF    COLDAT02-SYUTEN1    =   0
                  MOVE  SPACE             TO  WRK-DATA
                  MOVE  1                 TO  WRK-NAGASA
@@ -1141,7 +1141,7 @@
                  MOVE  7                 TO  WRK-NAGASA
                  PERFORM 5005-NUM-HENSYU-SEC
                END-IF
-      *        ÃÙ∫ﬁ≈¿øÙ
+      *        Ëñ¨Ââ§ÁÇπÊï∞
                IF    COLDAT02-YKZTEN     =   0
                  MOVE  SPACE             TO  WRK-DATA
                  MOVE  1                 TO  WRK-NAGASA
@@ -1151,7 +1151,7 @@
                  MOVE  7                 TO  WRK-NAGASA
                  PERFORM 5005-NUM-HENSYU-SEC
                END-IF
-      *        ¥Ô∫‡≈¿øÙ
+      *        Âô®ÊùêÁÇπÊï∞
                IF    COLDAT02-KIZAITEN   =   0
                  MOVE  SPACE             TO  WRK-DATA
                  MOVE  1                 TO  WRK-NAGASA
@@ -1167,15 +1167,15 @@
                END-IF
                MOVE  1                   TO  FLG-KOIHEAD
              ELSE
-      *        ºÍµª≈¿øÙ£±
+      *        ÊâãÊäÄÁÇπÊï∞Ôºë
                MOVE  SPACE               TO  WRK-DATA
                MOVE  1                   TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ÃÙ∫ﬁ≈¿øÙ
+      *        Ëñ¨Ââ§ÁÇπÊï∞
                MOVE  SPACE               TO  WRK-DATA
                MOVE  1                   TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC
-      *        ¥Ô∫‡≈¿øÙ
+      *        Âô®ÊùêÁÇπÊï∞
                MOVE  SPACE               TO  WRK-DATA
                MOVE  1                   TO  WRK-NAGASA
                IF    COLDAT02-SRYCD (1:3)  >= "099"
@@ -1187,11 +1187,11 @@
       *
            IF      WRK-REC(1:1)        =   "Z"
       *
-      *    √±∞Ã•≥°º•…
+      *    Âçò‰Ωç„Ç≥„Éº„Éâ
            MOVE    COLDAT02-TANICD     TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    √±≤¡
+      *    Âçò‰æ°
            PERFORM 20041-SANSO-CHECK-SEC
            IF     (COLDAT02-TENSIKIBETU =  2)  OR
                   (FLG-SANSO            =  1)
@@ -1212,7 +1212,7 @@
              OR    (WRK-REC(1:1)       =   "O"))
              AND   (COLDAT02-SRYCD (1:3) < "099"))
       *
-      *      ÃææŒ
+      *      ÂêçÁß∞
              MOVE    COLDAT02-NAME       TO  WRK-DATA
              MOVE    40                  TO  WRK-NAGASA
              MOVE    1                   TO  WRK-END
@@ -1230,7 +1230,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ª¿¡«•¡•ß•√•Ø
+      *    ÈÖ∏Á¥†„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        20041-SANSO-CHECK-SEC       SECTION.
       *
@@ -1251,7 +1251,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •´•Ï•Û•¿°º•Ï•≥°º•…∫Ó¿Æ
+      *    „Ç´„É¨„É≥„ÉÄ„Éº„É¨„Ç≥„Éº„Éâ‰ΩúÊàê
       *****************************************************************
        20042-CALENDAR-MAKE-SEC     SECTION.
       *
@@ -1281,11 +1281,11 @@
            EXIT.
       *
       *****************************************************************
-      *    •’•°•§•ÎΩ–ŒœΩËÕ˝
+      *    „Éï„Ç°„Ç§„É´Âá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        5001-FILE-WRITE-SEC        SECTION.
       *
-      *    ≤˛π‘•≥°º•… ‘Ω∏
+      *    ÊîπË°å„Ç≥„Éº„ÉâÁ∑®ÈõÜ
            STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
                    WRK-KAIGYO                DELIMITED  BY  SIZE
                    INTO        WRK-REC
@@ -1299,7 +1299,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ±¶§∫§· ‘Ω∏ΩËÕ˝
+      *    Âè≥„Åö„ÇÅÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *
@@ -1325,7 +1325,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ω–Œœ•Ï•≥°º•…ΩËÕ˝°  ∏ª˙°À
+      *    Âá∫Âäõ„É¨„Ç≥„Éº„ÉâÂá¶ÁêÜÔºàÊñáÂ≠óÔºâ
       *****************************************************************
        5004-MOJI-HENSYU-SEC          SECTION.
       *
@@ -1366,14 +1366,14 @@
            EXIT.
       *
       *****************************************************************
-      *    Ω–Œœ•Ï•≥°º•…ΩËÕ˝° øÙª˙°ÀZZZZZZZZZ9.99999§Œ ‘Ω∏
+      *    Âá∫Âäõ„É¨„Ç≥„Éº„ÉâÂá¶ÁêÜÔºàÊï∞Â≠óÔºâZZZZZZZZZ9.99999„ÅÆÁ∑®ÈõÜ
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
            IF      WRK-NAGASA          =   ZERO
                CONTINUE
            ELSE
-      *        ≥´ªœ∞Ã√÷
+      *        ÈñãÂßã‰ΩçÁΩÆ
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
       *
                PERFORM VARYING IDW FROM    WRK-ST    BY  1
@@ -1421,7 +1421,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •®•È°ºΩ–ŒœΩËÕ˝
+      *    „Ç®„É©„ÉºÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -1435,7 +1435,7 @@
                WRITE   COLDATERR-REC
                CLOSE   COLDATERR-FILE
       *
-      *        •∏•Á•÷¥…Õ˝≥´ªœΩËÕ˝
+      *        „Ç∏„Éß„ÉñÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1456,7 +1456,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ω™ŒªΩËÕ˝
+      *    ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -1469,12 +1469,12 @@
            END-IF
       *
       **   IF      CNT-COLDAT01           =   ZERO  
-      **       MOVE    "ΩËÕ˝¬–æ›§Œ•«°º•ø§¨§¢§Í§ﬁ§ª§Û§«§∑§ø"
+      **       MOVE    "Âá¶ÁêÜÂØæË±°„ÅÆ„Éá„Éº„Çø„Åå„ÅÇ„Çä„Åæ„Åõ„Çì„Åß„Åó„Åü"
       **                                   TO  WRK-COLDATERR
       **       PERFORM 500-ERR-HENSYU-SEC
       **   END-IF
       *
-      *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1497,7 +1497,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º˝Ω∏•«°º•ø° …¬±°¥À‹æ Û°À∆…π˛
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàÁóÖÈô¢Âü∫Êú¨ÊÉÖÂ†±ÔºâË™≠Ëæº
       *****************************************************************
        900-COLDAT91-READ-SEC             SECTION.
       *
@@ -1512,7 +1512,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º˝Ω∏•«°º•ø° ¥µº‘¥À‹æ Û°À∆…π˛
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàÊÇ£ËÄÖÂü∫Êú¨ÊÉÖÂ†±ÔºâË™≠Ëæº
       *****************************************************************
        900-COLDAT01-READ-SEC             SECTION.
       *
@@ -1527,7 +1527,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º˝Ω∏•«°º•ø° ø«Œ≈æ Û°À∆…π˛
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàË®∫ÁôÇÊÉÖÂ†±ÔºâË™≠Ëæº
       *****************************************************************
        900-COLDAT02-READ-SEC             SECTION.
       *
@@ -1542,7 +1542,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º˝Ω∏•«°º•ø° …¬Ãææ Û°À∆…π˛
+      *    ÂèéÈõÜ„Éá„Éº„ÇøÔºàÁóÖÂêçÊÉÖÂ†±ÔºâË™≠Ëæº
       *****************************************************************
        900-COLDAT03-READ-SEC             SECTION.
       *
@@ -1557,7 +1557,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬°°•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1575,7 +1575,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1593,7 +1593,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•¢•Ø•ª•πΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„Ç¢„ÇØ„Çª„ÇπÂá¶ÁêÜ
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

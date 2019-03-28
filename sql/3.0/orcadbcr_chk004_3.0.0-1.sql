@@ -14,7 +14,7 @@ CREATE TABLE "tbl_chk004" (
 	Constraint "tbl_chk004_primary_key" Primary Key ("kanricd", "kbncd", "styukymd", "edyukymd")
 );
 
-COMMENT ON TABLE "tbl_chk004" IS '•¡•ß•√•Ø•ﬁ•π•ø£¥';
+COMMENT ON TABLE "tbl_chk004" IS '„ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„ÇøÔºî';
 
 COPY "tbl_chk004" FROM stdin;
 1102	000001  	20040401	99999999	        00010311			20060609	20060609	183108

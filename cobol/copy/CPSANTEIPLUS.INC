@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    »»ÄêÍúÎòÉÕ²Ã¾ðÊó          COPY (CPSANTEIPLUS.INC)       *
+      *    ç®—å®šå±¥æ­´ä»˜åŠ æƒ…å ±          COPY (CPSANTEIPLUS.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SANTEIPLUS-REC.
            03  SANTEIPLUS-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  SANTEIPLUS-HOSPNUM          PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  SANTEIPLUS-PTID             PIC  9(10).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  SANTEIPLUS-SRYYM            PIC  X(06).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SANTEIPLUS-SRYCD            PIC  X(09).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  SANTEIPLUS-NYUGAIKBN        PIC  X(01).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  SANTEIPLUS-SRYKA            PIC  X(02).
-      *ÊÝ¸±ÁÈ¹çÈÖ¹æ
+      *ä¿é™ºçµ„åˆç•ªå·
                05  SANTEIPLUS-HKNCOMBINUM      PIC  9(04).
-      *¿ÇÎÅÆü
+      *è¨ºç™‚æ—¥
                05  SANTEIPLUS-DAYKEY           PIC  9(02).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  SANTEIPLUS-RENNUM           PIC  9(02).
-      *¥ê¥Ï¥Ó¥ê¥³¥á¥ó¥È
+      *ãƒªãƒãƒ“ãƒªã‚³ãƒ¡ãƒ³ãƒˆ
            03  SANTEIPLUS-COMMENT              PIC  X(80).
-      *½ªÎ»ÆüÉÕ
+      *çµ‚äº†æ—¥ä»˜
            03  SANTEIPLUS-ENDYMD               PIC  X(08).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SANTEIPLUS-TERMID           PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SANTEIPLUS-OPID             PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SANTEIPLUS-CREYMD           PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SANTEIPLUS-UPYMD            PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SANTEIPLUS-UPHMS            PIC  X(06).
       *

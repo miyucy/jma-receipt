@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,49 +16,49 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Ը������    �� COPY  (CPPTKOHINF.INC)  *
+      *    患者公費情報　    　 COPY  (CPPTKOHINF.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  02/09/09  ��ʧ��ʬ�ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  02/09/09  支払区分追加
       ************************************************************
       *01  PTKOHINF-REC.
-      *����
+      *キー
            03  PTKOH-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTKOH-HOSPNUM            PIC 9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTKOH-PTID              PIC  9(10).
-      *����ɣ�
+      *公費ＩＤ
                05  PTKOH-KOHID             PIC  9(10).
-      *�ݸ��ֹ�ʸ����
+      *保険番号（公費）
            03  PTKOH-KOHNUM                PIC  X(03).
-      *��ʧ��ʬ
+      *支払区分
            03  PTKOH-PAYKBN                PIC  X(02).
-      *��ô���ֹ�
+      *負担者番号
            03  PTKOH-FTNJA-G.
-      *��ô���ֹ�
+      *負担者番号
                05  PTKOH-FTNJANUM          PIC  X(08).
-      *������ֹ�
+      *受給者番号
            03  PTKOH-JKYSNUM               PIC  X(20).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
            03  PTKOH-TEKSTYMD              PIC  X(08).
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
            03  PTKOH-TEKEDYMD              PIC  X(08).
-      *��ǧǯ����
+      *確認年月日
            03  PTKOH-KAKUNINYMD            PIC  X(08).
-      *�����ʬ
+      *削除区分
            03  PTKOH-SAKJOKBN              PIC  X(01).
-      *�����ڤ��ʬ
+      *期限切れ区分
            03  PTKOH-TEKEDCHKKBN           PIC  X(01).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTKOH-TERMID                PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTKOH-OPID                  PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTKOH-CREYMD                PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTKOH-UPYMD                 PIC  X(08).
-      *��������
+      *更新時間
            03  PTKOH-UPHMS                 PIC  X(06).

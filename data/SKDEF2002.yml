@@ -1,41 +1,41 @@
 kanri_cd    : "2002"
-name        : "¥ì¥»¥×¥ÈºîÀ®»Ø¼¨¡Ê¸ÄÊÌºîÀ®¡Ë¥³¡¼¥É"
+name        : "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆæŒ‡ç¤ºï¼ˆå€‹åˆ¥ä½œæˆï¼‰ã‚³ãƒ¼ãƒ‰"
 class_cd    : "*"
 item_max    : 6
 item_list   :
 - item_no   : 1
   item      : "PTNUM"
-  item_jp   : "´µ¼ÔÈÖ¹æ"
+  item_jp   : "æ‚£è€…ç•ªå·"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "PTID"
-  item_jp   : "´µ¼Ô£É£Ä"
+  item_jp   : "æ‚£è€…ï¼©ï¼¤"
   type      : "X"
   start     : 21
   length    : 10
 - item_no   : 3
   item      : "SRYYM"
-  item_jp   : "¿ÇÎÅÇ¯·î"
+  item_jp   : "è¨ºç™‚å¹´æœˆ"
   type      : "X"
   start     : 31
   length    : 6
 - item_no   : 4
   item      : "NYUGAIKBN"
-  item_jp   : "Æş³°¶èÊ¬"
+  item_jp   : "å…¥å¤–åŒºåˆ†"
   type      : "X"
   start     : 27
   length    : 1
 - item_no   : 5
   item      : "RECEKBN"
-  item_jp   : "¥ì¥»¥×¥È¼ïÎà¶èÊ¬"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®é¡åŒºåˆ†"
   type      : "X"
   start     : 28
   length    : 1
 - item_no   : 6
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 29
   length    : 462

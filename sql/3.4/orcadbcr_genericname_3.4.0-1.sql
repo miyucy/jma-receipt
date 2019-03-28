@@ -1,11 +1,11 @@
 --                                    --
--- °ìÈÌÌ¾¥Ş¥¹¥¿¥Æ¡¼¥Ö¥ë¤ÎºîÀ®         --
+-- ä¸€èˆ¬åãƒã‚¹ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«ã®ä½œæˆ         --
 --                                    --
 --                                    --
 -- Create Date : 2006/12/20           --
 --                                    --
 
--- TBL_GENERICNAME ºîÀ®               --
+-- TBL_GENERICNAME ä½œæˆ               --
 
 create	table	tbl_genericname	(
 	YAKKAKJNCD    	char(9) not null,

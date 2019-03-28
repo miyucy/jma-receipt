@@ -1,17 +1,17 @@
 --                                    --
--- ÊÝ¸±¼Ô¾ðÊó¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹           --
+-- ä¿é™ºè€…æƒ…å ±ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´           --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   µëÉÕ³ä¹ç                         --
---    ÁÈ¹ç°÷ ³°Íè HON-GAIKYURATE      --
---    ÁÈ¹ç°÷ Æþ±¡ HON-NYUKYURATE      --
---    ²ÈÂ²   ³°Íè KZK-GAIKYURATE      --
---    ²ÈÂ²   Æþ±¡ KZK-NYUKYURATE      --
+-- é …ç›®ã®è¿½åŠ                          --
+--   çµ¦ä»˜å‰²åˆ                         --
+--    çµ„åˆå“¡ å¤–æ¥ HON-GAIKYURATE      --
+--    çµ„åˆå“¡ å…¥é™¢ HON-NYUKYURATE      --
+--    å®¶æ—   å¤–æ¥ KZK-GAIKYURATE      --
+--    å®¶æ—   å…¥é™¢ KZK-NYUKYURATE      --
 --                                    --
 -- Create Date : 2004/07/07           --
 --                                    --
 
--- TBL_HKNJAINFWK ºîÀ®                --
+-- TBL_HKNJAINFWK ä½œæˆ                --
 
 create table TBL_HKNJAINFWK (
 HOSPID				char(24)	not null,
@@ -35,16 +35,16 @@ UPYMD				char(8),
 UPHMS				char(6),
 constraint TBL_HKNJAINFWK_primary_key primary key (HOSPID,HKNJANUM));
 
--- TBL_HKNJAINF ¢ª TBL_HKNJAINFWK   --
+-- TBL_HKNJAINF â†’ TBL_HKNJAINFWK   --
 
 insert into TBL_HKNJAINFWK
 select * from TBL_HKNJAINF;
 
--- TBL_HKNJAINF ºï½ü               --
+-- TBL_HKNJAINF å‰Šé™¤               --
 
 drop table TBL_HKNJAINF;
 
--- TBL_HKNJAINF ºîÀ®               --
+-- TBL_HKNJAINF ä½œæˆ               --
 
 create table TBL_HKNJAINF (
 HOSPID				char(24)	not null,
@@ -72,7 +72,7 @@ UPYMD				char(8),
 UPHMS				char(6),
 constraint TBL_HKNJAINF_primary_key primary key (HOSPID,HKNJANUM));
 
--- TBL_HKNJAINFWK ¢ª TBL_HKNJAINF   --
+-- TBL_HKNJAINFWK â†’ TBL_HKNJAINF   --
 
 insert into TBL_HKNJAINF
 (HOSPID,
@@ -101,6 +101,6 @@ UPHMS
 )
 select * from TBL_HKNJAINFWK;
 
--- TBL_HKNJAINFWK ºï½ü             --
+-- TBL_HKNJAINFWK å‰Šé™¤             --
 
 drop table TBL_HKNJAINFWK;

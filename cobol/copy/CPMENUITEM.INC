@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,223 +16,223 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    •·•À•Â°º»÷πÊ§»•∑•π•∆•‡¥…Õ˝°ß1010§ŒGSRAUTH§Œ¥ÿœ¢…’§±
+      *    „É°„Éã„É•„ÉºÁï™Âè∑„Å®„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜÔºö1010„ÅÆGSRAUTH„ÅÆÈñ¢ÈÄ£‰ªò„Åë
       *****************************************************************
       *****************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
        01  MENU-ITEM-AREA.
-      *∞Âªˆ∂»Ã≥
+      *Âåª‰∫ãÊ•≠Âãô
          02  MENU-ITEM-VAL.
            03  MENU-ITEM001-G.
                05  MENU-ITEM001-NUMBER         PIC 9(03)   VALUE 1.
                05  MENU-ITEM001-NAME           PIC X(30)
-                                               VALUE "∞Âªˆ∂»Ã≥".
+                                               VALUE "Âåª‰∫ãÊ•≠Âãô".
                05  MENU-ITEM001-GSRAUTH        PIC 9(02)   VALUE 1.
-      *•◊•Ì•∞•È•‡ππø∑
+      *„Éó„É≠„Ç∞„É©„É†Êõ¥Êñ∞
            03  MENU-ITEM003-G.
                05  MENU-ITEM003-NUMBER         PIC 9(03)   VALUE   3.
                05  MENU-ITEM003-NAME           PIC X(30)   
-                                               VALUE "•◊•Ì•∞•È•‡ππø∑".
+                                               VALUE "„Éó„É≠„Ç∞„É©„É†Êõ¥Êñ∞".
                05  MENU-ITEM003-GSRAUTH        PIC 9(02)   VALUE   3.
-      *≥∞ÕË§ﬁ§»§·
+      *Â§ñÊù•„Åæ„Å®„ÇÅ
            03  MENU-ITEM029-G.
                05  MENU-ITEM029-NUMBER         PIC 9(03)   VALUE   29.
                05  MENU-ITEM029-NAME           PIC X(30)   
-                                               VALUE "≥∞ÕË§ﬁ§»§·".
+                                               VALUE "Â§ñÊù•„Åæ„Å®„ÇÅ".
                05  MENU-ITEM029-GSRAUTH        PIC 9(02)   VALUE   5.
-      *ºı…’
+      *Âèó‰ªò
            03  MENU-ITEM011-G.
                05  MENU-ITEM011-NUMBER         PIC 9(03)   VALUE  11.
                05  MENU-ITEM011-NAME           PIC X(30)   
-                                               VALUE "ºı…’".
+                                               VALUE "Âèó‰ªò".
                05  MENU-ITEM011-GSRAUTH        PIC 9(02)   VALUE  16.
-      *≈–œø
+      *ÁôªÈå≤
            03  MENU-ITEM012-G.
                05  MENU-ITEM012-NUMBER         PIC 9(03)   VALUE  12.
                05  MENU-ITEM012-NAME           PIC X(30)   
-                                               VALUE "≈–œø".
+                                               VALUE "ÁôªÈå≤".
                05  MENU-ITEM012-GSRAUTH        PIC 9(02)   VALUE  17.
-      *æ»≤Ò
+      *ÁÖß‰ºö
            03  MENU-ITEM013-G.
                05  MENU-ITEM013-NUMBER         PIC 9(03)   VALUE  13.
                05  MENU-ITEM013-NAME           PIC X(30)   
-                                               VALUE "æ»≤Ò".
+                                               VALUE "ÁÖß‰ºö".
                05  MENU-ITEM013-GSRAUTH        PIC 9(02)   VALUE  18.
-      *ÕΩÃÛ
+      *‰∫àÁ¥Ñ
            03  MENU-ITEM014-G.
                05  MENU-ITEM014-NUMBER         PIC 9(03)   VALUE  14.
                05  MENU-ITEM014-NAME           PIC X(30)   
-                                               VALUE "ÕΩÃÛ".
+                                               VALUE "‰∫àÁ¥Ñ".
                05  MENU-ITEM014-GSRAUTH        PIC 9(02)   VALUE  19.
-      *ø«Œ≈π‘∞Ÿ
+      *Ë®∫ÁôÇË°åÁÇ∫
            03  MENU-ITEM021-G.
                05  MENU-ITEM021-NUMBER         PIC 9(03)   VALUE  21.
                05  MENU-ITEM021-NAME           PIC X(30)   
-                                               VALUE "ø«Œ≈π‘∞Ÿ".
+                                               VALUE "Ë®∫ÁôÇË°åÁÇ∫".
                05  MENU-ITEM021-GSRAUTH        PIC 9(02)   VALUE  21.
-      *…¬Ãæ
+      *ÁóÖÂêç
            03  MENU-ITEM022-G.
                05  MENU-ITEM022-NUMBER         PIC 9(03)   VALUE  22.
                05  MENU-ITEM022-NAME           PIC X(30)   
-                                               VALUE "…¬Ãæ".
+                                               VALUE "ÁóÖÂêç".
                05  MENU-ITEM022-GSRAUTH        PIC 9(02)   VALUE  22.
-      *º˝«º
+      *ÂèéÁ¥ç
            03  MENU-ITEM023-G.
                05  MENU-ITEM023-NUMBER         PIC 9(03)   VALUE  23.
                05  MENU-ITEM023-NAME           PIC X(30)   
-                                               VALUE "º˝«º".
+                                               VALUE "ÂèéÁ¥ç".
                05  MENU-ITEM023-GSRAUTH        PIC 9(02)   VALUE  23.
-      *≤Ò∑◊æ»≤Ò
+      *‰ºöË®àÁÖß‰ºö
            03  MENU-ITEM024-G.
                05  MENU-ITEM024-NUMBER         PIC 9(03)   VALUE  24.
                05  MENU-ITEM024-NAME           PIC X(30)   
-                                               VALUE "≤Ò∑◊æ»≤Ò".
+                                               VALUE "‰ºöË®àÁÖß‰ºö".
                05  MENU-ITEM024-GSRAUTH        PIC 9(02)   VALUE  24.
-      *∆˛¬‡±°≈–œø
+      *ÂÖ•ÈÄÄÈô¢ÁôªÈå≤
            03  MENU-ITEM031-G.
                05  MENU-ITEM031-NUMBER         PIC 9(03)   VALUE  31.
                05  MENU-ITEM031-NAME           PIC X(30)   
-                                               VALUE "∆˛¬‡±°≈–œø".
+                                               VALUE "ÂÖ•ÈÄÄÈô¢ÁôªÈå≤".
                05  MENU-ITEM031-GSRAUTH        PIC 9(02)   VALUE  36.
-      *∆˛±°≤Ò∑◊æ»≤Ò
+      *ÂÖ•Èô¢‰ºöË®àÁÖß‰ºö
            03  MENU-ITEM032-G.
                05  MENU-ITEM032-NUMBER         PIC 9(03)   VALUE  32.
                05  MENU-ITEM032-NAME           PIC X(30)   
-                                               VALUE "∆˛±°≤Ò∑◊æ»≤Ò".
+                                               VALUE "ÂÖ•Èô¢‰ºöË®àÁÖß‰ºö".
                05  MENU-ITEM032-GSRAUTH        PIC 9(02)   VALUE  37.
-      *∆˛±°ƒÍ¥¸¿¡µ·
+      *ÂÖ•Èô¢ÂÆöÊúüË´ãÊ±Ç
            03  MENU-ITEM033-G.
                05  MENU-ITEM033-NUMBER         PIC 9(03)   VALUE  33.
                05  MENU-ITEM033-NAME           PIC X(30)   
-                                               VALUE "∆˛±°ƒÍ¥¸¿¡µ·".
+                                               VALUE "ÂÖ•Èô¢ÂÆöÊúüË´ãÊ±Ç".
                05  MENU-ITEM033-GSRAUTH        PIC 9(02)   VALUE  38.
-      *¬‡±°ª˛≤æ∑◊ªª
+      *ÈÄÄÈô¢ÊôÇ‰ªÆË®àÁÆó
            03  MENU-ITEM034-G.
                05  MENU-ITEM034-NUMBER         PIC 9(03)   VALUE  34.
                05  MENU-ITEM034-NAME           PIC X(30)   
-                                               VALUE "¬‡±°ª˛≤æ∑◊ªª".
+                                               VALUE "ÈÄÄÈô¢ÊôÇ‰ªÆË®àÁÆó".
                05  MENU-ITEM034-GSRAUTH        PIC 9(02)   VALUE  39.
-      *∆˛±°¥µº‘æ»≤Ò
+      *ÂÖ•Èô¢ÊÇ£ËÄÖÁÖß‰ºö
            03  MENU-ITEM036-G.
                05  MENU-ITEM036-NUMBER         PIC 9(03)   VALUE  36.
                05  MENU-ITEM036-NAME           PIC X(30)   
-                                               VALUE "∆˛±°¥µº‘æ»≤Ò".
+                                               VALUE "ÂÖ•Èô¢ÊÇ£ËÄÖÁÖß‰ºö".
                05  MENU-ITEM036-GSRAUTH        PIC 9(02)   VALUE  57.
-      *•«°º•ø•¡•ß•√•Ø
+      *„Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ
            03  MENU-ITEM041-G.
                05  MENU-ITEM041-NUMBER         PIC 9(03)   VALUE  41.
                05  MENU-ITEM041-NAME           PIC X(30)   
-                                               VALUE "•«°º•ø•¡•ß•√•Ø".
+                                               VALUE "„Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ".
                05  MENU-ITEM041-GSRAUTH        PIC 9(02)   VALUE  26.
-      *Ã¿∫ŸΩÒ
+      *ÊòéÁ¥∞Êõ∏
            03  MENU-ITEM042-G.
                05  MENU-ITEM042-NUMBER         PIC 9(03)   VALUE  42.
                05  MENU-ITEM042-NAME           PIC X(30)   
-                                               VALUE "Ã¿∫ŸΩÒ".
+                                               VALUE "ÊòéÁ¥∞Êõ∏".
                05  MENU-ITEM042-GSRAUTH        PIC 9(02)   VALUE  27.
-      *¿¡µ·¥…Õ˝
+      *Ë´ãÊ±ÇÁÆ°ÁêÜ
            03  MENU-ITEM043-G.
                05  MENU-ITEM043-NUMBER         PIC 9(03)   VALUE  43.
                05  MENU-ITEM043-NAME           PIC X(30)   
-                                               VALUE "¿¡µ·¥…Õ˝".
+                                               VALUE "Ë´ãÊ±ÇÁÆ°ÁêÜ".
                05  MENU-ITEM043-GSRAUTH        PIC 9(02)   VALUE  28.
-      *¡Ì≥Á…Ω
+      *Á∑èÊã¨Ë°®
            03  MENU-ITEM044-G.
                05  MENU-ITEM044-NUMBER         PIC 9(03)   VALUE  44.
                05  MENU-ITEM044-NAME           PIC X(30)   
-                                               VALUE "¡Ì≥Á…Ω".
+                                               VALUE "Á∑èÊã¨Ë°®".
                05  MENU-ITEM044-GSRAUTH        PIC 9(02)   VALUE  29.
-      *∆¸º°≈˝∑◊
+      *Êó•Ê¨°Áµ±Ë®à
            03  MENU-ITEM051-G.
                05  MENU-ITEM051-NUMBER         PIC 9(03)   VALUE  51.
                05  MENU-ITEM051-NAME           PIC X(30)   
-                                               VALUE "∆¸º°≈˝∑◊".
+                                               VALUE "Êó•Ê¨°Áµ±Ë®à".
                05  MENU-ITEM051-GSRAUTH        PIC 9(02)   VALUE  31.
-      *∑Óº°≈˝∑◊
+      *ÊúàÊ¨°Áµ±Ë®à
            03  MENU-ITEM052-G.
                05  MENU-ITEM052-NUMBER         PIC 9(03)   VALUE  52.
                05  MENU-ITEM052-NAME           PIC X(30)   
-                                               VALUE "∑Óº°≈˝∑◊".
+                                               VALUE "ÊúàÊ¨°Áµ±Ë®à".
                05  MENU-ITEM052-GSRAUTH        PIC 9(02)   VALUE  32.
-      *•«°º•øΩ–Œœ
+      *„Éá„Éº„ÇøÂá∫Âäõ
            03  MENU-ITEM071-G.
                05  MENU-ITEM071-NUMBER         PIC 9(03)   VALUE  71.
                05  MENU-ITEM071-NAME           PIC X(30)   
-                                               VALUE "•«°º•øΩ–Œœ".
+                                               VALUE "„Éá„Éº„ÇøÂá∫Âäõ".
                05  MENU-ITEM071-GSRAUTH        PIC 9(02)   VALUE  41.
-      *≥∞…Ù«ﬁ¬Œ
+      *Â§ñÈÉ®Â™í‰Ωì
            03  MENU-ITEM082-G.
                05  MENU-ITEM082-NUMBER         PIC 9(03)   VALUE  82.
                05  MENU-ITEM082-NAME           PIC X(30)   
-                                               VALUE "≥∞…Ù«ﬁ¬Œ".
+                                               VALUE "Â§ñÈÉ®Â™í‰Ωì".
                05  MENU-ITEM082-GSRAUTH        PIC 9(02)   VALUE  47.
-      *•ﬁ•π•ø≈–œø
+      *„Éû„Çπ„ÇøÁôªÈå≤
            03  MENU-ITEM091-G.
                05  MENU-ITEM091-NUMBER         PIC 9(03)   VALUE  91.
                05  MENU-ITEM091-NAME           PIC X(30)   
-                                               VALUE "•ﬁ•π•ø≈–œø".
+                                               VALUE "„Éû„Çπ„ÇøÁôªÈå≤".
                05  MENU-ITEM091-GSRAUTH        PIC 9(02)   VALUE  51.
-      *•ﬁ•π•øππø∑
+      *„Éû„Çπ„ÇøÊõ¥Êñ∞
            03  MENU-ITEM092-G.
                05  MENU-ITEM092-NUMBER         PIC 9(03)   VALUE  92.
                05  MENU-ITEM092-NAME           PIC X(30)   
-                                               VALUE "•ﬁ•π•øππø∑".
+                                               VALUE "„Éû„Çπ„ÇøÊõ¥Êñ∞".
                05  MENU-ITEM092-GSRAUTH        PIC 9(02)   VALUE  52.
-      *•∑•π•∆•‡¥…Õ˝
+      *„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ
            03  MENU-ITEM101-G.
                05  MENU-ITEM101-NUMBER         PIC 9(03)   VALUE  101.
                05  MENU-ITEM101-NAME           PIC X(30)   
-                                               VALUE "•∑•π•∆•‡¥…Õ˝".
+                                               VALUE "„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ".
                05  MENU-ITEM101-GSRAUTH        PIC 9(02)   VALUE  61.
-      *≈¿øÙ•ﬁ•π•ø
+      *ÁÇπÊï∞„Éû„Çπ„Çø
            03  MENU-ITEM102-G.
                05  MENU-ITEM102-NUMBER         PIC 9(03)   VALUE  102.
                05  MENU-ITEM102-NAME           PIC X(30)   
-                                               VALUE "≈¿øÙ•ﬁ•π•ø".
+                                               VALUE "ÁÇπÊï∞„Éû„Çπ„Çø".
                05  MENU-ITEM102-GSRAUTH        PIC 9(02)   VALUE  62.
-      *•¡•ß•√•Ø•ﬁ•π•ø
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„Çø
            03  MENU-ITEM103-G.
                05  MENU-ITEM103-NUMBER         PIC 9(03)   VALUE  103.
                05  MENU-ITEM103-NAME           PIC X(30)   
-                                               VALUE "•¡•ß•√•Ø•ﬁ•π•ø".
+                                               VALUE "„ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„Çø".
                05  MENU-ITEM103-GSRAUTH        PIC 9(02)   VALUE  63.
-      * ›∏±»÷πÊ•ﬁ•π•ø
+      *‰øùÈô∫Áï™Âè∑„Éû„Çπ„Çø
            03  MENU-ITEM104-G.
                05  MENU-ITEM104-NUMBER         PIC 9(03)   VALUE  104.
                05  MENU-ITEM104-NAME           PIC X(30)   
-                                               VALUE " ›∏±»÷πÊ•ﬁ•π•ø".
+                                               VALUE "‰øùÈô∫Áï™Âè∑„Éû„Çπ„Çø".
                05  MENU-ITEM104-GSRAUTH        PIC 9(02)   VALUE  64.
-      * ›∏±º‘•ﬁ•π•ø
+      *‰øùÈô∫ËÄÖ„Éû„Çπ„Çø
            03  MENU-ITEM105-G.
                05  MENU-ITEM105-NUMBER         PIC 9(03)   VALUE  105.
                05  MENU-ITEM105-NAME           PIC X(30)   
-                                               VALUE " ›∏±º‘•ﬁ•π•ø".
+                                               VALUE "‰øùÈô∫ËÄÖ„Éû„Çπ„Çø".
                05  MENU-ITEM105-GSRAUTH        PIC 9(02)   VALUE  65.
-      *øÕÃæº≠ΩÒ•ﬁ•π•ø
+      *‰∫∫ÂêçËæûÊõ∏„Éû„Çπ„Çø
            03  MENU-ITEM106-G.
                05  MENU-ITEM106-NUMBER         PIC 9(03)   VALUE  106.
                05  MENU-ITEM106-NAME           PIC X(30)   
-                                               VALUE "øÕÃæº≠ΩÒ•ﬁ•π•ø".
+                                               VALUE "‰∫∫ÂêçËæûÊõ∏„Éû„Çπ„Çø".
                05  MENU-ITEM106-GSRAUTH        PIC 9(02)   VALUE  66.
-      *ÃÙ∫ﬁæ Û•ﬁ•π•ø
+      *Ëñ¨Ââ§ÊÉÖÂ†±„Éû„Çπ„Çø
            03  MENU-ITEM107-G.
                05  MENU-ITEM107-NUMBER         PIC 9(03)   VALUE  107.
                05  MENU-ITEM107-NAME           PIC X(30)   
-                                               VALUE "ÃÙ∫ﬁæ Û•ﬁ•π•ø".
+                                               VALUE "Ëñ¨Ââ§ÊÉÖÂ†±„Éû„Çπ„Çø".
                05  MENU-ITEM107-GSRAUTH        PIC 9(02)   VALUE  67.
-      *ΩªΩÍ•ﬁ•π•ø
+      *‰ΩèÊâÄ„Éû„Çπ„Çø
            03  MENU-ITEM108-G.
                05  MENU-ITEM108-NUMBER         PIC 9(03)   VALUE  108.
                05  MENU-ITEM108-NAME           PIC X(30)   
-                                               VALUE "ΩªΩÍ•ﬁ•π•ø".
+                                               VALUE "‰ΩèÊâÄ„Éû„Çπ„Çø".
                05  MENU-ITEM108-GSRAUTH        PIC 9(02)   VALUE  68.
-      *•ÿ•Î•◊•ﬁ•π•ø
+      *„Éò„É´„Éó„Éû„Çπ„Çø
            03  MENU-ITEM109-G.
                05  MENU-ITEM109-NUMBER         PIC 9(03)   VALUE  109.
                05  MENU-ITEM109-NAME           PIC X(30)   
-                                               VALUE "•ÿ•Î•◊•ﬁ•π•ø".
+                                               VALUE "„Éò„É´„Éó„Éû„Çπ„Çø".
                05  MENU-ITEM109-GSRAUTH        PIC 9(02)   VALUE  69.
          02    MENU-ITEM-R REDEFINES   MENU-ITEM-VAL.
            03  MENU-ITEM-OCC   OCCURS          35.

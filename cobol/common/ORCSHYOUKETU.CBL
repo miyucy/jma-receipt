@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSHYOUKETU.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ɸ������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/08/10    NACL�ݾ�Ʀ��  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院
+      *  コンポーネント名  : 標欠情報取得サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/08/10    NACL−小豆沢  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/05/09  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
       *****************************************************************
       *
       *
@@ -42,25 +42,25 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI                PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
       *
-      *    ���󥹥������
+      *    コンスタント値
        01  CONSTANT-AREA.
-      *    ɸ��ʣ�����ʬ�Σ������ۡ�
+      *    標欠（１００分の１０減額）
            03  CONS-HYOUKETSU1             PIC X(09) VALUE "190107890".
-      *    ɸ��ʣ�����ʬ�Σ������ۡ�
+      *    標欠（１００分の１５減額）
            03  CONS-HYOUKETSU2             PIC X(09) VALUE "190107990".
-      *    ɸ��ʣ�����ʬ�Σ����ۡˡ�Υ������
+      *    標欠（１００分の２減額）（離島等）
            03  CONS-HYOUKETSU3             PIC X(09) VALUE "190108690".
-      *    ɸ��ʣ�����ʬ�Σ����ۡˡ�Υ������
+      *    標欠（１００分の３減額）（離島等）
            03  CONS-HYOUKETSU4             PIC X(09) VALUE "190108590".
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-SANTEIYM.
@@ -71,28 +71,28 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ɸ������ѥѥ�᥿
+      *    標欠取得用パラメタ
            COPY    "CPORCSHYOUKETU.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -102,7 +102,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -112,13 +112,13 @@
            INITIALIZE                  LNK-HYOUKETU-HENKYAKU-AREA
            MOVE    ZERO            TO  LNK-HYOUKETU-RC
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-HYOUKETU-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    �����
+      *    主処理
            IF      LNK-HYOUKETU-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -130,11 +130,11 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ����ǯ������å�
+      *    算定年月チェック
            IF    ( LNK-HYOUKETU-SANTEIYM    =   SPACE )
                MOVE    1               TO  LNK-HYOUKETU-RC
                GO  TO  100-PRM-CHK-EXT
@@ -145,11 +145,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *ɸ�����μ����ʥ����ƥ�����ơ��֥����
+      *標欠情報の取得（システム管理テーブルより）
            MOVE    SPACE               TO  WRK-HYOUKETUKBN
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
@@ -199,12 +199,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  2     TO    LNK-HYOUKETU-RC
                END-IF
            END-IF
-      *    �����ƥ������������
+      *    システム管理クローズ
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key10"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *ɸ�����μ����ʥ����ƥ�����ơ��֥������ʬ�������
+      *標欠情報の取得（システム管理テーブルより翌月分を取得）
            MOVE    LNK-HYOUKETU-SANTEIYM  
                                        TO  WRK-SANTEIYM
            IF      LNK-HYOUKETU-SANTEIYM(5:2)  = "12"
@@ -263,7 +263,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  2     TO    LNK-HYOUKETU-RC
                END-IF
            END-IF
-      *    �����ƥ������������
+      *    システム管理クローズ
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key10"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -277,7 +277,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ɹ�
+      *    システム管理マスター読込
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -298,7 +298,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

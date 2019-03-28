@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,74 +16,74 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK9000.INC)            *
-      *         �ʣ���������                                     *
-      *         �ạ̃��ɣ���³����                               *
+      *         システム管理マスタ     (CPSK9000.INC)            *
+      *         （９０００）                                     *
+      *         ＣＬＡＩＭ接続情報                               *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 03.05.00     NACL-¿��Ǽ  07/07/17  ����ǻ���Ÿ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-多々納  07/07/17  外来診察料展開追加
       ************************************************************
        01  SYS-9000-REC.
            03  SYS-9000-KEY.
                05  SYS-9000-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-9000-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-9000-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-9000-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-9000-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-9000-TBL.
-      *��³̵ͭ��ʬ
+      *接続有無区分
                05  SYS-9000-SETUZOKU    PIC  X(01).
-      *�����ѥ��󥹥��󥹥�����
+      *送信用インスタンスコード
                05  SYS-9000-CODE        PIC  X(01).
-      *���եݥåץ��å�ɽ��
+      *受付ポップアップ表示
                05  SYS-9000-UKEBUTTON-G.
                  07 SYS-9000-UKEBUTTON  PIC  X(01) OCCURS 2.
-      *������Ͽ�ݥåץ��å�ɽ��
+      *患者登録ポップアップ表示
                05  SYS-9000-KANBUTTON-G.
                  07 SYS-9000-KANBUTTON  PIC  X(01) OCCURS 2.
-      *���Ź԰٥ݥåץ��å�ɽ��
+      *診療行為ポップアップ表示
                05  SYS-9000-SYNBUTTON-G.
                  07 SYS-9000-SYNBUTTON  PIC  X(01) OCCURS 2.
-      *������Ͽ�����ե饰
+      *患者登録送信フラグ
            03  SYS-9000-PT-FLG          PIC  X(01).
-      *�쥻���Ѵ��ե饰
+      *レセ電変換フラグ
            03  SYS-9000-RECEDEN-FLG     PIC  X(01).
-      *��̾����ե饰
+      *病名集約フラグ
            03  SYS-9000-BYOMEI-SYU-FLG  PIC  X(01).
-      *��̾Ʊ���ե饰
+      *病名同期フラグ
            03  SYS-9000-BYOMEI-DOUKI-FLG
                                         PIC  X(01).
-      *����������������ե饰
+      *入院オーダー取込フラグ
            03  SYS-9000-NYU-ORDER-FLG
                                         PIC  X(01).
-      *�ޥ���ۥ��ȥե饰
+      *マルチホストフラグ
            03  SYS-9000-MULTIHOST-FLG
                                         PIC  X(01).
-      *�������ե饰
+      *再送信フラグ
            03  SYS-9000-RESEND-FLG
                                         PIC  X(01).
-      *����ǻ���Ÿ��
+      *外来診察料展開
            03  SYS-9000-SINSATU-FLG     PIC  X(01).
-      *ͽ��
+      *予備
            03  SYS-9000-YOBI            PIC  X(485).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-9000-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-9000-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-9000-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-9000-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-9000-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-9000-UPD-KEY.
                05  SYS-9000-UPD-HOSPNUM     PIC 9(2).
                05  SYS-9000-UPD-KANRICD     PIC X(04).

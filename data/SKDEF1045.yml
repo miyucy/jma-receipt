@@ -1,54 +1,54 @@
 kanri_cd    : "1045"
-name        : "Í½Ìó¡¦¼õÉÕµ¡Ç½¾ğÊó"
+name        : "äºˆç´„ãƒ»å—ä»˜æ©Ÿèƒ½æƒ…å ±"
 class_cd    : "*"
 item_max    : 8
 item_list   :
 - item_no   : 1
   item      : "INIT-DRCD"
-  item_jp   : "½é´üÉ½¼¨¥É¥¯¥¿¡¼"
+  item_jp   : "åˆæœŸè¡¨ç¤ºãƒ‰ã‚¯ã‚¿ãƒ¼"
   type      : "X"
   start     : 1
   length    : 5
 - item_no   : 2
   item      : "YYKINIT-FLG"
-  item_jp   : "Í½Ìó°ìÍ÷¤Î½é´üÉ½¼¨"
+  item_jp   : "äºˆç´„ä¸€è¦§ã®åˆæœŸè¡¨ç¤º"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 3
   item      : "YYKMAXCNT"
-  item_jp   : "Í½ÌóÏÈ·ï¿ô"
+  item_jp   : "äºˆç´„æ ä»¶æ•°"
   type      : "9"
   start     : 7
   length    : 2
   precision : 0
 - item_no   : 4
   item      : "YYKHYO-KBN"
-  item_jp   : "Í½ÌóÉ¼È¯¹Ô¶èÊ¬"
+  item_jp   : "äºˆç´„ç¥¨ç™ºè¡ŒåŒºåˆ†"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 5
   item      : "YYKPTNUM-KBN"
-  item_jp   : "´µ¼ÔÈÖ¹æÏ¢Æ°"
+  item_jp   : "æ‚£è€…ç•ªå·é€£å‹•"
   type      : "X"
   start     : 10
   length    : 1
 - item_no   : 6
   item      : "YYKUKE-KBN"
-  item_jp   : "Í½Ìó¡¦¼õÉÕÈÖ¹æÏ¢Æ°¶èÊ¬"
+  item_jp   : "äºˆç´„ãƒ»å—ä»˜ç•ªå·é€£å‹•åŒºåˆ†"
   type      : "X"
   start     : 11
   length    : 1
 - item_no   : 7
   item      : "UKEHKNCHK-KBN"
-  item_jp   : "Êİ¸±ÁÈ¹ç¤»ÀßÄê¶èÊ¬"
+  item_jp   : "ä¿é™ºçµ„åˆã›è¨­å®šåŒºåˆ†"
   type      : "X"
   start     : 12
   length    : 1
 - item_no   : 8
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 13
   length    : 488

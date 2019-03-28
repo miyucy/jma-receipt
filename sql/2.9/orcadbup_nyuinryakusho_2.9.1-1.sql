@@ -3,8 +3,8 @@ delete from tbl_nyuinryakusho where srycd = '190123350' and yukostymd = '2006040
 delete from tbl_nyuinryakusho where srycd = '190123450' and yukostymd = '20060401' and yukoedymd = '99999999';
 delete from tbl_nyuinryakusho where srycd = '190123550' and yukostymd = '20060401' and yukoedymd = '99999999';
 COPY "tbl_nyuinryakusho" FROM stdin;
-190123250	20060401	99999999	°ìÈÌ·Ğ²á						
-190123350	20060401	99999999	·ë³Ë·Ğ²á						
-190123450	20060401	99999999	Àº¿À·Ğ²á						
-190123550	20060401	99999999	¾ã³²·Ğ²á						
+190123250	20060401	99999999	ä¸€èˆ¬çµŒé						
+190123350	20060401	99999999	çµæ ¸çµŒé						
+190123450	20060401	99999999	ç²¾ç¥çµŒé						
+190123550	20060401	99999999	éšœå®³çµŒé						
 \.

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBGS138.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ���ݸ�����������å�ɽ ����
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  11/01/13    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 新保険別請求チェック表 国保
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  11/01/13    NACL-太田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,65 +34,65 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ����ե�����
+      *    請求ファイル
            SELECT  BGSSKY-FILE     ASSIGN  ASS-BGSSKY
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSSKY-KEY
                                    FILE    STATUS  IS  STS-BGSSKY.
       *
-      *    ����ե�����
+      *    公費ファイル
            SELECT  BGSKOH-FILE     ASSIGN  ASS-BGSKOH
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSKOH-KEY
                                    FILE    STATUS  IS  STS-BGSKOH.
       *
-      *    �ݸ��ԥե�����
+      *    保険者ファイル
            SELECT  BGSHKNJA-FILE   ASSIGN  ASS-BGSHKNJA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSHKNJA-KEY
                                    FILE    STATUS  IS  STS-BGSHKNJA.
       *
-      *    ����¾����ե�����
+      *    その他請求ファイル
            SELECT  BGSETC-FILE     ASSIGN  ASS-BGSETC
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSETC-KEY
                                    FILE    STATUS  IS  STS-BGSETC.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  BGS100ERR-FILE  ASSIGN  ASS-BGS100ERR
                                    FILE    STATUS  IS  STS-BGS100ERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ����ե�����
+      *    請求ファイル
        FD  BGSSKY-FILE.
        01  BGSSKY-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSSKY-//.
       *
-      *    ����ե�����
+      *    公費ファイル
        FD  BGSKOH-FILE.
        01  BGSKOH-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSKOH-//.
       *
-      *    �ݸ��ԥե�����
+      *    保険者ファイル
        FD  BGSHKNJA-FILE.
        01  BGSHKNJA-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSHKNJA-//.
-      *    ����¾����ե�����
+      *    その他請求ファイル
        FD  BGSETC-FILE.
        01  BGSETC-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSETC-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  BGS100ERR-FILE.
        01  BGS100ERR-REC           PIC X(200).
       *
@@ -196,55 +196,55 @@
            03  CSV-H01-G.
                05  CSV-H01-VAL.
                    07  CSV-H01-PRTKBN          PIC X(50)
-                           VALUE   "Ģɼ��ʬ".
+                           VALUE   "帳票区分".
                    07  CSV-H01-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ģɼ��ʬ̾".
+                           VALUE   "帳票区分名".
                    07  CSV-H01-DATAKBN         PIC X(50)
-                           VALUE   "�ǡ�����ʬ".
+                           VALUE   "データ区分".
                    07  CSV-H01-DATAKBNMEI      PIC X(50)
-                           VALUE   "�ǡ�����ʬ̾".
+                           VALUE   "データ区分名".
                    07  CSV-H01-SRYYMD          PIC X(50)
-                           VALUE   "����ǯ��".
+                           VALUE   "診療年月".
                    07  CSV-H01-NYUGAIKBN       PIC X(50)
-                           VALUE   "������ʬ".
+                           VALUE   "入外区分".
                    07  CSV-H01-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "������ʬ̾��".
+                           VALUE   "入外区分名称".
                    07  CSV-H01-SKYSBTKBN       PIC X(50)
-                           VALUE   "��������ʬ".
+                           VALUE   "当月・当月外区分".
                    07  CSV-H01-SKYSBT          PIC X(50)
-                           VALUE   "��������ʬ̾��".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H01-SRYKA           PIC X(50)
-                           VALUE   "���Ųʥ�����".
+                           VALUE   "診療科コード".
                    07  CSV-H01-SRYKAMEI        PIC X(50)
-                           VALUE   "���Ų�̾��".
+                           VALUE   "診療科名称".
                    07  CSV-H01-HKNKBN          PIC X(50)
-                           VALUE   "�ݸ���ʬ".
+                           VALUE   "保険区分".
                    07  CSV-H01-KENSU           PIC X(50)
-                           VALUE   "���".
+                           VALUE   "件数".
                    07  CSV-H01-NISSU           PIC X(50)
-                           VALUE   "����".
+                           VALUE   "日数".
                    07  CSV-H01-TENSU           PIC X(50)
-                           VALUE   "����".
+                           VALUE   "点数".
                    07  CSV-H01-FTNMONEY        PIC X(50)
-                           VALUE   "������ô��".
+                           VALUE   "患者負担額".
                    07  CSV-H01-HKNMONEY        PIC X(50)
-                           VALUE   "�ݸ������".
+                           VALUE   "保険請求額".
                    07  CSV-H01-KOHMONEY        PIC X(50)
-                           VALUE   "���������".
+                           VALUE   "公費請求額".
                    07  CSV-H01-TTLMONEY        PIC X(50)
-                           VALUE   "�ݸ����ż��סʣ��".
+                           VALUE   "保険診療収益（ａ）".
                    07  CSV-H01-SKJKAISU        PIC X(50)
-                           VALUE   "������������".
+                           VALUE   "食事・生活回数".
                    07  CSV-H01-SKJTTLMONEY     PIC X(50)
-                           VALUE   "����������ɸ����ô��".
+                           VALUE   "食事・生活標準負担額".
                    07  CSV-H01-SKJHKNMONEY     PIC X(50)
-                           VALUE   "�����������ݸ������".
+                           VALUE   "食事・生活保険請求額".
                    07  CSV-H01-SKJKOHMONEY     PIC X(50)
-                           VALUE   "������������������".
+                           VALUE   "食事・生活公費請求額".
                    07  CSV-H01-SKJFTNMONEY     PIC X(50)
-                           VALUE   "��������������ߡʣ��".
+                           VALUE   "食事・生活請求円（ｂ）".
                    07  CSV-H01-TTLTTLMONEY     PIC X(50)
-                           VALUE   "�ʣ�ˡܡʣ��".
+                           VALUE   "（ａ）＋（ｂ）".
                05  CSV-H01-R   REDEFINES   CSV-H01-VAL.
                    07  CSV-H01-ITEM            PIC X(50)
                                                OCCURS  25.
@@ -253,35 +253,35 @@
            03  CSV-H02-G.
                05  CSV-H02-VAL.
                    07  CSV-H02-PRTKBN          PIC X(50)
-                           VALUE   "Ģɼ��ʬ".
+                           VALUE   "帳票区分".
                    07  CSV-H02-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ģɼ��ʬ̾".
+                           VALUE   "帳票区分名".
                    07  CSV-H02-DATAKBN         PIC X(50)
-                           VALUE   "�ǡ�����ʬ".
+                           VALUE   "データ区分".
                    07  CSV-H02-DATAKBNMEI      PIC X(50)
-                           VALUE   "�ǡ�����ʬ̾".
+                           VALUE   "データ区分名".
                    07  CSV-H02-SRYYMD          PIC X(50)
-                           VALUE   "����ǯ��".
+                           VALUE   "診療年月".
                    07  CSV-H02-NYUGAIKBN       PIC X(50)
-                           VALUE   "������ʬ".
+                           VALUE   "入外区分".
                    07  CSV-H02-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "������ʬ̾��".
+                           VALUE   "入外区分名称".
                    07  CSV-H02-SKYSBTKBN       PIC X(50)
-                           VALUE   "��������ʬ".
+                           VALUE   "当月・当月外区分".
                    07  CSV-H02-SKYSBT          PIC X(50)
-                           VALUE   "��������ʬ̾��".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H02-SRYKA           PIC X(50)
-                           VALUE   "���Ųʥ�����".
+                           VALUE   "診療科コード".
                    07  CSV-H02-SRYKAMEI        PIC X(50)
-                           VALUE   "���Ų�̾��".
+                           VALUE   "診療科名称".
                    07  CSV-H02-KOHNAME         PIC X(50)
-                           VALUE   "ʻ�Ѹ������".
+                           VALUE   "併用公費一覧".
                    07  CSV-H02-KENSU           PIC X(50)
-                           VALUE   "���".
+                           VALUE   "件数".
                    07  CSV-H02-NISSU           PIC X(50)
-                           VALUE   "����".
+                           VALUE   "日数".
                    07  CSV-H02-TENSU           PIC X(50)
-                           VALUE   "����".
+                           VALUE   "点数".
                05  CSV-H02-R   REDEFINES   CSV-H02-VAL.
                    07  CSV-H02-ITEM            PIC X(50)
                                                OCCURS  15.
@@ -290,39 +290,39 @@
            03  CSV-H03-G.
                05  CSV-H03-VAL.
                    07  CSV-H03-PRTKBN          PIC X(50)
-                           VALUE   "Ģɼ��ʬ".
+                           VALUE   "帳票区分".
                    07  CSV-H03-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ģɼ��ʬ̾".
+                           VALUE   "帳票区分名".
                    07  CSV-H03-DATAKBN         PIC X(50)
-                           VALUE   "�ǡ�����ʬ".
+                           VALUE   "データ区分".
                    07  CSV-H03-DATAKBNMEI      PIC X(50)
-                           VALUE   "�ǡ�����ʬ̾".
+                           VALUE   "データ区分名".
                    07  CSV-H03-SRYYMD          PIC X(50)
-                           VALUE   "����ǯ��".
+                           VALUE   "診療年月".
                    07  CSV-H03-NYUGAIKBN       PIC X(50)
-                           VALUE   "������ʬ".
+                           VALUE   "入外区分".
                    07  CSV-H03-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "������ʬ̾��".
+                           VALUE   "入外区分名称".
                    07  CSV-H03-SKYSBTKBN       PIC X(50)
-                           VALUE   "��������ʬ".
+                           VALUE   "当月・当月外区分".
                    07  CSV-H03-SKYSBT          PIC X(50)
-                           VALUE   "��������ʬ̾��".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H03-SRYKA           PIC X(50)
-                           VALUE   "���Ųʥ�����".
+                           VALUE   "診療科コード".
                    07  CSV-H03-SRYKAMEI        PIC X(50)
-                           VALUE   "���Ų�̾��".
+                           VALUE   "診療科名称".
                    07  CSV-H03-ETCNAME         PIC X(50)
-                           VALUE   "����¾��".
+                           VALUE   "その他計".
                    07  CSV-H03-JIHIMONEY       PIC X(50)
-                           VALUE   "����".
+                           VALUE   "自費".
                    07  CSV-H03-GENMEN          PIC X(50)
-                           VALUE   "����".
+                           VALUE   "減免".
                    07  CSV-H03-CHOSEI1         PIC X(50)
-                           VALUE   "Ĵ���⣱".
+                           VALUE   "調整金１".
                    07  CSV-H03-CHOSEI2         PIC X(50)
-                           VALUE   "Ĵ���⣲".
+                           VALUE   "調整金２".
                    07  CSV-H03-HASU            PIC X(50)
-                           VALUE   "�������ü��������".
+                           VALUE   "窓口請求端数処理額".
                05  CSV-H03-R   REDEFINES   CSV-H03-VAL.
                    07  CSV-H03-ITEM            PIC X(50)
                                                OCCURS  17.
@@ -331,43 +331,43 @@
            03  CSV-H04-G.
                05  CSV-H04-VAL.
                    07  CSV-H04-PRTKBN          PIC X(50)
-                           VALUE   "Ģɼ��ʬ".
+                           VALUE   "帳票区分".
                    07  CSV-H04-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ģɼ��ʬ̾".
+                           VALUE   "帳票区分名".
                    07  CSV-H04-DATAKBN         PIC X(50)
-                           VALUE   "�ǡ�����ʬ".
+                           VALUE   "データ区分".
                    07  CSV-H04-DATAKBNMEI      PIC X(50)
-                           VALUE   "�ǡ�����ʬ".
+                           VALUE   "データ区分".
                    07  CSV-H04-SRYYMD          PIC X(50)
-                           VALUE   "����ǯ��".
+                           VALUE   "診療年月".
                    07  CSV-H04-NYUGAIKBN       PIC X(50)
-                           VALUE   "������ʬ".
+                           VALUE   "入外区分".
                    07  CSV-H04-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "������ʬ̾��".
+                           VALUE   "入外区分名称".
                    07  CSV-H04-SKYSBTKBN       PIC X(50)
-                           VALUE   "��������ʬ".
+                           VALUE   "当月・当月外区分".
                    07  CSV-H04-SKYSBT          PIC X(50)
-                           VALUE   "��������ʬ̾��".
+                           VALUE   "当月・当月外区分名称".
                    07  CSV-H04-SRYKA           PIC X(50)
-                           VALUE   "���Ųʥ�����".
+                           VALUE   "診療科コード".
                    07  CSV-H04-SRYKAMEI        PIC X(50)
-                           VALUE   "���Ų�̾��".
+                           VALUE   "診療科名称".
                    07  CSV-H04-HKNKBN          PIC X(50)
-                           VALUE   "�ݸ���ʬ".
+                           VALUE   "保険区分".
                    07  CSV-H04-KENSU           PIC X(50)
-                           VALUE   "���".
+                           VALUE   "件数".
                    07  CSV-H04-NISSU           PIC X(50)
-                           VALUE   "����".
+                           VALUE   "日数".
                    07  CSV-H04-TENSU           PIC X(50)
-                           VALUE   "����".
+                           VALUE   "点数".
                    07  CSV-H04-FTNMONEY        PIC X(50)
-                           VALUE   "������ô��".
+                           VALUE   "患者負担額".
                    07  CSV-H04-HKNMONEY        PIC X(50)
-                           VALUE   "�ݸ������".
+                           VALUE   "保険請求額".
                    07  CSV-H04-KOHMONEY        PIC X(50)
-                           VALUE   "���������".
+                           VALUE   "公費請求額".
                    07  CSV-H04-TTLMONEY        PIC X(50)
-                           VALUE   "�ݸ����ż���".
+                           VALUE   "保険診療収益".
                05  CSV-H04-R   REDEFINES   CSV-H04-VAL.
                    07  CSV-H04-ITEM            PIC X(50)
                                                OCCURS  19.
@@ -448,30 +448,30 @@
       *
            03  CONST-HKNMEI-G.
                05  CONST-HKNMEI01  PIC X(50)
-                                   VALUE "���̡ʹ⣹��".
+                                   VALUE "一般（高９）".
                05  CONST-HKNMEI02  PIC X(50)
-                                   VALUE "���̡ʹ⣷��".
+                                   VALUE "一般（高７）".
                05  CONST-HKNMEI03  PIC X(50)
-                                   VALUE "����".
+                                   VALUE "一般".
                05  CONST-HKNMEI04  PIC X(50)
-                                   VALUE "���̡ʣ��С�".
+                                   VALUE "一般（６歳）".
                05  CONST-HKNMEI05  PIC X(50)
-                                   VALUE "��סʣ��ˡʰ��̡�".
+                                   VALUE "合計（１）（一般）".
                05  CONST-HKNMEI06  PIC X(50)
-                                   VALUE "�࿦���ܿ͡�".
+                                   VALUE "退職（本人）".
                05  CONST-HKNMEI07  PIC X(50)
-                                   VALUE "�࿦�ʲ�²��".
+                                   VALUE "退職（家族）".
                05  CONST-HKNMEI08  PIC X(50)
-                                   VALUE "�࿦�ʣ��С�".
+                                   VALUE "退職（６歳）".
                05  CONST-HKNMEI09  PIC X(50)
-                                   VALUE "��סʣ��ˡ��࿦��".
+                                   VALUE "合計（２）（退職）".
                05  CONST-HKNMEI10  PIC X(50)
-                       VALUE "���סʡʣ��ˡܡʣ��ˡ�".
+                       VALUE "総計（（１）＋（２））".
            03  CONST-HKNMEI-R  REDEFINES   CONST-HKNMEI-G.
                05  CONST-HKNMEI-OCC    OCCURS 10.
                    07  CONST-HKNMEI    PIC X(50).
       *
-      *    �����ΰ�
+      *    集計領域
        01  TTLHKN-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //TTLHKN-//.
@@ -480,49 +480,49 @@
            COPY    "CPBGSF01.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1005.INC".
       *
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �ݸ���
+      *    保険者
        01  HKNJAINF-REC.
            COPY    "CPHKNJAINF.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ʸ��������
+      *    文字列操作サブ
            COPY    "CPORCSSTRING.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ����Ⱦ�ѥ����å�
+      *    全角半角チェック
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ףãӣ����極��
+      *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
@@ -541,7 +541,7 @@
                                        SPA-AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -555,7 +555,7 @@
       *
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -574,7 +574,7 @@
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    "����ʬ������"
+           MOVE    "国保分作成中"
                                        TO  JOB-YOBI
            PERFORM 800-ORCSJOB-SEC
       *
@@ -594,9 +594,9 @@
            INSPECT WRK-ITEM  TALLYING  WRK-ITEM-SIZE   FOR ALL " "
       *
            IF    ( BGS100P-SRYYM       >=  CONST-H2605 )
-               MOVE    "���̡ʹ���"  TO  LBL-GRP-IPNKOU9
+               MOVE    "一般（高一）"  TO  LBL-GRP-IPNKOU9
            ELSE
-               MOVE    "���̡ʹ⣹��"  TO  LBL-GRP-IPNKOU9
+               MOVE    "一般（高９）"  TO  LBL-GRP-IPNKOU9
            END-IF
       *
            .
@@ -604,7 +604,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -622,7 +622,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        201-MAIN-SEC                SECTION.
       *
@@ -646,7 +646,7 @@
        201-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        2001-MAIN-SEC                SECTION.
       *
@@ -661,9 +661,9 @@
            IF    ( BGS100P-EDITKBN =   "1" )
                EVALUATE    KEY-SKYSBT
                WHEN    "1"
-                   MOVE  "�������ʬ"  TO      WRK-SKYSBTNAME
+                   MOVE  "当月診療分"  TO      WRK-SKYSBTNAME
                WHEN    "2"
-                   MOVE  "�������ʬ�ʳ��ʷ��٤����ᡢ����ʬ�������"
+                   MOVE  "当月診療分以外（月遅れ請求、返戻分再請求）"
                                        TO      WRK-SKYSBTNAME
                END-EVALUATE
            END-IF
@@ -672,9 +672,9 @@
            IF    ( BGS100P-SYUKA-KOK   =   1 )
                EVALUATE    KEY-RECEKA
                WHEN    SPACE
-                   MOVE    "���ʹ��"  TO  WRK-SRYKANAME1
+                   MOVE    "全科合計"  TO  WRK-SRYKANAME1
                WHEN    "00"
-                   MOVE    "�������ʤ�"
+                   MOVE    "主科設定なし"
                                        TO  WRK-SRYKANAME1
                WHEN    OTHER
                    INITIALIZE                  SYSKANRI-REC
@@ -715,7 +715,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Խ�����
+      *    請求情報編集処理
       *****************************************************************
        2001-SKY-EDIT-SEC           SECTION.
       *
@@ -737,7 +737,7 @@
        2001-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������Խ�����
+      *    請求情報編集処理
       *****************************************************************
        20011-SKY-EDIT-SEC           SECTION.
       *
@@ -795,7 +795,7 @@
        20011-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������󽸷׽���
+      *    請求情報集計処理
       *****************************************************************
        2001111-SKY-SUM-SEC         SECTION.
       *
@@ -837,7 +837,7 @@
        2001111-SKY-SUM-EXT.
            EXIT.
       *****************************************************************
-      *    ��������Խ�����
+      *    公費情報編集処理
       *****************************************************************
        2001-KOH-EDIT-SEC           SECTION.
       *
@@ -859,7 +859,7 @@
        2001-KOH-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������Խ�����
+      *    公費情報編集処理
       *****************************************************************
        20011-KOH-EDIT-SEC          SECTION.
       *
@@ -898,7 +898,7 @@
        20011-KOH-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������Խ�����
+      *    請求情報編集処理
       *****************************************************************
        2001-ETC-EDIT-SEC           SECTION.
       *
@@ -930,14 +930,14 @@
        2001-ETC-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ�Խ������ʣ����ܡ�
+      *    入院チェック表編集処理（１枚目）
       *****************************************************************
        2001-HCGS138N1-EDIT-SEC         SECTION.
       *
            INITIALIZE                      HCGS138N1
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS138N1-SRYYM
-           MOVE    "����"              TO  HCGS138N1-NYUGAI
+           MOVE    "入院"              TO  HCGS138N1-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138N1-SYSYMD
            MOVE    WRK-SKYSBTNAME      TO  HCGS138N1-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138N1-SRYKANAME
@@ -1007,26 +1007,26 @@
                MOVE    SPACE           TO  WRK-KANACHK-STR
                MOVE    1               TO  IDXP
                IF    ( TKOH-KOHKBN (IDX1 IDX2)    =   "1" )
-                   STRING  "��"            DELIMITED BY SIZE
+                   STRING  "　"            DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
                    END-STRING
                ELSE
-                   STRING    "��"          DELIMITED BY SIZE
+                   STRING    "＊"          DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
                    END-STRING
                END-IF
                STRING  HKN-HBTNUM          DELIMITED BY SIZE
-                       "��"                DELIMITED BY SIZE
+                       "（"                DELIMITED BY SIZE
                        HKN-TANSEIDONAME    DELIMITED BY SPACE
-                       "��"                DELIMITED BY SIZE
+                       "）"                DELIMITED BY SIZE
                INTO    WRK-KANACHK-STR
                WITH    POINTER IDXP
                END-STRING
                IF    ( IDX2        =       CONST-TKOH-MAX )
                 AND  ( TKOH-CNT(IDX1) >       CONST-TKOH-MAX )
-                   STRING    "��¾"        DELIMITED BY SIZE
+                   STRING    "　他"        DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
                    END-STRING
@@ -1047,7 +1047,7 @@
            MOVE    CNT-KENSU       TO  WRK-Z4
            MOVE    WRK-Z4          TO  HCGS138N1-KOHKENSU (CONST-KOHTTL)
            IF    ( TKOH-KOHMSG (IDX1) =   1 )
-               MOVE    "�����쥻�ץȤ������Ԥ�ʤ�����"
+               MOVE    "＊：レセプトで請求を行わない公費"
                                    TO  HCGS138N1-KOHMSG
            END-IF
       *
@@ -1069,7 +1069,7 @@
                MOVE    WRK-M9      TO  HCGS138N1-HASU
            ELSE
                MOVE    SPACE   TO  HCGS138N1-ETCMSG
-               STRING  "����¾�פ����ʹ�פ��Խ�����ޤ���"
+               STRING  "その他計は全科合計に編集されます。"
                                        DELIMITED   BY  SIZE
                INTO    HCGS138N1-ETCMSG
                END-STRING
@@ -1095,7 +1095,7 @@
        2001-HCGS138N1-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        230-HCGS138N1-PRINT-SEC         SECTION.
       *
@@ -1110,7 +1110,7 @@
        230-HCGS138N1-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ�Խ������ʣ����ܡ�
+      *    入院チェック表編集処理（２枚目）
       *****************************************************************
        2001-HCGS138N2-EDIT-SEC         SECTION.
       *
@@ -1153,14 +1153,14 @@
        2001-HCGS138N2-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ���Ф��Խ������ʣ����ܡ�
+      *    入院チェック表見出し編集処理（２枚目）
       *****************************************************************
        210-HCGS138N2-HEAD-SEC          SECTION.
       *
            INITIALIZE                      HCGS138N2
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS138N2-SRYYM
-           MOVE    "����"              TO  HCGS138N2-NYUGAI
+           MOVE    "入院"              TO  HCGS138N2-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138N2-SYSYMD
            MOVE    WRK-SKYSBTNAME      TO  HCGS138N2-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138N2-SRYKANAME
@@ -1175,7 +1175,7 @@
        210-HCGS138N2-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ�����Խ������ʣ����ܡ�
+      *    入院チェック表明細編集処理（２枚目）
       *****************************************************************
        220-HCGS138N2-BODY-SEC          SECTION.
       *
@@ -1275,7 +1275,7 @@
        220-HCGS138N2-BODY-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ���ʬ̾���Խ�����
+      *    保険区分名称編集処理
       *****************************************************************
        2201-HKNKBNNAME-EDIT-SEC        SECTION.
       *
@@ -1285,25 +1285,25 @@
                MOVE    LBL-GRP-IPNKOU9
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-IPNKOU7
-               MOVE    "���̡ʹ⣷��"
+               MOVE    "一般（高７）"
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-IPN
-               MOVE    "����"
+               MOVE    "一般"
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-IPNMISGK
-               MOVE    "���̡ʣ��С�"
+               MOVE    "一般（６歳）"
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-TAI
-               MOVE    "�࿦���ܿ͡�"
+               MOVE    "退職（本人）"
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-TAIKZK
-               MOVE    "�࿦�ʲ�²��"
+               MOVE    "退職（家族）"
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-TAIMISGK
-               MOVE    "�࿦�ʣ��С�"
+               MOVE    "退職（６歳）"
                                TO  WRK-HKNKBNNAME
            WHEN    CONST-GRP-TOTAL
-               MOVE    "���ݸ��Էס�"
+               MOVE    "【保険者計】"
                                TO  WRK-HKNKBNNAME
            END-EVALUATE
       *
@@ -1311,11 +1311,11 @@
        2201-HKNKBNNAME-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ����Խ������ʣ����ܡ�
+      *    入院チェック表合計編集処理（２枚目）
       *****************************************************************
        220-HCGS138N2-TOTAL-SEC         SECTION.
       *
-           MOVE    "�������������硡����"
+           MOVE    "　　　　　　合　　計"
                                TO  HCGS138N2-HKNJANAME (CONST-HKNJATTL)
       *
            MOVE    TTLHKN-KENSU         TO  WRK-Z4
@@ -1361,7 +1361,7 @@
        220-HCGS138N2-TOTAL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        230-HCGS138N2-PRINT-SEC         SECTION.
       *
@@ -1376,14 +1376,14 @@
        230-HCGS138N2-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ�Խ������ʣãӣ֡�
+      *    入院チェック表編集処理（ＣＳＶ）
       *****************************************************************
        2001-HCGS138N1-CSV-SEC           SECTION.
       *
            MOVE    "2"             TO  WRK-PRTKBN
-           MOVE    "����"          TO  WRK-PRTKBNMEI
+           MOVE    "国保"          TO  WRK-PRTKBNMEI
            MOVE    "1"             TO  WRK-NYUGAIKBN
-           MOVE    "����"          TO  WRK-NYUGAIKBNMEI
+           MOVE    "入院"          TO  WRK-NYUGAIKBNMEI
       *
            MOVE    SPACE           TO  WRK-CSVDATA
            MOVE    1               TO  IDXP
@@ -1409,7 +1409,7 @@
                    MOVE    1           TO  IDXP
       *
                    MOVE    "1"         TO  WRK-DATAKBN
-                   MOVE    "�ݸ���ʬ��"
+                   MOVE    "保険区分別"
                                        TO  WRK-DATAKBNMEI
                    PERFORM 20011-CSV-KEY-EDIT-SEC
       *
@@ -1419,8 +1419,8 @@
                        INITIALIZE          ORCSSTRINGAREA
                        MOVE    "sub"   TO  ORCSSTR-COMMAND
                        MOVE    WRK-ITEM TO ORCSSTR-STRING1
-                       MOVE    "�⣹"  TO  ORCSSTR-STRING2
-                       MOVE    "���"  TO  ORCSSTR-STRING3
+                       MOVE    "高９"  TO  ORCSSTR-STRING2
+                       MOVE    "高一"  TO  ORCSSTR-STRING3
                        CALL    "orcsstring" USING  ORCSSTRINGAREA
                        MOVE    ORCSSTR-STRING1
                                        TO  WRK-ITEM
@@ -1540,7 +1540,7 @@
                                TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
-           MOVE  "�����"      TO  WRK-ITEM
+           MOVE  "件数計"      TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
            MOVE  HCGS138N1-KOHKENSU (CONST-KOHTTL)
@@ -1612,7 +1612,7 @@
        2001-HCGS138N1-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    �ãӣ֥ե�����ˣţٹ����Խ�����
+      *    ＣＳＶファイルＫＥＹ項目編集処理
       *****************************************************************
        20011-CSV-KEY-EDIT-SEC         SECTION.
       *
@@ -1654,14 +1654,14 @@
        20011-CSV-KEY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ�Խ������ʣãӣ֡�
+      *    入院チェック表編集処理（ＣＳＶ）
       *****************************************************************
        2001-HCGS138N2-CSV-SEC          SECTION.
       *
            MOVE    "2"             TO  WRK-PRTKBN
-           MOVE    "����"          TO  WRK-PRTKBNMEI
+           MOVE    "国保"          TO  WRK-PRTKBNMEI
            MOVE    "1"             TO  WRK-NYUGAIKBN
-           MOVE    "����"          TO  WRK-NYUGAIKBNMEI
+           MOVE    "入院"          TO  WRK-NYUGAIKBNMEI
       *
            COMPUTE CNT-CSV =   CNT-CSV     +   1
       *
@@ -1673,15 +1673,15 @@
       *
                    MOVE    CSV-H01-ITEM (IDXI)
                                        TO  WRK-ITEM
-                   IF    ( WRK-ITEM    =   "�ݸ���ʬ" )
-                       MOVE    "�ݸ����ֹ�"
+                   IF    ( WRK-ITEM    =   "保険区分" )
+                       MOVE    "保険者番号"
                                        TO  WRK-ITEM
                        PERFORM 801-CSVDATA-EDIT-SEC
-                       MOVE    "�ݸ��԰���"
+                       MOVE    "保険者一覧"
                                        TO  WRK-ITEM
                        PERFORM 801-CSVDATA-EDIT-SEC
       *
-                       MOVE    "�ݸ���ʬ"
+                       MOVE    "保険区分"
                                        TO  WRK-ITEM
       *
                    END-IF
@@ -1719,7 +1719,7 @@
        2001-HCGS138N2-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ���������å�ɽ�Խ������ʣãӣ֡�
+      *    入院チェック表編集処理（ＣＳＶ）
       *****************************************************************
        20011-HCGS138N2-CSV-SEC         SECTION.
       *
@@ -1727,7 +1727,7 @@
            MOVE    1               TO  IDXP
       *
            MOVE    "4"             TO  WRK-DATAKBN
-           MOVE    "�ݸ�����"      TO  WRK-DATAKBNMEI
+           MOVE    "保険者別"      TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
            IF    ( HCGS138N2-HKNJANUM (IDX2)
@@ -1809,14 +1809,14 @@
        20011-HCGS138N2-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ�Խ�����
+      *    外来チェック表編集処理
       *****************************************************************
        2001-HCGS138G1-EDIT-SEC         SECTION.
       *
            INITIALIZE                      HCGS138G1
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS138G1-SRYYM
-           MOVE    "����"              TO  HCGS138G1-NYUGAI
+           MOVE    "外来"              TO  HCGS138G1-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138G1-SYSYMD
            MOVE    WRK-SKYSBTNAME      TO  HCGS138G1-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138G1-SRYKANAME
@@ -1868,26 +1868,26 @@
                MOVE    SPACE           TO  WRK-KANACHK-STR
                MOVE    1               TO  IDXP
                IF    ( TKOH-KOHKBN (IDX1 IDX2)    =   "1" )
-                   STRING  "��"            DELIMITED BY SIZE
+                   STRING  "　"            DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
                    END-STRING
                ELSE
-                   STRING    "��"          DELIMITED BY SIZE
+                   STRING    "＊"          DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
                    END-STRING
                END-IF
                STRING  HKN-HBTNUM          DELIMITED BY SIZE
-                       "��"                DELIMITED BY SIZE
+                       "（"                DELIMITED BY SIZE
                        HKN-TANSEIDONAME    DELIMITED BY SPACE
-                       "��"                DELIMITED BY SIZE
+                       "）"                DELIMITED BY SIZE
                INTO    WRK-KANACHK-STR
                WITH    POINTER IDXP
                END-STRING
                IF    ( IDX2        =       CONST-TKOH-MAX )
                 AND  ( TKOH-CNT(IDX1) >       CONST-TKOH-MAX )
-                   STRING    "��¾"        DELIMITED BY SIZE
+                   STRING    "　他"        DELIMITED BY SIZE
                    INTO    WRK-KANACHK-STR
                    WITH    POINTER IDXP
                    END-STRING
@@ -1908,7 +1908,7 @@
            MOVE    CNT-KENSU       TO  WRK-Z4
            MOVE    WRK-Z4          TO  HCGS138G1-KOHKENSU (CONST-KOHTTL)
            IF    ( TKOH-KOHMSG (IDX1) =   1 )
-               MOVE    "�����쥻�ץȤ������Ԥ�ʤ�����"
+               MOVE    "＊：レセプトで請求を行わない公費"
                                    TO  HCGS138G1-KOHMSG
            END-IF
       *
@@ -1930,7 +1930,7 @@
                MOVE    WRK-M9      TO  HCGS138G1-HASU
            ELSE
                MOVE    SPACE   TO  HCGS138G1-ETCMSG
-               STRING  "����¾�פ����ʹ�פ��Խ�����ޤ���"
+               STRING  "その他計は全科合計に編集されます。"
                                        DELIMITED   BY  SIZE
                INTO    HCGS138G1-ETCMSG
                END-STRING
@@ -1956,7 +1956,7 @@
        2001-HCGS138G1-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        230-HCGS138G1-PRINT-SEC         SECTION.
       *
@@ -1971,7 +1971,7 @@
        230-HCGS138G1-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ�Խ������ʣ����ܡ�
+      *    外来チェック表編集処理（２枚目）
       *****************************************************************
        2001-HCGS138G2-EDIT-SEC         SECTION.
       *
@@ -2014,14 +2014,14 @@
        2001-HCGS138G2-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ���Ф��Խ������ʣ����ܡ�
+      *    外来チェック表見出し編集処理（２枚目）
       *****************************************************************
        210-HCGS138G2-HEAD-SEC          SECTION.
       *
            INITIALIZE                      HCGS138G2
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS138G2-SRYYM
-           MOVE    "����"              TO  HCGS138G2-NYUGAI
+           MOVE    "外来"              TO  HCGS138G2-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS138G2-SYSYMD
            MOVE    WRK-SKYSBTNAME      TO  HCGS138G2-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS138G2-SRYKANAME
@@ -2036,7 +2036,7 @@
        210-HCGS138G2-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ�����Խ������ʣ����ܡ�
+      *    外来チェック表明細編集処理（２枚目）
       *****************************************************************
        220-HCGS138G2-BODY-SEC          SECTION.
       *
@@ -2110,11 +2110,11 @@
        220-HCGS138G2-BODY-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ����Խ������ʣ����ܡ�
+      *    外来チェック表合計編集処理（２枚目）
       *****************************************************************
        220-HCGS138G2-TOTAL-SEC         SECTION.
       *
-           MOVE    "�������������硡����"
+           MOVE    "　　　　　　合　　計"
                                TO  HCGS138G2-HKNJANAME (CONST-HKNJATTL)
       *
            MOVE    TTLHKN-KENSU         TO  WRK-Z4
@@ -2142,7 +2142,7 @@
        220-HCGS138G2-TOTAL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        230-HCGS138G2-PRINT-SEC         SECTION.
       *
@@ -2157,14 +2157,14 @@
        230-HCGS138G2-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ�Խ������ʣãӣ֡�
+      *    外来チェック表編集処理（ＣＳＶ）
       *****************************************************************
        2001-HCGS138G1-CSV-SEC           SECTION.
       *
            MOVE    "2"             TO  WRK-PRTKBN
-           MOVE    "����"          TO  WRK-PRTKBNMEI
+           MOVE    "国保"          TO  WRK-PRTKBNMEI
            MOVE    "2"             TO  WRK-NYUGAIKBN
-           MOVE    "����"          TO  WRK-NYUGAIKBNMEI
+           MOVE    "外来"          TO  WRK-NYUGAIKBNMEI
       *
            MOVE    SPACE           TO  WRK-CSVDATA
            MOVE    1               TO  IDXP
@@ -2190,7 +2190,7 @@
                    MOVE    1           TO  IDXP
       *
                    MOVE    "1"         TO  WRK-DATAKBN
-                   MOVE    "�ݸ���ʬ��"
+                   MOVE    "保険区分別"
                                        TO  WRK-DATAKBNMEI
                    PERFORM 20011-CSV-KEY-EDIT-SEC
       *
@@ -2200,8 +2200,8 @@
                        INITIALIZE          ORCSSTRINGAREA
                        MOVE    "sub"   TO  ORCSSTR-COMMAND
                        MOVE    WRK-ITEM TO ORCSSTR-STRING1
-                       MOVE    "�⣹"  TO  ORCSSTR-STRING2
-                       MOVE    "���"  TO  ORCSSTR-STRING3
+                       MOVE    "高９"  TO  ORCSSTR-STRING2
+                       MOVE    "高一"  TO  ORCSSTR-STRING3
                        CALL    "orcsstring" USING  ORCSSTRINGAREA
                        MOVE    ORCSSTR-STRING1
                                        TO  WRK-ITEM
@@ -2297,7 +2297,7 @@
                                TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
-           MOVE  "�����"      TO  WRK-ITEM
+           MOVE  "件数計"      TO  WRK-ITEM
            PERFORM 801-CSVDATA-EDIT-SEC
       *
            MOVE  HCGS138G1-KOHKENSU (CONST-KOHTTL)
@@ -2369,14 +2369,14 @@
        2001-HCGS138G1-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ�Խ������ʣãӣ֡�
+      *    外来チェック表編集処理（ＣＳＶ）
       *****************************************************************
        2001-HCGS138G2-CSV-SEC          SECTION.
       *
            MOVE    "2"             TO  WRK-PRTKBN
-           MOVE    "����"          TO  WRK-PRTKBNMEI
+           MOVE    "国保"          TO  WRK-PRTKBNMEI
            MOVE    "2"             TO  WRK-NYUGAIKBN
-           MOVE    "����"          TO  WRK-NYUGAIKBNMEI
+           MOVE    "外来"          TO  WRK-NYUGAIKBNMEI
       *
            COMPUTE CNT-CSV =   CNT-CSV     +   1
       *
@@ -2388,15 +2388,15 @@
       *
                    MOVE    CSV-H04-ITEM (IDXI)
                                        TO  WRK-ITEM
-                   IF    ( WRK-ITEM    =   "�ݸ���ʬ" )
-                       MOVE    "�ݸ����ֹ�"
+                   IF    ( WRK-ITEM    =   "保険区分" )
+                       MOVE    "保険者番号"
                                        TO  WRK-ITEM
                        PERFORM 801-CSVDATA-EDIT-SEC
-                       MOVE    "�ݸ��԰���"
+                       MOVE    "保険者一覧"
                                        TO  WRK-ITEM
                        PERFORM 801-CSVDATA-EDIT-SEC
       *
-                       MOVE    "�ݸ���ʬ"
+                       MOVE    "保険区分"
                                        TO  WRK-ITEM
                    END-IF
                    IF    ( IDXI   >=   CSV-H04-MAX    )
@@ -2433,7 +2433,7 @@
        2001-HCGS138G2-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ��������å�ɽ�Խ������ʣãӣ֡�
+      *    外来チェック表編集処理（ＣＳＶ）
       *****************************************************************
        20011-HCGS138G2-CSV-SEC         SECTION.
       *
@@ -2441,7 +2441,7 @@
            MOVE    1               TO  IDXP
       *
            MOVE    "4"             TO  WRK-DATAKBN
-           MOVE    "�ݸ�����"      TO  WRK-DATAKBNMEI
+           MOVE    "保険者別"      TO  WRK-DATAKBNMEI
            PERFORM 20011-CSV-KEY-EDIT-SEC
       *
            IF    ( HCGS138G2-HKNJANUM (IDX2)
@@ -2499,7 +2499,7 @@
        20011-HCGS138G2-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        230-PRINT-SEC                   SECTION.
       *
@@ -2534,7 +2534,7 @@
            IF    ( SPRT-RETURN     =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -2543,7 +2543,7 @@
        230-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    �ãӣֽ��Ͻ���
+      *    ＣＳＶ出力処理
       *****************************************************************
        230-TOUKEICSV-SEC               SECTION.
       *
@@ -2567,7 +2567,7 @@
            MOVE    BGS100P-CSVFNAME TO STOUKEICSV-TO-DATA
            MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-CSVDATA     TO  STOUKEICSV-CSVDATA
-           MOVE    "�ݸ�����������å�ɽ�ãӣֺ���"
+           MOVE    "保険別請求チェック表ＣＳＶ作成"
                                    TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
@@ -2576,7 +2576,7 @@
            IF    ( STOUKEICSV-RETURN   =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "���ףãӣ֣ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -2586,7 +2586,7 @@
        230-TOUKEICSV-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -2597,7 +2597,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -2611,7 +2611,7 @@
                WRITE   BGS100ERR-REC
                CLOSE   BGS100ERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-ERRMSG      TO  JOB-YOBI
@@ -2627,7 +2627,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    CSV�ǡ����Խ�����
+      *    CSVデータ編集処理
       *****************************************************************
        800-CSVDATA-EDIT-SEC            SECTION.
       *
@@ -2643,7 +2643,7 @@
        800-CSVDATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    CSV�ǡ����Խ�����
+      *    CSVデータ編集処理
       *****************************************************************
        801-CSVDATA-EDIT-SEC            SECTION.
       *
@@ -2654,7 +2654,7 @@
        801-CSVDATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    CSV�ǡ����Խ�����
+      *    CSVデータ編集処理
       *****************************************************************
        802-CSVDATA-EDIT-SEC            SECTION.
       *
@@ -2665,7 +2665,7 @@
        802-CSVDATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܥ�������������
+      *    項目サイズ取得処理
       *****************************************************************
        800-GET-ITEM-SIZE-SEC           SECTION.
       *
@@ -2691,7 +2691,7 @@
        800-GET-ITEM-SIZE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ڤ�ʸ���Խ�����
+      *    区切り文字編集処理
       *****************************************************************
        800-PUT-DELIMITER-SEC           SECTION.
       *
@@ -2704,7 +2704,7 @@
        800-PUT-DELIMITER-EXT.
            EXIT.
       *****************************************************************
-      *    ����ʸ���Խ�����
+      *    改行文字編集処理
       *****************************************************************
        800-PUT-CR-SEC                  SECTION.
       *
@@ -2717,7 +2717,7 @@
        800-PUT-CR-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-HIZUKE-EDIT-SEC             SECTION.
       *
@@ -2736,7 +2736,7 @@
                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
                MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-               INSPECT WRK-EDTYMD3 REPLACING  ALL "  "  BY  "��"
+               INSPECT WRK-EDTYMD3 REPLACING  ALL "  "  BY  "　"
            END-IF
       *
       *
@@ -2744,7 +2744,7 @@
        800-HIZUKE-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        800-ZENKAKU-SEC                 SECTION.
       *
@@ -2760,7 +2760,7 @@
        800-ZENKAKU-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -2780,7 +2780,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ե������ɹ�����
+      *    請求ファイル読込処理
       *****************************************************************
        900-BGSSKY-READ-SEC             SECTION.
       *
@@ -2808,7 +2808,7 @@
        900-BGSSKY-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����ե������ɹ�����
+      *    公費ファイル読込処理
       *****************************************************************
        900-BGSKOH-READ-SEC             SECTION.
       *
@@ -2836,7 +2836,7 @@
        900-BGSKOH-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ԥե������ɹ�����
+      *    保険者ファイル読込処理
       *****************************************************************
        900-BGSHKNJA-READ-SEC           SECTION.
       *
@@ -2879,7 +2879,7 @@
        900-BGSHKNJA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����¾����ե������ɹ�����
+      *    その他請求ファイル読込処理
       *****************************************************************
        900-BGSETC-READ-SEC             SECTION.
       *
@@ -2907,7 +2907,7 @@
        900-BGSETC-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ɤ����Ф������å�����
+      *    読み飛ばしチェック処理
       *****************************************************************
        9001-SKIP-CHK-SEC           SECTION.
       *
@@ -2945,7 +2945,7 @@
        9001-SKIP-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ�ޥ�����������
+      *    保険番号マスタ検索処理
       *****************************************************************
        900-HKNNUM-KEY-SEL-SEC          SECTION.
       *
@@ -2976,7 +2976,7 @@
        900-HKNNUM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ԥޥ�����������
+      *    保険者マスタ検索処理
       *****************************************************************
        900-HKNJAINF-KEY-SEL-SEC        SECTION.
       *
@@ -3004,7 +3004,7 @@
        900-HKNJAINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ������������
+      *    システム管理検索処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
@@ -3030,7 +3030,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3048,7 +3048,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�ʤ�)
+      *    ＤＢ検索処理（FHETCHを行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -3063,7 +3063,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -3078,7 +3078,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -3093,7 +3093,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����ཪλ����
+      *    プログラム終了処理
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *

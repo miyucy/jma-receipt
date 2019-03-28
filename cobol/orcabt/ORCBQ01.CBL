@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBQ01.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���ԾȲ�
-      *  ����ݡ��ͥ��̾  : ���԰������ϡʣϣңã£ѣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/06/13    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者照会
+      *  コンポーネント名  : 患者一覧出力（ＯＲＣＢＱ０１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/06/13    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����       ����
-      *  01.00.02    MCC-����     02.06.26+ ����ִ�����ǽ�ɲ�
-      *                                   +-���Ϲ��ܤ�ǯ���ɲ�
-      *  01.00.03    NACL-����    02/09/13  �ǥ��쥯�ȥ�򥵥֥ץ���
-      *  01.00.04    NACL-����    02/10/21  �����ѥե�����˥����ȶ�ʬ���ɲ�
-      *  01.00.05    NACL-����    03/07/01  ������ץ�󥿥����ɲ�
-      *  01.00.06    NACL-����    03/09/11  ͹���ֹ���ɲ�
-      *  01.00.07    NACL-����    04/08/05  �ݸ��������ֹ���ɲ�
-      *  03.05.00    NACL-����    07.05.23 ���롼�׿����б�
-      *  04.01.01    NACL-ƣ��    07/10/01  ���饤�������¸�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付       内容
+      *  01.00.02    MCC-太田     02.06.26+ ジョブ管理機能追加
+      *                                   +-出力項目に年齢追加
+      *  01.00.03    NACL-太田    02/09/13  ディレクトリをサブプロへ
+      *  01.00.04    NACL-太田    02/10/21  印刷用ファイルにサイト区分を追加
+      *  01.00.05    NACL-太田    03/07/01  出力先プリンタサブ追加
+      *  01.00.06    NACL-太田    03/09/11  郵便番号を追加
+      *  01.00.07    NACL-太田    04/08/05  保険、電話番号を追加
+      *  03.05.00    NACL-太田    07.05.23 グループ診療対応
+      *  04.01.01    NACL-藤原    07/10/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,18 +43,18 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  BQ01-FILE   ASSIGN  PRFNAME
                                    ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-BQ01.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
       *
-      *    �ãӣ֥ե�����
+      *    ＣＳＶファイル
            SELECT  CSV-FILE        ASSIGN  CSVNAME
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
@@ -63,31 +63,31 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  BQ01-FILE.
            COPY    "CPBQ01.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
            COPY    "CPPRTALL.INC".
       *
-      *    �ãӣ֥ե�����
+      *    ＣＳＶファイル
        FD  CSV-FILE.
        01  CSV-REC                     PIC X(1000).
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *
-      *    ���������ΰ�
+      *    シェル用領域
       *    COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *
-      *    ����ѥ�᡼���ե�����
+      *    ワークパラメータファイル
            COPY    "CPBQ01.INC"
                                    REPLACING  //BQ01//
                                    BY         //WKBQ01//.
@@ -102,18 +102,18 @@
                                    REPLACING  //ASGNPARA//
                                    BY         //CSVNAME//.
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-BQ01                PIC X(02).
            03  STS-PRT                 PIC X(02).
            03  STS-CSV                 PIC X(02).
       *
-      *    ����ǥå����ΰ�
+      *    インデックス領域
        01  IDX-AREA.
            03  IDX1                    PIC 9(09).
            03  IDX-LEN                 PIC 9(05).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PTINF               PIC 9(01).
@@ -121,14 +121,14 @@
            03  FLG-PTSRH               PIC 9(01).
            03  FLG-PTPUBLIC            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE                PIC 9(09).
            03  CNT-LINE                PIC 9(05).
            03  CNT-KNS                 PIC 9(05).
            03  CNT-CSV                 PIC 9(09).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA. 
            03  WRK-STR                 PIC X(20000).
            03  WRK-STR-LEN             PIC 9(05).
@@ -207,7 +207,7 @@
            03  FILLER                  PIC X(01)   VALUE ",".
            03  CSV-KANANAME            PIC X(100).
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CSV-PATIENT-ID1         PIC X(20)   VALUE "�ϰ�Ϣ�ȣɣ�".
+           03  CSV-PATIENT-ID1         PIC X(20)   VALUE "地域連携ＩＤ".
       * 
        01  CONST-AREA.
            03  CONST-FORMID            PIC X(20)   VALUE  "HCM28.red".
@@ -217,77 +217,77 @@
                VALUE   "ORCBQ01".
       * 
        01  CONST-CSV-HEADER.
-           03  CONST-CSV-NO            PIC X(20)   VALUE "�ֹ�".
+           03  CONST-CSV-NO            PIC X(20)   VALUE "番号".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-PTNUM         PIC X(20)   VALUE "�����ֹ�".
+           03  CONST-CSV-PTNUM         PIC X(20)   VALUE "患者番号".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-NAME          PIC X(20)   VALUE "��̾".
+           03  CONST-CSV-NAME          PIC X(20)   VALUE "氏名".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-SEX           PIC X(20)   VALUE "����".
+           03  CONST-CSV-SEX           PIC X(20)   VALUE "性別".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-BIRTHDAY      PIC X(20)   VALUE "��ǯ����".
+           03  CONST-CSV-BIRTHDAY      PIC X(20)   VALUE "生年月日".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-AGENUM        PIC X(20)   VALUE "ǯ��".
+           03  CONST-CSV-AGENUM        PIC X(20)   VALUE "年齢".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-AGETANI       PIC X(20)   VALUE "ǯ���٥�".
+           03  CONST-CSV-AGETANI       PIC X(20)   VALUE "年齢ラベル".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-HKN           PIC X(20)   VALUE "�ݸ�".
+           03  CONST-CSV-HKN           PIC X(20)   VALUE "保険".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-BTUNUM        PIC X(20)   VALUE "�����ֹ�".
+           03  CONST-CSV-BTUNUM        PIC X(20)   VALUE "病棟番号".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-BRMNUM        PIC X(20)   VALUE "�¼��ֹ�".
+           03  CONST-CSV-BRMNUM        PIC X(20)   VALUE "病室番号".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-LASTYMD       PIC X(20)   VALUE "�ǽ�������".
+           03  CONST-CSV-LASTYMD       PIC X(20)   VALUE "最終受診日".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-TEL           PIC X(20)   VALUE "�����ֹ�".
+           03  CONST-CSV-TEL           PIC X(20)   VALUE "電話番号".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-POST          PIC X(20)   VALUE "͹���ֹ�".
+           03  CONST-CSV-POST          PIC X(20)   VALUE "郵便番号".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-JYUSYO        PIC X(20)   VALUE "����".
+           03  CONST-CSV-JYUSYO        PIC X(20)   VALUE "住所".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-KANANAME      PIC X(20)   VALUE "���ʻ�̾".
+           03  CONST-CSV-KANANAME      PIC X(20)   VALUE "カナ氏名".
            03  FILLER                  PIC X(01)   VALUE ",".
-           03  CONST-CSV-PATIENT-ID1   PIC X(20)   VALUE "�ϰ�Ϣ�ȣɣ�".
+           03  CONST-CSV-PATIENT-ID1   PIC X(20)   VALUE "地域連携ＩＤ".
       *
-      *    ���԰���
+      *    患者一覧
            COPY "HCM28.INC"        REPLACING  //HCM28//
                                    BY         //HC28//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    monpe�����ǡ����㤭�̤콤������
+      *    monpe印刷データ泣き別れ修正サブ
            COPY  "CPORCSFIXREDDATA.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY  "CPSYSKANRI.INC".
            COPY  "CPSK1001.INC".
            COPY  "CPSK1010.INC".
            COPY  "CPSK1031.INC".
            COPY  "CPSK1044.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ���ԾȲ�
+      *    患者照会
        01  PTSRH-REC.
            COPY    "CPPTSRH.INC".
       *
-      *    �����ϰ�Ϣ��
+      *    患者地域連携
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �գɣļ����ѥ��ꥢ
+      *   ＵＩＤ取得用エリア
        01 UIDIO-AREA.
            03  UIDIO-RET   PIC X(2).
            03  UIDIO-UID   PIC X(36).
@@ -295,37 +295,37 @@
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *
-      *    �ǽ�����������
+      *    最終受診日取得
            COPY    "CPORCSLASTYMD.INC".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -337,7 +337,7 @@
                                        USING     COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -350,7 +350,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -360,7 +360,7 @@
                                        WRK-AREA
                                        CNT-AREA
       *
-      *    �ģ¥����ץ�
+      *    ＤＢオープン
            PERFORM 120-DBOPEN-SEC
       *
            MOVE    SPACE               TO  SPA-AREA
@@ -396,7 +396,7 @@
       *
            MOVE    UIDIO-UID           TO  WRK-UUID
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -434,10 +434,10 @@
                                        TO  PRFNAME
            MOVE    SGETTEMP-TEMPDIR    TO  MCP-TEMPDIR
       *
-      *    �ѥ�᡼���ե����륪���ץ�
+      *    パラメータファイルオープン
            OPEN    INPUT               BQ01-FILE
       *
-      *    �ѥ�᡼���ե������ɤ߹���
+      *    パラメータファイル読み込み
            READ    BQ01-FILE
            END-READ
       *
@@ -458,7 +458,7 @@
                OPEN    OUTPUT              CSV-FILE
       *
            ELSE
-      *        �����ѥե����륪���ץ�
+      *        印刷用ファイルオープン
                MOVE    WRK-PARA-HOSPNUM TO HC01PARA-HOSPNUM
                MOVE    "HC99"          TO  HC01PARA-FORM-ID
                MOVE    WRK-PARA-TERMID
@@ -478,7 +478,7 @@
       *
                OPEN    OUTPUT              PRT-FILE
       *
-      *        �ץ��̾��������
+      *        プリンタ名取得処理
                PERFORM 110-PRTNUM-GET-SEC
                MOVE    SYS-1031-PRTNM(6)
                                        TO  WRK-PRTNM
@@ -492,11 +492,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ��̾��������
+      *    プリンタ名取得処理
       *****************************************************************
        110-PRTNUM-GET-SEC                  SECTION.
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
            MOVE    WRK-PARA-SYSYMD     TO  ORCSPRTNM-SRYYMD
@@ -511,20 +511,20 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO            TO  CNT-LINE
                                        CNT-KNS
       *
-      *    �����оݥǡ�����������
+      *    患者対象データ検索処理
            PERFORM 910-PTSRH-ODR-SEL-SEC
       *
-      *    ���ԥǡ����ɤ����Ф�����
+      *    患者データ読み飛ばし処理
            PERFORM 910-PTSRH-SKIP-SEC
       *
-      *    �����������
+      *    処理件数算出
            COMPUTE WRK-PROC-KNS    =   WKBQ01-EDKNS
                                    -   WKBQ01-STKNS
                                    +   1
@@ -544,22 +544,22 @@
       *
                IF  ( WKBQ01-PROC-FLG   =  ZERO )
       *
-      *            �ãӣ��Խ�����
+      *            ＣＳＶ編集処理
                    PERFORM 800-CSV-EDIT-SEC
                ELSE
       *
-      *            Ģɼ�Խ�����
+      *            帳票編集処理
                    PERFORM 800-PRT-EDIT-SEC
                END-IF
       *
-      *        ���ԥޥ����ɹ�����
+      *        患者マスタ読込処理
                PERFORM 910-PTSRH-ODR-FET-SEC
       *
            END-PERFORM
       *
            IF  ( WKBQ01-PROC-FLG   =   1 )
                IF  ( CNT-LINE      >   ZERO )
-      *            Ģɼ���Ͻ���
+      *            帳票出力処理
                    PERFORM 800-PRT-WRITE-SEC
                END-IF
            END-IF
@@ -573,7 +573,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -593,7 +593,7 @@
                MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
                MOVE    "0"             TO  SHELLTBL-ARG4
                IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-                   MOVE    "���ԾȲ񸡺����"  TO  SHELLTBL-ARG5
+                   MOVE    "患者照会検索結果"  TO  SHELLTBL-ARG5
                    MOVE    SPA-CLIENT-SHOWDIALOG
                                        TO  SHELLTBL-ARG6
                END-IF
@@ -607,7 +607,7 @@
            END-IF
       *
            IF  ( WKBQ01-PROC-FLG    =  ZERO )
-      *        �ե�������¸���󹹿�
+      *        ファイル保存情報更新
                PERFORM 3001-FILE-INFO-INSERT-SEC
            END-IF
       *
@@ -622,7 +622,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�������¸���󹹿�����
+      *    ファイル保存情報更新処理
       *****************************************************************
        3001-FILE-INFO-INSERT-SEC             SECTION.
       *
@@ -650,7 +650,7 @@
                                        TO  SFILESV-TO-FOLDER(WRK-RENNUM)
                MOVE    WRK-PARA-FILENM TO  SFILESV-TO-DATA  (WRK-RENNUM)
                MOVE    WRK-PROC-KNS    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
-               MOVE    "���԰���"      TO  SFILESV-TITLE    (WRK-RENNUM)
+               MOVE    "患者一覧"      TO  SFILESV-TITLE    (WRK-RENNUM)
       *********MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
            END-IF
       *
@@ -664,7 +664,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ե��åȼ�������
+      *    オフセット取得処理
       *****************************************************************
        800-OFFSET-GET-SEC              SECTION.
       *
@@ -703,7 +703,7 @@
        800-OFFSET-GET-EXT.
             EXIT.
       *****************************************************************
-      *    �ãӣ��Խ�����
+      *    ＣＳＶ編集処理
       *****************************************************************
        800-CSV-EDIT-SEC                SECTION.
       *
@@ -738,9 +738,9 @@
                                    TO  CSV-NAME
            EVALUATE    PTINF-SEX
            WHEN    1
-               MOVE    "��"        TO  CSV-SEX
+               MOVE    "男"        TO  CSV-SEX
            WHEN    2
-               MOVE    "��"        TO  CSV-SEX
+               MOVE    "女"        TO  CSV-SEX
            WHEN    OTHER
                MOVE    SPACE       TO  CSV-SEX
            END-EVALUATE
@@ -767,16 +767,16 @@
                                    TO  CSV-HKN
       *
       *
-      *    �����ֹ�
+      *    電話番号
            MOVE    PTINF-HOME-TEL1
                                        TO  CSV-TEL
-      *    �����ֹ�
+      *    病棟番号
            MOVE    ORCSLASTYMD-BRMNUM (1:2) TO  CSV-BTUNUM
       *
-      *    �¼��ֹ�
+      *    病室番号
            MOVE    ORCSLASTYMD-BRMNUM (4:)  TO  CSV-BRMNUM
       *
-      *    �ǽ�������
+      *    最終受診日
            IF    ( ORCSLASTYMD-LASTYMD      =   SPACE )
                MOVE    SPACE           TO  CSV-LASTYMD
            ELSE
@@ -810,7 +810,7 @@
        800-CSV-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        800-PRT-EDIT-SEC                SECTION.
       *
@@ -818,7 +818,7 @@
       *
            MOVE    CNT-KNS         TO  WRK-ZZZZ9
            MOVE    WRK-ZZZZ9       TO  HC28-CD     (CNT-LINE)
-      *    ����μºݤ�ʸ����Ĺ�����
+      *    住所の実際の文字列長を求める
            MOVE    20                    TO  WRK-STR-LEN
            MOVE    PTSRH-PTNUM     TO  WRK-STR
            PERFORM 900-STR-LEN-GET-SEC
@@ -842,9 +842,9 @@
       *
            EVALUATE    PTINF-SEX
            WHEN    1
-               MOVE    "��"        TO  HC28-SEIBETU(CNT-LINE)
+               MOVE    "男"        TO  HC28-SEIBETU(CNT-LINE)
            WHEN    2
-               MOVE    "��"        TO  HC28-SEIBETU(CNT-LINE)
+               MOVE    "女"        TO  HC28-SEIBETU(CNT-LINE)
            END-EVALUATE
       *
            MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
@@ -866,10 +866,10 @@
            MOVE    ORCSLASTYMD-HKNCOMBI-MEI
                                    TO  HC28-HKN (CNT-LINE)
       *
-      *    �����ֹ�
+      *    電話番号
            MOVE    PTINF-HOME-TEL1
                                        TO  HC28-TEL (CNT-LINE)
-      *    �ǽ�������
+      *    最終受診日
            IF    ( ORCSLASTYMD-BRMNUM  NOT =   SPACE )
                MOVE    ORCSLASTYMD-BRMNUM
                                        TO  HC28-LASTYMD
@@ -915,7 +915,7 @@
       *
            IF  ( CNT-LINE         >=   CONST-LINE )
       *
-      *        Ģɼ���Ͻ���
+      *        帳票出力処理
                PERFORM 800-PRT-WRITE-SEC
       *
                INITIALIZE              HC28
@@ -928,13 +928,13 @@
        800-PRT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ���Ͻ���
+      *    帳票出力処理
       *****************************************************************
        800-PRT-WRITE-SEC           SECTION.
       *
            COMPUTE CNT-PAGE        =   CNT-PAGE    +   1
       *
-      *    �إå����Խ�
+      *    ヘッダ部編集
            MOVE    WKBQ01-HYODAI   TO  HC28-HYODAI
       *
            MOVE    WKBQ01-JYOKEN1  TO  HC28-JYOKEN (1)
@@ -986,7 +986,7 @@
        800-PRT-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -998,12 +998,12 @@
                                                LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG3
-           INSPECT WRK-HENYMDG3   REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG3   REPLACING  ALL "  "  BY  "　"
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ���Խ�����
+      *    年齢編集処理
       *****************************************************************
        900-AGE-EDIT-SEC                SECTION.
       *
@@ -1026,17 +1026,17 @@
       *
            IF    ( WRK-AGE-YY          =   ZERO )
                MOVE    WRK-AGE-MM      TO  WRK-AGE-Z
-               MOVE    "����"          TO  WRK-AGE-MEI
+               MOVE    "ヶ月"          TO  WRK-AGE-MEI
            ELSE
                MOVE    WRK-AGE-YY      TO  WRK-AGE-Z
-               MOVE    "��"            TO  WRK-AGE-MEI
+               MOVE    "歳"            TO  WRK-AGE-MEI
            END-IF
       *
            .
        900-AGE-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ��׻�����
+      *    年齢計算処理
       *****************************************************************
        900-AGE-CALC-SEC                SECTION.
       *
@@ -1060,13 +1060,13 @@
        900-AGE-CALC-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    住所編集処理
       *****************************************************************
        900-ADRS-EDIT-SEC                   SECTION.
       *
            MOVE    SPACE           TO  WRK-ADRS
       *
-      *    ����ι���Ĺ�����
+      *    住所の項目長を求める
            MOVE    1               TO  WRK-STR-LEN
            MOVE    SPACE           TO  WRK-STR
            STRING  PTINF-HOME-ADRS   DELIMITED   BY  SIZE
@@ -1075,12 +1075,12 @@
            END-STRING
            COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
       *
-      *    ����μºݤ�ʸ����Ĺ�����
+      *    住所の実際の文字列長を求める
            MOVE    PTINF-HOME-ADRS TO  WRK-STR
            PERFORM 900-STR-LEN-GET-SEC
            MOVE    WRK-STR-LEN           TO  WRK-PTINF-ADR-LEN
       *
-      *    ���Ϥι���Ĺ�����
+      *    番地の項目長を求める
            MOVE    1               TO  WRK-STR-LEN
            MOVE    SPACE           TO  WRK-STR
            STRING  PTINF-HOME-BANTI  DELIMITED   BY  SIZE
@@ -1089,7 +1089,7 @@
            END-STRING
            COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
       *
-      *    ���Ϥμºݤ�ʸ����Ĺ�����
+      *    番地の実際の文字列長を求める
            MOVE    PTINF-HOME-BANTI  TO  WRK-STR
            PERFORM 900-STR-LEN-GET-SEC
            MOVE    WRK-STR-LEN         TO  WRK-PTINF-BANTI-LEN
@@ -1099,7 +1099,7 @@
                STRING  PTINF-HOME-ADRS 
                                (1: WRK-PTINF-ADR-LEN)
                                        DELIMITED   BY  SIZE
-                       "��"            DELIMITED   BY  SIZE
+                       "　"            DELIMITED   BY  SIZE
                INTO    WRK-ADRS
                WITH    POINTER WRK-STR-PNT
                END-STRING
@@ -1118,7 +1118,7 @@
        900-ADRS-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ʸ����Ĺ��������
+      *    文字列長取得処理
       *****************************************************************
        900-STR-LEN-GET-SEC                 SECTION.
       *
@@ -1135,7 +1135,7 @@
        900-STR-LEN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԾȲ񸡺�����
+      *    患者照会検索処理
       *****************************************************************
        910-PTSRH-ODR-SEL-SEC            SECTION.
       *
@@ -1165,7 +1165,7 @@
        910-PTSRH-ODR-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԾȲ�FETCH����
+      *    患者照会FETCH処理
       *****************************************************************
        910-PTSRH-ODR-FET-SEC            SECTION.
       *
@@ -1187,7 +1187,7 @@
        910-PTSRH-ODR-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԾȲ�������
+      *    患者照会削除処理
       *****************************************************************
        900-PTSRH-DEL1-SEC              SECTION.
       *
@@ -1204,7 +1204,7 @@
        900-PTSRH-DEL1-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ����ɤ����Ф�����
+      *    患者マスタ読み飛ばし処理
       *****************************************************************
        910-PTSRH-SKIP-SEC         SECTION.
       *
@@ -1212,7 +1212,7 @@
                UNTIL     ( IDX1        >       WKBQ01-STKNS )
                  OR      ( FLG-PTSRH   =       1 )
       *
-      *        ���ԥޥ����ɹ�����
+      *        患者マスタ読込処理
                PERFORM 910-PTSRH-ODR-FET-SEC
       *
            END-PERFORM
@@ -1221,7 +1221,7 @@
        910-PTSRH-SKIP-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ��󸡺�����
+      *    患者情報検索処理
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -1249,7 +1249,7 @@
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϰ�Ϣ�ȸ�������
+      *    患者地域連携検索処理
       *****************************************************************
        900-PTNUM-PUBLIC-KEY-SEL-SEC           SECTION.
       *
@@ -1277,7 +1277,7 @@
        900-PTNUM-PUBLIC-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
       *****************************************************************
        900-JOB-STEP-START-SEC      SECTION.
       *
@@ -1287,7 +1287,7 @@
            MOVE    CONST-JOBID     TO  JOB-JOBID
            MOVE    CONST-JOB-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    "���԰�������"  TO  JOB-SHELLMSG
+           MOVE    "患者一覧出力"  TO  JOB-SHELLMSG
            MOVE    "ORCBQ01"       TO  JOB-PGID
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA
@@ -1298,11 +1298,11 @@
        900-JOB-STEP-START-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        900-JOB-STEP-END-SEC            SECTION.
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -1327,7 +1327,7 @@
        900-JOB-STEP-END-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ�����������(KEY10)
+      *    システム管理マスタ検索処理(KEY10)
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -1353,7 +1353,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡���³����
+      *    ＤＢ　接続処理
       *****************************************************************
        120-DBOPEN-SEC              SECTION.
       *
@@ -1374,7 +1374,7 @@
        120-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡����ǽ���
+      *    ＤＢ　切断処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -1397,7 +1397,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1414,7 +1414,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -1428,7 +1428,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1442,7 +1442,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -1456,7 +1456,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģº������
+      *    ＤＢ削除処理
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *

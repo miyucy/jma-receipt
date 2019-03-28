@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,32 +16,32 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼ÔÊÝ¸±³ÎÇ§Ç¯·îÆüÍúÎò    ¡¡ COPY  (CPPTHKNRRK.INC)  *
+      *    æ‚£è€…ä¿é™ºç¢ºèªå¹´æœˆæ—¥å±¥æ­´    ã€€ COPY  (CPPTHKNRRK.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTHKNRRK-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTHKNRRK-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTHKNRRK-HOSPNUM           PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTHKNRRK-PTID              PIC  9(10).
-      *ÊÝ¸±£É£Ä
+      *ä¿é™ºï¼©ï¼¤
                05  PTHKNRRK-HKNID             PIC  9(10).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  PTHKNRRK-RENNUM            PIC  9(01).
-      *³ÎÇ§Ç¯·îÆü
+      *ç¢ºèªå¹´æœˆæ—¥
            03  PTHKNRRK-KAKUNINYMD            PIC  X(08).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTHKNRRK-TERMID                PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTHKNRRK-OPID                  PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTHKNRRK-CREYMD                PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTHKNRRK-UPYMD                 PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTHKNRRK-UPHMS                 PIC  X(06).

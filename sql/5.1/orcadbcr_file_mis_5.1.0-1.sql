@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- ���ž��󥷥��ƥ�����
+-- 診療情報システム提供用
 --
 -- Create Date : 2018/2/16
 --

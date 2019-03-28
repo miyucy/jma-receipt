@@ -1,22 +1,22 @@
 --                                    --
--- ¥ì¥»¥×¥È´ÉÍı¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹         --
+-- ãƒ¬ã‚»ãƒ—ãƒˆç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´         --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¹â³ÛÅÀ¿ô¥Õ¥é¥°(KOUGAKU)          --
---   ¹â³ÛÅÀ¿ôÊÇ(PAGE_KOUGAKU)         --
---   Ä¹´ü°õºşÀßÄê(CHOUKI_KBN)         --
---   ºßÁí¿ÇÅù°õºşÀßÄê (ZAITAKU_KBN)   --
---   ºÇ½ª½ĞÎÏ½ç (SRT_LAST)            --
---   ¹â³ÛÅÀ¿ô(KOUGAKU_TEN)            --
---   É½¼¨ÍÑ¥ì¥»¥×¥È¼ïÊÌ(SYUBETU_SRT1) --
---   ¸©Æâ¸©³°¶èÊ¬(PREFKBN)            --
+-- é …ç›®ã®è¿½åŠ                          --
+--   é«˜é¡ç‚¹æ•°ãƒ•ãƒ©ã‚°(KOUGAKU)          --
+--   é«˜é¡ç‚¹æ•°é (PAGE_KOUGAKU)         --
+--   é•·æœŸå°åˆ·è¨­å®š(CHOUKI_KBN)         --
+--   åœ¨ç·è¨ºç­‰å°åˆ·è¨­å®š (ZAITAKU_KBN)   --
+--   æœ€çµ‚å‡ºåŠ›é † (SRT_LAST)            --
+--   é«˜é¡ç‚¹æ•°(KOUGAKU_TEN)            --
+--   è¡¨ç¤ºç”¨ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥(SYUBETU_SRT1) --
+--   çœŒå†…çœŒå¤–åŒºåˆ†(PREFKBN)            --
 
 --                                    --
 -- Create Date : 2007/03/01           --
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_recekanri
    add column KOUGAKU      char(1);
 alter table tbl_recekanri
@@ -34,7 +34,7 @@ alter table tbl_recekanri
 alter table tbl_recekanri
    add column KOUGAKU_TEN  numeric(7);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_recekanri
    alter PAGE_KOUGAKU set default 0;
 alter table tbl_recekanri

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,16 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    �ե�����¸�ߥ����å��ѥ�᥿��  COPY (CPORCSFILECHK.INC)
+      *    ファイル存在チェックパラメタ　  COPY (CPORCSFILECHK.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCSFILECHKAREA.
-      *    �ե�����̾
+      *    ファイル名
       **** 03  FILECHK-NAME                PIC X(256).
            03  FILECHK-NAME                PIC X(1024).
-      *    ���������� �ʣ���¸�ߤ��ꡢ������Ȥʤ�������¸�ߤʤ���
+      *    復帰コード （０：存在あり、１：中身なし、２：存在なし）
            03  FILECHK-RC                  PIC 9(01).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,135 +16,135 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���У��ݸ��ȹ礻�����ѥ�᥿����COPY (CPORCSHKNGET.INC)
+      *    ＡＰＩ保険組合せ処理パラメタ　　COPY (CPORCSHKNGET.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.07.00     NACL-¿��Ǽ  14/11/12  ��ǧ����¾�ɲ�
-      * 04.08.00     NACL-¿��Ǽ  17/01/XX  ������ʬ�����ݸ��ȹ礻�����ɲ�
-      * 05.00.00     NACL-¿��Ǽ  18/11/XX  ���������ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL-多々納  14/11/12  確認日付他追加
+      * 04.08.00     NACL-多々納  17/01/XX  処理区分３、保険組合せ情報追加
+      * 05.00.00     NACL-多々納  18/11/XX  診療日付追加
       ************************************************************
        01  ORCSAPIHKNAREA.
-      *����
-      *������ʬ�ʣ�����ư���򤹤��
+      *入力
+      *処理区分（１：自動選択する）
            03  ORCSAPIHKN-KBN              PIC  X(01).
-      *���Ųʡ���������������
+      *診療科（前回受診履歴より）
            03  ORCSAPIHKN-SRYKA            PIC  X(02).
-      *������ʬ���ʣ���������Ͽ���ʤ��٤ơˡ�����ǯ���ϰϡ��ʳ���������
+      *処理区分２（１：患者登録時（すべて）、２：年月範囲、以外：当日）
            03  ORCSAPIHKN-KBN2             PIC  X(01).
       *H29.1
-      *������ʬ���ʣ����оݣ�������ޤǡ�
+      *処理区分３（１：対象２００件まで）
            03  ORCSAPIHKN-KBN3             PIC  X(01).
       *H30.11
-      *�������ա�̤����ϥ����ƥ����ա�
+      *診療日付（未設定はシステム日付）
            03  ORCSAPIHKN-SRYYMD           PIC  X(08).
-      *�ݸ�����
+      *保険情報
            03  ORCSAPIHKN-IN-HKNAREA.
-      *        �ݸ�����
+      *        保険種類
                05  ORCSAPIHKN-IN-HKNNUM            PIC X(03).
-      *        �ݸ����ֹ�
+      *        保険者番号
                05  ORCSAPIHKN-IN-HKNJANUM          PIC X(08).
-      *        �ݸ�����̾��
+      *        保険種類名称
                05  ORCSAPIHKN-IN-HKNNUM-NAME       PIC X(10).
-      *        ����
+      *        記号
                05  ORCSAPIHKN-IN-MARK              PIC X(80).
-      *        �ֹ�
+      *        番号
                05  ORCSAPIHKN-IN-NUMBER            PIC X(80).
-      *        ͭ������
+      *        有効期間
                05  ORCSAPIHKN-IN-TEKSTYMD          PIC X(08).
                05  ORCSAPIHKN-IN-TEKEDYMD          PIC X(08).
-      *        �������
+      *        公費情報
                05  ORCSAPIHKN-IN-INSURANCE-INFO
                                        OCCURS  4 TIMES.
                    07  ORCSAPIHKN-IN-KOHNUM            PIC X(04).
                    07  ORCSAPIHKN-IN-KOHNUM-NAME       PIC X(10).
                    07  ORCSAPIHKN-IN-FTNJANUM          PIC X(08).
                    07  ORCSAPIHKN-IN-JKYSNUM           PIC X(20).
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            03  ORCSAPIHKN-IN-HKNCOMBI      PIC X(04).
       *
-      *�����ΰ�
+      *出力領域
            03  ORCSAPIHKN-OUT-AREA.
-      *        �о��ݸ��ȹ礻
+      *        対象保険組合せ
                05  ORCSAPIHKN-OT-HKNCOMBI      PIC X(04).
-      *ͭ���ݸ�����
+      *有効保険一覧
            03  ORCSAPIHKN-HKNCOMBI-AREA.
                05  ORCSAPIHKN-HKNCOMBI-TBL     OCCURS   200.
-      *            �ݸ��ȹ礻
+      *            保険組合せ
                    07  ORCSAPIHKN-THKNCOMBI        PIC  X(04).
       *H29.1
-      *            �ݸ��ȹ礻��ô���ʳ����
+      *            保険組合せ負担割合（外来）
                    07  ORCSAPIHKN-COMB-RATEG       PIC  9(03).
-      *            �ݸ��ȹ礻��ô����������
+      *            保険組合せ負担割合（入院）
                    07  ORCSAPIHKN-COMB-RATEN       PIC  9(03).
-      *            �ݸ��ȹ礻ͭ������
+      *            保険組合せ有効期間
                    07  ORCSAPIHKN-COMB-TEKSTYMD    PIC  X(10).
                    07  ORCSAPIHKN-COMB-TEKEDYMD    PIC  X(10).
                    07  ORCSAPIHKN-COMBN-TEKSTYMD   PIC  X(08).
                    07  ORCSAPIHKN-COMBN-TEKEDYMD   PIC  X(08).
       *
-      *            �ݸ�����
+      *            保険種別
                    07  ORCSAPIHKN-HKNNUM           PIC  X(03).
-      *            �ݸ�����̾��
+      *            保険種別名称
                    07  ORCSAPIHKN-HKNNUM-NAME      PIC  X(20).
-      *            �ݸ����ֹ�
+      *            保険者番号
                    07  ORCSAPIHKN-HKNJANUM         PIC  X(08).
-      *            ����
+      *            記号
                    07  ORCSAPIHKN-KIGO             PIC  X(80).
-      *            �ֹ�
+      *            番号
                    07  ORCSAPIHKN-NUM              PIC  X(80).
-      *            ��³��ʬ
+      *            継続区分
                    07  ORCSAPIHKN-CONTKBN          PIC  X(01).
-      *            �����ʬ
+      *            補助区分
                    07  ORCSAPIHKN-HOJOKBN          PIC  X(01).
-      *            �����ʬ̾��
+      *            補助区分名称
                    07  ORCSAPIHKN-HOJOKBN-NAME     PIC  X(30).
-      *            �ܿͲ�²��ʬ
+      *            本人家族区分
                    07  ORCSAPIHKN-HONKZKKBN        PIC  X(01).
-      *            ���ݸ���̾��
+      *            被保険者名称
                    07  ORCSAPIHKN-HIHKNJANAME      PIC  X(100).
-      *            Ŭ�Ѵ��֡�ɽ����
+      *            適用期間（表示）
                    07  ORCSAPIHKN-TEKSTYMD         PIC  X(10).
                    07  ORCSAPIHKN-TEKEDYMD         PIC  X(10).
-      *            Ŭ�Ѵ���
+      *            適用期間
                    07  ORCSAPIHKN-NAI-TEKSTYMD     PIC  X(08).
                    07  ORCSAPIHKN-NAI-TEKEDYMD     PIC  X(08).
-      *            ��ʼ�����
+      *            資格取得日
                    07  ORCSAPIHKN-SKKGETYMD        PIC  X(10).
                    07  ORCSAPIHKN-NAI-SKKGETYMD    PIC  X(08).
-      *            ��ǧ����
+      *            確認日付
                    07  ORCSAPIHKN-KAKUNINYMD       PIC  X(10).
                    07  ORCSAPIHKN-NAI-KAKUNINYMD   PIC  X(08).
-      *            �ݸ��ɣ�
+      *            保険ＩＤ
                    07  ORCSAPIHKN-NAI-HKNID        PIC  9(10).
-      *            ϫ�Ҷ�ʬ
+      *            労災区分
                    07  ORCSAPIHKN-RSI-HKNKBN       PIC  X(01).
-      *            ��ɽ����ʬ
+      *            非表示区分
                    07  ORCSAPIHKN-HYOJIKBN         PIC  X(01).
-      *            ������ࡦ����ɣ�
+      *            公費種類・公費ＩＤ
                    07  ORCSAPIHKN-KOH-G.
                        09  ORCSAPIHKN-KOH-OCC      OCCURS   4.
                            11  ORCSAPIHKN-KOHNUM           PIC  X(03).
                            11  ORCSAPIHKN-KOHNUM-NAME      PIC  X(20).
                            11  ORCSAPIHKN-FTNJANUM         PIC  X(08).
                            11  ORCSAPIHKN-JKYSNUM          PIC  X(20).
-      *                    Ŭ�Ѵ���
+      *                    適用期間
                            11  ORCSAPIHKN-KOH-TEKSTYMD     PIC  X(10).
                            11  ORCSAPIHKN-KOH-TEKEDYMD     PIC  X(10).
-      *                    ��������ôΨ
+      *                    入院−負担率
                            11  ORCSAPIHKN-RATE-ADMISSION   PIC X(05).
-      *                    �����ݸ����
+      *                    入院−固定額
                            11  ORCSAPIHKN-MONEY-ADMISSION  PIC X(06).
-      *                    �������ôΨ
+      *                    外来−負担率
                            11  ORCSAPIHKN-RATE-OUTPATIENT  PIC X(05).
-      *                     ����ݸ����
+      *                     外来−固定額
                            11  ORCSAPIHKN-MONEY-OUTPATIENT PIC X(06).
-      *                    ����ɣ�
+      *                    公費ＩＤ
                            11  ORCSAPIHKN-NAI-KOHID        PIC 9(10).
-      *        �о��ݸ��ȹ礻���
+      *        対象保険組合せ件数
                05  ORCSAPIHKN-OT-MAX           PIC 9(04).
-      *���顼������
+      *エラーコード
            03  ORCSAPIHKN-ERRCD                    PIC 9(01).
       *
       *

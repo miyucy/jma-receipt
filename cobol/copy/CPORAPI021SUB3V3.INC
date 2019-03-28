@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,69 +16,69 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɺ޿��������Խ����֥ѥ�᥿�ʰ��β���
+      *    ＡＰＩ剤診療内容編集サブパラメタ（一体化）
       *                                         (CPORAPI021SUB3V3.INC)
       ******************************************************************
        01  ORAPI021SUB3V3AREA.
-      *    ������ʬ
+      *    処理区分
            03  ORAPISUB3-SYORIKBN      PIC X(01).
       *
-      *    �ơ��֥���
+      *    テーブル件数
            03  ORAPISUB3-ZAI-MAX       PIC 9(04).
       *
-      *SPA�ֵ�
+      *SPA返却
            03  ORAPISUB3-HENSYU-AREA.
                05  ORAPISUB3-HENSYU-OCC        OCCURS   400.
-      *        ���Ų������
+      *        診療会計内容
                    07  ORAPISUB3-ZAINUM        PIC 9(08).
                    07  ORAPISUB3-SRYKA         PIC X(02).
                    07  ORAPISUB3-SRYKA-NAME    PIC X(20).
                    07  ORAPISUB3-HKNCOMBI      PIC X(04).
       *
-      *            �ݸ��ȹ礻���֡�1:�����2:���ֳ���
+      *            保険組合せ状態（1:削除、2:期間外）
                    07  ORAPISUB3-COMBINATION-MODE   PIC X(01).
       *
                    07  ORAPISUB3-SRYKBN        PIC X(02).
                    07  ORAPISUB3-SRYSYUKBN     PIC X(03).
-      *            ������ʬ
+      *            包括診療分
                    07  ORAPISUB3-JIHOKBN       PIC X(01).
-      *            ������
+      *            剤点数
                    07  ORAPISUB3-ZAITEN        PIC 9(08).
-      *            �ޥ��ʥ���ʬ
+      *            マイナス区分
                    07  ORAPISUB3-PLUSKBN       PIC 9(01).
                    07  ORAPISUB3-ZAIKBN        PIC 9(03).
-      *            ������
+      *            自費金額
                    07  ORAPISUB3-JIHIMONEYTOTAL    PIC  9(07).
-      *            �޲��
+      *            剤回数
                    07  ORAPISUB3-NAI-DAY-AREA.
                        09  ORAPISUB3-NAI-DAY-TBL   OCCURS   10.
                            11   ORAPISUB3-NAI-DAY  PIC  9(03)
                                                        OCCURS   31.
-      *            ����Ĵ������ư�����ʬ
+      *            入院調剤料自動算定剤分
                    07  ORAPISUB3-CHOUZAIAUTO   PIC X(01).
-      *        API�ֵ�
-      *            ������
+      *        API返却
+      *            剤点数
                    07  ORAPISUB3-MDC-POINT         PIC X(08).
-      *            �޶��
+      *            剤金額
                    07  ORAPISUB3-MDC-MONEY         PIC X(08).
-      *            �޶�ʬ�ʣ������ޡ�
+      *            剤区分（１：包括剤）
                    07  ORAPISUB3-MDC-CODE          PIC X(01).
-      *            ��縡���θ�����
+      *            包括検査の検査数
                    07  ORAPISUB3-HKTKNSA-CNT       PIC X(02).
-      *            ���ż���̾��
+      *            診療種別名称
                    07  ORAPISUB3-MDC-CLASS-NAME    PIC X(40).
-      *            �ݸ��ȹ礻̾��
+      *            保険組合せ名称
                    07  ORAPISUB3-MAIN-INS-NAME     PIC X(20).
                    07  ORAPISUB3-PUBLIC-INS-INFO.
-      *            ����μ���̾��
+      *            公費の種類名称
                        09  ORAPISUB3-INSURANCE-NAME  PIC X(20)
                                                      OCCURS  4 TIMES.
       *
-      *            ��������
+      *            診療内容
                    07  ORAPISUB3-SRYACT-AREA.
                        09  ORAPISUB3-SRYACT-TBL   OCCURS   50.
                            11   ORAPISUB3-SRYCD        PIC X(09).
@@ -87,34 +87,34 @@
                            11   ORAPISUB3-MEISKYFLG    PIC X(01).
                            11   ORAPISUB3-AUTOKBN      PIC X(01).
                            11   ORAPISUB3-INPUTNUM     PIC 9(03).
-      *                    ������
+      *                    自費金額
                            11   ORAPISUB3-JIHIMONEY    PIC 9(07).
-      *                    ������������
+      *                    換算数量入力
                            11   ORAPISUB3-KANSURYO     PIC 9(05)V9(05).
       *
-      *        API�ֵ�
-      *                    ����̾��
+      *        API返却
+      *                    診療名称
                            11  ORAPISUB3-PRSCRPT-NAME      PIC X(80).
-      *                    ����
+      *                    数量
                            11  ORAPISUB3-PRSCRPT-NUMBER    PIC X(11).
-      *                    ñ�̥�����
+      *                    単位コード
                            11  ORAPISUB3-PRSCRPT-TANICD    PIC X(03).
-      *                    ñ��̾��
+      *                    単位名称
                            11  ORAPISUB3-PRSCRPT-TANICD-NAME PIC X(24).
-      *                    ��������������
+      *                    コメント埋め込み値
                            11  ORAPISUB3-PRSCRPT-ATAI-G.
                                13  ORAPISUB3-PRSCRPT-ATAI  PIC X(08)
                                                          OCCURS   5.
-      *                    ������
+      *                    自費金額
                            11  ORAPISUB3-PRSCRPT-MONEY     PIC X(07).
-      *                    �ե����ʬ���
+      *                    フィルム分画数
                            11  ORAPISUB3-PRSCRPT-FILMNUM   PIC X(03).
-      *                    ��³�ؼ���ʬ
+      *                    継続指示区分
                            11  ORAPISUB3-PRSCRPT-CONTKBN   PIC X(01).
-      *                    ��ư��ʬ���ֵ��ѡ�
+      *                    自動区分（返却用）
                            11  ORAPISUB3-PRSCRPT-AUTOKBN   PIC X(01).
       *
-      *    ���顼��ʬ
+      *    エラー区分
            03  ORAPISUB3-ERRCD         PIC X(04).
            03  ORAPISUB3-ERRMSG        PIC X(100).
       *

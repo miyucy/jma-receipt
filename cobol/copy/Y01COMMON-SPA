@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,18 +16,18 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC-¿��Ǽ   02/03/05  �ٹ�ե饰�ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-多々納   02/03/05  警告フラグ追加
       *****************************************************************
-      *     Y01���̣ӣУ�     (RL=550)
+      *     Y01共通ＳＰＡ     (RL=550)
        01  SPA-Y01KYOUTU.
-      *    �������
+      *    初期設定
            03  SPA-Y01-INIT-DRCD             PIC X(05).
            03  SPA-Y01-YYKINIT-FLG           PIC X(01).
            03  SPA-Y01-YYKHYO-KBN            PIC X(01).
            03  SPA-Y01-YYKMAXCNT             PIC 9(03).
-      *    ͽ����Ͽ����
+      *    予約登録内容
            03  SPA-Y01-YYK-AREA.
                05  SPA-Y01-SRYNAIYOG.
                    07  SPA-Y01-SRYNAIYO          PIC X(02).
@@ -48,12 +48,12 @@
                05  SPA-Y01-SEX                   PIC X(02).
                05  SPA-Y01-BIRTHDAY              PIC X(08).
                05  SPA-Y01-BIRTHDAYH             PIC X(09).
-      *    �ٹ�ե饰
+      *    警告フラグ
            03  SPA-Y01-KEIKOKU               PIC 9(01).
-      *    ��ǧ��å�����
+      *    確認メッセージ
            03  SPA-YID1CD                    PIC X(04).
            03  SPA-YID1-FLG                  PIC X(02).
-      *    ͽ�������
+      *    予約印刷用
            03  SPA-Y03-SET.
                05  SPA-Y03-SRYNAIYO          PIC X(02).
                05  SPA-Y03-DRCD              PIC X(05).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSKANACHK2.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : Ⱦ�ѥ����å������ʳ�ĥ�����б���
-      *  �ֵѥ��顼������  : 0:���1:Ⱦ�Ѻ��ߡ������Ѵ����顼
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/10/27    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 半角チェック処理（拡張漢字対応）
+      *  返却エラーコード  : 0:正常　1:半角混在、２：変換エラー
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/10/27    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.00    NACL-¿��Ǽ  10/10/01  ���ϡ������ΰ��X(5000)��
-      *  05.01.00    NACL-¿��Ǽ  17/09/26  ���ԥ�����Ƚ���ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.00    NACL-多々納  10/10/01  入力・出力領域をX(5000)へ
+      *  05.01.00    NACL-多々納  17/09/26  改行コード判定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,7 +44,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-ERR             PIC 9(01).
            03  FLG-KANA            PIC 9(01).
@@ -55,7 +55,7 @@
            03  FLG-ZENKAKU1        PIC 9(01).
            03  FLG-ZENKAKU2        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -100,21 +100,21 @@
       *
            03  WRK-IDX1                PIC 9(04).
            03  WRK-IDX2                PIC 9(04).
-      *    ����ʸ����
+      *    全角文字数
            03  WRK-MAX-MOJI            PIC S9(9)  BINARY.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCXKANACONV2.INC".
       *
-      *    ��ĥʸ���б�
+      *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -124,7 +124,7 @@
            ORCSKANACHK2AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -135,7 +135,7 @@
            MOVE    ZERO                TO  KANACHK2-RC
            MOVE    ZERO                TO  KANACHK2-RC2
            MOVE    SPACE               TO  KANACHK2-OUT-INPUT
-      *    ������Ƚ��
+      *    最大桁数判定
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX     FROM    5000 BY  -1
                    UNTIL       IDX     <   1
@@ -152,19 +152,19 @@
            END-IF
       *
            IF      IDX-MAX             >   ZERO
-      *        ���Ѥ�����Ƚ��
+      *        全角の内容判定
                PERFORM 1000-KOUMOKU-CHK-SEC
       *
                EVALUATE    KANACHK2-SYORI
                    WHEN    "1"
-      *            ����Ƚ�����
+      *            全角判定処理
                    PERFORM 100-ZENKAKU-CHECK-SEC
                    WHEN    "2"
-      *            �����ִ�����
+      *            全角置換処理
                    PERFORM 200-ZENKAKU-HENKAN-SEC
                END-EVALUATE
       *H29.9
-      *        ���ԥ����ɥ����å�
+      *        改行コードチェック
                PERFORM 1009-KAIGYO-CHK-SEC
       *
            END-IF
@@ -182,7 +182,7 @@
            .
       *
       *****************************************************************
-      *    ���ѥ����å�����
+      *    全角チェック処理
       *****************************************************************
        1000-KOUMOKU-CHK-SEC           SECTION.
       *
@@ -209,7 +209,7 @@
            IF      KANACHK2-MAX-CNT    =   ZERO
                MOVE    5000                TO  KANACHK2-MAX-CNT
            END-IF
-      *    ��ĥ����̵ͭ
+      *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
            MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
@@ -230,11 +230,11 @@
       *
       *H29.9
       *****************************************************************
-      *    ����Ƚ�����
+      *    改行判定処理
       *****************************************************************
        1009-KAIGYO-CHK-SEC           SECTION.
       *
-      *    ����Ƚ��
+      *    改行判定
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
@@ -250,7 +250,7 @@
       *
       *
       *****************************************************************
-      *    ����Ƚ�����
+      *    全角判定処理
       *****************************************************************
        100-ZENKAKU-CHECK-SEC           SECTION.
       *
@@ -266,7 +266,7 @@
            MOVE    KANACHK2-MAE-INPUT   TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            IF      KANACONV-RETURN     =   ZERO
-      *        ���ѤΤ�
+      *        全角のみ
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK2-MAX-CNT    TO  KANACONV-LEN
@@ -279,14 +279,14 @@
                IF      KANACONV-MAXLEN     =   IDX-MAX
                    CONTINUE
                ELSE
-      *            Ⱦ�Ѷ�����ִ�������
+      *            半角空白の置換えあり
                    MOVE    8                   TO  KANACHK2-RC2
                END-IF
                MOVE    KANACONV-OUTDATA    TO  KANACHK2-OUT-INPUT
                MOVE    2                   TO  KANACHK2-SYUBETU
                MOVE    KANACONV-MAXLEN     TO  KANACHK2-MAX
            ELSE
-      *        Ⱦ�ѤΤߤ�Ƚ��
+      *        半角のみの判定
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK2-MAX-CNT    TO  KANACONV-LEN
                MOVE    5000                TO  KANACONV-STLEN
@@ -299,15 +299,15 @@
                    MOVE    1                   TO  KANACHK2-SYUBETU
                    MOVE    KANACONV-MAXLEN     TO  KANACHK2-MAX
                    MOVE    KANACONV-MAXLEN     TO  IDX-MAX
-      *            �֤˶��򤬤��뤫��Ƚ��
+      *            間に空白があるかの判定
                    PERFORM 1001-KUHAKU-CHK-SEC
                ELSE
-      *            ���ߥ��顼
+      *            混在エラー
                    MOVE    1                   TO  KANACHK2-RC
                END-IF
            END-IF
       *
-      *    ���Ѷ����Ƚ��
+      *    全角空白の判定
            IF     (KANACHK2-SYUBETU     =   2    )  AND
                   (KANACHK2-RC          =   ZERO )
                PERFORM 1003-ZENSPACE-CHK-SEC
@@ -317,7 +317,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �֤�Ⱦ�Ѷ��򤬤��뤫��Ƚ�����
+      *    間に半角空白があるかの判定処理
       *****************************************************************
        1001-KUHAKU-CHK-SEC           SECTION.
       *
@@ -337,11 +337,11 @@
        1001-KUHAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ѷ���Ƚ�����
+      *    全角空白判定処理
       *****************************************************************
        1003-ZENSPACE-CHK-SEC           SECTION.
       *
-      *    ����ʸ����
+      *    最大文字数
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
            MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
@@ -352,13 +352,13 @@
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
-           MOVE    "��"                TO  ORCSSTR-STRING2
+           MOVE    "　"                TO  ORCSSTR-STRING2
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1    NOT =   ZERO
-      *        ���Ѷ��򤢤�
+      *        全角空白あり
                MOVE    1                   TO  KANACHK2-RC3
-      *        �ǽ�ʸ��Ƚ��
+      *        最終文字判定
                INITIALIZE                  ORCSSTRINGAREA
                MOVE    "substr"            TO  ORCSSTR-COMMAND
                MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
@@ -367,10 +367,10 @@
                                            +   1
                CALL    "orcsstring"        USING
                                            ORCSSTRINGAREA
-               IF      ORCSSTR-STRING2     =   "��"
-      *            �Ǹ夬���Ѷ���
+               IF      ORCSSTR-STRING2     =   "　"
+      *            最後が全角空白
                    IF      KANACHK2-SYORIKBN    =   "1"
-      *                �Ǹ�����Ѷ�����
+      *                最後の全角空白削除
                        PERFORM 10031-LASTDEL-HEN-SEC
                    ELSE
                        MOVE    3               TO  KANACHK2-RC3
@@ -378,7 +378,7 @@
                END-IF
            END-IF
       *
-      *    ��������
+      *    全部空白
            IF     (KANACHK2-RC4        =   ZERO  )
            AND    (KANACHK2-RC3    NOT =   ZERO  )
                MOVE    ZERO                TO  FLG-ZENKAKU1
@@ -393,15 +393,15 @@
                    MOVE    IDX                 TO  ORCSSTR-NUM2
                    CALL    "orcsstring"        USING
                                                ORCSSTRINGAREA
-                   IF      ORCSSTR-STRING2     =   "��"
-      *                ���Ѷ���
+                   IF      ORCSSTR-STRING2     =   "　"
+      *                全角空白
                        MOVE    1               TO  FLG-ZENKAKU2
                    ELSE
                        MOVE    1               TO  FLG-ZENKAKU1
                    END-IF
                END-PERFORM
                IF      FLG-ZENKAKU1        =   ZERO
-      *            ���Ѷ���Τ�
+      *            全角空白のみ
                    MOVE    2               TO  KANACHK2-RC3
                END-IF
            END-IF
@@ -410,7 +410,7 @@
        1003-ZENSPACE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �Ǹ�����Ѷ���������
+      *    最後の全角空白削除処理
       *****************************************************************
        10031-LASTDEL-HEN-SEC           SECTION.
       *
@@ -425,7 +425,7 @@
                MOVE    IDX                 TO  ORCSSTR-NUM2
                CALL    "orcsstring"        USING
                                            ORCSSTRINGAREA
-               IF      ORCSSTR-STRING2     =   "��"
+               IF      ORCSSTR-STRING2     =   "　"
                    CONTINUE
                ELSE
                    MOVE    IDX                 TO  IDX-END
@@ -449,7 +449,7 @@
            IF      KANACHK2-OUT-INPUT  =   SPACE
                MOVE    ZERO                TO  KANACHK2-MAX
            ELSE
-      *        ������
+      *        最大桁数
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK2-MAX-CNT    TO  KANACONV-LEN
@@ -464,11 +464,11 @@
                INITIALIZE                  ORCSSTRINGAREA
                MOVE    "search"            TO  ORCSSTR-COMMAND
                MOVE    KANACHK2-OUT-INPUT  TO  ORCSSTR-STRING1
-               MOVE    "��"                TO  ORCSSTR-STRING2
+               MOVE    "　"                TO  ORCSSTR-STRING2
                CALL    "orcsstring"        USING
                                            ORCSSTRINGAREA
                IF      ORCSSTR-NUM1    NOT =   ZERO
-      *            ���Ѷ��򤢤�
+      *            全角空白あり
                    MOVE    1                   TO  KANACHK2-RC3
                END-IF
            END-IF
@@ -477,7 +477,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���
+      *    全角処理
       *****************************************************************
        200-ZENKAKU-HENKAN-SEC           SECTION.
       *
@@ -499,7 +499,7 @@
                MOVE    2                   TO  KANACHK2-RC
            END-IF
       *
-      *    ���Ѷ����Ƚ��
+      *    全角空白の判定
            IF     (KANACHK2-SYUBETU     =   2    )  AND
                   (KANACHK2-RC          =   ZERO )
                PERFORM 1003-ZENSPACE-CHK-SEC

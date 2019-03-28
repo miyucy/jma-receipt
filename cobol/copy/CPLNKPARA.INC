@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,62 +16,62 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ²èÌÌÁ«°ÜÍÑ¥Ñ¥é¥á¥¿¡¡  COPY  (CPLNKPARA.INC)  *
+      *    ç”»é¢é·ç§»ç”¨ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€  COPY  (CPLNKPARA.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  LNK-PARA-AREA.
            03  LNKPAR-KEY.
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
                05  LNKPAR-TANMATID       PIC X(15).
       *
            03  LNKPAR-KYOUTU.
-      *°åÎÅµ¡´Ø¥³¡¼¥É
+      *åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
                05  LNKPAR-HOSPID          PIC X(24).
-      *¥·¥¹¥Æ¥àÆüÉÕ¡ÊÀ¾Îñ¡Ë
+      *ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ï¼ˆè¥¿æš¦ï¼‰
                05  LNKPAR-SYSDAY          PIC 9(08).
-      *¥·¥¹¥Æ¥àÆüÉÕ¡ÊÏÂÎñÊÔ½¸ºÑ¡Ë
+      *ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ï¼ˆå’Œæš¦ç·¨é›†æ¸ˆï¼‰
                05  LNKPAR-SYSDAYH         PIC X(09).
-      *¸µ¥×¥í¥°¥é¥à
+      *å…ƒãƒ—ãƒ­ã‚°ãƒ©ãƒ 
                05  LNKPAR-MOTOPG          PIC X(08).
-      *Àè¥×¥í¥°¥é¥à
+      *å…ˆãƒ—ãƒ­ã‚°ãƒ©ãƒ 
                05  LNKPAR-SAKIPG          PIC X(08).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
                05  LNKPAR-PTNUM           PIC X(20).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  LNKPAR-PTID            PIC 9(10).
-      *¿ÇÎÅÆü
+      *è¨ºç™‚æ—¥
                05  LNKPAR-SRYDAY          PIC X(08).
-      *¿ÇÎÅÆü¡ÊÏÂÎñÊÔ½¸ºÑ¡Ë
+      *è¨ºç™‚æ—¥ï¼ˆå’Œæš¦ç·¨é›†æ¸ˆï¼‰
                05  LNKPAR-SRYDAYW         PIC X(09).
-      *Æþ³°¶èÊ¬    
+      *å…¥å¤–åŒºåˆ†    
                05  LNKPAR-NYUGAI          PIC X(01).
-      *´µ¼Ô»áÌ¾¤«¤Ê
+      *æ‚£è€…æ°åã‹ãª
                05  LNKPAR-KANANAME        PIC X(50).
-      *´µ¼Ô»áÌ¾
+      *æ‚£è€…æ°å
                05  LNKPAR-NAME            PIC X(50).
-      *´µ¼ÔÀ­ÊÌ
+      *æ‚£è€…æ€§åˆ¥
                05  LNKPAR-SEX             PIC X(02).
-      *´µ¼ÔÀ¸Ç¯·îÆü
+      *æ‚£è€…ç”Ÿå¹´æœˆæ—¥
                05  LNKPAR-BIRTHDAY        PIC X(08).
-      *´µ¼ÔÀ¸Ç¯·îÆü¡ÊÏÂÎñÊÔ½¸ºÑ¡Ë
+      *æ‚£è€…ç”Ÿå¹´æœˆæ—¥ï¼ˆå’Œæš¦ç·¨é›†æ¸ˆï¼‰
                05  LNKPAR-BIRTHDAYW       PIC X(09).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  LNKPAR-SRYKA           PIC X(02).
-      *¿ÇÎÅ²ÊÌ¾
+      *è¨ºç™‚ç§‘å
                05  LNKPAR-SRYKAMEI        PIC X(10).
-      *ÊÝ¸±ÁÈ¹çÈÖ¹æ
+      *ä¿é™ºçµ„åˆç•ªå·
                05  LNKPAR-KUMINO          PIC X(04).
-      *ÊÝ¸±ÁÈ¹ç¤»ÆâÍÆ
+      *ä¿é™ºçµ„åˆã›å†…å®¹
                05  LNKPAR-KUMIMEI         PIC X(36).
-      *ÉéÃ´Î¨
+      *è² æ‹…çŽ‡
                05  LNKPAR-RITU            PIC 9(03).
-      *ÉéÃ´Î¨Ì¾¾Î
+      *è² æ‹…çŽ‡åç§°
                05  LNKPAR-RITUMEI         PIC X(10).
-      *¼õÉÕ»þ´Ö
+      *å—ä»˜æ™‚é–“
                05  LNKPAR-UKETIME         PIC X(06).
-      *¸µ¤Î¸µ¥×¥í¥°¥é¥à
+      *å…ƒã®å…ƒãƒ—ãƒ­ã‚°ãƒ©ãƒ 
                05  LNKPAR-MOTOPG2         PIC X(08).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    API�ꥯ�����ȡ���ǻ�������Ͽ 
+      *    APIリクエスト　初診算定日登録 
       *                                     COPY (CPMDCXMLV2REQ3.INC)
       ******************************************************************
        01  XML-MEDICALV2REQ3.
@@ -29,16 +29,16 @@
            03  MDCREQ-MODE             PIC S9(9)   BINARY.
            03  MDCREQ-RECORDNAME       PIC X(128).
            03  MDCREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               05  MDCREQ-REQUEST-NUMBER    PIC X(2).
-      *       �����ֹ�
+      *       患者番号
               05  MDCREQ-PATIENTID         PIC X(20).
       *
-      *       ��ǻ�����
+      *       初診算定日
               05  MDCREQ-FIRST-DATE        PIC X(10).
-      *       �ǽ��象��������ʤ����ԤΤߡ�
+      *       最終来院日（履歴なし患者のみ）
               05  MDCREQ-LAST-DATE         PIC X(10).
-      *       ���Ų�
+      *       診療科
               05  MDCREQ-DEP-CODE          PIC X(2).
       *
       *

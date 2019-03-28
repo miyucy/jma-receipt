@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,24 +16,24 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ¥³¥á¥ó¥È¥³¡¼¥É¸¡º÷¥µ¥Ö  COPY (CPORCSSRCCOMMCD.INC)          *
+      *    ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰æ¤œç´¢ã‚µãƒ–  COPY (CPORCSSRCCOMMCD.INC)          *
       *****************************************************************
       *****************************************************************
-      * ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev    ½¤Àµ¼Ô      ÆüÉÕ        ÆâÍÆ
+      * ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev    ä¿®æ­£è€…      æ—¥ä»˜        å†…å®¹
       *****************************************************************
        01  ORCSSRCCOMMCD-AREA.
       *
-      *°ú¿ô
-      *    ¥³¥á¥ó¥È¼ïÎà¡Ê 1:ÉþÍÑÊýË¡ 2:²èÁü¿ÇÃÇÉô°Ì 8:¥³¥á¥ó¥È )
+      *å¼•æ•°
+      *    ã‚³ãƒ¡ãƒ³ãƒˆç¨®é¡žï¼ˆ 1:æœç”¨æ–¹æ³• 2:ç”»åƒè¨ºæ–­éƒ¨ä½ 8:ã‚³ãƒ¡ãƒ³ãƒˆ )
            03  SRCCOM-COMMENT-KBN  PIC 9(01).
-      *    ¥Þ¥¹¥¿ÆüÉÕ
+      *    ãƒžã‚¹ã‚¿æ—¥ä»˜
            03  SRCCOM-MSTYMD       PIC X(08).
-      *    ¥³¥á¥ó¥ÈÆâÍÆ
+      *    ã‚³ãƒ¡ãƒ³ãƒˆå†…å®¹
            03  SRCCOM-COMMENT      PIC X(100).
       *
-      *Ìá¤êÃÍ
-      *    ¥³¥á¥ó¥È¥³¡¼¥É
+      *æˆ»ã‚Šå€¤
+      *    ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰
            03  SRCCOM-COMMENT-CODE PIC X(09).
-      *    Éüµ¢¥³¡¼¥É ( 0:³ºÅö¥³¡¼¥É¤¢¤ê 1:³ºÅö¥³¡¼¥É¤Ê¤· 2:¥³¥á¥ó¥È¼ïÎàÉÔÀµ )
+      *    å¾©å¸°ã‚³ãƒ¼ãƒ‰ ( 0:è©²å½“ã‚³ãƒ¼ãƒ‰ã‚ã‚Š 1:è©²å½“ã‚³ãƒ¼ãƒ‰ãªã— 2:ã‚³ãƒ¡ãƒ³ãƒˆç¨®é¡žä¸æ­£ )
            03  SRCCOM-RC           PIC 9(01).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥꥯ��������̾�ޥ���������� (xml2)
+      *    ＡＰＩリクエスト病名マスタ情報取得 (xml2)
       *                             COPY (PATIENT-BASIS-ALLV3RES.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  XML-LSTRES.
            03  LSTRES-CONTEXT              PIC S9(9)   BINARY.
@@ -29,33 +29,33 @@
            03  LSTRES-MODE                 PIC S9(9)   BINARY.
            03  LSTRES-RECORDNAME           PIC X(128).
            03  LSTRES-MEDICALRES.
-      *        �ꥯ�������ֹ�
+      *        リクエスト番号
                05  LSTRES-REQUEST-NUMBER   PIC X(2).
-      *        �쥹�ݥ��ֹ�
+      *        レスポンス番号
                05  LSTRES-RESPONSE-NUMBER  PIC X(2).
-      *        UID���Żҥ���ơ�
+      *        UID（電子カルテ）
                05  LSTRES-KARTE-UID        PIC X(36).
-      *        ���륫UID
+      *        オルカUID
                05  LSTRES-ORCA-UID         PIC X(36).
-      *        �»���
+      *        実施日
                05  LSTRES-INFORMATION-DATE PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                05  LSTRES-INFORMATION-TIME PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                05  LSTRES-API-RESULT       PIC X(03).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                05  LSTRES-API-RESULT-MSG   PIC X(100).
       *
                05  LSTRES-RESKEY           PIC X(100).
-      *        ������ʬ
+      *        処理区分
                05  LSTRES-REQUEST-MODE     PIC X(1).
-      *        ������
+      *        開始日
                05  LSTRES-START-DATE       PIC X(10).
-      *        ��λ��
+      *        終了日
                05  LSTRES-END-DATE         PIC X(10).
-      *        �����
+      *        基準日
                05  LSTRES-BASE-DATE        PIC X(10).
-      *        ���
+      *        件数
                05  LSTRES-OUTPUT-COUNT     PIC X(10).
       *
               05  LSTRES-DATA-ID-INFORMATION   OCCURS  10.

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,345 +16,345 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    ÅÀ¿ô¥Æ¡¼¥Ö¥ë¹àÌÜÌ¾¾Î¥Æ¡¼¥Ö¥ë COPY (CPTENSUNAMETBL.INC)
+      *    ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«é …ç›®åç§°ãƒ†ãƒ¼ãƒ–ãƒ« COPY (CPTENSUNAMETBL.INC)
       *----------------------------------------------------------------*
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        01  TBL-TENSU-NAME-AREA.
            03  FILLER                      PIC X(41)   VALUE
-                       "001 srycd              ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É    ".
+                       "001 srycd              è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "002 yukostymd          Í­¸ú³«»ÏÆü        ".
+                       "002 yukostymd          æœ‰åŠ¹é–‹å§‹æ—¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "003 yukoedymd          Í­¸ú½ªÎ»Æü        ".
+                       "003 yukoedymd          æœ‰åŠ¹çµ‚äº†æ—¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "004 srykbn             ¿ÇÎÅ¹Ô°Ù¶èÊ¬      ".
+                       "004 srykbn             è¨ºç™‚è¡Œç‚ºåŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "005 srysyukbn          ¿ÇÎÅ¼ïÊÌ¶èÊ¬      ".
+                       "005 srysyukbn          è¨ºç™‚ç¨®åˆ¥åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "006 yukoketa           ´Á»úÌ¾¾Î·å¿ô      ".
+                       "006 yukoketa           æ¼¢å­—åç§°æ¡æ•°      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "007 name               ´Á»úÌ¾¾Î          ".
+                       "007 name               æ¼¢å­—åç§°          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "008 kanayukoketa       ¥«¥ÊÌ¾¾Î·å¿ô      ".
+                       "008 kanayukoketa       ã‚«ãƒŠåç§°æ¡æ•°      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "009 kananame           ¥«¥ÊÌ¾¾Î          ".
+                       "009 kananame           ã‚«ãƒŠåç§°          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "010 formalyukoketa     Àµ¼°Ì¾¾Î·å¿ô      ".
+                       "010 formalyukoketa     æ­£å¼åç§°æ¡æ•°      ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "011 formalname         Àµ¼°Ì¾¾Î          ".
+                       "011 formalname         æ­£å¼åç§°          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "012 tensikibetu        ÅÀ¿ô¼±ÊÌ          ".
+                       "012 tensikibetu        ç‚¹æ•°è­˜åˆ¥          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "013 ten                ÅÀ¿ô¡¿¶â³Û        ".
+                       "013 ten                ç‚¹æ•°ï¼é‡‘é¡        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "014 tanicd             Ã±°Ì¥³¡¼¥É        ".
+                       "014 tanicd             å˜ä½ã‚³ãƒ¼ãƒ‰        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "015 tanimojisu         Ã±°ÌÌ¾¾Î·å¿ô      ".
+                       "015 tanimojisu         å˜ä½åç§°æ¡æ•°      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "016 taniname           Ã±°ÌÌ¾¾Î          ".
+                       "016 taniname           å˜ä½åç§°          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "017 datakbn            ¥Ç¡¼¥¿¶èÊ¬        ".
+                       "017 datakbn            ãƒ‡ãƒ¼ã‚¿åŒºåˆ†        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "018 hkntekkbn          Êİ¸±Å¬ÍÑ¶èÊ¬      ".
+                       "018 hkntekkbn          ä¿é™ºé©ç”¨åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "019 nyugaitekkbn       Æş³°Å¬ÍÑ¶èÊ¬      ".
+                       "019 nyugaitekkbn       å…¥å¤–é©ç”¨åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "020 routekkbn          ¸å´ü¹âÎğ¼ÔÅ¬ÍÑ¶èÊ¬".
+                       "020 routekkbn          å¾ŒæœŸé«˜é½¢è€…é©ç”¨åŒºåˆ†".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "021 hospsrykbn         ÉÂ±¡¡¦¿ÇÎÅ½ê¶èÊ¬  ".
+                       "021 hospsrykbn         ç—…é™¢ãƒ»è¨ºç™‚æ‰€åŒºåˆ†  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "022 osinkbn            ±ı¿Ç¶èÊ¬¡ÊÌ¤»ÈÍÑ¡Ë".
+                       "022 osinkbn            å¾€è¨ºåŒºåˆ†ï¼ˆæœªä½¿ç”¨ï¼‰".
            03  FILLER                      PIC X(41)   VALUE
-                       "023 houksnkbn          Êñ³çÂĞ¾İ¸¡ºº      ".
+                       "023 houksnkbn          åŒ…æ‹¬å¯¾è±¡æ¤œæŸ»      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "024 byokanrenkbn       ½ıÉÂÌ¾´ØÏ¢¶èÊ¬    ".
+                       "024 byokanrenkbn       å‚·ç—…åé–¢é€£åŒºåˆ†    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "025 sdokanryo          °å³Ø´ÉÍıÎÁ        ".
+                       "025 sdokanryo          åŒ»å­¦ç®¡ç†æ–™        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "026 jituday            ¼ÂÆü¿ô            ".
+                       "026 jituday            å®Ÿæ—¥æ•°            ".
            03  FILLER                      PIC X(41)   VALUE
-                       "027 daycnt             Æü¿ô¡¦²ó¿ô        ".
+                       "027 daycnt             æ—¥æ•°ãƒ»å›æ•°        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "028 ykzknrkbn          °åÌôÉÊ´ØÏ¢¶èÊ¬    ".
+                       "028 ykzknrkbn          åŒ»è–¬å“é–¢é€£åŒºåˆ†    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "029 kzmcompsikibetu    ¤­¤¶¤ßÃÍ·×»»¼±ÊÌ  ".
+                       "029 kzmcompsikibetu    ãã–ã¿å€¤è¨ˆç®—è­˜åˆ¥  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "030 kzmkgn             ¤­¤¶¤ßÃÍ²¼¸ÂÃÍ    ".
+                       "030 kzmkgn             ãã–ã¿å€¤ä¸‹é™å€¤    ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "031 kzmjgn             ¤­¤¶¤ßÃÍ¾å¸ÂÃÍ    ".
+                       "031 kzmjgn             ãã–ã¿å€¤ä¸Šé™å€¤    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "032 kzm                ¤­¤¶¤ßÃÍ          ".
+                       "032 kzm                ãã–ã¿å€¤          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "033 kzmten             ¤­¤¶¤ßÅÀ¿ô        ".
+                       "033 kzmten             ãã–ã¿ç‚¹æ•°        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "034 kzmerr             ¤­¤¶¤ßÃÍ¥¨¥é¡¼½èÍı".
+                       "034 kzmerr             ãã–ã¿å€¤ã‚¨ãƒ©ãƒ¼å‡¦ç†".
            03  FILLER                      PIC X(41)   VALUE
-                       "035 jgncnt             ¾å¸Â²ó¿ô£±·î      ".
+                       "035 jgncnt             ä¸Šé™å›æ•°ï¼‘æœˆ      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "036 jgncnt1d           ¾å¸Â²ó¿ô£±Æü      ".
+                       "036 jgncnt1d           ä¸Šé™å›æ•°ï¼‘æ—¥      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "037 jgncnt1w           ¾å¸Â²ó¿ô£±½µ      ".
+                       "037 jgncnt1w           ä¸Šé™å›æ•°ï¼‘é€±      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "038 jgncntetcm         ¾å¸Â²ó¿ôÂ¾·î¿ô    ".
+                       "038 jgncntetcm         ä¸Šé™å›æ•°ä»–æœˆæ•°    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "039 jgncntetc          ¾å¸Â²ó¿ôÂ¾·î      ".
+                       "039 jgncntetc          ä¸Šé™å›æ•°ä»–æœˆ      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "040 jgncnterr          ¾å¸Â²ó¿ô¥¨¥é¡¼½èÍı".
+                       "040 jgncnterr          ä¸Šé™å›æ•°ã‚¨ãƒ©ãƒ¼å‡¦ç†".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "041 chuksncd           Ãí²Ã»»¥³¡¼¥É      ".
+                       "041 chuksncd           æ³¨åŠ ç®—ã‚³ãƒ¼ãƒ‰      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "042 chuksntsuban       Ãí²Ã»»ÄÌÈÖ        ".
+                       "042 chuksntsuban       æ³¨åŠ ç®—é€šç•ª        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "043 tsusokuage         ÄÌÂ§Ç¯Îğ          ".
+                       "043 tsusokuage         é€šå‰‡å¹´é½¢          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "044 kgnage             ²¼¸ÂÇ¯Îğ          ".
+                       "044 kgnage             ä¸‹é™å¹´é½¢          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "045 jgnage             ¾å¸ÂÇ¯Îğ          ".
+                       "045 jgnage             ä¸Šé™å¹´é½¢          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "046 timeksnkbn         »ş´Ö²Ã»»¶èÊ¬      ".
+                       "046 timeksnkbn         æ™‚é–“åŠ ç®—åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "047 kijunteigenkbn     ´ğ½àÅ¬¹ç¶èÊ¬      ".
+                       "047 kijunteigenkbn     åŸºæº–é©åˆåŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "048 kijunteigencd      ´ğ½àÅ¬¹ç»ÜÀß´ğ½à  ".
+                       "048 kijunteigencd      åŸºæº–é©åˆæ–½è¨­åŸºæº–  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "049 laserksn           ½èÃÖÆıÍÄ»ù²Ã»»¶èÊ¬".
+                       "049 laserksn           å‡¦ç½®ä¹³å¹¼å…åŠ ç®—åŒºåˆ†".
            03  FILLER                      PIC X(41)   VALUE
-                       "050 chpmesuksn         ¶ËÄã½ĞÀ¸ÂÎ½Å»ù²Ã»»".
+                       "050 chpmesuksn         æ¥µä½å‡ºç”Ÿä½“é‡å…åŠ ç®—".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "051 micmesuksn         Æş±¡´ğËÜÎÁÅù¸º»»  ".
+                       "051 micmesuksn         å…¥é™¢åŸºæœ¬æ–™ç­‰æ¸›ç®—  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "052 donorkbn           ¥É¥Ê¡¼Ê¬½¸·×¶èÊ¬  ".
+                       "052 donorkbn           ãƒ‰ãƒŠãƒ¼åˆ†é›†è¨ˆåŒºåˆ†  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "053 knsjiskbn          ¸¡ººÅù¼Â»ÜÈ½ÃÇ¶èÊ¬".
+                       "053 knsjiskbn          æ¤œæŸ»ç­‰å®Ÿæ–½åˆ¤æ–­åŒºåˆ†".
            03  FILLER                      PIC X(41)   VALUE
-                       "054 knsjisgrpkbn       ¸¡ººÅù¼Â»ÜÈ½ÃÇ£Ç  ".
+                       "054 knsjisgrpkbn       æ¤œæŸ»ç­‰å®Ÿæ–½åˆ¤æ–­ï¼§  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "055 teigenkbn          Äş¸ºÂĞ¾İ¶èÊ¬      ".
+                       "055 teigenkbn          é€“æ¸›å¯¾è±¡åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "056 sekizuisokutei     ÀÔ¿ñÍ¶È¯ÅÅ°ÌÂ¬Äê  ".
+                       "056 sekizuisokutei     è„Šé«„èª˜ç™ºé›»ä½æ¸¬å®š  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "057 keibujyutu         ğôÉô³ÔÀ¶½ÑÊ»»Ü²Ã»»".
+                       "057 keibujyutu         é ¸éƒ¨éƒ­æ¸…è¡“ä½µæ–½åŠ ç®—".
            03  FILLER                      PIC X(41)   VALUE
-                       "058 autohougo          ¼«Æ°Ë¥¹ç´ï²Ã»»¶èÊ¬".
+                       "058 autohougo          è‡ªå‹•ç¸«åˆå™¨åŠ ç®—åŒºåˆ†".
            03  FILLER                      PIC X(41)   VALUE
-                       "059 gaikanrikbn        ³°Íè´ÉÍı²Ã»»¶èÊ¬  ".
+                       "059 gaikanrikbn        å¤–æ¥ç®¡ç†åŠ ç®—åŒºåˆ†  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "060 tusokugaikbn       ÄÌÂ§²Ã»»½êÄêÅÀ¿ô  ".
+                       "060 tusokugaikbn       é€šå‰‡åŠ ç®—æ‰€å®šç‚¹æ•°  ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "061 hokatuteigenkbn    Êñ³çÄş¸º¶èÊ¬      ".
+                       "061 hokatuteigenkbn    åŒ…æ‹¬é€“æ¸›åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "062 chpnaisiksn        Ä¶²»ÇÈÆâ»ë¶À²Ã»»  ".
+                       "062 chpnaisiksn        è¶…éŸ³æ³¢å†…è¦–é¡åŠ ç®—  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "063 autofungo          ¼«Æ°Ê­¹ç´ï²Ã»»¶èÊ¬".
+                       "063 autofungo          è‡ªå‹•å»åˆå™¨åŠ ç®—åŒºåˆ†".
            03  FILLER                      PIC X(41)   VALUE
-                       "064 chiikiksn          ÃÏ°è²Ã»»          ".
+                       "064 chiikiksn          åœ°åŸŸåŠ ç®—          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "065 byosyokbn          ÉÂ¾²¿ô¶èÊ¬        ".
+                       "065 byosyokbn          ç—…åºŠæ•°åŒºåˆ†        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "066 chpgyokosotiksn    Ä¶²»ÇÈ¶Å¸ÇÀÚ³«Á¼ÃÖ".
+                       "066 chpgyokosotiksn    è¶…éŸ³æ³¢å‡å›ºåˆ‡é–‹æªç½®".
            03  FILLER                      PIC X(41)   VALUE
-                       "067 shortstayope       Ã»´üÂÚºß¼ê½Ñ      ".
+                       "067 shortstayope       çŸ­æœŸæ»åœ¨æ‰‹è¡“      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "068 buikbn             Éô°Ì¶èÊ¬          ".
+                       "068 buikbn             éƒ¨ä½åŒºåˆ†          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "069 santeirrkkbn       »»ÄêÍúÎò¶èÊ¬      ".
+                       "069 santeirrkkbn       ç®—å®šå±¥æ­´åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "070 sstkijuncd1        »ÜÀß´ğ½à£±        ".
+                       "070 sstkijuncd1        æ–½è¨­åŸºæº–ï¼‘        ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "071 sstkijuncd2        »ÜÀß´ğ½à£²        ".
+                       "071 sstkijuncd2        æ–½è¨­åŸºæº–ï¼’        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "072 sstkijuncd3        »ÜÀß´ğ½à£³        ".
+                       "072 sstkijuncd3        æ–½è¨­åŸºæº–ï¼“        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "073 sstkijuncd4        »ÜÀß´ğ½à£´        ".
+                       "073 sstkijuncd4        æ–½è¨­åŸºæº–ï¼”        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "074 sstkijuncd5        »ÜÀß´ğ½à£µ        ".
+                       "074 sstkijuncd5        æ–½è¨­åŸºæº–ï¼•        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "075 sstkijuncd6        »ÜÀß´ğ½à£¶        ".
+                       "075 sstkijuncd6        æ–½è¨­åŸºæº–ï¼–        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "076 sstkijuncd7        »ÜÀß´ğ½à£·        ".
+                       "076 sstkijuncd7        æ–½è¨­åŸºæº–ï¼—        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "077 sstkijuncd8        »ÜÀß´ğ½à£¸        ".
+                       "077 sstkijuncd8        æ–½è¨­åŸºæº–ï¼˜        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "078 sstkijuncd9        »ÜÀß´ğ½à£¹        ".
+                       "078 sstkijuncd9        æ–½è¨­åŸºæº–ï¼™        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "079 sstkijuncd10       »ÜÀß´ğ½à£±£°      ".
+                       "079 sstkijuncd10       æ–½è¨­åŸºæº–ï¼‘ï¼      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "080 ageksnkgn1         Ç¯Îğ²Ã»»²¼¸ÂÇ¯Îğ£±".
+                       "080 ageksnkgn1         å¹´é½¢åŠ ç®—ä¸‹é™å¹´é½¢ï¼‘".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "081 ageksnjgn1         Ç¯Îğ²Ã»»¾å¸ÂÇ¯Îğ£±".
+                       "081 ageksnjgn1         å¹´é½¢åŠ ç®—ä¸Šé™å¹´é½¢ï¼‘".
            03  FILLER                      PIC X(41)   VALUE
-                       "082 ageksnsrycd1       Ç¯Îğ²Ã»»¥³¡¼¥É£±  ".
+                       "082 ageksnsrycd1       å¹´é½¢åŠ ç®—ã‚³ãƒ¼ãƒ‰ï¼‘  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "083 ageksnkgn2         Ç¯Îğ²Ã»»²¼¸ÂÇ¯Îğ£²".
+                       "083 ageksnkgn2         å¹´é½¢åŠ ç®—ä¸‹é™å¹´é½¢ï¼’".
            03  FILLER                      PIC X(41)   VALUE
-                       "084 ageksnjgn2         Ç¯Îğ²Ã»»¾å¸ÂÇ¯Îğ£²".
+                       "084 ageksnjgn2         å¹´é½¢åŠ ç®—ä¸Šé™å¹´é½¢ï¼’".
            03  FILLER                      PIC X(41)   VALUE
-                       "085 ageksnsrycd2       Ç¯Îğ²Ã»»¥³¡¼¥É£²  ".
+                       "085 ageksnsrycd2       å¹´é½¢åŠ ç®—ã‚³ãƒ¼ãƒ‰ï¼’  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "086 ageksnkgn3         Ç¯Îğ²Ã»»²¼¸ÂÇ¯Îğ£³".
+                       "086 ageksnkgn3         å¹´é½¢åŠ ç®—ä¸‹é™å¹´é½¢ï¼“".
            03  FILLER                      PIC X(41)   VALUE
-                       "087 ageksnjgn3         Ç¯Îğ²Ã»»¾å¸ÂÇ¯Îğ£³".
+                       "087 ageksnjgn3         å¹´é½¢åŠ ç®—ä¸Šé™å¹´é½¢ï¼“".
            03  FILLER                      PIC X(41)   VALUE
-                       "088 ageksnsrycd3       Ç¯Îğ²Ã»»¥³¡¼¥É£³  ".
+                       "088 ageksnsrycd3       å¹´é½¢åŠ ç®—ã‚³ãƒ¼ãƒ‰ï¼“  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "089 ageksnkgn4         Ç¯Îğ²Ã»»²¼¸ÂÇ¯Îğ£´".
+                       "089 ageksnkgn4         å¹´é½¢åŠ ç®—ä¸‹é™å¹´é½¢ï¼”".
            03  FILLER                      PIC X(41)   VALUE
-                       "090 ageksnjgn4         Ç¯Îğ²Ã»»¾å¸ÂÇ¯Îğ£´".
+                       "090 ageksnjgn4         å¹´é½¢åŠ ç®—ä¸Šé™å¹´é½¢ï¼”".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "091 ageksnsrycd4       Ç¯Îğ²Ã»»¥³¡¼¥É£´  ".
+                       "091 ageksnsrycd4       å¹´é½¢åŠ ç®—ã‚³ãƒ¼ãƒ‰ï¼”  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "092 kentaicomment      ¸¡ÂÎ¸¡ºº¥³¥á¥ó¥È  ".
+                       "092 kentaicomment      æ¤œä½“æ¤œæŸ»ã‚³ãƒ¡ãƒ³ãƒˆ  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "093 nyukhnkbn          Æş±¡´ğËÜÎÁ¶èÊ¬    ".
+                       "093 nyukhnkbn          å…¥é™¢åŸºæœ¬æ–™åŒºåˆ†    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "094 nyukhnksnkbn       Æş±¡´ğËÜÎÁ²Ã»»¶èÊ¬".
+                       "094 nyukhnksnkbn       å…¥é™¢åŸºæœ¬æ–™åŠ ç®—åŒºåˆ†".
            03  FILLER                      PIC X(41)   VALUE
-                       "095 kangoksn           ´Ç¸î²Ã»»          ".
+                       "095 kangoksn           çœ‹è­·åŠ ç®—          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "096 oldtenskb          µìÅÀ¿ô¼±ÊÌ        ".
+                       "096 oldtenskb          æ—§ç‚¹æ•°è­˜åˆ¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "097 oldten             µìÅÀ¿ô¡¿¶â³Û      ".
+                       "097 oldten             æ—§ç‚¹æ•°ï¼é‡‘é¡      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "098 madokukbn          ËãÌô¡¦ÆÇÌôÅù¶èÊ¬  ".
+                       "098 madokukbn          éº»è–¬ãƒ»æ¯’è–¬ç­‰åŒºåˆ†  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "099 sinkeihakaikbn     ¿À·ĞÇË²õºŞ        ".
+                       "099 sinkeihakaikbn     ç¥çµŒç ´å£Šå‰¤        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "100 seibutugakukbn     À¸Êª³ØÅªÀ½ºŞ      ".
+                       "100 seibutugakukbn     ç”Ÿç‰©å­¦çš„è£½å‰¤      ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "101 zoeizaikbn         Â¤±Æ¡ÊÊä½õ¡ËºŞ    ".
+                       "101 zoeizaikbn         é€ å½±ï¼ˆè£œåŠ©ï¼‰å‰¤    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "102 csyyouryo          Ãí¼ÍÍÆÎÌ          ".
+                       "102 csyyouryo          æ³¨å°„å®¹é‡          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "103 ykzkbn             ÌôºŞ¶èÊ¬          ".
+                       "103 ykzkbn             è–¬å‰¤åŒºåˆ†          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "104 zaigatakbn         ºŞ·Á              ".
+                       "104 zaigatakbn         å‰¤å½¢              ".
            03  FILLER                      PIC X(41)   VALUE
-                       "105 kouhatukbn         ¸åÈ¯ÉÊ            ".
+                       "105 kouhatukbn         å¾Œç™ºå“            ".
            03  FILLER                      PIC X(41)   VALUE
-                       "106 longtoyokbn        Ä¹´üÅêÍ¿¡ÊÌ¤»ÈÍÑ¡Ë".
+                       "106 longtoyokbn        é•·æœŸæŠ•ä¸ï¼ˆæœªä½¿ç”¨ï¼‰".
            03  FILLER                      PIC X(41)   VALUE
-                       "107 meiuseskb          Ì¾¾Î»ÈÍÑ¼±ÊÌ      ".
+                       "107 meiuseskb          åç§°ä½¿ç”¨è­˜åˆ¥      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "108 tokukizaiageksnkbn Ç¯Îğ²Ã»»¶èÊ¬      ".
+                       "108 tokukizaiageksnkbn å¹´é½¢åŠ ç®—åŒºåˆ†      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "109 sansokbn           »ÀÁÇÅù¶èÊ¬        ".
+                       "109 sansokbn           é…¸ç´ ç­‰åŒºåˆ†        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "110 tokukizaisbt1      ÆÃÄê´ïºà¼ïÊÌ      ".
+                       "110 tokukizaisbt1      ç‰¹å®šå™¨æç¨®åˆ¥      ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "111 tokukizaisbt2      ¾å¸Â²Á³Ê          ".
+                       "111 tokukizaisbt2      ä¸Šé™ä¾¡æ ¼          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "112 jgnten             ¾å¸ÂÅÀ¿ô          ".
+                       "112 jgnten             ä¸Šé™ç‚¹æ•°          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "113 gaitenttlkbn       ÅÀ¿ôÍó½¸·×Àè¡¦³°Íè".
+                       "113 gaitenttlkbn       ç‚¹æ•°æ¬„é›†è¨ˆå…ˆãƒ»å¤–æ¥".
            03  FILLER                      PIC X(41)   VALUE
-                       "114 nyutenttlkbn       ÅÀ¿ôÍó½¸·×Àè¡¦Æş±¡".
+                       "114 nyutenttlkbn       ç‚¹æ•°æ¬„é›†è¨ˆå…ˆãƒ»å…¥é™¢".
            03  FILLER                      PIC X(41)   VALUE
-                       "115 cdkbn_kbn          ¥³¡¼¥ÉÉ½¡¦¶èÊ¬    ".
+                       "115 cdkbn_kbn          ã‚³ãƒ¼ãƒ‰è¡¨ãƒ»åŒºåˆ†    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "116 cdkbn_syo          ¥³¡¼¥ÉÉ½¡¦¾Ï      ".
+                       "116 cdkbn_syo          ã‚³ãƒ¼ãƒ‰è¡¨ãƒ»ç«       ".
            03  FILLER                      PIC X(41)   VALUE
-                       "117 cdkbn_bu           ¥³¡¼¥ÉÉ½¡¦Éô      ".
+                       "117 cdkbn_bu           ã‚³ãƒ¼ãƒ‰è¡¨ãƒ»éƒ¨      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "118 cdkbn_kbnnum       ¥³¡¼¥ÉÉ½¡¦¶èÊ¬ÈÖ¹æ".
+                       "118 cdkbn_kbnnum       ã‚³ãƒ¼ãƒ‰è¡¨ãƒ»åŒºåˆ†ç•ªå·".
            03  FILLER                      PIC X(41)   VALUE
-                       "119 cdkbn_kbnnum_eda   ¥³¡¼¥ÉÉ½¡¦»ŞÈÖ    ".
+                       "119 cdkbn_kbnnum_eda   ã‚³ãƒ¼ãƒ‰è¡¨ãƒ»æç•ª    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "120 cdkbn_kouban       ¥³¡¼¥ÉÉ½¡¦¹àÈÖ    ".
+                       "120 cdkbn_kouban       ã‚³ãƒ¼ãƒ‰è¡¨ãƒ»é …ç•ª    ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "121 kokuchi_kbn        ¹ğÃÎÄÌÃÎ¡¦¶èÊ¬    ".
+                       "121 kokuchi_kbn        å‘ŠçŸ¥é€šçŸ¥ãƒ»åŒºåˆ†    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "122 kokuchi_syo        ¹ğÃÎÄÌÃÎ¡¦¾Ï      ".
+                       "122 kokuchi_syo        å‘ŠçŸ¥é€šçŸ¥ãƒ»ç«       ".
            03  FILLER                      PIC X(41)   VALUE
-                       "123 kokuchi_bu         ¹ğÃÎÄÌÃÎ¡¦Éô      ".
+                       "123 kokuchi_bu         å‘ŠçŸ¥é€šçŸ¥ãƒ»éƒ¨      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "124 kokuchi_kbnnum     ¹ğÃÎÄÌÃÎ¡¦¶èÊ¬ÈÖ¹æ".
+                       "124 kokuchi_kbnnum     å‘ŠçŸ¥é€šçŸ¥ãƒ»åŒºåˆ†ç•ªå·".
            03  FILLER                      PIC X(41)   VALUE
-                       "125 kokuchi_kbnnum_eda ¹ğÃÎÄÌÃÎ¡¦»ŞÈÖ    ".
+                       "125 kokuchi_kbnnum_eda å‘ŠçŸ¥é€šçŸ¥ãƒ»æç•ª    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "126 kokuchi_kouban     ¹ğÃÎÄÌÃÎ¡¦¹àÈÖ    ".
+                       "126 kokuchi_kouban     å‘ŠçŸ¥é€šçŸ¥ãƒ»é …ç•ª    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "127 kokujiskbkbn1      ¹ğ¼¨Åù¼±ÊÌ¶èÊ¬£±  ".
+                       "127 kokujiskbkbn1      å‘Šç¤ºç­‰è­˜åˆ¥åŒºåˆ†ï¼‘  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "128 kokujiskbkbn2      ¹ğ¼¨Åù¼±ÊÌ¶èÊ¬£²  ".
+                       "128 kokujiskbkbn2      å‘Šç¤ºç­‰è­˜åˆ¥åŒºåˆ†ï¼’  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "129 namechgkbn         ´Á»úÌ¾¾ÎÊÑ¹¹¶èÊ¬  ".
+                       "129 namechgkbn         æ¼¢å­—åç§°å¤‰æ›´åŒºåˆ†  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "130 kananamechgkbn     ¥«¥ÊÌ¾¾ÎÊÑ¹¹¶èÊ¬  ".
+                       "130 kananamechgkbn     ã‚«ãƒŠåç§°å¤‰æ›´åŒºåˆ†  ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "131 idokanren          °ÛÆ°´ØÏ¢          ".
+                       "131 idokanren          ç•°å‹•é–¢é€£          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "132 kouhyojyunnum      ¸øÉ½½ç½øÈÖ¹æ      ".
+                       "132 kouhyojyunnum      å…¬è¡¨é †åºç•ªå·      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "133 yakkakjncd         Ìô²Á´ğ½à¥³¡¼¥É    ".
+                       "133 yakkakjncd         è–¬ä¾¡åŸºæº–ã‚³ãƒ¼ãƒ‰    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "134 syusaiskb          ¼ıÂ×Êı¼°Åù¼±ÊÌ    ".
+                       "134 syusaiskb          åæˆ´æ–¹å¼ç­‰è­˜åˆ¥    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "135 syomeikanren       ¾¦ÉÊÌ¾Åù´ØÏ¢      ".
+                       "135 syomeikanren       å•†å“åç­‰é–¢é€£      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "136 chgymd             ÊÑ¹¹Ç¯·îÆü        ".
+                       "136 chgymd             å¤‰æ›´å¹´æœˆæ—¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "137 haisiymd           ÇÑ»ßÇ¯·îÆü        ".
+                       "137 haisiymd           å»ƒæ­¢å¹´æœˆæ—¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "138 keikasochiymd      ·Ğ²áÁ¼ÃÖÇ¯·îÆü    ".
+                       "138 keikasochiymd      çµŒéæªç½®å¹´æœˆæ—¥    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "139 termid             Ã¼Ëö£É£Ä          ".
+                       "139 termid             ç«¯æœ«ï¼©ï¼¤          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "140 opid               ¥ª¥Ú¥ì¡¼¥¿¡¼£É£Ä  ".
+                       "140 opid               ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãƒ¼ï¼©ï¼¤  ".
       *
            03  FILLER                      PIC X(41)   VALUE
-                       "141 creymd             ºîÀ®Ç¯·îÆü        ".
+                       "141 creymd             ä½œæˆå¹´æœˆæ—¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "142 upymd              ¹¹¿·Ç¯·îÆü        ".
+                       "142 upymd              æ›´æ–°å¹´æœˆæ—¥        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "143 uphms              ¹¹¿·»ş´Ö          ".
+                       "143 uphms              æ›´æ–°æ™‚é–“          ".
            03  FILLER                      PIC X(41)   VALUE
-                       "144 hospnum            °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ  ".
+                       "144 hospnum            åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·  ".
            03  FILLER                      PIC X(41)   VALUE
-                       "145 gazoopesup         ²èÁüÅù¼ê½Ñ»Ù±ç²Ã»»".
+                       "145 gazoopesup         ç”»åƒç­‰æ‰‹è¡“æ”¯æ´åŠ ç®—".
            03  FILLER                      PIC X(41)   VALUE
-                       "146 iryokansatukbn     °åÎÅ´Ñ»¡Ë¡ÂĞ¾İ¶èÊ¬".
+                       "146 iryokansatukbn     åŒ»ç™‚è¦³å¯Ÿæ³•å¯¾è±¡åŒºåˆ†".
            03  FILLER                      PIC X(41)   VALUE
-                       "147 masuiskbkbn        Ëã¿ì¼±ÊÌ¶èÊ¬      ".
-      *H24.4ÄÉ²Ã£´¤Ä
+                       "147 masuiskbkbn        éº»é…”è­˜åˆ¥åŒºåˆ†      ".
+      *H24.4è¿½åŠ ï¼”ã¤
            03  FILLER                      PIC X(41)   VALUE
-                       "148 fukubikunaikbn     ÉûÉ¡¹ĞÆâ»ë¶À      ".
+                       "148 fukubikunaikbn     å‰¯é¼»è…”å†…è¦–é¡      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "149 fukubikukotukbn    ÉûÉ¡¹Ğ¹üÆğÉô      ".
+                       "149 fukubikukotukbn    å‰¯é¼»è…”éª¨è»Ÿéƒ¨      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "150 timemasuikbn       Ä¹»ş´ÖËã¿ì        ".
+                       "150 timemasuikbn       é•·æ™‚é–“éº»é…”        ".
            03  FILLER                      PIC X(41)   VALUE
-                       "151 dpckbn             £Ä£Ğ£Ã¶èÊ¬        ".
-      *H28.4ÄÉ²Ã£µ¤Ä
+                       "151 dpckbn             ï¼¤ï¼°ï¼£åŒºåˆ†        ".
+      *H28.4è¿½åŠ ï¼•ã¤
            03  FILLER                      PIC X(41)   VALUE
-                       "152 hisinsyumonitorksn Èó¿¯½±Åª·ì¹ÔÆ°ÂÖ¥â".
+                       "152 hisinsyumonitorksn éä¾µè¥²çš„è¡€è¡Œå‹•æ…‹ãƒ¢".
            03  FILLER                      PIC X(41)   VALUE
-                       "153 touketuhozonksn    Åà·ëÊİÂ¸Æ±¼ïÁÈ¿¥²Ã".
+                       "153 touketuhozonksn    å‡çµä¿å­˜åŒç¨®çµ„ç¹”åŠ ".
            03  FILLER                      PIC X(41)   VALUE
-                       "154 kubunbangou        ÅÀ¿ôÉ½¶èÊ¬ÈÖ¹æ    ".
+                       "154 kubunbangou        ç‚¹æ•°è¡¨åŒºåˆ†ç•ªå·    ".
            03  FILLER                      PIC X(41)   VALUE
-                       "155 rosaikbn           Ï«ºÒ»»ÄêÉÔ²Ä      ".
+                       "155 rosaikbn           åŠ´ç½ç®—å®šä¸å¯      ".
            03  FILLER                      PIC X(41)   VALUE
-                       "156 sisiksn            »Í»è²Ã»»¡ÊÏ«ºÒ¡Ë  ".
-      *H30.4ÄÉ²Ã£±¤Ä
+                       "156 sisiksn            å››è‚¢åŠ ç®—ï¼ˆåŠ´ç½ï¼‰  ".
+      *H30.4è¿½åŠ ï¼‘ã¤
            03  FILLER                      PIC X(41)   VALUE
-                       "157 akuseibyoriksn     °­À­¼ğáçÉÂÍıÁÈ¿¥  ".
+                       "157 akuseibyoriksn     æ‚ªæ€§è…«ç˜ç—…ç†çµ„ç¹”  ".
       *
        01  TBL-TENSU-NAME-AREA-R   REDEFINES   TBL-TENSU-NAME-AREA.
            03  TBL-TENSU-NAME-OCC  OCCURS  157 INDEXED  TBL-TNM.

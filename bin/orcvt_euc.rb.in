@@ -3,16 +3,16 @@
 Encoding.default_external = "euc-jp"
 #require "jcode"
 
-# Ⱦ�ѱѿ������� -> �����Ѵ�(EUC) script for ORCA
+# 半角英数字記号 -> 全角変換(EUC) script for ORCA
 # 
-#       �оݹ��ܤ�Ⱦ�Ѥ����ѤΥ������ʤ�¸�ߤ����硢���ߤ���Ⱦ�ѥ���
-#       ���ʡ�Ⱦ�ѱѿ�������ӵ�������Ѥ��Ѵ�����
+#       対象項目に半角か全角のカタカナが存在する場合、混在する半角カタ
+#       カナ、半角英数字および記号を全角に変換する
 #
-#     �ѥ�᡼���ե����� /home/orca/ORCADC.PARA [ $file_path_name ]
-#              ( csv�ե�����ϸ��ܤ� �ե�����̾_org �Ȥ�����¸���ޤ� )
-#     �оݹ����ֹ� 16,17,18,19,20 [ $tgt_csv_no ] ( ���ϥ����ɣ����� )
-# 01/08/22 by ����
-# 01/11/05 by ���� bug fix
+#     パラメータファイル /home/orca/ORCADC.PARA [ $file_path_name ]
+#              ( csvファイルは原本を ファイル名_org として保存します )
+#     対象項目番号 16,17,18,19,20 [ $tgt_csv_no ] ( 入力コード１〜５ )
+# 01/08/22 by 山本
+# 01/11/05 by 山本 bug fix
 
 #$KCODE = "euc"
 
@@ -20,25 +20,25 @@ $file_path_name = ARGV[0]
 $tgt_csv_no = [16,17,18,19,20]
 
 def h2z(buf)
-  # Ⱦ��->���� �Ѵ��ơ��֥� ============================================
-  # (Ⱦ�ѥ��ڡ����ϥǥ�ߥ��Ȥ��ƻ��Ѥ���Τ���Ͽ�Ǥ��ޤ���)
+  # 半角->全角 変換テーブル ============================================
+  # (半角スペースはデリミタとして使用するので登録できません)
   str1 = "" ; str2 = ""
-  str1 = str1 + '���� ���� ���� ���� ���� ���� ���� ���� ���� ���� ���� ���� �� �Î� �Ď� �ʎ� �ˎ� �̎� �͎� �Ύ� ���� '
-  str2 = str2 + '�����������������������¥ťǥɥХӥ֥٥ܥ�'
-  str1 = str1 + '�ʎ� �ˎ� �̎� �͎� �Ύ� �� �� �� �� �� �� �� �� �� �� �� �� '
-  str2 = str2 + '�ѥԥץڥݥ�������������á�����'
-  str1 = str1 + '�� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� '
-  str2 = str2 + '�����������������������������������ĥƥȥʥ˥̥ͥ�'
-  str1 = str1 + '�� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� �� '
-  str2 = str2 + '�ϥҥեإۥޥߥ���������������'
+  str1 = str1 + 'ガ ギ グ ゲ ゴ ザ ジ ズ ゼ ゾ ダ ヂ ヅ デ ド バ ビ ブ ベ ボ ヴ '
+  str2 = str2 + 'ガギグゲゴザジズゼゾダヂヅデドバビブベボヴ'
+  str1 = str1 + 'パ ピ プ ペ ポ ァ ィ ゥ ェ ォ ャ ュ ョ ッ ー ゛ ゜ '
+  str2 = str2 + 'パピプペポァィゥェォャュョッー゛゜'
+  str1 = str1 + 'ア イ ウ エ オ カ キ ク ケ コ サ シ ス セ ソ タ チ ツ テ ト ナ ニ ヌ ネ ノ '
+  str2 = str2 + 'アイウエオカキクケコサシスセソタチツテトナニヌネノ'
+  str1 = str1 + 'ハ ヒ フ ヘ ホ マ ミ ム メ モ ヤ ユ ヨ ラ リ ル レ ロ ワ ヲ ン '
+  str2 = str2 + 'ハヒフヘホマミムメモヤユヨラリルレロワヲン'
   str1 = str1 + 'a b c d e f g h i j k l m n o p q r s t u v w x y z '
-  str2 = str2 + '����������������������������������'
+  str2 = str2 + 'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
   str1 = str1 + 'A B C D E F G H I J K L M N O P Q R S T U V W X Y Z '
-  str2 = str2 + '���£ãģţƣǣȣɣʣˣ̣ͣΣϣУѣңӣԣգ֣ףأ٣�'
+  str2 = str2 + 'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'
   str1 = str1 + '0 1 2 3 4 5 6 7 8 9 '
-  str2 = str2 + '��������������������'
+  str2 = str2 + '０１２３４５６７８９'
   str1 = str1 + '\! " # \$ % & \' \( \) \* \+ , - \. / : ; < = > \? @ \[ \\\\ ] \^ _ ` \{ \| } ~ '
-  str2 = str2 + '���ɡ������ǡʡˡ��ܡ��ݡ����������䡩���Ρ�ϡ����ơСáѡ�'
+  str2 = str2 + '！”＃＄％＆’（）＊＋，−．／：；＜＝＞？＠［¥］＾＿‘｛｜｝〜'
 
   frm = str1.split(" ")
   to  = str2.split("")
@@ -52,9 +52,9 @@ def h2z(buf)
   return buf
 end
 
-# �ѥ�᡼���ե����뤫�����ϥե�����̾�򥻥åȤ���
+# パラメータファイルから入力ファイル名をセットする
 def set_in_f(idct)
-  # �ѥ�᡼���ե������¸�߳�ǧ
+  # パラメータファイルの存在確認
   if !File.exists?($file_path_name)
     print "ERR: no file [ " + $file_path_name + " ]\n"
     exit
@@ -72,48 +72,48 @@ end
 
 #----- Main -------------------------------------------------
 cnt = 0 ; lcnt = 0
-# ���ϥե�����̾�Υ��å�
+# 入力ファイル名のセット
 in_file = set_in_f('@01-5:')
-# �ե������¸�߳�ǧ
+# ファイルの存在確認
 if !File.exists?(in_file)
   print "ERR: no file [ " + in_file + " ]\n"
   exit
 end
 
-# �ե����븶�ܤ���̾����¸(copy)�����ϥե�����Ȥ���
+# ファイル原本を別名で保存(copy)し入力ファイルとする
 out_file = in_file
 in_file = in_file + "_org"
 `cp #{out_file} #{in_file}`
 
-# ���ϡ����ϥե�����򤽤줾�쥪���ץ�
+# 入力、出力ファイルをそれぞれオープン
 open(in_file,"r") do |f|
   open(out_file,"w") do |f2|
 
-    # ���ϥե����뤫��1���ɤ߹���
+    # 入力ファイルから1行読み込み
     while buf = f.gets
       lcnt = lcnt + 1
       ary = Array.new
-      # �����β��ԥ����ɤ���
+      # 行末の改行コードを削除
       buf.chop!
-      # �ǥ�ߥ��򥫥�ޤȤ�����˥��åȡʣ����ꥸ���
+      # デリミタをカンマとし配列にセット（０オリジン）
 #     print "[IN-ARY] => " + buf + "\n"
       ary = buf.split(",",-1)
 
-      # �оݹ��ܤˤĤ��ƤΤ߽���
+      # 対象項目についてのみ処理
       flg = false
       $tgt_csv_no.each{|s|
-        # Ⱦ�Ѥ����ѤΥ������ʤ�¸�ߤ���Х᥽�å� h2z(String) ���Ѵ�
-        if /[��-�ߥ�-��������]/e =~ ary[s-1]
+        # 半角か全角のカタカナが存在すればメソッド h2z(String) で変換
+        if /[ヲ-゜ァ-ヴー゛゜]/e =~ ary[s-1]
           ary[s-1] = h2z(String(ary[s-1])) ; flg = true
         end
       }
       cnt = cnt + 1 if flg
 
-      # ����򥫥�ޥǥ�ߥ���ʸ����˷��
+      # 配列をカンマデリミタで文字列に結合
       buf = ary.join(",")
 #     print "[OUT-ARY]=> " + buf + "\n"
 #     puts "-----------------------------------------------------------------------"
-      # ʸ�������ϥե�����˽񤭹���
+      # 文字列を出力ファイルに書き込み
       f2.puts buf
     end
   end

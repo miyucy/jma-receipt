@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,45 +16,45 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *   ��ϥӥ�Ʊ�컻�ꥳ���ɥơ��֥� COPY (CMRIHACDTBL.INC)
+      *   リハビリ同一算定コードテーブル COPY (CMRIHACDTBL.INC)
       *----------------------------------------------------------------*
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-      *    ��ϥӥ�Υ�����
+      *    リハビリのコード
        01  TBL-RIHABIRI-AREA.
-      *    ����ɼ��¥�ϥӥ�
+      *    心血管疾病リハビリ
            03  FILLER              PIC X(13)   VALUE   "1 1 180027410".
            03  FILLER              PIC X(13)   VALUE   "1 2 180027510".
-      *    ����ɼ��¥�ϥӥ�ʣ�����Ķ��
+      *    心血管疾病リハビリ（１２０超）
            03  FILLER              PIC X(13)   VALUE   "121 180029110".
            03  FILLER              PIC X(13)   VALUE   "122 180029210".
-      *    Ǿ��ɼ��¥�ϥӥ�
+      *    脳血管疾病リハビリ
            03  FILLER              PIC X(13)   VALUE   "2 1 180027610".
            03  FILLER              PIC X(13)   VALUE   "2 2 180027710".
-      *    Ǿ��ɼ��¥�ϥӥ�ʣ�����Ķ��
+      *    脳血管疾病リハビリ（１４０超）
            03  FILLER              PIC X(13)   VALUE   "221 180029310".
            03  FILLER              PIC X(13)   VALUE   "222 180029410".
-      *    ��ư���ϥӥ�
+      *    運動器リハビリ
            03  FILLER              PIC X(13)   VALUE   "3 1 180027810".
            03  FILLER              PIC X(13)   VALUE   "3 2 180027910".
-      *    ��ư���ϥӥ�ʣ�����Ķ��
+      *    運動器リハビリ（１２０超）
            03  FILLER              PIC X(13)   VALUE   "321 180029510".
            03  FILLER              PIC X(13)   VALUE   "322 180029610".
-      *    �Ƶ۴��ϥӥ�
+      *    呼吸器リハビリ
            03  FILLER              PIC X(13)   VALUE   "4 1 180028010".
            03  FILLER              PIC X(13)   VALUE   "4 2 180028110".
-      *    �Ƶ۴��ϥӥ�ʣ���Ķ��
+      *    呼吸器リハビリ（８０超）
            03  FILLER              PIC X(13)   VALUE   "421 180029710".
            03  FILLER              PIC X(13)   VALUE   "422 180029810".
-      *�ȣ�����������(������������ѡ�
-      *    Ǿ��ɼ��¥�ϥӥꣳ
+      *Ｈ２０．４から(算定履歴作成用）
+      *    脳血管疾病リハビリ３
            03  FILLER              PIC X(13)   VALUE   "2 3 180030810".
       *
        01  TBL-RIHABIRI-AREA-R     REDEFINES   TBL-RIHABIRI-AREA.
            03  TBL-RIHABIRI-OCC    OCCURS   17   INDEXED   TBL-RIH.
-      *        ��ϥӥ����
+      *        リハビリ種類
                05  TBL-RIHA-KBN        PIC X(01).
                05  TBL-RIHA-GEN        PIC X(01).
                05  TBL-RIHA-KBN2       PIC X(01).

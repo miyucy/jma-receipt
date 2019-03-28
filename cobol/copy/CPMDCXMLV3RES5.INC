@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹥�ϥӥꥳ���������Ͼ��� (���β�)
+      *    ＡＰＩレスポンスリハビリコメント等入力情報 (一体化)
       *                                          COPY (CPMDCXMLV3RES5.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  XML-MEDICALV3RES5.
            03  MDCRES-CONTEXT             PIC S9(9)   BINARY.
@@ -29,105 +29,105 @@
            03  MDCRES-MODE                PIC S9(9)   BINARY.
            03  MDCRES-RECORDNAME          PIC X(128).
            03  MDCRES-MEDICALRES.
-      *        �ꥯ�������ֹ�
+      *        リクエスト番号
                05  MDCRES-REQUEST-NUMBER    PIC X(2).
-      *        �쥹�ݥ��ֹ�
+      *        レスポンス番号
                05  MDCRES-RESPONSE-NUMBER   PIC X(2).
-      *        UID���Żҥ���ơ�
+      *        UID（電子カルテ）
                05  MDCRES-KARTE-UID         PIC X(36).
-      *        UID�ʥ��륫��
+      *        UID（オルカ）
                05  MDCRES-ORCA-UID          PIC X(36).
-      *        �»���
+      *        実施日
                05  MDCRES-INFORMATION-DATE  PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                05  MDCRES-INFORMATION-TIME  PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                05  MDCRES-API-RESULT        PIC X(03).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                05  MDCRES-API-RESULT-MSG    PIC X(100).
       *
                05  MDCRES-RESKEY            PIC X(100).
       *
-      *        ���Ծ���
+      *        患者情報
                05  MDCRES-PATIENT-INFOMATION.
                    07  MDCRES-PATIENTID       PIC X(20).
                    07  MDCRES-NAME            PIC X(100).
                    07  MDCRES-KANANAME        PIC X(100).
                    07  MDCRES-BIRTHDAY        PIC X(10).
                    07  MDCRES-SEX             PIC X(1).
-      *        ��ϥӥ�ơ���������������ʥꥯ�����ȡᣰ��)
+      *        リハビリテーション等開始日（リクエスト＝０１)
                05  MDCRES-SANTEIRRK-TBLINF.
                    07  MDCRES-SANTEIRRK-TBL   OCCURS   100.
-      *                ���������ť�����
+      *                開始日診療コード
                        09  MDCRES-TPRSCRPT-CODE          PIC X(9).
-      *                ����̾��
+      *                診療名称
                        09  MDCRES-TPRSCRPT-NAME          PIC X(80).
-      *                ����ǯ��
+      *                算定年月
                        09  MDCRES-TPERFORM-YM            PIC X(7).
-      *                �ݸ��ȹ礻�ֹ�
+      *                保険組合せ番号
                        09  MDCRES-TCOMBINATION-NUMBER    PIC X(04).
-      *                �ݸ��ȹ礻�ֹ�̾��
+      *                保険組合せ番号名称
                        09  MDCRES-TCOMBINATION-NAME      PIC X(100).
-      *                ������
+      *                算定日
                        09  MDCRES-TPERFORM-DATE-G.
                            11  MDCRES-TPERFORM-DAY       PIC X(02)
                                                         OCCURS   31.
-      *                ��Ͽ��ʬ(1�����Ź԰١�
+      *                登録区分(1：診療行為）
                        09  MDCRES-TOROKU-MODE1           PIC X(01).
-      *                �����ȶ�ʬ(1�������Ȥ����
+      *                コメント区分(1：コメントあり）
                        09  MDCRES-TOROKU-MODE2           PIC X(01).
-      *                ��λ��
+      *                終了日
                        09  MDCRES-TEND-DATE              PIC X(10).
-      *                ��λ����ʬ(1�����Ź԰١�
+      *                終了日区分(1：診療行為）
                        09  MDCRES-TOROKU-MODE3           PIC X(01).
       *
-      *        ����������ʥꥯ�����ȡᣰ������
+      *        開始日選択（リクエスト＝０２〜）
                05  MDCRES-SANTEIRRK-INFO.
-      *            ������ʬ
+      *            処理区分
                    07  MDCRES-SANTEI-MODE           PIC X(6).
-      *            ���������ť�����
+      *            開始日診療コード
                    07  MDCRES-PRSCRPT-CODE          PIC X(9).
-      *            ����̾��
+      *            診療名称
                    07  MDCRES-PRSCRPT-NAME          PIC X(80).
-      *            ����ǯ��
+      *            算定年月
                    07  MDCRES-PERFORM-YM            PIC X(07).
-      *            �ݸ��ȹ礻�ֹ�
+      *            保険組合せ番号
                    07  MDCRES-COMBINATION-NUMBER    PIC X(04).
-      *            �ݸ��ȹ礻�ֹ�̾��
+      *            保険組合せ番号名称
                    07  MDCRES-COMBINATION-NAME      PIC X(100).
-      *            ������
+      *            算定日
                    07  MDCRES-PERFORM-DATE-G.
                        09  MDCRES-PERFORM-DAY       PIC X(02)
                                                    OCCURS   31.
-      *            ���顼������
+      *            エラーコード
                    07  MDCRES-SAN-ERRCD-TBL        OCCURS   50.
                        09  MDCRES-SAN-ERRCD            PIC X(04).
                        09  MDCRES-SAN-ERRCD-MSG        PIC X(100).
       *
-      *        ��ϥӥꥳ���ȡʥꥯ�����ȡᣰ������
+      *        リハビリコメント（リクエスト＝０２〜）
                05  MDCRES-COMMNT-INFO.
-      *            ������
+      *            算定日
                    07  MDCRES-COMMNT-DAY-TBL        OCCURS   31.
-      *                ������
+      *                算定日
                        09  MDCRES-COMMNT-DAY            PIC X(02).
-      *                ��λ��
+      *                終了日
                        09  MDCRES-END-DATE              PIC X(10).
-      *                �����ȣ�
+      *                コメント１
                        09  MDCRES-COMMNT-TBL-G.
                            11  MDCRES-COMMNT-TBL        OCCURS   50.
                                13  MDCRES-COMMNT        PIC X(80).
                                13  MDCRES-COM-ENDDATE   PIC X(10).
-      *                ���顼������
+      *                エラーコード
                        09  MDCRES-COM-ERRCD            PIC X(04).
                        09  MDCRES-COM-ERRCD-MSG        PIC X(100).
       *
-      *        ��ϥӥ�ơ��������������̤��Ͽ�����ɰ���
+      *        リハビリテーション等開始日未登録コード一覧
                05  MDCRES-STARTSRYCD-INF.
                    07  MDCRES-STARTSRYCD-TBL   OCCURS   100.
-      *                ���������ť�����
+      *                開始日診療コード
                        09  MDCRES-STARTSRYCD-CODE          PIC X(9).
-      *                ����̾��
+      *                診療名称
                        09  MDCRES-STARTSRYCD-NAME          PIC X(80).
-      *                Ŭ��������
+      *                適応開始日
                        09  MDCRES-STARTSRYCD-DATE          PIC X(10).
       *

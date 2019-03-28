@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ╞№░х╔╕╜реье╗е╫е╚е╜е╒е╚б╩JMA standard receipt softwareб╦
+      * цЧехМ╗циЩц║ЦуГмуВ╗уГЧуГИуВ╜уГХуГИя╝ИJMA standard receipt softwareя╝Й
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0161.
       *****************************************************************
-      *  е╖е╣е╞ер╠╛        : г╧г╥г├г┴
-      *  е╡е╓е╖е╣е╞ер╠╛    : г─г┬║ю└о╜ш═¤
-      *  е│еєе▌б╝е═еєе╚╠╛  : е╫еэе░ещереке╫е╖ечеє╣╣┐╖╜ш═¤
+      *  уВ╖уВ╣уГЖуГахРН        : я╝пя╝▓я╝гя╝б
+      *  уВ╡уГЦуВ╖уВ╣уГЖуГахРН    : я╝дя╝вф╜ЬцИРхЗжчРЖ
+      *  уВ│уГ│уГЭуГ╝уГНуГ│уГИхРН  : уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│цЫ┤цЦ░хЗжчРЖ
       *                    : 
-      *  ┤╔═¤╝╘            : 
-      *  ║ю└о╞№╔╒    ║ю╢╚╝╘        ╡н╜╥
-      *  08.02.04    NACL-░╦╞г     ┐╖╡м║ю└о
+      *  чобчРЖшАЕ            : 
+      *  ф╜ЬцИРцЧеф╗Ш    ф╜ЬценшАЕ        шиШш┐░
+      *  08.02.04    NACL-ф╝КшЧд     цЦ░шжПф╜ЬцИР
       *****************************************************************
-      *  е╫еэе░ещер╜д└╡═·╬Є
-      * Maj/Min/Rev  ╜д└╡╝╘       ╞№╔╒      ╞т═╞
-      * 04.03.00     NACL-┬└┼─    08/05/28  еиещб╝╜ш═¤╢п▓╜┬╨▒■
-      * 04.04.00     NACL-░╦╞г    09/03/25  ╣╣┐╖е╟б╝е┐еьедевеже╚╩╤╣╣
+      *  уГЧуГнуВ░уГйуГаф┐оцнгх▒ецн┤
+      * Maj/Min/Rev  ф┐оцнгшАЕ       цЧеф╗Ш      хЖЕхо╣
+      * 04.03.00     NACL-хдкчФ░    08/05/28  уВиуГйуГ╝хЗжчРЖх╝╖хМЦхп╛х┐Ь
+      * 04.04.00     NACL-ф╝КшЧд    09/03/25  цЫ┤цЦ░уГЗуГ╝уВ┐уГмуВдуВвуВжуГИхдЙцЫ┤
       *                                     OPTION 5000 -> 44000
-      * 04.04.00     NACL-┬└┼─    09/03/27  г▓╜┼─╔▓├е┴езе├еп╜д└╡
-      * 04.07.01     NACL-┐╣╧╞    13/07/04  OPIDе╗е├е╚
+      * 04.04.00     NACL-хдкчФ░    09/03/27  я╝ТщЗНш┐╜хКауГБуВзуГГуВпф┐оцнг
+      * 04.07.01     NACL-цгошДЗ    13/07/04  OPIDуВ╗уГГуГИ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,17 +40,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ╞■╬╧бзе╫еэе░ещереке╫е╖ечеє╣╣┐╖е╟б╝е┐
+      *    хЕехКЫя╝ЪуГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│цЫ┤цЦ░уГЗуГ╝уВ┐
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ╜╨╬╧бзеиещб╝е╒ебедеы
+      *    хЗ║хКЫя╝ЪуВиуГйуГ╝уГХуВбуВдуГл
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ╜╨╬╧бзе╫еыб╝е╒е╒ебедеы
+      *    хЗ║хКЫя╝ЪуГЧуГлуГ╝уГХуГХуВбуВдуГл
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -59,18 +59,18 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ╞■╬╧бзе╫еэе░ещереке╫е╖ечеє╣╣┐╖е╟б╝е┐
+      *    хЕехКЫя╝ЪуГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│цЫ┤цЦ░уГЗуГ╝уВ┐
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
-      *    ╜╨╬╧бзеиещб╝е╒ебедеы
+      *    хЗ║хКЫя╝ЪуВиуГйуГ╝уГХуВбуВдуГл
        FD  ERR-FILE.
        01  ERR-PRGOPTIONWK-REC.
            03  ERR-PRGOPTIONWK-SYORIKBN       PIC  X(01).
            COPY    "CPPRGOPTION.INC"   REPLACING  //PRGOPTION-//
                                               BY  //ERR-PRGOPTIONWK-//.
       *
-      *    ╜╨╬╧бзе╫еыб╝е╒е╒ебедеы
+      *    хЗ║хКЫя╝ЪуГЧуГлуГ╝уГХуГХуВбуВдуГл
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
@@ -78,25 +78,25 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    е╒ебедеы╗╪─ъ╬╬░ш
+      *    уГХуВбуВдуГлцМЗхоЪщаШхЯЯ
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    е╒еще░╬╬░ш
+      *    уГХуГйуВ░щаШхЯЯ
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    е╒еще░╬╬░ш
+      *    уГХуГйуВ░щаШхЯЯ
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-PRGOPTION           PIC 9(01).
            03  FLG-LF                  PIC 9(01).
       *
-      *    едеєе╟е├епе╣╬╬░ш
+      *    уВдуГ│уГЗуГГуВпуВ╣щаШхЯЯ
        01  IDX-AREA.
            03  IDX-PNT1                PIC 9(05).
            03  IDX-PNT2                PIC 9(05).
@@ -104,7 +104,7 @@ grpsys     COPY    "COMMON-SPA".
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(03).
       *
-      *    ележеєе╚╬╬░ш
+      *    уВлуВжуГ│уГИщаШхЯЯ
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-INS                 PIC 9(06).
@@ -121,7 +121,7 @@ grpsys     COPY    "COMMON-SPA".
            03  SYS-DD                  PIC 9(02).
       *
        01  SYS-TIME                    PIC 9(08).
-      *    ░ь╗■╬╬░ш
+      *    ф╕АцЩВщаШхЯЯ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -148,7 +148,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-ATO-OPTION      PIC X(200) OCCURS 100.
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ╡ье▐е╣е┐е╟б╝е┐┬р╚Є╬╬░ш
+      *    цЧзуГЮуВ╣уВ┐уГЗуГ╝уВ┐щААщБ┐щаШхЯЯ
        01  PRGWK-REC.
            03  PRGWK-SYORIKBN      PIC  X(1).
            03  PRGWK-HOSPNUM       PIC  9(2).
@@ -165,11 +165,11 @@ grpsys     COPY    "COMMON-SPA".
            03  PRGWK-V01-AREA-01       PIC X(5044).
            03  PRGWK-V01-AREA-02       PIC X(55).
       *
-      *    ╜╨╬╧е╒ебедеы╬╬░ш
+      *    хЗ║хКЫуГХуВбуВдуГлщаШхЯЯ
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "б┌PGID:ORCMUP0161.CBLб█".
+                                       "уАРPGID:ORCMUP0161.CBLуАС".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -191,31 +191,31 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    е╒ебедеы─ъ╡┴
+      *    уГХуВбуВдуГлхоЪч╛й
       *****************************************************************
       *
            COPY    "ENUM-VALUE".
-      *    ░ь╗■е╒ебедеы╠╛╩╘╜╕
+      *    ф╕АцЩВуГХуВбуВдуГлхРНч╖ищЫЖ
            COPY    "CPORCSGETTEMP.INC".
       *
        01  PRGOPTIONWK-REC.
            03  PRGOPTIONWK-SYORIKBN           PIC  X(01).
            COPY    "CPPRGOPTION.INC"   REPLACING   //PRGOPTION-//
                                               BY   //PRGOPTIONWK-//.
-      *    е╫еэе░ещереке╫е╖ечеє
+      *    уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│
        01  PRGOPTION-REC.
            COPY    "CPPRGOPTION.INC".
       *
-      *    е╕ече╓┤╔═¤╛Ё╩є
+      *    уВ╕уГзуГЦчобчРЖцГЕха▒
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ╢ж─╠е╤ещесе┐
+      *    хЕ▒щАЪуГСуГйуГбуВ┐
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    ╧в═эбб╬╬░ш
+      *    щАгч╡буААщаШхЯЯ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -226,7 +226,7 @@ grpsys     COPY    "COMMON-SPA".
            LNK-AREA.
       *
       ****************************************************************
-      *    ╝чбббб╜ш═¤
+      *    ф╕╗уААуААхЗжчРЖ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -242,7 +242,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    ╜щ┤№╜ш═¤
+      *    хИЭцЬЯхЗжчРЖ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -268,7 +268,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ╞■╬╧бб╜щ┤№╜ш═¤
+      *    хЕехКЫуААхИЭцЬЯхЗжчРЖ
            OPEN    INPUT               IN-FILE
            IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
@@ -276,10 +276,10 @@ grpsys     COPY    "COMMON-SPA".
                                        STS-IN "]"
            END-IF
       *
-      *    ╜╨╬╧е╒ебедеыбб╜щ┤№╜ш═¤
+      *    хЗ║хКЫуГХуВбуВдуГлуААхИЭцЬЯхЗжчРЖ
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    е╫еэе░ещереке╫е╖ечеєе╟б╝е┐╞╔╣■д▀╜ш═¤
+      *    уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│уГЗуГ╝уВ┐шкнш╛╝уБ┐хЗжчРЖ
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -287,7 +287,7 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    е╒ебедеы╛Ё╩є╝ш╞└
+      *    уГХуВбуВдуГлцГЕха▒хПЦх╛Ч
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
@@ -300,7 +300,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ╞■╬╧е╒ебедеы
+      *    хЕехКЫуГХуВбуВдуГл
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -311,7 +311,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    еиещб╝е╒ебедеы
+      *    уВиуГйуГ╝уГХуВбуВдуГл
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -322,7 +322,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    е╫еыб╝е╒е╒ебедеы
+      *    уГЧуГлуГ╝уГХуГХуВбуВдуГл
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -336,32 +336,32 @@ grpsys     COPY    "COMMON-SPA".
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    еседеє╜ш═¤
+      *    уГбуВдуГ│хЗжчРЖ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO                TO  WRK-ERRCD
       *
            EVALUATE    PRGOPTIONWK-SYORIKBN
-      *        ─╔▓├
+      *        ш┐╜хКа
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ╣╣┐╖
+      *        цЫ┤цЦ░
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ║я╜№
+      *        хЙКщЩд
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    е╫еэе░ещереке╫е╖ечеєе╟б╝е┐╞╔╣■д▀╜ш═¤
+      *    уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│уГЗуГ╝уВ┐шкнш╛╝уБ┐хЗжчРЖ
            PERFORM 900-IN-KENSAKU-SEC
            .
        200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ─╔▓├  ╜ш═¤
+      *    ш┐╜хКа  хЗжчРЖ
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
@@ -384,13 +384,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    ─╔▓├еиещб╝б╩╞▒░ьенб╝┬╕║▀б╦
+      *    ш┐╜хКауВиуГйуГ╝я╝ИхРМф╕АуВнуГ╝хнШхЬия╝Й
            IF      FLG-PRGOPTION       =   ZERO
       *        MOVE    1               TO  WRK-ERRCD
       *        PERFORM 2040-ERR-SYORI-SEC
                CONTINUE
            ELSE
-      *        г─г┬─╔▓├
+      *        я╝дя╝вш┐╜хКа
                PERFORM 20101-PRGOPTION-INS-SEC
            END-IF
            .
@@ -398,7 +398,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    г─г┬╣╣┐╖  ╜ш═¤
+      *    я╝дя╝вцЫ┤цЦ░  хЗжчРЖ
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
       *
@@ -422,12 +422,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-PRGOPTION       =   ZERO
-      *        г─г┬╣╣┐╖
+      *        я╝дя╝вцЫ┤цЦ░
                PERFORM 20101-PRGOPTION-UPD-SEC
            ELSE
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
-      *        г─г┬─╔▓├
+      *        я╝дя╝вш┐╜хКа
                PERFORM 20101-PRGOPTION-INS-SEC
            END-IF
            .
@@ -435,7 +435,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ║я╜№  ╜ш═¤
+      *    хЙКщЩд  хЗжчРЖ
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
@@ -459,7 +459,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-PRGOPTION       =   ZERO
-      *        г─г┬║я╜№
+      *        я╝дя╝вхЙКщЩд
                PERFORM 20101-PRGOPTION-DEL-SEC
            ELSE
                MOVE    6               TO  WRK-ERRCD
@@ -470,7 +470,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    г─г┬─╔▓├  ╜ш═¤
+      *    я╝дя╝вш┐╜хКа  хЗжчРЖ
       *****************************************************************
        20101-PRGOPTION-INS-SEC  SECTION.
       *
@@ -497,11 +497,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    г─г┬╣╣┐╖  ╜ш═¤
+      *    я╝дя╝вцЫ┤цЦ░  хЗжчРЖ
       *****************************************************************
        20101-PRGOPTION-UPD-SEC  SECTION.
       *
-      *    ецб╝е╢дмеке╫е╖ечеєдЄ╩╘╜╕д╖д╞ддд┐╛ь╣чд╧╣╣┐╖д╖д╩дд
+      *    уГжуГ╝уВ╢уБМуВкуГЧуВ╖уГзуГ│уВТч╖ищЫЖуБЧуБжуБДуБЯха┤хРИуБпцЫ┤цЦ░уБЧуБкуБД
            IF     (PRGOPTIONWK-KBNCD   =   "*")
              AND  (PRGOPTION-OPID     NOT = SPACE)
              AND  (PRGOPTION-UPYMD    NOT = SPACE)
@@ -529,7 +529,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    г─г┬║я╜№  ╜ш═¤
+      *    я╝дя╝вхЙКщЩд  хЗжчРЖ
       *****************************************************************
        20101-PRGOPTION-DEL-SEC  SECTION.
       *
@@ -552,7 +552,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20101-PRGOPTION-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    еке╫е╖ечеє╩╘╜╕╜ш═¤
+      *    уВкуГЧуВ╖уГзуГ│ч╖ищЫЖхЗжчРЖ
       *****************************************************************
        220-PRGOPTION-EDIT-SEC         SECTION.
       *
@@ -609,11 +609,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    еке╫е╖ечеє╩╘╜╕е▐б╝е╕╜ш═¤
+      *    уВкуГЧуВ╖уГзуГ│ч╖ищЫЖуГЮуГ╝уВ╕хЗжчРЖ
       *****************************************************************
        220-PRGOPTION-HENSYU-SEC       SECTION.
       *
-      *    ┤√┬╕е╟б╝е┐
+      *    цЧвхнШуГЗуГ╝уВ┐
            MOVE    SPACE               TO  WRK-OPTION
            MOVE    1                   TO  WRK-OPTION-LEN
            STRING  PRGOPTION-OPTION    DELIMITED   BY  SIZE
@@ -631,10 +631,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM UNTIL ( IDX-PNT1    >   WRK-OPTION-LEN )
                    OR    ( PRGOPTION-OPTION(IDX-PNT1:) =   SPACE )
-      *        ╣╘дм╜кдяд├д┐д╚дн
+      *        шбМуБМч╡ВуВПуБгуБЯуБиуБН
                IF    ( PRGOPTION-OPTION(IDX-PNT1:1)    =   X"0A" )
                    MOVE    ZERO       TO  FLG-LF
-      *            е│есеєе╚е┴езе├еп
+      *            уВ│уГбуГ│уГИуГБуВзуГГуВп
                    IF      WRK-MAE-NAIYO(1:1)  NOT =   "#"
                        PERFORM VARYING IDX-PNT2 FROM 1 BY 1
                                UNTIL ( IDX-PNT2 >   200 )
@@ -646,7 +646,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                            END-IF
                        END-PERFORM
                    END-IF
-      *            е│есеєе╚д╟д╩дд╛ь╣че╗е├е╚
+      *            уВ│уГбуГ│уГИуБзуБкуБДха┤хРИуВ╗уГГуГИ
                    IF      FLG-LF      =   1
                        COMPUTE CNT-MAE     =   CNT-MAE     +   1
                        MOVE    WRK-MAE-NAIYO
@@ -661,9 +661,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
            END-PERFORM
-      *    ║╟╜к╣╘
+      *    цЬАч╡ВшбМ
            MOVE    ZERO       TO  FLG-LF
-      *    е│есеєе╚е┴езе├еп
+      *    уВ│уГбуГ│уГИуГБуВзуГГуВп
            IF      WRK-MAE-NAIYO(1:1)  NOT =   "#"
                PERFORM VARYING IDX-PNT2 FROM 1 BY 1
                        UNTIL ( IDX-PNT2 >   200 )
@@ -674,7 +674,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    END-IF
                END-PERFORM
            END-IF
-      *    е│есеєе╚д╟д╩дд╛ь╣че╗е├е╚
+      *    уВ│уГбуГ│уГИуБзуБкуБДха┤хРИуВ╗уГГуГИ
            IF      FLG-LF      =   1
                COMPUTE CNT-MAE     =   CNT-MAE     +   1
                MOVE    WRK-MAE-NAIYO   TO  WRK-MAE-OPTION(CNT-MAE)
@@ -687,7 +687,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *----(04.07.01)--ADD-END-----
       *
-      *    ╣╣┐╖е╟б╝е┐
+      *    цЫ┤цЦ░уГЗуГ╝уВ┐
            INITIALIZE                      PRGOPTION-REC
            MOVE    PRGOPTIONWK-REC(2:) TO  PRGOPTION-REC
       *
@@ -708,7 +708,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM UNTIL ( IDX-PNT1    >   WRK-OPTION-LEN )
                    OR    ( PRGOPTION-OPTION(IDX-PNT1:) =   SPACE )
-      *        ╣╘дм╜кдядыд▐д╟
+      *        шбМуБМч╡ВуВПуВЛуБ╛уБз
                IF    ( PRGOPTION-OPTION(IDX-PNT1:2)    =   "\n" )
                    COMPUTE CNT-ATO     =   CNT-ATO     +   1
                    MOVE    WRK-ATO-NAIYO   TO  WRK-ATO-OPTION(CNT-ATO)
@@ -722,11 +722,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
            END-PERFORM
-      *    ║╟╜к╣╘
+      *    цЬАч╡ВшбМ
            COMPUTE CNT-ATO     =   CNT-ATO     +   1
            MOVE    WRK-ATO-NAIYO   TO  WRK-ATO-OPTION(CNT-ATO)
       *
-      *    е▐б╝е╕╜ш═¤
+      *    уГЮуГ╝уВ╕хЗжчРЖ
            MOVE    1                   TO  IDX-PNT1
            MOVE    1                   TO  IDX-PNT2
            MOVE    1                   TO  IDX-PNT3
@@ -742,13 +742,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        UNTIL ( IDX-PNT1 >   200 )
                        OR    ( WRK-ATO-NAIYO(IDX-PNT1:)    =  SPACE )
                        OR    ( FLG-LF  =   1 )
-      *            е│есеєе╚е┴езе├еп
+      *            уВ│уГбуГ│уГИуГБуВзуГГуВп
                    IF      WRK-ATO-NAIYO(IDX-PNT1:1)   =   "="
                        PERFORM VARYING IDY FROM 1 BY 1
                                UNTIL ( IDY >   CNT-MAE )
                                OR    ( FLG-LF  =   1 )
                            MOVE    WRK-MAE-OPTION(IDY) TO  WRK-MAE-NAIYO
-      *                    еке╫е╖ечеєе┴езе├еп
+      *                    уВкуГЧуВ╖уГзуГ│уГБуВзуГГуВп
                            IF      WRK-ATO-NAIYO(1:1)    =   "#"
                                COMPUTE IDX-PNT2  =   IDX-PNT1  -   1
                                IF      WRK-ATO-NAIYO(2:IDX-PNT2)
@@ -797,23 +797,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        220-PRGOPTION-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    еиещб╝╜ш═¤
+      *    уВиуГйуГ╝хЗжчРЖ
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    еиещб╝╜╨╬╧
+      *    уВиуГйуГ╝хЗ║хКЫ
            MOVE    PRGOPTIONWK-REC     TO  ERR-PRGOPTIONWK-REC
            WRITE   ERR-PRGOPTIONWK-REC
            ADD     1                   TO  CNT-ERR
       *
-      *    еиещб╝есе├е╗б╝е╕╜╨╬╧
+      *    уВиуГйуГ╝уГбуГГуВ╗уГ╝уВ╕хЗ║хКЫ
            PERFORM 20401-PLF-OUT-SEC
            .
        2040-ERR-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    еиещб╝есе├е╗б╝е╕╜╨╬╧╜ш═¤
+      *    уВиуГйуГ╝уГбуГГуВ╗уГ╝уВ╕хЗ║хКЫхЗжчРЖ
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -822,18 +822,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    PRGOPTIONWK-KBNCD     TO  WRK-KBNCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "еке╫е╖ечеєе▐е╣е┐┼╨╧┐║╤д▀"
+                   MOVE  "уВкуГЧуВ╖уГзуГ│уГЮуВ╣уВ┐чЩ╗щМ▓ц╕ИуБ┐"
                                        TO  WRK-MSG-01
                WHEN    2
-                   MOVE  "─╔▓├еиещб╝"  TO  WRK-MSG-01
+                   MOVE  "ш┐╜хКауВиуГйуГ╝"  TO  WRK-MSG-01
                WHEN    3
-                   MOVE  "╣╣┐╖еиещб╝"  TO  WRK-MSG-01
+                   MOVE  "цЫ┤цЦ░уВиуГйуГ╝"  TO  WRK-MSG-01
                WHEN    4
-                   MOVE  "║я╜№еиещб╝"  TO  WRK-MSG-01
+                   MOVE  "хЙКщЩдуВиуГйуГ╝"  TO  WRK-MSG-01
                WHEN    5
-                   MOVE  "╣╣┐╖┬╨╛▌д╩д╖"  TO  WRK-MSG-01
+                   MOVE  "цЫ┤цЦ░хп╛ш▒буБкуБЧ"  TO  WRK-MSG-01
                WHEN    6
-                   MOVE  "║я╜№┬╨╛▌д╩д╖"  TO  WRK-MSG-01
+                   MOVE  "хЙКщЩдхп╛ш▒буБкуБЧ"  TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA        TO  PLF-REC
@@ -844,7 +844,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ╜╨╬╧е╒ебедеыбб╜щ┤№╜ш═¤
+      *    хЗ║хКЫуГХуВбуВдуГлуААхИЭцЬЯхЗжчРЖ
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -854,7 +854,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    еиещб╝еье│б╝е╔╜╨╬╧е╒ебедеыббекб╝е╫еє
+      *    уВиуГйуГ╝уГмуВ│уГ╝уГЙхЗ║хКЫуГХуВбуВдуГлуААуВкуГ╝уГЧуГ│
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUP0161)* PLFFILE OPN STS[" STS-PLF "]"
@@ -871,14 +871,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ╜к╬╗╜ш═¤
+      *    ч╡Вф║ЖхЗжчРЖ
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ╜╨╬╧е╒ебедеыбб╜к╬╗╜ш═¤
+      *    хЗ║хКЫуГХуВбуВдуГлуААч╡Вф║ЖхЗжчРЖ
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -912,7 +912,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *     е╫еэе░ещереке╫е╖ечеє╞╔╣■д▀╜ш═¤
+      *     уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│шкнш╛╝уБ┐хЗжчРЖ
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -932,7 +932,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
           EXIT.
       *
       *****************************************************************
-      *    е╫еэе░ещереке╫е╖ечеєе▐е╣е┐╩╤╣╣е╟б╝е┐└▀─ъ╜ш═¤
+      *    уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│уГЮуВ╣уВ┐хдЙцЫ┤уГЗуГ╝уВ┐шинхоЪхЗжчРЖ
       *****************************************************************
        900-IN-DATA-SET-SEC         SECTION.
       *
@@ -948,7 +948,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ╩╤╣╣╕хеьедевеже╚░▄┴ў╜ш═¤
+      *    хдЙцЫ┤х╛МуГмуВдуВвуВжуГИчз╗щАБхЗжчРЖ
       *****************************************************************
        900-PRGWK-SET              SECTION.
       *
@@ -975,7 +975,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ╩╤╣╣╕хеьедевеже╚░▄┴ў╜ш═¤
+      *    хдЙцЫ┤х╛МуГмуВдуВвуВжуГИчз╗щАБхЗжчРЖ
       *****************************************************************
        900-PRGWK-V01-SET          SECTION.
       *
@@ -991,7 +991,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    е╫еэе░ещереке╫е╖ечеє╞╔╣■
+      *    уГЧуГнуВ░уГйуГауВкуГЧуВ╖уГзуГ│шкнш╛╝
       *****************************************************************
        910-PRGOPTION-READ-SEC   SECTION.
       *
@@ -1009,7 +1009,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    г─г┬ббекб╝е╫еє╜ш═¤
+      *    я╝дя╝вуААуВкуГ╝уГЧуГ│хЗжчРЖ
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1027,7 +1027,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    г─г┬ббепеэб╝е║╜ш═¤
+      *    я╝дя╝вуААуВпуГнуГ╝уВ║хЗжчРЖ
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1045,7 +1045,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    е╞б╝е╓еыепеэб╝е║╜ш═¤
+      *    уГЖуГ╝уГЦуГлуВпуГнуГ╝уВ║хЗжчРЖ
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
@@ -1056,7 +1056,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    е╞б╝е╓еыевепе╗е╣╜ш═¤
+      *    уГЖуГ╝уГЦуГлуВвуВпуВ╗уВ╣хЗжчРЖ
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

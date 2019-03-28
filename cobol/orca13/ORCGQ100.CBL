@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGQ100.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���ԾȲ�
-      *  ����ݡ��ͥ��̾  : ���ϻؼ����̡ʣѣ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/06/11    MCC������     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者照会
+      *  コンポーネント名  : 出力指示画面（Ｑ１００）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/06/11    MCC−太田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    03/06/10  ��������б�
-      *  03.05.00    NACL-����    07.05.23  ���롼�׿����б�
-      *  04.01.01    NACL-ƣ��    07/10/01  ���饤�������¸�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03/06/10  一括入力対応
+      *  03.05.00    NACL-太田    07.05.23  グループ診療対応
+      *  04.01.01    NACL-藤原    07/10/01  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,31 +43,31 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "Q01SCR-SPA".
       *
-      *    ���󥹥������
+      *    コンスタント値
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-NUM                             PIC 9(09).
            03  WRK-MCP-WIDGET                      PIC X(64).
       *
-      *    �������ΰ�
+      *    固定値領域
       *01  CONST-AREA.
       *
            03  CONST-JOBID         PIC 9(07)   VALUE   1.
@@ -75,18 +75,18 @@
            03  CONST-JOB-SHELLID   PIC X(08)   VALUE   "ORCBQ01".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -105,7 +105,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -123,15 +123,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF  ( FLG-END           =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -143,7 +143,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -151,14 +151,14 @@
                                        IDX-AREA
                                        WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF  ( SPA-MOTOPG            =   "QERR" )
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -175,7 +175,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -185,23 +185,23 @@
            MOVE  4                     TO  SPA-GMN-Q100-CUR
       *
            IF  ( SPA-Q02-Q100-PROC-FLG     =   ZERO )
-      *        �ãӣֽ��Ͻ���
+      *        ＣＳＶ出力処理
       *
-      *        ���饤�������¸���ݾ����������
+      *        クライアント保存可否情報取得サブ
                IF      SPA-Q01-CLIENT-SAVE
                                        =   "1"
                    MOVE    "1"             TO  SPA-GMN-Q100-FILEL   (1)
-                   MOVE    "���饤�������¸"
+                   MOVE    "クライアント保存"
                                            TO  SPA-GMN-Q100-FILEMEIL(1)
                    MOVE    1               TO  SPA-GMN-Q100-FILE-MAX
                    MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-FILE-STATE
       *
                    MOVE    "1"             TO  SPA-GMN-Q100-CDKBNL   (1)
-                   MOVE    "�ţգ�"        TO  SPA-GMN-Q100-CDKBNMEIL(1)
+                   MOVE    "ＥＵＣ"        TO  SPA-GMN-Q100-CDKBNMEIL(1)
                    MOVE    "2"             TO  SPA-GMN-Q100-CDKBNL   (2)
-                   MOVE    "�ӡݣ���"    TO  SPA-GMN-Q100-CDKBNMEIL(2)
+                   MOVE    "Ｓ−ｊｉｓ"    TO  SPA-GMN-Q100-CDKBNMEIL(2)
                    MOVE    "3"             TO  SPA-GMN-Q100-CDKBNL   (3)
-                   MOVE    "�գԣơݣ�"    TO  SPA-GMN-Q100-CDKBNMEIL(3)
+                   MOVE    "ＵＴＦ−８"    TO  SPA-GMN-Q100-CDKBNMEIL(3)
                    MOVE    3               TO  SPA-GMN-Q100-CDKBN-MAX
                    MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-CDKBN-STATE
       *
@@ -219,9 +219,9 @@
                END-IF
       *
                MOVE    "3001"          TO  SPA-GMN-Q100-CD
-               MOVE    "�ãӣֽ��Ϥ򳫻Ϥ��ޤ�"
+               MOVE    "ＣＳＶ出力を開始します"
                                        TO  SPA-GMN-Q100-MSG
-               MOVE    "���ϥե�����̾"
+               MOVE    "出力ファイル名"
                                        TO  SPA-GMN-Q100-LBLFILENAME
                IF    ( SPA-MW          =   SPA-GINBEE )
                    MOVE    "OUTPUT.csv"
@@ -231,16 +231,16 @@
                                        TO  SPA-GMN-Q100-FILENAME
                END-IF
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-Q100-FILENAME-STATE
-               MOVE    "�������"      TO  SPA-GMN-Q100-LBLNUMSEL
+               MOVE    "件数指定"      TO  SPA-GMN-Q100-LBLNUMSEL
            ELSE
                MOVE    "3002"          TO  SPA-GMN-Q100-CD
-               MOVE    "���������򳫻Ϥ��ޤ�"
+               MOVE    "印刷処理を開始します"
                                        TO  SPA-GMN-Q100-MSG
                MOVE    SPACE           TO  SPA-GMN-Q100-LBLFILENAME
                                            SPA-GMN-Q100-FILENAME
                MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-GMN-Q100-FILENAME-STATE
-               MOVE    "�ڡ�������"    TO  SPA-GMN-Q100-LBLNUMSEL
+               MOVE    "ページ指定"    TO  SPA-GMN-Q100-LBLNUMSEL
                MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-GMN-Q100-FILE-STATE
                                            SPA-GMN-Q100-CDKBN-STATE
@@ -254,17 +254,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *     ���
+      *     戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *     ����
+      *     確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KAKUTEI
            END-EVALUATE
@@ -273,16 +273,16 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                             SECTION.
       *
            MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            .
@@ -291,7 +291,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
@@ -302,38 +302,38 @@
        400-GMN-INPUT-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC           SECTION.
       *
-      *    ���̤�ӣУ��˥��å�
+      *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
            PERFORM 4100-FILENAME-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ���Ϸ���ʥڡ������˥����å�
+      *    開始件数（ページ数）チェック
            PERFORM 4100-STNUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ��λ����ʥڡ������˥����å�
+      *    終了件数（ページ数）チェック
            PERFORM 4100-EDNUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ����������å�
+      *    出力先チェック
            PERFORM 4100-FILE-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ʸ�������ɥ����å�
+      *    文字コードチェック
            PERFORM 4100-CDKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
@@ -343,30 +343,30 @@
        410-INPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC        SECTION.
       *
-      *    �ե�����̾
+      *    ファイル名
            MOVE    Q100-FILENAME   TO  SPA-GMN-Q100-FILENAME
       *
-      *    ���Ϸ���ʥڡ�������
+      *    開始件数（ページ数）
            MOVE    Q100-STNUM      TO  SPA-GMN-Q100-STNUM
       *
-      *    ��λ����ʥڡ�������
+      *    終了件数（ページ数）
            MOVE    Q100-EDNUM      TO  SPA-GMN-Q100-EDNUM
       *
-      *    ������
+      *    出力先
            MOVE    Q100-FILE       TO  SPA-GMN-Q100-FILE-G
       *
-      *    ʸ��������
+      *    文字コード
            MOVE    Q100-CDKBN      TO  SPA-GMN-Q100-CDKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
       *****************************************************************
        4100-FILENAME-CHK-SEC           SECTION.
       *
@@ -399,14 +399,14 @@
        4100-FILENAME-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ϸ���ʥڡ������˥����å�
+      *    開始件数（ページ数）チェック
       *****************************************************************
        4100-STNUM-CHK-SEC              SECTION.
       *
            MOVE    SPA-GMN-Q100-STNUM
                                    TO  WRK-NUM
       *
-      *    ����ʥڡ��������ϰϥ����å�
+      *    件数（ページ数）範囲チェック
            PERFORM 4100-NUM-HANI-CHK-SEC
       *
            MOVE    WRK-NUM         TO  SPA-GMN-Q100-STNUM
@@ -415,14 +415,14 @@
        4100-STNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����ʥڡ������˥����å�
+      *    終了件数（ページ数）チェック
       *****************************************************************
        4100-EDNUM-CHK-SEC              SECTION.
       *
            MOVE    SPA-GMN-Q100-EDNUM
                                    TO  WRK-NUM
       *
-      *    ����ʥڡ��������ϰϥ����å�
+      *    件数（ページ数）範囲チェック
            PERFORM 4100-NUM-HANI-CHK-SEC
       *
            MOVE    WRK-NUM         TO  SPA-GMN-Q100-EDNUM
@@ -431,7 +431,7 @@
        4100-STNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ʥڡ��������ϰϥ����å�
+      *    件数（ページ数）範囲チェック
       *****************************************************************
        4100-NUM-HANI-CHK-SEC           SECTION.
       *
@@ -449,7 +449,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������å�����
+      *    出力先チェック処理
       *****************************************************************
        4100-FILE-CHK-SEC           SECTION.
       *
@@ -484,7 +484,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʸ�������ɥ����å�����
+      *    文字コードチェック処理
       *****************************************************************
        4100-CDKBN-CHK-SEC           SECTION.
       *
@@ -516,7 +516,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -538,17 +538,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꡡ����
+      *    確定　処理
       *****************************************************************
        490-KAKUTEI                 SECTION.
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  490-KAKUTEI-EXT
            END-IF
       *
-      *    ���ϥե�����̤̾���ϥ����å��ʣãӣֽ��ϻ���
+      *    出力ファイル名未入力チェック（ＣＳＶ出力時）
            IF  ( SPA-Q02-Q100-PROC-FLG     =   ZERO )
                IF  ( SPA-GMN-Q100-FILENAME
                                        =   SPACE )
@@ -577,7 +577,7 @@
       *
            END-IF
       *
-      *    ���(�ڡ������˻�������å�
+      *    件数(ぺージ数）指定チェック
            IF  ( SPA-GMN-Q100-STNUM    >   SPA-GMN-Q100-EDNUM )
       *
                IF  ( SPA-Q02-Q100-PROC-FLG =   ZERO )
@@ -590,7 +590,7 @@
                GO  TO  490-KAKUTEI-EXT
            END-IF
       *
-      *    �ѣ��������
+      *    Ｑ０２に戻る
            MOVE    SPA-GMN-Q100-FILENAME
                                        TO  SPA-Q02-Q100-FILENAME
            IF      SPA-GMN-Q100-FILE   =   SPACE
@@ -600,28 +600,28 @@
            END-IF
       *
            IF  ( SPA-Q02-Q100-PROC-FLG     =   1 )
-      *        ���Ϸ��
+      *        開始件数
                COMPUTE SPA-Q02-Q100-STKNS
                    = ( SPA-GMN-Q100-STNUM  -   1 )
                    *   SPA-Q02-Q100-LINE   +   1
-      *        ��λ���
+      *        終了件数
                COMPUTE SPA-Q02-Q100-EDKNS
                    =   SPA-GMN-Q100-EDNUM
                    *   SPA-Q02-Q100-LINE
-      *        ���ϥڡ���
+      *        開始ページ
                MOVE    SPA-GMN-Q100-STNUM
                                        TO  SPA-Q02-Q100-STPAGE
-      *        ��λ�ڡ���
+      *        終了ページ
                MOVE    SPA-GMN-Q100-EDNUM
                                        TO  SPA-Q02-Q100-EDPAGE
            ELSE
-      *        ���Ϸ��
+      *        開始件数
                MOVE    SPA-GMN-Q100-STNUM
                                        TO  SPA-Q02-Q100-STKNS
-      *        ��λ���
+      *        終了件数
                MOVE    SPA-GMN-Q100-EDNUM
                                        TO  SPA-Q02-Q100-EDKNS
-      *        ʸ�������ɶ�ʬ
+      *        文字コード区分
                IF      SPA-GMN-Q100-CDKBN  =   SPACE
                    MOVE    "1"                 TO  SPA-Q02-Q100-CDKBN
                ELSE
@@ -645,7 +645,7 @@
        490-KAKUTEI-EXT.
            EXIT.
      *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -667,39 +667,39 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-      *    ��å�����������
+      *    メッセージコード
            MOVE    SPA-GMN-Q100-CD     TO  Q100-ID1CODE
       *
-      *    ��å�����
+      *    メッセージ
            MOVE    SPA-GMN-Q100-MSG    TO  Q100-ID1MSG
       *
-      *    �ե�����̾�ʥ�٥��
+      *    ファイル名（ラベル）
            MOVE    SPA-GMN-Q100-LBLFILENAME
                                        TO  Q100-LBLFILENAME
       *
-      *    �ե�����̾
+      *    ファイル名
            MOVE    SPA-GMN-Q100-FILENAME
                                        TO  Q100-FILENAME
            MOVE    SPA-GMN-Q100-FILENAME-STATE
                                        TO  Q100-FILENAME-STATE
       *
-      *    �ե�����̾�ʥ�٥��
+      *    ファイル名（ラベル）
            MOVE    SPA-GMN-Q100-LBLNUMSEL
                                        TO  Q100-LBLNUMSEL
       *
-      *    ���Ϸ���ʥڡ����˿�
+      *    開始件数（ページ）数
            MOVE    SPA-GMN-Q100-STNUM
                                        TO  Q100-STNUM
       *
-      *    ��λ����ʥڡ����˿�
+      *    終了件数（ページ）数
            MOVE    SPA-GMN-Q100-EDNUM
                                        TO  Q100-EDNUM
       *
-      *    ������
+      *    出力先
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-Q100-FILE-MAX
@@ -710,7 +710,7 @@
            MOVE    SPA-GMN-Q100-FILE-G     TO  Q100-FILE
            MOVE    SPA-GMN-Q100-FILE-STATE TO  Q100-FILE-STATE
       *
-      *    ʸ��������
+      *    文字コード
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-Q100-CDKBN-MAX
                MOVE    SPA-GMN-Q100-CDKBNLST (IDX2)
@@ -731,7 +731,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -742,27 +742,27 @@
       *
            EVALUATE    SPA-GMN-Q100-CUR
       *
-      *    �ե�����̾
+      *    ファイル名
            WHEN   001
                MOVE  "FILENAME"    TO  MCP-WIDGET
       *
-      *    ���Ϸ���ʥڡ����˿�
+      *    開始件数（ページ）数
            WHEN   002
                MOVE  "STNUM"       TO  MCP-WIDGET
       *
-      *    ��λ����ʥڡ����˿�
+      *    終了件数（ページ）数
            WHEN   003
                MOVE  "EDNUM"       TO  MCP-WIDGET
       *
-      *    ����ܥ���
+      *    確定ボタン
            WHEN   004
                MOVE  "B12"         TO  MCP-WIDGET
       *
-      *    ������
+      *    出力先
            WHEN   005
                MOVE  "FILE"        TO  MCP-WIDGET
       *
-      *    ʸ��������
+      *    文字コード
            WHEN   006
                MOVE  "CDKBN"       TO  MCP-WIDGET
            END-EVALUATE
@@ -772,35 +772,35 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
       *
-      *    ɽ��
+      *    表題
            WHEN    "FILENAME"
                MOVE    001         TO  SPA-GMN-Q100-CUR
       *
-      *    ������
+      *    条件上段
            WHEN    "STNUM"
                MOVE    002         TO  SPA-GMN-Q100-CUR
       *
-      *    ��ﲼ��
+      *    条件下段
            WHEN    "EDNUM"
                MOVE    003         TO  SPA-GMN-Q100-CUR
       *
-      *    ������
+      *    出力先
            WHEN   "FILE"
                MOVE    005         TO  SPA-GMN-Q100-CUR
       *
-      *    ʸ��������
+      *    文字コード
            WHEN   "CDKBN"
                MOVE    006         TO  SPA-GMN-Q100-CUR
       *
            END-EVALUATE
       *
-      *    ������������֤�����
+      *    次カーソル位置を設定
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "EDNUM"
                IF      SPA-Q01-CLIENT-SAVE    =   "1"
@@ -825,7 +825,7 @@
        5011-INPUT-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -834,23 +834,23 @@
            EVALUATE    SPA-ERRCD
            WHEN    "1001"
            WHEN    "1005"
-               MOVE    "���ϥե�����̾�����Ϥ���Ƥ��ޤ���"
+               MOVE    "出力ファイル名が入力されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
-               MOVE    "���Ϸ���佪λ����ȤʤäƤ��ޤ�"
+               MOVE    "開始件数＞終了件数となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1003"
-               MOVE    "���ϥڡ����佪λ�ڡ����ȤʤäƤ��ޤ�"
+               MOVE    "開始ページ＞終了ページとなっています"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
-               STRING   "���ϥե�����̾��" DELIMITED  BY  SIZE
-                        "���郎���Ϥ���Ƥ��ޤ�"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "：¥が入力されています"
                                              DELIMITED  BY  SIZE
                                              INTO  SPA-ERRMSG
                END-STRING
            WHEN    "1006"
-               STRING   "���ϥե�����̾��" DELIMITED  BY  SIZE
-                        "��������Ϥ���Ƥ��ޤ�"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "：¥／が入力されています"
                DELIMITED  BY  SIZE
                INTO  SPA-ERRMSG
                END-STRING
@@ -876,7 +876,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

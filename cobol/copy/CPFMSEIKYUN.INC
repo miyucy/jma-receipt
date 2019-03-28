@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -28,117 +28,117 @@
               05  FMSEIKYUN-MOTOID             PIC X(02).
               05  FMSEIKYUN-KARIKEISANKBN      PIC X(01).
       *
-      *       ´µ¼ÔÈÖ¹æ
+      *       æ‚£è€…ç•ªå·
               05  FMSEIKYUN-PTNUM              PIC X(20).
-      *       ´µ¼Ô»áÌ¾
+      *       æ‚£è€…æ°å
               05  FMSEIKYUN-NAME               PIC X(50).
-      *       ´µ¼Ô¥«¥Ê»áÌ¾
+      *       æ‚£è€…ã‚«ãƒŠæ°å
               05  FMSEIKYUN-KANANAME           PIC X(50).
       *
-      *       °åÎÅµ¡´Ø¾ðÊó
+      *       åŒ»ç™‚æ©Ÿé–¢æƒ…å ±
               05  FMSEIKYUN-HOSP-AREA.
-      *         °åÎÅµ¡´ØÌ¾¾Î
+      *         åŒ»ç™‚æ©Ÿé–¢åç§°
                 07  FMSEIKYUN-HOSP-NAME-G.
                   09  FMSEIKYUN-HOSP-NAME      PIC X(120)
                                                OCCURS   3.
-      *         °åÎÅµ¡´ØÍ¹ÊØÈÖ¹æ
+      *         åŒ»ç™‚æ©Ÿé–¢éƒµä¾¿ç•ªå·
                 07  FMSEIKYUN-HOSP-POST        PIC X(7).
-      *         °åÎÅµ¡´Ø½»½ê
+      *         åŒ»ç™‚æ©Ÿé–¢ä½æ‰€
                 07  FMSEIKYUN-HOSP-ADRS-G.
                   09  FMSEIKYUN-HOSP-ADRS      PIC X(200)
                                                OCCURS   3.
-      *         °åÎÅµ¡´ØÅÅÏÃÈÖ¹æ
+      *         åŒ»ç™‚æ©Ÿé–¢é›»è©±ç•ªå·
                 07  FMSEIKYUN-HOSP-TEL         PIC X(15).
-      *       ³«»Ï¿ÇÎÅÆü
+      *       é–‹å§‹è¨ºç™‚æ—¥
               05  FMSEIKYUN-STSRYYMD           PIC X(10).
-      *       ½ªÎ»¿ÇÎÅÆü
+      *       çµ‚äº†è¨ºç™‚æ—¥
               05  FMSEIKYUN-EDSRYYMD           PIC X(10).
-      *       ÅÁÉ¼È¯¹ÔÆü
+      *       ä¼ç¥¨ç™ºè¡Œæ—¥
               05  FMSEIKYUN-DENPPRTYMD         PIC X(10).
-      *       ÉÂÅïÈÖ¹æ
+      *       ç—…æ£Ÿç•ªå·
               05  FMSEIKYUN-BTUNUM             PIC X(2).
-      *       ÉÂÅïÌ¾¾Î
+      *       ç—…æ£Ÿåç§°
               05  FMSEIKYUN-BTUNAME            PIC X(20).
-      *       ÉÂ¼¼ÈÖ¹æ
+      *       ç—…å®¤ç•ªå·
               05  FMSEIKYUN-BRMNUM             PIC X(6).
       *
-      *       ¿ÇÎÅ²Ê
+      *       è¨ºç™‚ç§‘
               05  FMSEIKYUN-SRYKANAME          PIC X(30).
-      *       ÊÝ¸±¾ðÊó
+      *       ä¿é™ºæƒ…å ±
               05  FMSEIKYUN-HOKENNAME          PIC X(40).
               05  FMSEIKYUN-FUTAN-G.
-      *         ÉéÃ´³ä¹ç
+      *         è² æ‹…å‰²åˆ
                 07  FMSEIKYUN-FUTAN            PIC X(04).
-      *         ÉéÃ´³ä¹ç
+      *         è² æ‹…å‰²åˆ
                 07  FMSEIKYUN-FUTANMEI         PIC X(02).
-      *       ÅÁÉ¼ÈÖ¹æ¡Ê°ì³ç°Ê³°¡Ë
+      *       ä¼ç¥¨ç•ªå·ï¼ˆä¸€æ‹¬ä»¥å¤–ï¼‰
               05  FMSEIKYUN-DENPNUM            PIC X(07).
-      *       ÄûÀµÉ½¼¨¶èÊ¬
+      *       è¨‚æ­£è¡¨ç¤ºåŒºåˆ†
               05  FMSEIKYUN-TEISEI-KBN         PIC X(01).
-      *       ÀÁµá¹àÌÜ
+      *       è«‹æ±‚é …ç›®
               05  FMSEIKYUN-MEISAI-OCC         OCCURS 16.
-      *           ÀÁµá¹àÌÜ¶èÊ¬
+      *           è«‹æ±‚é …ç›®åŒºåˆ†
                   07  FMSEIKYUN-HKNTEN-KBN     PIC X(03).
-      *           ÀÁµá¹àÌÜÌ¾
+      *           è«‹æ±‚é …ç›®å
                   07  FMSEIKYUN-HKNTEN-NAME    PIC X(20).
-      *           ÀÁµáÅÀ¿ô
+      *           è«‹æ±‚ç‚¹æ•°
                   07  FMSEIKYUN-HKNTEN         PIC X(10).
-      *           ÀÁµá¶â³Û¡ÊÊÝ¸±Å¬ÍÑ³°¡Ë
+      *           è«‹æ±‚é‡‘é¡ï¼ˆä¿é™ºé©ç”¨å¤–ï¼‰
                   07  FMSEIKYUN-TGMONEY        PIC X(10).
-      *       ÅÀ¿ô¹ç·×
+      *       ç‚¹æ•°åˆè¨ˆ
               05  FMSEIKYUN-TOTAL-TEN          PIC X(10).
-      *       ´µ¼Ô°ìÉôÉéÃ´¶â
+      *       æ‚£è€…ä¸€éƒ¨è² æ‹…é‡‘
               05  FMSEIKYUN-HKNTEKMONEY                 PIC X(10).
-      *       ´µ¼Ô°ìÉôÉéÃ´¶â¥é¥Ù¥ë¡ÊÏ«ºÒ¿ÇÎÅÎÁÅùºÆ·Ç¡Ë
+      *       æ‚£è€…ä¸€éƒ¨è² æ‹…é‡‘ãƒ©ãƒ™ãƒ«ï¼ˆåŠ´ç½è¨ºç™‚æ–™ç­‰å†æŽ²ï¼‰
               05  FMSEIKYUN-LBL-RSI-TOTAL               PIC X(20).
-      *       ´µ¼Ô°ìÉôÉéÃ´¶â¡ÊÏ«ºÒ¿ÇÎÅÎÁÅùºÆ·Ç¡Ë
+      *       æ‚£è€…ä¸€éƒ¨è² æ‹…é‡‘ï¼ˆåŠ´ç½è¨ºç™‚æ–™ç­‰å†æŽ²ï¼‰
               05  FMSEIKYUN-RSI-TOTAL                   PIC X(10).
-      *       ¸øÈñ°ìÉôÉéÃ´¶â
+      *       å…¬è²»ä¸€éƒ¨è² æ‹…é‡‘
               05  FMSEIKYUN-KOH-FTN                     PIC X(10).
-      *       ¿©»öÎÅÍÜÈñ
+      *       é£Ÿäº‹ç™‚é¤Šè²»
               05  FMSEIKYUN-SKJRYOYO                    PIC X(10).
-      *       ¿©»öÉéÃ´¶â
+      *       é£Ÿäº‹è² æ‹…é‡‘
               05  FMSEIKYUN-SKJ-FTN                     PIC X(10).
-      *       À¸³èÎÅÍÜÈñ
+      *       ç”Ÿæ´»ç™‚é¤Šè²»
               05  FMSEIKYUN-LIFERYOYO                    PIC X(10).
-      *       À¸³èÉéÃ´¶â
+      *       ç”Ÿæ´»è² æ‹…é‡‘
               05  FMSEIKYUN-LIFE-FTN                     PIC X(10).
-      *       ÊÝ¸±Å¬ÍÑ³°¹ç·×
+      *       ä¿é™ºé©ç”¨å¤–åˆè¨ˆ
               05  FMSEIKYUN-TOTAL-TGMONEY               PIC X(10).
-      *       ÊÝ¸±Å¬ÍÑ³°¹ç·×¾ÃÈñÀÇºÆ·Ç
+      *       ä¿é™ºé©ç”¨å¤–åˆè¨ˆæ¶ˆè²»ç¨Žå†æŽ²
               05  FMSEIKYUN-TOTAL-TGMONEY-TAX           PIC X(10).
-      *       ¤½¤ÎÂ¾¼«Èñ
+      *       ãã®ä»–è‡ªè²»
               05  FMSEIKYUN-JIHI-OCC                    OCCURS  10.
-      *             ¤½¤ÎÂ¾¼«ÈñÌ¾¾Î
+      *             ãã®ä»–è‡ªè²»åç§°
                 07  FMSEIKYUN-JIHI-NAME                 PIC X(20).
-      *             ¤½¤ÎÂ¾¼«Èñ¶â³Û
+      *             ãã®ä»–è‡ªè²»é‡‘é¡
                 07  FMSEIKYUN-JIHI                      PIC X(10).
-      *       ¤½¤ÎÂ¾¼«Èñ¹ç·×¶â³Û
+      *       ãã®ä»–è‡ªè²»åˆè¨ˆé‡‘é¡
               05  FMSEIKYUN-JIHI-TOTAL                  PIC X(10).
-      *       ¤½¤ÎÂ¾¼«Èñ¹ç·×¶â³Û¾ÃÈñÀÇºÆ·Ç
+      *       ãã®ä»–è‡ªè²»åˆè¨ˆé‡‘é¡æ¶ˆè²»ç¨Žå†æŽ²
               05  FMSEIKYUN-JIHI-TOTAL-TAX              PIC X(10).
-      *       ¼¼ÎÁº¹³Û
+      *       å®¤æ–™å·®é¡
               05  FMSEIKYUN-RMSAGAKU                    PIC X(10).
-      *       ¼¼ÎÁº¹³Û¾ÃÈñÀÇºÆ·Ç
+      *       å®¤æ–™å·®é¡æ¶ˆè²»ç¨Žå†æŽ²
               05  FMSEIKYUN-RMSAGAKU-TAX                PIC X(10).
-      *       Ä´À°¶â£±
+      *       èª¿æ•´é‡‘ï¼‘
               05  FMSEIKYUN-CHOSEI1                     PIC X(10).
-      *       Ä´À°¶â£²
+      *       èª¿æ•´é‡‘ï¼’
               05  FMSEIKYUN-CHOSEI2                     PIC X(10).
-      *       º£²óÀÁµá³Û
+      *       ä»Šå›žè«‹æ±‚é¡
               05  FMSEIKYUN-SKYMONEY                    PIC X(10).
-      *       º£²óÀÁµá³Û¾ÃÈñÀÇºÆ·Ç
+      *       ä»Šå›žè«‹æ±‚é¡æ¶ˆè²»ç¨Žå†æŽ²
               05  FMSEIKYUN-SKYMONEY-TAX                PIC X(10).
-      *       º£²óÆþ¶â³Û
+      *       ä»Šå›žå…¥é‡‘é¡
               05  FMSEIKYUN-NYUKIN                      PIC X(10).
-      *       Æþ±¡Ì¤¼ý³Û
+      *       å…¥é™¢æœªåŽé¡
               05  FMSEIKYUN-NYU-MISYU                   PIC X(10).
-      *       ³°ÍèÌ¤¼ý³Û
+      *       å¤–æ¥æœªåŽé¡
               05  FMSEIKYUN-GAI-MISYU                   PIC X(10).
       *
-      *       Ãí°Õ½ñ¤­¡ÊÀÁµá½ñÉôÊ¬¡Ë
+      *       æ³¨æ„æ›¸ãï¼ˆè«‹æ±‚æ›¸éƒ¨åˆ†ï¼‰
               05  FMSEIKYUN-SKY-CAUTION                 PIC X(100).
       *
-      *       ¥á¥â
+      *       ãƒ¡ãƒ¢
               05  FMSEIKYUN-MEMO                        PIC X(80)
                                                         OCCURS 10.

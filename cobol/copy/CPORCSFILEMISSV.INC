@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,53 +16,53 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÍÑ    CPORCSFILEMISSV.INC *
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±è¨ºç™‚æƒ…å ±ã‚·ã‚¹ãƒ†ãƒ ç”¨    CPORCSFILEMISSV.INC *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSFILEMISSVAREA.
-      *    ½èÍý¶èÊ¬                              
+      *    å‡¦ç†åŒºåˆ†                              
            03  FLMISSV-MODE            PIC X(01).
-      *    Éüµ¢¥³¡¼¥É     
+      *    å¾©å¸°ã‚³ãƒ¼ãƒ‰     
            03  FLMISSV-RETURN          PIC S9(03).
-      *    £Ë£Å£Ù
+      *    ï¼«ï¼¥ï¼¹
            03  FLMISSV-TBL-KEY         PIC X(08).
       *
            03  FLMISSV-OCC             OCCURS  100.
-      *        Ï¢ÈÖ
+      *        é€£ç•ª
                05  FLMISSV-RENNUM      PIC 9(04).
-      *        ¥°¥ë¡¼¥×
+      *        ã‚°ãƒ«ãƒ¼ãƒ—
                05  FLMISSV-TBL-GROUP   PIC X(14).
-      *        ½èÍýÆâÏ¢ÈÖ
+      *        å‡¦ç†å†…é€£ç•ª
                05  FLMISSV-SHORI-RENNUM
                                        PIC 9(04).
-      *        ¥·¥§¥ë£É£Ä
+      *        ã‚·ã‚§ãƒ«ï¼©ï¼¤
                05  FLMISSV-SHELLID     PIC X(20).
-      *        ¿ÇÎÅÇ¯·î
+      *        è¨ºç™‚å¹´æœˆ
                05  FLMISSV-SRYYM       PIC X(06).
-      *        ¿ÇÎÅÇ¯·îÆü
+      *        è¨ºç™‚å¹´æœˆæ—¥
                05  FLMISSV-SRYYMD      PIC X(08).
-      *        ·ï¿ô
+      *        ä»¶æ•°
                05  FLMISSV-CNT         PIC 9(07).
-      *        Æþ³°¶èÊ¬
+      *        å…¥å¤–åŒºåˆ†
                05  FLMISSV-NYUGAIKBN   PIC X(01).
-      *        ÀèÊÝÂ¸¾ì½ê
+      *        å…ˆä¿å­˜å ´æ‰€
                05  FLMISSV-TO-FOLDER   PIC X(200).
-      *        Àè¥Õ¥¡¥¤¥ëÌ¾
+      *        å…ˆãƒ•ã‚¡ã‚¤ãƒ«å
                05  FLMISSV-TO-DATA     PIC X(200).
-      *        ¥³¡¼¥É¶èÊ¬
+      *        ã‚³ãƒ¼ãƒ‰åŒºåˆ†
                05  FLMISSV-CODE-TYPE   PIC X(01).
-      *        ½ÐÎÏ¥Õ¥é¥°
+      *        å‡ºåŠ›ãƒ•ãƒ©ã‚°
                05  FLMISSV-PUTFLG      PIC X(1).
-      *        ¥¿¥¤¥È¥ë
+      *        ã‚¿ã‚¤ãƒˆãƒ«
                05  FLMISSV-TITLE       PIC X(100).
       *        UUID
                05  FLMISSV-TBL-UUID    PIC X(36).
-      *        ºîÀ®Ç¯·îÆü
+      *        ä½œæˆå¹´æœˆæ—¥
                05  FLMISSV-CREYMD      PIC X(08).
-      *        ¹¹¿·Ç¯·îÆü
+      *        æ›´æ–°å¹´æœˆæ—¥
                05  FLMISSV-UPYMD       PIC X(08).
-      *        ¹¹¿·»þ´Ö
+      *        æ›´æ–°æ™‚é–“
                05  FLMISSV-UPHMS       PIC X(06).

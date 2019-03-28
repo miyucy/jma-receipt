@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSPRVDBDEL.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : �ꥢ�륿����ץ�ӥ塼
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    NACL�����ġ�����������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : リアルタイムプレビュー
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    NACL−竹田　　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  FLG-AREA.
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SYUMEI                              PIC 9(01).
@@ -64,58 +64,58 @@
       *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ����
+      *    収納明細
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    ��Ǽ��ץޥ���
+      *    収納合計マスタ
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
-      *    ��������ޥ���
+      *    受診履歴マスタ
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ��ץޥ���
+      *    会計マスタ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ����ղþ���ޥ���
+      *    会計付加情報マスタ
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ���Ź԰٥ޥ���
+      *    診療行為マスタ
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ����ޥ���
+      *    算定マスタ
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ���Ų�����ޥ���
+      *    診療科履歴マスタ
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
-      *    ���ԥ����ȥޥ���
+      *    患者コメントマスタ
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *
@@ -125,7 +125,7 @@
       *01  PARAM-NYUGAIKBN    PIC X(01).
       *01  PARAM-PTID         PIC 9(10).
       *01  PARAM-RC           PIC 9(02).
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       ****************************************************************
        PROCEDURE           DIVISION
@@ -133,7 +133,7 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -146,7 +146,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -157,13 +157,13 @@
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    TMP DB¸�ߥ����å�
+      *    TMP DB存在チェック
            PERFORM 2000-TMPDB-EXIST-SEC
-      *    TMP DB�������
+      *    TMP DB削除処理
            IF      FLG-DEL             =  1
                PERFORM 2001-TMPDB-DELETE-SEC
            END-IF
@@ -173,7 +173,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ƥ�ݥ��DB¸�ߥ����å�����
+      *    テンポラリDB存在チェック処理
       *****************************************************************
        2000-TMPDB-EXIST-SEC         SECTION.
       *
@@ -205,10 +205,10 @@
            EXIT.
       *
       *****************************************************************
-      *    �ƥ�ݥ��DB�������
+      *    テンポラリDB削除処理
       *****************************************************************
        2001-TMPDB-DELETE-SEC        SECTION.
-      *��Ǽ�ޥ���
+      *収納マスタ
            MOVE    SPA-HOSPNUM         TO      SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO      SYU-NYUGAIKBN
            MOVE    SPA-PTID            TO      SYU-PTID
@@ -221,7 +221,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *��Ǽ���٥ޥ���
+      *収納明細マスタ
            MOVE    SPA-HOSPNUM         TO      SMEI-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO      SMEI-NYUGAIKBN
            MOVE    SPA-PTID            TO      SMEI-PTID
@@ -231,7 +231,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *��Ǽ�ȡ�����ޥ���
+      *収納トータルマスタ
            MOVE    SPA-HOSPNUM         TO      SYUTTL-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO      SYUTTL-NYUGAIKBN
            MOVE    SPA-PTID            TO      SYUTTL-PTID
@@ -241,7 +241,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *��ץޥ���
+      *会計マスタ
            MOVE    SPA-HOSPNUM        TO      ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN      TO      ACCT-NYUGAIKBN
            MOVE    SPA-PTID           TO      ACCT-PTID
@@ -251,7 +251,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *���Ź԰٥ޥ���
+      *診療行為マスタ
            MOVE    SPA-HOSPNUM        TO      SRY-HOSPNUM
            MOVE    SPA-NYUGAIKBN     TO      SRY-NYUGAIKBN
            MOVE    SPA-PTID          TO      SRY-PTID
@@ -261,7 +261,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *��������ޥ���
+      *算定履歴マスタ
            MOVE    SPA-HOSPNUM         TO      SANTEI-HOSPNUM
            MOVE    ZERO                TO      SANTEI-NYUGAIKBN
            MOVE    SPA-PTID            TO      SANTEI-PTID
@@ -271,7 +271,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *��������ޥ���
+      *受診履歴マスタ
            MOVE    SPA-HOSPNUM        TO      JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN     TO      JYURRK-NYUGAIKBN
            MOVE    SPA-PTID          TO      JYURRK-PTID
@@ -281,7 +281,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *���Ų�����ޥ���
+      *診療科履歴マスタ
            MOVE    SPA-HOSPNUM        TO      KARRK-HOSPNUM
            MOVE    SPA-PTID           TO      KARRK-PTID
            MOVE    SRYKARRK-REC        TO      MCPDATA-REC
@@ -290,7 +290,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *���ԥ����ȥޥ���
+      *患者コメントマスタ
            MOVE    SPA-HOSPNUM        TO      PTCOM-HOSPNUM
            MOVE    SPA-PTID          TO      PTCOM-PTID
            MOVE    PTCOM-REC           TO      MCPDATA-REC
@@ -299,7 +299,7 @@
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
-      *���ԥޥ���
+      *患者マスタ
            MOVE    SPA-HOSPNUM        TO      PTINF-HOSPNUM
            MOVE    SPA-PTID          TO      PTINF-PTID
            MOVE    PTINF-REC           TO      MCPDATA-REC
@@ -307,7 +307,7 @@
            MOVE    "tbl_ptinf_prv"     TO  MCP-TABLE
            MOVE    "delprv"            TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
-      *���Ź԰��ղþ���ޥ���
+      *診療行為付加情報マスタ
            MOVE    SPA-HOSPNUM        TO      ACCTP-HOSPNUM
            MOVE    SPA-NYUGAIKBN     TO      ACCTP-NYUGAIKBN
            MOVE    SPA-PTID          TO      ACCTP-PTID
@@ -321,7 +321,7 @@
        2001-TMPDB-DELETE-EXT.
            EXIT.
       *****************************************************************
-      *    ����DB��������
+      *    本体DB更新処理
       *****************************************************************
        900-TMPDB-ACCESS-SEC            SECTION.
       *
@@ -336,7 +336,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-TMPDB-ACCESS-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

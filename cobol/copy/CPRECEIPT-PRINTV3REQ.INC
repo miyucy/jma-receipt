@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ì¥»¥×¥È¾ðÊó¡Ê¥ì¥»¥×¥È°õºþ¡Ë(xml2)
+      *    ï¼¡ï¼°ï¼©ãƒ¬ã‚»ãƒ—ãƒˆæƒ…å ±ï¼ˆãƒ¬ã‚»ãƒ—ãƒˆå°åˆ·ï¼‰(xml2)
       *                                   COPY (CPRECEIPT-PRINTV3REQ.INC)
       ******************************************************************
         01  XML-RECEIPT-PRINTREQ.
@@ -29,48 +29,48 @@
             02  RECEPRINTQ-MODE            PIC S9(9)   BINARY.
             02  RECEPRINTQ-RECORDNAME      PIC X(128).
             02  RECEPRINTQ-PATIENTREQ.
-      *         ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *         ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
                 03  RECEPRINTQ-REQUEST-NUMBER PIC X(2).
-      *         ¥«¥ë¥ÆUID
+      *         ã‚«ãƒ«ãƒ†UID
                 03  RECEPRINTQ-KARTE-UID   PIC X(36).
-      *         ¥ª¥ë¥«UID
+      *         ã‚ªãƒ«ã‚«UID
                 03  RECEPRINTQ-ORCA-UID    PIC X(36).
-      *         ¼Â»ÜÆü
+      *         å®Ÿæ–½æ—¥
                 03  RECEPRINTQ-PERFORM-DATE PIC X(10).
-      *         ¿ÇÎÅÇ¯·î
+      *         è¨ºç™‚å¹´æœˆ
                 03  RECEPRINTQ-PERFORM-MONTH PIC X(7).
-      *         Æþ³°¶èÊ¬
+      *         å…¥å¤–åŒºåˆ†
                 03  RECEPRINTQ-INOUT       PIC X(1).
-      *         ½èÍý¶èÊ¬
+      *         å‡¦ç†åŒºåˆ†
                 03  RECEPRINTQ-RECEIPT-MODE PIC X(10).
-      *         °õºþ¥â¡¼¥É
+      *         å°åˆ·ãƒ¢ãƒ¼ãƒ‰
                 03  RECEPRINTQ-PRINT-MODE  PIC X(5).
-      *         Äó½ÐÀè
+      *         æå‡ºå…ˆ
                 03  RECEPRINTQ-SUBMISSION-MODE  PIC X(2).
-      *         ÌÀºÙ°ìÍ÷
+      *         æ˜Žç´°ä¸€è¦§
                 03  RECEPRINTQ-RECEIPT-INFORMATION.
                    05  RECEPRINTQ-SUBMISSION OCCURS  19.
-      *                Ï¢ÈÖ
+      *                é€£ç•ª
                        07  RECEPRINTQ-SUBMISSION-POSITION
                                                PIC X(5).
                        07  RECEPRINTQ-DETAIL-INFORMATION OCCURS  36.
-      *                    Ï¢ÈÖ
+      *                    é€£ç•ª
                            09  RECEPRINTQ-DETAIL-POSITION
                                                    PIC X(5).
-      *                    °õºþ»Ø¼¨(Yes :°õºþ ¤½¤ì°Ê³° :°õºþ¤·¤Ê¤¤)
+      *                    å°åˆ·æŒ‡ç¤º(Yes :å°åˆ· ãã‚Œä»¥å¤– :å°åˆ·ã—ãªã„)
                            09  RECEPRINTQ-PRINT-INSTRUCT
                                                    PIC X(5).
-      *                    Äó½ÐÀè
+      *                    æå‡ºå…ˆ
                            09  RECEPRINTQ-SUBMISSION-IDENT
                                                PIC X(2).
-      *                    ¼ïÊÌÅù¥³¡¼¥É
+      *                    ç¨®åˆ¥ç­‰ã‚³ãƒ¼ãƒ‰
                            09  RECEPRINTQ-SUBMISSION-CODE
                                                    PIC X(10).
-      *                    ¼ïÊÌ
+      *                    ç¨®åˆ¥
                            09  RECEPRINTQ-SUBMISSION-TYPE
                                                    PIC X(100).
-      *                    ·ï¿ô
+      *                    ä»¶æ•°
                            09  RECEPRINTQ-COUNT    PIC X(5).
-      *                    Ëç¿ô
+      *                    æžšæ•°
                            09  RECEPRINTQ-NUMBER-OF-SHEETS
                                                    PIC X(5).

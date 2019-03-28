@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹴�����Ͽ�����Ź԰٥����ƥ�����������
+      *    ＡＰＩレスポンス患者登録・診療行為システム設定情報取得
       *                                 COPY (CPAPISYSDAY01V2RES.INC)
       ******************************************************************
         01  XML-SYSTEMDAILYRES.
@@ -25,156 +25,156 @@
             02  SYSDAYRES-MODE               PIC S9(9)   BINARY.
             02  SYSDAYRES-RECORDNAME         PIC X(128).
             02  SYSDAYRES-APPOINTRES.
-      *       �»���
+      *       実施日
               03  SYSDAYRES-INFORMATION-DATE    PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  SYSDAYRES-INFORMATION-TIME    PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  SYSDAYRES-API-RESULT          PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  SYSDAYRES-API-RESULT-MSG      PIC X(100).
       *
               03  SYSDAYRES-RESKEY              PIC X(100).
-      *       �����
+      *       基準日
               03  SYSDAYRES-BASE-DATE           PIC X(10).
-      *       ������Ͽ�ط�
+      *       患者登録関係
               03  SYSDAYRES-PATIENT-INFOMATION.
-      *           �����Ͽ���������å���ʬ
+      *           二重登録疑いチェック区分
                   05  SYSDAYRES-JYUFUKU-CHKKBN     PIC X(01).
                   05  SYSDAYRES-JYUFUKU-CHK-MEI    PIC X(40).
-      *           ͹���ֹ漫ư���ܶ�ʬ
+      *           郵便番号自動記載区分
                   05  SYSDAYRES-POSTKBN-FLG        PIC X(01).
                   05  SYSDAYRES-POSTKBN-MEI        PIC X(40).
-      *           ��ƻ�ܸ�̾���ܶ�ʬ
+      *           都道府県名記載区分
                   05  SYSDAYRES-KENMEIKBN-FLG      PIC X(01).
                   05  SYSDAYRES-KENMEIKBN-MEI      PIC X(40).
       *
-      *       ���Ź԰ٴط�
+      *       診療行為関係
               03  SYSDAYRES-MEDICAL-INFOMATION.
-      *����
+      *設定
       *SYS1001
                   05  SYSDAYRES-SET-INF.
-      *           ������ʬ
+      *           処方区分
                       07  SYSDAYRES-SYOHOKBN           PIC X(01).
                       07  SYSDAYRES-SYOHOKBN-MEI       PIC X(40).
-      *           ������ü������
+      *           消費税端数設定
                       07  SYSDAYRES-TAX-HASU-KBN       PIC X(01).
                       07  SYSDAYRES-TAX-HASU-MEI       PIC X(40).
-      *           ���񥳡���ü������
+      *           自費コード端数設定
                       07  SYSDAYRES-JIHI-HASU-KBN      PIC X(01).
                       07  SYSDAYRES-JIHI-HASU-MEI      PIC X(40).
       *SYS1038
-      *           �鲼�����������Ѵ�����
+      *           皮下筋肉注射料変換選択
                       07  SYSDAYRES-CHG310FLG          PIC X(01).
                       07  SYSDAYRES-CHG310FLG-MEI      PIC X(40).
-      *           �������Ŷ�ʬ�Ѵ�����
+      *           投薬診療区分変換選択
                       07  SYSDAYRES-CHGSRYSYU-FLG      PIC X(01).
                       07  SYSDAYRES-CHGSRYSYU-MEI      PIC X(40).
-      *           ���å�Ÿ����ʬ
+      *           セット展開区分
                       07  SYSDAYRES-SETALLKBN          PIC X(01).
                       07  SYSDAYRES-SETALLKBN-MEI      PIC X(40).
       *
-      *�ꥯ�����ȡᣰ��
+      *リクエスト＝０１
                   05  SYSDAYRES-SET01-INF.
       *SYS1008
-      *           �ǻ�����ưȯ��
+      *           診察料自動発生
                       07  SYSDAYRES-INITAUTO-FLG       PIC X(01).
                       07  SYSDAYRES-INITAUTO-MEI       PIC X(40).
-      *           ������ܲû���ư����
+      *           育児栄養加算自動算定
                       07  SYSDAYRES-IKUJIEIYO-FLG      PIC X(01).
                       07  SYSDAYRES-IKUJIEIYO-MEI      PIC X(40).
-      *           ������ܲû���ư�����
+      *           育児栄養加算自動算定科
                       07  SYSDAYRES-IKUJIEIYO-SRYKA    PIC X(02).
                       07  SYSDAYRES-IKUJIEIYO-KAMEI    PIC X(40).
-      *           ��̾������ʬ����μ�ưȯ��
+      *           病名疾患区分からの自動発生
                       07  SYSDAYRES-BYOMEIAUTO-FLG     PIC X(01).
                       07  SYSDAYRES-BYOMEIAUTO-MEI     PIC X(40).
       *SYS1007
-      *           ����ô������
+      *           療養担当手当
                       07  SYSDAYRES-RYOYOU-FLG         PIC X(01).
                       07  SYSDAYRES-RYOYOU-MEI         PIC X(40).
       *SYS1008
-      *           ��������û������å�
+      *           外来管理加算チェック
                       07  SYSDAYRES-GAIKANRIKBN-CHK    PIC X(01).
                       07  SYSDAYRES-GAIKANRIKBN-MEI    PIC X(40).
       *SYS1008
-      *           ���ֳ��û��ʾ����������
+      *           時間外加算（小児科特例）
                       07  SYSDAYRES-JIKANTOKU-NYU-FLG  PIC X(01).
                       07  SYSDAYRES-JIKANTOKU-NYU-MEI  PIC X(40).
       *
-      *�ꥯ�����ȡᣰ��
-      *           �ǽ��象������δ���
+      *リクエスト＝００
+      *           最終来院日からの期間
                       07  SYSDAYRES-LAST-KIKAN         PIC X(02).
-      *           �����ݸ��ȹ礻�������å�
+      *           前回保険組合せ相違チェック
                       07  SYSDAYRES-ZENHKNCHK-FLG      PIC X(01).
                       07  SYSDAYRES-ZENHKNCHK-MEI      PIC X(40).
       *
-      *�ꥯ�����ȡᣰ��������
+      *リクエスト＝０２，０３
                   05  SYSDAYRES-SET02-INF.
       *SYS1008
-      *           ������Ϳ�̥����å�
+      *           薬剤投与量チェック
                       07  SYSDAYRES-TOUYOCHK-FLG       PIC X(01).
                       07  SYSDAYRES-TOUYOCHK-MEI       PIC X(40).
-      *           ����������Ķ�����å�
+      *           投薬３０日超チェック
                       07  SYSDAYRES-SHOHOU30CHK        PIC X(01).
                       07  SYSDAYRES-SHOHOU30CHK-MEI    PIC X(40).
       *
-      *           ���޾������������å�
+      *           薬剤情報提供料チェック
                       07  SYSDAYRES-YAKJYOCHK-FLG      PIC X(01).
                       07  SYSDAYRES-YAKJYOCHK-MEI      PIC X(40).
-      *           ��Ģ�û���ǧ�����å�
+      *           手帳加算確認チェック
                       07  SYSDAYRES-TECHOKBN-FLG       PIC X(01).
                       07  SYSDAYRES-TECHOKBN-MEI       PIC X(40).
-      *           ���ֳ��۵ޱ�������å�
+      *           時間外緊急院内チェック
                       07  SYSDAYRES-JGAIKEIKBN-FLG     PIC X(01).
                       07  SYSDAYRES-JGAIKEIKBN-MEI     PIC X(40).
       *
       *SYS1038
-      *           ������ˡ����̤���û���ʬ
+      *           精神療法２０未満加算区分
                       07  SYSDAYRES-SEI20KSNKBN        PIC X(01).
                       07  SYSDAYRES-SEI20KSNKBN-MEI    PIC X(40).
-      *           ������ˡ����̤���û���ʬ
+      *           心身療法２０未満加算区分
                       07  SYSDAYRES-SIN20KSNKBN        PIC X(01).
                       07  SYSDAYRES-SIN20KSNKBN-MEI    PIC X(40).
-      *           �����Ѵ���ʬ
+      *           残量廃棄区分
                       07  SYSDAYRES-HAIKIKBN           PIC X(01).
                       07  SYSDAYRES-HAIKIKBN-MEI       PIC X(40).
       *SYS1007
-      *           Ĵ�޵��Ѵ�����
+      *           調剤技術基本料
                       07  SYSDAYRES-CHOKI-FLG          PIC X(01).
                       07  SYSDAYRES-CHOKI-MEI          PIC X(40).
-      *           ���޾��������ʰ��̡�
+      *           薬剤情報提供料（一般）
                       07  SYSDAYRES-YAKJYO1-FLG        PIC X(01).
                       07  SYSDAYRES-YAKJYO1-MEI        PIC X(40).
-      *           ���޾���������Ϸ�͡�
+      *           薬剤情報提供料（老人）
                       07  SYSDAYRES-YAKJYO2-FLG        PIC X(01).
                       07  SYSDAYRES-YAKJYO2-MEI        PIC X(40).
-      *           �������޼��Ŵ�����̵ͭ
+      *           特定薬剤治療管理料有無
                       07  SYSDAYRES-TOKUTEI-FLG        PIC X(01).
                       07  SYSDAYRES-TOKUTEI-MEI        PIC X(40).
       *
-      *           �������μ�ưȯ���ʳ����
+      *           訂正時の自動発生（外来）
                       07  SYSDAYRES-TEISEIAUTO-FLG     PIC X(01).
                       07  SYSDAYRES-TEISEIAUTO-MEI     PIC X(40).
-      *           �������μ�ưȯ���������������������
+      *           訂正時の自動発生（特定疾患処方管理）
                       07  SYSDAYRES-TEISEITOKU-FLG     PIC X(01).
                       07  SYSDAYRES-TEISEITOKU-MEI     PIC X(40).
-      *           ���θ����û���ưȯ��
+      *           検体検査加算自動発生
                       07  SYSDAYRES-KENSAAUTO-FLG      PIC X(01).
                       07  SYSDAYRES-KENSAAUTO-MEI      PIC X(40).
-      *           �������Ǵ����û����ʼ̿����ǡ�
+      *           画像診断管理加算１（写真診断）
                       07  SYSDAYRES-GAZOUKSN1-FLG      PIC X(01).
                       07  SYSDAYRES-GAZOUKSN1-MEI      PIC X(40).
       *
-      *�ꥯ�����ȡᣰ��
+      *リクエスト＝０４
                   05  SYSDAYRES-SET04-INF.
-      *           ����μ谷����ʬ
+      *           入金の取扱い区分
                       07  SYSDAYRES-NYKNKNRKBN          PIC X(01).
                       07  SYSDAYRES-NYKNKNRKBN-MEI      PIC X(40).
-      *           ���⡦�ֶ�������ʬ
+      *           入金・返金額設定区分
                       07  SYSDAYRES-NYKHNKKBN           PIC X(01).
                       07  SYSDAYRES-NYKHNKKBN-MEI       PIC X(40).
-      *           �������������
+      *           訂正の請求書金額
                       07  SYSDAYRES-TEIKINKBN           PIC X(01).
                       07  SYSDAYRES-TEIKINKBN-MEI       PIC X(40).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɴ�����Ͽ����ʽ����Ծ���¾�����(���β���V3)
+      *    ＡＰＩ患者登録情報（所得者情報他情報）(一体化　V3)
       *                                   COPY (CPPATIENTMODV3RES4.INC)
       ******************************************************************
        01  XML-PATIENTMODRES.
@@ -29,144 +29,144 @@
            02  PTMODRES-MODE              PIC S9(9)   BINARY.
            02  PTMODRES-RECORDNAME        PIC X(128).
            02  PTMODRES-APPOINTRES.
-      *      �ꥯ�������ֹ�
+      *      リクエスト番号
              03  PTMODRES-REQUEST-NUMBER    PIC X(2).
-      *      �쥹�ݥ��ֹ�
+      *      レスポンス番号
              03  PTMODRES-RESPONSE-NUMBER   PIC X(2).
-      *      UID���Żҥ���ơ�
+      *      UID（電子カルテ）
              03  PTMODRES-KARTE-UID         PIC X(36).
-      *      UID�ʥ��륫��
+      *      UID（オルカ）
              03  PTMODRES-ORCA-UID          PIC X(36).
-      *      ��³��ʬ
+      *      継続区分
              03  PTMODRES-CONT-MODE         PIC X(05).
-      *      �»���
+      *      実施日
              03  PTMODRES-INFORMATION-DATE  PIC X(10).
-      *      �»ܻ���
+      *      実施時間
              03  PTMODRES-INFORMATION-TIME  PIC X(8).
-      *      �ֵѥ�����
+      *      返却コード
              03  PTMODRES-API-RESULT        PIC X(3).
-      *      �ֵѥ�å�����
+      *      返却メッセージ
              03  PTMODRES-API-RESULT-MSG    PIC X(100).
       *
              03  PTMODRES-RESKEY              PIC X(100).
-      *      �����ֹ�
+      *      患者番号
              03  PTMODRES-PATIENTID        PIC X(20).
-      *      ���Ծ���
+      *      患者情報
              03  PTMODRES-PTINF-INFO.
-      *        ���Ի�̾
+      *        患者氏名
                05  PTMODRES-NAME             PIC X(100).
-      *        ���ԥ��ʻ�̾
+      *        患者カナ氏名
                05  PTMODRES-KANANAME         PIC X(100).
-      *        ��ǯ����
+      *        生年月日
                05  PTMODRES-BIRTHDAY         PIC X(10).
-      *        ����
+      *        性別
                05  PTMODRES-SEX              PIC X(01).
       *
-      *       ������ԣ������������������
+      *       低所得者２情報（低所得者履歴）
               03  PTMODRES-TSYRRK-INFO-G.
                  05  PTMODRES-TSYRRK-INFO     OCCURS   20.
-      *            ǧ�곫��ǯ����
+      *            認定開始年月日
                    07  PTMODRES-TSYRRK-NINSTYMD    PIC X(10).
-      *            ǧ�꽪λǯ����
+      *            認定終了年月日
                    07  PTMODRES-TSYRRK-NINEDYMD    PIC X(10).
-      *            ɸ����ô�۸��۳�����
+      *            標準負担額減額開始日
                    07  PTMODRES-TSYRRK-SKJNINSTYMD PIC X(10).
-      *            Ĺ����������ǯ����
+      *            長期入院該当年月日
                    07  PTMODRES-TSYRRK-SKJGNSTYMD  PIC X(10).
-      *            ǧ���ϰ϶�ʬ
+      *            認定範囲区分
                    07  PTMODRES-TSYRRK-HKNTEKKBN   PIC X(01).
-      *            ǧ���ϰ϶�ʬ̾��
+      *            認定範囲区分名称
                    07  PTMODRES-TSYRRK-HKNTEK-NAME PIC X(40).
-      *H29.6       �����س�����ʬ
+      *H29.6       境界層該当区分
                    07  PTMODRES-TSYRRK-KYOUKAISOU   PIC X(01).
-      *            �����س�����ʬ̾��
+      *            境界層該当区分名称
                    07  PTMODRES-TSYRRK-KYOUKAI-NAME PIC X(20).
-      *            ���顼������
+      *            エラーコード
                    07  PTMODRES-TSYRRK-ERRCD       PIC X(04).
                    07  PTMODRES-TSYRRK-ERRCD-MSG   PIC X(100).
       *
-      *       ������ԣ������ǯ�������
+      *       低所得者１情報（年金履歴）
               03  PTMODRES-TNKRRK-INFO-G.
                  05  PTMODRES-TNKRRK-INFO        OCCURS   20.
-      *            ǧ�곫��ǯ����
+      *            認定開始年月日
                    07  PTMODRES-TNKRRK-STYMD       PIC X(10).
-      *            ǧ�꽪λǯ����
+      *            認定終了年月日
                    07  PTMODRES-TNKRRK-EDYMD       PIC X(10).
-      *            ɸ����ô�۸��۳�����
+      *            標準負担額減額開始日
                    07  PTMODRES-TNKRRK-SKJNINSTYMD PIC X(10).
-      *            Ϸ��ʡ��ǯ�����Ծڶ�ʬ
+      *            老齢福祉年金受給者証区分
                    07  PTMODRES-TNKRRK-FUKUSHI-KBN PIC X(01).
-      *            ǧ���ϰ϶�ʬ
+      *            認定範囲区分
                    07  PTMODRES-TNKRRK-HKNTEKKBN   PIC X(01).
-      *            ǧ���ϰ϶�ʬ̾��
+      *            認定範囲区分名称
                    07  PTMODRES-TNKRRK-HKNTEK-NAME PIC X(40).
-      *H29.6       �����س�����ʬ
+      *H29.6       境界層該当区分
                    07  PTMODRES-TNKRRK-KYOUKAISOU   PIC X(01).
-      *            �����س�����ʬ̾��
+      *            境界層該当区分名称
                    07  PTMODRES-TNKRRK-KYOUKAI-NAME PIC X(20).
-      *            ���顼������
+      *            エラーコード
                    07  PTMODRES-TNKRRK-ERRCD       PIC X(04).
                    07  PTMODRES-TNKRRK-ERRCD-MSG   PIC X(100).
       *
-      *       ��������
+      *       旧姓履歴
               03  PTMODRES-KYUSEIRRK-INFO-G.
                   05  PTMODRES-KYUSEIRRK-INFO     OCCURS   20.
-      *            �ѹ�ǯ����
+      *            変更年月日
                    07  PTMODRES-KYUSEI-CHGYMD      PIC X(10).
-      *            �������ʻ�̾
+      *            旧姓カナ氏名
                    07  PTMODRES-KYUSEI-KANANAME    PIC X(100).
-      *            ������̾
+      *            旧姓氏名
                    07  PTMODRES-KYUSEI-NAME        PIC X(100).
-      *            �����̾�̾
+      *            旧姓通称名
                    07  PTMODRES-KYUSEI-NICKNAME    PIC X(100).
-      *            ���顼������
+      *            エラーコード
                    07  PTMODRES-KYUSEI-ERRCD       PIC X(04).
                    07  PTMODRES-KYUSEI-ERRCD-MSG   PIC X(100).
       *
-      *       �õ�����
+      *       特記事項
               03  PTMODRES-PTTOKKI-INFO-G.
                  05  PTMODRES-PTTOKKI-INFO     OCCURS   50.
-      *            ������ʬ
+      *            入外区分
                    07  PTMODRES-PTTOKKI-NYUGAIKBN    PIC X(01).
                    07  PTMODRES-PTTOKKI-NYUGAI-NAME  PIC X(12).
-      *            �쥻�Ŷ�ʬ
+      *            レセ電区分
                    07  PTMODRES-PTTOKKI-CD          PIC X(02).
-      *            ��쥻�ץȡ��õ���ʬ���ơ�
+      *            紙レセプト（特記区分内容）
                    07  PTMODRES-PTTOKKI-NAIYO       PIC X(12).
-      *            ����ǯ��
+      *            開始年月
                    07  PTMODRES-PTTOKKI-STYM        PIC X(07).
-      *            ��λǯ��
+      *            終了年月
                    07  PTMODRES-PTTOKKI-EDYM        PIC X(07).
-      *            ���顼������
+      *            エラーコード
                    07  PTMODRES-PTTOKKI-ERRCD       PIC X(04).
                    07  PTMODRES-PTTOKKI-ERRCD-MSG   PIC X(100).
       *
-      *       ���Ը��̾���
+      *       患者個別情報
               03  PTMODRES-PTCONF-INFO.
-      *           �������ν�
+      *           出生時体重
                   05  PTMODRES-BIRTHWEIGHT         PIC X(04).
-      *           �ϰ��������оݼ���
+      *           地域包括診療対象疾病
                   05  PTMODRES-CHKHKTBYO-G.
                       07  PTMODRES-CHKHKTBYO       PIC X(05)
                                                    OCCURS   4.
                   05  PTMODRES-CHKHKTBYO-G2    REDEFINES
                                                PTMODRES-CHKHKTBYO-G.
-      *               ��찵��
+      *               高血圧症
                       07  PTMODRES-CHKHKTBYO-1      PIC X(05).
-      *               ��Ǣ��
+      *               糖尿病
                       07  PTMODRES-CHKHKTBYO-2      PIC X(05).
-      *               ����۾��
+      *               脂質異常症
                       07  PTMODRES-CHKHKTBYO-3      PIC X(05).
-      *               ǧ�ξ�
+      *               認知症
                       07  PTMODRES-CHKHKTBYO-4      PIC X(05).
-      *           ǧ�ξ��ϰ�������
+      *           認知症地域包括診療
                   05  PTMODRES-NINTIHOKATU          PIC X(05).
-      *           ����������Ĥ�����
+      *           小児かかりつけ診療
                   05  PTMODRES-SYOUNIKAKARI         PIC X(05).
-      *H30.4      ǥ������
+      *H30.4      妊婦設定
                   05  PTMODRES-NINPUKBN             PIC X(05).
       *
-      *      ���顼��å�����
+      *      エラーメッセージ
              03  PTMODRES-PATIENT-ERRMSG-G.
                  05  PTMODRES-PATIENT-ERRMSG-INF  OCCURS   50.
                      07  PTMODRES-ERROR        PIC X(04).

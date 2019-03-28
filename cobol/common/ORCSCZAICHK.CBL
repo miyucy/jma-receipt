@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSCZAICHK.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ų��Ʊ��ޥ����å�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/05/09    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 診療会計同一剤チェック処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/05/09    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/11/22  MONFUNC �б�
-      *  03.04.00    NACL-¿��Ǽ  07/02/XX  �������б�
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
-      *  04.05.00    NACL-¿��Ǽ  09/10/XX  ¿����Ϳ�����������б�
-      *  04.07.00    NACL-¿��Ǽ  12/04/12  ��ȯ���ѹ��Բ����б�
-      *  04.08.00    NACL-¿��Ǽ  18/03/XX  �ȣ���ǯ����������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/22  MONFUNC 対応
+      *  03.04.00    NACL-多々納  07/02/XX  包括診療対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.05.00    NACL-多々納  09/10/XX  多剤投与・換算値等対応
+      *  04.07.00    NACL-多々納  12/04/12  後発品変更不可等対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年０４月改正対応
       *****************************************************************
       *
       *
@@ -47,7 +47,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -63,7 +63,7 @@
       *H24.4
            03  FLG-HENCHK          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -72,15 +72,15 @@
            03  IDX-SIN             PIC 9(04).
            03  IDX-ATO             PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-ZAINUM              PIC 9(08).
            03  WRK-H-ZAINUM            PIC 9(08).
-      *    ���ż���
+      *    診療種別
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-MAE-SRYSYUKBN       PIC X(03).
       *
-      *    ���Ź԰���������ѥơ��֥�
+      *    診療行為内容比較用テーブル
        01  TBL-AREA.
            03  TBL-MAE-AREA.
                05  TBL-MAE-REC     OCCURS   50.
@@ -94,7 +94,7 @@
                    07  TBL-MAE-INPUTKBN    PIC  X(01).
                    07  TBL-MAE-JIHIMONEY   PIC  9(07).
       *H24.4
-      *            ����ͽ�󥳡���
+      *            投薬予約コード
                    07  TBL-MAE-TOUYKK-G.
                        09  TBL-MAE-TOUYYK       PIC  X(01)
                                                 OCCURS   5.
@@ -112,7 +112,7 @@
                    07  TBL-ATO-INPUTKBN    PIC  X(01).
                    07  TBL-ATO-JIHIMONEY   PIC  9(07).
       *H24.4
-      *            ����ͽ�󥳡���
+      *            投薬予約コード
                    07  TBL-ATO-TOUYKK-G.
                        09  TBL-ATO-TOUYYK       PIC  X(01)
                                                 OCCURS   5.
@@ -120,33 +120,33 @@
                                            OCCURS   50.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスター
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
@@ -155,13 +155,13 @@
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ���Ź԰����������ѥ�᥿�ΰ�
+      *    診療行為入院更新パラメタ領域
            COPY    "CPORCSCZAICHK.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -170,7 +170,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -181,7 +181,7 @@
            INITIALIZE                  ORCSCZAICHK-OUT-AREA
       *
            EVALUATE    ORCSCZAICHK-KBN
-      *        ���Ų�ץ����å�
+      *        診療会計チェック
                WHEN    "1"
                    PERFORM 100-CHK-SYORI-SEC
            END-EVALUATE
@@ -193,16 +193,16 @@
            .
       *
       *****************************************************************
-      *    ���Ų�ץ����å�����
+      *    診療会計チェック処理
       *****************************************************************
        100-CHK-SYORI-SEC               SECTION.
       *
-      *    ���ż��̤ˤ��Ƚ����ɲä���
+      *    診療種別により判定を追加する
            IF     (ORCSCZAICHK-SRYSYUKBN   =  SPACE )  OR
                   (ORCSCZAICHK-SRYSYUKBN   =   "210"  OR
                                                "230" )
                MOVE    SPACE                   TO  WRK-SRYSYUKBN
-      *        �������Ǥ����̤���ξ��
+      *        画像診断で部位からの場合
                IF     (ORCSCZAICHK-SRYSYUKBN   =   SPACE  )  AND
                       (ORCSCZAICHK-SRYKBN      =   "70"   )
                    MOVE    "700"               TO  WRK-SRYSYUKBN
@@ -213,7 +213,7 @@
       *
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  FLG-OK
-      *    ���Ų�ץޥ����������ꤹ��
+      *    診療会計マスターを特定する
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
@@ -236,27 +236,27 @@
            PERFORM
                UNTIL   (FLG-SRYACCT        =   1    ) OR
                        (FLG-OK             =   1    )
-      *        ���̷פ򥼥��Ǻ������Ƥ�����Τ����ä��Τǡ�
-      *        �����򣱤�Ƚ�ꤹ��
+      *        数量計をゼロで作成していたものがあったので、
+      *        ゼロを１で判定する
                IF      ACCT-SURYOUTOTAL    =   ZERO
                    MOVE    1                   TO  ACCT-SURYOUTOTAL
                END-IF
-      *        ���ݶ�ʬ�����ޡ˥��������Ȥ���ʥ��������ä���
+      *        自保区分（包括剤）ゼロを空白とする（ゼロがあった）
                IF      ACCT-JIHOKBN        =   "0"
                    MOVE    SPACE               TO  ACCT-JIHOKBN
                END-IF
       *
-      *        ���ť����ɷפ���Ӥ���
+      *        診療コード計を比較する
                MOVE     ZERO               TO  FLG-OK
                IF      (ACCT-HKNCOMBI      =   ORCSCZAICHK-HKNCOMBI  )
                  AND   (ACCT-SRYCDTOTAL    =   ORCSCZAICHK-SRYCDTOTAL)
                  AND   (ACCT-ZAITEN        =   ORCSCZAICHK-ZAITEN    )
                  AND   (ACCT-MEISAISU      =   ORCSCZAICHK-MEISAISU  )
                  AND   (ACCT-SURYOUTOTAL   =   ORCSCZAICHK-SURYOUTOTAL)
-      *          ���ݶ�ʬ�����ޡ�
+      *          自保区分（包括剤）
                  AND   (ACCT-JIHOKBN       =   ORCSCZAICHK-JIHOKBN   )
                    MOVE    ACCT-ZAINUM         TO  WRK-H-ZAINUM
-      *            ���Ź԰����Ƥ���ӽ���
+      *            診療行為内容の比較処理
                    PERFORM 1002-SRYACCT-CHK-SEC
                    IF      FLG-OK              =   1
                        MOVE    WRK-H-ZAINUM        TO WRK-ZAINUM
@@ -271,7 +271,7 @@
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    Ʊ��ޤ���
+      *    同一剤あり
            IF      WRK-ZAINUM      NOT =   ZERO
                MOVE    WRK-ZAINUM          TO  ORCSCZAICHK-ZAINUM
            ELSE
@@ -284,13 +284,13 @@
            EXIT.
       *
       *****************************************************************
-      *   ���Ź԰����Ƥ���ӽ���
+      *   診療行為内容の比較処理
       *****************************************************************
        1002-SRYACCT-CHK-SEC            SECTION.
       *
            MOVE    ZERO                TO  IDX-SIN
            INITIALIZE                      TBL-MAE-AREA 
-      *    ���Ų�ץޥ�����������Ź԰٥ޥ������򸡺�����
+      *    診療会計マスターから診療行為マスターを検索する
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -311,12 +311,12 @@
                MOVE    1                   TO  FLG-SRYACT
            END-IF
            PERFORM UNTIL     (FLG-SRYACT       =   1  )
-      *        ���ż��̤ˤ��Ƚ����ɲä���
+      *        診療種別により判定を追加する
                IF     (SRY-SRYSYUKBN       =  SPACE )  OR
                       (SRY-SRYSYUKBN       =  "210"  OR
                                               "230" )
                    MOVE    SPACE           TO  WRK-MAE-SRYSYUKBN
-      *            �������Ǥ����̤���ξ��
+      *            画像診断で部位からの場合
                    IF     (SRY-SRYSYUKBN       =   SPACE  )  AND
                           (SRY-SRYKBN          =   "70"   )
                        MOVE    "700"               TO  WRK-MAE-SRYSYUKBN
@@ -324,7 +324,7 @@
                ELSE
                    MOVE    SRY-SRYSYUKBN   TO  WRK-MAE-SRYSYUKBN
                END-IF
-      *        ���ż��̶�ʬȽ��
+      *        診療種別区分判定
                IF       WRK-SRYSYUKBN       =   WRK-MAE-SRYSYUKBN
                    MOVE     1               TO  FLG-CHK-OK
                ELSE
@@ -353,13 +353,13 @@
                                                              (IDX-SIN)
                        MOVE    SRY-SRYKAISU(IDX2)  TO  TBL-MAE-SRYKAISU
                                                              (IDX-SIN)
-      *                ������
+      *                自費金額
                        MOVE    SRY-JIHIMONEY(IDX2) TO  TBL-MAE-JIHIMONEY
                                                              (IDX-SIN)
-      *                �����Ϳ���
+      *                換算値数量
                        MOVE    SRY-KANSURYO(IDX2)  TO  TBL-MAE-KANSURYO
                                                              (IDX-SIN)
-      *                ¿����Ϳ����Ϣ������
+      *                多剤投与・関連コメント
                        EVALUATE    SRY-MEISKYFLG (IDX2)
                            WHEN    "2"
                                MOVE    "1"         TO  TBL-MAE-INPUTKBN
@@ -407,7 +407,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ���Ź԰����ƤΤߥơ��֥����¸����
+      *    診療行為内容のみテーブルに保存する
            MOVE    ZERO                TO  IDX-ATO
            INITIALIZE                      TBL-ATO-AREA 
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -449,7 +449,7 @@
       *H24.4
            END-PERFORM
       *
-      *    ���Ź԰ٿ����㤦
+      *    診療行為数が違う
            IF      IDX-SIN         NOT =   IDX-ATO
                GO      TO      1002-SRYACCT-CHK-EXT
            END-IF
@@ -483,28 +483,28 @@
       *
       *H24.4
       *****************************************************************
-      *    ���Ź԰٥ǡ�����ͽ�󥳡����Խ�
+      *    診療行為データ　予約コード編集
       *****************************************************************
        10022-SRYACCT-HEN-SEC         SECTION.
       *
            EVALUATE    SRY-SRYCD (IDX2)
-      *        ��ȯ�ѹ��Բ�
+      *        後発変更不可
                WHEN    "099209903"
                    MOVE    "1"         TO  TBL-MAE-TOUYYK (IDX-SIN 1)
                    MOVE    1           TO  FLG-HENCHK
-      *        �����ѹ��Բ�
+      *        含量変更不可
                WHEN    "099209905"
                    MOVE    "1"         TO  TBL-MAE-TOUYYK (IDX-SIN 2)
                    MOVE    1           TO  FLG-HENCHK
-      *        �޷��ѹ��Բ�
+      *        剤形変更不可
                WHEN    "099209906"
                    MOVE    "1"         TO  TBL-MAE-TOUYYK (IDX-SIN 3)
                    MOVE    1           TO  FLG-HENCHK
-      *        ����̾����
+      *        銘柄名記載
                WHEN    "099209907"
                    MOVE    "1"         TO  TBL-MAE-TOUYYK (IDX-SIN 4)
                    MOVE    1           TO  FLG-HENCHK
-      *        ����̾����
+      *        一般名記載
                WHEN    "099209908"
                    MOVE    "1"         TO  TBL-MAE-TOUYYK (IDX-SIN 5)
                    MOVE    1           TO  FLG-HENCHK
@@ -515,28 +515,28 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ�󥳡����Խ�����
+      *    予約コード編集処理
       *****************************************************************
        10023-ZAICHK-HEN-SEC         SECTION.
       *
            EVALUATE    ORCSCZAICHK-SRYCD (IDX1)
-      *        ��ȯ�ѹ��Բ�
+      *        後発変更不可
                WHEN    "099209903"
                    MOVE    "1"         TO  TBL-ATO-TOUYYK (IDX-ATO 1)
                    MOVE    1           TO  FLG-HENCHK
-      *        �����ѹ��Բ�
+      *        含量変更不可
                WHEN    "099209905"
                    MOVE    "1"         TO  TBL-ATO-TOUYYK (IDX-ATO 2)
                    MOVE    1           TO  FLG-HENCHK
-      *        �޷��ѹ��Բ�
+      *        剤形変更不可
                WHEN    "099209906"
                    MOVE    "1"         TO  TBL-ATO-TOUYYK (IDX-ATO 3)
                    MOVE    1           TO  FLG-HENCHK
-      *        ����̾����
+      *        銘柄名記載
                WHEN    "099209907"
                    MOVE    "1"         TO  TBL-ATO-TOUYYK (IDX-ATO 4)
                    MOVE    1           TO  FLG-HENCHK
-      *        ����̾����
+      *        一般名記載
                WHEN    "099209908"
                    MOVE    "1"         TO  TBL-ATO-TOUYYK (IDX-ATO 5)
                    MOVE    1           TO  FLG-HENCHK
@@ -547,7 +547,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        910-SRYACT-READ-SEC         SECTION.
       *
@@ -564,7 +564,7 @@
        910-SRYACT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -582,7 +582,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ����ȥޥ������ɹ�
+      *    患者コメントマスター読込
       *****************************************************************
        950-PTCOM-READ-SEC         SECTION.
       *
@@ -612,7 +612,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -625,7 +625,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -640,7 +640,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

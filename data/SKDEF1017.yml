@@ -1,131 +1,131 @@
 kanri_cd    : "1017"
-name        : "´µ¼ÔÅĞÏ¿µ¡Ç½¾ğÊó"
+name        : "æ‚£è€…ç™»éŒ²æ©Ÿèƒ½æƒ…å ±"
 class_cd    : "*"
 item_max    : 21
 item_list   :
 - item_no   : 1
   item      : "JINMEI-USE"
-  item_jp   : "¿ÍÌ¾¼­½ñ»ÈÍÑ"
+  item_jp   : "äººåè¾æ›¸ä½¿ç”¨"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "KARUTE-BYOMEI"
-  item_jp   : "¥«¥ë¥Æ¤ÎÉÂÌ¾ÂĞ¾İ"
+  item_jp   : "ã‚«ãƒ«ãƒ†ã®ç—…åå¯¾è±¡"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "KARUTE-HAKKO"
-  item_jp   : "´µ¼ÔÅĞÏ¿¤Î¥«¥ë¥ÆÈ¯¹Ô¡Ê¿·µ¬´µ¼Ô¤Î»ş¡Ë"
+  item_jp   : "æ‚£è€…ç™»éŒ²ã®ã‚«ãƒ«ãƒ†ç™ºè¡Œï¼ˆæ–°è¦æ‚£è€…ã®æ™‚ï¼‰"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "JIHIHKN-TAX"
-  item_jp   : "¼«ÈñÊİ¸±¤ÎÊä½õ¶èÊ¬"
+  item_jp   : "è‡ªè²»ä¿é™ºã®è£œåŠ©åŒºåˆ†"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "SEIHO-JKYSNUM"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "DOUMEI-CHKFLG"
-  item_jp   : "Æ±À«Æ±Ì¾¼Ô¥ê¥¹¥È"
+  item_jp   : "åŒå§“åŒåè€…ãƒªã‚¹ãƒˆ"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "JYUFUKU-CHKKBN"
-  item_jp   : "Æó½ÅÅĞÏ¿µ¿¤¤È½Äê"
+  item_jp   : "äºŒé‡ç™»éŒ²ç–‘ã„åˆ¤å®š"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "KOHONLY-CHKFLG"
-  item_jp   : "ÃÏÊı¸øÈñÃ±ÆÈ¥Á¥§¥Ã¥¯"
+  item_jp   : "åœ°æ–¹å…¬è²»å˜ç‹¬ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 9
   item      : "PTNUMDEL-FLG"
-  item_jp   : "´µ¼Ôºï½üµ¡Ç½"
+  item_jp   : "æ‚£è€…å‰Šé™¤æ©Ÿèƒ½"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 10
   item      : "HONKZKKBN-FLG"
-  item_jp   : "ËÜ¿Í¡¦²ÈÂ²¶èÊ¬"
+  item_jp   : "æœ¬äººãƒ»å®¶æ—åŒºåˆ†"
   type      : "X"
   start     : 10
   length    : 1
 - item_no   : 11
   item      : "KZKNEN"
-  item_jp   : "½é´üÀßÄê»ş¤Î²ÈÂ²Ç¯Îğ"
+  item_jp   : "åˆæœŸè¨­å®šæ™‚ã®å®¶æ—å¹´é½¢"
   type      : "X"
   start     : 11
   length    : 2
 - item_no   : 12
   item      : "HIHKNJAKBN-FLG"
-  item_jp   : "ÈïÊİ¸±¼ÔÌ¾¼«Æ°µ­ºÜ"
+  item_jp   : "è¢«ä¿é™ºè€…åè‡ªå‹•è¨˜è¼‰"
   type      : "X"
   start     : 13
   length    : 1
 - item_no   : 13
   item      : "SETAIKBN-FLG"
-  item_jp   : "À¤ÂÓ¼çÌ¾¼«Æ°µ­ºÜ"
+  item_jp   : "ä¸–å¸¯ä¸»åè‡ªå‹•è¨˜è¼‰"
   type      : "X"
   start     : 14
   length    : 1
 - item_no   : 14
   item      : "GRPPTLST-FLG"
-  item_jp   : "¥°¥ë¡¼¥×°åÎÅµ¡´ØÆâÆ±°ì´µ¼ÔÌ¾¥ê¥¹¥È"
+  item_jp   : "ã‚°ãƒ«ãƒ¼ãƒ—åŒ»ç™‚æ©Ÿé–¢å†…åŒä¸€æ‚£è€…åãƒªã‚¹ãƒˆ"
   type      : "X"
   start     : 15
   length    : 1
 - item_no   : 15
   item      : "KOHRRKKBN-FLG"
-  item_jp   : "¸øÈñ¾å¸Â³ÛÍúÎò¥Á¥§¥Ã¥¯"
+  item_jp   : "å…¬è²»ä¸Šé™é¡å±¥æ­´ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 16
   length    : 1
 - item_no   : 16
   item      : "POSTKBN-FLG"
-  item_jp   : "Í¹ÊØÈÖ¹æ¼«Æ°µ­ºÜ"
+  item_jp   : "éƒµä¾¿ç•ªå·è‡ªå‹•è¨˜è¼‰"
   type      : "X"
   start     : 17
   length    : 1
 - item_no   : 17
   item      : "KENMEIKBN-FLG"
-  item_jp   : "½»½êÅÔÆ»ÉÜ¸©Ì¾µ­ºÜ¶èÊ¬"
+  item_jp   : "ä½æ‰€éƒ½é“åºœçœŒåè¨˜è¼‰åŒºåˆ†"
   type      : "X"
   start     : 18
   length    : 1
 - item_no   : 18
   item      : "TOWNNAME2KBN-FLG"
-  item_jp   : "µşÅÔÉÜÄÌ¤êÌ¾¾ÎÊÔ½¸¶èÊ¬"
+  item_jp   : "äº¬éƒ½åºœé€šã‚Šåç§°ç·¨é›†åŒºåˆ†"
   type      : "X"
   start     : 19
   length    : 1
 - item_no   : 19
   item      : "KOHHBTKBN-FLG"
-  item_jp   : "Ë¡ÊÌËè¸øÈñ°ìÍ÷É½¼¨¶èÊ¬"
+  item_jp   : "æ³•åˆ¥æ¯å…¬è²»ä¸€è¦§è¡¨ç¤ºåŒºåˆ†"
   type      : "X"
   start     : 20
   length    : 1
 - item_no   : 20
   item      : "HKNINITKBN-FLG"
-  item_jp   : "Êİ¸±½é´üÉ½¼¨¶èÊ¬"
+  item_jp   : "ä¿é™ºåˆæœŸè¡¨ç¤ºåŒºåˆ†"
   type      : "X"
   start     : 21
   length    : 1
 - item_no   : 21
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 22
   length    : 479

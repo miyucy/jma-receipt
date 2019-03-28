@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 05.00.00     NACL-¿��Ǽ  19/01/XX  ʣ�����ݸ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹿��Ź԰���Ͽ���� (���β�)
+      *    ＡＰＩレスポンス診療行為登録情報 (一体化)
       *                                      COPY (CPMDCXMLV3RE4.INC)
-      *         ���Ź԰ٺ��
+      *         診療行為削除
       ******************************************************************
        01  XML-MEDICALV3RES4.
             03  MDCRES-CONTEXT             PIC S9(9)   BINARY.
@@ -31,189 +31,189 @@
             03  MDCRES-MODE                PIC S9(9)   BINARY.
             03  MDCRES-RECORDNAME          PIC X(128).
             03  MDCRES-MEDICALRES.
-      *        �ꥯ�������ֹ�
+      *        リクエスト番号
                05  MDCRES-REQUEST-NUMBER    PIC X(2).
-      *        �쥹�ݥ��ֹ�
+      *        レスポンス番号
                05  MDCRES-RESPONSE-NUMBER   PIC X(2).
-      *        UID���Żҥ���ơ�
+      *        UID（電子カルテ）
                05  MDCRES-KARTE-UID         PIC X(36).
-      *        UID�ʥ��륫��
+      *        UID（オルカ）
                05  MDCRES-ORCA-UID          PIC X(36).
-      *        �»���
+      *        実施日
                05  MDCRES-INFORMATION-DATE  PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                05  MDCRES-INFORMATION-TIME  PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                05  MDCRES-API-RESULT        PIC X(3).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                05  MDCRES-API-RESULT-MSG    PIC X(100).
       *
                05  MDCRES-RESKEY            PIC X(100).
-      *        ���Ծ���
+      *        患者情報
                05  MDCRES-PATIENTID        PIC X(20).
                05  MDCRES-NAME             PIC X(100).
                05  MDCRES-KANANAME         PIC X(100).
                05  MDCRES-BIRTHDAY         PIC X(10).
                05  MDCRES-SEX              PIC X(1).
-      *        �����ֵѤ���
+      *        選択返却あり
                05  MDCRES-MEDICAL-SELECT-FLAG   PIC X(05).
-      *        ��������
+      *        診療日付
                05  MDCRES-PERFORM-DATE      PIC X(10).
-      *        ��ɼ�ֹ�
+      *        伝票番号
                05  MDCRES-INVOICD-NUMBER    PIC  X(07).
-      *        ���Ų�
+      *        診療科
                05  MDCRES-APPOINT-DEP-CODE  PIC X(2).
                05  MDCRES-APPOINT-DEP-NAME  PIC X(80).
-      *        Ϣ��
+      *        連番
                05  MDCRES-NUMBER            PIC X(01).
-      *        �ɥ�����
+      *        ドクター
                05  MDCRES-APPOINT-DR-CODE   PIC X(5).
                05  MDCRES-APPOINT-DR-NAME   PIC X(80).
-      *        �ݸ�����
+      *        保険情報
                05  MDCRES-INSURANCE-G.
-      *            �ݸ��ȹ礻�ֹ�
+      *            保険組合せ番号
                    09  MDCRES-COMBINATION-NUMBER     PIC X(04).
-      *            �ݸ��ȹ礻��ô���
+      *            保険組合せ負担割合
                    09  MDCRES-COMBINATION-RATE       PIC X(03).
-      *            �ݸ��μ���
+      *            保険の種類
                    09  MDCRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *            �ݸ����ֹ�
+      *            保険者番号
                    09  MDCRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *            �ݸ��μ���̾��
+      *            保険の種類名称
                    09  MDCRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *            ����
+      *            記号
                    09  MDCRES-MAIN-MARK              PIC X(80).
-      *            �ֹ�
+      *            番号
                    09  MDCRES-MAIN-NUMBER            PIC X(80).
-      *            ��³��ʬ
+      *            継続区分
                    09  MDCRES-MAIN-CONTINUATION      PIC X(01).
-      *            �����ʬ
+      *            補助区分
                    09  MDCRES-MAIN-ASSISTANCE        PIC X(01).
-      *            �����ʬ̾��
+      *            補助区分名称
                    09  MDCRES-MAIN-ASSI-NAME         PIC X(20).
-      *            �ܿͲ�²��ʬ
+      *            本人家族区分
                    09  MDCRES-MAIN-FAMILY            PIC X(01).
-      *            �������
+      *            公費情報
                    09  MDCRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *               ����μ���
+      *               公費の種類
                       11  MDCRES-INSURANCE-CLASS         PIC X(03).
-      *               ����μ���̾��
+      *               公費の種類名称
                       11  MDCRES-INSURANCE-NAME          PIC X(20).
-      *               ��ô���ֹ�
+      *               負担者番号
                       11  MDCRES-PROVIDER-NUMBER         PIC X(08).
-      *               ������ֹ�
+      *               受給者番号
                       11  MDCRES-RECIPIENT-NUMBER        PIC X(20).
-      *               �������ôΨ�ʳ��
+      *               外来−負担率（割）
                       11  MDCRES-RATE-OUTPATIENT         PIC X(04).
-      *               ����ݸ����
+      *               外来−固定額
                       11  MDCRES-MONEY-OUTPATIENT        PIC X(06).
       *
       *H31.01
-      *        ʣ�����ݸ��б�
+      *        複数科保険対応
                05  MDCRES-GRP-INF-G.
                    07  MDCRES-GRP-INF-OCC      OCCURS   15.
-      *                ��ɼ�ֹ�
+      *                伝票番号
                        09  MDCRES-SUB-INVOICD-NUMBER    PIC  X(07).
-      *                �ݸ��ȹ礻�ֹ�
+      *                保険組合せ番号
                        09  MDCRES-SUB-COMBINATION-NUMBER     PIC X(04).
-      *                ���Ų�
+      *                診療科
                        09  MDCRES-SUB-DEP-CODE          PIC X(2).
-      *                Ϣ��
+      *                連番
                        09  MDCRES-SUB-NUMBER            PIC X(01).
       *!!!
       *
-      *        ���ⱡ����ʬ����������Τߡ�
+      *        院内院外区分（投薬ありのみ）
                05  MDCRES-OUTSIDE-LASS        PIC X(05).
       *
-      *        ���������ֵ�
+      *        診療内容返却
                05  MDCRES-MEDICAL-INF-G.
                  07  MDCRES-MDC-INFO          OCCURS   120.
       *!!!
       *H31.01
-      *             �ݸ������Ų�����
+      *             保険・診療科切替
                     09  MDCRES-CHENGE-REC.
-      *                 �ǡ�����ʬ��DEP��ʣ�����Ųʡ�COM:�ݸ��ȹ礻��
+      *                 データ区分（DEP：複数診療科、COM:保険組合せ）
                         11  MDCRES-MDC-DATA-KBN              PIC X(03).
-      *                 �ݸ��ȹ礻�ֹ�
+      *                 保険組合せ番号
                         11  MDCRES-MDC-COMBINATION-NUMBER    PIC X(04).
-      *                 �ݸ��μ���̾��
+      *                 保険の種類名称
                         11  MDCRES-MDC-MAIN-INS-NAME    PIC X(20).
                         11  MDCRES-MDC-PUBLIC-INS-INFO.
-      *                 ����μ���̾��
+      *                 公費の種類名称
                             13  MDCRES-MDC-INSURANCE-NAME     PIC X(20)
                                                      OCCURS  4 TIMES.
-      *                 ���Ų�
+      *                 診療科
                         11  MDCRES-MDC-DEP-CODE          PIC X(2).
                         11  MDCRES-MDC-DEP-CODE-NAME     PIC X(20).
-      *                 �ɥ�����
+      *                 ドクター
                         11  MDCRES-MDC-DR-CODE           PIC X(5).
                         11  MDCRES-MDC-DR-CODE-NAME      PIC X(80).
       *!!!
-      *             ���Ŷ�ʬ
+      *             診療区分
                     09  MDCRES-MDC-CLASS-KBN         PIC X(2).
-      *             ���ż��̶�ʬ
+      *             診療種別区分
                     09  MDCRES-MDC-CLASS             PIC X(3).
-      *             ���ż���̾��
+      *             診療種別名称
                     09  MDCRES-MDC-CLASS-NAME        PIC X(40).
-      *             ���
+      *             回数
                     09  MDCRES-MDC-CLASS-NUMBER      PIC X(03).
-      *             ������
+      *             剤点数
                     09  MDCRES-MDC-POINT             PIC X(08).
-      *             �޶��
+      *             剤金額
                     09  MDCRES-MDC-MONEY             PIC X(08).
-      *             ����ʬ��True�����ޡ�
+      *             包括区分（True：包括剤）
                     09  MDCRES-INCLUSION-CLASS       PIC X(05).
       *
-      *             ��縡���θ�����
+      *             包括検査の検査数
                     09  MDCRES-HKTKNSA-CNT           PIC X(02).
       *
                     09  MDCRES-PRSCRPT-INFO-G.
                       10  MDCRES-PRESCRIPTION-INFO    OCCURS   50.
-      *                 ���ť�����
+      *                 診療コード
                         11  MDCRES-PRSCRPT-CODE          PIC X(9).
-      *                 ����̾��
+      *                 診療名称
                         11  MDCRES-PRSCRPT-NAME          PIC X(80).
-      *                 ����
+      *                 数量
                         11  MDCRES-PRSCRPT-NUMBER        PIC X(11).
-      *                 ñ�̥�����
+      *                 単位コード
                         11  MDCRES-PRSCRPT-TANICD        PIC X(03).
-      *                 ñ��̾��
+      *                 単位名称
                         11  MDCRES-PRSCRPT-TANICD-NAME   PIC X(24).
-      *                 ������
+      *                 自費金額
                         11  MDCRES-PRSCRPT-MONEY         PIC X(07).
-      *                 ��������������
+      *                 コメント埋め込み値
                         11  MDCRES-PRSCRPT-ATAI-G.
                             13  MDCRES-PRSCRPT-ATAI      PIC X(08)
                                                          OCCURS   5.
-      *                 �ե����ʬ���
+      *                 フィルム分画数
                         11  MDCRES-PRSCRPT-FILMNUM       PIC X(03).
-      *                 ����̾���ܶ�ʬ�ʣ�������̾����������̾�ʰ���̾��
+      *                 一般名記載区分（１：一般名、３：処方名（一般名）
       *                 11  MDCRES-PRSCRPT-GENERIC       PIC X(01).
-      *                 ����̾̾��
+      *                 一般名名称
       *                 11  MDCRES-PRSCRPT-GENNAME       PIC X(200).
-      *                 ��³�ؼ���ʬ
+      *                 継続指示区分
                         11  MDCRES-PRSCRPT-CONTKBN       PIC X(01).
-      *                 ����������ؼ���ʬ
+      *                 内服種類数指示区分
                         11  MDCRES-PRSCRPT-NAIFKBN       PIC X(01).
       *
-      *                 ��ư����ʤ���ʬ�ʺ������ܼ��Ӳû���
+      *                 自動算定なし区分（在宅療養実績加算）
                         11  MDCRES-PRSCRPT-NOAUTO        PIC X(03).
       *
-      *                 ��ư��ʬ
+      *                 自動区分
                         11  MDCRES-PRSCRPT-AUTOKBN       PIC X(01).
       *
-      *        �������ƥ��顼
+      *        診療内容エラー
                05  MDCRES-MEDICAL-MSG1-G.
-      *           ��˥󥰥�å�����
+      *           ワーニングメッセージ
                   07  MDCRES-MEDI-WARNING-TBL    OCCURS  40.
-      *               ��˥󥰥�����
+      *               ワーニングコード
                       09  MDCRES-MEDI-WARNING        PIC X(03).
-      *               ��˥󥰥�å�����
+      *               ワーニングメッセージ
                       09  MDCRES-MEDI-WARNING-MSG    PIC X(100).
       *
-      *        ��ǧ��å����������ɡ����������ɡ�
+      *        確認メッセージコード（送信コード）
                05  MDCRES-SELECT-CODE         PIC X(04).
-      *        ��ǧ��å���������
+      *        確認メッセージ内容
                05  MDCRES-SELECT-MSG          PIC X(100).
       *

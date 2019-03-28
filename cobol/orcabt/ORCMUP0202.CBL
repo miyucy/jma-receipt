@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0202.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �����쥻�ץȵ���ά�ι�������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : 入院レセプト記載略称更新処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  11.02.15    NACL-����     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  11.02.15    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,17 +35,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ������쥻�ץȵ���ά�ι����ǡ���
+      *    入力：入院レセプト記載略称更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,11 +54,11 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ������쥻�ץȵ���ά�ι����ǡ���
+      *    入力：入院レセプト記載略称更新データ
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
        FD  ERR-FILE.
        01  ERR-RYAKUSHOWK-REC.
            03  ERR-RYAKUSHOWK-SYORIKBN PIC  X(01).
@@ -68,7 +68,7 @@
                                        REPLACING  //NYURYAKUSHO//
                                               BY  //ERR-RYAKUSHOWK//.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
@@ -76,26 +76,26 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-RYAKUSHO            PIC 9(01).
            03  FLG-PLF                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ����ǥå����ΰ�
+      *    インデックス領域
        01  IDX-AREA.
            03  IDX-PNT1                PIC 9(05).
            03  IDX-PNT2                PIC 9(05).
@@ -103,7 +103,7 @@
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(03).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-INS                 PIC 9(06).
@@ -120,7 +120,7 @@
            03  SYS-DD                  PIC 9(02).
       *
        01  SYS-TIME                    PIC 9(08).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -135,11 +135,11 @@
            03  WRK-IN                  PIC X(01).
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ���ϥե������ΰ�
+      *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCMUP0202.CBL��".
+                                       "【PGID:ORCMUP0202.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -161,11 +161,11 @@
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
        01  RYAKUSHOWK-REC.
@@ -174,22 +174,22 @@
            COPY    "CPNYUINRYAKUSHO.INC"
                                        REPLACING   //NYURYAKUSHO//
                                               BY   //RYAKUSHOWK//.
-      *    �����쥻�ץȵ���ά��
+      *    入院レセプト記載略称
        01  RYAKUSHO-REC.
            COPY    "CPNYUINRYAKUSHO.INC"
                                        REPLACING   //NYURYAKUSHO//
                                               BY   //RYAKUSHO//.
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -200,7 +200,7 @@
            LNK-AREA.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -217,7 +217,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -240,17 +240,17 @@
       *
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT               IN-FILE
            IF      STS-IN       NOT =   ZERO
                MOVE    1               TO  FLG-IN
                DISPLAY "*(ORCMUP0202)* IN-FILE OPN STS[" STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    �����쥻�ץȵ���ά�Υǡ����ɹ��߽���
+      *    入院レセプト記載略称データ読込み処理
            IF      FLG-IN          =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -259,7 +259,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
@@ -272,7 +272,7 @@
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE           TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -283,7 +283,7 @@
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            MOVE    SPACE           TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -294,7 +294,7 @@
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    �ץ롼�եե�����
+      *    プルーフファイル
            MOVE    SPACE           TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -309,25 +309,25 @@
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
            EVALUATE    RYAKUSHOWK-SYORIKBN
-      *        �ɲ�
+      *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ����
+      *        更新
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ���
+      *        削除
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    �����쥻�ץȵ���ά�Υǡ����ɹ��߽���
+      *    入院レセプト記載略称データ読込み処理
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -335,11 +335,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɲ�  ����
+      *    追加  処理
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
-      *    ñ���ɲ�
+      *    単純追加
            IF      RYAKUSHOWK-YUKOEDYMD2
                                    =   SPACE
                PERFORM 2011-INSERT-SYORI-SEC
@@ -352,7 +352,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ñ���ɲ�  ����
+      *    単純追加  処理
       *****************************************************************
        2011-INSERT-SYORI-SEC       SECTION.
       *
@@ -378,12 +378,12 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    �ɲå��顼��Ʊ�쥭��¸�ߡ�
+      *    追加エラー（同一キー存在）
            IF      FLG-RYAKUSHO    =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
-      *        �ģ��ɲ�
+      *        ＤＢ追加
                PERFORM 20101-RYAKUSHO-INS-SEC
            END-IF
       *
@@ -392,7 +392,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɲ�  ����
+      *    改正追加  処理
       *****************************************************************
        2012-INSERT-SYORI-SEC       SECTION.
       *
@@ -419,12 +419,12 @@
                      OR   (FLG-SYORI       =   1)
                IF     (RYAKUSHO-YUKOSTYMD <=  RYAKUSHOWK-YUKOEDYMD2)
                  AND  (RYAKUSHO-YUKOEDYMD >=  RYAKUSHOWK-YUKOEDYMD2)
-      *            ����
+      *            更新
                    MOVE    RYAKUSHO-KEY    TO  RYAKUSHO-UP-KEY
                    MOVE    RYAKUSHOWK-YUKOEDYMD2
                                            TO  RYAKUSHO-YUKOEDYMD
                    PERFORM 20101-RYAKUSHO-UPD-SEC
-      *            �ģ��ɲ�
+      *            ＤＢ追加
                    PERFORM 20101-RYAKUSHO-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
@@ -441,7 +441,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
-      *        �ģ��ɲ�
+      *        ＤＢ追加
                PERFORM 20101-RYAKUSHO-INS-SEC
            END-IF
       *
@@ -450,7 +450,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        2020-UPDATE-SYORI-SEC       SECTION.
       *
@@ -477,7 +477,7 @@
                      OR   (FLG-SYORI       =   1)
                IF     (RYAKUSHO-YUKOSTYMD  <=  RYAKUSHOWK-YUKOSTYMD)
                  AND  (RYAKUSHO-YUKOEDYMD  >=  RYAKUSHOWK-YUKOEDYMD)
-      *            �ģ¹���
+      *            ＤＢ更新
                    MOVE    RYAKUSHO-KEY    TO  RYAKUSHO-UP-KEY
                    MOVE    RYAKUSHOWK-KEY  TO  RYAKUSHO-KEY
                    MOVE    RYAKUSHOWK-RYAKUSHO
@@ -511,7 +511,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���  ����
+      *    削除  処理
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
@@ -538,7 +538,7 @@
                      OR   (FLG-SYORI       =   1)
                IF     (RYAKUSHO-YUKOSTYMD  <=  RYAKUSHOWK-YUKOSTYMD)
                  AND  (RYAKUSHO-YUKOEDYMD  >=  RYAKUSHOWK-YUKOEDYMD)
-      *            �ģº��
+      *            ＤＢ削除
                    PERFORM 20101-RYAKUSHO-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
@@ -564,7 +564,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɲ�  ����
+      *    ＤＢ追加  処理
       *****************************************************************
        20101-RYAKUSHO-INS-SEC      SECTION.
       *
@@ -594,7 +594,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        20101-RYAKUSHO-UPD-SEC      SECTION.
       *
@@ -620,7 +620,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģº��  ����
+      *    ＤＢ削除  処理
       *****************************************************************
        20101-RYAKUSHO-DEL-SEC      SECTION.
       *
@@ -644,16 +644,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����
+      *    エラー処理
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    ���顼����
+      *    エラー出力
            MOVE    RYAKUSHOWK-REC  TO  ERR-RYAKUSHOWK-REC
            WRITE   ERR-RYAKUSHOWK-REC
            ADD     1               TO  CNT-ERR
       *
-      *    ���顼��å���������
+      *    エラーメッセージ出力
            PERFORM 20401-PLF-OUT-SEC
       *
            .
@@ -661,7 +661,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������Ͻ���
+      *    エラーメッセージ出力処理
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -674,18 +674,18 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "�����쥻����ά�Υޥ�����Ͽ�Ѥ�"
+                   MOVE  "入院レセ記載略称マスタ登録済み"
                                            TO  WRK-MSG-01
                WHEN    2
-                   MOVE  "�ɲå��顼"      TO  WRK-MSG-01
+                   MOVE  "追加エラー"      TO  WRK-MSG-01
                WHEN    3
-                   MOVE  "�������顼"      TO  WRK-MSG-01
+                   MOVE  "更新エラー"      TO  WRK-MSG-01
                WHEN    4
-                   MOVE  "������顼"      TO  WRK-MSG-01
+                   MOVE  "削除エラー"      TO  WRK-MSG-01
                WHEN    5
-                   MOVE  "�����оݤʤ�"    TO  WRK-MSG-01
+                   MOVE  "更新対象なし"    TO  WRK-MSG-01
                WHEN    6
-                   MOVE  "����оݤʤ�"    TO  WRK-MSG-01
+                   MOVE  "削除対象なし"    TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA    TO  PLF-REC
@@ -697,7 +697,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -707,7 +707,7 @@
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ���顼�쥳���ɽ��ϥե����롡�����ץ�
+      *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
            IF      STS-PLF     NOT =   ZERO
                DISPLAY "*(ORCMUP0202)* PLFFILE OPN STS[" STS-PLF "]"
@@ -726,14 +726,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -764,7 +764,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �����쥻�ץȵ���ά���ɹ��߽���
+      *     入院レセプト記載略称読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -786,7 +786,7 @@
           EXIT.
       *
       *****************************************************************
-      *    �����쥻�ץȵ���ά���ɹ�
+      *    入院レセプト記載略称読込
       *****************************************************************
        910-RYAKUSHO-READ-SEC    SECTION.
       *
@@ -805,7 +805,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -824,7 +824,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -843,7 +843,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-TBL-CLOSE-SEC           SECTION.
       *
@@ -855,7 +855,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
       *

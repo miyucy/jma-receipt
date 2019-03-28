@@ -9,7 +9,7 @@ xml_patientlst7v2res {
 	Api_Result		varchar(3);
 	Api_Result_Message	varchar(100);
        	Reskey			varchar(100);
-#-----> ´µ¼Ô¾ðÊó
+#-----> æ‚£è€…æƒ…å ±
 	Patient_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(100);
@@ -17,26 +17,26 @@ xml_patientlst7v2res {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         	};
-#---   	´ð½àÆü
+#---   	åŸºæº–æ—¥
 	Base_Date		varchar(10);
-#-----> ¥á¥â¾ðÊó
+#-----> ãƒ¡ãƒ¢æƒ…å ±
 	Patient_Memo_Information	{
-#----->	 	¿ÇÎÅ²Ê
+#----->	 	è¨ºç™‚ç§‘
         	Department_Code		varchar(2);
 		Department_Name		varchar(40);
-#----->	 	¥á¥âÆâÍÆ
+#----->	 	ãƒ¡ãƒ¢å†…å®¹
         	Patient_Memo		varchar(1000);
-#----->         ¼õÉÕ¾ðÊó
+#----->         å—ä»˜æƒ…å ±
 		Accept_Information	{
-#----->	 	    ¿ÇÎÅ²Ê
+#----->	 	    è¨ºç™‚ç§‘
         	    Department_Code		varchar(2);
 		    Department_Name		varchar(40);
-#----->             ÊÝ¸±ÁÈ¹ç¤»¾ðÊó
+#----->             ä¿é™ºçµ„åˆã›æƒ…å ±
 		    HealthInsurance_Information	{
 	 		Insurance_Combination_Number	varchar(04);
-#----->                 ÊÝ¸±ÁÈ¹ç¤»ÈóÉ½¼¨¶èÊ¬
+#----->                 ä¿é™ºçµ„åˆã›éžè¡¨ç¤ºåŒºåˆ†
 			Insurance_Nondisplay		varchar(01);
-#----->                 ÊÝ¸±¾ðÊó
+#----->                 ä¿é™ºæƒ…å ±
 			InsuranceProvider_Class			varchar(03);
             		InsuranceProvider_Number		varchar(08);
             		InsuranceProvider_WholeName		varchar(20);
@@ -48,7 +48,7 @@ xml_patientlst7v2res {
 			HealthInsuredPerson_WholeName		varchar(100);
 	            	Certificate_StartDate			varchar(10);
  	           	Certificate_ExpiredDate			varchar(10);
-#----->                 ¸øÈñ¾ðÊó
+#----->                 å…¬è²»æƒ…å ±
             		PublicInsurance_Information   {
                		 	PublicInsurance_Class		varchar(03);
                 		PublicInsurance_Name		varchar(20);

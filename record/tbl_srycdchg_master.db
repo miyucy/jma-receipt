@@ -7,7 +7,7 @@ tbl_srycdchg_master {
 	CREYMD  		varchar(8);
 	UPYMD   		varchar(8);
 	UPHMS			varchar(6);
-#-----> ¼ç¥­¡¼¹¹¿·ÍÑ
+#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨
 	UPHOSPNUM		number(2,0),virtual;
 	UPIPNSRYCD   		varchar(9),virtual;
 	UPRJNSRYCD  		varchar(9),virtual;

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG026.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ��ȯ�����ʿ��̥��������֤�����Ψ�ˡʷ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/02/12    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 後発医薬品数量シェア（置き換え率）（月報）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/02/12    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
-      *  04.08.01    NACL-����     16/09/01  �������оݳ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-森脇     16/09/01  持参薬対象外
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,21 +35,21 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥե�����
+      *    統計用ファイル
            SELECT  TOKEI-FILE          ASSIGN    TOKEIPARA
                                        ORGANIZATION    IS  INDEXED
                                        ACCESS  MODE    IS  DYNAMIC
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥե�����
+      *    統計用ファイル
        FD  TOKEI-FILE.
        01  TOKEI-REC. 
            03  TOKEI-KEY.
@@ -63,7 +63,7 @@
            03  TOKEI-TUKI-G            OCCURS 3.
                05  TOKEI-SRYSURYO      PIC 9(10)V9(05).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
@@ -76,12 +76,12 @@
       *
            COPY    "HCMG007.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TOKEI               PIC 9(01).
@@ -93,7 +93,7 @@
            03  FLG-OK                  PIC 9(01).
            03  FLG-SP                  PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                PIC 9(02).
            03  CNT-PAGE                PIC 9(03).
@@ -102,21 +102,21 @@
            03  CNT-KETA                PIC 9(02).
            03  CNT-KETA2               PIC 9(02).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX-T                   PIC 9(01).
            03  IDX-S                   PIC 9(04).
            03  IDX-D                   PIC 9(02).
            03  IDX-W                   PIC 9(04).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -128,7 +128,7 @@
            03  WRK-PARA-TAISYOKBN      PIC 9(01).
            03  WRK-PARA-NYUGAIKBN      PIC 9(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
            03  WRK-TOUKEIERR           PIC X(200).
@@ -165,7 +165,7 @@
            03  WRK-Z3                  PIC ZZ9.
            03  WRK-Z2                  PIC Z9.
       *
-      *    �ãӣ֥ǡ����Խ���
+      *    ＣＳＶデータ編集用
            03  WRK-REC             PIC X(20000).
            03  WRK-REC-LENGTH      PIC 9(05).
            03  WRK-HENSYU-AREA.
@@ -184,12 +184,12 @@
            03  WRK-HEN-DD-OT       PIC X(02).
       *
        01  WRK-CONS-AREA.
-      *    �����
+      *    コンマ
            03  WRK-KUGIRI          PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO          PIC X(01)   VALUE   X"0D".
       *
-      *    ������ե�����̾
+      *    出力先ファイル名
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
@@ -200,92 +200,92 @@
                05  WRK-TO-KIKAN-ENDYM  PIC X(06).
                05  FILLER              PIC X(04)   VALUE   ".csv".
       *
-      *    �إå�������
+      *    ヘッダー情報
        01  CSV-HEAD-01.
-           03  FILLER              PIC X(08)   VALUE   "���޶�ʬ".
+           03  FILLER              PIC X(08)   VALUE   "薬剤区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "���Ź԰٥�����".
+           03  FILLER              PIC X(14)   VALUE   "診療行為コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "̾��".
+           03  FILLER              PIC X(04)   VALUE   "名称".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��ȯ��ʬ".
+           03  FILLER              PIC X(08)   VALUE   "後発区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "������ॳ����".
+           03  FILLER              PIC X(14)   VALUE   "薬価基準コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ʿ���".
+           03  FILLER              PIC X(08)   VALUE   "規格数量".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-HEAD-TUKI-G                 OCCURS  3.
                05  CSV-HEAD-TUKI   PIC X(02)   VALUE   SPACE.
-               05  FILLER          PIC X(03)   VALUE   "��,".
-           03  FILLER              PIC X(04)   VALUE   "���".
+               05  FILLER          PIC X(03)   VALUE   "月,".
+           03  FILLER              PIC X(04)   VALUE   "合計".
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    �����ޥ���������
+      *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
       *
-      *    ���Ų�ץޥ���
+      *    診療会計マスタ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰٥ޥ���
+      *    診療行為マスタ
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ������ʬ��ޥ���
+      *    医薬品分類マスタ
        01  GECLASS-REC.
            COPY    "CPGENERICCLASS.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ������Ź԰ٷ��Ĵ���֣�
+      *    指定診療行為件数調サブ２
            COPY    "CPORCSS009.INC".
       *
-      *    ���ףãӣ����極��
+      *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -294,7 +294,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -308,7 +308,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -323,7 +323,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -362,14 +362,14 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBG026"          TO  JOB-PGID
-           MOVE    "��ȯ�����ʿ��̥��������ִ���Ψ��"
+           MOVE    "後発医薬品数量シェア（置換え率）"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -390,7 +390,7 @@
            MOVE    SGETTEMP-FULLNAMES(2)
                                        TO  RECEERR
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
            .
@@ -398,12 +398,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
            IF      WRK-PARA-SYORIYM    <   "201603"
-               MOVE    "����ǯ���ʿ������ǯ����ʹߤ���ꤷ�Ƥ�������"
+               MOVE    "診療年月は平成２８年３月以降を指定してください"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
@@ -411,7 +411,7 @@
       *
            IF    ( WRK-PARA-MEISAIKBN  NOT =   0 ) AND
                  ( WRK-PARA-MEISAIKBN  NOT =   1 )
-               MOVE    "���ٶ�ʬ������������ޤ���"
+               MOVE    "明細区分が正しくありません"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
@@ -419,7 +419,7 @@
       *
            IF    ( WRK-PARA-CSVKBN     NOT =   0 ) AND
                  ( WRK-PARA-CSVKBN     NOT =   1 )
-               MOVE    "�ãӣֶ�ʬ������������ޤ���"
+               MOVE    "ＣＳＶ区分が正しくありません"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
@@ -428,7 +428,7 @@
            IF    ( WRK-PARA-TAISYOKBN  NOT =   0 ) AND
                  ( WRK-PARA-TAISYOKBN  NOT =   1 ) AND
                  ( WRK-PARA-TAISYOKBN  NOT =   2 )
-               MOVE    "�оݶ�ʬ������������ޤ���"
+               MOVE    "対象区分が正しくありません"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
@@ -437,19 +437,19 @@
            IF    ( WRK-PARA-NYUGAIKBN  NOT =   0 ) AND
                  ( WRK-PARA-NYUGAIKBN  NOT =   1 ) AND
                  ( WRK-PARA-NYUGAIKBN  NOT =   2 )
-               MOVE    "������ʬ������������ޤ���"
+               MOVE    "入外区分が正しくありません"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-PRTYMD
       *
            MOVE    SPACE               TO  WRK-TUKI-G
-      *    �о�ǯ���Խ��ʳ���ǯ��ϣ���������
+      *    対象年月編集（開始年月は２カ月前）
            MOVE    WRK-PARA-SYORIYM    TO  WRK-SYMD(1:6)
            PERFORM VARYING IDX-T   FROM    3   BY  -1
                    UNTIL   IDX-T   =   0
@@ -467,37 +467,37 @@
       *
            MOVE    SPA-HOSPNUM         TO  WRK-TO-DATA-HOSPNUM
       *
-      *    ������
+      *    開始日
            MOVE    WRK-TUKI(1)         TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-KIKAN(1:16)
-           MOVE    "��"                TO  WRK-KIKAN(17:2)
-      *    ��λ��
+           MOVE    "〜"                TO  WRK-KIKAN(17:2)
+      *    終了日
            MOVE    WRK-TUKI(3)         TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-KIKAN(19:16)
-           MOVE    "ʬ"                TO  WRK-KIKAN(35:2)
+           MOVE    "分"                TO  WRK-KIKAN(35:2)
            MOVE    WRK-TUKI(1)         TO  WRK-TO-KIKAN-STRYM
            MOVE    WRK-TUKI(3)         TO  WRK-TO-KIKAN-ENDYM
       *
            EVALUATE    WRK-PARA-TAISYOKBN
                WHEN    0
-                   MOVE    "����"              TO  WRK-TAISYO
+                   MOVE    "全て"              TO  WRK-TAISYO
                WHEN    1
-                   MOVE    "����"              TO  WRK-TAISYO
+                   MOVE    "投薬"              TO  WRK-TAISYO
                WHEN    2
-                   MOVE    "�ߡ��ꡦ��"        TO  WRK-TAISYO
+                   MOVE    "在・投・注"        TO  WRK-TAISYO
            END-EVALUATE
       *
            EVALUATE    WRK-PARA-NYUGAIKBN
                WHEN    0
-                   MOVE    "����"              TO  WRK-TAISYO(13:4)
+                   MOVE    "入外"              TO  WRK-TAISYO(13:4)
                WHEN    1
-                   MOVE    "����"              TO  WRK-TAISYO(13:4)
+                   MOVE    "入院"              TO  WRK-TAISYO(13:4)
                WHEN    2
-                   MOVE    "����"              TO  WRK-TAISYO(13:4)
+                   MOVE    "外来"              TO  WRK-TAISYO(13:4)
            END-EVALUATE
       *
            .
@@ -505,17 +505,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �ǡ����򥯥ꥢ����
+      *    データをクリアする
            OPEN    OUTPUT              TOKEI-FILE
            CLOSE                       TOKEI-FILE
       *
            OPEN    I-O                 TOKEI-FILE
       *
-      *    ���Ź԰ٽ��׽���
+      *    診療行為集計処理
            PERFORM 220-MAIN-SRYACT-SEC
       *
            CLOSE                       TOKEI-FILE
@@ -526,12 +526,12 @@
       *
            OPEN    INPUT               TOKEI-FILE
       *
-      *    ���׽��Ͻ���
+      *    統計出力処理
            PERFORM 260-TOKEI-OUT-SEC
       *
            CLOSE                       TOKEI-FILE
       *
-      *    �ǡ����򥯥ꥢ����
+      *    データをクリアする
            OPEN    OUTPUT              TOKEI-FILE
            CLOSE                       TOKEI-FILE
       *
@@ -542,11 +542,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���Ź԰ٽ��׽���
+      *   診療行為集計処理
       *****************************************************************
        220-MAIN-SRYACT-SEC         SECTION.
       *
-      *    ���Ź԰��ɤ߹���
+      *    診療行為読み込み
            PERFORM 900-SRYACT-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-SRYACT  =   1
@@ -556,27 +556,27 @@
                     ((WRK-PARA-NYUGAIKBN   =   2 )  AND
                      (SRY-NYUGAIKBN        =  "2"))
                  EVALUATE    WRK-PARA-TAISYOKBN
-      *              ����
+      *              全て
                      WHEN    0
-      *                  ���Ų�׽��׽���
+      *                  診療会計集計処理
                          PERFORM 230-MAIN-SRYACCT-SEC
-      *              ����
+      *              投薬
                      WHEN    1
                          IF      SRY-SRYKBN(1:1)     =  "2"
-      *                      ���Ų�׽��׽���
+      *                      診療会計集計処理
                              PERFORM 230-MAIN-SRYACCT-SEC
                          END-IF
-      *              ��������������
+      *              在宅、投薬、注射
                      WHEN    2
                          IF    ( SRY-SRYKBN(1:1)     =  "2" ) OR
                                ( SRY-SRYKBN(1:1)     =  "3" ) OR
                                ( SRY-SRYKBN          =  "14" )
-      *                      ���Ų�׽��׽���
+      *                      診療会計集計処理
                              PERFORM 230-MAIN-SRYACCT-SEC
                          END-IF
                  END-EVALUATE
                END-IF
-      *        ���Ź԰��ɤ߹���
+      *        診療行為読み込み
                PERFORM 900-SRYACT-DBFETCH-SEC
            END-PERFORM
       *
@@ -589,11 +589,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�׽��׽���
+      *    診療会計集計処理
       *****************************************************************
        230-MAIN-SRYACCT-SEC           SECTION.
       *
-      *    ���Ų���ɤ߹���
+      *    診療会計読み込み
            PERFORM 900-SRYACCT-READ-SEC
            IF      FLG-SRYACCT        =   1
                GO  TO  230-MAIN-SRYACCT-EXT
@@ -607,14 +607,14 @@
       *----(04.08.01)--ADD-END-----
       *
            IF      ACCT-HKNCOMBI   NOT =   9999
-      *        �ݸ��ȹ礻�ɤ߹���
+      *        保険組合せ読み込み
                PERFORM 900-HKNCOMBI-READ-SEC
                IF      FLG-HKNCOMBI       =   1
                    GO  TO  230-MAIN-SRYACCT-EXT
                END-IF
            END-IF
       *
-      *    ��������å�
+      *    院内チェック
            MOVE   ZERO             TO  FLG-OK
            IF    ( ACCT-ZAIKBN     NOT = 1 )   AND
                  ( ACCT-ZAIKBN     NOT = 2 )
@@ -631,9 +631,9 @@
                ELSE
                    MOVE    1           TO  FLG-OK
                END-IF
-      *        ����ʬ�Τ��о�
+      *        院内分のみ対象
                IF    ( FLG-OK          =   1 )
-      *            ���Խ�����
+      *            主編集処理
                    PERFORM 240-MAIN-HEN-SEC
                END-IF
            END-IF
@@ -643,14 +643,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Խ�����
+      *    主編集処理
       *****************************************************************
        240-MAIN-HEN-SEC            SECTION.
       *
            PERFORM VARYING IDX-S   FROM    1   BY  1
                    UNTIL ( IDX-S   >   5 )
                    OR    ( SRY-SRYCD(IDX-S)    =   SPACE )
-      *        ���ޤ��оݤȤ���
+      *        薬剤を対象とする
                IF    ( SRY-SRYCD(IDX-S)(1:1)   =   "6" )
                    PERFORM 250-TOKEI-HEN-SEC 
                END-IF
@@ -661,11 +661,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    統計編集処理
       *****************************************************************
        250-TOKEI-HEN-SEC           SECTION.
       *
-      *    �оݳ�������
+      *    対象外コード
            IF    ( SRY-SRYCD(IDX-S)    =   "620754301" )   OR
                  ( SRY-SRYCD(IDX-S)    =   "620754601" )   OR
                  ( SRY-SRYCD(IDX-S)    =   "613250027" )   OR
@@ -681,29 +681,29 @@
       *
            MOVE    SRY-SRYCD(IDX-S)    TO  WRK-SRYCD
       *
-      *    �����ޥ�������
+      *    点数マスタ検索
            PERFORM 900-TNS-READ-SEC
       *
-      *    �оݳ�ʬ��
+      *    対象外分類
            IF    ( TNS-YAKKAKJNCD(1:3) =   "510" ) OR
                  ( TNS-YAKKAKJNCD(1:3) =   "520" ) OR
                  ( TNS-YAKKAKJNCD(1:3) =   "590" )
                GO  TO  250-TOKEI-HEN-EXT
            END-IF
       *
-      *    �������ʤ������оݳ�
+      *    点数がない場合は対象外
            IF      TNS-TEN             =   ZERO
                GO  TO  250-TOKEI-HEN-EXT
            END-IF
       *
-      *    ñ�̿�
+      *    単位数
            IF      TNS-SSTKIJUNCD(1)   =   ZERO
                MOVE    1                   TO  WRK-TANISU
            ELSE
                MOVE    TNS-SSTKIJUNCD(1)   TO  WRK-TANISU
            END-IF
       *
-      *    �оݷ�
+      *    対象月
            IF      SRY-SRYYM       =   WRK-TUKI(1)
                MOVE    1           TO  IDX-T
            END-IF
@@ -717,14 +717,14 @@
            PERFORM VARYING IDX-D FROM  1   BY  1
                    UNTIL   IDX-D >     31
                IF      ACCT-DAY(1 IDX-D)   NOT =   ZERO
-      *            ������ʬ��ޥ�������
+      *            医薬品分類マスタ検索
                    PERFORM 900-GECLASS-READ-SEC
                    IF      FLG-GECLASS     =   ZERO
                        MOVE    GECLASS-KOUHATU TO  WRK-KOUHATU
                    ELSE
                        MOVE    ZERO            TO  WRK-KOUHATU
                    END-IF
-      *            ���ץ��åȽ���
+      *            統計セット処理
                    PERFORM 250-TOKEI-SET-SEC
                END-IF
            END-PERFORM
@@ -734,14 +734,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ץ��åȽ���
+      *    統計セット処理
       *****************************************************************
        250-TOKEI-SET-SEC           SECTION.
       *
            COMPUTE WRK-SURYO       =   SRY-SRYSURYO(IDX-S)
                                    *   ACCT-DAY(1 IDX-D)
       *
-      *    ���ץǡ�������
+      *    統計データ検索
            INITIALIZE                  TOKEI-REC
            MOVE    TNS-YKZKBN      TO  TOKEI-YKZKBN
            MOVE    TNS-YAKKAKJNCD  TO  TOKEI-YAKKAKJNCD
@@ -770,11 +770,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���׽��Ͻ���
+      *    統計出力処理
       *****************************************************************
        260-TOKEI-OUT-SEC           SECTION.
       *
-      *    ���޶�ʬ��˰�������
+      *    薬剤区分毎に印刷する
            MOVE    ZERO            TO  CNT-PAGE
            MOVE    ZERO            TO  CNT-LINE
       *
@@ -782,24 +782,24 @@
            MOVE    ZERO            TO  WRK-KIKAKU-G
       *
            INITIALIZE                  TOKEI-REC
-      *    ���ץե������ɤ߹���
+      *    統計ファイル読み込み
            PERFORM 900-TOKEI-NEXT-SEC
       *
-      *    �����Խ�
+      *    見出編集
            PERFORM 310-PRT-HEAD-SET-SEC
            PERFORM 410-CSV-HEAD-SET-SEC
       *
            PERFORM UNTIL ( FLG-TOKEI           =   1  )
-      *        ���׵��ʽ���
+      *        統計規格処理
                PERFORM 260-TOKEI-KIKAKU-SEC
-      *        �����Խ�
+      *        明細編集
                PERFORM 320-PRT-BODY-SET-SEC
                PERFORM 420-CSV-BODY-SET-SEC
-      *        ���ץե������ɤ߹���
+      *        統計ファイル読み込み
                PERFORM 900-TOKEI-NEXT-SEC
            END-PERFORM
       *
-      *    ����Խ�
+      *    割合編集
            PERFORM 320-PRT-WARIAI-SET-SEC
       *
              .
@@ -807,7 +807,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���׵��ʽ���
+      *    統計規格処理
       *****************************************************************
        260-TOKEI-KIKAKU-SEC        SECTION.
       *
@@ -815,17 +815,17 @@
       *
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   3
-      *        ñ�̿���
+      *        単位数量
                COMPUTE WRK-KIKAKU(IDX-T)   =   TOKEI-SRYSURYO(IDX-T)
                                            /   TOKEI-TANISU
                COMPUTE WRK-KIKAKU(4)       =   WRK-KIKAKU(4)
                                            +   WRK-KIKAKU(IDX-T)
-      *        ����
+      *        全体
                COMPUTE WRK-KBN-ALL(IDX-T)
                    =   WRK-KBN-ALL(IDX-T)  +   WRK-KIKAKU(IDX-T)
                COMPUTE WRK-KBN-ALL(4)
                    =   WRK-KBN-ALL(4)      +   WRK-KIKAKU(IDX-T)
-      *        ��ȯ�ʤȸ�ȯ��
+      *        先発品と後発品
                IF    ( TOKEI-KOUHATU   =   2 )   OR
                      ( TOKEI-KOUHATU   =   3 )
                     COMPUTE WRK-KBN-MIX(IDX-T)
@@ -833,7 +833,7 @@
                    COMPUTE WRK-KBN-MIX(4)
                        =   WRK-KBN-MIX(4)      +   WRK-KIKAKU(IDX-T)
                END-IF
-      *        ��ȯ�ʤΤ�
+      *        後発品のみ
                IF      TOKEI-KOUHATU   =   3
                    COMPUTE WRK-KBN-KOU(IDX-T)
                        =   WRK-KBN-KOU(IDX-T)  +   WRK-KIKAKU(IDX-T)
@@ -847,7 +847,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ��������Ф�
+      *    帳票編集処理見出し
       *****************************************************************
        310-PRT-HEAD-SET-SEC        SECTION.
       *
@@ -874,7 +874,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ���������
+      *    帳票編集処理明細
       *****************************************************************
        320-PRT-BODY-SET-SEC        SECTION.
       *
@@ -883,9 +883,9 @@
            END-IF
       *
            IF      CNT-LINE        =   51
-      *        ��������
+      *        印刷処理
                PERFORM 330-PRINT-OUT-SEC
-      *        �����Խ�
+      *        見出編集
                PERFORM 310-PRT-HEAD-SET-SEC
            END-IF
       *
@@ -893,17 +893,17 @@
       *
            EVALUATE    TOKEI-YKZKBN
                WHEN    "1"
-                   MOVE    "��"        TO  HCMG007-YKZKBN(CNT-LINE)
+                   MOVE    "内"        TO  HCMG007-YKZKBN(CNT-LINE)
                WHEN    "2"
-                   MOVE    "¾"        TO  HCMG007-YKZKBN(CNT-LINE)
+                   MOVE    "他"        TO  HCMG007-YKZKBN(CNT-LINE)
                WHEN    "4"
-                   MOVE    "��"        TO  HCMG007-YKZKBN(CNT-LINE)
+                   MOVE    "注"        TO  HCMG007-YKZKBN(CNT-LINE)
                WHEN    "6"
-                   MOVE    "��"        TO  HCMG007-YKZKBN(CNT-LINE)
+                   MOVE    "外"        TO  HCMG007-YKZKBN(CNT-LINE)
                WHEN    "8"
-                   MOVE    "��"        TO  HCMG007-YKZKBN(CNT-LINE)
+                   MOVE    "歯"        TO  HCMG007-YKZKBN(CNT-LINE)
                WHEN    "9"
-                   MOVE    "��"        TO  HCMG007-YKZKBN(CNT-LINE)
+                   MOVE    "特"        TO  HCMG007-YKZKBN(CNT-LINE)
            END-EVALUATE
       *
            MOVE    TOKEI-SRYCD     TO  HCMG007-SRYCD(CNT-LINE)
@@ -926,20 +926,20 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ��������
+      *    帳票編集処理割合
       *****************************************************************
        320-PRT-WARIAI-SET-SEC      SECTION.
       *
            IF      WRK-PARA-MEISAIKBN  =   1
-      *        ��������
+      *        印刷処理
                PERFORM 330-PRINT-OUT-SEC
-      *        �����Խ�
+      *        見出編集
                PERFORM 310-PRT-HEAD-SET-SEC
            END-IF
       *
-      *    ����
+      *    全体
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
-           MOVE    "�������ʤε���ñ�̿��̡��������������ġʣ���"
+           MOVE    "全医薬品の規格単位数量　　　　　　　…（１）"
                                        TO  HCMG007-NAME(CNT-LINE)
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   4
@@ -947,12 +947,12 @@
                MOVE    WRK-Z7      TO  HCMG007-KIKAKU(CNT-LINE IDX-T)
            END-PERFORM
       *
-      *    ��ȯ�ʤȸ�ȯ��
+      *    先発品と後発品
            COMPUTE CNT-LINE    =   CNT-LINE    +   2
-           MOVE    "��ȯ�����ʤ�����ȯ������"
+           MOVE    "後発医薬品あり先発医薬品"
                                        TO  HCMG007-NAME(CNT-LINE)
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
-           MOVE    "�ڤӸ�ȯ�����ʤε���ñ�̿��̡��������ġʣ���"
+           MOVE    "及び後発医薬品の規格単位数量　　　　…（２）"
                                        TO  HCMG007-NAME(CNT-LINE)
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   4
@@ -960,9 +960,9 @@
                MOVE    WRK-Z7      TO  HCMG007-KIKAKU(CNT-LINE IDX-T)
            END-PERFORM
       *
-      *    ��ȯ��
+      *    後発品
            COMPUTE CNT-LINE    =   CNT-LINE    +   2
-           MOVE    "��ȯ�����ʤε���ñ�̿��̡������������ġʣ���"
+           MOVE    "後発医薬品の規格単位数量　　　　　　…（３）"
                                        TO  HCMG007-NAME(CNT-LINE)
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   4
@@ -970,9 +970,9 @@
                MOVE    WRK-Z7      TO  HCMG007-KIKAKU(CNT-LINE IDX-T)
            END-PERFORM
       *
-      *    �ִ���Ψ
+      *    置換え率
            COMPUTE CNT-LINE    =   CNT-LINE    +   2
-           MOVE    "���åȥ����ͤγ��ʣ������ˡʡ�ˡ��ġʣ���"
+           MOVE    "カットオフ値の割合（２／１）（％）　…（４）"
                                        TO  HCMG007-NAME(CNT-LINE)
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   4
@@ -987,9 +987,9 @@
                MOVE    WRK-Z7      TO  HCMG007-KIKAKU(CNT-LINE IDX-T)
            END-PERFORM
       *
-      *    �ִ���Ψ
+      *    置換え率
            COMPUTE CNT-LINE    =   CNT-LINE    +   1
-           MOVE    "��ȯ�����ʤγ�硡�ʣ������ˡʡ�ˡ��ġʣ���"
+           MOVE    "後発医薬品の割合　（３／２）（％）　…（５）"
                                        TO  HCMG007-NAME(CNT-LINE)
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   4
@@ -1004,14 +1004,14 @@
                MOVE    WRK-Z7      TO  HCMG007-KIKAKU(CNT-LINE IDX-T)
            END-PERFORM
       *
-      *    ��������
+      *    印刷処理
            PERFORM 330-PRINT-OUT-SEC
       *
            .
        320-PRT-WARIAI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        330-PRINT-OUT-SEC           SECTION.
       *
@@ -1031,7 +1031,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCMG007.red"       TO  SPRT-PRTID
-           MOVE    "��ȯ�����ʿ��̥��������ִ���Ψ��"
+           MOVE    "後発医薬品数量シェア（置換え率）"
                                        TO  SPRT-TITLE
            MOVE    HCMG007             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1052,7 +1052,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡ʣȣţ��ĥ쥳���ɡ��Խ�����
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
       *****************************************************************
        410-CSV-HEAD-SET-SEC        SECTION.
       *
@@ -1061,7 +1061,7 @@
            END-IF
       *
            INITIALIZE                  WRK-REC
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
                    INTO                WRK-REC
@@ -1073,7 +1073,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡ʥǡ����쥳���ɡ��Խ�����
+      *    ＣＳＶ（データレコード）編集処理
       *****************************************************************
        420-CSV-BODY-SET-SEC        SECTION.
       *
@@ -1084,46 +1084,46 @@
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    ���޶�ʬ
+      *    薬剤区分
            MOVE    TOKEI-YKZKBN    TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 800-MOJI-HENSYU-SEC
       *
-      *    ���Ź԰٥�����
+      *    診療行為コード
            MOVE    TOKEI-SRYCD     TO  WRK-DATA
            MOVE    9               TO  WRK-NAGASA
            PERFORM 800-MOJI-HENSYU-SEC
       *
-      *    ����̾��
+      *    薬剤名称
            MOVE    TOKEI-NAME      TO  WRK-DATA
            MOVE    50              TO  WRK-NAGASA
            PERFORM 800-MOJI-HENSYU-SEC
       *
-      *    ��ȯ��ʬ
+      *    後発区分
            MOVE    TOKEI-KOUHATU   TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 800-MOJI-HENSYU-SEC
       *
-      *    ������ॳ����
+      *    薬価基準コード
            MOVE    TOKEI-YAKKAKJNCD    TO  WRK-DATA
            MOVE    12              TO  WRK-NAGASA
            PERFORM 800-MOJI-HENSYU-SEC
       *
-      *    ����ñ��
+      *    規格単位
            MOVE    TOKEI-TANISU    TO  WRK-DATA
            MOVE    4               TO  WRK-NAGASA
            PERFORM 800-MOJI-HENSYU-SEC
       *
-      *    ����ñ�̿���
+      *    規格単位数量
            PERFORM VARYING IDX-T   FROM    1   BY  1
                    UNTIL   IDX-T   >   4
-      *        ñ�̿���
+      *        単位数量
                MOVE    WRK-KIKAKU(IDX-T)   TO  WRK-DATA
                MOVE    7               TO  WRK-NAGASA
                PERFORM 800-MOJI-HENSYU-SEC
            END-PERFORM
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1137,7 +1137,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ףãӣֽ��Ͻ���
+      *    統計ＣＳＶ出力処理
       *****************************************************************
        430-TOUKEICSV-SEC           SECTION.
       *
@@ -1160,7 +1160,7 @@
            MOVE    WRK-TO-DATA         TO  STOUKEICSV-TO-DATA
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC             TO  STOUKEICSV-CSVDATA
-           MOVE    "��ȯ�����ʿ��̥��������ִ���Ψ�ˣãӣֺ���"
+           MOVE    "後発医薬品数量シェア（置換え率）ＣＳＶ作成"
                                        TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"         USING
@@ -1169,7 +1169,7 @@
            IF      STOUKEICSV-RETURN   =   ZERO
                CONTINUE
            ELSE
-               MOVE    "���ףãӣ֣ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
                                       TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -1180,7 +1180,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -1193,13 +1193,13 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3
                                    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "　"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        800-MOJI-HENSYU-SEC        SECTION.
       *
@@ -1236,7 +1236,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1250,7 +1250,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1272,7 +1272,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �۾ｪλ����
+      *    異常終了処理
       *****************************************************************
        500-COBABORT-SEC          SECTION.
       *
@@ -1288,18 +1288,18 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    TOKEIPARA       TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
            IF      CNT-TOKEI       =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1307,7 +1307,7 @@ grpsys                                     SPA-AREA
            DISPLAY "*** ORCBG026 IN "      CNT-TOKEI
            DISPLAY "*** ORCBG026 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1327,7 +1327,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���ץե������ɹ�
+      *    統計ファイル読込
       *****************************************************************
        900-TOKEI-READ-SEC          SECTION.
       *
@@ -1343,7 +1343,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���ץե�������ɹ�
+      *    統計ファイル順読込
       *****************************************************************
        900-TOKEI-NEXT-SEC          SECTION.
       *
@@ -1359,11 +1359,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ�������
+      *    診療行為マスタ検索
       *****************************************************************
        900-SRYACT-DBSELECT-SEC     SECTION.
       *
-      *    �оݿ���ǯ��Ǹ���
+      *    対象診療年月で検索
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    WRK-TUKI(1)     TO  SRY-SRYYM
@@ -1385,7 +1385,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ�������
+      *    診療行為マスタ検索
       *****************************************************************
        900-SRYACT-DBFETCH-SEC      SECTION.
       *
@@ -1404,11 +1404,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ�������
+      *    診療会計マスタ検索
       *****************************************************************
        900-SRYACCT-READ-SEC        SECTION.
       *
-      *    �����ο��Ų�ץǡ����򸡺�
+      *    該当の診療会計データを検索
            INITIALIZE                  SRYACCT-REC
            MOVE    SPA-HOSPNUM     TO  ACCT-HOSPNUM
            MOVE    SRY-NYUGAIKBN   TO  ACCT-NYUGAIKBN
@@ -1437,11 +1437,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻����
+      *    保険組合せ検索
       *****************************************************************
        900-HKNCOMBI-READ-SEC        SECTION.
       *
-      *    �����ο��Ų�ץǡ����򸡺�
+      *    該当の診療会計データを検索
            INITIALIZE                  HKNCOMBI-REC
            MOVE    ACCT-HOSPNUM    TO  COMB-HOSPNUM
            MOVE    ACCT-PTID       TO  COMB-PTID
@@ -1473,7 +1473,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ�������
+      *    点数マスタ検索
       *****************************************************************
        900-TNS-READ-SEC            SECTION.
       *
@@ -1487,10 +1487,10 @@ grpsys                                     SPA-AREA
            MOVE    TNS-SRYCD           TO  TTNS-CHK-SRYCD
            MOVE    ORC-DBYMD           TO  TTNS-CHK-YMD
       *
-      *    �����ޥ��������������å�
+      *    点数マスタ退避ワークチェック
            PERFORM 9001-TTNS-CHK-SEC
       *
-      *    ��������¸�ߤ��ʤ����ϣģ¤򸡺�
+      *    退避ワークに存在しない場合はＤＢを検索
            IF      TTNS-FLG        =   ZERO
                INITIALIZE                  TNS-TENSU-REC
                MOVE    TTNS-CHK-SRYCD  TO  TNS-SRYCD
@@ -1504,7 +1504,7 @@ grpsys                                     SPA-AREA
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                    MOVE    ZERO            TO  FLG-TENSU
-      *            �����ޥ������������Խ�����
+      *            点数マスタ退避ワークに編集する
                    PERFORM 9001-TTNS-HEN-SEC
                ELSE
                    INITIALIZE                  TNS-TENSU-REC
@@ -1521,7 +1521,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ��������������å�����
+      *    点数マスタ退避ワークチェック処理
       *****************************************************************
        9001-TTNS-CHK-SEC           SECTION.
       *
@@ -1547,7 +1547,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����������Խ�����
+      *    点数マスタ退避ワーク編集処理
       *****************************************************************
        9001-TTNS-HEN-SEC           SECTION.
       *
@@ -1564,7 +1564,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ��ޥ�������
+      *    医薬品分類マスタ検索
       *****************************************************************
        900-GECLASS-READ-SEC        SECTION.
       *
@@ -1596,7 +1596,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
@@ -1614,7 +1614,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -1629,7 +1629,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ạ̃ϣӣŽ���
+      *    ＤＢＣＬＯＳＥ処理
       *****************************************************************
        900-DBCLOSECURSOR-SEC       SECTION.
       *
@@ -1644,7 +1644,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1668,7 +1668,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

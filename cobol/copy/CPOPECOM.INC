@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,51 +16,51 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¼ê½ÑÎò¥ì¥»¥×¥È¥³¥á¥ó¥È¥Þ¥¹¥¿¡¼       (CPOPECOM.INC)
+      *  æ‰‹è¡“æ­´ãƒ¬ã‚»ãƒ—ãƒˆã‚³ãƒ¡ãƒ³ãƒˆãƒžã‚¹ã‚¿ãƒ¼       (CPOPECOM.INC)
       *****************************************************************
-      *  ½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
       *01  OPECOM-REC.
            03  OPECOM-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  OPECOM-HOSPNUM        PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  OPECOM-PTID          PIC 9(10).
-      *¼ê½ÑÇ¯·îÆü
+      *æ‰‹è¡“å¹´æœˆæ—¥
                05  OPECOM-SRYYMD        PIC X(08).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  OPECOM-SRYCD         PIC X(09).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  OPECOM-RENNUM        PIC 9(03).
-      *¼ê½ÑÌ¾
+      *æ‰‹è¡“å
            03  OPECOM-OPENAME           PIC X(100).
-      *¥³¥á¥ó¥È
+      *ã‚³ãƒ¡ãƒ³ãƒˆ
            03  OPECOM-OPECOMMENT        PIC X(100).
-      *Æþ³°¶èÊ¬¡Ê£±¡§Æþ±¡¡¡£²¡§Æþ±¡³°¡Ë
+      *å…¥å¤–åŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢ã€€ï¼’ï¼šå…¥é™¢å¤–ï¼‰
            03  OPECOM-NYUGAIKBN         PIC X(01).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  OPECOM-SRYKA             PIC X(02).
-      *ÊÝ¸±ÈÖ¹æ
+      *ä¿é™ºç•ªå·
            03  OPECOM-HKNNUM            PIC X(03).
-      *Ï«ºÒÊÝ¸±¶èÊ¬¡Ê£±¡§Ã»´üµëÉÕ¡¡£²¡§½ýÉÂÇ¯¶â¡¡£³¡§¥¢¥Õ¥¿¡¼¥±¥¢¡Ë
+      *åŠ´ç½ä¿é™ºåŒºåˆ†ï¼ˆï¼‘ï¼šçŸ­æœŸçµ¦ä»˜ã€€ï¼’ï¼šå‚·ç—…å¹´é‡‘ã€€ï¼“ï¼šã‚¢ãƒ•ã‚¿ãƒ¼ã‚±ã‚¢ï¼‰
            03  OPECOM-HKNKBN            PIC X(01).
-      *ÊÝ¸±£É£Ä
+      *ä¿é™ºï¼©ï¼¤
            03  OPECOM-HKNID             PIC 9(10).
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
            03  OPECOM-HKNCOMBI          PIC 9(04).
-      *Í­¸ú³«»ÏÇ¯·î
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆ
            03  OPECOM-TEKSTYM           PIC X(06).
-      *Í­¸ú½ªÎ»Ç¯·î
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆ
            03  OPECOM-TEKEDYM           PIC X(06).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  OPECOM-TERMID            PIC X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  OPECOM-OPID              PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  OPECOM-CREYMD            PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  OPECOM-UPYMD             PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  OPECOM-UPHMS             PIC X(06).

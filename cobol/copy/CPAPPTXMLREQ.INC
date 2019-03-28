@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥꥯ������ͽ����󡡡�         COPY (CPAPPTXMLREQ.INC)
+      *    ＡＰＩリクエスト予約情報　　         COPY (CPAPPTXMLREQ.INC)
       ******************************************************************
         01  XML-APPOINTREQ.
             02  APNTREQ-OBJECT         PIC X(36).
             02  APNTREQ-MODE           PIC S9(9)   BINARY.
             02  APNTREQ-APPOINT.
-      *       �����ֹ�
+      *       患者番号
               03  APNTREQ-PATIENTID    PIC X(20).
-      *       ͽ���̾
+      *       予約氏名
               03  APNTREQ-APPOINT-NAME     PIC X(100).
-      *       ͽ�󥫥ʻ�̾
+      *       予約カナ氏名
               03  APNTREQ-APPOINT-KANANAME PIC X(100).
-      *       ͽ����
+      *       予約日
               03  APNTREQ-APPOINT-DATE PIC X(10).
-      *       ͽ�����
+      *       予約時間
               03  APNTREQ-APPOINT-TIME PIC X(8).
-      *       ͽ��ɣ�
+      *       予約ＩＤ
               03  APNTREQ-APPOINT-ID   PIC X(5).
-      *       ���Ų�
+      *       診療科
               03  APNTREQ-APPOINT-DEP-CODE PIC X(2).
-      *       �ɥ�����������
+      *       ドクターコード
               03  APNTREQ-APPOINT-DR-CODE  PIC X(5).
-      *       �������ƶ�ʬ������
+      *       診療内容区分コード
               03  APNTREQ-APPOINT-DEP-INFO PIC X(2).
-      *       ͽ�����ƥ�����
+      *       予約内容コード
               03  APNTREQ-APPOINT-INFO PIC X(2).
-      *       ͽ����
+      *       予約メモ
               03  APNTREQ-APPOINT-MEMO PIC X(100).

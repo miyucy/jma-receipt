@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,29 +16,29 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´Ç¸î¿¦°÷¿ôÅùÆþ±¡´ðËÜÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
+      *    çœ‹è­·è·å“¡æ•°ç­‰å…¥é™¢åŸºæœ¬æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–
       *                                COPY (CPORCSKANGOCHG.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSKANGOCHG)
-      *    ÀßÄê¹àÌÜ
-      *      Æþ±¡ÎÁ¥³¡¼¥É
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSKANGOCHG)
+      *    è¨­å®šé …ç›®
+      *      å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSKANGOCHG-AREA.
       *
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-KANGOCHG-SANTEIYM              PIC  X(06).
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
            03  LNK-KANGOCHG-BTU-NUM               PIC  X(02).
-      *Æþ±¡ÎÁ¥³¡¼¥É
+      *å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
            03  LNK-KANGOCHG-SRYCD                 PIC  X(09).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-KANGOCHG-HENKYAKU-AREA.
-      *·Ð²áÁ¼ÃÖÆþ±¡ÎÁ¥³¡¼¥É
+      *çµŒéŽæŽªç½®å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
               05  LNK-KANGOCHG-CHGSRYCD           PIC  X(09).
-      *Éüµ¢¥³¡¼¥É¡Ê£°¡§´Ç¸î¿¦°÷Æþ±¡ÎÁÊÖµÑ¤¢¤ê¡¡£±¡§´Ç¸î¿¦°÷Æþ±¡ÎÁÊÖµÑ¤Ê¤·¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼ï¼šçœ‹è­·è·å“¡å…¥é™¢æ–™è¿”å´ã‚ã‚Šã€€ï¼‘ï¼šçœ‹è­·è·å“¡å…¥é™¢æ–™è¿”å´ãªã—ï¼‰
            03  LNK-KANGOCHG-RC                    PIC S9(9) BINARY.
       *

@@ -1,16 +1,16 @@
 --                                    --
--- ��Ǽ�ơ��֥���ѹ�                 --
+-- 収納テーブルの変更                 --
 --                                    --
--- ���ܤ��ɲ�                         --
---   �ޤȤ�������ɼ�ֹ�  GRP_DENPNUM  --
---   �ޤȤ�����Ϣ��      GRP_RENNUM   --
---   �ޤȤ����Ϻ���      GRP_SGKMONEY --
+-- 項目の追加                         --
+--   まとめ入力伝票番号  GRP_DENPNUM  --
+--   まとめ入力連番      GRP_RENNUM   --
+--   まとめ入力差額      GRP_SGKMONEY --
 --                                    --
 --                                    --
 -- Create Date : 2004/07/04           --
 --                                    --
 
--- TBL_SYUNOUWK ����                  --
+-- TBL_SYUNOUWK 作成                  --
 
 create table TBL_SYUNOUWK (
 HOSPID				char(24)	not null,
@@ -270,16 +270,16 @@ constraint TBL_SYUNOUWK_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
 
--- TBL_SYUNOU �� TBL_SYUNOUWK   --
+-- TBL_SYUNOU → TBL_SYUNOUWK   --
 
 insert into TBL_SYUNOUWK
 select * from TBL_SYUNOU;
 
--- TBL_SYUNOU ���               --
+-- TBL_SYUNOU 削除               --
 
 drop table TBL_SYUNOU;
 
--- TBL_SYUNOU ����               --
+-- TBL_SYUNOU 作成               --
 
 create table TBL_SYUNOU (
 HOSPID				char(24)	not null,
@@ -541,10 +541,10 @@ UPHMS				char(6),
 constraint TBL_SYUNOU_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
--- index ����
+-- index 作成
 create index idx_syunou_ptid on tbl_syunou (ptid);
 
--- TBL_SYUNOUWK �� TBL_SYUNOU   --
+-- TBL_SYUNOUWK → TBL_SYUNOU   --
 
 insert into TBL_SYUNOU
 (HOSPID,
@@ -923,6 +923,6 @@ TERMID,OPID,CREYMD,UPYMD,UPHMS from TBL_SYUNOUWK;
 
 UPDATE TBL_SYUNOU SET DRCD = '1' || DRCD WHERE DRCD <> ' ';
 
--- TBL_SYUNOUWK ���             --
+-- TBL_SYUNOUWK 削除             --
 
 drop table TBL_SYUNOUWK;  

@@ -1,15 +1,15 @@
 This Text Character is EUC-JP Code.
 
-É¬Í×¤Ê¥Ñ¥Ã¥±¡¼¥¸°ìÍ÷
+å¿…è¦ãªãƒ‘ãƒƒã‚±ãƒ¼ã‚¸ä¸€è¦§
 
-woodyÈÇ
+woodyç‰ˆ
   ruby
   libnkf-ruby
   libxml-parser-ruby
   libuconv-ruby
 
 
-sargeÈÇ
+sargeç‰ˆ
   ruby
   ruby1.8
   libxml-parser-ruby1.8

@@ -1,24 +1,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBMIGCHK.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���åȥ��å׽���
-      *  ����ݡ��ͥ��̾  : �����å��ޥ�������
-      *                    : �����å��ޥ���ʬΥ��ȼ���桼����������
-      *                    : �������ƤˤĤ��Ƥϥ桼�����ѤΥơ��֥�Ȥ���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/10/31    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : セットアップ処理
+      *  コンポーネント名  : チェックマスタ更新
+      *                    : チェックマスタ分離に伴いユーザーが訂正
+      *                    : した内容についてはユーザー用のテーブルとする
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/10/31    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PRF-FILE        ASSIGN
                                    ASS-PRF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -27,29 +27,29 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PRF-FILE.
        01  PRF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PRF                 PIC X(256).
        01  STS-AREA.
            03  STS-PRF                 PIC X(02).
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-CHKM                PIC 9(01).
            03  FLG-CHKU                PIC 9(01).
            03  FLG-CHKO                PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-CHKO                PIC 9(06).
            03  CNT-CHKM                PIC 9(06).
            03  CNT-PRF                 PIC 9(06).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-HOSPNUM    PIC 9(02).
@@ -65,14 +65,14 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-PRFCD               PIC 9(02).
-      *    ��ӥơ��֥�
+      *    比較テーブル
        01  TBL-COMP-AREA.
            03  TBL-COMP                PIC 9(01) OCCURS    4.
-      *    �ץ롼���Խ��ΰ�
+      *    プルーフ編集領域
        01  PRF-AREA.
            03  PRF-HEADER1.
                05  FILLER              PIC X(38) VALUE
-                   "�����å��ޥ����ܹԽ�����ORCBMIGCHK��".
+                   "チェックマスタ移行処理【ORCBMIGCHK】".
                05  PRF-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE "/".
                05  PRF-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -84,27 +84,27 @@
                05  FILLER              PIC X(01) VALUE "]".
                05  PRF-HOSPNAME        PIC X(120) VALUE SPACE.
            03  PRF-HEADER3.
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "処理".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(12) VALUE "�����å���ʬ".
+               05  FILLER              PIC X(12) VALUE "チェック区分".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "���ť�����".
+               05  FILLER              PIC X(10) VALUE "診療コード".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "����ǯ����".
+               05  FILLER              PIC X(10) VALUE "開始年月日".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "��λǯ����".
+               05  FILLER              PIC X(10) VALUE "終了年月日".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "�����ɶ�ʬ".
+               05  FILLER              PIC X(10) VALUE "コード区分".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "Ŭ�ѥ�����".
+               05  FILLER              PIC X(10) VALUE "適用コード".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(20) VALUE
-                               "�桼�����ꥨ�顼����".
+                               "ユーザ設定エラー処理".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(18) VALUE
-                               "ɸ���󶡥��顼����".
+                               "標準提供エラー処理".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "内容".
            03  PRF-DETAIL.
                05  PRF-COMMAND         PIC X(20).
                05  PRF-CHKKBN          PIC X(01).
@@ -118,46 +118,46 @@
                05  PRF-COMMENT         PIC X(200).
        01  CONST-AREA.
            03  CONST-COMM1             PIC X(44) VALUE
-           "�桼�����ꥨ�顼���������Ƥ��ѹ�����ޤ�����".
+           "ユーザ設定エラー処理の内容に変更されました。".
            03  CONST-COMM2.
                05  CONST-COMM2-1       PIC X(42) VALUE
-               "�桼�����ꥨ�顼���������Ƥ��ɲä���ޤ���".
+               "ユーザ設定エラー処理の内容を追加されました".
                05  CONST-COMM2-2       PIC X(28) VALUE
-               "��ɸ���󶡤ˤϤ���ޤ���ˡ�".
+               "（標準提供にはありません）。".
       *****************************************************************
-      *    ���֥ץ������
+      *    サブプロ用定義
       *****************************************************************
-      *    �ޥ������ռ���
+      *    マシン日付取得
            COPY    "CPORCSMCNDATE.INC".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
       *     COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
-      *    �����å��ܹ����ơ��֥�
+      *    チェック移行前テーブル
        01  CHKO-REC.
            COPY    "CPCHK.INC"         REPLACING
                                        //CHK-// BY //CHKO-//.
-      *    �����å��ޥ������ơ��֥�
+      *    チェックマスターテーブル
        01  CHKM-REC.
            COPY    "CPCHK.INC"         REPLACING
                                        //CHK-// BY //CHKM-//.
-      *    �����å��桼�����ơ��֥�
+      *    チェックユーザーテーブル
        01  CHKU-REC.
            COPY    "CPCHK.INC"         REPLACING
                                        //CHK-// BY //CHKU-//.
-      *    �����å����
+      *    チェックワーク
        01  CHKW-REC.
            COPY    "CPCHK.INC"         REPLACING
                                        //CHK-// BY //CHKW-//.
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
@@ -166,7 +166,7 @@
        PROCEDURE                   DIVISION
                                    USING   COMMAND-PARAM.
       ****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
            PERFORM 100-INIT-SEC
@@ -175,10 +175,10 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-           DISPLAY "*(ORCBMIGCHK)* �����å��ܹԽ�������"
+           DISPLAY "*(ORCBMIGCHK)* チェック移行処理開始"
            MOVE    ZERO                TO  FLG-AREA
            MOVE    ZERO                TO  CNT-AREA
            INITIALIZE  WRK-AREA
@@ -230,14 +230,14 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
            INITIALIZE  PRF-DETAIL
-      *    �ޥ������ơ��֥�¸�߳�ǧ
+      *    マスターテーブル存在確認
            PERFORM 900-CHKM-READ-SEC
            IF      FLG-CHKM            =   ZERO
-      *        ɸ��ȹ�������ӡ����ξ��桼�����ơ��֥���ɲ�
+      *        標準と項目別比較、相違の場合ユーザーテーブルに追加
                PERFORM 220-COMPARE-SEC
                IF      TBL-COMP-AREA       =   ZERO
                    MOVE    ZERO                TO  WRK-PRFCD
@@ -250,7 +250,7 @@
                    END-IF
                END-IF
            ELSE
-      *        �ޥ������ˤʤ����桼�����ơ��֥���ɲ�
+      *        マスターになし、ユーザーテーブルに追加
                MOVE    CHKO-REC            TO  CHKW-REC
                MOVE    "2"                 TO  CHKW-DATAKBN
                PERFORM 210-CHKU-INSERT-SEC
@@ -261,15 +261,15 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��桼�����ơ��֥��ɲ�
+      *    チェックユーザーテーブル追加
       *****************************************************************
        210-CHKU-INSERT-SEC         SECTION.
            PERFORM 900-CHKU-READ-SEC
            IF      FLG-CHKU            =   ZERO
-      *        �桼�����ơ��֥��ͭ��
+      *        ユーザーテーブルに有る
                MOVE    ZERO                TO  WRK-PRFCD
            ELSE
-      *        �������ϸ��ΤޤޤȤ���
+      *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
       *                                        CHGW-UPYMD
       *        MOVE    LNK-MNTHMS          TO  CHGW-UPHMS
@@ -288,47 +288,47 @@
        210-CHKU-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������
+      *    項目別比較
       *****************************************************************
        220-COMPARE-SEC             SECTION.
            MOVE    ZERO                TO  TBL-COMP-AREA
-      *�����å���ʬ
-      *���ť�����
-      *���롼���ֹ��̤���ѡ�
-      *ͭ������ǯ����
-      *ͭ����λǯ����
-      *�����ɶ�ʬ
-      *Ŭ�ѥ�����
+      *チェック区分
+      *診療コード
+      *グループ番号（未使用）
+      *有効開始年月日
+      *有効終了年月日
+      *コード区分
+      *適用コード
       *
-      *������ʬ
+      *入外区分
            IF      CHKO-NYUGAIKBN  NOT =   CHKM-NYUGAIKBN
                MOVE    1                   TO  TBL-COMP (1)
            END-IF
-      *Ʊ�����������ʬ��1:�����������Ƚ���Ԥ���
+      *同一入外制御区分（1:入院・外来の判定を行う）
            IF      CHKO-NYUGAIBNDKBN
                                    NOT =   CHKM-NYUGAIBNDKBN
                MOVE    1                   TO  TBL-COMP (2)
            END-IF
-      *������ʬ��1:�������˴����������å���2:����������å���
+      *処理区分（1:慢性疼痛管理料チェック、2:初診料チェック）
            IF      CHKO-SYORIKBN   NOT =   CHKM-SYORIKBN
                MOVE    1                   TO  TBL-COMP (3)
            END-IF
-      *���顼������0:���顼��9:���顼��8:�����ʤ���
+      *エラー処理（0:エラー、9:エラー、8:処理なし）
            IF      CHKO-CHKERR     NOT =   CHKM-CHKERR
                MOVE    1                   TO  TBL-COMP (4)
            END-IF
-      *�ǡ�����ʬ��1:�ޥ����󶡡�2:�桼����Ͽ��
-      *Ϣ�ֹ�ʲ���ɽ����
+      *データ区分（1:マスタ提供、2:ユーザ登録）
+      *連番号（画面表示）
            .
        220-COMPARE-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        290-PRF-SEC                 SECTION.
            EVALUATE    WRK-PRFCD
                WHEN    1
-                   MOVE    "�ɲ�"              TO  PRF-COMMAND
+                   MOVE    "追加"              TO  PRF-COMMAND
                    MOVE    CONST-COMM2         TO  PRF-COMMENT
                    MOVE    CHKW-CHKKBN         TO  PRF-CHKKBN
                    MOVE    CHKW-SRYCD          TO  PRF-SRYCD
@@ -338,7 +338,7 @@
                    MOVE    CHKW-CD             TO  PRF-CD
                    MOVE    CHKW-CHKERR         TO  PRF-CHKERRU
                WHEN    2
-                   MOVE    "�ѹ�"              TO  PRF-COMMAND
+                   MOVE    "変更"              TO  PRF-COMMAND
                    MOVE    CONST-COMM1         TO  PRF-COMMENT
                    MOVE    CHKW-CHKKBN         TO  PRF-CHKKBN
                    MOVE    CHKW-SRYCD          TO  PRF-SRYCD
@@ -349,7 +349,7 @@
                    MOVE    CHKW-CHKERR         TO  PRF-CHKERRU
                    MOVE    CHKM-CHKERR         TO  PRF-CHKERRM
                WHEN    91
-                   MOVE    "�ɲå��顼"        TO  PRF-COMMAND
+                   MOVE    "追加エラー"        TO  PRF-COMMAND
                    MOVE    CHKW-CHKKBN         TO  PRF-CHKKBN
                    MOVE    CHKW-SRYCD          TO  PRF-SRYCD
                    MOVE    CHKW-YUKOSTYMD      TO  PRF-YUKOSTYMD
@@ -365,7 +365,7 @@
        290-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        2901-PRF-SEC                SECTION.
            IF      CNT-PRF             =   ZERO
@@ -406,7 +406,7 @@
        2901-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
            MOVE    "tbl_chk_org"       TO  MCP-TABLE
@@ -419,12 +419,12 @@
            MOVE    CNT-PRF             TO  WRK-MSG-CNT
            DISPLAY "*(ORCBMIGCHK)* Proof Data [ " WRK-MSG-CNT " ]"
            DISPLAY " "
-           DISPLAY "*(ORCBMIGCHK)* �����å��ܹԽ�����λ"
+           DISPLAY "*(ORCBMIGCHK)* チェック移行処理終了"
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ܹ����ơ��֥��ɹ�
+      *    チェック移行前テーブル読込
       *****************************************************************
        900-CHKO-SELECT-SEC         SECTION.
            INITIALIZE  CHKO-REC
@@ -440,7 +440,7 @@
        900-CHKO-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ܹ����ơ��֥��ɹ�
+      *    チェック移行前テーブル読込
       *****************************************************************
        900-CHKO-FETCH-SEC          SECTION.
            MOVE    "tbl_chk_org"       TO  MCP-TABLE
@@ -465,7 +465,7 @@
        900-CHKO-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ����ơ��֥��ɹ�
+      *    チェックマスタテーブル読込
       *****************************************************************
        900-CHKM-READ-SEC           SECTION.
            INITIALIZE  CHKM-REC
@@ -494,7 +494,7 @@
        900-CHKM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��桼�����ơ��֥��ɹ�
+      *    チェックユーザーテーブル読込
       *****************************************************************
        900-CHKU-READ-SEC           SECTION.
            INITIALIZE  CHKU-REC
@@ -523,7 +523,7 @@
        900-CHKU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
            INITIALIZE  SYS-1001-REC
@@ -556,7 +556,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -570,7 +570,7 @@
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �쥳������н���
+      *    レコード抽出処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -579,7 +579,7 @@
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -588,7 +588,7 @@
        900-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -603,7 +603,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -618,7 +618,7 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
            CALL    "ORCDBMAIN"     USING   MCPAREA
@@ -628,7 +628,7 @@
        900-ORCDBMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥빹�����顼������λ����
+      *    テーブル更新エラー強制終了処理
       *****************************************************************
        900-DBABORT-SEC             SECTION.
            MOVE    SPACE               TO  WRK-ERRMSG

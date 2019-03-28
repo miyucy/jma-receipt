@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,40 +16,40 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¤ªÌô¼êÄ¢¥Ç¡¼¥¿Ï¢·È       COPY (CPOKUSURIDATA.INC)     *
+      *    ãŠè–¬æ‰‹å¸³ãƒ‡ãƒ¼ã‚¿é€£æº       COPY (CPOKUSURIDATA.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  OKUSURI-DATA-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  OKUDAT-KEY.
-      *¥Ç¡¼¥¿¥­¡¼
+      *ãƒ‡ãƒ¼ã‚¿ã‚­ãƒ¼
                05  OKUDAT-DATA-KEY          PIC  9(16).
-      *£Ò£ÐÈÖ¹æ
+      *ï¼²ï¼°ç•ªå·
                05  OKUDAT-RP                PIC  9(03).
-      *£Ò£ÐÆâÏ¢ÈÖ
+      *ï¼²ï¼°å†…é€£ç•ª
                05  OKUDAT-RP-SEQ            PIC  9(03).
-      *¥Ç¡¼¥¿¼±ÊÌ
+      *ãƒ‡ãƒ¼ã‚¿è­˜åˆ¥
            03  OKUDAT-DATA-CLASS            PIC  9(03).
-      *Ì¾¾Î
+      *åç§°
            03  OKUDAT-NAME                  PIC  X(200).
-      *¿ôÎÌ
+      *æ•°é‡
            03  OKUDAT-SURYO                 PIC  9(5)V9(5).
-      *Ã±°ÌÌ¾
+      *å˜ä½å
            03  OKUDAT-TANINAME              PIC  X(20).
-      *¥³¡¼¥É¶èÊ¬
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†
            03  OKUDAT-CODE-CLASS            PIC  9(02).
-      *¥³¡¼¥É
+      *ã‚³ãƒ¼ãƒ‰
            03  OKUDAT-CODE                  PIC  X(20).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  OKUDAT-TERMID                PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  OKUDAT-OPID                  PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  OKUDAT-CREYMD                PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  OKUDAT-UPYMD                 PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  OKUDAT-UPHMS                 PIC  X(06).

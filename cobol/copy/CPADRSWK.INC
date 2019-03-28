@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,39 +16,39 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ������                COPY (CPADRSWK.INC)        *
+      *    住所ワーク                COPY (CPADRSWK.INC)        *
       *****************************************************************
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *01  ADRSWK-REC.
            03  ADRSWK-SYORIKBN         PIC X(01).
            03  ADRSWK-KEY.
-      *�����������Υ�����
+      *地方公共団体コード
                05  ADRSWK-LPUBCD       PIC X(05).
-      *͹���ֹ�
+      *郵便番号
                05  ADRSWK-POST         PIC X(07).
-      *����
+      *枝番
                05  ADRSWK-EDANUM       PIC 9(02).
-      *��ƻ�ܸ�̾����
+      *都道府県名カナ
            03  ADRSWK-PREFKANA         PIC X(40).
-      *��Į¼̾����
+      *市町村名カナ
            03  ADRSWK-CITYKANA         PIC X(200).
-      *Į��̾����
+      *町域名カナ
            03  ADRSWK-TOWNKANA         PIC X(200).
-      *��ƻ�ܸ�̾
+      *都道府県名
            03  ADRSWK-PREFNAME         PIC X(20).
-      *��Į¼̾
+      *市町村名
            03  ADRSWK-CITYNAME         PIC X(100).
-      *Į��̾
+      *町域名
            03  ADRSWK-TOWNNAME         PIC X(100).
-      *�Խ��彻�ꥫ��
+      *編集後住所カナ
            03  ADRSWK-EDITADRS-KANA    PIC X(440).
-      *�Խ��彻��
+      *編集後住所
            03  ADRSWK-EDITADRS-NAME    PIC X(220).
-      *Į��ʬ��ե饰
+      *町域分割フラグ
            03  ADRSWK-TOWNDIVFLG       PIC X(01).
-      *ʣ��Į��ե饰
+      *複数町域フラグ
            03  ADRSWK-MANYTOWNFLG      PIC X(01).
       *

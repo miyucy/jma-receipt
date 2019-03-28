@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,39 +16,39 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    µìÀ«ÍúÎò¡¡    ¡¡¡¡¡¡ COPY  (CPKYUSEIRRK.INC)    *
+      *    æ—§å§“å±¥æ­´ã€€    ã€€ã€€ã€€ COPY  (CPKYUSEIRRK.INC)    *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-Æ£¸¶     01/07/23  ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ ÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-è—¤åŽŸ     01/07/23  ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›® è¿½åŠ 
       ************************************************************
       *01  KYUSEIRRK-REC.
-      *µìÀ«ÍúÎò
+      *æ—§å§“å±¥æ­´
            03  KYUSEI-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  KYUSEI-HOSPNUM           PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  KYUSEI-PTID             PIC  9(10).
-      *ÊÑ¹¹Ç¯·îÆü
+      *å¤‰æ›´å¹´æœˆæ—¥
                05  KYUSEI-CHGYMD           PIC  X(08).
-      *¥«¥Ê»áÌ¾
+      *ã‚«ãƒŠæ°å
            03  KYUSEI-KANANAME             PIC  X(100).
-      *´Á»ú»áÌ¾
+      *æ¼¢å­—æ°å
            03  KYUSEI-NAME                 PIC  X(100).
-      *ÄÌ¾Î
+      *é€šç§°
            03  KYUSEI-NICKNAME             PIC  X(100).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  KYUSEI-TERMID               PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  KYUSEI-OPID                 PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  KYUSEI-CREYMD               PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  KYUSEI-UPYMD                PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  KYUSEI-UPHMS                PIC  X(06).
-      *¡¡¡¡¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ã€€ã€€ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  KYUSEIUP-KEY.
                05  KYUSEIUP-HOSPNUM         PIC 9(2).
                05  KYUSEIUP-PTID           PIC 9(10).

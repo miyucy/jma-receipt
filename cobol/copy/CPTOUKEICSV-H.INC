@@ -4,37 +4,37 @@
                                        PIC 9(2).
                 05  TOUKEICSV-H-TBL-KEY
                                        PIC X(8).
-      *         Ï¢ÈÖ
+      *         é€£ç•ª
                 05  TOUKEICSV-H-RENNUM PIC 9(4).
-      *         ¥°¥ë¡¼¥×
+      *         ã‚°ãƒ«ãƒ¼ãƒ—
                 05  TOUKEICSV-H-TBL-GROUP
                                        PIC X(14).
-      *         ½èÍýÆâÏ¢ÈÖ
+      *         å‡¦ç†å†…é€£ç•ª
                 05  TOUKEICSV-H-SHORI-RENNUM
                                        PIC 9(4).
-      *    ¥·¥§¥ë£É£Ä
+      *    ã‚·ã‚§ãƒ«ï¼©ï¼¤
            03  TOUKEICSV-H-SHELLID     PIC X(20).
-      *    ¿ÇÎÅÇ¯·î
+      *    è¨ºç™‚å¹´æœˆ
            03  TOUKEICSV-H-SRYYM       PIC X(6).
-      *    ¿ÇÎÅÇ¯·îÆü
+      *    è¨ºç™‚å¹´æœˆæ—¥
            03  TOUKEICSV-H-SRYYMD      PIC X(8).
-      *    ·ï¿ô
+      *    ä»¶æ•°
            03  TOUKEICSV-H-CNT         PIC 9(8).
-      *    Æþ³°¶èÊ¬
+      *    å…¥å¤–åŒºåˆ†
            03  TOUKEICSV-H-NYUGAIKBN   PIC X(1).
-      *    Àè³ÊÇ¼¾ì½ê
+      *    å…ˆæ ¼ç´å ´æ‰€
            03  TOUKEICSV-H-TO-FOLDER   PIC X(200).
-      *    Àè¥Õ¥¡¥¤¥ëÌ¾
+      *    å…ˆãƒ•ã‚¡ã‚¤ãƒ«å
            03  TOUKEICSV-H-TO-DATA     PIC X(200).
-      *    ¥³¡¼¥É¶èÊ¬¡Ê¶õÇò¡¢£±¡§£Å£Õ£Ã £²¡§£Ó¡Ý£ê£é£ó¡Ë
+      *    ã‚³ãƒ¼ãƒ‰åŒºåˆ†ï¼ˆç©ºç™½ã€ï¼‘ï¼šï¼¥ï¼µï¼£ ï¼’ï¼šï¼³âˆ’ï½Šï½‰ï½“ï¼‰
            03  TOUKEICSV-H-CODE-TYPE   PIC X(01).
-      *    ½ÐÎÏ¥Õ¥é¥°
+      *    å‡ºåŠ›ãƒ•ãƒ©ã‚°
            03  TOUKEICSV-H-PUTFLG      PIC X(1).
-      *    ½èÍý¥¿¥¤¥È¥ë
+      *    å‡¦ç†ã‚¿ã‚¤ãƒˆãƒ«
            03  TOUKEICSV-H-TITLE       PIC X(100).
-      *    ºîÀ®Æü
+      *    ä½œæˆæ—¥
            03  TOUKEICSV-H-CREYMD      PIC X(8).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  TOUKEICSV-H-UPYMD       PIC  X(08).
-      *    ¹¹¿·»þ´Ö
+      *    æ›´æ–°æ™‚é–“
            03  TOUKEICSV-H-UPHMS       PIC  X(06).

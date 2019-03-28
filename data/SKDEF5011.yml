@@ -1,23 +1,23 @@
 kanri_cd    : "5011"
-name        : "Äê´üÀÁµáºîÀ®»Ø¼¨¥³¡¼¥É"
+name        : "å®šæœŸè«‹æ±‚ä½œæˆæŒ‡ç¤ºã‚³ãƒ¼ãƒ‰"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "SYOKBN"
-  item_jp   : "½èÍı¶èÊ¬"
+  item_jp   : "å‡¦ç†åŒºåˆ†"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SRYYM"
-  item_jp   : "ÀÁµáÇ¯·î"
+  item_jp   : "è«‹æ±‚å¹´æœˆ"
   type      : "X"
   start     : 2
   length    : 6
 - item_no   : 3
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 8
   length    : 493

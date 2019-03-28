@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,40 +18,40 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGW61.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : �쥻�ץ��õ������Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/03/14    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : レセプト特記事項編集情報
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/03/14    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-ƣ��    05/05/17  �쥻�ץ��õ������Խ������
-      *                                     ��2 Ϸ�Ͱ��ż��뤬�ʤ�����
-      *                                      ���ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    05/05/17  レセプト特記事項編集情報に
+      *                                     「2 老人医療受給がない場合」
+      *                                      を追加
       *
-      *  02.06.01    NACL-ƣ��    05/05/20  ����ܥ����ƣ����ѹ�
-      *  02.06.02    NACL-ƣ��    05/08/03  ������ô���ֹ���ɲ�
+      *  02.06.01    NACL-藤原    05/05/20  削除ボタンをＦ４に変更
+      *  02.06.02    NACL-藤原    05/08/03  条件に負担者番号を追加
       *
-      *  02.08.01    NACL-ƣ��    06/02/25  ͭ�����֤�̤���ϻ��ι�������
+      *  02.08.01    NACL-藤原    06/02/25  有効期間の未入力時の更新処理
       *
-      *  03.01.01    NACL-ƣ��    06/08/23  DBCLOSECURSOR�ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
+      *  03.01.01    NACL-藤原    06/08/23  DBCLOSECURSOR追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *
-      *  04.01.01    NACL-ƣ��    08/01/10  Ŭ���󥳥����б�
-      *  04.01.02    NACL-ƣ��    08/02/14  �ݸ�̾�Τμ�����ˡ�ν���
-      *  04.01.03    NACL-ƣ��    08/01/10  Ŭ���󥳥��ȤΥ����å��ν���
+      *  04.01.01    NACL-藤原    08/01/10  適用欄コメント対応
+      *  04.01.02    NACL-藤原    08/02/14  保険名称の取得方法の修正
+      *  04.01.03    NACL-藤原    08/01/10  適用欄コメントのチェックの修正
       *
-      *  04.02.01    NACL-ƣ��    08/04/12  ʿ������ǯ��������б�
-      *  04.02.02    NACL-ƣ��    08/04/14  �ٹ������Ͽ�������ǽ�ˤ���
+      *  04.02.01    NACL-藤原    08/04/12  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/14  警告時の登録処理を可能にする
       *
-      *  04.04.01    NACL-ƣ��    09/04/14  �ݸ��ֹ棹��������Υ����å�
-      *  04.04.02    NACL-ƣ��    09/08/12  �����ꥹ�Ȥξ�¤򣲣�����
-      *                                     �ѹ�
-      *  04.04.03    NACL-ƣ��    09/08/28  ���ֽ�ʣ�����å�����ô���ֹ�
-      *                                     ���ɲ�
-      *  04.07.01    NACL-ƣ��    14/02/10  ����������ʬ��������ʬ���ɲ�
+      *  04.04.01    NACL-藤原    09/04/14  保険番号９００番台のチェック
+      *  04.04.02    NACL-藤原    09/08/12  コラムリストの上限を２００に
+      *                                     変更
+      *  04.04.03    NACL-藤原    09/08/28  期間重複チェックに負担者番号
+      *                                     を追加
+      *  04.07.01    NACL-藤原    14/02/10  条件に入外区分、所得区分の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,13 +64,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W61.
            03  SPA-W61-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -298,10 +298,10 @@
       *
               05  SPA-NAI-SELNUM                   PIC 9(03).
       *
-      *    ���󥹥������
+      *    コンスタント値
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰���ꥢ
+      *    フラグエリア
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
@@ -312,13 +312,13 @@
            03  FLG-CHK                             PIC 9(01).
            03  FLG-TOUROKU                         PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                                 PIC 9(05).
            03  IDY                                 PIC 9(05).
            03  IDZ                                 PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA. 
            03  WRK-SELNUM                          PIC 9(03). 
       *
@@ -343,7 +343,7 @@
                    07  WRK-KBN2                    PIC X(01).
                05  WRK-KBNMEI                      PIC X(50).
       *  
-      *    ���Ϲ���̾
+      *    入力項目名
            03  WRK-MCP-WIDGET                      PIC X(64).
            03  WRK-GMN-CUR                         PIC 9(03).
       *
@@ -355,48 +355,48 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
       *
-      *    �쥻�ץ��õ������Խ�����
+      *    レセプト特記事項編集情報
            COPY  "CPSK2006.INC".
       *
-      *    �ݸ����ֹ�
+      *    保険者番号
        01  HKNJAINF-REC.
            COPY    "CPHKNJAINF.INC".
       *
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -414,7 +414,7 @@
                                                SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -432,15 +432,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END         =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -453,21 +453,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF    ( SPA-MOTOPG          =   "WERR" )
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END         =   1 )
                    GO  TO  100-INIT-EXT
                END-IF 
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    PERFORM 510-ERRSET-SEC
@@ -488,11 +488,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
@@ -510,7 +510,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -518,85 +518,85 @@
            INITIALIZE                  SPA-W61
       *
            MOVE    "1"             TO  SPA-GMN-TEISYUTUSAKIL     (1)
-           MOVE    "��ʧ���"      TO  SPA-GMN-TEISYUTUSAKIMEIL  (1)
+           MOVE    "支払基金"      TO  SPA-GMN-TEISYUTUSAKIMEIL  (1)
            MOVE    "2"             TO  SPA-GMN-TEISYUTUSAKIL     (2)
-           MOVE    "����Ϣ���"    TO  SPA-GMN-TEISYUTUSAKIMEIL  (2)
+           MOVE    "国保連合会"    TO  SPA-GMN-TEISYUTUSAKIMEIL  (2)
            MOVE    "6"             TO  SPA-GMN-TEISYUTUSAKIL     (3)
-           MOVE    "����Ϣ��"      TO  SPA-GMN-TEISYUTUSAKIMEIL  (3)
+           MOVE    "広域連合"      TO  SPA-GMN-TEISYUTUSAKIMEIL  (3)
            MOVE    3               TO  SPA-GMN-TEISYUTUSAKI-MAX
       *
            MOVE    "1"             TO  SPA-GMN-ZAITAKUL          (1)
-           MOVE    "����������������ꤷ�Ƥ�����Τ��о�"
+           MOVE    "在宅総合診療料を算定している場合のみ対象"
                                    TO  SPA-GMN-ZAITAKUMEIL       (1)
            MOVE    1               TO  SPA-GMN-ZAITAKU-MAX
       *
            MOVE    "1"             TO  SPA-GMN-FTNJANUMKBN-JYOKENL   (1)
-           MOVE    "���ܤ�������Τ��о�"
+           MOVE    "記載がある場合のみ対象"
                                    TO  SPA-GMN-FTNJANUMKBN-JYOKENMEIL(1)
            MOVE    "2"             TO  SPA-GMN-FTNJANUMKBN-JYOKENL   (2)
-           MOVE    "���ܤ��ʤ����Τ��о�"
+           MOVE    "記載がない場合のみ対象"
                                    TO  SPA-GMN-FTNJANUMKBN-JYOKENMEIL(2)
            MOVE    "3"             TO  SPA-GMN-FTNJANUMKBN-JYOKENL   (3)
-           MOVE    "�������ô���ֹ�ξ��Τ��о�"
+           MOVE    "固定の負担者番号の場合のみ対象"
                                    TO  SPA-GMN-FTNJANUMKBN-JYOKENMEIL(3)
            MOVE    3               TO  SPA-GMN-FTNJANUMKBN-JYOKEN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-NYUGAIKBNL      (1)
-           MOVE    "����"          TO  SPA-GMN-NYUGAIKBNMEIL   (1)
+           MOVE    "入院"          TO  SPA-GMN-NYUGAIKBNMEIL   (1)
            MOVE    "2"             TO  SPA-GMN-NYUGAIKBNL      (2)
-           MOVE    "������"        TO  SPA-GMN-NYUGAIKBNMEIL   (2)
+           MOVE    "入院外"        TO  SPA-GMN-NYUGAIKBNMEIL   (2)
            MOVE    2               TO  SPA-GMN-NYUGAIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SYOTOKUKBNL     (1)
-           MOVE    "��������Τ��о�"
+           MOVE    "低所得１のみ対象"
                                    TO  SPA-GMN-SYOTOKUKBNMEIL  (1)
            MOVE    "2"             TO  SPA-GMN-SYOTOKUKBNL     (2)
-           MOVE    "��������Τ��о�"
+           MOVE    "低所得２のみ対象"
                                    TO  SPA-GMN-SYOTOKUKBNMEIL  (2)
            MOVE    2               TO  SPA-GMN-SYOTOKUKBN-MAX
       *
            MOVE    "01"            TO  SPA-GMN-FTNJANUMKBNL      (1)
-           MOVE    "��Ͽ���ʤ�"    TO  SPA-GMN-FTNJANUMKBNMEIL   (1)
+           MOVE    "記録しない"    TO  SPA-GMN-FTNJANUMKBNMEIL   (1)
            MOVE    "02"            TO  SPA-GMN-FTNJANUMKBNL      (2)
-           MOVE    "�����ʸ����򵭺ܤ���"
+           MOVE    "固定の文字列を記載する"
                                    TO  SPA-GMN-FTNJANUMKBNMEIL   (2)
            MOVE    "03"            TO  SPA-GMN-FTNJANUMKBNL      (3)
-           MOVE    "���˥����Ť�ˤ��Ƶ���"
+           MOVE    "前にゼロづめにして記載"
                                    TO  SPA-GMN-FTNJANUMKBNMEIL   (3)
            MOVE    3               TO  SPA-GMN-FTNJANUMKBN-MAX
       *
            MOVE    "01"            TO  SPA-GMN-JKYSNUMKBNL       (1)
-           MOVE    "��Ͽ���ʤ�"    TO  SPA-GMN-JKYSNUMKBNMEIL    (1)
+           MOVE    "記録しない"    TO  SPA-GMN-JKYSNUMKBNMEIL    (1)
            MOVE    "02"            TO  SPA-GMN-JKYSNUMKBNL       (2)
-           MOVE    "�����ʸ����򵭺ܤ���"
+           MOVE    "固定の文字列を記載する"
                                    TO  SPA-GMN-JKYSNUMKBNMEIL    (2)
            MOVE    2               TO  SPA-GMN-JKYSNUMKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-RJNKBNL           (1)
-           MOVE    "Ϸ�Ͱ��š�ˡ���ֹ棲���ˤμ��뤬������Τ��о�"
+           MOVE    "老人医療（法別番号２７）の受給がある場合のみ対象"
                                    TO  SPA-GMN-RJNKBNMEIL        (1)
            MOVE    "2"             TO  SPA-GMN-RJNKBNL           (2)
            MOVE
-                   "Ϸ�Ͱ��š�ˡ���ֹ棲���ˤμ��뤬�ʤ����Τ��о�"
+                   "老人医療（法別番号２７）の受給がない場合のみ対象"
                                    TO  SPA-GMN-RJNKBNMEIL        (2)
            MOVE    2               TO  SPA-GMN-RJNKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-RECEDEN-KORECKBNL (1)
-           MOVE    "��Ͽ���ʤ�"    TO  SPA-GMN-RECEDEN-KORECKBNMEIL
+           MOVE    "記録しない"    TO  SPA-GMN-RECEDEN-KORECKBNMEIL
                                                                  (1)
            MOVE    1               TO  SPA-GMN-RECEDEN-KORECKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-TEKIYOU-COMMENT1KBNL(1)
-           MOVE    "�쥻�Ť˵�Ͽ���ʤ�"
+           MOVE    "レセ電に記録しない"
                                    TO  SPA-GMN-TEKIYOU-COMMENT1KBNMEIL
                                                                    (1)
            MOVE    "2"             TO  SPA-GMN-TEKIYOU-COMMENT1KBNL(2)
-           MOVE    "�쥻�Ť˵�Ͽ����"
+           MOVE    "レセ電に記録する"
                                    TO  SPA-GMN-TEKIYOU-COMMENT1KBNMEIL
                                                                    (2)
            MOVE    2               TO  SPA-GMN-TEKIYOU-COMMENT1KBN-MAX
       *
-      *    �쥻�ץ��õ������Խ�����
+      *    レセプト特記事項編集情報
            PERFORM 3101-SPA-HENSYU-SEC
       *
            MOVE    1               TO  FLG-ROW
@@ -605,7 +605,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ��õ������Խ��������
+      *    レセプト特記事項編集情報処理
       *****************************************************************
        3101-SPA-HENSYU-SEC         SECTION.
       *
@@ -677,13 +677,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        SPA-NAI-TFTNJANUMKBN-JYOKEN (IDX)
                EVALUATE    SYS-2006-FTNJANUMKBN-JYOKEN
                    WHEN    "1"
-                       MOVE    "���ܤ�����"    TO
+                       MOVE    "記載がある"    TO
                                        SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
                    WHEN    "2"
-                       MOVE    "���ܤ��ʤ�"    TO
+                       MOVE    "記載がない"    TO
                                        SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
                    WHEN    "3"
-                       MOVE    "����"          TO
+                       MOVE    "固定"          TO
                                        SPA-GMN-TFTNJANUMKBN-JYOKEN (IDX)
                    WHEN    OTHER
                        MOVE    SPACE           TO
@@ -702,10 +702,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    SYS-2006-SYOTOKUKBN TO  SPA-NAI-TSYOTOKUKBN (IDX)
                EVALUATE    SYS-2006-SYOTOKUKBN
                    WHEN    "1"
-                       MOVE    "�������"      TO
+                       MOVE    "低所得１"      TO
                                                SPA-GMN-TSYOTOKUKBN (IDX)
                    WHEN    "2"
-                       MOVE    "�������"      TO
+                       MOVE    "低所得２"      TO
                                                SPA-GMN-TSYOTOKUKBN (IDX)
                    WHEN    OTHER
                        MOVE    SPACE           TO
@@ -715,10 +715,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    SYS-2006-RJNKBN     TO  SPA-NAI-TRJNKBN   (IDX)
                EVALUATE    SYS-2006-RJNKBN
                    WHEN    "1"
-                       MOVE    "���뤬����"
+                       MOVE    "受給がある"
                                            TO  SPA-GMN-TRJNKBN   (IDX)
                    WHEN    "2"
-                       MOVE    "���뤬�ʤ�"
+                       MOVE    "受給がない"
                                            TO  SPA-GMN-TRJNKBN   (IDX)
                    WHEN    OTHER
                        MOVE    SPACE       TO  SPA-GMN-TRJNKBN   (IDX)
@@ -751,7 +751,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        3101-SPA-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧ���̡ʣףɣģ��ˣϣ˽���
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
        320-WID1-SET-SEC            SECTION.
       *
@@ -777,22 +777,22 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM  210-BACK
-      *        ���ꥢ
+      *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
-      *        ���
+      *        削除
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 420-SAKUJO-GID-SEC
-      *        ��Ͽ
+      *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 420-TOUROKU-GID-SEC
            END-EVALUATE
@@ -802,7 +802,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -821,7 +821,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
@@ -840,17 +840,17 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                             SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    �����ֹ�
+      *    選択番号
            WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 400-SELNUM-CHK-SEC
-      *    ����
+      *    一覧
            WHEN    ANY             ALSO    "TOKKILST"
                    PERFORM 400-TOKKILST-CHK-SEC
       *
@@ -864,7 +864,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ʬ�����Ͻ���
+      *    一括分　入力処理
       *****************************************************************
        410-ENTRY-SYORI-SEC       SECTION.
       *
@@ -872,28 +872,28 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    ZERO                TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            .
        410-ENTRY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
            END-IF
       *
            IF      FLG-TOUROKU         =   1
-      *        ������
+      *        更新前
                PERFORM 4103-KAKUTEI-CHK-SEC
            END-IF
       *
@@ -902,7 +902,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -949,154 +949,154 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-      *    ͭ������ǯ����
+      *    有効開始年月日
            PERFORM 41021-STYUKYMD-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ͭ����λǯ����
+      *    有効終了年月日
            PERFORM 41021-EDYUKYMD-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    �ݸ��ֹ�
+      *    保険番号
            PERFORM 41021-HKNNUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    �����
+      *    提出先
            PERFORM 41021-TEISYUTUSAKI-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    �ݸ����ֹ�
+      *    保険者番号
            PERFORM 41021-HKNJANUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ��ô���ֹ�
+      *    負担者番号
            PERFORM 41021-FTNJANUMKB-JYOKEN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ��ô���ֹ�����
+      *    負担者番号内容
            PERFORM 41021-FTNJANUM-JYOKEN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ʬ
+      *    入外区分
            PERFORM 41021-NYUGAIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ʬ
+      *    所得区分
            PERFORM 41021-SYOTOKUKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    Ϸ�Ͷ�ʬ
+      *    老人区分
            PERFORM 41021-RJNKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    �����Ƕ�ʬ
+      *    在総診区分
            PERFORM 41021-ZAITAKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    �õ�����
+      *    特記事項
            PERFORM 41021-TOKKI-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ���ճ��
+      *    給付割合
            PERFORM 41021-KYURATE-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ��ô���ֹ浭�ܶ�ʬ
+      *    負担者番号記載区分
            PERFORM 41021-FTNJANUMKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ��ô���ֹ浭������
+      *    負担者番号記載内容
            PERFORM 41021-FTNJANUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ������ֹ浭�ܶ�ʬ
+      *    受給者番号記載区分
            PERFORM 41021-JKYSNUMKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    ������ֹ�
+      *    受給者番号
            PERFORM 41021-JKYSNUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    Ŭ������ʥ�����
+      *    適用欄上段コメント
            PERFORM 41021-TEKIYOU-COM1-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    Ŭ������ʥ����ȥ쥻���Խ���ʬ
+      *    適用欄上段コメントレセ電編集区分
            PERFORM 41021-TEKIYOU-COM1KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    Ŭ�����ʥ�����
+      *    適用欄下段コメント
            PERFORM 41021-TEKIYOU-COM2-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    Ŭ�����ʥ����ȥ쥻���Խ���ʬ
+      *    適用欄下段コメントレセ電編集区分
            PERFORM 41021-TEKIYOU-COM2KBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    �쥻�š��õ�����
+      *    レセ電・特記事項
            PERFORM 41021-RECEDEN-TOKKI-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
-      *    �쥻�š����ճ��
+      *    レセ電・給付割合
            PERFORM 41021-RECEDEN-KYURATE-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    �쥻�š�����쥳���ɶ�ʬ
+      *    レセ電・公費レコード区分
            PERFORM 41021-RECEDEN-KORECKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    �쥻�š���ô���ֹ浭�ܶ�ʬ
+      *    レセ電・負担者番号記載区分
            PERFORM 41021-RECEDEN-FTNJAKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    �쥻�š���ô���ֹ�
+      *    レセ電・負担者番号
            PERFORM 41021-RECEDEN-FTNJA-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    �쥻�š�������ֹ浭�ܶ�ʬ
+      *    レセ電・受給者番号記載区分
            PERFORM 41021-RECEDEN-JKYSNUMKB-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
-      *    �쥻�š�������ֹ�
+      *    レセ電・受給者番号
            PERFORM 41021-RECEDEN-JKYSNUM-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -1107,7 +1107,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ����Ͻ���
+      *    選択番号入力処理
       *****************************************************************
        400-SELNUM-CHK-SEC          SECTION.
       *
@@ -1119,7 +1119,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    W61-SELNUM      TO  SPA-GMN-SELNUM
       *
-      *    �����ֹ�����å�
+      *    選択番号チェック
            IF      SPA-GMN-SELNUM      =   ZERO
                MOVE    2                   TO  SPA-GMN-CUR 
                GO  TO  400-SELNUM-CHK-EXT 
@@ -1141,7 +1141,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    選択番号編集処理
       *****************************************************************
        4001-SELNUM-HENSYU-SEC          SECTION.
       *
@@ -1313,7 +1313,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        400-TOKKILST-CHK-SEC            SECTION.
       *
@@ -1348,7 +1348,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ͭ������ǯ���������å�����
+      *    有効開始年月日チェック処理
       *****************************************************************
        41021-STYUKYMD-CHK-SEC          SECTION.
       *     
@@ -1394,7 +1394,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ͭ����λǯ���������å�����
+      *    有効終了年月日チェック処理
       *****************************************************************
        41021-EDYUKYMD-CHK-SEC           SECTION.
       *
@@ -1416,7 +1416,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    WRK-SYMD            TO  SPA-NAI-EDYUKYMD
                MOVE    WRK-HENYMDG         TO  SPA-GMN-EDYUKYMD
       *
-      *        ���������å�
+      *        末日チェック
                IF      SPA-NAI-EDYUKYMD
                                        NOT =   99999999 
                    INITIALIZE                      STS-AREA-DAY
@@ -1432,7 +1432,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF
       *
-      *    �������Ȥδ�Ϣ�����å�   
+      *    開始日との関連チェック   
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-GMN-STYUKYMD    NOT =   SPACE )  AND
                      ( SPA-GMN-EDYUKYMD    NOT =   SPACE )
@@ -1451,7 +1451,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�����å�����
+      *    保険番号チェック処理
       *****************************************************************
        41021-HKNNUM-CHK-SEC           SECTION.
       *
@@ -1496,7 +1496,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������Ͻ���
+      *    提出先入力処理
       *****************************************************************
        41021-TEISYUTUSAKI-CHK-SEC      SECTION.
       *
@@ -1531,7 +1531,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ����ֹ�����å�����
+      *    保険者番号チェック処理
       *****************************************************************
        41021-HKNJANUM-CHK-SEC           SECTION.
       *
@@ -1563,7 +1563,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ��ʬ���Ͻ���
+      *    負担者番号区分入力処理
       *****************************************************************
        41021-FTNJANUMKB-JYOKEN-CHK-SEC      SECTION.
       *
@@ -1605,7 +1605,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ浭�����Ͻ���
+      *    負担者番号記載入力処理
       *****************************************************************
        41021-FTNJANUM-JYOKEN-CHK-SEC      SECTION.
       *
@@ -1618,7 +1618,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ���Ͻ���
+      *    入外区分入力処理
       *****************************************************************
        41021-NYUGAIKBN-CHK-SEC      SECTION.
       *
@@ -1645,7 +1645,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ���Ͻ���
+      *    所得区分入力処理
       *****************************************************************
        41021-SYOTOKUKBN-CHK-SEC      SECTION.
       *
@@ -1719,7 +1719,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    Ϸ���ݸ����Ͻ���
+      *    老人保険入力処理
       *****************************************************************
        41021-RJNKBN-CHK-SEC      SECTION.
       *
@@ -1751,7 +1751,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Ƕ�ʬ���Ͻ���
+      *    在総診区分入力処理
       *****************************************************************
        41021-ZAITAKU-CHK-SEC      SECTION.
       *
@@ -1777,7 +1777,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �õ��������Ͻ���
+      *    特記事項入力処理
       *****************************************************************
        41021-TOKKI-CHK-SEC      SECTION.
       *
@@ -1818,7 +1818,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ճ�����Ͻ���
+      *    給付割合入力処理
       *****************************************************************
        41021-KYURATE-CHK-SEC           SECTION.
       *
@@ -1843,7 +1843,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ浭�ܶ�ʬ���Ͻ���
+      *    負担者番号記載区分入力処理
       *****************************************************************
        41021-FTNJANUMKBN-CHK-SEC      SECTION.
       *
@@ -1882,7 +1882,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ����Ͻ���
+      *    負担者番号入力処理
       *****************************************************************
        41021-FTNJANUM-CHK-SEC      SECTION.
       *
@@ -1895,7 +1895,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ֹ浭�ܶ�ʬ���Ͻ���
+      *    受給者番号記載区分入力処理
       *****************************************************************
        41021-JKYSNUMKBN-CHK-SEC      SECTION.
       *
@@ -1932,7 +1932,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ֹ����Ͻ���
+      *    受給者番号入力処理
       *****************************************************************
        41021-JKYSNUM-CHK-SEC      SECTION.
       *
@@ -1945,7 +1945,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ŭ������ʥ��������Ͻ���
+      *    適用欄上段コメント入力処理
       *****************************************************************
        41021-TEKIYOU-COM1-CHK-SEC      SECTION.
       *
@@ -1996,7 +1996,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ŭ������ʥ����ȥ쥻���Խ���ʬ���Ͻ���
+      *    適用欄上段コメントレセ電編集区分入力処理
       *****************************************************************
        41021-TEKIYOU-COM1KBN-CHK-SEC      SECTION.
       *
@@ -2028,7 +2028,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ŭ�����ʥ��������Ͻ���
+      *    適用欄下段コメント入力処理
       *****************************************************************
        41021-TEKIYOU-COM2-CHK-SEC      SECTION.
       *
@@ -2079,7 +2079,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ŭ�����ʥ����ȥ쥻���Խ���ʬ���Ͻ���
+      *    適用欄下段コメントレセ電編集区分入力処理
       *****************************************************************
        41021-TEKIYOU-COM2KBN-CHK-SEC      SECTION.
       *
@@ -2111,7 +2111,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š��õ��������Ͻ���
+      *    レセ電：特記事項入力処理
       *****************************************************************
        41021-RECEDEN-TOKKI-CHK-SEC     SECTION.
       *
@@ -2147,7 +2147,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š����ճ�����Ͻ���
+      *    レセ電：給付割合入力処理
       *****************************************************************
        41021-RECEDEN-KYURATE-CHK-SEC           SECTION.
       *
@@ -2172,7 +2172,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š�����쥳���ɶ�ʬ���Ͻ���
+      *    レセ電：公費レコード区分入力処理
       *****************************************************************
        41021-RECEDEN-KORECKBN-CHK-SEC  SECTION.
       *
@@ -2217,7 +2217,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š���ô���ֹ浭�ܶ�ʬ���Ͻ���
+      *    レセ電：負担者番号記載区分入力処理
       *****************************************************************
        41021-RECEDEN-FTNJAKBN-CHK-SEC      SECTION.
       *
@@ -2260,7 +2260,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š���ô���ֹ浭�����Ͻ���
+      *    レセ電：負担者番号記載入力処理
       *****************************************************************
        41021-RECEDEN-FTNJA-CHK-SEC      SECTION.
       *
@@ -2273,7 +2273,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š�������ֹ浭�ܶ�ʬ���Ͻ���
+      *    レセ電：受給者番号記載区分入力処理
       *****************************************************************
        41021-RECEDEN-JKYSNUMKB-CHK-SEC      SECTION.
       *
@@ -2314,7 +2314,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š�������ֹ浭�����Ͻ���
+      *    レセ電：受給者番号記載入力処理
       *****************************************************************
        41021-RECEDEN-JKYSNUM-CHK-SEC      SECTION.
       *
@@ -2328,11 +2328,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ����ܥ��󲡲��������å�����
+      *    確定ボタン押下時チェック処理
       *****************************************************************
        4103-KAKUTEI-CHK-SEC        SECTION.
       *   
-      *    �Խ����ܤ�����̤����
+      *    編集項目が全て未入力
            IF    ( SPA-GMN-TOKKI       =   SPACE )
            AND   ( SPA-GMN-KYURATE     =   ZERO  )
            AND   ( SPA-GMN-FTNJANUMKBN =   SPACE )
@@ -2355,7 +2355,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    9                   TO  SPA-GMN-CUR
            END-IF
       *
-      *    ��ô���ֹ�ʾ��ˤ���ô���ֹ�Υ����å�
+      *    負担者番号（条件）と負担者番号のチェック
            IF    ( SPA-ERRCD           =   SPACE )
                IF      SPA-GMN-FTNJANUM-JYOKEN
                                            =   SPACE
@@ -2373,7 +2373,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF
       *
-      *    ��ô���ֹ浭�ܶ�ʬ����ô���ֹ�Υ����å�
+      *    負担者番号記載区分と負担者番号のチェック
            IF    ( SPA-ERRCD           =   SPACE )
                IF      SPA-GMN-FTNJANUM    =   SPACE
                    IF      SPA-GMN-FTNJANUMKBN  =   "02"
@@ -2390,7 +2390,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF
       *
-      *    ������ֹ浭�ܶ�ʬ�ȼ�����ֹ�Υ����å�
+      *    受給者番号記載区分と受給者番号のチェック
            IF    ( SPA-ERRCD           =   SPACE )
                IF      SPA-GMN-JKYSNUM     =   SPACE
                    IF      SPA-GMN-JKYSNUMKBN  =   "02"
@@ -2407,7 +2407,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF 
            END-IF
       *
-      *    �쥻�š���ô���ֹ浭�ܶ�ʬ�ȥ쥻�š���ô���ֹ�Υ����å�
+      *    レセ電：負担者番号記載区分とレセ電：負担者番号のチェック
            IF    ( SPA-ERRCD           =   SPACE )
                IF      SPA-GMN-RECEDEN-FTNJANUM    
                                            =   SPACE
@@ -2427,7 +2427,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF 
            END-IF
       *
-      *    �쥻�š�������ֹ浭�ܶ�ʬ�ȥ쥻�š�������ֹ�Υ����å�
+      *    レセ電：受給者番号記載区分とレセ電：受給者番号のチェック
            IF    ( SPA-ERRCD           =   SPACE )
                IF      SPA-GMN-RECEDEN-JKYSNUM     
                                            =   SPACE
@@ -2447,7 +2447,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF 
            END-IF
       *
-      *    ͭ�����֤γ������Ƚ�λ����Ʊ�����ѹ�����Ƥ��ʤ�����
+      *    有効期間の開始日と終了日が同時に変更されていないこと
            IF    ( SPA-ERRCD           =   SPACE )
            AND   ( SPA-NAI-SELNUM      >   ZERO  )
                IF    ( SPA-NAI-STYUKYMD
@@ -2462,7 +2462,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF      
       *
-      *    Ʊ����Ǵ��ֽ�ʣ�����뤫
+      *    同一条件で期間重複があるか
            IF      SPA-ERRCD           =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-MAX
@@ -2482,7 +2482,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                            SPA-GMN-FTNJANUMKBN-JYOKEN )
                    AND   ( SPA-NAI-TSYOTOKUKBN   (IDX)
                                            =   SPA-GMN-SYOTOKUKBN     )
-      *                ������ʬ�϶���ȤΥ����å���Ԥ�
+      *                入外区分は空白とのチェックも行う
                        IF    ( SPA-NAI-TNYUGAIKBN    (IDX)
                                            NOT =   SPACE             )
                        AND   ( SPA-GMN-NYUGAIKBN
@@ -2509,7 +2509,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF      
       *
-      *    ͭ�����֤�Ϸ�Ͷ�ʬ�Υ����å�
+      *    有効期間と老人区分のチェック
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-NAI-STYUKYMD    <   WRK-CONS-SRYYM-200804 )
                AND   ( SPA-NAI-EDYUKYMD    >=  WRK-CONS-SRYYM-200804 )
@@ -2518,7 +2518,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF
       *
-      *    ͭ�����֤������Υ����å�
+      *    有効期間と提出先のチェック
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-NAI-STYUKYMD    <   WRK-CONS-SRYYM-200804 )
                AND   ( SPA-NAI-EDYUKYMD    >=  WRK-CONS-SRYYM-200804 )
@@ -2532,7 +2532,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��說�ꥢ����
+      *    条件クリア処理
       *****************************************************************
        420-CLEAR-SEC                   SECTION.
       *
@@ -2549,16 +2549,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            EXIT.
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        420-SAKUJO-GID-SEC              SECTION.
       *
-      *    �оݥǡ���̤����������å�
+      *    対象データ未選択時チェック
            IF      SPA-NAI-SELNUM      =   ZERO
                MOVE    "0001"              TO  SPA-ERRCD
            END-IF
       *
-      *    ͭ�������ѻ������å�
+      *    有効期間変時チェック
            IF      SPA-ERRCD           =   SPACE 
                IF    ( SPA-NAI-TSTYUKYMD (SPA-NAI-SELNUM)
                                        NOT =   SPA-NAI-STYUKYMD )
@@ -2577,11 +2577,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        421-SAKUJO-SEC                  SECTION.
       *
-      *    �������
+      *    削除処理
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    "2006"              TO  SYS-KANRICD
@@ -2599,10 +2599,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-IF    
       *
            IF      SPA-ERRCD           =   SPACE
-      *        ���̥��ꥢ����
+      *        画面クリア処理
                PERFORM 420-CLEAR-SEC
       *
-      *        �������Խ�����
+      *        一覧再編集処理
                PERFORM 3101-SPA-HENSYU-SEC
                IF      W61-ROW             =   ZERO
                    MOVE    SPA-GMN-MAX         TO  W61-ROW
@@ -2616,11 +2616,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ������
+      *    登録前処理
       *****************************************************************
        420-TOUROKU-GID-SEC                SECTION.
       *
-      *    ���ϥ����å�
+      *    入力チェック
            MOVE    1               TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
       *
@@ -2643,11 +2643,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ����
+      *    登録処理
       *****************************************************************
        421-TOUROKU-SEC                 SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -2689,7 +2689,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                ADD     1                   TO  WRK-2006-KBNCD-9
            END-IF
       *
-      *   ��Ͽ����
+      *   登録処理
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-SELNUM       =   ZERO
                    MOVE    SPACE               TO  SYS-2006-REC
@@ -2789,10 +2789,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *        ���̥��ꥢ����
+      *        画面クリア処理
                PERFORM 420-CLEAR-SEC
       *
-      *        �������Խ�����
+      *        一覧再編集処理
                PERFORM 3101-SPA-HENSYU-SEC
                IF      W61-ROW             =   ZERO
                    MOVE    SPA-GMN-MAX         TO  W61-ROW
@@ -2807,7 +2807,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN                  SECTION.
       *
@@ -2832,7 +2832,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -3026,7 +3026,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -3117,7 +3117,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC         SECTION.
       *
@@ -3188,7 +3188,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -3196,154 +3196,154 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "選択番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "ͭ�����ֳ��������ϥ��顼"
+                   MOVE    "有効期間開始日入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "ͭ�����ֽ�λ�����ϥ��顼"
+                   MOVE    "有効期間終了日入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�ݸ��ֹ����ϥ��顼"
+                   MOVE    "保険番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "��������ϥ��顼"
+                   MOVE    "提出先入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "�ݸ����ֹ����ϥ��顼"
+                   MOVE    "保険者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "Ϸ�Ͷ�ʬ���ϥ��顼"
+                   MOVE    "老人区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "���������ϥ��顼"
+                   MOVE    "在総診入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "�õ���������Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "特記事項は全角で入力して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "���ճ�����ϥ��顼"
+                   MOVE    "給付割合入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "�쥻�ץ��Ż����õ��������ϥ��顼"
+                   MOVE    "レセプト電算・特記事項入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "�쥻�ץ��Ż������ճ�����ϥ��顼"
+                   MOVE    "レセプト電算・給付割合入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0013"
-                   MOVE    "�쥻�ץ��Ż�������쥳���ɶ�ʬ���ϥ��顼"
+                   MOVE    "レセプト電算・公費レコード区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE
-                       "�ݸ��ֹ椬̤���ϤΤȤ������ϤǤ��ʤ����ܤǤ�"
+                       "保険番号が未入力のときは入力できない項目です"
                                            TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "���ϤǤ��ʤ�������ݸ��ֹ�Ǥ�"
+                   MOVE    "入力できない種類の保険番号です"
                                            TO  SPA-ERRMSG
                WHEN    "0016"
-                   MOVE    "��ô���ֹ浭�ܶ�ʬ���ϥ��顼"
+                   MOVE    "負担者番号記載区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0017"
-                   MOVE    "��ô���ֹ����ϥ��顼"
+                   MOVE    "負担者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "������ֹ浭�ܶ�ʬ���ϥ��顼"
+                   MOVE    "受給者番号記載区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0019"
-                   MOVE    "������ֹ����ϥ��顼"
+                   MOVE    "受給者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE    "�쥻�ץ��Ż�����ô���ֹ浭�ܶ�ʬ���ϥ��顼"
+                   MOVE    "レセプト電算・負担者番号記載区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0021"
-                   MOVE    "�쥻�ץ��Ż�����ô���ֹ����ϥ��顼"
+                   MOVE    "レセプト電算・負担者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0022"
-                   MOVE    "�쥻�ץ��Ż���������ֹ浭�ܶ�ʬ���ϥ��顼"
+                   MOVE    "レセプト電算・受給者番号記載区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0023"
-                   MOVE    "�쥻�ץ��Ż���������ֹ����ϥ��顼"
+                   MOVE    "レセプト電算・受給者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0024"
-                   MOVE    "��ô���ֹ����ϥ��顼"
+                   MOVE    "負担者番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0025"
-                   MOVE    "��ô���ֹ���������ϥ��顼"
+                   MOVE    "負担者番号固定値入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0026"
-                   MOVE    "Ŭ������ʥ����Ȥ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "適用欄上段コメントは全角で入力して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0027"
-                   MOVE    "Ŭ������ʥ����ȵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "適用欄上段コメント記載区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0028"
-                   MOVE    "Ŭ�����ʥ����Ȥ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "適用欄下段コメントは全角で入力して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0029"
-                   MOVE    "Ŭ�����ʥ����ȵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "適用欄下段コメント記載区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0030"
-                   MOVE    "Ŭ������ʥ��������ϻ��Τ�����Ǥ��ޤ�"
+                   MOVE    "適用欄上段コメント入力時のみ選択できます"
                                            TO  SPA-ERRMSG
                WHEN    "0031"
-                   MOVE    "Ŭ������ʥ��������ϻ��Τ�����Ǥ��ޤ�"
+                   MOVE    "適用欄上段コメント入力時のみ選択できます"
                                            TO  SPA-ERRMSG
                WHEN    "0032"
-                   MOVE    "���Ѷ���Τ����Ϥ���Ƥ��ޤ�"
+                   MOVE    "全角空白のみ入力されています"
                                            TO  SPA-ERRMSG
                WHEN    "0033"
-                   MOVE    "������ʬ���ϥ��顼"
+                   MOVE    "入外区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0034"
-                   MOVE    "������ʬ���ϥ��顼"
+                   MOVE    "所得区分入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0035"
-                   MOVE    "���Ϥ����ݸ��ֹ�ˤ�����Ǥ��ޤ���"
+                   MOVE    "入力した保険番号には設定できません"
                                            TO  SPA-ERRMSG
                WHEN    "0036"
-                   MOVE   "�쥻�ץ����ᤷ�ʤ��ݸ��ֹ�ˤ�����Ǥ��ޤ���"
+                   MOVE   "レセプト請求しない保険番号には設定できません"
                                            TO  SPA-ERRMSG
                WHEN    "0037"
-                   MOVE   "������ʬ������ˤ����������꤬ɬ�פǤ�"
+                   MOVE   "所得区分の設定には提出先の設定が必要です"
                                            TO  SPA-ERRMSG
       *
                WHEN    "0101"
-                   MOVE    "���򤵤줿�ǡ������ɤ߹��ߤ��Ǥ��ޤ���"
+                   MOVE    "選択されたデータの読み込みができません"
                                            TO  SPA-ERRMSG
                WHEN    "0102"
                    MOVE
-                       "ͭ�����ֳ�������ͭ�����ֽ�λ���ȤʤäƤ��ޤ�"
+                       "有効期間開始日＞有効期間終了日となっています"
                                            TO  SPA-ERRMSG
                WHEN    "0103"
-                   MOVE    "�Խ����ܤ�̤���ϤǤ�"
+                   MOVE    "編集項目が未入力です"
                                            TO  SPA-ERRMSG
                WHEN    "0104"
-                   MOVE    "ͭ�����֤��ѹ����Ԥ��Ƥ��ޤ�"
+                   MOVE    "有効期間の変更が行われています"
                                            TO  SPA-ERRMSG
                WHEN    "0105"
                    MOVE
-                      "��郎Ʊ����ͭ�����֤ν�ʣ����ǡ�����¸�ߤ��ޤ�"
+                      "条件が同じで有効期間の重複するデータが存在します"
                                            TO  SPA-ERRMSG
                WHEN    "0106"
-                   MOVE    "ͭ�����ֳ������ϣ��������Ϥ��Ʋ�����"
+                   MOVE    "有効期間開始日は１日で入力して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0107"
-                   MOVE    "ͭ�����ֽ�λ���Ϸ����������Ϥ��Ʋ�����"
+                   MOVE    "有効期間終了日は月末日で入力して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0108"
                    MOVE
-                       "ͭ�����֤γ������Ƚ�λ����Ʊ�����ѹ��Ǥ��ޤ���"
+                       "有効期間の開始日と終了日は同時に変更できません"
                                            TO  SPA-ERRMSG
       *
                WHEN    "1001"
-                   MOVE    "�ɲäǤ��ޤ���Ǥ���"
+                   MOVE    "追加できませんでした"
                                            TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "�����Ǥ��ޤ���Ǥ���"
+                   MOVE    "更新できませんでした"
                                            TO  SPA-ERRMSG
                WHEN    "1003"
-                   MOVE    "����Ǥ��ޤ���Ǥ���"
+                   MOVE    "削除できませんでした"
                                            TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -3367,7 +3367,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
@@ -3378,29 +3378,29 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EVALUATE    SPA-WIDCD
                WHEN    "2001"
                    MOVE
-                       "���򤵤줿�ǡ����������ޤ�����������Ǥ���"
+                       "選択されたデータを削除します。よろしいですか"
                                                 TO  WID1-ID1MSG
                WHEN    "2002"
-                   MOVE    "�ǡ�������Ͽ���ޤ�����������Ǥ���"
+                   MOVE    "データを登録します。よろしいですか"
                                                 TO  WID1-ID1MSG
                WHEN    "2003"
-                   STRING  "ʿ������ǯ����ʹߤ�Ϸ�Ͷ�ʬ����"
+                   STRING  "平成２０年４月以降に老人区分の設"
                                                 DELIMITED  BY  SIZE
-                           "�꤬����ޤ���������λ���Ƥ�������Ǥ���"
+                           "定があります。処理を終了してよろしいですか"
                                                 DELIMITED  BY  SIZE
                                                 INTO  WID1-ID1MSG
                    END-STRING
                WHEN    "2004"
-                   STRING  "ʿ������ǯ����ʹߤ�Ϸ�Ͷ�ʬ�����꤬��"
+                   STRING  "平成２０年４月以降に老人区分の設定があ"
                                                 DELIMITED  BY  SIZE
-                          "��ޤ����ǡ�������Ͽ���Ƥ�������Ǥ���"
+                          "ります。データを登録してよろしいですか"
                                                 DELIMITED  BY  SIZE
                                                 INTO  WID1-ID1MSG
                    END-STRING
                WHEN    "2005"
-                   STRING  "ʿ������ǯ��������˹���Ϣ�������"
+                   STRING  "平成２０年４月以前に広域連合の設定"
                                                 DELIMITED  BY  SIZE
-                          "������ޤ����ǡ�������Ͽ���Ƥ�������Ǥ���"
+                          "があります。データを登録してよろしいですか"
                                                 DELIMITED  BY  SIZE
                                                 INTO  WID1-ID1MSG
                    END-STRING
@@ -3423,7 +3423,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������Խ�����
+      *    提出先編集処理
       *****************************************************************
        5001-TEISYUTUSAKI-HENSYU-SEC   SECTION.
       * 
@@ -3448,7 +3448,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ��Խ�����
+      *    負担者番号編集処理
       *****************************************************************
        5001-FTNJANUMKB-JYOKEN-HEN-SEC  SECTION.
       * 
@@ -3473,7 +3473,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ�Խ�����
+      *    入外区分編集処理
       *****************************************************************
        5001-NYUGAIKBN-HENSYU-SEC   SECTION.
       * 
@@ -3498,7 +3498,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ�Խ�����
+      *    所得区分編集処理
       *****************************************************************
        5001-SYOTOKUKBN-HENSYU-SEC  SECTION.
       * 
@@ -3523,7 +3523,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ϸ�Ͷ�ʬ�Խ�����
+      *    老人区分編集処理
       *****************************************************************
        5001-RJNKBN-HENSYU-SEC    SECTION.
       * 
@@ -3548,7 +3548,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Ƕ�ʬ�Խ�����
+      *    在総診区分編集処理
       *****************************************************************
        5001-ZAITAKU-HENSYU-SEC    SECTION.
       * 
@@ -3573,7 +3573,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�š�����쥳���ɶ�ʬ�Խ�����
+      *    レセ電：公費レコード区分編集処理
       *****************************************************************
        5001-RECEDEN-KORECKB-HENSYU-SEC    SECTION.
       * 
@@ -3598,7 +3598,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ浭�ܶ�ʬ�Խ�����
+      *    負担者番号記載区分編集処理
       *****************************************************************
        5001-FTNJANUMKB-HENSYU-SEC   SECTION.
       * 
@@ -3623,7 +3623,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ֹ浭�ܶ�ʬ�Խ�����
+      *    受給者番号記載区分編集処理
       *****************************************************************
        5001-JKYSNUMKBN-HENSYU-SEC    SECTION.
       * 
@@ -3648,7 +3648,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ŭ���󥳥��ȥ쥻���Խ���ʬ�Խ�����
+      *    適用欄コメントレセ電編集区分編集処理
       *****************************************************************
        5001-TEKIYOU-COM1KBN-HENSYU-SEC    SECTION.
       * 
@@ -3673,7 +3673,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC             SECTION.
       *
@@ -3685,7 +3685,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    WRK-YMD     TO  WRK-HENYMDG
                                        WRK-SYMD
            ELSE
-      *        ���ղ��̥����å�����
+      *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    WRK-YMD             TO  SGDAY-INDAY
                CALL    "ORCSGDAY"          USING
@@ -3700,7 +3700,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3724,7 +3724,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ��ʣΣţأԡ�
+      *    システム管理マスタ読込（ＮＥＸＴ）
       *****************************************************************
        900-SYSKANRI-READ-N-SEC         SECTION.
       *
@@ -3743,7 +3743,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ԥޥ������ɹ��ʥ�����
+      *    保険者マスター読込（キー）
       *****************************************************************
        900-HKNJAINF-READ-SEC         SECTION.
       *
@@ -3775,7 +3775,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ����ɹ�
+      *    保険番号マスタ読込
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
@@ -3809,7 +3809,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɹ�
+      *    保険番号マスター読込
       *****************************************************************
        900-HKNNUM-READ-N-SEC       SECTION.
       *
@@ -3827,7 +3827,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-DB-CLOSE-SEC               SECTION.
       *
@@ -3839,7 +3839,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -3852,7 +3852,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

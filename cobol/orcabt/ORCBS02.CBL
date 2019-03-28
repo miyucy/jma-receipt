@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCBS02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��������
-      *  ����ݡ��ͥ��̾  : ������ѹ������Խ�
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  03/04/08    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 日次統計
+      *  コンポーネント名  : 請求書変更ログ編集
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  03/04/08    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����     07/05/24  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田     07/05/24  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -35,14 +35,14 @@
        INPUT-OUTPUT                        SECTION.
        FILE-CONTROL.
       *
-      *    ������ѥѥ�᥿�ե�����
+      *    請求書用パラメタファイル
            SELECT  BS01-FILE   ASSIGN      PRFNAME
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
        DATA                                DIVISION.
        FILE                                SECTION.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  BS01-FILE.
        01  BS01-REC.
            COPY    "CPPARA.INC"    REPLACING //PARA-//
@@ -50,16 +50,16 @@
       *
        WORKING-STORAGE                     SECTION.
       *
-      *    �ѥ�᡼���ե�����̾
+      *    パラメータファイル名
            COPY    "CPASGNPARA.INC"
                                    REPLACING  //ASGNPARA//
                                    BY         //PRFNAME//.
       *
-      *    �ե饰
+      *    フラグ
        01  FLG-AREA.
            03  FLG-BS01                        PIC 9(01).
       *
-      *    ����ǥå���
+      *    インデックス
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
            03  IDX1                            PIC 9(05).
@@ -82,21 +82,21 @@
            COPY    "CPSYUPARA03.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                 SECTION.
       *
@@ -108,7 +108,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -121,7 +121,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -150,7 +150,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -170,15 +170,15 @@
                    MOVE    ALL "="     TO  WRK-MEISAI
                    DISPLAY WRK-MEISAI
                    DISPLAY WRK-YMD  " " WRK-HMS " " BS01-TERMID
-                   DISPLAY "�桼��̾:"  SPA-OPID
+                   DISPLAY "ユーザ名:"  SPA-OPID
                    IF    ( SYUPARA03-HAKKOFLG  =   4 )
-                       DISPLAY "�����������μ����ѹ�"
-                       DISPLAY "�����ֹ桧" SPA-PTNUM
-                       DISPLAY "����ǯ�" SYU-SRYYMD(1:6)
+                       DISPLAY "月別請求書兼領収書変更"
+                       DISPLAY "患者番号：" SPA-PTNUM
+                       DISPLAY "診療年月：" SYU-SRYYMD(1:6)
                    ELSE
-                       DISPLAY "�������μ����ѹ�"
-                       DISPLAY "�����ֹ桧" SPA-PTNUM
-                       DISPLAY "����ǯ������" SYU-SRYYMD
+                       DISPLAY "請求書兼領収書変更"
+                       DISPLAY "患者番号：" SPA-PTNUM
+                       DISPLAY "診療年月日：" SYU-SRYYMD
                    END-IF
                END-IF
       *
@@ -195,13 +195,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        2001-EDIT-SEC                   SECTION.
       *
            MOVE    ALL "-"         TO  WRK-MEISAI
            DISPLAY WRK-MEISAI
-           DISPLAY "���Ųʡ�"  SYUPARA03-SRYKAMEI
+           DISPLAY "診療科："  SYUPARA03-SRYKAMEI
            MOVE    SPACE           TO  WRK-STR
            MOVE    1               TO  IDXP
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -220,7 +220,7 @@
            END-PERFORM
            DISPLAY WRK-STR(1:IDXP)
       *
-           DISPLAY "�ݸ����ࡧ"  SYUPARA03-HKNCOMBIMEI
+           DISPLAY "保険種類："  SYUPARA03-HKNCOMBIMEI
            MOVE    SPACE           TO  WRK-STR
            MOVE    1               TO  IDXP
            PERFORM VARYING IDX0    FROM    1   BY  1
@@ -255,7 +255,7 @@
                WITH POINTER    IDXP
                END-STRING
            END-PERFORM
-           DISPLAY "��ɼ�ֹ桧" WRK-STR(1:IDXP)
+           DISPLAY "伝票番号：" WRK-STR(1:IDXP)
       *
            MOVE    SYUPARA03-ORG-SEIKYU    TO  WRK-SEIKYUZ
            MOVE    SYUPARA03-ORG-SEIKYU-TAX-SAI
@@ -266,12 +266,12 @@
                +   SYUPARA03-ORG-MISYU
            MOVE    WRK-GOKEI               TO  WRK-GOKEIZ
            MOVE    SYUPARA03-ORG-NYUKIN    TO  WRK-NYUKINZ
-           DISPLAY "�ѹ�����"
-                   "��������ۡ�"     WRK-SEIKYUZ " ��"
-                   "�����ǡʺƷǡˡ�" WRK-SEIKYU-TAX-SAIZ " ��"
-                   "��������ۡ�"     WRK-MISYUZ " ��"
-                   "�������ۡ�"     WRK-GOKEIZ " ��"
-                   "��������ۡ�"     WRK-NYUKINZ " ��"
+           DISPLAY "変更前："
+                   "今回請求額［"     WRK-SEIKYUZ " ］"
+                   "消費税（再掲）［" WRK-SEIKYU-TAX-SAIZ " ］"
+                   "前回請求額［"     WRK-MISYUZ " ］"
+                   "合計請求額［"     WRK-GOKEIZ " ］"
+                   "今回入金額［"     WRK-NYUKINZ " ］"
       *
            MOVE    SYUPARA03-SEIKYU        TO  WRK-SEIKYUZ
            MOVE    SYUPARA03-SEIKYU-TAX-SAI
@@ -282,18 +282,18 @@
                +   SYUPARA03-MISYU
            MOVE    WRK-GOKEI               TO  WRK-GOKEIZ
            MOVE    SYUPARA03-NYUKIN        TO  WRK-NYUKINZ
-           DISPLAY "�ѹ��塧"
-                   "��������ۡ�"     WRK-SEIKYUZ " ��"
-                   "�����ǡʺƷǡˡ�" WRK-SEIKYU-TAX-SAIZ " ��"
-                   "��������ۡ�"     WRK-MISYUZ " ��"
-                   "�������ۡ�"     WRK-GOKEIZ " ��"
-                   "��������ۡ�"     WRK-NYUKINZ " ��"
+           DISPLAY "変更後："
+                   "今回請求額［"     WRK-SEIKYUZ " ］"
+                   "消費税（再掲）［" WRK-SEIKYU-TAX-SAIZ " ］"
+                   "前回請求額［"     WRK-MISYUZ " ］"
+                   "合計請求額［"     WRK-GOKEIZ " ］"
+                   "今回入金額［"     WRK-NYUKINZ " ］"
       *
            .
        2001-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -303,7 +303,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ѥѥ�᥿�ե������ɹ�����
+      *    請求書用パラメタファイル読込処理
       *****************************************************************
        900-BS01-READ-SEC               SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,33 +16,33 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���ԸĿ��ֹ�            COPY  (CPPTMYNUMBER.INC)  *
+      *    患者個人番号            COPY  (CPPTMYNUMBER.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTMYNUMBER-REC.
-      *����
+      *キー
            03  PTMYNUM-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTMYNUM-HOSPNUM         PIC  9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTMYNUM-PTID            PIC  9(10).
-      *�ɣļ���
+      *ＩＤ識別
                05  PTMYNUM-ID-KEY          PIC  X(10).
-      *�ɣ��ֹ�
+      *ＩＤ番号
            03  PTMYNUM-MY-NUMBER           PIC  X(20).
-      *����
+      *備考
            03  PTMYNUM-DESCRIPTION         PIC  X(100).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTMYNUM-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTMYNUM-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTMYNUM-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTMYNUM-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  PTMYNUM-UPHMS               PIC  X(06).
       *

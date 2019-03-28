@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCM16.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ���հ���ɽ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/06/10    NACL�ݿ���    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 受付
+      *  コンポーネント名  : 受付一覧表印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/06/10    NACL−森脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  03/11/06  ������ץ�󥿥����ɲ�
-      *                                     �������ͽ������ʣ��ˤ�
-      * 01.00.01     NACL-¿��Ǽ  05/12/07  MONFUNC�б�
-      *  03.05.00    NACL-¿��Ǽ  07/05/07  ���롼�׿����б�
-      *  04.08.00    NACL-¿��Ǽ  14/08/01  ����ǥ��쥯�ȥ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/11/06  出力先プリンタサブ追加
+      *                                     出力先を予約一覧（７）へ
+      * 01.00.01     NACL-多々納  05/12/07  MONFUNC対応
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.08.00    NACL-多々納  14/08/01  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,7 +39,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       **** SELECT  PRT-FILE        ASSIGN  HC01PARA
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
@@ -48,40 +48,40 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
            COPY    "HCM16.INC".
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ǡ���̾���ΰ�
+      *    印刷データ名称領域
            COPY    "CPCOMMONPRT.INC".
       *
       *v4.8
-      *    ����ǥ��쥯�ȥ��ΰ� 
+      *    一時デイレクトリ領域 
            COPY    "CPASGNPARA.INC".
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(03).
            03  CNT-LINE            PIC 9(02).
            03  CNT-HCM16           PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-DATE            PIC 9(08).
            03  SYS-TIME            PIC 9(08).
       *
-      *    ����ΰ�
+      *    作業領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -92,7 +92,7 @@
            03  WRK-ZZ9             PIC ZZ9.
            03  WRK-ZZZ9            PIC ZZZ9.
       *
-      *    �Խ��Ѻ���ΰ�
+      *    編集用作業領域
        01  WRK-HEN-AREA.
            03  WRK-HEN-DATE.
                05  WRK-HDYY        PIC 9(02).
@@ -107,73 +107,73 @@
                05  WRK-HTMM        PIC 9(02).
       *
       ****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       ****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���Ų��ܾ���
+      *    診療科目情報
            COPY    "CPSK1005.INC".
       *
-      *    ��������
+      *    職員情報
            COPY    "CPSK1010.INC".
       *
-      *    �������ƾ���
+      *    診療内容情報
            COPY    "CPSK1012.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
-      *    ����
+      *    受付
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
       ****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       ****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
       ****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       ****************************************************************
        LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE               DIVISION    USING
                                            SPA-AREA.
       *
       ****************************************************************
-      *    �����
+      *    主処理
       ****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �硡������
+      *    主　　処理
            PERFORM 200-MAIN-SEC
       *
            .
@@ -181,7 +181,7 @@
            EXIT    PROGRAM.
       *
       ****************************************************************
-      *    �������
+      *    初期処理
       ****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -193,7 +193,7 @@
            ACCEPT  SYS-DATE    FROM    DATE
            ACCEPT  SYS-TIME    FROM    TIME
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            PERFORM 900-SYS1031-READ-SEC
       *
            .
@@ -201,26 +201,26 @@
            EXIT.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       ****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO            TO  FLG-UKETUKE
            MOVE    ZERO            TO  CNT-AREA
       *
-      *    �����ɤ߹���
+      *    受付読み込み
            PERFORM 900-UKETUKE-SELECT-SEC
       *
            PERFORM UNTIL   FLG-UKETUKE =   1
-      *        Ģɼ�Խ�<���Ф�>����
+      *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-SEC
-      *        Ģɼ�Խ�<����>����
+      *        帳票編集<明細>処理
                PERFORM 320-BODY-HEN-SEC
-      *        Ģɼ��������
+      *        帳票印刷処理
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
       *
-      *    �����ɤ߹���
+      *    受付読み込み
            PERFORM 900-UKETUKE-CLOSE-SEC
       *
            .
@@ -228,7 +228,7 @@
            EXIT.
       *
       ****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       ****************************************************************
        310-HEAD-HEN-SEC            SECTION.
       *
@@ -257,7 +257,7 @@
            EXIT.
       *
       ****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       ****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
@@ -266,14 +266,14 @@
                ADD     1               TO  CNT-LINE
                ADD     1               TO  CNT-HCM16
       *
-      *        �ֹ�
+      *        番号
                MOVE    CNT-HCM16       TO  WRK-ZZZ9
                MOVE    WRK-ZZZ9        TO  HCM16-NUM(CNT-LINE)
       *
-      *        ����̾��
+      *        患者名称
                MOVE    UKE-NAME        TO  HCM16-NAME(CNT-LINE)
       *
-      *        �����ֹ��Ѵ�
+      *        患者番号変換
                IF      UKE-PTID        NOT =   ZERO
                    INITIALIZE                  ORCSPTIDAREA
                    MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
@@ -286,31 +286,31 @@
                    END-IF
                END-IF
       *
-      *        ���Ų��ɤ߹���
+      *        診療科読み込み
                PERFORM 900-SYS1005-READ-SEC
                MOVE    SYS-1005-SRYKANAME1     TO  HCM16-SRYKA(CNT-LINE)
       *
-      *        ���������ɤ߹���
+      *        診療内容読み込み
                PERFORM 900-SYS1012-READ-SEC
                MOVE    SYS-1012-SRYNAIYODSP    TO  HCM16-NAIYO(CNT-LINE)
       *
-      *        ���������ɤ߹���
+      *        職員情報読み込み
                IF      UKE-DRCD(2:4)   NOT =   SPACE
                    PERFORM 900-SYS1010-READ-SEC
                    MOVE    SYS-1010-NAME   TO  HCM16-DRNAME(CNT-LINE)
                END-IF
       *
-      *        ���ջ���
+      *        受付時間
                MOVE    UKE-UKETIME(1:2)    TO  WRK-HTHH
                MOVE    UKE-UKETIME(3:2)    TO  WRK-HTMM
                MOVE    WRK-HEN-TIME    TO  HCM16-UKETUKE(CNT-LINE)
       *
-      *        ��׻���
+      *        会計時間
                MOVE    UKE-KAIKEITIME(1:2) TO  WRK-HTHH
                MOVE    UKE-KAIKEITIME(3:2) TO  WRK-HTMM
                MOVE    WRK-HEN-TIME    TO  HCM16-KAIKEI(CNT-LINE)
       *
-      *        �����ɤ߹���
+      *        受付読み込み
                MOVE    ZERO            TO  FLG-UKETUKE
                MOVE    ZERO            TO  UKE-UKEID
                PERFORM 900-UKETUKE-FETCH-SEC
@@ -324,18 +324,18 @@
            EXIT.
       *
       ****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       ****************************************************************
        390-PRINT-OUT-SEC           SECTION.
       *
-      *    �ե�����ϣУţ�
+      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM     TO  HC01PARA-HOSPNUM
            MOVE    "HC16"          TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    CNT-PAGE        TO  HC01PARA-CNT
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    HC01PARA            TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
@@ -354,7 +354,7 @@
            MOVE    ASGNPARA        TO  MKPRT-DAT
       *****MOVE    SYS-1031-PRTNM(9)   TO  MKPRT-PRTNM
            MOVE    SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
-           MOVE    "���հ���"          TO  MKPRT-INFO
+           MOVE    "受付一覧"          TO  MKPRT-INFO
            CALL    "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -364,7 +364,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       ****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -381,7 +381,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹���
+      *    システム管理マスタ読み込み
       ****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
@@ -411,7 +411,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ƥ�������������ɤ߹���
+      *    システム管理１００５読み込み
       ****************************************************************
        900-SYS1005-READ-SEC        SECTION.
       *
@@ -435,7 +435,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ƥ�������������ɤ߹���
+      *    システム管理１０１０読み込み
       ****************************************************************
        900-SYS1010-READ-SEC        SECTION.
       *
@@ -459,7 +459,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ƥ�������������ɤ߹���
+      *    システム管理１０１２読み込み
       ****************************************************************
        900-SYS1012-READ-SEC        SECTION.
       *
@@ -483,7 +483,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ƥ�������������ɤ߹���
+      *    システム管理１０３１読み込み
       ****************************************************************
        900-SYS1031-READ-SEC        SECTION.
       *
@@ -499,7 +499,7 @@
       *        INITIALIZE                  SYS-1031-REC
       **** END-IF
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -518,7 +518,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ɤ߹���
+      *    受付読み込み
       ****************************************************************
        900-UKETUKE-SELECT-SEC      SECTION.
       *
@@ -545,7 +545,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �����ɤ߹���
+      *    受付読み込み
       ****************************************************************
        900-UKETUKE-FETCH-SEC       SECTION.
       *
@@ -565,7 +565,7 @@
            EXIT.
       *
       ****************************************************************
-      *    ���գạ̃ϣӣ�
+      *    受付ＣＬＯＳＥ
       ****************************************************************
        900-UKETUKE-CLOSE-SEC       SECTION.
       *
@@ -577,7 +577,7 @@
        900-UKETUKE-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -590,7 +590,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -605,7 +605,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

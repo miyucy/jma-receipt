@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI23.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ´µ¼Ô¾È²ñ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ½èÍý·ë²Ì
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/06/26    MCC¡ÝÂÀÅÄ¡¡   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ‚£è€…ç…§ä¼š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å‡¦ç†çµæžœ
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/06/26    MCCâˆ’å¤ªç”°ã€€   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.01.01    NACL-Æ£¸¶    07/10/19  ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸ÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.01.01    NACL-è—¤åŽŸ    07/10/19  ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä¿å­˜å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,20 +41,20 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    Æþ±¡´µ¼Ô¾È²ñ¶¦ÄÌ£Ó£Ð£Á
+      *    å…¥é™¢æ‚£è€…ç…§ä¼šå…±é€šï¼³ï¼°ï¼¡
            COPY    "I2SCR-SPA".
       *
-      *    Æþ±¡´µ¼Ô¾È²ñÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…¥é™¢æ‚£è€…ç…§ä¼šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "I2COMMON-SPA".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
@@ -77,37 +77,37 @@
            03  CONST-JOBID         PIC 9(07)   VALUE   1.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
-      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä¿å­˜ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSFILESV.INC".
       *
            COPY    "ORCA-BLOB".
       *
-      *    ¥Õ¥¡¥¤¥ëºï½ü¥Ñ¥é¥á¥¿
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -126,7 +126,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -137,7 +137,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ²èÌÌÁ«°Ü
+      *    ç”»é¢é·ç§»
                WHEN      OTHER
                    PERFORM 200-GMNSENI
            END-EVALUATE
@@ -150,7 +150,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -168,15 +168,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    Ìá¤ë
+      *    æˆ»ã‚‹
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ½èÍý¾õÂÖ
+      *    å‡¦ç†çŠ¶æ…‹
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
@@ -187,11 +187,11 @@
            EXIT.
       *     
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸ÍÑºî¶È¥Õ¥¡¥¤¥ëºï½ü
+      *    ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä¿å­˜ç”¨ä½œæ¥­ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-SFILESV-MAX
                INITIALIZE              ORCSFDELAREA
@@ -220,7 +220,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½èÍý³ÎÇ§½èÍý
+      *    å‡¦ç†ç¢ºèªå‡¦ç†
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
@@ -230,7 +230,7 @@
       *
            MOVE    5                   TO  I23-DURATION
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -243,7 +243,7 @@
            IF    ( SJOBKANRI-RETURN    =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "³ºÅö¤¹¤ë½èÍý¤Ï¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "è©²å½“ã™ã‚‹å‡¦ç†ã¯ã‚ã‚Šã¾ã›ã‚“"
                                                TO  I23-MSG
                MOVE    "B01"               TO  MCP-WIDGET
                PERFORM 4901-PUT-CURRENT-WINDOW-SEC
@@ -289,17 +289,17 @@
            MOVE    JOB-YOBI        TO  I23-ERRMSG   (1)
       *
            IF    ( JOB-ENDYMD      =   SPACE )
-               MOVE    "½èÍýÃæ¤Ç¤¹"
+               MOVE    "å‡¦ç†ä¸­ã§ã™"
                                    TO  I23-MSG
            ELSE
                IF    ( JOB-ERRCD   =   SPACE )
-                   MOVE    "½èÍý¤ÏÀµ¾ï¤Ë½ªÎ»¤·¤Þ¤·¤¿"
+                   MOVE    "å‡¦ç†ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ"
                                                TO  I23-MSG
                ELSE
                    STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                           "¡Ú"        DELIMITED  BY  SIZE
+                           "ã€"        DELIMITED  BY  SIZE
                           JOB-SHELLMSG DELIMITED  BY  SPACE
-                          "¡Û"         DELIMITED  BY  SIZE
+                          "ã€‘"         DELIMITED  BY  SIZE
                    INTO  I23-MSG
                    END-STRING
                END-IF
@@ -317,7 +317,7 @@
                        IF      SPA-I23-FILESV-CHK-FLG  =   ZERO
                            PERFORM 4902-FILE-INFO-CHK-SEC
                        ELSE
-      *                    ¥Õ¥¡¥¤¥ë¥¨¥ó¥È¥ê½èÍý(¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸)
+      *                    ãƒ•ã‚¡ã‚¤ãƒ«ã‚¨ãƒ³ãƒˆãƒªå‡¦ç†(ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä¿å­˜)
                            MOVE    1               TO  SPA-SFILESV-IDX 
                            PERFORM 3001-FILEENTRY-SEC
                            IF      FLG-END         =   1
@@ -335,7 +335,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼¡²èÌÌºÆÉ½¼¨½èÍý
+      *    æ¬¡ç”»é¢å†è¡¨ç¤ºå‡¦ç†
       *****************************************************************
        4901-PUT-CURRENT-WINDOW-SEC     SECTION.
       *
@@ -352,7 +352,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸¾ðÊó¥Á¥§¥Ã¥¯½èÍý
+      *    ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä¿å­˜æƒ…å ±ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4902-FILE-INFO-CHK-SEC          SECTION.
       *
@@ -398,7 +398,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥¨¥ó¥È¥ê½èÍý(¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸)
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ã‚¨ãƒ³ãƒˆãƒªå‡¦ç†(ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä¿å­˜)
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
@@ -428,7 +428,7 @@
        3001-FILEENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    À¾ÎñÏÂÎñÊÔ½¸½èÍý
+      *    è¥¿æš¦å’Œæš¦ç·¨é›†å‡¦ç†
       *****************************************************************
        700-SEIWA-HEN-SEC             SECTION.
       *
@@ -458,7 +458,7 @@
        700-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

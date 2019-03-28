@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    Æþ±¡ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊó
+      *    å…¥é™¢ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±
       ******************************************************************
         01 SNTENSU-AREA.
            03  SNTENSU-BASEYMD                 PIC X(8).
@@ -24,11 +24,11 @@
            03  SNTENSU-RETURN-AREA.
                05  SNTENSU-KBNNUM              PIC 9(3).
                05  SNTENSU-EDANUM              PIC 9(2).
-      *        ½ÐÍè¹âÆþ±¡ÎÁ¶èÊ¬ 1:½ÐÍè¹âÆþ±¡ÎÁ
+      *        å‡ºæ¥é«˜å…¥é™¢æ–™åŒºåˆ† 1:å‡ºæ¥é«˜å…¥é™¢æ–™
                05  SNTENSU-DEKIDAKAKBN         PIC X(1).
-      *        ÆÃÊÌÆþ±¡´ðËÜÎÁÅù¶èÊ¬
-      *          1:ÆÃÊÌÆþ±¡´ðËÜÎÁ
-      *          2:·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»
-      *          3:Ìë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ
-      *          4:½Å¾É´µ¼Ô³ä¹çÆÃÊÌÆþ±¡´ðËÜÎÁ
+      *        ç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç­‰åŒºåˆ†
+      *          1:ç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™
+      *          2:æœˆå¹³å‡å¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—
+      *          3:å¤œå‹¤æ™‚é–“ç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™
+      *          4:é‡ç—‡æ‚£è€…å‰²åˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™
                05  SNTENSU-TOKUBETSUKBN        PIC X(1).

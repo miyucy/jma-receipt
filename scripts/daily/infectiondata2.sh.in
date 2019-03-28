@@ -10,16 +10,16 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ´¶À÷¾É¥Ç¡¼¥¿ºîÀ®
+#    æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿ä½œæˆ
 #        $1  GMNID (K03, K08, C02)
 #        $2  HOSPNUM
 #        $3  HOSPID
-#        $4  SYORIFLG (0:¿·µ¬¡¢1:ÄûÀµ)
-#        $5  NYUGAI (1:Æþ±¡¡¢2:³°Íè)
+#        $4  SYORIFLG (0:æ–°è¦ã€1:è¨‚æ­£)
+#        $5  NYUGAI (1:å…¥é™¢ã€2:å¤–æ¥)
 #        $6  PTID
 #        $7  SRYYMD
 #        $8  SRYKA
-#        $9  BEDFLG (0:ÉÂ¾²¤Ê¤·¡¢1:ÉÂ¾²¤¢¤ê)
+#        $9  BEDFLG (0:ç—…åºŠãªã—ã€1:ç—…åºŠã‚ã‚Š)
 #-------------------------------------------#
 
 GMNID=${1}
@@ -58,7 +58,7 @@ rm -f ${LOG_FILE}
 echo "SYORIBI [ $SRYYMD ]"
 echo "SYORIFLG [ $SYORIFLG ]"
 
-#´¶À÷¾É¥Ç¡¼¥¿ºîÀ®
+#æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿ä½œæˆ
 
 rm -f $ERRFILE
 
@@ -81,7 +81,7 @@ if [ -e $INFECFILE ]; then
   fi
 fi
 
-echo "´¶À÷¾É¥Ç¡¼¥¿Á÷¿®½èÍý µ¯Æ°"
+echo "æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿é€ä¿¡å‡¦ç† èµ·å‹•"
 $DASUPLOAD ${HOSPNUM} ${HOSPID} 2 &
 
 exit 0

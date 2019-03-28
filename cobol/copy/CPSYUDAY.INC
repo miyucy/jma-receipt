@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���̼�Ǽ�ޥ���  COPY (CPSYUDAY.INC)                   *
+      *    日別収納マスタ  COPY (CPSYUDAY.INC)                   *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SYUDAY-REC.
            03  SDAY-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  SDAY-HOSPNUM              PIC 9(2).
-      *������ʬ
+      *入外区分
                05  SDAY-NYUGAIKBN           PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SDAY-PTID                PIC  9(10).
-      *��ɼ�ֹ�
+      *伝票番号
                05  SDAY-DENPNUM             PIC  9(07).
-      *����ǯ��
+      *請求年月
            03  SDAY-SKYYM                   PIC  X(06).
-      *��ɼ������ʬ�ʣ����ౡ�������������������
-      *              ���������쥻�ץ��ѥ��ߡ���
+      *伝票作成区分（１：退院時作成　２：定期請求
+      *              ３：入院レセプト用ダミー）
            03  SDAY-CREATEKBN               PIC  X(01).
-      *���ž���ơ��֥�
+      *診療情報テーブル
            03  SDAY-DAY-AREA.
-      *        ���ž���ʣ������飳������
+      *        診療情報（１日から３１日）
                05  SDAY-HKNTEN1         PIC S9(07).
                05  SDAY-SANTEIFLG1-1    PIC  9(01).
                05  SDAY-FTNMONEY1-1     PIC S9(05).
@@ -692,7 +692,7 @@
                05  SDAY-COMPFTNWK31-4   PIC S9(05).
                05  SDAY-SKJFTN31-4      PIC S9(05).
            03  SDAY-DAY-AREA-R    REDEFINES    SDAY-DAY-AREA.
-      *        ���ž���ơ��֥�
+      *        診療情報テーブル
                05  SDAY-TBL               OCCURS   31.
                    07  SDAY-HKNTEN        PIC S9(07).
                    07  SDAY-TBL2          OCCURS    4.
@@ -702,17 +702,17 @@
                      09  SDAY-COMPFTNWK   PIC S9(05).
                      09  SDAY-SKJFTN      PIC S9(05).
       *
-      *���̼�Ǽ�ե饰
+      *日別収納フラグ
            03  SDAY-DAYINFFLG               PIC  X(01).
       *
-      *ü���ɣ�
+      *端末ＩＤ
            03  SDAY-TERMID                  PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SDAY-OPID                    PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SDAY-CREYMD                  PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SDAY-UPYMD                   PIC  X(08).
-      *��������
+      *更新時間
            03  SDAY-UPHMS                   PIC  X(06).
       *

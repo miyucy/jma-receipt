@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,28 +18,28 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGH02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �������
-      *  ����ݡ��ͥ��̾  : ��������������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  08/12/22    NaCl��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 請求管理
+      *  コンポーネント名  : 請求管理−返戻情報設定
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  08/12/22    NaCl−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *  04.06.02    NACL-ƣ��    10/12/20  �ݸ��Ԥ���������б�
-      *  04.06.03    NACL-ƣ��    11/02/01  ���ݸ����ʤ���硢��Ƹ�ݸ�(53)
-      *                                     �ϸ���ñ�ȤΥ쥻�ץȤȤ���
-      *  04.06.04    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *  04.06.02    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.03    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
+      *  04.06.04    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加
       *
-      *  04.07.01    NACL-ƣ��    13/10/07  ϫ�ҥ쥻�������б�
+      *  04.07.01    NACL-藤原    13/10/07  労災レセ電返戻対応
       *
-      *  04.08.01    NACL-ƣ��    16/08/08  �ҳ�����ʬ�������оݤȸ����оݡ�
-      *                                     �쥻�ץȤ�ʬ���б�
-      *  04.08.02    NACL-ƣ��    18/03/28  ʿ������ǯ��������б�
+      *  04.08.01    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
+      *  04.08.02    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,22 +52,22 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �������
+      *    請求管理
            COPY    "H01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "H01SCR-SPA".
       *
-      *    ���������ǡ���
+      *    設定済返戻データ
            02  SPA-HENREI-B-REC.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
                                    BY          //SPA-HENREI-B-//.
       *
-      *    �оݰ���������ǡ�����
+      *    対象一覧用返戻データ　
            02  TBL-HENREI-B-REC    OCCURS  30.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -75,7 +75,7 @@
            02  TBL-HENREI-B-ERR    PIC 9(01)   OCCURS  30.
            02  TBL-HENREI-B-MAX    PIC 9(02).
       *
-      *    �����о�����ǡ���
+      *    更新対象返戻データ
            02  WRK-HENREI-B-REC.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -83,21 +83,21 @@
       *
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
            03  FLG-ROW             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDZZ                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-Z9              PIC Z9.
            03  WRK-SELNO           PIC 9(02).
@@ -114,7 +114,7 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
-      *    ���Ϲ���̾
+      *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
       *
        01  WRK-HEN-AREA.
@@ -130,27 +130,27 @@
         01  WRK-CONS-HENREI-B-MAX  PIC 9(02)   VALUE   30. 
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPRCF010.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -174,7 +174,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -188,15 +188,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -209,21 +209,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "HERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-HIDCD       NOT =   SPACE
                    PERFORM 520-HIDSET-SEC
@@ -244,7 +244,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -260,7 +260,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̽���
+      *    確認画面処理
       *****************************************************************
        310-HID1-SET-SEC            SECTION.
       *
@@ -275,11 +275,11 @@
                            WHEN    ZERO
                                MOVE    99          TO  SPA-H02GMN-CUR
                            WHEN    1
-      *                        �������������
+      *                        既に返戻設定済
       *****                    MOVE    "0002"      TO  SPA-ERRCD
                               MOVE    99           TO  SPA-H02GMN-CUR
                            WHEN    2
-      *                        �ƺ�����
+      *                        再再請求
                                MOVE    SPACE       TO  SPA-HID1-FLG
                                MOVE    "1003"      TO  SPA-HIDCD
                                GO  TO  310-HID1-SET-EXT
@@ -302,7 +302,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        320-SPASET-SEC              SECTION.
       *
@@ -347,10 +347,10 @@
                                                           (IDY)
                EVALUATE    SPA-H02NAI-TTEISYUTUSAKI2 (IDY)
                    WHEN    "0"
-                       MOVE    "��"    TO  SPA-H02GMN-TTEISYUTUSAKI2
+                       MOVE    "　"    TO  SPA-H02GMN-TTEISYUTUSAKI2
                                                               (IDY)
                    WHEN    "1"
-                       MOVE    "��"    TO  SPA-H02GMN-TTEISYUTUSAKI2
+                       MOVE    "保"    TO  SPA-H02GMN-TTEISYUTUSAKI2
                                                               (IDY)
                END-EVALUATE
       *
@@ -359,9 +359,9 @@
                                                           (IDY)
                EVALUATE    SPA-H02NAI-TNYUGAIKBN    (IDY)
                    WHEN    "1"
-                       MOVE    "��"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
+                       MOVE    "入"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
                    WHEN    "2"
-                       MOVE    "��"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
+                       MOVE    "外"    TO  SPA-H02GMN-TNYUGAIKBN  (IDY)
                END-EVALUATE
       *
                EVALUATE    TBL-HENREI-B-TEISYUTUSAKI (IDZZ)
@@ -369,19 +369,19 @@
                        EVALUATE    TBL-HENREI-B-RECESYUBETU(IDZZ)
                            WHEN    "7101"
                            WHEN    "7091"
-                               MOVE    "���¡���̳"
+                               MOVE    "傷病・業務"
                                    TO  SPA-H02GMN-TRECESYUBETU    (IDY)
                            WHEN    "7102"
                            WHEN    "7092"
-                               MOVE    "���¡��̶�"
+                               MOVE    "傷病・通勤"
                                    TO  SPA-H02GMN-TRECESYUBETU    (IDY)
                            WHEN    "7071"
                            WHEN    "7081"
-                               MOVE    "û������̳"
+                               MOVE    "短期・業務"
                                    TO  SPA-H02GMN-TRECESYUBETU    (IDY)
                            WHEN    "7072"
                            WHEN    "7082"
-                               MOVE    "û�����̶�"
+                               MOVE    "短期・通勤"
                                    TO  SPA-H02GMN-TRECESYUBETU    (IDY)
                            WHEN    OTHER
                                MOVE    TBL-HENREI-B-RECESYUBETU(IDZZ)
@@ -395,8 +395,8 @@
                MOVE    TBL-HENREI-B-HKNJANUM   (IDZZ)
                                    TO  SPA-H02GMN-THKNJANUM       (IDY)
       *
-      *        ����ñ�Ȥ�������������αˮ�����ΤȤ���ô���ֹ桢
-      *        ������ֹ�򥻥å�
+      *        公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *        受給者番号をセット
                IF      TBL-HENREI-B-RECESYUBETU(IDZZ)
                                        =   "1211" OR "1212"
                    IF    ( TBL-HENREI-B-FTNNUM (IDZZ 1) (1:2)
@@ -404,7 +404,7 @@
                                            OR  "53"   )
                        STRING  TBL-HENREI-B-FTNNUM (IDZZ 1)
                                                DELIMITED   BY  SPACE
-                               "��"            DELIMITED   BY  SIZE
+                               "　"            DELIMITED   BY  SIZE
                                TBL-HENREI-B-JKYNUM  (IDZZ 1)
                                                DELIMITED   BY  SPACE
                                        INTO    SPA-H02GMN-TKIGO   (IDY)
@@ -413,7 +413,7 @@
                ELSE
                    STRING  TBL-HENREI-B-KIGO (IDZZ)
                                                DELIMITED   BY  SPACE
-                           "��"            DELIMITED   BY  SIZE
+                           "　"            DELIMITED   BY  SIZE
                            TBL-HENREI-B-NUM  (IDZZ)
                                            DELIMITED   BY  SPACE
                                            INTO    SPA-H02GMN-TKIGO(IDY)
@@ -421,23 +421,23 @@
                END-IF
                EVALUATE    TBL-HENREI-B-RECEIPT-KBN (IDZZ)(1:1)
                    WHEN    "1"
-                       MOVE    "Ϸʻ"      TO  SPA-H02GMN-TRECEIPT-KBN
+                       MOVE    "老併"      TO  SPA-H02GMN-TRECEIPT-KBN
                                                                   (IDY)
                    WHEN    "2"
-                       MOVE    "Ϸ��"      TO  SPA-H02GMN-TRECEIPT-KBN
+                       MOVE    "老健"      TO  SPA-H02GMN-TRECEIPT-KBN
                                                                   (IDY)
                    WHEN    "3"
-                       MOVE    "��ʻ"      TO  SPA-H02GMN-TRECEIPT-KBN
+                       MOVE    "医併"      TO  SPA-H02GMN-TRECEIPT-KBN
                                                                   (IDY)
                    WHEN    "4"
-                       MOVE    "����"      TO  SPA-H02GMN-TRECEIPT-KBN
+                       MOVE    "医療"      TO  SPA-H02GMN-TRECEIPT-KBN
                                                                   (IDY)
                END-EVALUATE
                EVALUATE    TBL-HENREI-B-DISASTER (IDZZ)
                    WHEN    "00"
                        CONTINUE
                    WHEN    OTHER
-                       MOVE    "��"            TO  SPA-H02GMN-TDISASTER
+                       MOVE    "災"            TO  SPA-H02GMN-TDISASTER
                                                                   (IDY)
                END-EVALUATE
                MOVE    TBL-HENREI-B-HR-MSG (IDZZ)
@@ -463,7 +463,7 @@
                                    TO  SPA-H02NAI-TS-MAKE-FLG    (IDY)
                    IF      SPA-H02NAI-TS-MAKE-FLG    (IDY)
                                    =   1
-                       MOVE    "��"    TO  SPA-H02GMN-TS-MAKE-FLG(IDY)
+                       MOVE    "○"    TO  SPA-H02GMN-TS-MAKE-FLG(IDY)
                    END-IF
       *
                    MOVE    TBL-HENREI-B-S-HENREI-SIJI-FLG  (IDZZ IDX)
@@ -471,7 +471,7 @@
                                                                  (IDY)
                    IF      SPA-H02NAI-TS-HENREI-SIJI-FLG (IDY)
                                    =   1
-                       MOVE    "��"    TO  SPA-H02GMN-TS-HENREI-SIJI-FLG
+                       MOVE    "○"    TO  SPA-H02GMN-TS-HENREI-SIJI-FLG
                                                                  (IDY)
                    END-IF
       *
@@ -487,10 +487,10 @@
                                    TO  SPA-H02NAI-TS-NYUGAIKBN    (IDY)
                    EVALUATE    SPA-H02NAI-TS-NYUGAIKBN (IDY)
                        WHEN    "1"
-                           MOVE    "��"
+                           MOVE    "入"
                                        TO  SPA-H02GMN-TS-NYUGAIKBN (IDY)
                        WHEN    "2"
-                           MOVE    "��"
+                           MOVE    "外"
                                        TO  SPA-H02GMN-TS-NYUGAIKBN (IDY)
                    END-EVALUATE
                    MOVE    TBL-HENREI-B-S-RECEKA           (IDZZ IDX)
@@ -502,19 +502,19 @@
                            EVALUATE    SPA-H02NAI-TS-RECESYUBETU  (IDY)
                                WHEN    "7101"
                                WHEN    "7091"
-                                   MOVE    "���¡���̳"    TO
+                                   MOVE    "傷病・業務"    TO
                                        SPA-H02GMN-TS-RECESYUBETU  (IDY)
                                WHEN    "7102"
                                WHEN    "7092"
-                                   MOVE    "���¡��̶�"    TO
+                                   MOVE    "傷病・通勤"    TO
                                        SPA-H02GMN-TS-RECESYUBETU  (IDY)
                                WHEN    "7071"
                                WHEN    "7081"
-                                   MOVE    "û������̳"    TO
+                                   MOVE    "短期・業務"    TO
                                        SPA-H02GMN-TS-RECESYUBETU  (IDY)
                                WHEN    "7072"
                                WHEN    "7082"
-                                   MOVE    "û�����̶�"    TO
+                                   MOVE    "短期・通勤"    TO
                                        SPA-H02GMN-TS-RECESYUBETU  (IDY)
                                WHEN    OTHER
                                    MOVE
@@ -541,16 +541,16 @@
       *
                    EVALUATE    TBL-HENREI-B-S-RECEIPT-KBN(IDZZ IDX)(1:1)
                        WHEN    "1"
-                           MOVE    "Ϸʻ"          TO
+                           MOVE    "老併"          TO
                                        SPA-H02GMN-TS-RECEIPT-KBN (IDY)
                        WHEN    "2"
-                           MOVE    "Ϸ��"          TO
+                           MOVE    "老健"          TO
                                        SPA-H02GMN-TS-RECEIPT-KBN (IDY)
                        WHEN    "3"
-                           MOVE    "��ʻ"          TO
+                           MOVE    "医併"          TO
                                        SPA-H02GMN-TS-RECEIPT-KBN (IDY)
                        WHEN    "4"
-                           MOVE    "����"          TO
+                           MOVE    "医療"          TO
                                        SPA-H02GMN-TS-RECEIPT-KBN (IDY)
                    END-EVALUATE
       *
@@ -560,7 +560,7 @@
                            MOVE    SPACE           TO
                                        SPA-H02GMN-TS-DISASTER (IDY)
                        WHEN    OTHER
-                           MOVE    "��"            TO
+                           MOVE    "災"            TO
                                        SPA-H02GMN-TS-DISASTER (IDY)
                    END-EVALUATE
                END-PERFORM
@@ -568,11 +568,11 @@
       *
            MOVE    IDY                 TO  SPA-H02GMN-MAX
       *
-      *    ����ͽ���������
+      *    設定予定欄の設定
            IF    ( SPA-H01-SYOKBN      =   3    )
            AND   ( WRK-HENREI-B-HOSPNUM
                                        >   ZERO )
-               MOVE    "����ͽ�ꡧ"    TO  SPA-H02GMN-LABEL
+               MOVE    "設定予定："    TO  SPA-H02GMN-LABEL
                MOVE    WRK-HENREI-B-SYORIYM
                                        TO  WRK-SYMD  (1:6)
                MOVE    "01"            TO  WRK-SYMD  (7:2) 
@@ -581,17 +581,17 @@
                                        TO  SPA-H02GMN-SYORIYM
                EVALUATE    WRK-HENREI-B-NYUGAIKBN
                    WHEN    "1"
-                       MOVE    "����"      TO  SPA-H02GMN-NYUGAIKBN
+                       MOVE    "入院"      TO  SPA-H02GMN-NYUGAIKBN
                    WHEN    "2"
-                       MOVE    "������"    TO  SPA-H02GMN-NYUGAIKBN
+                       MOVE    "入院外"    TO  SPA-H02GMN-NYUGAIKBN
                END-EVALUATE
                MOVE    WRK-HENREI-B-RECESYUBETU
                                        TO  SPA-H02GMN-RECESYUBETU
                MOVE    WRK-HENREI-B-HKNJANUM
                                        TO  SPA-H02GMN-HKNJANUM
       *
-      *        ����ñ�Ȥ�������������αˮ�����ΤȤ���ô���ֹ桢
-      *        ������ֹ�򥻥å�
+      *        公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *        受給者番号をセット
                IF      WRK-HENREI-B-RECESYUBETU
                                        =   "1211" OR "1212"
                    IF    ( WRK-HENREI-B-FTNNUM (1) (1:2)
@@ -599,7 +599,7 @@
                                            OR  "53" )
                        STRING  WRK-HENREI-B-FTNNUM (1)
                                                DELIMITED   BY  SPACE
-                               "��"            DELIMITED   BY  SIZE
+                               "　"            DELIMITED   BY  SIZE
                                WRK-HENREI-B-JKYNUM (1)
                                                DELIMITED   BY  SPACE
                                        INTO    SPA-H02GMN-KIGO
@@ -607,7 +607,7 @@
                    END-IF
                ELSE
                    STRING  WRK-HENREI-B-KIGO   DELIMITED   BY  SPACE
-                           "��"                DELIMITED   BY  SIZE
+                           "　"                DELIMITED   BY  SIZE
                            WRK-HENREI-B-NUM    DELIMITED   BY  SPACE
                                                INTO    SPA-H02GMN-KIGO
                    END-STRING
@@ -634,16 +634,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE               TO  SPA-H02-FLG
                    PERFORM 210-BACK
-      *        ����
+      *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KAKUTEI-SEC
            END-EVALUATE
@@ -652,7 +652,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���ý���
+      *    会話処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -668,7 +668,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ͻ���
+      *    一括入力処理
       *****************************************************************
        400-ENTRY-SYORI-SEC       SECTION.
       *
@@ -676,28 +676,28 @@
            MOVE    ZERO                TO  SPA-H02GMN-CUR
       *
            MOVE    ZERO                TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            .
        400-ENTRY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
            IF      FLG-TOUROKU         =   1
-      *        ������
+      *        更新前
                PERFORM 4101-KAKUTEI-CHK-SEC
            END-IF
       *
@@ -705,7 +705,7 @@
        410-INPUT-CHK-EXT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -720,7 +720,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
@@ -734,7 +734,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ����Ͻ���
+      *    選択番号入力処理
       *****************************************************************
        41021-SELNUM-CHK-SEC          SECTION.
       *
@@ -758,7 +758,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥǡ����������
+      *    対象データ選択処理
       *****************************************************************
        41011-HENREILIST-SEL-SEC               SECTION.
       * 
@@ -772,11 +772,11 @@
                    WHEN    ZERO
                        MOVE    99              TO  SPA-H02GMN-CUR
                    WHEN    1
-      *                �������������
+      *                既に返戻設定済
       *****            MOVE    "0002"              TO  SPA-ERRCD
                        CONTINUE
                    WHEN    2
-      *                �ƺ�����
+      *                再再請求
                        MOVE    "1003"              TO  SPA-HIDCD
                END-EVALUATE
            END-IF 
@@ -792,17 +792,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥǡ��������å�����
+      *    対象データチェック処理
       *****************************************************************
        410111-HENREILST-SEL-CHK-SEC               SECTION.
       *
-      *    ���򤷤�����ǯ���꿷��������ǯ��˥ǡ���������Ȥ�
+      *    選択した処理年月より新しい処理年月にデータがあるとき
            IF    ( IDX                 >   1                          )
            AND   ( TBL-HENREI-B-SYORIYM (1)
                                        >   TBL-HENREI-B-SYORIYM (IDX) )
            AND   (  SPA-RECE10-TEISYUTUSAKI
                                        =   1                          ) 
-      *        ���ݤΤȤ���̵���˥���������ɽ��
+      *        社保のときは無条件にダイアログ表示
                MOVE    "1007"          TO  SPA-HIDCD
                GO  TO  410111-HENREILST-SEL-CHK-EXT
            END-IF
@@ -827,7 +827,7 @@
                END-IF
            END-PERFORM         
       *
-      *    ���򤷤�����ǯ���꿷��������ǯ��˾��ΰ��פ���ǡ��������뤫
+      *    選択した処理年月より新しい処理年月に条件の一致するデータがあるか
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       TBL-HENREI-B-MAX
                    OR      TBL-HENREI-B-SYORIYM (IDZZ)
@@ -850,7 +850,7 @@
                        END-IF
                    END-IF
                ELSE
-      *            �㤦���������򤷤��Ȥ�
+      *            違う提出先を選択したとき
                    IF  ( ( SPA-RECE10-TEISYUTUSAKI
                                              =   2   ) AND
                          ( TBL-HENREI-B-RECESYUBETU (IDX)(2:1)
@@ -871,7 +871,7 @@
                            GO  TO  410111-HENREILST-SEL-CHK-EXT
                        END-IF
                    ELSE
-      *                Ʊ���ݸ��Ԥ����򤷤��Ȥ�
+      *                同じ保険者を選択したとき
                        IF    ( TBL-HENREI-B-HKNJANUM    (IDX)
                                            =   SPA-RECE10-HKNJANUM )
                            IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
@@ -900,7 +900,7 @@
                END-IF
            END-PERFORM         
       *
-      *    ����ǡ����Υ����å�
+      *    選択データのチェック
            IF      SPA-RECE10-HKNNUM   =   SPACE
                IF    ( TBL-HENREI-B-RECESYUBETU (IDX)
                                        =   SPA-RECE10-RECESYUBETU )
@@ -917,7 +917,7 @@
                END-IF
            END-IF
       *
-      *    Ʊ����ݸ�����Υǡ���������Ȥ�
+      *    同一の保険情報のデータがあるとき
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       TBL-HENREI-B-MAX
                    OR      TBL-HENREI-B-SYORIYM (IDZZ)
@@ -929,7 +929,7 @@
                                        >   TBL-HENREI-B-SYORIYM (IDX)
                        CONTINUE
                    ELSE
-      *                ���򤷤�����ǯ���Ʊ������ǯ��˥ǡ���������Ȥ�
+      *                選択した処理年月と同じ処理年月にデータがあるとき
                        IF      SPA-RECE10-HKNNUM
                                            =   SPACE
                            IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
@@ -952,7 +952,7 @@
                END-IF
            END-PERFORM         
       *
-      *    ���򤷤�����ǯ��˾��ΰ��פ���¾�Υǡ��������뤫
+      *    選択した処理年月に条件の一致する他のデータがあるか
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       TBL-HENREI-B-MAX
                    OR      TBL-HENREI-B-SYORIYM (IDZZ)
@@ -978,7 +978,7 @@
                            END-IF
                        END-IF
                    ELSE
-      *              �㤦���������򤷤��Ȥ�
+      *              違う提出先を選択したとき
                      IF  ( ( SPA-RECE10-TEISYUTUSAKI
                                              =   2   ) AND
                            ( TBL-HENREI-B-RECESYUBETU (IDX)(2:1)
@@ -999,7 +999,7 @@
                            GO  TO  410111-HENREILST-SEL-CHK-EXT
                        END-IF
                      ELSE
-      *                Ʊ���ݸ��Ԥ����򤷤��Ȥ�
+      *                同じ保険者を選択したとき
                        IF    ( TBL-HENREI-B-HKNJANUM    (IDX)
                                            =   SPA-RECE10-HKNJANUM )
                            IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
@@ -1033,7 +1033,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        4102-HENREILIST-SEL-SEC               SECTION.
       *
@@ -1072,7 +1072,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ܥ��󲡲��������å�����
+      *    確定ボタン押下時チェック処理
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
@@ -1081,7 +1081,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������
+      *    戻る処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -1100,12 +1100,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    確定処理
       *****************************************************************
        450-KAKUTEI-SEC                SECTION.
       *
            MOVE    1                  TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  450-KAKUTEI-EXT
@@ -1118,7 +1118,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1145,7 +1145,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1254,7 +1254,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1277,7 +1277,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC             SECTION.
       *
@@ -1293,7 +1293,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1301,16 +1301,16 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ����ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "������������ѤǤ�"    TO  SPA-ERRMSG
+                   MOVE    "既に返戻設定済です"    TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE
-                  "���򤵤줿�ǡ�����������դ�����ǡ�����¸�ߤ��ޤ�"
+                  "選択されたデータより後の日付の返戻データが存在します"
                                                    TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE
-                  "�ݸ����󤬰��פ����̤�����ǡ�����¸�ߤ��ޤ�"
+                  "保険情報が一致する別の返戻データが存在します"
                                                    TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -1334,7 +1334,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ��å�����ɽ������
+      *    確認メッセージ表示処理
       *****************************************************************
        520-HIDSET-SEC              SECTION.
       *
@@ -1344,84 +1344,84 @@
       *
            EVALUATE    SPA-HIDCD
                WHEN    "1001"
-                   STRING  "�ݸ����ֹ椬���פ����̤�"
+                   STRING  "保険者番号が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "1002"
-                   STRING  "�쥻�ץȼ��̤����פ����̤�"
+                   STRING  "レセプト種別が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "1003"
                    MOVE
-                   "��������ʬ�����᤬�Ԥʤ��Ƥ��ޤ������򤷤ޤ�����"
+                   "既に返戻分再請求が行なわれていますが選択しますか。"
                                         TO  HID1-ID1MSG
                WHEN    "1004"
-                   STRING  "��ô���ֹ椬���פ����̤�"
+                   STRING  "負担者番号が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "1005"
-                   STRING  "���椬���פ����̤�"
+                   STRING  "記号が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "1006"
-                   STRING  "����褬���פ����̤�"
+                   STRING  "提出先が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "1007"
-                   STRING  "���򤵤줿�ǡ�����������դ�����ǡ�����"
+                   STRING  "選択されたデータより後の日付の返戻データが"
                                         DELIMITED  BY  SIZE 
-                           "¸�ߤ��ޤ�����������Ǥ�����"
+                           "存在しますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "2001"
-                   STRING  "���򤵤줿�ǡ�����������դ�����ǡ�����"
+                   STRING  "選択されたデータより後の日付の返戻データに"
                                         DELIMITED  BY  SIZE 
-                           "�ݸ����ֹ椬���פ����̤�����ǡ����������"
+                           "保険者番号が一致する別の返戻データがありま"
                                         DELIMITED  BY  SIZE 
-                           "������������Ǥ�����"
+                           "すがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "2002"
-                   STRING  "���򤵤줿�ǡ�����������դ�����ǡ�����"
+                   STRING  "選択されたデータより後の日付の返戻データに"
                                         DELIMITED  BY  SIZE 
-                           "�쥻�ץȼ��̤����פ����̤�"
+                           "レセプト種別が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "2004"
-                   STRING  "���򤵤줿�ǡ�����������դ�����ǡ�����"
+                   STRING  "選択されたデータより後の日付の返戻データに"
                                         DELIMITED  BY  SIZE 
-                           "��ô���ֹ椬���פ����̤�"
+                           "負担者番号が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "2006"
-                   STRING  "���򤵤줿�ǡ�����������դ�����ǡ�����"
+                   STRING  "選択されたデータより後の日付の返戻データに"
                                         DELIMITED  BY  SIZE 
-                           "����褬���פ����̤�"
+                           "提出先が一致する別の"
                                         DELIMITED  BY  SIZE 
-                           "����ǡ���������ޤ�����������Ǥ�����"
+                           "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
@@ -1444,7 +1444,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -1465,7 +1465,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1476,7 +1476,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1488,7 +1488,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1500,7 +1500,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1513,7 +1513,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

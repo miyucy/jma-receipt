@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,93 +16,93 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.08.00     NACL-¿��Ǽ  15/11/XX  ���顼���ť������ɲ�
-      * 05.00.00     NACL-¿��Ǽ  17/11/XX  �����б��ɲ�
-      * 05.00.00     NACL-¿��Ǽ  19/01/XX  ʣ�����ݸ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-多々納  15/11/XX  エラー診療コード追加
+      * 05.00.00     NACL-多々納  17/11/XX  入院対応追加
+      * 05.00.00     NACL-多々納  19/01/XX  複数科保険対応
       *****************************************************************
       ******************************************************************
-      *    ���У����ӽ�λ�ǡ����Խ����֥ѥ�᥿�ʰ��β���
+      *    ＡＰＩ中途終了データ編集サブパラメタ（一体化）
       *                                         (CPORAPI021SUB1V3.INC)
       ******************************************************************
        01  ORAPI021SUB1V3AREA.
-      *    ������ʬ
+      *    処理区分
            03  ORAPISUB01-SYORIKBN      PIC X(03).
-      *    ���ֳ��û���ʬ
+      *    時間外加算区分
            03  ORAPISUB01-TIMEFLG       PIC X(01).
-      *    �ݸ�����
+      *    保険情報
            03  ORAPISUB01-HKNCOMBI-AREA.
-      *        �ݸ��ȹ礻�ֹ�
+      *        保険組合せ番号
                05  ORAPISUB01-HKNCOMBI     PIC X(04).
       *
-      *    ��������
+      *    診療内容
            03  ORAPISUB01-SRYACT-AREA.
                05  ORAPISUB01-MDC-INFO         OCCURS  110 TIMES.
       *!!
       *H31.01
-      *            �ǡ�����ʬ��DEP��ʣ�����Ųʡ�COM:�ݸ��ȹ礻�ֹ�Υ쥳���ɡ�
+      *            データ区分（DEP：複数診療科、COM:保険組合せ番号のレコード）
                    07  ORAPISUB01-MDC-DATA-KBN         PIC X(03).
-      *            �ݸ��ȹ礻�ֹ�
+      *            保険組合せ番号
                    07  ORAPISUB01-MDC-COMBINATION      PIC X(04).
-      *            ���Ų�
+      *            診療科
                    07  ORAPISUB01-MDC-DEP-CODE         PIC X(02).
-      *            �ɥ�����
+      *            ドクター
                    07  ORAPISUB01-MDC-DR-CODE          PIC X(05).
       *!!
-      *            ���ż��̶�ʬ
+      *            診療種別区分
                    07  ORAPISUB01-MDC-CLASS-KBN    PIC X(2).
-      *            ���ż��̶�ʬ
+      *            診療種別区分
                    07  ORAPISUB01-MDC-CLASS        PIC X(3).
-      *            ���Ŷ�ʬ̾��
+      *            診療区分名称
                    07  ORAPISUB01-MDC-CLASS-NAME   PIC X(40).
-      *            ���
+      *            回数
                    07  ORAPISUB01-MDC-CLASS-NUMBER PIC X(3).
-      *H29.12 ������
-      *            ������
+      *H29.12 入院用
+      *            算定日
                    07  ORAPISUB01-MDC-DAY-G.
                        09  ORAPISUB01-MDC-DAY      PIC X(01)
                                                    OCCURS   31.
-      *            ������
+      *            剤内容
                    07  ORAPISUB01-PRESCRIPTION-INFO    OCCURS  50 TIMES.
-      *                ���ť�����
+      *                診療コード
                        09  ORAPISUB01-PRSCRPT-CODE     PIC X(9).
-      *                ����̾�Ρʥ����ȡ�
+      *                診療名称（コメント）
                        09  ORAPISUB01-PRSCRPT-NAME     PIC X(80).
-      *                ����
+      *                数量
                        09  ORAPISUB01-PRSCRPT-NUMBER   PIC X(11).
-      *                ������
+      *                自費金額
                        09  ORAPISUB01-PRSCRPT-MONEY    PIC X(07).
-      *                ��������������
+      *                コメント埋め込み値
                        09  ORAPISUB01-ATAI-G.
                            11  ORAPISUB01-ATAI         PIC X(08)
                                                        OCCURS   5.
       *H29.5
-      *                �ե����ʬ���
+      *                フィルム分画数
                        09  ORAPISUB01-PRSCRPT-FILMNUM  PIC X(03).
-      *                ��³�ؼ���ʬ
+      *                継続指示区分
                        09  ORAPISUB01-CONTKBN          PIC X(01).
-      *                ����������ؼ���ʬ
+      *                内服種類数指示区分
                        09  ORAPISUB01-NAIFKBN          PIC X(01).
       *H29.5
-      *                ��ư����ʤ���ʬ�ʺ������ܼ��Ӳû���
+      *                自動算定なし区分（在宅療養実績加算）
                        09  ORAPISUB01-NOAUTO           PIC X(03).
       *
-      *                ��ư��ʬ
+      *                自動区分
                        09  ORAPISUB01-AUTOKBN          PIC X(01).
       *
-      *    ���顼��ʬ
+      *    エラー区分
            03  ORAPISUB01-ERRCD        PIC X(02).
            03  ORAPISUB01-ERRMSG       PIC X(100).
-      *    ��������Υ��顼
+      *    コード毎のエラー
            03  ORAPISUB01-INP-ERR-G.
                05  ORAPISUB01-IN-ERR-TBL   OCCURS   200.
                    07  ORAPISUB01-IN-ERR       PIC X(03).
                    07  ORAPISUB01-IN-ERRMSG    PIC X(100).
-      *            ���顼����
+      *            エラー剤番
                    07  ORAPISUB01-IN-POS       PIC 9(03).
-      *            ���顼����
+      *            エラー行番
                    07  ORAPISUB01-IN-LINE      PIC 9(02).
-      *            ���顼���ť�����
+      *            エラー診療コード
                    07  ORAPISUB01-IN-SRYCD     PIC X(09).
       *

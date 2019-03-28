@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ÆÃÄê´ïºàÉÊÌÜ  COPY (CPMATERIAL-H-M.INC)      *
+      *         ç‰¹å®šå™¨æå“ç›®  COPY (CPMATERIAL-H-M.INC)      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  MATERIAL-H-M-REC.
-      *    ¥ì¥³¡¼¥É´ÉÍýÈÖ¹æ
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†ç•ªå·
            03  MATERH-M-KANRINO        PIC 9(08).
-      *    £Ê£Á£Î¥³¡¼¥É
+      *    ï¼ªï¼¡ï¼®ã‚³ãƒ¼ãƒ‰
            03  MATERH-M-JANCD          PIC X(13).
-      *    À½ÉÊÌ¾¥³¡¼¥É
+      *    è£½å“åã‚³ãƒ¼ãƒ‰
            03  MATERH-M-SNAMECD        PIC 9(05).
-      *    µ¬³Ê¥³¡¼¥É
+      *    è¦æ ¼ã‚³ãƒ¼ãƒ‰
            03  MATERH-M-KIKAKUCD       PIC 9(05).
-      *    ÆÃÄê´ïºà¥³¡¼¥É
+      *    ç‰¹å®šå™¨æã‚³ãƒ¼ãƒ‰
            03  MATERH-M-SRYCD          PIC X(09).
-      *    À½Â¤ÈÎÇä¶È¼ÔÌ¾¥³¡¼¥É
+      *    è£½é€ è²©å£²æ¥­è€…åã‚³ãƒ¼ãƒ‰
            03  MATERH-M-COMPANYCD1     PIC 9(05).
-      *    ¹ñÆâÁíÈÎÇä¸µ¶È¼ÔÌ¾¥³¡¼¥É
+      *    å›½å†…ç·è²©å£²å…ƒæ¥­è€…åã‚³ãƒ¼ãƒ‰
            03  MATERH-M-COMPANYCD2     PIC 9(05).
-      *    ÅºÉÕÊ¸½ñ¾ðÊó´ÉÍý¥³¡¼¥É
+      *    æ·»ä»˜æ–‡æ›¸æƒ…å ±ç®¡ç†ã‚³ãƒ¼ãƒ‰
            03  MATERH-M-DOCKANRICD     PIC X(30).
-      *    µ¡Ç½¶èÊ¬ÈÖ¹æ
+      *    æ©Ÿèƒ½åŒºåˆ†ç•ªå·
            03  MATERH-M-KINOKBNNO      PIC X(30).
-      *    ÊÑ¹¹Ç¯·îÆü
+      *    å¤‰æ›´å¹´æœˆæ—¥
            03  MATERH-M-CHGYMD         PIC X(08).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  MATERH-M-CREYMD         PIC X(08).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  MATERH-M-UPYMD          PIC X(08).
-      *    ¹¹¿·»þ´Ö
+      *    æ›´æ–°æ™‚é–“
            03  MATERH-M-UPHMS          PIC X(06).

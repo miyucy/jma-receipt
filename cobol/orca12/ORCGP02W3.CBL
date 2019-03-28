@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION                   DIVISION.
        PROGRAM-ID.                      ORCGP02W3.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ݸ��ȹ礻�ɣ�����
-      *  ����ݡ��ͥ��̾  : �ݸ��ȹ礻�ɣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 保険組合せＩＤ付番
+      *  コンポーネント名  : 保険組合せＩＤ付番
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  02.00.01    NACL-¿��Ǽ  02/07/31  �ѥ�᥿�ե������ģ¤�
-      *  02.00.02    NACL-¿��Ǽ  05/11/14  MONFUNC �б�¾
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  05/11/14  MONFUNC 対応他
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                      DIVISION.
@@ -43,27 +43,27 @@
       *
        WORKING-STORAGE                           SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
            03  FLG-PARA                          PIC 9(01).
            03  FLG-NC01                          PIC 9(01).
            03  FLG-HKNCOMBI                      PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARAEDANUM                    PIC 9(04).
            03  CNT-AUTOCOMBINUM                  PIC 9(04).
       *
-      *    ����ǥå����ΰ�
+      *    インデックス領域
        01  INDEX-AREA.
            03  IDX1                              PIC 9(04).
            03  IDX2                              PIC 9(04).
       *
-      *    �����쥳�����ֹ��Ǽ
+      *    該当レコード番号収納
        01  WRK-RECEDATBL.
            03  WRK-RECEDA                    PIC 9(04) OCCURS 4 TIMES.
-      *    ���ȹ礻�ѥ�᥿�ǡ����ѥ쥤������
+      *    新組合せパラメタデータ用レイアウト
        01  WRK-NC01PAREA-AREA.
            03  WRK-NC01PARA-OCC                OCCURS   999.
                05  NC01PARA-REC.
@@ -71,30 +71,30 @@
                    07  PARA-NC01-FLG           PIC 9(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ݸ��Ȥ߹�碌�ʣģ��ѡ�
+      *    保険組み合わせ（ＤＢ用）
        01  DBHKNCOMBI-REC.
            COPY  "CPHKNCOMBI.INC" REPLACING  //COMB-// BY //DBCOMB-//.
       *
-      *    �ݸ��Ȥ߹�碌�ʥե������ѡ�
+      *    保険組み合わせ（ファイル用）
        01  HKNCOMBI-REC.
            COPY  "CPHKNCOMBI.INC".
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY  "CPPTNUM.INC".
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
@@ -102,13 +102,13 @@
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                                  SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ������Ͽ�����ΰ�
+      *    患者登録スパ領域
            COPY    "P02COMMON-SPA".
       *
        PROCEDURE                                 DIVISION    USING
@@ -117,11 +117,11 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                              SECTION.
       *
-      *    �Ȥ߹�碌�ѥ�᥿��������
+      *    組み合わせパラメタを削除する
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -139,12 +139,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  FLG-AREA
       *
-      *    �ѥ�᥿�ե�����˺��������������ȹ礻��ơ��֥��
+      *    パラメタファイルに作成した新しい組合せをテーブルへ
            PERFORM 100-NC01AREA-TBL-SEC
       *
-      *  ����¸���ȹ礻�ֹ�򤢤��餷���ȹ礻�˷�³����
+      *  　既存の組合せ番号をあたらしい組合せに継続する
            PERFORM 100-NUMBCONT-SEC
-      *��  �������Ȥ߹�碌���ֹ����֤���
+      *　  新規の組み合わせに番号を採番する
            IF  SPA-ERRCD             =  SPACE
                PERFORM  200-NUMBNEW-SEC
            END-IF
@@ -154,7 +154,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT  PROGRAM.
       *
       *****************************************************************
-      *    �ѥ�᥿�ե�����˺��������������ȹ礻��ơ��֥���¸
+      *    パラメタファイルに作成した新しい組合せをテーブル保存
       *****************************************************************
        100-NC01AREA-TBL-SEC                SECTION.
       *
@@ -200,12 +200,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ֹ��³�����롼����
+      *    番号継続検索ルーチン
       *****************************************************************
        100-NUMBCONT-SEC                SECTION.
       *
            MOVE    ZERO                TO  CNT-PARAEDANUM
-      *    �ȹ礻����ǡ������ʥѥ�᡼���ե��������
+      *    組合せ削除データ数（パラメータファイル内）
            MOVE    ZERO                TO  SPA-P02-COMBDCNT
            MOVE    SPACE               TO  SPA-ERRCD
       *
@@ -261,12 +261,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ֹ��³�����롼����
+      *    番号継続検索ルーチン
       *****************************************************************
        1001-NUMBCONT-SEC                     SECTION.
       *
       *H26.4
-      *    ϫ�ҡ������դ��ܿͲ�²��ʬ�϶���Ȥ���
+      *    労災・自賠責の本人家族区分は空白とする
            IF    (DBCOMB-HKNNUM            =   "971"
                                            OR  "973")
              AND (DBCOMB-HONKZKKBN     NOT =   SPACE)
@@ -280,7 +280,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       (PARA-NC01-REC(IDX2) =   SPACE )
              MOVE  PARA-NC01-REC (IDX2)      TO HKNCOMBI-REC
       *!!
-      *      ϫ�ҡ������դ��ܿͲ�²��ʬ�϶���Ȥ���
+      *      労災・自賠責の本人家族区分は空白とする
              IF    (COMB-HKNNUM            =   "971"
                                            OR  "973")
                AND (COMB-HONKZKKBN     NOT =   SPACE)
@@ -303,25 +303,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  COMB-KOH4ID                 =  DBCOMB-KOH4ID      AND
                  COMB-KOH4HKNNUM             =  DBCOMB-KOH4HKNNUM  AND
                  PARA-NC01-FLG (IDX2)        =  ZERO
-      *����������Ŭ�ѳ���ǯ������Ŭ�ѽ�λǯ����������Ʊ���ǡ���
+      *　　　　　適用開始年月日、適用終了年月日が共に同じデータ
                  IF  (COMB-TEKSTYMD          =  DBCOMB-TEKSTYMD )  AND
                      (COMB-TEKEDYMD          =  DBCOMB-TEKEDYMD )  AND
                      (WRK-RECEDA(1)          =  ZERO            )
                      MOVE    IDX2            TO  WRK-RECEDA(1)
                  END-IF
-      *����������Ŭ�ѳ���ǯ�����Τ�Ʊ���ǡ���
+      *　　　　　適用開始年月日のみ同じデータ
                  IF (COMB-TEKSTYMD           =  DBCOMB-TEKSTYMD )  AND
                     (COMB-TEKEDYMD       NOT =  DBCOMB-TEKEDYMD )  AND
                     (WRK-RECEDA(2)           =  ZERO            )
                      MOVE    IDX2            TO WRK-RECEDA(2)
                  END-IF
-      *����������Ŭ�ѽ�λǯ�����Τ�Ʊ���ǡ���
+      *　　　　　適用終了年月日のみ同じデータ
                  IF (COMB-TEKSTYMD       NOT =  DBCOMB-TEKSTYMD )  AND
                     (COMB-TEKEDYMD           =  DBCOMB-TEKEDYMD )  AND
                     (WRK-RECEDA(3)           =  ZERO            )
                      MOVE    IDX2            TO WRK-RECEDA(3)
                  END-IF
-      *����������Ŭ��ǯ������������ʣ���Ƥ���ǡ���
+      *　　　　　適用年月日が一部重複しているデータ
                  IF (COMB-TEKSTYMD       NOT =  DBCOMB-TEKSTYMD )  AND
                     (COMB-TEKEDYMD       NOT =  DBCOMB-TEKEDYMD )  AND
                     (WRK-RECEDA(4)           =  ZERO            )  AND
@@ -345,11 +345,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ֹ��³�����ϥ롼����
+      *    番号継続時出力ルーチン
       *****************************************************************
        1002-COMBIWRT-SEC                         SECTION.
       *
-      *  �����Ȥ߹�碌�ǡ����˽����ѥե饰��Ω�Ƥ�
+      *  入力組み合わせデータに処理済フラグを立てる
            EVALUATE    TRUE
                WHEN    WRK-RECEDA(1)   NOT =   ZERO
                    MOVE    1               TO  IDX1
@@ -371,7 +371,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ֹ��³�����ϥ롼����
+      *    番号継続時出力ルーチン
       *****************************************************************
        10021-COMBIWRT2-SEC                         SECTION.
       *
@@ -379,8 +379,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  HKNCOMBI-REC
            MOVE    1                   TO  PARA-NC01-FLG (IDX2)
       *
-      *    �ѥ�᡼���ǡ��������Ƥ���Ϥ���
-      *    �ݸ��ȹ礻
+      *    パラメータデータに内容を出力する
+      *    保険組合せ
            COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM  +  1
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
@@ -441,13 +441,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ֹ��������ϥ롼����
+      *    番号削除時出力ルーチン
       *****************************************************************
        1003-COMBIDEL-SEC                         SECTION.
       *
-      *  �ѥ�᡼���ǡ��������Ƥ���Ϥ���
+      *  パラメータデータに内容を出力する
            COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM  +  1
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -483,7 +483,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
-      *        �ȹ礻����ǡ������ʥѥ�᡼���ե��������
+      *        組合せ削除データ数（パラメータファイル内）
                ADD    1                    TO  SPA-P02-COMBDCNT
            ELSE
                INITIALIZE                      PARA-REC
@@ -503,7 +503,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
-      *        �ȹ礻����ǡ������ʥѥ�᡼���ե��������
+      *        組合せ削除データ数（パラメータファイル内）
                ADD    1                    TO  SPA-P02-COMBDCNT
            END-IF
            .
@@ -511,11 +511,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ȹ礻���ϥ롼����
+      *    新規組合せ出力ルーチン
       *****************************************************************
        200-NUMBNEW-SEC                           SECTION.
       *
-      *    �ӣУ�����¸���Ƥ���
+      *    ＳＰＡに保存してある
            MOVE    SPA-MAE-AUTOCOMBINUM    TO  CNT-AUTOCOMBINUM
            IF      SPA-MAE-AUTOCOMBINUM    =   8999
                MOVE    "0011"              TO  SPA-ERRCD
@@ -558,11 +558,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE  "0010"                TO SPA-ERRCD
                    END-IF
                    IF      SPA-ERRCD           =   SPACE
-      *  �ѥ�᡼���ǡ��������Ƥ���Ϥ���
+      *  パラメータデータに内容を出力する
                        COMPUTE CNT-PARAEDANUM      =   CNT-PARAEDANUM
                                                    +   1
                        MOVE    CNT-AUTOCOMBINUM    TO  COMB-HKNCOMBINUM
-      *  ����������ѹ���ʬ�������¾�ǻ��Ѥ��ʤ����ȡ�
+      *  新規設定を変更区分に設定（他で使用しないこと）
                        MOVE    "A"                 TO  COMB-CHGKBN
       *
                        PERFORM 2001-PARAHKNCOMBI-INS-SEC
@@ -572,7 +572,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
-      *        �ӣУ����ݸ��ȹ礻�ֹ��ѹ�
+      *        ＳＰＡの保険組合せ番号変更
                MOVE    CNT-AUTOCOMBINUM    TO  SPA-PTNUM-AUTOCOMBINUM
            END-IF
       *
@@ -581,10 +581,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ɲå롼����
+      *    パラメータ追加ルーチン
       *****************************************************************
        2001-PARAHKNCOMBI-INS-SEC       SECTION.
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -642,11 +642,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�����
+      *    ＤＢ　処理
       *****************************************************************
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ƣţԣãȽ���
+      *    保険組合せＦＥＴＣＨ処理
       *****************************************************************
        812-COMBIFET-SEC                          SECTION.
       *
@@ -666,7 +666,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        812-COMBIFET-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -685,7 +685,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -698,7 +698,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -713,7 +713,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSSYU40.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ʡ�������������б�
-      *                      �����оݳ������Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/08/25    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 福岡県地方公費対応
+      *                      給付対象外点数編集サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/08/25    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  04/03/11  �ȣ������������б�
-      *  01.00.02    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  01.00.03    NACL-¿��Ǽ  06/03/20  �ȣ������������б�
-      *  01.00.04    NACL-¿��Ǽ  06/04/12  �ŻҲ��û��ɲ�
-      *  01.00.05    NACL-¿��Ǽ  06/08/18  Ʊ������ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
-      *  04.08.00    NACL-¿��Ǽ  12/03/XX  �ȣ���ǯ��������б�
-      *  04.08.00    NACL-¿��Ǽ  12/03/XX  �ȣ���ǯ��������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  04/03/11  Ｈ１６．４改正対応
+      *  01.00.02    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  01.00.03    NACL-多々納  06/03/20  Ｈ１８．４改正対応
+      *  01.00.04    NACL-多々納  06/04/12  電子化加算追加
+      *  01.00.05    NACL-多々納  06/08/18  同日初診追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２５年４月改正対応
+      *  04.08.00    NACL-多々納  12/03/XX  Ｈ２７年１月改正対応
       *****************************************************************
       *
       *
@@ -50,7 +50,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -71,7 +71,7 @@
            03  FLG-SYORI-END       PIC 9(01).
            03  FLG-SYONIKA         PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -83,16 +83,16 @@
            03  IDX-D               PIC 9(04).
            03  IDX-D2              PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-KASAN           PIC X(01).
-      *    ���Ź԰ٷ׻���
+      *    診療行為計算用
            03  WRK-TENSU           PIC 9(08).
            03  WRK-ZAITEN          PIC 9(08).
       *
            03  WRK-SRYCD           PIC X(09).
            03  WRK-HEN-SRYCD       PIC X(09).
-      *    ��ǻ�����
+      *    初診算定日
            03  WRK-DD              PIC 9(02).
            03  WRK-DD2             PIC 9(02).
            03  WRK-DD-S            PIC 9(02).
@@ -104,168 +104,168 @@
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-H-ZAINUM        PIC 9(08).
-      *    �ŻҲ��û�
+      *    電子化加算
            03  WRK-DENSIKA         PIC 9(01).
-      *    Ʊ�����
+      *    同日初診
            03  WRK-DOUJITU         PIC X(01).
       *
-      *    ���Ź԰٥����ɰ���
+      *    診療行為コード一覧
        01  TBL-SINSATU-AREA.
-      *    ������ʰ��� �±���
+      *    初診料（一般 病院）
            03  FILLER              PIC X(13)   VALUE   "111000110 1 0".
-      *    �������Ϸ�� �±���
+      *    初診料（老人 病院）
            03  FILLER              PIC X(13)   VALUE   "111700110 1 0".
-      *    ������ʰ��� ���Ž��
+      *    初診料（一般 診療所）
            03  FILLER              PIC X(13)   VALUE   "111003610 1 0".
-      *    �������Ϸ�� ���Ž��
+      *    初診料（老人 診療所）
            03  FILLER              PIC X(13)   VALUE   "111700210 1 0".
       *
-      *    ������
+      *    往診料
            03  FILLER              PIC X(13)   VALUE   "114000110 1 0".
-      *    ���ǡ���ֲû���
+      *    往診（夜間加算）
            03  FILLER              PIC X(13)   VALUE   "114000470 2 1".
-      *    ���ǡʿ���û���
+      *    往診（深夜加算）
            03  FILLER              PIC X(13)   VALUE   "114000570 2 2".
-      *    ���ǡʶ۵޲û���
+      *    往診（緊急加算）
            03  FILLER              PIC X(13)   VALUE   "114000370 2 2".
       *
-      *    ���̱�����
+      *    特別往診料
            03  FILLER              PIC X(13)   VALUE   "114001610 1 0".
-      *    ���̱��ǡ���ֲû���
+      *    特別往診（夜間加算）
            03  FILLER              PIC X(13)   VALUE   "114001970 2 1".
-      *    ���̱��ǡʿ���û���
+      *    特別往診（深夜加算）
            03  FILLER              PIC X(13)   VALUE   "114002070 2 2".
-      *    ���̱��ǡʶ۵޲û���
+      *    特別往診（緊急加算）
            03  FILLER              PIC X(13)   VALUE   "114001870 2 2".
       *
       *
-      *    �����ʳ���ǻ���(�������� ���)
+      *    小児科外来診察料(院外処方 初診)
            03  FILLER              PIC X(13)   VALUE   "113003510 1 0".
-      *    �����ʳ���ǻ���(������� ���)
+      *    小児科外来診察料(院内処方 初診)
            03  FILLER              PIC X(13)   VALUE   "113003710 1 0".
-      *    �����ʳ���ǻ���(��ǻ����ֳ��û�)
+      *    小児科外来診察料(初診時時間外加算)
            03  FILLER              PIC X(13)   VALUE   "111010470 2 1".
-      *    �����ʳ���ǻ���(��ǻ������û�)
+      *    小児科外来診察料(初診時休日加算)
            03  FILLER              PIC X(13)   VALUE   "111010570 2 2".
-      *    �����ʳ���ǻ���(��ǻ�����û�)
+      *    小児科外来診察料(初診時深夜加算)
            03  FILLER              PIC X(13)   VALUE   "111010670 2 3".
-      *    �����ʳ���ǻ���(��ǻ����ֳ�����)
+      *    小児科外来診察料(初診時時間外特例)
            03  FILLER              PIC X(13)   VALUE   "111010770 2 4".
       *
-      *    �����ʳ���ǻ���(��ǻ����Ļ���֡�
+      *    小児科外来診察料(初診時乳幼児夜間）
            03  FILLER              PIC X(13)   VALUE   "113007070 2 5".
-      *    �����ʳ���ǻ���(��ǻ����Ļ�������
+      *    小児科外来診察料(初診時乳幼児休日）
            03  FILLER              PIC X(13)   VALUE   "113007170 2 6".
-      *    �����ʳ���ǻ���(��ǻ����Ļ������
+      *    小児科外来診察料(初診時乳幼児深夜）
            03  FILLER              PIC X(13)   VALUE   "113007270 2 7".
-      *�ȣ�����������
-      *    �����ʳ���ǻ���(��ǻ����ֳ��û�)
+      *Ｈ１８／４から
+      *    小児科外来診察料(初診時時間外加算)
            03  FILLER              PIC X(13)   VALUE   "113009670 2 1".
       *
-      *    �������Ʊ��ʣ�����Ųʡ�
+      *    初診料（同日複数診療科）
            03  FILLER              PIC X(13)   VALUE   "111011810 110".
-      *H25.4 ����
-      *    ������ʾҲ���ʤ���
+      *H25.4 から
+      *    初診料（紹介状なし）
            03  FILLER              PIC X(13)   VALUE   "111012510 1 0".
-      *    Ʊ����ǡʾҲ���ʤ���
+      *    同日初診（紹介状なし）
            03  FILLER              PIC X(13)   VALUE   "111012610 110".
-      *H27.1 ����
-      *    ��������ŷ�Ψ����ʲ���
+      *H27.1 から
+      *    初診料（妥結率５割以下）
            03  FILLER              PIC X(13)   VALUE   "111012710 1 0".
       *H29.2
-      *    �������Ʊ���������ܡ��ŷ�Ψ����ʲ���
+      *    初診料（同一日２科目・妥結率５割以下）
            03  FILLER              PIC X(13)   VALUE   "111012810 110".
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
       *****03  TBL-SINSATU-OCC         OCCURS  18    INDEXED  TBL-IDX.
            03  TBL-SINSATU-OCC         OCCURS  27    INDEXED  TBL-IDX.
-      *        ���ť�����
+      *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
                05  TBL-YOBO1           PIC X(01).
-      *        �ǡ�����ʬ
+      *        データ区分
                05  TBL-DATAKBN         PIC X(01).
-      *        ��1:Ʊ����ǡ�
+      *        （1:同日初診）
                05  TBL-YOBO2           PIC X(01).
-      *        ���ǲû���0:�ʤ�,1:��֡�2:���롦�۵ޡ�
-      *        ���ֲû���0:�ʤ�,1:���ֳ���2:������3:���롢4:����
-      *                 (5:���Ļ���֡�6:���Ļ�������7:���Ļ������
+      *        往診加算（0:なし,1:夜間、2:深夜・緊急）
+      *        時間加算（0:なし,1:時間外、2:休日、3:深夜、4:特例
+      *                 (5:乳幼児夜間、6:乳幼児休日、7:乳幼児深夜）
                05  TBL-KASAN           PIC X(01).
       *
       *
        01  TBL2-SYOKAI-AREA.
-      *    �����ʳ���ǻ���(�Ҳ�û�)
+      *    小児科外来診察料(紹介加算)
            03  FILLER              PIC X(09)   VALUE   "111010370".
-      *    ��ǻ�(�Ҳ�û�)
+      *    初診時(紹介加算)
            03  FILLER              PIC X(09)   VALUE   "111003770".
-      *    �Ҳ�û���
+      *    紹介加算１
            03  FILLER              PIC X(09)   VALUE   "113005070".
            03  FILLER              PIC X(09)   VALUE   "111011270".
-      *    �Ҳ�û���
+      *    紹介加算２
            03  FILLER              PIC X(09)   VALUE   "113005170".
            03  FILLER              PIC X(09)   VALUE   "111011370".
-      *    �Ҳ�û���
+      *    紹介加算３
            03  FILLER              PIC X(09)   VALUE   "111010870".
            03  FILLER              PIC X(09)   VALUE   "111009970".
-      *    �Ҳ�û���
+      *    紹介加算４
            03  FILLER              PIC X(09)   VALUE   "111010970".
            03  FILLER              PIC X(09)   VALUE   "111010070".
-      *    �Ҳ�û���
+      *    紹介加算５
            03  FILLER              PIC X(09)   VALUE   "111011070".
            03  FILLER              PIC X(09)   VALUE   "111010170".
-      *    �Ҳ�û���
+      *    紹介加算６
            03  FILLER              PIC X(09)   VALUE   "111011170".
            03  FILLER              PIC X(09)   VALUE   "111010270".
       *
-      *    ������ܻ�Ƴ��
+      *    育児栄養指導料
            03  FILLER              PIC X(09)   VALUE   "099114001".
            03  FILLER              PIC X(09)   VALUE   "111000470".
       *
        01  TBL2-SYOKAI-AREAR       REDEFINES   TBL2-SYOKAI-AREA.
            03  TBL2-SYOKAI-OCC         OCCURS  8     INDEXED  TBL2-IDX.
-      *        �����ʳ���ǻ����βû�
+      *        小児科外来診察料の加算
                05  TBL2-SRYCD-1        PIC X(09).
-      *        ������βû�
+      *        初診料の加算
                05  TBL2-SRYCD-2        PIC X(09).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1006.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスター
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
@@ -274,15 +274,15 @@
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ���ճ������Խ��ѥ�᥿�ΰ�
+      *    給付外点数編集パラメタ領域
            COPY    "CPORCSSYU40.INC".
-      *    ��Ǽ�ޥ���
+      *    収納マスタ
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
@@ -293,22 +293,22 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-      *    ���Ŷ�ʬ�̵��ճ��������ꥢ
+      *    診療区分別給付外点数クリア
            INITIALIZE                  SYU-KYUFUGAI
       *
            EVALUATE    ORCS40-KBN
                WHEN    "1"
-      *            ���Ź԰٤��
+      *            診療行為より
                    PERFORM 100-SRYKOU-GMN-SEC
                WHEN    "2"
-      *            ��Ǽ���
+      *            収納より
                    PERFORM 300-SYUNOU-GMN-SEC
            END-EVALUATE
       *
@@ -319,7 +319,7 @@
            .
       *
       *****************************************************************
-      *   �ŻҲ��û������å�����
+      *   電子化加算チェック処理
       *****************************************************************
        1000-SYSKANRI-HEN-SEC           SECTION.
       *
@@ -329,7 +329,7 @@
            MOVE    "2"                 TO  SYS-1006-KBNCD
            MOVE    WRK-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    WRK-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    �����ƥ���������ʻ��ߴ���
+      *    システム管理検索（施設基準）
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -347,7 +347,7 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                IF      SYS-1006-KBNCD      =   "2"
-      *            �ŻҲ��û�
+      *            電子化加算
                    IF      SYS-1006-SSTKIJUN (100) =   1
                        MOVE    1               TO  WRK-DENSIKA
                    END-IF
@@ -361,12 +361,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰ٺ�������
+      *    診療行為作成処理
       *****************************************************************
        100-SRYKOU-GMN-SEC           SECTION.
       *
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-      *    �ŻҲ��û�
+      *    電子化加算
            IF      WRK-SRYYMD(1:6)     <   "200604"
                MOVE    ZERO            TO  WRK-DENSIKA
            ELSE
@@ -374,7 +374,7 @@
            END-IF
            MOVE    ZERO                TO  FLG-DOUJITU
            MOVE    ZERO                TO  FLG-SYOSIN
-      *    ����ǽ�ν������������Ƚ�ꤹ��
+      *    当月最初の初診料算定日を判定する
            PERFORM 3000-SYOSIN-ALLCHK-SEC
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -383,15 +383,15 @@
                               (ORCS40-SRYKBN (IDX) =   SPACE)
                IF      ORCS40-SRYKBN (IDX)     =   "13"
                                                OR  "99"
-      *            �����ʳ���ǻ����������������׻�
+      *            小児科外来診察料算定時、初診料計算
                    PERFORM 1001-SYOUNIKA-HEN-SEC
                ELSE
-      *            �����ʳ���ǻ����ʳ�
+      *            小児科外来診察料以外
                    PERFORM 1002-SRYCD-CHK-SEC
                END-IF
            END-PERFORM
       *
-      *    ��׷׻�
+      *    合計計算
            COMPUTE SYU-KYUFUGAI-GOKEI-TEN  =   SYU-KYUFUGAI-SHOSHIN-TEN
                                            +   SYU-KYUFUGAI-SIDOU-TEN
                                            +   SYU-KYUFUGAI-OSIN1-TEN
@@ -412,7 +412,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʳ���ǻ����ʳ�����
+      *    小児科外来診察料以外処理
       *****************************************************************
        1002-SRYCD-CHK-SEC            SECTION.
       *
@@ -423,7 +423,7 @@
                    UNTIL      (IDX2            >   5   )  OR
                               (ORCS40-SRYCD (IDX IDX2)
                                                =   SPACE)
-      *        �����ɥ����å�
+      *        コードチェック
                SET     TBL-IDX             TO  1
                SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                    AT  END
@@ -445,22 +445,22 @@
            END-IF
       *
       *
-      *    �оݤοǻ�������
+      *    対象の診察料あり
            EVALUATE    ORCS40-SRYKBN (IDX)
                WHEN    "11"
-      *            ������λ�������ǽ餫�ɤ�����Ƚ��
+      *            初診料の時、当月最初かどうかの判定
                    IF     (WRK-DD              =   ZERO )  OR
                           (WRK-SRYDD           <=  WRK-DD)
                        IF     (WRK-SRYDD           =   WRK-DD) AND
                               (FLG-SYOSIN          =   1     )
-      *                    �������Ʊ����Ǥ�Ʊ���ˤ����硢������Τ�
+      *                    初診料と同日初診が同日にある場合、初診料のみ
                            IF      WRK-DOUJITU     =   SPACE
-      *                    �����оݳ������ʽ�ǡ�
+      *                    給付対象外点数（初診）
                                MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-SHOSHIN-TEN
                            END-IF
                        ELSE
-      *                    �����оݳ������ʽ�ǡ�
+      *                    給付対象外点数（初診）
                            MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-SHOSHIN-TEN
                        END-IF
@@ -468,15 +468,15 @@
                WHEN    "14"
                    EVALUATE    WRK-KASAN
                        WHEN    "0"
-      *                �����оݳ������ʱ��ǡ�
+      *                給付対象外点数（往診）
                            MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-OSIN1-TEN
                        WHEN    "1"
-      *                �����оݳ������ʱ��ǡ���֡�
+      *                給付対象外点数（往診／夜間）
                            MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-OSIN2-TEN
                        WHEN    "2"
-      *                �����оݳ������ʱ��ǡ����롿�۵ޡ�
+      *                給付対象外点数（往診／深夜／緊急）
                            MOVE    ORCS40-ZAITEN (IDX)
                                            TO  SYU-KYUFUGAI-OSIN3-TEN
                    END-EVALUATE
@@ -487,11 +487,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʳ���ǻ����������
+      *    小児科外来診察料算定処理
       *****************************************************************
        1001-SYOUNIKA-HEN-SEC            SECTION.
       *
-      *    ����ǽ餫�ɤ�����Ƚ��
+      *    当月最初かどうかの判定
            IF     (WRK-DD              =   ZERO  )  OR
                   (WRK-SRYDD           <=  WRK-DD)
                CONTINUE
@@ -507,7 +507,7 @@
                    UNTIL      (IDX2            >   5   )  OR
                               (ORCS40-SRYCD (IDX IDX2)
                                                =   SPACE)
-      *        �����ɥ����å�
+      *        コードチェック
                SET     TBL-IDX             TO  1
                SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                    AT  END
@@ -524,7 +524,7 @@
                END-SEARCH
       *
                IF      FLG-OK2                 =   ZERO
-      *            �Ҳ�û���Ƚ��
+      *            紹介加算の判定
                    SET     TBL2-IDX            TO  1
                    SEARCH  TBL2-SYOKAI-OCC     VARYING   TBL2-IDX
                        AT  END
@@ -537,13 +537,13 @@
                    END-SEARCH
                END-IF
            END-PERFORM
-      *    �оݳ�
+      *    対象外
            IF     (FLG-OK              =   ZERO  )  AND
                   (WRK-HEN-SRYCD       =   SPACE )
                GO      TO      1001-SYOUNIKA-HEN-EXT
            END-IF
       *
-      *    ���������������оݳ�������
+      *    初診料点数を給付対象外点数へ
            IF      WRK-SRYYMD(1:6)     <   "200604"
                PERFORM 10013-SYOSIN-TEN-SEC
            ELSE
@@ -555,26 +555,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������оݳ������������
+      *    初診料点数を給付対象外点数設定処理
       *****************************************************************
        10013-SYOSIN-TEN-SEC            SECTION.
       *
       *
            MOVE    ZERO                TO  WRK-ZAITEN
-      *    ���ť����ɤ��������׻�
+      *    診療コードから点数計算
            IF      FLG-OK              =   1
-      *        �ǻ���
+      *        診察料
                IF      SPA-HOSPSBT         =   "1"
-      *            �±�
+      *            病院
                    MOVE    "111000110"         TO  WRK-SRYCD
                ELSE
-      *            ���Ž�
+      *            診療所
                    MOVE    "111003610"         TO  WRK-SRYCD
                END-IF
                PERFORM 10011-TENSU-SET-SEC
                ADD     WRK-TENSU               TO  WRK-ZAITEN
       *
-      *        ���Ļ��û�
+      *        乳幼児加算
                IF      WRK-KASAN           =   ZERO
                    MOVE    "111000370"         TO  WRK-SRYCD
                ELSE
@@ -583,31 +583,31 @@
                PERFORM 10011-TENSU-SET-SEC
                ADD     WRK-TENSU               TO  WRK-ZAITEN
       *
-      *        ���ֳ�
+      *        時間外
                EVALUATE    WRK-KASAN
                    WHEN    "1"
-      *                ���ֳ�
+      *                時間外
                        MOVE    "111000570"         TO  WRK-SRYCD
                    WHEN    "2"
-      *                ����
+      *                休日
                        MOVE    "111000670"         TO  WRK-SRYCD
                    WHEN    "3"
-      *                ����
+      *                深夜
                        MOVE    "111000770"         TO  WRK-SRYCD
                    WHEN    "4"
-      *                ���ֳ��������
+      *                時間外特例休日
                        MOVE    "111000870"         TO  WRK-SRYCD
                    WHEN    "5"
-      *                ���Ļ����
+      *                乳幼児夜間
                        MOVE    "111011570"         TO  WRK-SRYCD
                    WHEN    "6"
-      *                ���Ļ�����
+      *                乳幼児休日
                        MOVE    "111011670"         TO  WRK-SRYCD
                    WHEN    "7"
-      *                ���Ļ�����
+      *                乳幼児深夜
                        MOVE    "111011770"         TO  WRK-SRYCD
                    WHEN    OTHER
-      *                ���ֳ��ʤ�
+      *                時間外なし
                        MOVE    SPACE               TO  WRK-SRYCD
                END-EVALUATE
                IF      WRK-SRYCD       NOT =   SPACE
@@ -622,7 +622,7 @@
                ADD     WRK-TENSU               TO  WRK-ZAITEN
            END-IF
       *
-      *    �����оݳ������ʻ�Ƴ��
+      *    給付対象外点数（指導）
            ADD     WRK-ZAITEN         TO  SYU-KYUFUGAI-SIDOU-TEN
       *
            .
@@ -630,55 +630,55 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������оݳ������������
+      *    初診料点数を給付対象外点数設定処理
       *****************************************************************
        10013-SYOSIN02-TEN-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-ZAITEN
-      *    ���ť����ɤ��������׻�
+      *    診療コードから点数計算
            IF      FLG-OK              =   1
-      *        �±�
+      *        病院
                MOVE    "111000110"         TO  WRK-SRYCD
                PERFORM 10011-TENSU-SET-SEC
                ADD     WRK-TENSU               TO  WRK-ZAITEN
       *
-      *        ���Ļ��û�
+      *        乳幼児加算
                MOVE    SPACE                   TO  WRK-SRYCD
-      *        ���ֳ�
+      *        時間外
                EVALUATE    WRK-KASAN
                    WHEN    "1"
-      *                ���ֳ�
+      *                時間外
                        MOVE    "111011970"         TO  WRK-SRYCD
                    WHEN    "2"
-      *                ����
+      *                休日
                        MOVE    "111012070"         TO  WRK-SRYCD
                    WHEN    "3"
-      *                ����
+      *                深夜
                        MOVE    "111012170"         TO  WRK-SRYCD
                    WHEN    "4"
-      *                ���ֳ��������
+      *                時間外特例休日
                        MOVE    "111012270"         TO  WRK-SRYCD
                    WHEN    "5"
-      *                ���Ļ����
+      *                乳幼児夜間
                        MOVE    "111011570"         TO  WRK-SRYCD
                    WHEN    "6"
-      *                ���Ļ�����
+      *                乳幼児休日
                        MOVE    "111011670"         TO  WRK-SRYCD
                    WHEN    "7"
-      *                ���Ļ�����
+      *                乳幼児深夜
                        MOVE    "111011770"         TO  WRK-SRYCD
                    WHEN    "8"
-      *                ���Ļ������ī��
+      *                乳幼児夜間早朝等
                        MOVE    "111012470"         TO  WRK-SRYCD
                    WHEN    OTHER
-      *                ���ֳ��ʤ�
+      *                時間外なし
                        MOVE    "111000370"         TO  WRK-SRYCD
                END-EVALUATE
                IF      WRK-SRYCD       NOT =   SPACE
                    PERFORM 10011-TENSU-SET-SEC
                    ADD     WRK-TENSU               TO  WRK-ZAITEN
                END-IF
-      *        �ŻҲ��û�
+      *        電子化加算
                IF      WRK-DENSIKA         =   1
                    MOVE    "111012370"         TO  WRK-SRYCD
                    PERFORM 10011-TENSU-SET-SEC
@@ -692,7 +692,7 @@
                ADD     WRK-TENSU               TO  WRK-ZAITEN
            END-IF
       *
-      *    �����оݳ������ʻ�Ƴ��
+      *    給付対象外点数（指導）
            ADD     WRK-ZAITEN         TO  SYU-KYUFUGAI-SIDOU-TEN
       *
            .
@@ -700,7 +700,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰������������
+      *    診療行為点数設定処理
       *****************************************************************
        10011-TENSU-SET-SEC            SECTION.
       *
@@ -717,12 +717,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ����������
+      *    収納より作成処理
       *****************************************************************
        300-SYUNOU-GMN-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOSIN-ERR
-      *    ������򸡺�����
+      *    受診歴を検索する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
@@ -742,18 +742,18 @@
                INITIALIZE                  JYURRK-REC
                MOVE    1               TO  FLG-JYURRK
            END-IF
-      *    �ǻ��������Ϥ�������Τ��оݤȤ���
+      *    診察料に入力がある時のみ対象とする
            IF     (FLG-JYURRK          =   ZERO )  AND
                   (JYURRK-RENNUM       =   1    )  AND
                   (JYURRK-SRYKBN1  NOT =   SPACE)
                MOVE    JYURRK-SRYYMD       TO  WRK-SRYYMD
-      *        �ŻҲ��û�
+      *        電子化加算
                IF      WRK-SRYYMD(1:6)     <   "200604"
                    MOVE    ZERO            TO  WRK-DENSIKA
                ELSE
                    PERFORM 1000-SYSKANRI-HEN-SEC
                END-IF
-      *        ����ǽ�ν������������Ƚ�ꤹ��
+      *        当月最初の初診料算定日を判定する
                PERFORM 3000-SYOSIN-ALLCHK-SEC
       *****ELSE
       *********MOVE    1               TO  FLG-JYURRK
@@ -765,7 +765,7 @@
                PERFORM VARYING     IDX-Z   FROM    1  BY  1
                        UNTIL       IDX-Z   >   15
                    IF      JYURRK-ZAINUM (IDX-Z)  NOT =   ZERO
-      *                ���Ų�׼���
+      *                診療会計取得
                        PERFORM 3001-SRYACCT-CHK-SEC
                    END-IF
                END-PERFORM
@@ -778,7 +778,7 @@
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ��׷׻�
+      *    合計計算
            COMPUTE SYU-KYUFUGAI-GOKEI-TEN  =   SYU-KYUFUGAI-SHOSHIN-TEN
                                            +   SYU-KYUFUGAI-SIDOU-TEN
                                            +   SYU-KYUFUGAI-OSIN1-TEN
@@ -797,13 +797,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǽ�ν������������Ƚ�����
+      *    当月最初の初診料算定日を判定処理
       *****************************************************************
        3000-SYOSIN-ALLCHK-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
            MOVE    ZERO                TO  FLG-DOUJITU
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    SPACE               TO  SANTEI-REC
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
@@ -826,7 +826,7 @@
       *D               OR (FLG-ERR         =   1  )
       *
                IF      SANTEI-MSANTEICNT   >   ZERO
-      *            �����ʬ
+      *            当月算定分
                    PERFORM 30001-TOUGETU-CHK-SEC
                END-IF
       *
@@ -837,11 +837,11 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �������˽��������
+      *    処理日に初診料算定
            IF      WRK-DD              =   WRK-SRYDD
                MOVE    1               TO  FLG-SYOSIN
            END-IF
-      *    Ʊ������Խ�
+      *    同日初診編集
            IF      WRK-DD2             >   ZERO
                IF     (WRK-DD          >   WRK-DD2 )
                   OR  (WRK-DD          =   ZERO    )
@@ -854,22 +854,22 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʬ�����å�����
+      *    当月算定分チェック処理
       *****************************************************************
        30001-TOUGETU-CHK-SEC            SECTION.
       *
            EVALUATE    SANTEI-SRYCD
-      *        �����
+      *        初診料
                WHEN    "111000110"
                WHEN    "111700110"
                WHEN    "111003610"
                WHEN    "111700210"
-      *        �����ʳ�����Ų�
+      *        小児科外来診療科
                WHEN    "113003510"
                WHEN    "113003710"
-      *        ���ߡ�
+      *        ダミー
                WHEN    "099110001"
-      *            �Ǿ��λ������Խ�
+      *            最小の算定日編集
                    IF     (WRK-DD              =   ZERO )  OR
                           (SANTEI-MSANTEID     <   WRK-DD)
                        MOVE    SANTEI-MSANTEID     TO  WRK-DD
@@ -877,11 +877,11 @@
                    IF      WRK-DD              <   WRK-SRYDD
                         MOVE    1              TO  FLG-ERR
                    END-IF
-      *        Ʊ��ʣ�����Ų�
+      *        同日複数診療科
                WHEN    "111011810"
-      *H25.4   Ʊ����ǡʾҲ���ʤ���
+      *H25.4   同日初診（紹介状なし）
                WHEN    "111012610"
-      *            �Ǿ��λ������Խ�
+      *            最小の算定日編集
                    IF     (WRK-DD2             =   ZERO )  OR
                           (SANTEI-MSANTEID     <   WRK-DD2)
                        MOVE    SANTEI-MSANTEID     TO  WRK-DD2
@@ -893,7 +893,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץ����å�����
+      *    診療会計チェック処理
       *****************************************************************
        3001-SRYACCT-CHK-SEC            SECTION.
      *
@@ -945,14 +945,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥����å�����
+      *    診療行為チェック処理
       *****************************************************************
        30011-SRYACT-SYORI-SEC            SECTION.
      *
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  WRK-KASAN
       *
-      *    ���Ź԰٥ޥ������ɤ߹���
+      *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -973,11 +973,11 @@
                MOVE    1               TO  FLG-SRYACT
            END-IF
            PERFORM UNTIL       FLG-SRYACT      =   1
-      *        �������Խ�
+      *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5        )  OR
                                   (SRY-SRYCD (IDZ) =   SPACE)
-      *            �굻���λ���Ƚ�ꤹ��
+      *            手技料の時、判定する
                    IF      SRY-SRYCD (IDZ)(1:1)    =   "1"
                        PERFORM 300111-TBL-CHK-SEC
                    END-IF
@@ -999,7 +999,7 @@
                   (WRK-KASAN           =   SPACE)
                GO      TO      30011-SRYACT-SYORI-EXT
            ELSE
-      *        �оݤ����ä������Խ�����
+      *        対象があった時、編集する
                PERFORM 30012-KYUFUGAI-HEN-SEC
            END-IF
       *
@@ -1008,12 +1008,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݿ��ť����ɥ����å�����
+      *    対象診療コードチェック処理
       *****************************************************************
        300111-TBL-CHK-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-DOUJITU
-      *    �����ɥ����å�
+      *    コードチェック
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                AT  END
@@ -1031,7 +1031,7 @@
            END-SEARCH
       *
            IF      FLG-OK                  =   1
-      *        Ʊ����ǥ����ɤ�Ʊ���˽�������ʤ�����
+      *        同日初診コードで同日に初診料がないこと
                IF      WRK-DOUJITU         =   "1"
                    IF      FLG-SYOSIN      =   1
                        MOVE    ZERO            TO  FLG-OK
@@ -1040,7 +1040,7 @@
            END-IF
       *
            IF      FLG-OK2                 =   ZERO
-      *        �Ҳ�û���Ƚ��
+      *        紹介加算の判定
                SET     TBL2-IDX            TO  1
                SEARCH  TBL2-SYOKAI-OCC     VARYING   TBL2-IDX
                    AT  END
@@ -1057,18 +1057,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �����оݳ������Խ�����
+      *    給付対象外点数編集処理
       *****************************************************************
        30012-KYUFUGAI-HEN-SEC            SECTION.
       *
-      *    �оݤοǻ�������
+      *    対象の診察料あり
            EVALUATE    ACCT-SRYKBN  ALSO   FLG-OK
                WHEN    "11"         ALSO   1
                    MOVE    1                   TO  FLG-SYORI-END
-      *            ������λ�������ǽ餫�ɤ�����Ƚ��
+      *            初診料の時、当月最初かどうかの判定
                    IF     (WRK-DD              =   ZERO )  OR
                           (WRK-SRYDD           <=  WRK-DD)
-      *                �����оݳ������ʽ�ǡ�
+      *                給付対象外点数（初診）
                        MOVE    ACCT-ZAITEN
                                            TO  SYU-KYUFUGAI-SHOSHIN-TEN
       *********    ELSE
@@ -1078,23 +1078,23 @@
                    MOVE    1                   TO  FLG-SYORI-END
                    EVALUATE    WRK-KASAN
                        WHEN    "0"
-      *                �����оݳ������ʱ��ǡ�
+      *                給付対象外点数（往診）
                            MOVE    ACCT-ZAITEN
                                            TO  SYU-KYUFUGAI-OSIN1-TEN
                        WHEN    "1"
-      *                �����оݳ������ʱ��ǡ���֡�
+      *                給付対象外点数（往診／夜間）
                            MOVE    ACCT-ZAITEN
                                            TO  SYU-KYUFUGAI-OSIN2-TEN
                        WHEN    "2"
-      *                �����оݳ������ʱ��ǡ����롿�۵ޡ�
+      *                給付対象外点数（往診／深夜／緊急）
                            MOVE    ACCT-ZAITEN
                                            TO  SYU-KYUFUGAI-OSIN3-TEN
                    END-EVALUATE
                WHEN    "13"        ALSO    1
-      *            ������λ�������ǽ餫�ɤ�����Ƚ��
+      *            初診料の時、当月最初かどうかの判定
                    IF     (WRK-DD              =   ZERO )  OR
                           (WRK-SRYDD           <=  WRK-DD)
-      *                ���������������оݳ�������
+      *                初診料点数を給付対象外点数へ
                        IF      WRK-SRYYMD(1:6)     <   "200604"
                            PERFORM 10013-SYOSIN-TEN-SEC
                        ELSE
@@ -1105,10 +1105,10 @@
                        MOVE    1                   TO  FLG-SYORI-END
                    END-IF
                WHEN    "99"        ALSO    ANY
-      *            �����ʳ���ǻ���
-      *            ���������������оݳ�������
+      *            小児科外来診察料
+      *            初診料点数を給付対象外点数へ
                    IF      FLG-SYONIKA         =   1
-      *                ���������������оݳ�������
+      *                初診料点数を給付対象外点数へ
                        IF      WRK-SRYYMD(1:6)     <   "200604"
                            PERFORM 10013-SYOSIN-TEN-SEC
                        ELSE
@@ -1122,7 +1122,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1158,7 +1158,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ɤ߹���
+      *    システム管理読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1174,7 +1174,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ������ޥ����ɤ߹���
+      *    算定歴マスタ読み込み
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
@@ -1193,7 +1193,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        930-SRYACT-RAED-SEC         SECTION.
       *
@@ -1212,7 +1212,7 @@
        930-SRYACT-RAED-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -1231,7 +1231,7 @@
        900-SRYACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����������ɤ�
+      *    受診履歴順読み
       *****************************************************************
        970-JYURRK-READ-SEC           SECTION.
       *
@@ -1249,7 +1249,7 @@
        970-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1262,7 +1262,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1277,7 +1277,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

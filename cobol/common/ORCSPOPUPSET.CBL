@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSPOPUPSET.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ծ��������Խ�����
-      *  �ֵѥ��顼������  : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  12/12/14    NACL- ¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 患者情報通知編集処理
+      *  返却エラーコード  : 
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  12/12/14    NACL- 多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -42,7 +42,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PTMEMOINF       PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
@@ -50,12 +50,12 @@
       *
            03  FLG-OK              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -78,42 +78,42 @@
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ΰ�
+      *    共通領域
            COPY    "MCPAREA".
       *
-      *    ���ԥ��
+      *    患者メモ
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    �ݸ�����
+      *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
-      *    ���Ծ������Υѥ�᥿
+      *    患者情報通知パラメタ
            COPY    "CPORCSPOPUPSET.INC".
       *
            COPY    "COMMON-SPA".
@@ -124,7 +124,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -133,21 +133,21 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  ORCSPOPUPSET-BODY
       *
-      *    �ݸ���ǧ��
+      *    保険確認日
            IF     ORCSPOPUPSET-HKNCHK  =   "1"
                PERFORM 100-PTHKNINF-HEN-SEC
            END-IF
-      *    ��⣱
+      *    メモ１
            IF     (ORCSPOPUPSET-MEMO1  =   "1"  )  OR
                   (ORCSPOPUPSET-MEMO2  =   "1"  )
                PERFORM 200-PTMEMOINF-SYORI-SEC
            END-IF
       *
-      *    ���������Խ�
+      *    出力内容編集
            IF      WRK-MEMO-HEN    NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-      *        ���Ϸ��
+      *        出力桁数
                MOVE    1000                TO  KANACHK-MAX-CNT
                MOVE    WRK-MEMO-HEN        TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
@@ -163,7 +163,7 @@
            .
       *
       *****************************************************************
-      *    �ݸ���ǧ������
+      *    保険確認日処理
       *****************************************************************
        100-PTHKNINF-HEN-SEC                SECTION.
       *
@@ -211,10 +211,10 @@
                MOVE    WRK-KAKUNINYMD      TO  LNK-DAY2-YMD
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
-               STRING  "�ݸ��ǽ���ǧ����"
+               STRING  "保険最終確認日："
                        HKN-TANSEIDONAME
                                            DELIMITED  BY  SPACE
-                       "��"
+                       "　"
                        LNK-DAY2-EDTYMD1
                        X"0A"
                                            DELIMITED  BY  SIZE
@@ -226,7 +226,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��������
+      *    保険情報処理
       *****************************************************************
        1001-HKNNUM-HEN-SEC                SECTION.
       *
@@ -257,20 +257,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ɽ������
+      *    メモ表示処理
       *****************************************************************
        200-PTMEMOINF-SYORI-SEC                SECTION.
       *
            MOVE    SPACE               TO  WRK-MEMO-G
            IF     (ORCSPOPUPSET-MEMO1  =   "1"  )
                MOVE    1                   TO  WRK-MEMOKBN
-               MOVE    "��⣱��"          TO  WRK-HEDMESG
+               MOVE    "メモ１："          TO  WRK-HEDMESG
                PERFORM 2001-PTMEMOINF-HEN-SEC
            END-IF
       *
            IF     (ORCSPOPUPSET-MEMO2  =   "1"  )
                MOVE    2                   TO  WRK-MEMOKBN
-               MOVE    "��⣲��"          TO  WRK-HEDMESG
+               MOVE    "メモ２："          TO  WRK-HEDMESG
                PERFORM 2001-PTMEMOINF-HEN-SEC
            END-IF
       *
@@ -279,7 +279,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ɽ������
+      *    メモ表示処理
       *****************************************************************
        2001-PTMEMOINF-HEN-SEC                SECTION.
       *
@@ -317,7 +317,7 @@
                ELSE
                    MOVE    PTMEMOINF-SYSYMD    TO  WRK-MEMO-YMD
                    IF      PTMEMOINF-SYSYMD    <   SPA-SYSYMD
-      *                �����ƥ����դ�����ǽ�λ
+      *                システム日付より前で終了
                        MOVE    1               TO  FLG-PTMEMOINF
                    END-IF
                END-IF
@@ -338,10 +338,10 @@
                MOVE    WRK-MEMO-YMD        TO  LNK-DAY2-YMD
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
-               STRING  "��"
+               STRING  "【"
                        WRK-HEDMESG
                        LNK-DAY2-EDTYMD1
-                       "����Ͽ������ޤ���"
+                       "に登録があります】"
                                            DELIMITED  BY  SIZE
                                            INTO    WRK-MEMO
                END-STRING
@@ -350,14 +350,14 @@
            IF      WRK-MEMO        NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-      *        ���Ϸ��
+      *        出力桁数
                MOVE    400                 TO  KANACHK-MAX-CNT
                MOVE    WRK-MEMO            TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
                MOVE    KANACHK-MAE-INPUT   TO  WRK-MEMO
                IF      KANACHK-MAX         >   ZERO
-      *            �ǽ�ʸ�������԰ʳ��ϡ����Ԥ����ꤹ��
+      *            最終文字が改行以外は、改行を設定する
                    IF      WRK-MEMO(KANACHK-MAX:1)
                                            NOT =   X"0A"
                        COMPUTE IDX         =   KANACHK-MAX  +  1
@@ -367,7 +367,7 @@
       *
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
-      *        ���Ϸ��
+      *        出力桁数
                MOVE    1000                TO  KANACHK-MAX-CNT
                MOVE    WRK-MEMO-HEN        TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING
@@ -384,7 +384,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ޥ������ɤ߹���
+      *    保険マスター読み込み
       *****************************************************************
        910-PTHKNINF-READ-SEC         SECTION.
       *
@@ -401,7 +401,7 @@
        910-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ���ɹ�����
+      *    患者メモ読込処理
       *****************************************************************
        910-PTMEMOINF-READ-SEC         SECTION.
       *
@@ -418,7 +418,7 @@
        910-PTMEMOINF-READ-EXT.
            EXIT.
       ****************************************************************
-      *    �ݸ��ֹ�ޥ�������������
+      *    保険番号マスタ次検索処理
       ****************************************************************
        920-HKNNUM-READ-SEC              SECTION.
       *
@@ -435,7 +435,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -449,7 +449,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɹ��߽���
+      *    ＤＢ読込み処理
       *****************************************************************
        920-DBFETCH-SEC         SECTION.
       *
@@ -462,7 +462,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,86 +16,86 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ������ũ��Хѥ�᥿����COPY (CPORCSCTENTEK2.INC)
-      *                            ���ѥץ������ 
+      *    入院点滴抽出パラメタ　　COPY (CPORCSCTENTEK2.INC)
+      *                            使用プログラム 
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSTENTEK2AREA.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  LNK-ORCSTEN2-HOSPNUM            PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
            03  LNK-ORCSTEN2-PTID               PIC  9(10).
-      *����ǯ��
+      *診療年月
            03  LNK-ORCSTEN2-SRYYM              PIC  X(06).
-      *�ݸ��ȹ�
+      *保険組合
            03  LNK-ORCSTEN2-HKNCOMBI           PIC 9(04).
-      *�ֵѹ���
+      *返却項目
            03  LNK-ORCSTEN2-OUT-AREA.
-      *        ���ֹ�
+      *        剤番号
                05  LNK-ORCSTEN2-ZAINUM         PIC 9(08)  OCCURS 40.
-      *        ��ũ����
+      *        点滴注射
                05  LNK-ORCSTEN2-TENTEK-AREA.
                    07  LNK-ORCSTEN2-TENTEK-DAY            OCCURS   31.
-      *              ���Ų�
+      *              診療科
                      09  LNK-ORCSTEN2-TENTEK-SRYKA        PIC X(02).
-      *              ���ٿ�
+      *              明細数
                      09  LNK-ORCSTEN2-TENTEK-MEISAISU     PIC 9(03).
-      *              ������
+      *              剤点数
                      09  LNK-ORCSTEN2-TENTEK-ZAITEN       PIC 9(07).
-      *              ���ť����ɷ�
+      *              診療コード計
                      09  LNK-ORCSTEN2-TENTEK-SRYCDTOTAL   PIC 9(13).
-      *              �����ֵ�
+      *              明細返却
                      09  LNK-ORCSTEN2-TENTEK-MEISAI       OCCURS  5.
-      *                ���Ź԰٥�����
+      *                診療行為コード
                        11  LNK-ORCSTEN2-TENTEK-SRYCD      PIC X(09).
-      *                ���������ٿ�
+      *                コメント明細数
                        11   LNK-ORCSTEN2-TENTEK-COM-MEISAISU
                                                           PIC 9(03).
-      *                �������ֵ��ΰ�
+      *                コメント返却領域
                        11  LNK-ORCSTEN2-TENTEK-COM-AREA   OCCURS   5.
-      *                 �����ȥե饰�ʶ����̾拾���ȡ�������­�����ȡ�
+      *                 コメントフラグ（空白：通常コメント　１：補足コメント）
                         13  LNK-ORCSTEN2-TENTEK-COM-FLG   PIC X(1).
-      *                 �����ȥ�����
+      *                 コメントコード
                         13  LNK-ORCSTEN2-TENTEK-COM-SRYCD PIC X(09).
-      *                 ������ʸ��
+      *                 コメント文字
                         13  LNK-ORCSTEN2-TENTEK-COM-MOJI  PIC X(100).
-      *        ���顼�����ɡʣ������ｪλ�������оݤʤ���
+      *        エラーコード（０：正常終了　１：対象なし）
                   07  LNK-ORCSTEN2-TENTEK-ERRCD           PIC 9(01).
       *
-      *        �濴��̮
+      *        中心静脈
                05  LNK-ORCSTEN2-CHUJOU-AREA.
                    07  LNK-ORCSTEN2-CHUJOU-DAY            OCCURS   31.
-      *              ���Ų�
+      *              診療科
                      09  LNK-ORCSTEN2-CHUJOU-SRYKA        PIC X(02).
-      *              ���ٿ�
+      *              明細数
                      09  LNK-ORCSTEN2-CHUJOU-MEISAISU     PIC 9(03).
-      *              ������
+      *              剤点数
                      09  LNK-ORCSTEN2-CHUJOU-ZAITEN       PIC 9(07).
-      *              ���ť����ɷ�
+      *              診療コード計
                      09  LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL   PIC 9(13).
-      *              �����ֵ�
+      *              明細返却
                      09  LNK-ORCSTEN2-CHUJOU-MEISAI       OCCURS  5.
-      *                ���Ź԰٥�����
+      *                診療行為コード
                        11  LNK-ORCSTEN2-CHUJOU-SRYCD      PIC X(09).
-      *                ���������ٿ�
+      *                コメント明細数
                        11   LNK-ORCSTEN2-CHUJOU-COM-MEISAISU
                                                           PIC 9(03).
-      *                �������ֵ��ΰ�
+      *                コメント返却領域
                        11  LNK-ORCSTEN2-CHUJOU-COM-AREA   OCCURS   5.
-      *                 �����ȥե饰�ʶ����̾拾���ȡ�������­�����ȡ�
+      *                 コメントフラグ（空白：通常コメント　１：補足コメント）
                         13  LNK-ORCSTEN2-CHUJOU-COM-FLG   PIC X(1).
-      *                 �����ȥ�����
+      *                 コメントコード
                         13  LNK-ORCSTEN2-CHUJOU-COM-SRYCD PIC X(09).
-      *                 ������ʸ��
+      *                 コメント文字
                         13  LNK-ORCSTEN2-CHUJOU-COM-MOJI  PIC X(100).
-      *        ���顼�����ɡʣ������ｪλ�������оݤʤ���
+      *        エラーコード（０：正常終了　１：対象なし）
                   07  LNK-ORCSTEN2-CHUJOU-ERRCD           PIC 9(01).
-      *      ���������ɡʣ�������ǯ��顼���������Ը������顼
-      *                  �����ݸ��ȹ礻���顼������������פʤ�
-      *                  �����굻�ܲû��ȹ礻���顼��
+      *      復帰コード（１：診療年月エラー　２：患者検索エラー
+      *                  ３：保険組合せエラー　４：入院会計なし
+      *                  ５：手技＋加算組合せエラー）
              03  LNK-ORCSTEN2-RC              PIC S9(9)  BINARY.
       *

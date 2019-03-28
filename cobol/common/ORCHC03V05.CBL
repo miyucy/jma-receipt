@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHC03V05.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : �������������ٽ񡡰���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/12/16    NACL�ݿ���  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 外来請求書兼明細書　印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/12/16    NACL−森脇  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  05.00.01    NACL-����    18/11/08  ��ϥӥ�ˤ���¾��ޤ��
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-森脇    18/11/08  リハビリにその他を含める
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,14 +35,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC                 PIC X(20000).
       *
@@ -50,15 +50,15 @@
       *
            COPY    "HCM03V05.INC".
       *
-      *     �����ѥǡ��� ̾���ΰ� 
+      *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
            COPY    "CPASGNPARA.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -80,7 +80,7 @@
            03  FLG-HKNTEN          PIC 9(01).
            03  FLG-FTNKIN          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -94,11 +94,11 @@
            03  IDXC                PIC 9(04).
            03  IDX-CM              PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-YMD             PIC X(10).
@@ -156,9 +156,9 @@
            03  WRK-Z72-HS              REDEFINES   WRK-Z72-H
                                        PIC -,---,---.
            03  WRK-Z72-H9              PIC Z,ZZZ,ZZ9.
-      *    �����Ѵ���
+      *    全角変換用
            03  WRK-HENKAN-G            PIC X(10).
-      *    ���񽸷�
+      *    自費集計
            03  WRK-JIHI-TOTAL          PIC S9(08).
       *
            03  WRK-NYUKIN                  PIC S9(07).
@@ -187,9 +187,9 @@
            03  WRK-HOSPTEL             PIC X(15).
       *
            03  WRK-PAGECNT             PIC 9(03).
-      *    ��ɼ�����ڡ���
+      *    伝票毎総ページ
            03  WRK-PAGEALL             PIC 9(03).
-      *    ���ڡ���
+      *    総ページ
            03  WRK-PAGE-CNT            PIC 9(03).
       *
            03  WRK-PAGE                PIC 9(03).
@@ -200,8 +200,8 @@
                05  WRK-KEY-HKNCOMBINUM     PIC X(04).
                05  WRK-KEY-DENPNUM         PIC 9(07).
                05  WRK-KEY-PCNT            PIC 9(07).
-      *    ���������ٽ�
-      *    ̾�Ρܿ����Խ�
+      *    診療費明細書
+      *    名称＋数量編集
            03  WRK-NAME                 PIC X(148).
            03  WRK-NAME-R               REDEFINES   WRK-NAME.
                05  WRK-NAME-1           PIC X(74).
@@ -211,7 +211,7 @@
                    07  WRK-NAME-211         PIC X(66).
                    07  WRK-NAME-212         PIC X(08).
                05  WRK-NAME-22          PIC X(74).
-      *    �������Խ�
+      *    診療日編集
            03  WRK-SRYMEI-H            PIC X(80).
            03  WRK-DAY-HEN.
                05  WRK-DAY-H1          PIC X(02).
@@ -222,7 +222,7 @@
                05  WRK-FILEMEI-HMS     PIC X(06).
                05  WRK-FILEMEI-CD      PIC X(06).
       *H26.10
-      *    �����ȥ������ϰ�
+      *    コメントコード範囲
            03  WRK-COMMNT.
                05  WRK-COM-STR         PIC X(09).
                05  WRK-COM-FIL         PIC X(01).
@@ -234,7 +234,7 @@
                05  TBL-COM-STR             PIC X(09).
                05  TBL-COM-END             PIC X(09).
       *
-      *    Ģɼ�ơ��֥�
+      *    帳票テーブル
        01  TBL-MEISAI-AREA.
            03  TBL-MEISA-PAGE          OCCURS   50.
                05  TBL-MEISA-REC           OCCURS   36.
@@ -252,28 +252,28 @@
                        09  TBL-H-KINGAKU1        PIC X(02).
                        09  TBL-H-KINGAKU2        PIC X(09).
                    07  TBL-H-EN              PIC X(01).
-      *Ģɼ���ٿ�
+      *帳票明細数
        01  LINE-MAX                    PIC 9(03)   VALUE   0.
        01  LINE-MAX1                   PIC 9(03)   VALUE   20.
        01  LINE-MAX2                   PIC 9(03)   VALUE   36.
        01  PAGE-MAX                    PIC 9(03)   VALUE   50.
       *
-      *����������
+      *点数記載用
        01  CONS-LABEL1.
            03  FILLER          PIC X(48)   VALUE
-           "�������ˤĤ��Ƥϣ�����ʬ��ɽ���򤷤Ƥ���ޤ���".
+           "※金額欄については１０割分の表示をしております。".
            03  FILLER          PIC X(52)   VALUE
-           "���԰�����ô����ݸ�����ˤ����ô���ʬ�Ȥʤ�ޤ���".
-      *��۵�����
+           "患者一部負担金は保険公費による負担割合分となります。".
+      *金額記載用
        01  CONS-LABEL2.
            03  FILLER          PIC X(36)   VALUE
-           "�������������Ǥ�ɽ���򤷤Ƥ��ޤ���".
+           "※合計欄は点数での表示をしています。".
            03  FILLER          PIC X(52)   VALUE
-           "���԰�����ô��Ϥ����������׻��ʣ����ᣱ���ߡˤ���".
+           "患者一部負担金はこの点数より計算（１点＝１０円）し、".
            03  FILLER          PIC X(38)   VALUE
-           "�ݸ�����ˤ����ô���ʬ�Ȥʤ�ޤ���".
+           "保険公費による負担割合分となります。".
       *
-      *    �ץ�����४�ץ����ѥ�᥿
+      *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-HAKKOUBIKBN        PIC X(01).
       *
@@ -289,7 +289,7 @@
            03  PARA-MISYUKBN1          PIC X(01).
            03  PARA-MISYUKBN2          PIC X(01).
       *H26.4
-      *    ���ս�
+      *    注意書き
            03  PARA-CHUI-YUKOSTYMD     PIC X(08).
            03  PARA-CHUI-YUKOEDYMD     PIC X(08).
            03  PARA-RCHUI              PIC X(100).
@@ -297,7 +297,7 @@
            03  PARA-API-DATA           PIC X(1).
       *
       *H26.10
-      *    �оݥ����ȥ�����
+      *    対象コメントコード
            03  PARA-COM-HYOJI-G.
                05  PARA-COM-HYOJI01        PIC X(20).
                05  PARA-COM-HYOJI02        PIC X(20).
@@ -306,7 +306,7 @@
                05  PARA-COM-HYOJI05        PIC X(20).
            03  PARA-COM-HYOJI-G2       REDEFINES   PARA-COM-HYOJI-G.
                05  PARA-COM-HYOJI          PIC X(20)  OCCURS  5.
-      *    �����о�
+      *    自費対象
            03  PARA-JIHIKBN            PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
@@ -315,14 +315,14 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ���� 
+      *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
       *
            COPY    "CPSK1005.INC".
@@ -331,94 +331,94 @@
       *
            COPY    "CPSK1013.INC".
       *
-      *    ϫ�Ұ��ŵ��ؾ���
+      *    労災医療機関情報
            COPY    "CPSK4001.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
-      *    ���ŵ���̾���Խ�����
+      *    医療機関名称編集情報
            COPY    "CPSK1901.INC".
-      *    ���ŵ��ؽ����Խ�����
+      *    医療機関住所編集情報
            COPY    "CPSK1902.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ��¸�Ѽ�Ǽ���
+      *    保存用収納ワーク
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //WRK-SYU-//.
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
            COPY    "CPSYUPARA01.INC".
            COPY    "CPSYUPARA03.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSGDAY.INC".
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
-      *    ������Ǽ�ѥ�᥿
+      *    請求書収納パラメタ
            COPY    "CPORCHC03SUB.INC".
       *
-      *    ������Խ����֥ѥ�᥿
+      *    請求書編集サブパラメタ
            COPY    "CPORCHC04SUB.INC".
       *
-      *    �ݸ��ȹ礻̾���Խ�����
+      *    保険組合せ名称編集サブ
            COPY    "CPORCSHKNMEI.INC".
       *
-      *    �����ģ����極��
+      *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "MCPDATA.INC".
@@ -426,14 +426,14 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ѥ�᥿
+      *    請求書パラメタ
            COPY    "CPORCHC03.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -442,7 +442,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -453,7 +453,7 @@
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
-      *    �ƣģ��ɹ�
+      *    各ＤＢ読込
            PERFORM 100-SYORI-SEC
       *
            IF     ( SPA-API-FLG    NOT =   ZERO )
@@ -471,10 +471,10 @@
            WHEN  ( ORCHC03-PARAFLG     =   1 )
                PERFORM 203-PARA-SYUNOU-SEC
            WHEN  ( ORCHC03-HAKHOUFLG   =   ZERO )
-      *            �оݤ���ɼ�ֹ�ʬ�Τ�
+      *            対象の伝票番号分のみ
                PERFORM 201-ONLY-SYUNOU-SEC
            WHEN    OTHER
-      *        ȯ�Զ�ʬ�ˤ��
+      *        発行区分による
                PERFORM 202-KAKHOU-SYUNOU-SEC
            END-EVALUATE
       *
@@ -484,11 +484,11 @@
            .
       *
       *****************************************************************
-      *    Ģɼ�������Ͻ���
+      *    帳票印刷開始処理
       *****************************************************************
        400-SYOKI-PRINT-SEC             SECTION.
       *
-      *    �ե�����ϣУţ�
+      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC03"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
@@ -510,13 +510,13 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
            MOVE    HCM03V05            TO  PRT-REC
       *
-      *    �����ѥǡ�������
+      *    印刷用データ出力
            WRITE   PRT-REC
       *
            CLOSE                       PRT-FILE
@@ -529,10 +529,10 @@
            MOVE   SYS-1031-PRTNM(3)    TO  MKPRT-PRTNM
            IF    ( ORCHC03-PARAFLG     =   1 )
              AND ( ORCHC03-PARA-GYOUMUID   =   "SU1" )
-               MOVE   "�μ�������ٽ�ʽ�����" 
+               MOVE   "領収書兼明細書（修正）" 
                                        TO  MKPRT-INFO
            ELSE
-               MOVE   "�μ�������ٽ�" TO  MKPRT-INFO
+               MOVE   "領収書兼明細書" TO  MKPRT-INFO
            END-IF
            CALL   "ORCSMKPRT1"         USING
                                        ORCSMKPRTAREA
@@ -543,7 +543,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�������� (�����ģ¤˽��ϡ�
+      *    帳票印刷処理 (印刷ＤＢに出力）
       *****************************************************************
        401-PRINT-SEC                SECTION.
       *
@@ -553,7 +553,7 @@
            MOVE    HCM03V05            TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
-      *    �������ޥ����УǤξ��"2"�򥻥åȤ��뤳�ȡ�
+      *    カスタマイズＰＧの場合"2"をセットすること。
       *    MOVE    "2"                 TO  SPRT-SITEKBN
       *-----------------------------------------------------------------
            CALL    "ORCSPRT"           USING
@@ -570,18 +570,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Խ�����
+      *    初期編集処理
       *****************************************************************
        100-SYORI-SEC                SECTION.
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-SRYYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1001-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
@@ -591,13 +591,13 @@
                INITIALIZE                  SYS-1001-REC
            END-IF
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1002-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1002-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
@@ -610,10 +610,10 @@
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -624,14 +624,14 @@
                                            SPA-AREA
                                            SYS-1031-REC
       *
-      *    ϫ�Ұ��ŵ��ؾ����Խ�
+      *    労災医療機関情報編集
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-4001-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-4001-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
@@ -641,10 +641,10 @@
                INITIALIZE                  SYS-4001-REC
            END-IF
       *
-      *    �ץ�����४�ץ����
+      *    プログラムオプション
            PERFORM 100-OPTION-SELECT-SEC
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
       *
@@ -652,7 +652,7 @@
        100-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ�������߽���
+      *    プログラムオプション取込み処理
       *****************************************************************
        100-OPTION-SELECT-SEC             SECTION.
       *
@@ -660,69 +660,69 @@
            MOVE    "0"                 TO  PARA-HAKKOUBIKBN
            MOVE    "0"                 TO  PARA-API-DATA
       *
-      *    ��ɼȯ������ʬ
+      *    伝票発行日区分
            MOVE    "HAKKOUBIKBN"       TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-HAKKOUBIKBN
-      *    ���ñ��
+      *    合計単位
            MOVE    "GOKEITANI"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-GOKEITANI
-      *    �ֳݤ�
+      *    網掛け
            MOVE    "SHADE"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SHADE
       *
-      *    �ݸ��ȹ礻ɽ��
+      *    保険組合せ表示
            MOVE    "HKNMEI"            TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-HKNMEI
            IF      PARA-HKNMEI         =   SPACE
                MOVE    "1"                 TO  PARA-HKNMEI
            END-IF
-      *    ��ô���ɽ��
+      *    負担割合表示
            MOVE    "FTNKBN"           TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-FTNKBN
            IF      PARA-FTNKBN         =   SPACE
                MOVE    "2"                 TO  PARA-FTNKBN
            END-IF
-      *    ���Ų�ɽ��
+      *    診療科表示
            MOVE    "SRYKA"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SRYKA
            IF      PARA-SRYKA          =   SPACE
                MOVE    "1"                 TO  PARA-SRYKA
            END-IF
-      *    ��������ɽ��
+      *    （訂正）表示
            MOVE    "TEISEIKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-TEISEIKBN
            IF      PARA-TEISEIKBN      =   SPACE
                MOVE    "1"             TO  PARA-TEISEIKBN
            END-IF
-      *    ���ʻ�̾ɽ��
+      *    カナ氏名表示
            MOVE    "KANANAME"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-KANANAME
            IF      PARA-KANANAME       =   SPACE
                MOVE    "0"             TO  PARA-KANANAME
            END-IF
-      *    �Դ�
+      *    行間
            MOVE    "LINE"              TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-LINE
            IF      PARA-LINE           =   SPACE
                MOVE    "1"                 TO  PARA-LINE
            END-IF
-      *    ����
+      *    小計
            MOVE    "SYOKEI"            TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SYOKEI
            IF      PARA-SYOKEI         =   SPACE
                MOVE    "1"                 TO  PARA-SYOKEI
            END-IF
-      *    ���������ɽ���ʿ��Ź԰ٶ�̳��
+      *    前回請求額表示（診療行為業務）
            MOVE    "MISYUKBN1"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-MISYUKBN1
@@ -731,7 +731,7 @@
            ELSE
                MOVE    "1"                 TO  PARA-MISYUKBN1
            END-IF
-      *    ���������ɽ���ʼ�Ǽ��̳��
+      *    前回請求額表示（収納業務）
            MOVE    "MISYUKBN2"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-MISYUKBN2
@@ -741,7 +741,7 @@
                MOVE    "1"                 TO  PARA-MISYUKBN2
            END-IF
       *
-      *    ���ս�ͭ��������
+      *    注意書き有効開始日
            MOVE    "CHUI_YUKOSTYMD"    TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  WRK-YMD
@@ -752,7 +752,7 @@
                MOVE    "00000000"          TO  PARA-CHUI-YUKOSTYMD
            END-IF
       *
-      *    ���ս�ͭ����λ��
+      *    注意書き有効終了日
            MOVE    "CHUI_YUKOEDYMD"    TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  WRK-YMD
@@ -763,11 +763,11 @@
                MOVE    "99999999"          TO  PARA-CHUI-YUKOEDYMD
            END-IF
       *
-      *    ���ս�
+      *    注意書き
            MOVE    "RCHUI"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-RCHUI
-      *    ���ս�
+      *    注意書き
            MOVE    "MCHUI"             TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-MCHUI
@@ -780,7 +780,7 @@
            END-IF
       *
       *H26.10
-      *    �оݥ����ȥ�����
+      *    対象コメントコード
            MOVE    "COM_HYOUJI_1"      TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-COM-HYOJI01
@@ -799,7 +799,7 @@
            MOVE    "JIHIKBN"           TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-JIHIKBN
-      *    �������ϰ��Խ�
+      *    コメント範囲編集
            PERFORM 1001-COMHYOJI-HEN-SEC
       *
            .
@@ -807,7 +807,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ����ѥ�᥿��������
+      *    プログラムオプションパラメタ取得処理
       *****************************************************************
        1001-OPTION-CALL-SEC             SECTION.
       *
@@ -823,7 +823,7 @@
            EVALUATE    WRK-PARA-NAME
            WHEN    "RCHUI" 
            WHEN    "MCHUI" 
-      *        ����
+      *        注意
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    ORCSPRGOPTION-OT-PARA(1:100)
@@ -832,7 +832,7 @@
                MOVE    KANACHK-MAE-INPUT   TO  WRK-PARA
            WHEN    OTHER
                IF      ORCSPRGOPTION-OT-TYPE   =   1
-      *            Ⱦ��
+      *            半角
                    MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA
                ELSE
                    MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA-N
@@ -845,7 +845,7 @@
       *
       *H26.10
       *****************************************************************
-      *    �оݥ����ȥ������Խ�����
+      *    対象コメントコード編集処理
       *****************************************************************
        1001-COMHYOJI-HEN-SEC                SECTION.
       *
@@ -860,7 +860,7 @@
        1001-COMHYOJI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �оݥ����ȥ������Խ�����
+      *    対象コメントコード編集処理
       *****************************************************************
        10011-COMHYOJI-HENSYU-SEC                SECTION.
       *
@@ -883,7 +883,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻̾���Խ�����
+      *    保険組合せ名称編集処理
       *****************************************************************
        1001-HKNCOMBI-HEN-SEC             SECTION.
       *
@@ -896,7 +896,7 @@
                                        ORCSHKNMEIAREA
            MOVE    ORCSHKNMEI-HKNCOMBIMEI  TO  WRK-HKNCOMBIMEI
       *
-      *    �ݸ��ȹ礻�ޥ���������
+      *    保険組合せマスター検索
            INITIALIZE                      HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
@@ -907,7 +907,7 @@
            END-IF
       *
            IF    ( COMB-HKNNUM         =   "971" OR "973" )
-      *        ����ϫ���ݸ����󸡺�
+      *        患者労災保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
@@ -922,17 +922,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�̾�Խ�����
+      *    診療科名編集処理
       *****************************************************************
        1000-SRYKAMEI-HEN-SEC                SECTION.
       *
-      *    ���Ų�
+      *    診療科
            MOVE    SPACE               TO  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
@@ -946,7 +946,7 @@
                        CONTINUE
                    ELSE
                        STRING  WRK-SRYKA-MEI   DELIMITED  BY  SPACE
-                               "��"            DELIMITED  BY  SIZE
+                               "、"            DELIMITED  BY  SIZE
                                SYS-1005-SRYKANAME1
                                                DELIMITED  BY  SPACE
                                INTO                WRK-SRYKA-MEI
@@ -962,54 +962,54 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        300-HC03-HEN-SEC                SECTION.
       *
            INITIALIZE                  HCM03V05
       *
-      *    ��
+      *    頁
            MOVE    WRK-PAGEALL         TO  WRK-ZZZ
            MOVE    WRK-ZZZ             TO  HCM03V05-PAGE
       *
-      *    ��ɼ�ֹ�
+      *    伝票番号
            MOVE    WRK-HEAD-DENPNUM    TO  WRK-NO  
            MOVE    WRK-NO              TO  HCM03V05-NO
-      *    ���Ų�
+      *    診療科
            MOVE    WRK-HEAD-SRYKAMEI   TO  HCM03V05-SRYKANAME
-      *    �����ֹ�
+      *    患者番号
            MOVE    SPA-PTNUM           TO  HCM03V05-PTNUM
-      *    ����̾��
+      *    カナ名称
            IF    ( PARA-KANANAME   =   "1" )
                MOVE    SPA-KANANAME    TO  HCM03V05-KANANAME
            END-IF
-      *    ����̾��
+      *    患者名称
            IF    ( SPA-NAME (31:)  NOT =   SPACE )
                MOVE    SPA-NAME        TO  HCM03V05-NAME2
            ELSE
                MOVE    SPA-NAME        TO  HCM03V05-NAME
            END-IF
-      *    �ݸ�����
+      *    保険種別
            MOVE    WRK-HEAD-HKNCOMBIMEI     TO  HCM03V05-HOKEN
-      *    ��ô���
+      *    負担割合
            MOVE    WRK-FUTAN           TO  HCM03V05-FUTAN
            MOVE    WRK-FUTAN-MEI       TO  HCM03V05-FUTANLABEL
-      *    ������
+      *    診療日
            MOVE    WRK-LBLSRYYMD       TO  HCM03V05-LBLSRYYMD
            MOVE    WRK-SRYYMDG         TO  HCM03V05-SRYYMD
-      *    ȯ����
+      *    発行日
            MOVE    WRK-HAKYMD          TO  HCM03V05-HAKYMD
       *
-      *    ���ŵ��ؽ���
+      *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM03V05-IRYOADRS
-           INSPECT HCM03V05-IRYOADRS   REPLACING ALL "  " BY "��"
-      *    ���ŵ���̾
+           INSPECT HCM03V05-IRYOADRS   REPLACING ALL "  " BY "　"
+      *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM03V05-IRYOMEI
-           INSPECT HCM03V05-IRYOMEI    REPLACING ALL "  " BY "��"
-      *    ���ŵ��أԣţ�
+           INSPECT HCM03V05-IRYOMEI    REPLACING ALL "  " BY "　"
+      *    医療機関ＴＥＬ
            MOVE    WRK-HOSPTEL         TO  HCM03V05-IRYOTEL
       *
-      *    ϫ�ҡ�����Ǵ������᤬̵����硢����ɽ���ʤ�
+      *    労災・自賠で患者請求が無い場合、点数表示なし
            IF    ( COMB-HKNNUM             =    "971"
               AND  PTRSI-HKNKBN        NOT =    "5"
               AND  SYS-4001-RSIIRYOKBN     =    "1" )
@@ -1026,88 +1026,88 @@
                    PERFORM 800-HENKAN-SEC
                    MOVE    WRK-Z7-G            TO  HCM03V05-HKNRYO(IDY)
                END-PERFORM
-      *        �������
+      *        合計点数
                MOVE    WRK-TOTAL-HKNTEN    TO  WRK-Z72
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-Z7-G            TO  HCM03V05-GOKTEN
            END-IF
       *
-      *    �ݸ�Ŭ��ʬ
+      *    保険適用分
            MOVE    WRK-HKNTEKMONEY     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-FTNKIN
       *
-      *    ������
+      *    自費合計
            MOVE    WRK-GOK-JIHI        TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-JIHI
-      *    ���������ô��
+      *    公費一部負担金
            MOVE    WRK-KOH-FTN         TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-KOUHI
-      *    Ĵ����
+      *    調整金
            MOVE    WRK-CHOSEI          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-CHOSEI
-      *    ����̤���۷׻�
+      *    前回未収額計算
            MOVE    WRK-MISYUMONEY      TO  WRK-Z72
            PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-ZENMISYU
-      *    ���������
+      *    今回請求額
            MOVE    WRK-SKYMONEY        TO  WRK-Z72
            PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-KONSEIKYU
-      *    ��������
+      *    合計請求額
            COMPUTE WRK-GOKTEN          =   WRK-SKYMONEY
                                        +   WRK-MISYUMONEY
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z7-G            TO  HCM03V05-GOUKEIGAK
-      *    ���������
+      *    今回入金額
            MOVE    WRK-NYUKIN          TO  WRK-Z72
            MOVE    1                   TO  FLG-HENPARA
            PERFORM 810-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HCM03V05-NYUKIN
            MOVE    WRK-Z7-G            TO  HCM03V05-KONNYUKIN
       *
-      *    ȯ�Զ�ʬ
+      *    発行区分
            EVALUATE    ORCHC03-HAKKOFLG
                WHEN    2
                    IF    ( PARA-TEISEIKBN  =   "1" )
-                       MOVE    "��������"  TO  HCM03V05-MIDASHI
+                       MOVE    "（訂正）"  TO  HCM03V05-MIDASHI
                    END-IF
            END-EVALUATE
       *
-      *    ��̾���������ܡ�
+      *    列名（点数記載）
            IF      PARA-GOKEITANI      =   "1"
-               MOVE    "����������"        TO  HCM03V05-LABEL12
-               MOVE    "����������"        TO  HCM03V05-LABEL22
+               MOVE    "　点　数　"        TO  HCM03V05-LABEL12
+               MOVE    "　点　数　"        TO  HCM03V05-LABEL22
            ELSE
-               MOVE    "��ñ������"        TO  HCM03V05-LABEL12
-               MOVE    "��ñ������"        TO  HCM03V05-LABEL22
+               MOVE    "　単　価　"        TO  HCM03V05-LABEL12
+               MOVE    "　単　価　"        TO  HCM03V05-LABEL22
            END-IF
-           MOVE    "�����硡���ס���"      TO  HCM03V05-LABEL1
-           MOVE    "�����硡���ס���"      TO  HCM03V05-LABEL2
+           MOVE    "　　合　　計　　"      TO  HCM03V05-LABEL1
+           MOVE    "　　合　　計　　"      TO  HCM03V05-LABEL2
       *
-           MOVE    "�� �� �� �� ��"        TO  HCM03V05-MEISAI (1)
-           MOVE    "�� �� �� �� ��"        TO  HCM03V05-MEISAI (2)
-           MOVE    "�ߡ��𡡰塡��"        TO  HCM03V05-MEISAI (3)
-           MOVE    "�ꡡ����������"        TO  HCM03V05-MEISAI (4)
-           MOVE    "��������������"        TO  HCM03V05-MEISAI (5)
-           MOVE    "�衡����������"        TO  HCM03V05-MEISAI (6)
-           MOVE    "�ꡡ����������"        TO  HCM03V05-MEISAI (7)
-           MOVE    "�㡡����������"        TO  HCM03V05-MEISAI (8)
-           MOVE    "��������������"        TO  HCM03V05-MEISAI (9)
-           MOVE    "�衡�����ǡ���"        TO  HCM03V05-MEISAI (10)
-      *     MOVE    "��ϥӥ�ơ������"    TO  HCM03V05-MEISAI (11)
-           MOVE    "��ϥӥꡦ����¾"      TO  HCM03V05-MEISAI (11)
-           MOVE    "������������ˡ"        TO  HCM03V05-MEISAI (12)
-           MOVE    "�� �� �� �� ��"        TO  HCM03V05-MEISAI (13)
-           MOVE    "�¡������ǡ���"        TO  HCM03V05-MEISAI (14)
-           MOVE    "��������������"        TO  HCM03V05-MEISAI (15)
+           MOVE    "初 ・ 再 診 料"        TO  HCM03V05-MEISAI (1)
+           MOVE    "医 学 管 理 等"        TO  HCM03V05-MEISAI (2)
+           MOVE    "在　宅　医　療"        TO  HCM03V05-MEISAI (3)
+           MOVE    "投　　　　　薬"        TO  HCM03V05-MEISAI (4)
+           MOVE    "注　　　　　射"        TO  HCM03V05-MEISAI (5)
+           MOVE    "処　　　　　置"        TO  HCM03V05-MEISAI (6)
+           MOVE    "手　　　　　術"        TO  HCM03V05-MEISAI (7)
+           MOVE    "麻　　　　　酔"        TO  HCM03V05-MEISAI (8)
+           MOVE    "検　　　　　査"        TO  HCM03V05-MEISAI (9)
+           MOVE    "画　像　診　断"        TO  HCM03V05-MEISAI (10)
+      *     MOVE    "リハビリテーション"    TO  HCM03V05-MEISAI (11)
+           MOVE    "リハビリ・その他"      TO  HCM03V05-MEISAI (11)
+           MOVE    "精神科専門療法"        TO  HCM03V05-MEISAI (12)
+           MOVE    "放 射 線 治 療"        TO  HCM03V05-MEISAI (13)
+           MOVE    "病　理　診　断"        TO  HCM03V05-MEISAI (14)
+           MOVE    "入　院　料　等"        TO  HCM03V05-MEISAI (15)
       *
-      *    ��������
-      *    ������
+      *    明細内容
+      *    １枚目
            IF      WRK-PAGEALL         =   1
       *
                PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -1117,7 +1117,7 @@
                    MOVE    TBL-H-SRYMEI (IDX IDX2)
                                           TO  HCM03V05-SRYMEI1 (IDX2)
                    IF      TBL-H-KAISU  (IDX IDX2)    =   "---"
-                       MOVE    ALL "��"       TO  HCM03V05-KAIUSU12
+                       MOVE    ALL "—"       TO  HCM03V05-KAIUSU12
                                                                 (IDX2)
                    ELSE
                        MOVE    TBL-H-KAISU  (IDX IDX2)
@@ -1129,34 +1129,34 @@
                                               TO  HCM03V05-TENSU1
                                                                  (IDX2)
                    END-IF
-      *            �������ܤǱߤΤ��
+      *            点数記載で円のもの
                    IF      PARA-GOKEITANI      =   "1"
                        IF      TBL-H-EN (IDX IDX2)     =   "1"
                            MOVE    SPACE           TO  HCM03V05-TENSU1
                                                                 (IDX2)
                            STRING  TBL-H-TENSU2  (IDX IDX2)
-                                   "��"
+                                   "　"
                                               DELIMITED  BY  SIZE
                                        INTO   HCM03V05-TENSU1   (IDX2)
                            END-STRING
-                           MOVE    "��"            TO  HCM03V05-TENSU12
+                           MOVE    "円"            TO  HCM03V05-TENSU12
                                                                 (IDX2)
                            MOVE    SPACE           TO  HCM03V05-KINGAKU1
                                                                 (IDX2)
                            MOVE    SPACE         TO  HCM03V05-KINGAKU12
                                                                 (IDX2)
                            STRING  TBL-H-KINGAKU2(IDX IDX2)
-                                   "��"
+                                   "　"
                                               DELIMITED  BY  SIZE
                                        INTO   HCM03V05-KINGAKU1 (IDX2)
                            END-STRING
-                           MOVE    "��"           TO  HCM03V05-KINGAKU12
+                           MOVE    "円"           TO  HCM03V05-KINGAKU12
                                                                 (IDX2)
                        END-IF
                    END-IF
                END-PERFORM
            ELSE
-      *        ������
+      *        ２枚目
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   LINE-MAX2
                    MOVE    TBL-H-SRYKBN (IDX IDX2)
@@ -1164,7 +1164,7 @@
                    MOVE    TBL-H-SRYMEI (IDX IDX2)
                                           TO  HCM03V05-SRYMEI2 (IDX2)
                    IF      TBL-H-KAISU  (IDX IDX2)    =   "---"
-                       MOVE    ALL "��"       TO  HCM03V05-KAISU22(IDX2)
+                       MOVE    ALL "—"       TO  HCM03V05-KAISU22(IDX2)
                    ELSE
                        MOVE    TBL-H-KAISU  (IDX IDX2)
                                               TO  HCM03V05-KAISU2 (IDX2)
@@ -1175,28 +1175,28 @@
                                               TO  HCM03V05-TENSU2
                                                                  (IDX2)
                    END-IF
-      *            �������ܤǱߤΤ��
+      *            点数記載で円のもの
                    IF      PARA-GOKEITANI      =   "1"
                        IF      TBL-H-EN (IDX IDX2)     =   "1"
                            MOVE    SPACE           TO  HCM03V05-TENSU2
                                                                 (IDX2)
                            STRING  TBL-H-TENSU2  (IDX IDX2)
-                                   "��"
+                                   "　"
                                               DELIMITED  BY  SIZE
                                        INTO   HCM03V05-TENSU2   (IDX2)
                            END-STRING
-                           MOVE    "��"           TO  HCM03V05-TENSU22
+                           MOVE    "円"           TO  HCM03V05-TENSU22
                                                                 (IDX2)
                            MOVE    SPACE           TO  HCM03V05-KINGAKU2
                                                                 (IDX2)
                            MOVE    SPACE         TO  HCM03V05-KINGAKU22
                                                                 (IDX2)
                            STRING  TBL-H-KINGAKU2(IDX IDX2)
-                                   "��"
+                                   "　"
                                               DELIMITED  BY  SIZE
                                        INTO   HCM03V05-KINGAKU2 (IDX2)
                            END-STRING
-                           MOVE    "��"           TO  HCM03V05-KINGAKU22
+                           MOVE    "円"           TO  HCM03V05-KINGAKU22
                                                                 (IDX2)
                        END-IF
                    END-IF
@@ -1209,7 +1209,7 @@
                MOVE    CONS-LABEL1         TO  HCM03V05-LABEL3
            END-IF
       *H26.4
-      *    ����
+      *    注意
            IF      (SMCNDATE-YMD       >=  PARA-CHUI-YUKOSTYMD )
               AND  (SMCNDATE-YMD       <=  PARA-CHUI-YUKOEDYMD )
                MOVE    PARA-RCHUI          TO  HCM03V05-RCHUI
@@ -1218,9 +1218,9 @@
       *
            EVALUATE   PARA-SHADE
            WHEN    "0"
-      *        �ֳݤ��ʤ�
+      *        網掛けなし
                IF      WRK-PAGEALL         =   1
-      *            ������
+      *            １枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE2"
                            " -L L1 -L L2 -L L3 "
@@ -1230,7 +1230,7 @@
                                                INTO    HCM03V05-LOPTION
                    END-STRING
                ELSE
-      *            ������
+      *            ２枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE"
                            " -L L1 -L L2 -L L3 "
@@ -1242,9 +1242,9 @@
                END-IF
       *
            WHEN    "1"
-      *        �ֳݤ�ǻ����
+      *        網掛の濃さ１
                IF      WRK-PAGEALL         =   1
-      *            ������
+      *            １枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE2 -L L2 -L L3"
                            " -L L21 -L L22 -L L23 "
@@ -1253,7 +1253,7 @@
                                                INTO    HCM03V05-LOPTION
                    END-STRING
                ELSE
-      *            ������
+      *            ２枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE -L L22 -L L23"
                            " -L L1 -L L2 -L L3 "
@@ -1263,9 +1263,9 @@
                    END-STRING
                END-IF
            WHEN    "2"
-      *        �ֳݤ�ǻ����
+      *        網掛の濃さ２
                IF      WRK-PAGEALL         =   1
-      *            ������
+      *            １枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE2 -L L1 -L L3"
                            " -L L21 -L L22 -L L23 "
@@ -1274,7 +1274,7 @@
                                                INTO    HCM03V05-LOPTION
                    END-STRING
                ELSE
-      *            ������
+      *            ２枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE -L L21 -L L23"
                            " -L L1 -L L2 -L L3 "
@@ -1284,9 +1284,9 @@
                    END-STRING
                END-IF
            WHEN    OTHER
-      *            �ֳ�ǻ������ɸ���
+      *            網掛濃さ３（標準）
                IF      WRK-PAGEALL         =   1
-      *            ������
+      *            １枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE2 -L L1 -L L2"
                            " -L L21 -L L22 -L L23"
@@ -1295,7 +1295,7 @@
                                                INTO    HCM03V05-LOPTION
                    END-STRING
                ELSE
-      *            ������
+      *            ２枚目
                    STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
                            " -L PAGE -L L21 -L L22"
                            " -L L1 -L L2 -L L3 "
@@ -1309,24 +1309,24 @@
        300-HC03-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   �оݤ���ɼ�ֹ�ʬ�Τ߽���
+      *   対象の伝票番号分のみ処理
       *****************************************************************
        201-ONLY-SYUNOU-SEC                SECTION.
       *
-      *    ��Ǽ�ޥ�������
+      *    収納マスタ検索
            MOVE    ORCHC03-DENPNUM     TO  WRK-DENPNUM
            PERFORM 2011-SYUNOU-KEN-SEC
       *
       *!!!
-      *    �ޥ�Ĺ�θ�����ô���ݸ�Ŭ�Ѷ�ۤ�
+      *    マル長の公費負担を保険適用金額へ
            IF      SYU-HKNTEKKBN   =   "1"
                MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
                MOVE    ZERO                TO  SYU-KOH-FTN
            END-IF
       *!!!
-      *    ���Ф�����Խ�����
+      *    見出し合計編集処理
            PERFORM 21001-HAED-KEISAN-SEC
-      *    ���Ф��Խ�����
+      *    見出し編集処理
            PERFORM 2100-HAED-HENSYU-SEC
       *
            MOVE    ORCHC03-DENPNUM     TO  WRK-HEAD-DENPNUM
@@ -1334,16 +1334,16 @@
            MOVE    ORCHC03-NYUKIN      TO  WRK-NYUKIN
            MOVE    ORCHC03-SEIKYU-TAX-SAI  TO  WRK-SKYMONEY-TAX-SAI
            MOVE    ORCHC03-ZENMISYU-2  TO  WRK-MISYUMONEY
-      *    ���������
+      *    前回請求額
            IF     (ORCHC03-ZEN-HENKIN  >   ZERO ) OR
                   (ORCHC03-KON-HENKIN (1)  >   ZERO )
-      *        �����ֶ��
+      *        今回返金額
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
                                            -   ORCHC03-ZEN-HENKIN
                                            -   ORCHC03-KON-HENKIN
                                                              (1)
            ELSE
-      *        ����ޤǤ�Ķ���
+      *        前回までの超過額
                COMPUTE WRK-MISYUMONEY      =   WRK-MISYUMONEY
                                            -   ORCHC03-KANYUKIN
                IF      WRK-MISYUMONEY      <   ZERO
@@ -1351,21 +1351,21 @@
                END-IF
            END-IF
       *
-      *    �ץ�����४�ץ����ˤ������̤���۰���Ƚ��
+      *    プログラムオプションによる前回未収額印字判定
            PERFORM 2011-MISYU-OPTION-CHK-SEC
       *
-      *    �ֶ��б�
+      *    返金対応
            IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                    (ORCHC03-NYUKIN     =   ZERO )  AND
                    (ORCHC03-ZEN-HENKIN >   ZERO )  AND
                    (WRK-MISYUMONEY     <   ZERO )  AND
                    ((WRK-MISYUMONEY * -1 )
                                        >   WRK-SKYMONEY)
-      *        �ֶ�ۤ���������ۤ��¿�������ޥ��ʥ�����Ȥ���
+      *        返金額が今回請求額より多い時、マイナス入金とする
                COMPUTE WRK-NYUKIN          =   WRK-SKYMONEY
                                            +   WRK-MISYUMONEY
            END-IF
-      *    �������˹�׶��ɽ��
+      *    訂正時に合計金額表示
            IF     (ORCHC03-TEIKIN-KBN  =   1   )  AND
                   (ORCHC03-HAKKOFLG    =   2   )
                MOVE    SYU-SKYMONEY        TO  WRK-SKYMONEY
@@ -1381,20 +1381,20 @@
            MOVE    1                   TO  WRK-PAGE
            MOVE    1                   TO  WRK-PAGECNT
            MOVE    ZERO                TO  WRK-PAGEALL
-      *   �����ܤκ���
+      *   １枚目の最大
            MOVE    LINE-MAX1           TO  LINE-MAX
            MOVE    ZERO                TO  IDX-H
            MOVE    ZERO                TO  WRK-KEY-PCNT
            MOVE    ORCHC03-DENPNUM     TO  WRK-DENPNUM
-      *    ��ɼ�ֹ���ΰ���
+      *    伝票番号毎の印刷
            PERFORM 2100-DENPNUM-SYORI-SEC
-      *    ��������
+      *    印刷処理
            PERFORM 400-PRINT-SYORI-SEC
            .
        201-ONLY-SYUNOU-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ����ˤ������̤���۰���Ƚ��
+      *    プログラムオプションによる前回未収額印字判定
       *****************************************************************
        2011-MISYU-OPTION-CHK-SEC       SECTION.
       *
@@ -1420,11 +1420,11 @@
        2011-MISYU-OPTION-CHK-EXT.
            EXIT.
       *****************************************************************
-      *   ��Ǽ��������
+      *   収納検索処理
       *****************************************************************
        2011-SYUNOU-KEN-SEC                SECTION.
       *
-      *    ��Ǽ�ޥ�������
+      *    収納マスタ検索
            INITIALIZE                  SYUNOU-REC
            MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  SYU-NYUGAIKBN
@@ -1451,13 +1451,13 @@
        2011-SYUNOU-KEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ф��Խ�����
+      *    見出し編集処理
       *****************************************************************
        2100-HAED-HENSYU-SEC                SECTION.
       *
-      *    ������
+      *    診療日
            PERFORM 3101-SRYYMD-HEN-SEC
-      *    ȯ����
+      *    発行日
            IF    ( ORCHC03-MOTOID      =    1 OR 3 OR 4 )
             AND  ( PARA-HAKKOUBIKBN    =   "1" )
                MOVE    SPA-SYSYMD          TO  WRK-SYMD
@@ -1467,7 +1467,7 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-HAKYMD
       *
-      *    ���Ų�̾�Խ�
+      *    診療科名編集
            IF      PARA-SRYKA          =   "0"
                MOVE    SPACE               TO  WRK-SRYKA-MEI
            ELSE
@@ -1476,7 +1476,7 @@
                PERFORM 1000-SRYKAMEI-HEN-SEC
            END-IF
            MOVE    WRK-SRYKA-MEI       TO  WRK-HEAD-SRYKAMEI
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            IF     (PARA-HKNMEI         =   "0" )
                MOVE    SPACE               TO  WRK-HKNCOMBIMEI
            ELSE
@@ -1484,19 +1484,19 @@
                PERFORM 1001-HKNCOMBI-HEN-SEC
            END-IF
            MOVE    WRK-HKNCOMBIMEI     TO  WRK-HEAD-HKNCOMBIMEI
-      *    ��ô���
+      *    負担割合
            MOVE    SPACE               TO  WRK-FUTAN
            MOVE    SPACE               TO  WRK-FUTAN-MEI
            EVALUATE    PARA-FTNKBN
                WHEN    "0"
                    MOVE    SPACE               TO  WRK-FUTAN
                WHEN    "1"
-      *            %��ɽ��
+      *            %　表示
                    MOVE    SYU-PTFTNRATE       TO  WRK-Z6
                    MOVE    WRK-Z6              TO  WRK-FUTAN
-                   MOVE    "��"                TO  WRK-FUTAN-MEI
+                   MOVE    "％"                TO  WRK-FUTAN-MEI
                WHEN    "2"
-      *            �䡡ɽ��
+      *            割　表示
                    IF      SYU-PTFTNRATE       >   ZERO
                        COMPUTE WRK-WARI        =   SYU-PTFTNRATE
                                                /   10
@@ -1511,26 +1511,26 @@
                        MOVE    SYU-PTFTNRATE       TO  WRK-Z6
                        MOVE    WRK-Z6              TO  WRK-FUTAN
                    END-IF
-                   MOVE    "��"                TO  WRK-FUTAN-MEI
+                   MOVE    "割"                TO  WRK-FUTAN-MEI
            END-EVALUATE
            .
        2100-HAED-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���Ф�����Խ�����
+      *    見出し合計編集処理
       *****************************************************************
        21001-HAED-KEISAN-SEC                SECTION.
       *
-      *    Ĵ����
+      *    調整金
            MOVE    SYU-CHOSEI          TO  WRK-CHOSEI
-      *    �������
+      *    合計点数
            MOVE    SYU-TOTAL-HKNTEN    TO  WRK-TOTAL-HKNTEN
-      *    �ݸ�Ŭ�Ѷ��
+      *    保険適用金額
            MOVE    SYU-HKNTEKMONEY     TO  WRK-HKNTEKMONEY
-      *    ���������ô��
+      *    公費一部負担金
            MOVE    SYU-KOH-FTN         TO  WRK-KOH-FTN
-      *    ������
+      *    自費合計
            COMPUTE WRK-JIHI-TOTAL      =   SYU-JIHI-TOTAL
                                        +   SYU-JIHI-TOTAL-TAX
                                        +   SYU-TOTAL-TGMONEY
@@ -1549,7 +1549,7 @@
                MOVE    SYU-HKNTEN(IDY)     TO  WRK-HKNTEN(IDY)
            END-PERFORM
       *
-      *    ��ϥӥ�ˤ���¾��ޤ��
+      *    リハビリにその他を含める
            COMPUTE WRK-HKNTEN(11)  =   SYU-HKNTEN(11)
                                    +   SYU-HKNTEN(16)
       *
@@ -1558,7 +1558,7 @@
                                            OR   "973" )
             OR   ( COMB-KOHHKNNUM (1)      =    "970"
               AND  SYU-PTFTNRATE       NOT =     ZERO )
-      *        ϫ�ҡ�����λ�������ɽ���ʤ�
+      *        労災・自賠の時、点数表示なし
                IF    ( COMB-HKNNUM             =    "971"
                    AND PTRSI-HKNKBN        NOT =    "5"
                    AND SYS-4001-RSIIRYOKBN     =    "1" )
@@ -1582,24 +1582,24 @@
        21001-HAED-KEISAN-EXT.
            EXIT.
       *****************************************************************
-      *   ʣ���ʡ��ݸ����Ϥΰ�������
+      *   複数科・保険入力の印刷処理
       *****************************************************************
        202-KAKHOU-SYUNOU-SEC                SECTION.
       *
            INITIALIZE                  ORCHC03SUBAREA
-      *    ��Ǽ�ޥ����ޤȤ�׻�
+      *    収納マスタまとめ計算
            CALL    "ORCHC03SUB"        USING
                                        SPA-AREA
                                        ORCHC03AREA
                                        ORCHC03SUBAREA
-      *    ������
+      *    入金合計
            MOVE    ZERO                TO  WRK-NYUKIN-TOTAL
            PERFORM VARYING IDX-SYU     FROM    1   BY  1
                    UNTIL   IDX-SYU     >   ORCHC03SUB-MAX
                ADD     ORCHC03SUB-NYUKIN-TOTAL(IDX-SYU)
                                            TO  WRK-NYUKIN-TOTAL
            END-PERFORM
-      *    �����פ�������̤���ۤ�����ۤ����
+      *    入金合計から前回未収額の入金額を求める
            IF      ORCHC03-NYUKIN      >   WRK-NYUKIN-TOTAL
                COMPUTE WRK-ZENMISYU    =   ORCHC03-NYUKIN
                                        -   WRK-NYUKIN-TOTAL
@@ -1622,7 +1622,7 @@
                MOVE    ORCHC03SUB-SKYMONEY-TAX-SAI (IDX-SYU)
                                            TO  WRK-SKYMONEY-TAX-SAI
       *
-      *        �����ܤ�����̤���ۤ�ɽ������
+      *        １枚目に前回未収額を表示する
                IF      IDX-SYU             =   1
                   AND  (ORCHC03-HAKKOFLG   =   ZERO )
                    MOVE    ORCHC03-ZENMISYU-2  TO  WRK-MISYUMONEY
@@ -1646,17 +1646,17 @@
                        END-IF
                    END-IF
       *
-      *            �ץ�����४�ץ����ˤ������̤���۰���Ƚ��
+      *            プログラムオプションによる前回未収額印字判定
                    PERFORM 2011-MISYU-OPTION-CHK-SEC
       *
-      *            �ֶ��б�
+      *            返金対応
                    IF      (ORCHC03-HAKKOFLG   =   ZERO )  AND
                            (WRK-NYUKIN         =   ZERO )  AND
                            (ORCHC03-ZEN-HENKIN >   ZERO )  AND
                            (WRK-MISYUMONEY     <   ZERO )  AND
                            ((WRK-MISYUMONEY * -1)
                                                 >   WRK-SKYMONEY)
-      *            �ֶ�ۤ���������ۤ��¿�������ޥ��ʥ�����Ȥ���
+      *            返金額が今回請求額より多い時、マイナス入金とする
                        COMPUTE WRK-NYUKIN      =   WRK-SKYMONEY
                                                +   WRK-MISYUMONEY
                    END-IF
@@ -1665,11 +1665,11 @@
                                            -   ORCHC03SUB-HENKIN
                                                          (IDX-SYU)
                END-IF
-      *        ���Ф�����Խ�����
+      *        見出し合計編集処理
                PERFORM 21001-HAED-KEISAN-SEC
-      *        ���Ф��Խ�����
+      *        見出し編集処理
                PERFORM 2100-HAED-HENSYU-SEC
-      *        ʣ�����Ų�̾�Խ�
+      *        複数診療科名編集
                IF     (ORCHC03SUB-DOUJI-SRYKA-G (IDX-SYU)
                                            NOT =   SPACE )
                 AND   (PARA-SRYKA          NOT =   "0"   )
@@ -1677,18 +1677,18 @@
                    PERFORM 2021-GRP-SRYKAMEI-HEN-SEC
                    MOVE    WRK-SRYKA-MEI       TO  WRK-HEAD-SRYKAMEI
                END-IF
-      *        �ݸ��ȹ礻
+      *        保険組合せ
                IF     (SYU-HKNCOMBINUM     =   ZERO  OR  SPACE )
                 AND   (PARA-HKNMEI     NOT =   "0"   )
-                   MOVE    "ʣ���ݸ�����"      TO  WRK-HEAD-HKNCOMBIMEI
+                   MOVE    "複数保険使用"      TO  WRK-HEAD-HKNCOMBIMEI
                    MOVE    SPACE               TO  WRK-FUTAN
                    MOVE    SPACE               TO  WRK-FUTAN-MEI
                END-IF
       *
                MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
-      *        ��Ǽ�ޥ�������
+      *        収納マスタ検索
                PERFORM 2011-SYUNOU-KEN-SEC
-      *        ʣ����ɼ
+      *        複数伝票
                IF      ORCHC03SUB-DOUJI-DENPNUM (IDX-SYU 1)
                                            =   ZERO
                    MOVE    ZERO                TO  FLG-DOUJI
@@ -1699,13 +1699,13 @@
                MOVE    1                   TO  WRK-PAGE
                MOVE    1                   TO  WRK-PAGECNT
                MOVE    ZERO                TO  WRK-PAGEALL
-      *        ������
+      *        １枚目
                MOVE    LINE-MAX1           TO  LINE-MAX
                MOVE    ZERO                TO  WRK-KEY-PCNT
                MOVE    ZERO                TO  IDX-H
-      *        ��ɼ�ֹ���ΰ���
+      *        伝票番号毎の印刷
                PERFORM 2100-DENPNUM-SYORI-SEC
-      *        ʣ����ɼ�ֹ�
+      *        複数伝票番号
                PERFORM VARYING IDX-SYU2    FROM    1   BY  1
                        UNTIL  (IDX-SYU2    >   15   )   OR
                               (ORCHC03SUB-DOUJI-DENPNUM
@@ -1713,13 +1713,13 @@
                                                =   ZERO )
                    MOVE    ORCHC03SUB-DOUJI-DENPNUM (IDX-SYU IDX-SYU2)
                                                TO  WRK-DENPNUM
-      *            ��Ǽ�ޥ�������
+      *            収納マスタ検索
                    PERFORM 2011-SYUNOU-KEN-SEC
-      *            ��ɼ�ֹ���ΰ���
+      *            伝票番号毎の印刷
                    PERFORM 2100-DENPNUM-SYORI-SEC
                END-PERFORM
       *
-      *        ��������
+      *        印刷処理
                PERFORM 400-PRINT-SYORI-SEC
            END-PERFORM
       *
@@ -1728,40 +1728,40 @@
            EXIT.
       *
       *****************************************************************
-      *   ��ɼ�ֹ���ΰ�������
+      *   伝票番号毎の印刷処理
       *****************************************************************
        2100-DENPNUM-SYORI-SEC                 SECTION.
       *
            EVALUATE    ORCHC03-HAKHOUFLG
-      *        �ʡ��ݸ���
+      *        科・保険別
                WHEN    1
                    MOVE    SYU-SRYKA       TO  WRK-KEY-SRYKA
                    MOVE    SYU-HKNCOMBINUM TO  WRK-KEY-HKNCOMBINUM
-      *        �ݸ���
+      *        保険別
                WHEN    2
                    MOVE    SPACE           TO  WRK-KEY-SRYKA
                    MOVE    SYU-HKNCOMBINUM TO  WRK-KEY-HKNCOMBINUM
-      *        ����
+      *        科別
                WHEN    3
                    MOVE    SYU-SRYKA       TO  WRK-KEY-SRYKA
                    MOVE    SPACE           TO  WRK-KEY-HKNCOMBINUM
-      *        ���
+      *        合計
                WHEN    4
                    MOVE    SPACE           TO  WRK-KEY-SRYKA
                    MOVE    SPACE           TO  WRK-KEY-HKNCOMBINUM
            END-EVALUATE
       *
-      *    ��ɼ�ֹ��������Խ�����
+      *    伝票番号毎明細編集処理
            INITIALIZE                  ORCHC04SUBAREA
            MOVE    WRK-DENPNUM         TO  ORCHC04SUB-DENPNUM
            MOVE    PARA-GOKEITANI      TO  ORCHC04SUB-GOKEITANI
            MOVE    PARA-SYOKEI         TO  ORCHC04SUB-PARAKBN
       *H26.10
-      *    �������оݶ�ʬ
+      *    コメント対象区分
            IF      TBL-COM-STR (1) NOT =   SPACE
                MOVE    "1"             TO  ORCHC04SUB-PARACOMKBN
            END-IF
-      *    �����оݶ�ʬ
+      *    自費対象区分
            IF      PARA-JIHIKBN        =   "1"
                MOVE    "1"             TO  ORCHC04SUB-PARAJIHIKBN
            END-IF
@@ -1772,16 +1772,16 @@
            MOVE    ORCHC04SUB-TBL-MAX  TO  IDX-TBL
       *
            IF      IDX-TBL             >   ZERO
-      *        ���Ųʡ��ݸ��ȹ礻
+      *        診療科・保険組合せ
                IF    ((WRK-KEY-PCNT        =   ZERO )
                AND    (ORCHC03-HAKHOUFLG   =   1    )
                AND    (FLG-SYORI           =   1    ))
-      *        ��ɼ������λ����ڤ��ؤ��ʤ�
+      *        伝票が１枚の時、切り替えなし
                OR     (FLG-DOUJI           =   ZERO )
                    MOVE    SYU-SRYKA       TO  WRK-SYU-SRYKA
                    MOVE    SYU-HKNCOMBINUM TO  WRK-SYU-HKNCOMBINUM
                ELSE
-      *            ��ɼ����ڤ��ؤ�
+      *            伝票毎の切り替え
                    PERFORM 3006-KEY-HENSYU-SEC
                END-IF
                PERFORM 3005-PRTTBL-HENSYU-SEC
@@ -1793,13 +1793,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ɼ����ڤ��ؤ�����
+      *    伝票毎の切り替え処理
       *****************************************************************
        3006-KEY-HENSYU-SEC        SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYKA-MEI
            MOVE    SPACE               TO  WRK-HKNCOMBIMEI
-      *    ���Ų�̾�Խ�
+      *    診療科名編集
            IF      WRK-KEY-SRYKA       =   SPACE
                IF     (PARA-SRYKA          =   "0" )
                    MOVE    SPACE               TO  WRK-SRYKA-MEI
@@ -1808,7 +1808,7 @@
                    PERFORM 1000-SRYKAMEI-HEN-SEC
                END-IF
            END-IF
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            IF      WRK-KEY-HKNCOMBINUM =   SPACE
                IF     (PARA-HKNMEI         =   "0" )
                    MOVE    SPACE               TO  WRK-HKNCOMBIMEI
@@ -1818,7 +1818,7 @@
                END-IF
            END-IF
       *
-      *    ����ˣ��Գ�����
+      *    剤毎に１行開ける
            IF     (PARA-LINE           =   "1"   )
            AND    (IDX-H               >   ZERO  )
                ADD     2                   TO  IDX-H
@@ -1828,33 +1828,33 @@
            IF      IDX-H               >=  LINE-MAX
                PERFORM 200520-PAGE-CNT-SEC
            END-IF
-           MOVE    ALL "��"            TO  TBL-H-SRYKBN (WRK-PAGE IDX-H)
+           MOVE    ALL "—"            TO  TBL-H-SRYKBN (WRK-PAGE IDX-H)
            MOVE    ALL "-"             TO  TBL-H-KAISU  (WRK-PAGE IDX-H)
            MOVE    ALL "-"             TO  TBL-H-TENSU  (WRK-PAGE IDX-H)
            MOVE    ALL "-"             TO  TBL-H-KINGAKU(WRK-PAGE IDX-H)
            EVALUATE    TRUE
                WHEN   (WRK-SRYKA-MEI   NOT =   SPACE )  AND
                       (WRK-HKNCOMBIMEI NOT =   SPACE )
-                   STRING    "��"
+                   STRING    "≪"
                              WRK-SRYKA-MEI
-                             "�䡡" 
-                             "��"
+                             "≫　" 
+                             "【"
                              WRK-HKNCOMBIMEI
-                             "��"              DELIMITED  BY  SPACE
+                             "】"              DELIMITED  BY  SPACE
                                    INTO    TBL-H-SRYMEI(WRK-PAGE IDX-H)
                    END-STRING
                WHEN   (WRK-SRYKA-MEI   NOT =   SPACE )  AND
                       (WRK-HKNCOMBIMEI     =   SPACE )
-                   STRING    "��"
+                   STRING    "≪"
                              WRK-SRYKA-MEI
-                             "��"              DELIMITED  BY  SPACE
+                             "≫"              DELIMITED  BY  SPACE
                                    INTO    TBL-H-SRYMEI(WRK-PAGE IDX-H)
                    END-STRING
                WHEN   (WRK-SRYKA-MEI       =   SPACE )  AND
                       (WRK-HKNCOMBIMEI NOT =   SPACE )
-                   STRING    "��"
+                   STRING    "【"
                              WRK-HKNCOMBIMEI
-                             "��"              DELIMITED  BY  SPACE
+                             "】"              DELIMITED  BY  SPACE
                                    INTO    TBL-H-SRYMEI(WRK-PAGE IDX-H)
                    END-STRING
            END-EVALUATE
@@ -1869,7 +1869,7 @@
            END-IF
       *
            INSPECT TBL-H-SRYMEI(WRK-PAGE IDX-H)
-                           REPLACING    ALL    "  "   BY  "��"
+                           REPLACING    ALL    "  "   BY  "—"
       *
            IF      PARA-LINE           =   "1"
                CONTINUE
@@ -1881,12 +1881,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �������������Խ�����
+      *    印刷内容明細編集処理
       *****************************************************************
        3005-PRTTBL-HENSYU-SEC          SECTION.
       *
       *H26.10
-      *    �������оݶ�ʬ
+      *    コメント対象区分
            IF      TBL-COM-STR (1) NOT =   SPACE
                PERFORM 30050-COMMNT-CHK-SEC
            END-IF
@@ -1900,63 +1900,63 @@
                IF      IDX-H               >=  LINE-MAX
                    PERFORM 200520-PAGE-CNT-SEC
                END-IF
-      *        ̾�Ρܿ����Խ�
+      *        名称＋数量編集
                IF     (ORCHC04SUB-SURYO  (IDX) =   ZERO )
                  OR   (ORCHC04SUB-SRYKBN (IDX) =   "95"
                                                OR  "96"     )
-      *            ����ο��̵��ܤʤ�
+      *            自費の数量記載なし
                    MOVE    ORCHC04SUB-NAME (IDX)   TO  WRK-NAME
                ELSE
                    MOVE    SPACE                   TO  WRK-NAME
                    STRING  ORCHC04SUB-NAME (IDX)
-                           "����"
+                           "　　"
                            ORCHC04SUB-H-ZEN-SURYO (IDX)
                            DELIMITED  BY  SPACE
                                            INTO   WRK-NAME
                    END-STRING
                END-IF
-      *        ����
+      *        小計
                IF      ORCHC04SUB-SRYKBN (IDX)     =   "XX"
-                   MOVE    ALL "��"                TO  WRK-NAME-211
-                   MOVE    "�ʾ��ס�"              TO  WRK-NAME-212
+                   MOVE    ALL "　"                TO  WRK-NAME-211
+                   MOVE    "（小計）"              TO  WRK-NAME-212
                END-IF
       *
-      *        ̾�Τ�ñ��̾�Υ����å�
+      *        名称と単位名称チェック
                IF     (WRK-NAME-2        NOT =   SPACE)
-      *            �ǽ��Ԥλ������ڡ���
+      *            最終行の時、改ページ
                    IF      IDX-H               >=  (LINE-MAX  - 1 )
                        PERFORM 200520-PAGE-CNT-SEC
                    END-IF
                END-IF
                MOVE    ORCHC04SUB-H-SRYKBN(IDX)    TO  TBL-H-SRYKBN
                                                     (WRK-PAGE IDX-H)
-      *        ��
+      *        ＊
                MOVE    ORCHC04SUB-H-ZAIHEN (IDX)
                                            TO  TBL-H-ZKBN
                                                      (WRK-PAGE IDX-H)
                MOVE    WRK-NAME-1          TO  TBL-H-NAME
                                                      (WRK-PAGE IDX-H)
-      *        ñ��̾��
+      *        単位名称
                IF     (WRK-NAME-2      NOT =   SPACE)
                    ADD     1                   TO  IDX-H
                    MOVE    WRK-NAME-2          TO  TBL-H-NAME
                                                      (WRK-PAGE IDX-H)
-                   MOVE    "��"                TO  TBL-H-ZKBN
+                   MOVE    "　"                TO  TBL-H-ZKBN
                                                      (WRK-PAGE IDX-H)
                END-IF
-      *        ������ñ����
+      *        点数（単価）
                MOVE    ORCHC04SUB-H-TENSU   (IDX)  TO  TBL-H-TENSU
                                                    (WRK-PAGE IDX-H)
-      *        ���
+      *        合計
                MOVE    ORCHC04SUB-H-KINGAKU (IDX)  TO  TBL-H-KINGAKU
                                                    (WRK-PAGE IDX-H)
-      *        ��
+      *        円
                MOVE    ORCHC04SUB-H-ENKBN (IDX)    TO  TBL-H-EN
                                                    (WRK-PAGE IDX-H)
-      *        ���
+      *        回数
                MOVE    ORCHC04SUB-H-KAISU (IDX)    TO  TBL-H-KAISU
                                                    (WRK-PAGE IDX-H)
-      *        ����ˣ��Գ�����
+      *        剤毎に１行開ける
                IF      PARA-LINE           =   "1"
                    CONTINUE
                ELSE
@@ -1976,7 +1976,7 @@
       *
       *H26.10
       *****************************************************************
-      *    ������Ƚ���ɲý���
+      *    コメント判定追加処理
       *****************************************************************
        30050-COMMNT-CHK-SEC                  SECTION.
       *
@@ -2000,14 +2000,14 @@
                        END-IF
                    END-PERFORM
                    IF      FLG-OK              =   ZERO
-      *                �оݳ�
+      *                対象外
                        IF     (ORCHC04SUB-H-ZAIHEN(IDX)
-                                                   NOT =   "��")
+                                                   NOT =   "＊")
                          AND  (ORCHC04SUB-H-TENSU(IDX-CM)
                                                        =   SPACE )
                          AND  (ORCHC04SUB-H-KINGAKU(IDX-CM)
                                                        =   SPACE )
-      *                    �ޤκǸ�
+      *                    剤の最後
                            MOVE    ORCHC04SUB-H-KAISU (IDX)
                                                TO  ORCHC04SUB-H-KAISU
                                                              (IDX-CM)
@@ -2025,9 +2025,9 @@
                                                              (IDX-CM)
                        END-IF
                        IF     (ORCHC04SUB-H-ZAIHEN(IDX)
-                                                       =   "��")
+                                                       =   "＊")
                        AND    (ORCHC04SUB-ZAIEND(IDX)  =   SPACE)
-      *                    �ޤ���Ƭ
+      *                    剤の先頭
                            MOVE    ORCHC04SUB-H-SRYKBN (IDX)
                                                TO  ORCHC04SUB-H-SRYKBN
                                                              (IDX + 1)
@@ -2049,23 +2049,23 @@
       *
       *
       *****************************************************************
-      *    �ڡ���������Ƚ���
+      *    ページカウント処理
       *****************************************************************
        200520-PAGE-CNT-SEC                  SECTION.
       *
-      *    �ǽ����٤λ������ڡ����ʤ�
+      *    最終明細の時、改ページなし
            MOVE    LINE-MAX            TO  IDX-H
-           MOVE    "���ڡ�����³��"    TO  TBL-H-SRYMEI
+           MOVE    "次ページへ続く"    TO  TBL-H-SRYMEI
                                                (WRK-PAGE IDX-H)(30:)
            ADD     1                   TO  WRK-PAGE
-      *    �ơ��֥����
+      *    テーブル最大
            IF      WRK-PAGE            >   PAGE-MAX
-      *        Ģɼ����
+      *        帳票印刷
                PERFORM 400-PRINT-SYORI-SEC
            END-IF
       *
            MOVE    1                   TO  IDX-H
-      *    ���ǰʹߤκ���
+      *    ２頁以降の最大
            MOVE    LINE-MAX2           TO  LINE-MAX
            ADD     1                   TO  WRK-PAGECNT
       *
@@ -2073,7 +2073,7 @@
        200520-PAGE-CNT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        400-PRINT-SYORI-SEC          SECTION.
       *
@@ -2084,7 +2084,7 @@
                MOVE    1               TO  WRK-PAGE-MAX
            END-IF
       *
-      *    �ǽ���
+      *    最終行
            IF      TBL-H-SRYMEI(WRK-PAGE LINE-MAX)
                                        =   SPACE
                IF      PARA-LINE           =   "1"
@@ -2095,31 +2095,31 @@
                IF      IDX-H               >   LINE-MAX
                    MOVE    LINE-MAX            TO  IDX-H
                END-IF
-               MOVE    "�ʲ�;��"          TO  TBL-H-SRYMEI
+               MOVE    "以下余白"          TO  TBL-H-SRYMEI
                                                (WRK-PAGE IDX-H)(30:)
            END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-PAGE-MAX
       *
-      *        ���ڡ�����
+      *        総ページ数
                ADD     1                   TO  WRK-PAGEALL
       *
                IF    ( ORCHC03-PRTKBN      =   "1" )
       *
-      *            Ģɼ�Խ�����
+      *            帳票編集処理
                    PERFORM 300-HC03-HEN-SEC
       *
-      *            Ģɼ��������
+      *            帳票印刷処理
                    PERFORM 401-PRINT-SEC
                ELSE
-      *            Ģɼ�������Ͻ���
+      *            帳票印刷開始処理
                    PERFORM 400-SYOKI-PRINT-SEC
       *
-      *            Ģɼ�Խ�����
+      *            帳票編集処理
                    PERFORM 300-HC03-HEN-SEC
       *
-      *            Ģɼ��������
+      *            帳票印刷処理
                    PERFORM 400-PRINT-SEC
                END-IF
            END-PERFORM
@@ -2133,7 +2133,7 @@
            EXIT.
       *
       *****************************************************************
-      *   �ѥ�᥿�ơ��֥뤫��ΰ�������
+      *   パラメタテーブルからの印刷処理
       *****************************************************************
        203-PARA-SYUNOU-SEC                 SECTION.
       *
@@ -2163,25 +2163,25 @@
                    END-IF
                END-IF
       *!!
-      *        ���Ф�����Խ�����
+      *        見出し合計編集処理
                PERFORM 21001-HAED-KEISAN-SEC
-      *        ���Ф��Խ�����
+      *        見出し編集処理
                PERFORM 2100-HAED-HENSYU-SEC
-      *        ʣ�����Ų�̾�Խ�
+      *        複数診療科名編集
                IF    ( PARA-SRYKA          =   "0" )
                    MOVE    SPACE           TO  WRK-HEAD-SRYKAMEI
                ELSE
                    MOVE    SYUPARA03-SRYKAMEI
                                            TO  WRK-HEAD-SRYKAMEI
                END-IF
-      *        �ݸ��ȹ礻
+      *        保険組合せ
                IF    ( SYUPARA03-HKNCOMBI-MAX  >   1 )
                AND   ( PARA-HKNMEI     NOT =   "0" )
-                   MOVE    "ʣ���ݸ�����"      TO  WRK-HEAD-HKNCOMBIMEI
+                   MOVE    "複数保険使用"      TO  WRK-HEAD-HKNCOMBIMEI
                    MOVE    SPACE               TO  WRK-FUTAN
                    MOVE    SPACE               TO  WRK-FUTAN-MEI
                END-IF
-      *        ʣ����ɼ
+      *        複数伝票
                IF     (SYUPARA03-GRP-DENPNUM-MAX   >   1 )
                OR     (FLG-SYORI               =   2     )
                    MOVE    1                   TO  FLG-DOUJI
@@ -2193,7 +2193,7 @@
                MOVE    1                   TO  WRK-PAGE
                MOVE    1                   TO  WRK-PAGECNT
                MOVE    ZERO                TO  WRK-PAGEALL
-      *        ������
+      *        １枚目
                MOVE    LINE-MAX1           TO  LINE-MAX
                MOVE    ZERO                TO  WRK-KEY-PCNT
                MOVE    ZERO                TO  IDX-H
@@ -2205,15 +2205,15 @@
                                            NOT =   ZERO )
                        MOVE    SYUPARA03-GRP-DENPNUM (IDX-SYU2)
                                                TO  WRK-DENPNUM
-      *                ��Ǽ�ޥ�������
+      *                収納マスタ検索
                        PERFORM 2011-SYUNOU-KEN-SEC
                        PERFORM 2031-SRYYMD-HEN-SEC
-      *                ��ɼ�ֹ���ΰ���
+      *                伝票番号毎の印刷
                        PERFORM 2100-DENPNUM-SYORI-SEC
                    END-IF
                END-PERFORM
       *
-      *        ��������
+      *        印刷処理
                PERFORM 400-PRINT-SYORI-SEC
       *
                PERFORM 900-PARA-KEY5-FET-SEC
@@ -2228,21 +2228,21 @@
        203-PARA-SYUNOU-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    診療日編集処理
       *****************************************************************
        2031-SRYYMD-HEN-SEC             SECTION.
       *
            MOVE    SYU-SRYYMD          TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(17:6)   TO  WRK-DAY-H2
-           MOVE    "��"                TO  WRK-DAY-H1
-           MOVE    "��"                TO  WRK-DAY-H3
+           MOVE    "〔"                TO  WRK-DAY-H1
+           MOVE    "〕"                TO  WRK-DAY-H3
       *
            .
        2031-SRYYMD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ʣ�����Ų��Խ�����
+      *    複数診療科編集処理
       *****************************************************************
        2021-GRP-SRYKAMEI-HEN-SEC             SECTION.
       *
@@ -2260,7 +2260,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ⱦ�������Ѵ�����
+      *    半角全角変換処理
       *****************************************************************
        800-HENKAN-SEC             SECTION.
       *
@@ -2285,7 +2285,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ⱦ�������Ѵ������ʥ���ɽ���ѡ�
+      *    半角全角変換処理（ゼロ表示用）
       *****************************************************************
        810-HENKAN-SEC             SECTION.
      *
@@ -2299,7 +2299,7 @@
                MOVE    WRK-Z72-H9          TO  KANACHK-MAE-INPUT
            END-IF
            MOVE    KANACHK-MAE-INPUT   TO  WRK-Z7-G
-      *    ������
+      *    左ずめ
            IF      FLG-HENPARA         =   1
                MOVE    KANACHK-MAE-INPUT   TO  WRK-HENKAN-G
                MOVE    SPACE               TO  KANACHK-MAE-INPUT
@@ -2323,7 +2323,7 @@
        810-HENKAN-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    診療日編集処理
       *****************************************************************
        3101-SRYYMD-HEN-SEC         SECTION.
       *
@@ -2333,10 +2333,10 @@
       *
            IF    ( ORCHC03-HAKKOFLG    =   4 )
                IF    ( SYUPARA03-KIKANKBN  =   "1" )
-                   MOVE    "������"        TO  WRK-LBLSRYYMD
+                   MOVE    "診療日"        TO  WRK-LBLSRYYMD
                    PERFORM 31012-SRYYMD-HEN-SEC
                ELSE
-                   MOVE    "����ǯ��"      TO  WRK-LBLSRYYMD
+                   MOVE    "診療年月"      TO  WRK-LBLSRYYMD
                    MOVE    SYU-SRYYMD      TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG  (1:16)
@@ -2347,10 +2347,10 @@
            ELSE
                IF    ( ORCHC03-PARAFLG         =   1 )
                 AND  ( SYUPARA03-STSRYYMD  NOT =   SYUPARA03-EDSRYYMD )
-                   MOVE    "������"        TO  WRK-LBLSRYYMD
+                   MOVE    "診療日"        TO  WRK-LBLSRYYMD
                    PERFORM 31012-SRYYMD-HEN-SEC
                ELSE
-                   MOVE    "������"        TO  WRK-LBLSRYYMD
+                   MOVE    "診療日"        TO  WRK-LBLSRYYMD
                    MOVE    SYU-SRYYMD      TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    WRK-HENYMDG     TO  WRK-SRYYMDG
@@ -2361,7 +2361,7 @@
        3101-SRYYMD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    診療日編集処理
       *****************************************************************
        31012-SRYYMD-HEN-SEC        SECTION.
       *
@@ -2376,7 +2376,7 @@
            MOVE    WRK-HENYMDG         TO  WRK-EDSRYYMDG
       *
            STRING  WRK-STSRYYMDG       DELIMITED   BY  SIZE
-                   "��"                DELIMITED   BY  SIZE
+                   "〜"                DELIMITED   BY  SIZE
                    WRK-EDSRYYMDG       DELIMITED   BY  SIZE
            INTO    WRK-SRYYMDG
            END-STRING
@@ -2386,7 +2386,7 @@
        31012-SRYYMD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -2402,7 +2402,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        800-HIZUKE-CHK-SEC             SECTION.
       *
@@ -2428,11 +2428,11 @@
        800-HIZUKE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
       *****************************************************************
        900-1900-READ-SEC           SECTION.
       *
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
            MOVE    SPACE           TO  SYS-1900-REC
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
@@ -2445,9 +2445,9 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(10) NOT =   SPACE
-      *            ���ŵ���̾���Խ�����
+      *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
-      *            ���ŵ��ؽ����Խ�����
+      *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
                END-IF
            ELSE
@@ -2458,11 +2458,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
            MOVE    SPACE           TO  SYS-1901-REC
            INITIALIZE                  SYS-1901-REC
            MOVE    "1901"          TO  SYS-1901-KANRICD
@@ -2485,11 +2485,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
            MOVE    "1902"          TO  SYS-1902-KANRICD
@@ -2513,7 +2513,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����祭���ɤ߹��߽���
+      *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEC         SECTION.
       *
@@ -2541,7 +2541,7 @@
        900-SYSKANRI-KEY10-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
       *
@@ -2557,7 +2557,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɤ߹���
+      *    患者マスター読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -2586,7 +2586,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�ơ��֥븡��
+      *    パラメタテーブル検索
       *****************************************************************
        900-PARA-KEY5-SEL-SEC           SECTION.
       *
@@ -2615,7 +2615,7 @@
        900-PARA-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�ơ��֥�FETCH
+      *    パラメタテーブルFETCH
       *****************************************************************
        900-PARA-KEY5-FET-SEC           SECTION.
       *
@@ -2635,7 +2635,7 @@
        900-PARA-KEY5-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�ơ��֥븡������
+      *    パラメタテーブル検索処理
       *****************************************************************
        900-PARA-KEY4-SEL-SEC           SECTION.
       *
@@ -2678,7 +2678,7 @@
        900-PARA-KEY4-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�ޥ������ɹ�
+      *    収納マスター読込
       *****************************************************************
        980-SYUNOU-READ-SEC         SECTION.
       *
@@ -2696,7 +2696,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɤ߹���
+      *    保険組合せマスター読み込み
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -2727,7 +2727,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ������ɤ߹���
+      *    患者労災保険情報読み込み
       *****************************************************************
        910-PTRSIINF-READ-SEC         SECTION.
       *
@@ -2757,7 +2757,7 @@
        910-PTRSIINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2770,7 +2770,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2785,7 +2785,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2798,7 +2798,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *

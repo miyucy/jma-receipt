@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSPRVPSDEL.
       ****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ꥢ�륿����ץ�ӥ塼����
-      *  ����ݡ��ͥ��̾  : ��֥ե�����������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/03/10    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : リアルタイムプレビュー処理
+      *  コンポーネント名  : 中間ファイル削除処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/03/10    NACL−竹田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/06/01  ϫ�ҡ������ս����ɲ�                                            
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/01  労災・自賠責処理追加                                            
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,7 +41,7 @@
        DATA                    DIVISION.
        WORKING-STORAGE         SECTION.
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
@@ -58,12 +58,12 @@
                05  WRK-SYSYY           PIC 9(04).
                05  WRK-SYSMM           PIC 9(02).  
                05  WRK-SYSDD           PIC 9(02).  
-      *������ɣ�
+      *シェルＩＤ
            03  WRK-SHELLID             PIC X(08).
            03  WRK-PTID                PIC 9(16).
            03  WRK-PTNUM               PIC X(20).
       *
-      *    �ץ�ӥ塼�ѥ���ɲ�
+      *    プレビュー用ワーク追加
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC X(06).
              05  WRK-SHELL-TERMID  PIC X(16).
@@ -81,19 +81,19 @@
              05  WRK-PSFILE-PAGE-X.
                07  WRK-PSFILE-PAGE     PIC 9(05).
        01  WRK-FILE-NAME               PIC X(200).
-      *    ���������ģ¤Υ�����
+      *    印刷管理ＤＢのキー値
        01  WRK-PREV-AREA.
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                    PIC X(08)   VALUE   "RECEPTX".
       *
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPTX".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
            03  WRK-CONST-Z         PIC X(16)
                VALUE   "ZZZZZZZZZZZZZZZZ".
       *
-      *    ����ִ����ģ¤Υ����͡ʥ쥻�ץȡ�
+      *    ジョブ管理ＤＢのキー値（レセプト）
            03  WRK-CONS-JOB-SHELLID1
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-SHELLID2
@@ -101,7 +101,7 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
        01  WRK-LNK-AREA.
@@ -115,16 +115,16 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    �����ֹ湽�����������Խ�
+      *    患者番号構成管理情報編集
            COPY    "CPSK1009.INC".
       *
-      *    �ץ�ӥ塼�����ޥ���
+      *    プレビュー管理マスタ
            COPY    "CPPRVKANRI.INC".
       *
            COPY    "CPRCF008.INC".
@@ -134,29 +134,29 @@
       *
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *???
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
        01  LINK-ERRCD                  PIC X(04).
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
       *
        LINKAGE                 SECTION.
@@ -178,7 +178,7 @@ grpsys     COPY    "COMMON-SPA".
                .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -188,7 +188,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       * 
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *???
@@ -207,7 +207,7 @@ grpsys     COPY    "COMMON-SPA".
       *??
           DISPLAY "SGETTEMP-TEMPDIR="  SGETTEMP-TEMPDIR
       *??
-      *    ��������ǡ����������
+      *    前回処理データ削除処理
            PERFORM 1002-PRVDATA-DEL-SEC
       *
            .
@@ -215,7 +215,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ��������ǡ����������
+      *    前回処理データ削除処理
       *****************************************************************
        1002-PRVDATA-DEL-SEC        SECTION.
       *
@@ -241,7 +241,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    �ǡ���������к��
+      *    データがあれば削除
            IF      FLG-PRVKANRI         =   ZERO
                DISPLAY "PRV EXIST !!"
                DISPLAY "PAGE = [" PRVKANRI-PAGE "]"
@@ -255,11 +255,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
        1002-PRVDATA-DEL-EXT.
       *
       *****************************************************************
-      *    ��������ǡ����������
+      *    前回処理データ削除処理
       *****************************************************************
        10021-PRVDEL-SEC            SECTION.
-      *    �����ֹ湽�����������Խ�
-      *        �����ֹ湽�����������Խ�
+      *    患者番号構成管理情報編集
+      *        患者番号構成管理情報編集
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*%"                TO  SYS-1009-KBNCD
@@ -286,10 +286,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                                            TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
                    DISPLAY "ORCRPRVPSDEL ERR = "
-                   "�����ֹ湽���������󤬼����Ǥ��ޤ���Ǥ��� = "
+                   "患者番号構成管理情報が取得できませんでした = "
                    LINK-SRYYM
            END-IF
-      *    �����ֹ����
+      *    患者番号取得
            INITIALIZE                      ORCSPTIDAREA
 grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    LINK-PTID           TO  SPTID-PTID
@@ -301,7 +301,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                    MOVE    SPTID-PTNUM     TO  WRK-PTNUM
                    DISPLAY "PTNUM = [" SPTID-PTNUM "]"
            END-IF
-      *    �쥻�ץȥץ��ȥǡ������
+      *    レセプトプリントデータ削除
            PERFORM VARYING IDX FROM    20  BY  -1
                    UNTIL   IDX <       1
                IF      WRK-PTNUM (IDX:1)   NOT =   SPACE
@@ -344,7 +344,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                DISPLAY "XC01 PRTDATA DELETE ERR [" MCP-RC "]"
            END-IF
       *
-      *    �����ǡ������
+      *    印刷データ削除
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  PRTKANRI-TBL-KEY
            MOVE    LINK-PTID           TO  PRTKANRI-TBL-GROUP
@@ -358,7 +358,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                DISPLAY "XC01 PRTKANRI DELETE ERR [" MCP-RC "]"
            END-IF
       *
-      *    �����������
+      *    印刷管理削除
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
            MOVE    LINK-PTID           TO  PRVKANRI-TBL-GROUP
@@ -372,7 +372,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                DISPLAY "XC01 PRVKANRI DELETE ERR [" MCP-RC "]"
            END-IF
       *
-      *    ps�ե����륯�ꥢ
+      *    psファイルクリア
       *****MOVE "/var/lib/jma-receipt/orca_ps/"
            MOVE    SGETTEMP-TEMPDIR
                                        TO  WRK-PSFILE-FOLDER
@@ -405,7 +405,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        10021-PRVDEL-EXT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -427,7 +427,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ��ʣΣţأԡ�
+      *    システム管理マスタ読込（ＮＥＸＴ）
       *****************************************************************
        900-SYSKANRI-READ-N-SEC         SECTION.
       *
@@ -443,7 +443,7 @@ grpsys      PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *     ���������ģ��ɤ߹���
+      *     印刷管理ＤＢ読み込み
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
@@ -459,7 +459,7 @@ grpsys      PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -470,7 +470,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -482,7 +482,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -494,7 +494,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

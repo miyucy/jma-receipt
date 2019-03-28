@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGI2SUB03.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �������ԾȲ�
-      *  ����ݡ��ͥ��̾  : �������ԾȲ񥵥֡ʥ���ܥܥå������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/10/04    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院患者照会
+      *  コンポーネント名  : 入院患者照会サブ（コンボボックス情報取得）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/10/04    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -39,17 +39,17 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                         PIC 9(01).
            03  FLG-SYSKANRI                    PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
            03  IDXL                            PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-CD99-G.
                05  WRK-CD99                    PIC 9(02).
@@ -63,24 +63,24 @@
            03  CONST-TAIINCDLST-MAX            PIC 9(05)   VALUE 50.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���Ծ��֥�����
+      *    患者状態コメント
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1005.INC".
            COPY    "CPSK5001.INC".
            COPY    "CPSK5013.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -91,7 +91,7 @@
            I2SUB03-AREA
            SPA-AREA.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -105,7 +105,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -118,39 +118,39 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ���Ųʥ���ܥܥå����������
+      *    診療科コンボボックス初期処理
            PERFORM 2001-SRYKALST-SEC
       *
-      *    �����ֹ楳��ܥܥå����������
+      *    病棟番号コンボボックス初期処理
            PERFORM 2001-BTUNUMLST-SEC
       *
-      *    ���֥���ܥܥå����������
+      *    状態コンボボックス初期処理
            PERFORM 2001-JOTAILST-SEC
       *
-      *    ������֥���ܥܥå����������
+      *    請求状態コンボボックス初期処理
            PERFORM 2001-SEIKYUJOTAILST-SEC
       *
-      *    ��˴��ʬ����ܥܥå����������
+      *    死亡区分コンボボックス初期処理
            PERFORM 2001-DEATHKBNLST-SEC
       *
-      *    �ƥ��ȴ��ԥ���ܥܥå����������
+      *    テスト患者コンボボックス初期処理
            PERFORM 2001-TSTPTLST-SEC
       *
-      *    �ౡ��ͳ����ܥܥå����������
+      *    退院事由コンボボックス初期処理
            PERFORM 2001-TAIINCDLST-SEC
       *
-      *    �������ܥ���ܥܥå����������
+      *    検索項目コンボボックス初期処理
            PERFORM 2001-SORTLST-SEC
       *
            .
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ųʥ���ܥܥå����������
+      *    診療科コンボボックス初期処理
       *****************************************************************
        2001-SRYKALST-SEC                   SECTION.
       *
@@ -188,7 +188,7 @@
        2001-SRYKALST-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ楳��ܥܥå����������
+      *    病棟番号コンボボックス初期処理
       *****************************************************************
        2001-BTUNUMLST-SEC                  SECTION.
       *
@@ -226,23 +226,23 @@
        2001-BTUNUMLST-EXT.
            EXIT.
       *****************************************************************
-      *    ���֥���ܥܥå����������
+      *    状態コンボボックス初期処理
       *****************************************************************
        2001-JOTAILST-SEC                   SECTION.
       *
            MOVE    4                   TO  I2SUB03-JOTAILST-MAX
       *
            MOVE    "1"                 TO  I2SUB03-JOTAIL (1)
-           MOVE    "������"            TO  I2SUB03-JOTAIMEIL (1)
+           MOVE    "入院中"            TO  I2SUB03-JOTAIMEIL (1)
       *
            MOVE    "2"                 TO  I2SUB03-JOTAIL (2)
-           MOVE    "�ౡ��"            TO  I2SUB03-JOTAIMEIL (2)
+           MOVE    "退院済"            TO  I2SUB03-JOTAIMEIL (2)
       *
            MOVE    "3"                 TO  I2SUB03-JOTAIL (3)
-           MOVE    "����߱�"          TO  I2SUB03-JOTAIMEIL (3)
+           MOVE    "当月在院"          TO  I2SUB03-JOTAIMEIL (3)
       *
            MOVE    "4"                 TO  I2SUB03-JOTAIL (4)
-           MOVE    "�����߱�"          TO  I2SUB03-JOTAIMEIL (4)
+           MOVE    "当日在院"          TO  I2SUB03-JOTAIMEIL (4)
       *
            IF    ( I2SUB03-FROM        =   "API" )
       *
@@ -250,7 +250,7 @@
                    =   I2SUB03-JOTAILST-MAX    +   1
       *
                MOVE    "5"             TO  I2SUB03-JOTAIL (5)
-               MOVE    "���ݸ��ȹ礻��Ͽ"
+               MOVE    "仮保険組合せ登録"
                                        TO  I2SUB03-JOTAIMEIL (5)
            END-IF
       *
@@ -258,58 +258,58 @@
        2001-JOTAILST-EXT.
            EXIT.
       *****************************************************************
-      *    ������֥���ܥܥå����������
+      *    請求状態コンボボックス初期処理
       *****************************************************************
        2001-SEIKYUJOTAILST-SEC             SECTION.
       *
            MOVE    2                   TO  I2SUB03-SEIKYUJOTAILST-MAX
       *
            MOVE    "1"                 TO  I2SUB03-SEIKYUJOTAIL (1)
-           MOVE    "�ౡ�����"        TO  I2SUB03-SEIKYUJOTAIMEIL (1)
+           MOVE    "退院請求済"        TO  I2SUB03-SEIKYUJOTAIMEIL (1)
       *
            MOVE    "2"                 TO  I2SUB03-SEIKYUJOTAIL (2)
-           MOVE    "ľ�����������"  TO  I2SUB03-SEIKYUJOTAIMEIL (2)
+           MOVE    "直近の定期請求済"  TO  I2SUB03-SEIKYUJOTAIMEIL (2)
       *
            .
        2001-SEIKYUJOTAILST-EXT.
            EXIT.
       *****************************************************************
-      *    ��˴����ܽ������
+      *    死亡コンボ初期処理
       *****************************************************************
        2001-DEATHKBNLST-SEC                   SECTION.
       *
            MOVE    2                   TO  I2SUB03-DEATHKBNLST-MAX
       *
            MOVE    "0"                 TO  I2SUB03-DEATHKBNL    (1)
-           MOVE    "̤����"            TO  I2SUB03-DEATHKBNMEIL (1)
+           MOVE    "未設定"            TO  I2SUB03-DEATHKBNMEIL (1)
       *
            MOVE    "1"                 TO  I2SUB03-DEATHKBNL    (2)
-           MOVE    "��˴"              TO  I2SUB03-DEATHKBNMEIL (2)
+           MOVE    "死亡"              TO  I2SUB03-DEATHKBNMEIL (2)
       *
            .
        2001-DEATHKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    �ƥ��ȴ��ԥ���ܽ������
+      *    テスト患者コンボ初期処理
       *****************************************************************
        2001-TSTPTLST-SEC                   SECTION.
       *
            MOVE    3                   TO  I2SUB03-TSTPTLST-MAX
       *
            MOVE    "a"                 TO  I2SUB03-TSTPTL    (1)
-           MOVE    "�ƥ��ȴ��Ԥ����"  TO  I2SUB03-TSTPTMEIL (1)
+           MOVE    "テスト患者を除く"  TO  I2SUB03-TSTPTMEIL (1)
       *
            MOVE    "b"                 TO  I2SUB03-TSTPTL    (2)
-           MOVE    "�ƥ��ȴ��Ԥ�ޤ��" TO I2SUB03-TSTPTMEIL (2)
+           MOVE    "テスト患者を含める" TO I2SUB03-TSTPTMEIL (2)
       *
            MOVE    "1"                 TO  I2SUB03-TSTPTL    (3)
-           MOVE    "�ƥ��ȴ��ԤΤ�"    TO  I2SUB03-TSTPTMEIL (3)
+           MOVE    "テスト患者のみ"    TO  I2SUB03-TSTPTMEIL (3)
       *
            .
        2001-TSTPTLST-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ楳��ܥܥå����������
+      *    病棟番号コンボボックス初期処理
       *****************************************************************
        2001-TAIINCDLST-SEC                  SECTION.
       *
@@ -347,38 +347,38 @@
        2001-TAIINCDLST-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܥ���ܥܥå����������
+      *    検索項目コンボボックス初期処理
       *****************************************************************
        2001-SORTLST-SEC                    SECTION.
       *
            MOVE    7                   TO  I2SUB03-SORTLST-MAX
       *
            MOVE    "1"                 TO  I2SUB03-SORTL (1)
-           MOVE    "����¼���"      TO  I2SUB03-SORTMEIL (1)
+           MOVE    "病棟、病室順"      TO  I2SUB03-SORTMEIL (1)
       *
            MOVE    "2"                 TO  I2SUB03-SORTL (2)
-           MOVE    "�����ֹ��"        TO  I2SUB03-SORTMEIL (2)
+           MOVE    "患者番号順"        TO  I2SUB03-SORTMEIL (2)
       *
            MOVE    "3"                 TO  I2SUB03-SORTL (3)
-           MOVE    "���ʻ�̾��"        TO  I2SUB03-SORTMEIL (3)
+           MOVE    "カナ氏名順"        TO  I2SUB03-SORTMEIL (3)
       *
            MOVE    "4"                 TO  I2SUB03-SORTL (4)
-           MOVE    "�������ο�������"  TO  I2SUB03-SORTMEIL (4)
+           MOVE    "入院日の新しい順"  TO  I2SUB03-SORTMEIL (4)
       *
            MOVE    "5"                 TO  I2SUB03-SORTL (5)
-           MOVE    "�������θŤ���"    TO  I2SUB03-SORTMEIL (5)
+           MOVE    "入院日の古い順"    TO  I2SUB03-SORTMEIL (5)
       *
            MOVE    "6"                 TO  I2SUB03-SORTL (6)
-           MOVE    "�ౡ���ο�������"  TO  I2SUB03-SORTMEIL (6)
+           MOVE    "退院日の新しい順"  TO  I2SUB03-SORTMEIL (6)
       *
            MOVE    "7"                 TO  I2SUB03-SORTL (7)
-           MOVE    "�ౡ���θŤ���"    TO  I2SUB03-SORTMEIL (7)
+           MOVE    "退院日の古い順"    TO  I2SUB03-SORTMEIL (7)
       *
            .
        2001-SORTLST-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -387,7 +387,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ�����������(KEY2)
+      *    システム管理マスタ検索処理(KEY2)
       *****************************************************************
        900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
@@ -408,7 +408,7 @@
        900-SYSKANRI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ���FETCH����(KEY2)
+      *    システム管理マスタFETCH処理(KEY2)
       *****************************************************************
        900-SYSKANRI-KEY2-FET-SEC       SECTION.
       *
@@ -427,7 +427,7 @@
        900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸�������
+      *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -444,7 +444,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -458,7 +458,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £¡£–£…•Ï•π•›•Û•π ›∏±º‘æ Û         COPY (CPINSPROV2REQ.INC)
+      *    Ôº°Ôº∞Ôº©„É¨„Çπ„Éù„É≥„Çπ‰øùÈô∫ËÄÖÊÉÖÂ†±         COPY (CPINSPROV2REQ.INC)
       ******************************************************************
         01  XML-INSPROGETREQ.
             02  INSPROREQ-CONTEXT            PIC S9(9)   BINARY.
@@ -24,8 +24,8 @@
             02  INSPROREQ-MODE               PIC S9(9)   BINARY.
             02  INSPROREQ-RECORDNAME         PIC X(128).
             02  INSPROREQ-INSURANCE.
-      *        ›∏±º‘»÷πÊ
+      *       ‰øùÈô∫ËÄÖÁï™Âè∑
               03  INSPROREQ-INSPRO-NUMBER    PIC X(08).
-      *        ›∏±»÷πÊ
+      *       ‰øùÈô∫Áï™Âè∑
               03  INSPROREQ-INS-NUMBER       PIC X(03).
       *

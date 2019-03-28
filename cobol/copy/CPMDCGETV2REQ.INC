@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,13 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.07.00     NACL-¿��Ǽ  14/12/XX  ���ŷ���б�
-      * 05.00.00     NACL-¿��Ǽ  17/08/XX  ��ɼ�ֹ��ɲ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL-多々納  14/12/XX  診療月数対応
+      * 05.00.00     NACL-多々納  17/08/XX  伝票番号追加対応
       *****************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����ȿ��Ź԰پ������ (xml2)
+      *    ＡＰＩリクエスト診療行為情報取得 (xml2)
       *                                        COPY (CPMDCGETREQ.INC)
       ******************************************************************
         01  XML-MEDICALGETREQ.
@@ -31,47 +31,47 @@
             02  MDCREQ-MODE              PIC S9(9)   BINARY.
             02  MDCREQ-RECORDNAME        PIC X(128).
             02  MDCREQ-MEDICALREQ.
-      *       ������ʬ�ʣɡ�������
+      *       入外区分（Ｉ：入院）
               03  MDCREQ-INOUT-CLASS       PIC X(1).
-      *       �����ֹ�
+      *       患者番号
               03  MDCREQ-PATIENTID         PIC X(20).
-      *       ��������
+      *       診療日付
               03  MDCREQ-PERFORM-DATE      PIC X(10).
-      *       ���ŷ��
+      *       診療月数
               03  MDCREQ-FOR-MONTHS        PIC X(02).
       *
               03  MDCREQ-MEDICAL-INFO.
-      *         ���Ų�
+      *         診療科
                 04  MDCREQ-DEP-CODE                PIC X(02).
-      *         Ϣ��
+      *         連番
                 04  MDCREQ-NUMBER                  PIC X(01).
-      *         �ݸ��ȹ礻�ֹ�
+      *         保険組合せ番号
                 04  MDCREQ-COMBINATION-NUMBER      PIC X(04).
-      *         �ݸ��ȹ礻����
+      *         保険組合せ情報
                 04  MDCREQ-INSURANCE-INFO.
-      *           �ݸ��μ���
+      *           保険の種類
                   05  MDCREQ-MAIN-INSURANCE-CLASS    PIC X(03).
-      *           �ݸ��μ���
+      *           保険の種類
                   05  MDCREQ-MAIN-INSURANCE-NAME     PIC X(20).
-      *           �ݸ����ֹ�
+      *           保険者番号
                   05  MDCREQ-MAIN-INSURANCE-NUMBER   PIC X(08).
-      *           ����
+      *           記号
                   05  MDCREQ-MAIN-MARK               PIC X(80).
-      *           �ֹ�
+      *           番号
                   05  MDCREQ-MAIN-NUMBER             PIC X(80).
-      *           �������
+      *           公費情報
                   05  MDCREQ-PUBLIC-INSURANCE-INF  OCCURS  4 TIMES.
-      *             ����μ���
+      *             公費の種類
                     06  MDCREQ-INSURANCE-CLASS       PIC X(03).
-      *             ����μ���
+      *             公費の種類
                     06  MDCREQ-INSURANCE-NAME        PIC X(20).
-      *             ��ô���ֹ�
+      *             負担者番号
                     06  MDCREQ-PROVIDER-NUMBER       PIC X(08).
-      *             ������ֹ�
+      *             受給者番号
                     06  MDCREQ-RECIPIENT-NUMBER      PIC X(20).
-      *         ��ɼ�ֹ�
+      *         伝票番号
                 04  MDCREQ-INVOICD-NUMBER    PIC X(07).
       *H30.1
-      *         �쥻�Űܹ�ʬ�о�
+      *         レセ電移行分対象
                 04  MDCREQ-CONTAIN-MIGRATION     PIC X(05).
       *

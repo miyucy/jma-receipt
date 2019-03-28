@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,70 +16,70 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���ܥ쥻�����ȼ����ѥ�᥿������COPY (CPORCSRYOCOM.INC)
-      *                                ���ѥץ������ (ORCSRYOCOM)
-      *    �������
-      *      ���ŵ��أɣ�
-      *      ���ԣɣ�
-      *      ����ǯ��
-      *      �ݸ���ʬ
+      *    療養レセコメント取得パラメタ　　　COPY (CPORCSRYOCOM.INC)
+      *                                使用プログラム (ORCSRYOCOM)
+      *    設定項目
+      *      医療機関ＩＤ
+      *      患者ＩＤ
+      *      算定年月
+      *      保険区分
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSRYOCOM-AREA.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  LNK-RYOCOM-HOSPNUM                PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
            03  LNK-RYOCOM-PTID                   PIC  9(10).
-      *����ǯ��
+      *算定年月
            03  LNK-RYOCOM-SANTEIYM               PIC  X(06).
-      *�ֵѹ���
+      *返却項目
            03  LNK-RYOCOM-HENKYAKU-AREA.
-      *�������ֵѥơ��֥�
+      *コメント返却テーブル
              04  LNK-RYOCOM-HENKYAKU-TABLE       OCCURS  31.
-      *����������ʬ�ʶ������������ʳ�����������������
+      *療養入院区分（空白：療養入院以外　１：療養入院）
                05  LNK-RYOCOM-NYUINKBN           PIC  X(01).
-      *���ٿ�
+      *明細数
                05  LNK-RYOCOM-MEISAISU           PIC  9(03).
-      *���ť����ɷסʣ��ģ̥����ȴޤ��
+      *診療コード計（ＡＤＬコメント含む）
                05  LNK-RYOCOM-SRYCDTOTAL         PIC  9(14).
-      *���ť����ɷף��ʿ��ť����ɷסʣ��ģ̥����ȴޤ�ˡܣ��ģ�������
+      *診療コード計２（診療コード計（ＡＤＬコメント含む）＋ＡＤＬ点数）
                05  LNK-RYOCOM-SRYCDTOTAL2        PIC  9(14).
-      *�����ȵ�Ͽ���ꥢ
+      *コメント記録エリア
                05  LNK-RYOCOM-RECORD             OCCURS 30.
-      *���Ŷ�ʬ�����ȥ�����
+      *医療区分コメントコード
                    07  LNK-RYOCOM-IRYO-SRYCD     PIC  X(09).
-      *���Ŷ�ʬ�����Ⱥ��ֹ�
+      *医療区分コメント剤番号
                    07  LNK-RYOCOM-IRYO-ZAINUM    PIC  9(08).
-      *���Ŷ�ʬ��������Ƭ��ʸ�����¤��ؤ��ѡ�
+      *医療区分コメント先頭２文字（並び替え用）
                    07  LNK-RYOCOM-IRYO-SORT-COM  PIC  X(04).
       *
-      *���ģ̥����ȥ����ɡ�ʿ������ǯ����ޤǤ��ֵѹ��ܡ�
+      *ＡＤＬコメントコード（平成２２年３月までの返却項目）
                05  LNK-RYOCOM-ADL-SRYCD          PIC  X(09).
-      *���ģ������ʿ����ˡ�ʿ������ǯ����ޤǤ��ֵѹ��ܡ�
+      *ＡＤＬ点数（数字）（平成２２年３月までの返却項目）
                05  LNK-RYOCOM-ADL-TEN            PIC  9(02).
-      *���ģ����������ѡˡ�ʿ������ǯ����ޤǤ��ֵѹ��ܡ�
+      *ＡＤＬ点数（全角）（平成２２年３月までの返却項目）
                05  LNK-RYOCOM-ADL-TEN-MOJI       PIC  X(04).
       *
-      *���ģ��ֵ��ΰ��ʿ������ǯ����ʹߡ�
+      *ＡＤＬ返却領域（平成２２年４月以降）
                05  LNK-RYOCOM-ADL-H22            OCCURS   4.
-      *���ģ̥����ȥ�����
+      *ＡＤＬコメントコード
                  07  LNK-RYOCOM-ADL-SRYCD-H22    PIC  X(09).
-      *���ģ������ʿ�����
+      *ＡＤＬ点数（数字）
                  07  LNK-RYOCOM-ADL-TEN-H22      PIC  9(02).
-      *���ģ����������ѡ�
+      *ＡＤＬ点数（全角）
                  07  LNK-RYOCOM-ADL-TEN-MOJI-H22 PIC  X(04).
       *
-      *���ģ��ֵ��ΰ��ʿ������ǯ����ʹߤϤ�����ˤ⿷�ߥ����ɤ��ֵѡ�
+      *ＡＤＬ返却領域（平成２８年４月以降はこちらにも新設コードを返却）
                05  LNK-RYOCOM-ADL-H28            OCCURS   4.
-      *���ģ̥����ȥ�����
+      *ＡＤＬコメントコード
                  07  LNK-RYOCOM-ADL-SRYCD-H28    PIC  X(09).
       *
-      *���������ɡʣ�������ǯ��顼���������Ը������顼
-      *            ����������פʤ������������������ʤ�
-      *            �������ܥ��������Ϥʤ���
+      *復帰コード（１：算定年月エラー　２：患者検索エラー
+      *            ３：入院会計なし　　４：療養入院なし
+      *            ５：療養コメント入力なし）
            03  LNK-RYOCOM-RC                     PIC S9(9) BINARY.
       *

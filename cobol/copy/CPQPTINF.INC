@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô                 COPY (CPPTINF.INC)     *
+      *    æ‚£è€…                 COPY (CPPTINF.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     MCC-ÂÀÅÄ     02/06/06  É¬Í×¹àÌÜ¤Î¸«Ä¾¤·
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     MCC-å¤ªç”°     02/06/06  å¿…è¦é …ç›®ã®è¦‹ç›´ã—
       ************************************************************
       *01  QUERY-PTINF-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  QUERY-PTINF-KEY.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  QUERY-PTINF-HOSPNUM         PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  QUERY-PTINF-PTID            PIC  9(10).
-      *¥«¥Ê»áÌ¾
+      *ã‚«ãƒŠæ°å
            03  QUERY-PTINF-KANANAME            PIC  X(100).
-      *´Á»ú»áÌ¾
+      *æ¼¢å­—æ°å
            03  QUERY-PTINF-NAME                PIC  X(100).
-      *À­ÊÌ
+      *æ€§åˆ¥
            03  QUERY-PTINF-SEX                 PIC  X(01).
-      *À¸Ç¯·îÆü
+      *ç”Ÿå¹´æœˆæ—¥
            03  QUERY-PTINF-BIRTHDAY            PIC  X(08).
-      *¼«Âð¡ÝÍ¹ÊØÈÖ¹æ
+      *è‡ªå®…âˆ’éƒµä¾¿ç•ªå·
            03  QUERY-PTINF-HOME-POST           PIC  X(07).
-      *¼«Âð¡Ý½»½ê
+      *è‡ªå®…âˆ’ä½æ‰€
            03  QUERY-PTINF-HOME-ADRS           PIC  X(200).
-      *¼«Âð¡ÝÈÖÃÏÊý½ñ
+      *è‡ªå®…âˆ’ç•ªåœ°æ–¹æ›¸
            03  QUERY-PTINF-HOME-BANTI          PIC  X(200).
-      *¼«Âð¡ÝÅÅÏÃÈÖ¹æ
+      *è‡ªå®…âˆ’é›»è©±ç•ªå·
            03  QUERY-PTINF-HOME-TEL1           PIC  X(15).
-      *¥Æ¥¹¥È´µ¼Ô¶èÊ¬
+      *ãƒ†ã‚¹ãƒˆæ‚£è€…åŒºåˆ†
            03  QUERY-PTINF-TSTPTNUMKBN         PIC  X(1).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
            03  QUERY-PTINF-PTNUM               PIC  X(20).
-      *·ï¿ô
+      *ä»¶æ•°
            03  QUERY-PTINF-TOTAL               PIC  9(10).
       *
-      *¥Õ¥ê¡¼£Ó£Ñ£ÌÊ¸¡ÊWHERE¶ç¡Ë
+      *ãƒ•ãƒªãƒ¼ï¼³ï¼±ï¼¬æ–‡ï¼ˆWHEREå¥ï¼‰
            03  QUERY-PTINF-SQL                 PIC  X(15000).
       *DBESCAPEENCODING
            03  QUERY-PTINF-DBSTR               PIC  X(500).

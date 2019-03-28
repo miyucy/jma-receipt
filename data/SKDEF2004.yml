@@ -1,23 +1,23 @@
 kanri_cd    : "2004"
-name        : "¥ì¥»¥×¥ÈºîÀ®»Ø¼¨¡Ê¥ì¥»¥×¥È¼ïÊÌ¡Ë"
+name        : "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆæŒ‡ç¤ºï¼ˆãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼‰"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "SYUBETUNAME"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌÌ¾¾Î"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥åç§°"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "PRTJYUNI"
-  item_jp   : "¥ì¥»¥×¥È½ĞÎÏ½ç"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆå‡ºåŠ›é †"
   type      : "X"
   start     : 41
   length    : 2
 - item_no   : 3
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 43
   length    : 458

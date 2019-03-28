@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,53 +18,53 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0035.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : ����ʬ����Ƚ��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC�ݾ�Ʀ��   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 公費分点数判定
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−小豆沢   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01.06.29  �ݸ����ֹ桦
-      *                                     Ŭ�ѳ���ǯ�������ɲ�
-      *  01.01.02    MCC-ƣ��     02.02.13  �ݸ��ȹ礻�򣳤��飱�����ѹ�
-      *  01.00.03    NACL-ƣ��    03.03.12  �����ʬ���ɲ�
-      *  01.00.04    NACL-����    03.03.03  ���ֹ�彤���б�
-      *  01.00.05    NACL-����    04.03.17  �㰦ɲ�����������б���
-      *                                     �����������ʤ֤���������ʬΥ
-      *                                     ��ʬ�Խ��ѡˤ���Ѥ���褦����
-      *  01.00.06    NACL-����    04.08.04  Ʊ���ݸ��ֹ��б�
-      *  ��߽����ɲ�
-      *  01.01.01    NACL-ƣ��    04/09/28  ��߽������ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01.06.29  保険者番号・
+      *                                     適用開始年月日の追加
+      *  01.01.02    MCC-藤原     02.02.13  保険組合せを３から１０に変更
+      *  01.00.03    NACL-藤原    03.03.12  補助区分の追加
+      *  01.00.04    NACL-門脇    03.03.03  剤番号桁修正対応
+      *  01.00.05    NACL-門脇    04.03.17  ＜愛媛県地方公費対応＞
+      *                                     合計点数情報（ぶん点・公費分離
+      *                                     区分編集用）を使用するよう修正
+      *  01.00.06    NACL-門脇    04.08.04  同一保険番号対応
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/09/28  中止処理の追加
       *
-      *  02.06.01    NACL-����    05/04/20  �������������Խ��б�
-      *  02.06.02    NACL-����    05/06/02  ����ʬΥ��ʬ�Խ�����
-      *  02.06.03    NACL-����    05/05/30  realtime preview �����ɲ�
+      *  02.06.01    NACL-門脇    05/04/20  内服薬剤逓減編集対応
+      *  02.06.02    NACL-門脇    05/06/02  公費分離区分編集修正
+      *  02.06.03    NACL-竹田    05/05/30  realtime preview 処理追加
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  04.02.01    NACL-����    07/05/12  �裳����ʹߤ���ô��ʬ�Խ�
-      *  04.04.01    NACL-����    09/09/10  ������˰��ݤ����ݤ�ʻ�Ѥ���
-      *                                     ����ñ�Ȥˤʤä��Ȥ����б�
-      *  04.04.02    NACL-����    10/01/04  ������˰��ݤȹ�������ʻ�Ѥ���
-      *                                     ������ñ�Ȥˤʤä��Ȥ����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.02.01    NACL-門脇    07/05/12  第３公費以降の負担区分編集
+      *  04.04.01    NACL-門脇    09/09/10  月途中に医保と生保の併用から
+      *                                     生保単独になったときの対応
+      *  04.04.02    NACL-門脇    10/01/04  月途中に医保と更生等の併用から
+      *                                     更生等単独になったときの対応
       *
-      *  04.05.01    NACL-����    11/06/20  ����ʬΥ��ʬ�Խ�����
-      *  04.05.02    NACL-����    12/06/28  ���ݤޤȤ�ʬ����Ŧ���󵭺��б�
+      *  04.05.01    NACL-門脇    11/06/20  公費分離区分編集修正
+      *  04.05.02    NACL-門脇    12/06/28  生保まとめ分点欄摘要欄記載対応
       *
-      *  04.06.01    NACL-����    10/10/14  �Խ����Ƚ�꽤��
+      *  04.06.01    NACL-門脇    10/10/14  編集条件判定修正
       *
-      *  04.07.01    NACL-����    13/09/04  �����ա��軰�Թ԰١��б�
-      *  04.07.02    NACL-����    14/01/08  �����������ʤ��ݸ��Ȥ߹�碌��ͭ��
-      *                                     ���θ���ʬΥ��ʬ�Խ��б�
-      *  04.07.03    NACL-����    15/03/17  ����������������쥻�����б�
+      *  04.07.01    NACL-門脇    13/09/04  自賠責（第三者行為）対応
+      *  04.07.02    NACL-門脇    14/01/08  請求点数がない保険組み合わせが有る
+      *                                     場合の公費分離区分編集対応
+      *  04.07.03    NACL-門脇    15/03/17  請求点数０点公費レセ記載対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-����    16/02/08  RECE02��ͽ�����ܻ���ʬ�ˤĤ��ơ�
-      *                                     �ġ��˹��ܤ��ߤ������ȼ������
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-門脇    16/02/08  RECE02の予備項目使用分について、
+      *                                     個々に項目を設ける事に伴う修正
       *
-      *  05.00.01    NACL-ƣ��    18/06/11  �ե�����Υ��顼�����ɲ�
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -86,7 +86,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE05-KEY
                                    FILE    STATUS  IS  STS-RECE05.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -105,7 +105,7 @@
        01  RECE05-REC. 
            COPY    "CPRCF005.INC".
       * 
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -113,7 +113,7 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *     �쥻�ץ����٥ե����� ̾���ΰ� 
+      *     レセプト明細ファイル 名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE01PARA//.
       *
@@ -123,15 +123,15 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE05PARA//.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե�����̾����
+      *    ファイル名取得
            COPY    "CPRECEDAT1.INC".
            COPY    "CPTEMPFL.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE02                              PIC X(02).
            03  STS-RECE04                              PIC X(02).
@@ -146,7 +146,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-KOHBUNRI-OKIKAE2                    PIC 9(01).
            03  FLG-FTNKBN-ERR                          PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-IN-CANCEL                           PIC 9(06).
@@ -155,7 +155,7 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-OUT3                                PIC 9(06).
            03  CNT-FTNKBNTBL                           PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                                     PIC 9(03).
            03  IDX2                                    PIC 9(03).
@@ -167,9 +167,9 @@ grpsys     COPY    "COMMON-SPA".
            03  IDY3                                    PIC 9(01).
            03  IDZ                                     PIC 9(03).
       *
-      *    ���ֹ������
+      *    剤番号の退避
        01  WK-ZAINUM                                   PIC 9(08).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
            03  WRK-PARA.
@@ -213,29 +213,29 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-ERR-FILE-MSG                    PIC X(100).
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -250,7 +250,7 @@ grpsys     COPY    "COMMON-SPA".
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -267,7 +267,7 @@ grpsys     COPY    "COMMON-SPA".
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -312,18 +312,18 @@ grpsys     COPY    "COMMON-SPA".
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        �ģ¥����ץ����
+      *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0035"      TO  JOB-PGID
-               MOVE    "����ʬ����Ƚ��"
+               MOVE    "公費分点数判定"
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
@@ -370,7 +370,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -378,7 +378,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM     900-RECE02-READ-SEC
       *
-      *    ��������������
+      *    処理中止設定処理
            IF      CNT-IN-CANCEL   =   50
                MOVE    ZERO            TO  CNT-IN-CANCEL
                PERFORM 500-CANCEL-HENSYU-SEC
@@ -388,7 +388,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        2001-HENSYU-SEC                   SECTION.
       *
@@ -474,7 +474,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����������
+      *    請求点数比較
       *****************************************************************
        20011-TENSU-HIKAU-SEC                SECTION.
       *
@@ -485,21 +485,21 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                     TO WRK-HIKAKU-TOTALTEN(IDY)
                 MOVE  IDY           TO WRK-HIKAKU-KOJYUN(IDY)
       *
-      *         ����
+      *         生保
                 IF    RECE02-KOHNUM(IDY)  =   "012"
                       MOVE   "1"    TO WRK-3SYU(1:1)
                 END-IF
-      *         ���
+      *         結核
                 IF    RECE02-KOHNUM(IDY)  =   "010"  OR  "011"
                       MOVE   "1"    TO WRK-3SYU(2:1)
                 END-IF
                 IF    RECE02-SRYYM   <   "200604"
-      *           ����
+      *           精神
                   IF  RECE02-KOHNUM(IDY)  =   "020"  OR  "021"
                       MOVE   "1"    TO WRK-3SYU(3:1)
                   END-IF
                 ELSE
-      *           ��Ω�ٱ�ˡ
+      *           自立支援法
                   IF  RECE02-KOHNUM(IDY)  =   "021"  OR  "015"
                                           OR  "016"  OR  "024"
                       MOVE   "1"    TO WRK-3SYU(3:1)
@@ -546,7 +546,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ���֥ե�����κ����ʣƣ�������
+      *    レセプト中間ファイルの作成（Ｆ００４）
       *****************************************************************
        20011-RECE04-HENSYU-SEC                SECTION.
       *
@@ -575,7 +575,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ʬΥ��ʬ�λ���
+      *    公費分離区分の算出
       *****************************************************************
        200111-KOHBUNRI-SET-SEC               SECTION.
       *
@@ -618,7 +618,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ǡ������Ͻ����ʣƣ�������
+      *    データ出力処理（Ｆ００４）
       *****************************************************************
        200112-RECE04-REWRITE-SEC                SECTION.
       *
@@ -643,7 +643,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ���֥ե�����κ����ʣƣ�������
+      *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
        200113-RECE05-HENSYU-SEC               SECTION.
       *
@@ -676,7 +676,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ǡ������Ͻ����ʣƣ�������
+      *    データ出力処理（Ｆ００５）
       *****************************************************************
        2001131-RECE05-REWRITE-SEC                SECTION.
       *
@@ -701,7 +701,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ʬΥ��ʬ���֤�����
+      *    公費分離区分の置き換え
       *****************************************************************
        20013-KOHBUNRI-OKIKAE-SEC                SECTION.
       *
@@ -749,7 +749,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ô��ʬ�Խ�
+      *    負担区分編集
       *****************************************************************
        200131-FTNKBN-SET-SEC               SECTION.
       *
@@ -790,11 +790,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                ALSO    WRK-KOHNUM(2)
                                            ALSO    WRK-KOHNUM(3)
                                                    ALSO    WRK-KOHNUM(4)
-      *            ���� 
+      *            １者 
                    WHEN    0   ALSO    0   ALSO    0   ALSO    0
                        MOVE    "1"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(1)
-      *            ���� 
+      *            ２者 
                    WHEN    1   ALSO    0   ALSO    0   ALSO    0
                        MOVE    "2"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(2)
@@ -807,7 +807,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    0   ALSO    0   ALSO    0   ALSO    1
                        MOVE    "G"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(5)
-      *            ���� 
+      *            ３者 
                    WHEN    1   ALSO    1   ALSO    0   ALSO    0
                        MOVE    "4"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(6)
@@ -826,7 +826,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    0   ALSO    0   ALSO    1   ALSO    1
                        MOVE    "Q"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(11)
-      *            ���� 
+      *            ４者 
                    WHEN    1   ALSO    1   ALSO    1   ALSO    0
                        MOVE    "V"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(12)
@@ -839,7 +839,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    0   ALSO    1   ALSO    1   ALSO    1
                        MOVE    "Y"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(15)
-      *            ���� 
+      *            ５者 
                    WHEN    1   ALSO    1   ALSO    1   ALSO    1
                        MOVE    "9"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(16)
@@ -849,7 +849,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                ALSO    WRK-KOHNUM(2)
                                            ALSO    WRK-KOHNUM(3)
                                                    ALSO    WRK-KOHNUM(4)
-      *            ���� 
+      *            １者 
                    WHEN    1   ALSO    0   ALSO    0   ALSO    0
                        MOVE    "5"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(17)
@@ -862,7 +862,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    0   ALSO    0   ALSO    0   ALSO    1
                        MOVE    "C"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(20)
-      *            ���� 
+      *            ２者 
                    WHEN    1   ALSO    1   ALSO    0   ALSO    0
                        MOVE    "7"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(21)
@@ -881,7 +881,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    0   ALSO    0   ALSO    1   ALSO    1
                        MOVE    "L"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(26)
-      *            ���� 
+      *            ３者 
                    WHEN    1   ALSO    1   ALSO    1   ALSO    0
                        MOVE    "R"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(27)
@@ -894,7 +894,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    0   ALSO    1   ALSO    1   ALSO    1
                        MOVE    "U"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(30)
-      *            ���� 
+      *            ４者 
                    WHEN    1   ALSO    1   ALSO    1   ALSO    1
                        MOVE    "Z"            TO  WRK-FTNKBN
                                                   WRK-FTNKBNTBL(31)
@@ -911,7 +911,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ���֥ե�����κ����ʣƣ�������
+      *    レセプト中間ファイルの作成（Ｆ００４）
       *****************************************************************
        200132-RECE04-HENSYU2-SEC                SECTION.
       *
@@ -940,7 +940,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ʬΥ��ʬ�λ���
+      *    公費分離区分の算出
       *****************************************************************
        2001321-KOHBUNRI-SET2-SEC               SECTION.
       *
@@ -974,7 +974,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ���֥ե�����κ����ʣƣ�������
+      *    レセプト中間ファイルの作成（Ｆ００５）
       *****************************************************************
        2001322-RECE05-HENSYU2-SEC               SECTION.
       *
@@ -1005,7 +1005,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ곫�����Խ��Ѹ���ʬΥ��ʬ�Խ�
+      *    リハビリ開始日編集用公費分離区分編集
       *****************************************************************
        20014-RIHA-KOHBUNRI-HENSYU-SEC                SECTION.
       *
@@ -1038,7 +1038,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -1053,7 +1053,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1069,7 +1069,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -1080,26 +1080,26 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -1131,7 +1131,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -1144,7 +1144,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -1157,7 +1157,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1174,12 +1174,12 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ���ƥå״�����λ����
+      *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
@@ -1200,7 +1200,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ե�����̾��������
+      *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
       *
@@ -1211,7 +1211,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��֥ե�����ңţ��Ľ����ʣƣ�������
+      *    中間ファイルＲＥＡＤ処理（Ｆ００２）
       *****************************************************************
        900-RECE02-READ-SEC            SECTION.
       *
@@ -1230,7 +1230,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��֥ե�����ңţ��Ľ����ʣƣ�������
+      *    中間ファイルＲＥＡＤ処理（Ｆ００４）
       *****************************************************************
        900-RECE04-NEXT-SEC            SECTION.
       *
@@ -1244,7 +1244,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��֥ե�����ңţ��Ľ����ʣƣ�������
+      *    中間ファイルＲＥＡＤ処理（Ｆ００５）
       *****************************************************************
        900-RECE05-NEXT-SEC            SECTION.
       *
@@ -1258,7 +1258,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1275,7 +1275,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1288,7 +1288,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1306,7 +1306,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

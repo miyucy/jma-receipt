@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,58 +16,58 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ղþ���      �� COPY (CPKOHPLUS.INC)             *
+      *    公費付加情報      　 COPY (CPKOHPLUS.INC)             *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  KOHPLUS-REC.
-      *����
+      *キー
            03 KOHPLUS-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05 KOHPLUS-HOSPNUM        PIC 9(2).
-      *���ֹ�
+      *県番号
                05 KOHPLUS-PREFNUM       PIC  X(02).
-      *��Į¼�ֹ�
+      *市町村番号
                05 KOHPLUS-CITYNUM       PIC  X(03).
-      *�����ֹ�
+      *公費番号
                05 KOHPLUS-KOHNUM        PIC  X(03).
-      *���Զ�ʬ
+      *患者区分
                05 KOHPLUS-PTKBN         PIC  X(01).
-      *ͭ������ǯ����
+      *有効開始年月日
                05 KOHPLUS-YUKOSTYMD     PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
            03 KOHPLUS-YUKOEDYMD         PIC  X(08).
-      *��ô��ʬ
+      *負担区分
            03 KOHPLUS-FTNKBN            PIC  X(01).
-      *�����ݿ������ܶ�ʬ
+      *入院−食事療養区分
            03 KOHPLUS-NYUSKJRYYKBN      PIC  X(01).
-      *�쥻�ץ������ʬ
+      *レセプト請求区分
            03 KOHPLUS-RECESKYKBN        PIC  X(01).
-      *����̾
+      *制度名
            03 KOHPLUS-SEIDONAME         PIC  X(100).
-      *ü���ɣ�
+      *端末ＩＤ
            03 KOHPLUS-TERMID            PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03 KOHPLUS-OPID              PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03 KOHPLUS-CREYMD            PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03 KOHPLUS-UPYMD             PIC  X(08).
-      *��������
+      *更新時間
            03 KOHPLUS-UPHMS             PIC  X(06).
-      *�����ѥ���
+      *更新用キー
            03 KOHPLUSUP-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05 KOHPLUSUP-HOSPNUM      PIC 9(2).
-      *���ֹ�
+      *県番号
                05 KOHPLUSUP-PREFNUM     PIC  X(02).
-      *��Į¼�ֹ�
+      *市町村番号
                05 KOHPLUSUP-CITYNUM     PIC  X(03).
-      *�����ֹ�
+      *公費番号
                05 KOHPLUSUP-KOHNUM      PIC  X(03).
-      *���Զ�ʬ
+      *患者区分
                05 KOHPLUSUP-PTKBN       PIC  X(01).
-      *ͭ������ǯ����
+      *有効開始年月日
                05 KOHPLUSUP-YUKOSTYMD   PIC  X(08).

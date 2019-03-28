@@ -1,6 +1,6 @@
      *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI042R1V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    :  APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : �쥻�ץȺ���(xml2)
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  16/09/15    NACL��ƣ��    ��������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    :  API連携用モジュール
+      *  コンポーネント名  : レセプト作成(xml2)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  16/09/15    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,20 +38,20 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �쥻�ץȺ����ؼ����̥ѥ�᥿
+      *    レセプト作成指示共通パラメタ
            COPY    "R01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "R01SCR-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "R03SCR-SPA"    REPLACING  //SPA-GMN-//
                                    BY         //SPA-GMN-R03-//.
       *
-      *    �쥻�ץȺ����ݰ����ؼ����̣ӣУ�
+      *    レセプト作成−印刷指示画面ＳＰＡ
            COPY    "R02SCR-SPA".
       *
        01  SPA-SCR-REC.
@@ -64,7 +64,7 @@
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-SPATMP          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -73,7 +73,7 @@
            03  IDXX                    PIC 9(04).
            03  IDZZ                    PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -85,7 +85,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -96,7 +96,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(03).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-WARNING             PIC X(03).
@@ -105,7 +105,7 @@
            03  WRK-ERR-PATIENT-MAX     PIC 9(03).
            03  WRK-ERR-PATIENT-MAX1    PIC 9(03).
       *
-      *    ��˥󥰴��԰���
+      *    ワーニング患者一覧
            03  WRK-WARNING-INFORMATION.
                05  WRK-WARNING-PATIENT-MAX PIC 9(03).
                05  WRK-WARNING-INFORMATION-OCC OCCURS  100.
@@ -130,7 +130,7 @@
                                    BY         //TAIHI-MCP//.
       *
        01  WRK-CONS-AREA.
-      *    ����ִ����ģ¤Υ�����  
+      *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
@@ -140,55 +140,55 @@
            03  WRK-CONS-JOB-SHELLID2
                                    PIC X(08)   VALUE   "RECEPT2".
       *
-      *    �����оݴ��԰���
+      *    個別対象患者一覧
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPRECEIPT-MAKEV3REQ.INC".
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPRECEIPT-MAKEV3RES.INC".
       *ver.4.7
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "MCPDATA2.INC".
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ������᥸��֥����å�����
+      *    定期請求ジョブチェックサブ
            COPY    "CPORCSTEIKIJOB.INC".
       *
-      *    ��������
+      *    職員情報
            COPY    "CPSK1010.INC".
       *
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -206,7 +206,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -226,18 +226,18 @@
       *
            MOVE    MCPAREA             TO  TAIHI-MCPAREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "999"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-RGTXMLMAKE-SEC
            END-IF
       *
@@ -249,13 +249,13 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      XML-RECEIPT-MAKERES
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -268,7 +268,7 @@
            END-STRING
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
@@ -277,7 +277,7 @@
            MOVE    WRK-HEN-TIME        TO
                                        RECEMAKES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -287,7 +287,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       * 
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -305,11 +305,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-RGTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  200-MAIN-EXT
@@ -322,20 +322,20 @@
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    RECEMAKEQ-REQUEST-NUMBER
                WHEN    "01"
-      *            �����»�
+      *            処理実施
                    MOVE    1                   TO  FLG-SYORI
                WHEN    "02"
-      *            ������ǧ
+      *            処理確認
                    MOVE    2                   TO  FLG-SYORI
       *****    WHEN    "03"
-      *****       ����󥻥�
+      *****       キャンセル
       *****        MOVE    3                   TO  FLG-SYORI
       *
                WHEN    OTHER
                    MOVE    "E91"               TO  WRK-ERRCD
            END-EVALUATE
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -352,13 +352,13 @@
       *
            EVALUATE    RECEMAKEQ-REQUEST-NUMBER
                WHEN    "01"
-      *            �����»ܽ���
+      *            処理実施処理
                    PERFORM 2002-RECEIPT-MAKE-SEC
                WHEN    "02"
-      *            ������ǧ����
+      *            処理確認処理
                    PERFORM 2003-RECEIPT-CHECK-SEC
                WHEN    "03"
-      *            ����󥻥����
+      *            キャンセル処理
                    PERFORM 2004-RECEIPT-CANCEL-SEC
            END-EVALUATE
       *
@@ -367,7 +367,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-RGTXMLREAD-SEC   SECTION.
       *
@@ -398,33 +398,33 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-RGTXMLMAKE-SEC   SECTION.
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                MOVE    "02"            TO  RECEMAKES-RESPONS-NUMBER
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "�����»ܽ�λ"
+                       MOVE    "処理実施終了"
                                            TO  RECEMAKES-API-RESULT-MSG
                    WHEN    2
-                       MOVE    "������ǧ��λ"
+                       MOVE    "処理確認終了"
                                            TO  RECEMAKES-API-RESULT-MSG
                    WHEN    3
-                       MOVE    "��������󥻥뽪λ"
+                       MOVE    "処理キャンセル終了"
                                            TO  RECEMAKES-API-RESULT-MSG
                END-EVALUATE
            ELSE
                MOVE    "01"            TO  RECEMAKES-RESPONS-NUMBER
-      *        ���顼��å�����
+      *        エラーメッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD       TO  RECEMAKES-API-RESULT
                MOVE    WRK-ERRMSG      TO  RECEMAKES-API-RESULT-MSG
            END-IF
       *
-      *    ���顼���ʤ���Х�˥�ʬ���ֵ�
+      *    エラーがなければワーニング分も返却
            IF    ( WRK-ERR-PATIENT-MAX1
                                        =   ZERO )
            AND   ( WRK-WARNING-PATIENT-MAX
@@ -458,7 +458,7 @@
                    END-IF
                END-PERFORM
            END-IF
-      *    �ٹ��å�����
+      *    警告メッセージ
            MOVE    WRK-WARNING     TO  RECEMAKES-API-WARNING
            MOVE    WRK-WARNING-MSG TO  RECEMAKES-API-WARNING-MSG
       *
@@ -505,7 +505,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -514,17 +514,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    �����UID
+      *    カルテUID
            IF      RECEMAKEQ-KARTE-UID =   SPACE
                MOVE    "E04"               TO  WRK-ERRCD
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
-      *   ���륫UID
+      *   オルカUID
            IF      RECEMAKEQ-REQUEST-NUMBER
                                        =   "01"
                CONTINUE
@@ -535,7 +535,7 @@
                END-IF
            END-IF
       *
-      *    ����̾���
+      *    初画面情報
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
                                        SPA-RIDCD-AREA
@@ -546,7 +546,7 @@
       *
            PERFORM 800-ORCGR03-CALL-SEC
       *
-      *    ������ʬ
+      *    処理区分
            EVALUATE    RECEMAKEQ-RECEIPT-MODE
                WHEN    "All"
                    MOVE    "T"             TO  SPA-GMN-R03-IKKATU
@@ -556,7 +556,7 @@
                    MOVE    "F"             TO  SPA-GMN-R03-IKKATU
            END-EVALUATE
       *
-      *    �쥻�ץȺ�����ʬ
+      *    レセプト作成区分
            EVALUATE    RECEMAKEQ-PRINT-MODE
                WHEN    "Check"
                        MOVE    "2"         TO  R03-PRTKBN
@@ -564,7 +564,7 @@
                        MOVE    "1"         TO  R03-PRTKBN
            END-EVALUATE
       *
-      *    ������ʬ
+      *    入外区分
            EVALUATE    RECEMAKEQ-INOUT
                WHEN    "I"
                    MOVE    "1"             TO  R03-NYUGAIKBN
@@ -574,7 +574,7 @@
                    MOVE    "E12"           TO  WRK-ERRCD
            END-EVALUATE
       *
-      *    �����
+      *    提出先
            IF      WRK-ERRCD           =   SPACE
                MOVE    "F"                 TO  SPA-DATAKBN1-VALUE
                MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
@@ -641,7 +641,7 @@
       *
            EVALUATE    SPA-GMN-R03-IKKATU
                WHEN    "T"
-      *            ����ǯ��
+      *            診療年月
                    IF      RECEMAKEQ-PERFORM-MONTH
                                                =   SPACE
                        MOVE    "E14"              TO  WRK-ERRCD  
@@ -659,7 +659,7 @@
            MOVE    RECEMAKEQ-ORCA-UID
                                    TO  SPA-R01-JOB-ORCA-UID
       *
-      *    �����������å�
+      *    更新前チェック
            MOVE    SPACE           TO  LINKAREA
                                        SPA-MOTOPG
                                        SPA-RIDCD-AREA
@@ -687,7 +687,7 @@
                        MOVE    SPA-ERRMSG          TO  WRK-ERRMSG
                        IF      RECEMAKEQ-REQUEST-NUMBER
                                                    =   "02"
-      *                    ����ִ��������å�����
+      *                    ジョブ管理チェック処理
                            MOVE    "CHK"           TO  SJOBKANRI-MODE
                            INITIALIZE                  JOBKANRI-REC
                            MOVE    WRK-CONS-JOB-JOBID
@@ -719,7 +719,7 @@
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
-      *    ���̺��������å�
+      *    個別作成チェック
            IF    ( SPA-R01-FILEKBN =   "2"  )
            AND   ( RECEMAKEQ-REQUEST-NUMBER
                                    =   "01" )
@@ -746,21 +746,21 @@
                                                SPA-RID1-AREA
                                                SPA-ERRCD
                                                SPA-ERRMSG
-      *            �����ֹ�
+      *            患者番号
                    IF      RECEMAKEQ-PATIENT-ID (IDZZ)
                                                =   SPACE
                        MOVE    "E001"              TO  SPA-ERRCD
-                       MOVE    "�����ֹ椬̤����Ǥ�"
+                       MOVE    "患者番号が未設定です"
                                                    TO  SPA-ERRMSG
                    ELSE
                        MOVE    RECEMAKEQ-PATIENT-ID (IDZZ)
                                                    TO  R01-PTNUM
                    END-IF
-      *            ����ǯ��
+      *            診療年月
                    IF      RECEMAKEQ-PATIENT-PERFORM-DATE (IDZZ)
                                                =   SPACE
                        MOVE    "E014"              TO  SPA-ERRCD
-                       MOVE    "����ǯ�̤����Ǥ�"
+                       MOVE    "診療年月が未設定です"
                                                    TO  SPA-ERRMSG
                    ELSE
                        MOVE    RECEMAKEQ-PATIENT-PERFORM-DATE (IDZZ)
@@ -786,7 +786,7 @@
                        WHEN    "1008"
                        WHEN    "1009"
                        WHEN    "1010"
-      *                    ���Ťʤ�����������������
+      *                    診療なしの請求管理削除処理
                            MOVE    SPACE       TO  LINKAREA
                                                    SPA-MOTOPG
                                                    SPA-RIDCD-AREA
@@ -816,12 +816,12 @@
                    END-EVALUATE
                END-PERFORM
       *
-      *        ���顼������н�����λ
+      *        エラーがあれば処理終了
                IF      WRK-ERR-PATIENT-MAX1    >   ZERO
                    GO  TO  2001-INPUT-CHK-EXT
                END-IF
       *
-      *        �����������å�
+      *        更新前チェック
                MOVE    SPACE           TO  LINKAREA
                                            SPA-MOTOPG
                                            SPA-RIDCD-AREA
@@ -849,7 +849,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����оݴ��ԥ��顼����
+      *    個別対象患者エラー処理
       *****************************************************************
        20012-PATIENT-ERR-SEC     SECTION.
       *
@@ -864,7 +864,7 @@
                IF       SPA-RIDCD      =   "1008"
                    MOVE    "W20"               TO  RECEMAKES-ERROR-CODE
                                                    (WRK-ERR-PATIENT-MAX)
-                   MOVE    "���Ť��ʤ��Τ���������������ޤ�����"
+                   MOVE    "診療がないので請求管理を削除しました。"
                                                TO  RECEMAKES-ERROR-MSG
                                                    (WRK-ERR-PATIENT-MAX)
       *
@@ -907,7 +907,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����оݴ��ԥ�˥󥰽���
+      *    個別対象患者ワーニング処理
       *****************************************************************
        20013-PATIENT-WARNING-SEC   SECTION.
       *
@@ -920,7 +920,7 @@
                                                (WRK-WARNING-PATIENT-MAX)
            MOVE    "W21"           TO  WRK-WARNING-ERROR-CODE
                                                (WRK-WARNING-PATIENT-MAX)
-           MOVE    "���ᤷ�ʤ��������������������ޤ�����"
+           MOVE    "請求しない設定の請求管理を削除しました。"
                                    TO  WRK-WARNING-ERROR-MSG
                                                (WRK-WARNING-PATIENT-MAX)
       *
@@ -928,15 +928,15 @@
        20013-PATIENT-WARNING-EXT.
            EXIT.
       *****************************************************************
-      *    �쥻�ץȺ�������
+      *    レセプト作成処理
       *****************************************************************
        2002-RECEIPT-MAKE-SEC       SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            PERFORM 20021-UID-GET-SEC
            MOVE    C-UID           TO  RECEMAKEQ-ORCA-UID
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
            PERFORM 800-JOBKANRI-CHK-SEC
            IF      WRK-ERRCD      NOT =   SPACE
                GO  TO  2002-RECEIPT-MAKE-EXT
@@ -989,11 +989,11 @@
            EXIT.
       *
       *****************************************************************
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
       *****************************************************************
        20021-UID-GET-SEC     SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
@@ -1004,11 +1004,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȺ�����ǧ����
+      *    レセプト作成確認処理
       *****************************************************************
        2003-RECEIPT-CHECK-SEC     SECTION.
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
@@ -1034,10 +1034,10 @@
       *
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "E70"           TO  WRK-ERRCD
-                   STRING  "�쥻�ץȺ���������Ǥ���"
+                   STRING  "レセプト作成処理中です【"
                                              DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
-                           "��"              DELIMITED  BY  SIZE
+                           "】"              DELIMITED  BY  SIZE
                                              INTO  WRK-ERRMSG
                    END-STRING
                    GO  TO  2003-RECEIPT-CHECK-EXT
@@ -1066,7 +1066,7 @@
                MOVE    TAIHI-MCPAREA   TO  MCPAREA
       *
                EVALUATE    R99-MSG
-                   WHEN    "����������˽�λ���ޤ���"
+                   WHEN    "処理は正常に終了しました"
                        CONTINUE
                    WHEN    OTHER
                        IF      R99-B12-STATE   =   WIDGET-NORMAL
@@ -1079,7 +1079,7 @@
                END-EVALUATE
       *
                IF      R99-B12-STATE   =   WIDGET-NORMAL
-      *            �ǡ�������Խ�����
+      *            頁・件数の編集処理
                    PERFORM 3101-HENSYU-SEC
                END-IF
            ELSE
@@ -1091,7 +1091,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ�������Խ�����
+      *    頁・件数の編集処理
       *****************************************************************
        3101-HENSYU-SEC             SECTION.
       *
@@ -1111,7 +1111,7 @@
                                            SPAAREA
                                            LINKAREA
                                            SCRAREA
-      *        ���̣ӣУ��ɹ���
+      *        画面ＳＰＡ読込み
                PERFORM 000-R02SPA-SET-SEC
       *
                MOVE    SPA-COMMON      TO  SPA-AREA
@@ -1300,11 +1300,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȺ�������󥻥����
+      *    レセプト作成キャンセル処理
       *****************************************************************
        2004-RECEIPT-CANCEL-SEC     SECTION.
       *
-      *    ��ߥե饰�Υ��å�
+      *    中止フラグのセット
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
@@ -1314,7 +1314,7 @@
            PERFORM 900-CALL-ORCSJOB-SEC
            IF      SJOBKANRI-RETURN
                                    =   ZERO
-      *        �ѥ�᡼���ȥ����UID+���륫UID ������å�
+      *        パラメータとカルテUID+オルカUID をチェック
                IF    ( RECEMAKEQ-KARTE-UID
                                    NOT =   JOB-KARTE-UID )
                OR    ( RECEMAKEQ-ORCA-UID
@@ -1324,7 +1324,7 @@
                END-IF
       *
                IF      JOB-ENDYMD      =   SPACE
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "STP"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-CONS-JOB-JOBID
@@ -1333,7 +1333,7 @@
                                            TO  JOB-SHELLID
                    MOVE    1               TO  JOB-STOPFLG
                    PERFORM 900-CALL-ORCSJOB-SEC
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "STP"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-CONS-JOB-JOBID
@@ -1349,7 +1349,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        800-JOBKANRI-CHK-SEC       SECTION.
       *
@@ -1364,16 +1364,16 @@
                                    =   ZERO
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "E70"           TO  WRK-ERRCD
-                   STRING  "�쥻�ץȺ���������Ǥ���"
+                   STRING  "レセプト作成処理中です【"
                                            DELIMITED  BY  SIZE
                            JOB-SHELLMSG    DELIMITED  BY  SPACE
-                           "��"            DELIMITED  BY  SIZE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
                    END-STRING
                END-IF
            END-IF    
       *
-      *    �����ν����ΤȤ��������Υ����å��򤹤�
+      *    入院の処理のとき定期請求のチェックをする
            IF    ( WRK-ERRCD       =   SPACE   )
            AND   ( SPA-R01-NYUGAIKBN   =   "1" )
                INITIALIZE                  STEIKIJOB-AREA
@@ -1407,10 +1407,10 @@
                                        =   ZERO
                    IF      JOB-ENDYMD      =   SPACE
                        MOVE    "E70"           TO  WRK-ERRCD
-                       STRING  "�쥻�ץȰ���������Ǥ���"
+                       STRING  "レセプト印刷処理中です【"
                                                DELIMITED  BY  SIZE
                                JOB-SHELLMSG    DELIMITED  BY  SPACE
-                               "��"            DELIMITED  BY  SIZE
+                               "】"            DELIMITED  BY  SIZE
                                                INTO  WRK-ERRMSG
                        END-STRING
                    END-IF
@@ -1421,7 +1421,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȰ���������
+      *    レセプト一括作成処理
       *****************************************************************
        800-ORCGR03-CALL-SEC                SECTION.
       *
@@ -1445,14 +1445,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȸ��̺�������
+      *    レセプト個別作成処理
       *****************************************************************
        800-ORCGR01-CALL-SEC                SECTION.
      *
                MOVE    SPA-R01KYOUTU   TO  SPA-WORK
                MOVE    SPA-AREA        TO  SPA-COMMON
       *
-      *        ���̣ӣУ������
+      *        画面ＳＰＡ書込み
                PERFORM 000-R01SPA-OUT-SEC
       *
                CALL    "ORCGR01"           USING
@@ -1464,7 +1464,7 @@
                MOVE    SPA-COMMON      TO  SPA-AREA
                MOVE    SPA-WORK        TO  SPA-R01KYOUTU
       *
-      *        ���̣ӣУ��ɹ���
+      *        画面ＳＰＡ読込み
                PERFORM 000-R01SPA-SET-SEC
       *
            MOVE    TAIHI-MCPAREA   TO  MCPAREA
@@ -1473,7 +1473,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��ɹ�
+      *    画面ＳＰＡ読込
       *****************************************************************
        000-R01SPA-SET-SEC             SECTION.
       *
@@ -1485,7 +1485,7 @@
            MOVE    "SPANAI"            TO  WRK-FILEMEI
            PERFORM 000-SPATMP-SEL-SEC
       *
-      *    �����¸�ơ��֥�������
+      *    一時保存テーブル削除処理
            INITIALIZE                      SPATMP-REC
            MOVE    "R01"               TO  SPATMP-GYOUMUID
            PERFORM 900-SPATMP-DBDELETE-SEC
@@ -1494,7 +1494,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��ɹ�
+      *    画面ＳＰＡ読込
       *****************************************************************
        000-SPATMP-SEL-SEC             SECTION.
       *
@@ -1531,7 +1531,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ����
+      *    画面ＳＰＡ書込
       *****************************************************************
        000-R01SPA-OUT-SEC             SECTION.
       *
@@ -1546,7 +1546,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ����
+      *    画面ＳＰＡ書込
       *****************************************************************
        000-SPATMP-OUT-SEC                SECTION.
       *
@@ -1576,7 +1576,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��ɹ�
+      *    画面ＳＰＡ読込
       *****************************************************************
        000-R02SPA-SET-SEC             SECTION.
       *
@@ -1607,7 +1607,7 @@
            MOVE    "key"              TO  MCP-PATHNAME
            PERFORM 900-SPATMP-DBCLOSE-SEC
       *
-      *    �����¸�ơ��֥�������
+      *    一時保存テーブル削除処理
            INITIALIZE                      SPATMP-REC
            MOVE    "R02"               TO  SPATMP-GYOUMUID
            PERFORM 900-SPATMP-DBDELETE-SEC
@@ -1616,16 +1616,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǥ��쥯�ȥ��������
+      *    一時ディレクトリ作成処理
       *****************************************************************
        800-TEMPDIR-SEC             SECTION.
       *
            MOVE    SPA-TERMID      TO  WRK-SPA-TERMID
       *
-      *    ����ǥ��쥯�ȥ�Υ롼�ȥǥ��쥯�ȥ����
+      *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT
                                FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
-      *    ����ǥ��쥯�ȥ�̾�Ȥ�Ω��
+      *    一時ディレクトリ名組み立て
            STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
                    "/"                 DELIMITED   BY  SIZE
                    SPA-TERMID          DELIMITED   BY  SPACE
@@ -1633,7 +1633,7 @@
                                        INTO        MCP-TEMPDIR
            END-STRING
       *
-      *    �Ķ��ѿ���MCP_TEMPDIR�Ϥ�������MCP-TEMPDIR���ͤ������
+      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
            SET ENVIRONMENT "MCP_TEMPDIR"
                                    TO  MCP-TEMPDIR
       *
@@ -1644,7 +1644,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1669,7 +1669,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1691,21 +1691,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            EVALUATE    WRK-ERRCD
                WHEN    "E70"
-      *            �쥻�ץȺ������������ν�����
+      *            レセプト作成、定期請求の処理中
                    GO  TO  890-ERRCD-MSG-EXT
                WHEN    "E30"
                WHEN    "E31"
                WHEN    "E32"
-      *            �쥻�ץȺ������
+      *            レセプト作成結果
                    GO  TO  890-ERRCD-MSG-EXT
                WHEN    "E63"
-      *            �����оݴ��ԥ��顼
+      *            個別対象患者エラー
                    GO  TO  890-ERRCD-MSG-EXT
            END-EVALUATE
       * 
@@ -1713,85 +1713,85 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    "E01"
-                   MOVE    "�����ֹ椬̤����Ǥ���"
+                   MOVE    "患者番号が未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E04"
-                   MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+                   MOVE    "電子カルテＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E05"
-                   MOVE    "���륫�գɣĤ�̤����Ǥ���"
+                   MOVE    "オルカＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E10"
-                   MOVE    "�����ֹ�˳������봵�Ԥ�¸�ߤ��ޤ���"
+                   MOVE    "患者番号に該当する患者が存在しません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E11"
-                   MOVE    "����ǯ������ǤϤ���ޤ���"
+                   MOVE    "診療年月が暦日ではありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E12"
-                   MOVE    "������ʬ������˸��꤬����ޤ���"
+                   MOVE    "入外区分の設定に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E13"
-                   MOVE    "����������˸��꤬����ޤ���"
+                   MOVE    "提出先の設定に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E14"
-                   MOVE    "����ǯ�̤����Ǥ���"
+                   MOVE    "診療年月が未設定です。"
                                                    TO  WRK-ERRMSG
        *
                WHEN    "E40"
-                   MOVE    "�оݤΥ���ִ���������ޤ���"
+                   MOVE    "対象のジョブ管理がありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E41"
-                   MOVE    "�оݤν����Ϥ���ޤ���"
+                   MOVE    "対象の処理はありません。"
                                                    TO  WRK-ERRMSG
       *
                WHEN    "E60"
                WHEN    "E61"
                WHEN    "E62"
-      *            ���̥��顼
+      *            画面エラー
                    MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
       *
                WHEN    "E80"
-                   MOVE    "����ǥ��쥯�ȥ꤬�����Ǥ��ޤ���"
+                   MOVE    "一時ディレクトリが取得できません"
                                                TO  WRK-ERRMSG
-      *        ���̥��顼
+      *        共通エラー
                WHEN    "E89"
-      *            ORCSCOMMON �Υ��顼
+      *            ORCSCOMMON のエラー
                    EVALUATE    SPA-ERRCD
                        WHEN    "1001"
-                           MOVE    "�������󤬼����Ǥ��ޤ���"
+                           MOVE    "職員情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1002"
-                           MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                           MOVE    "医療機関情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1003"
-                           MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                           MOVE    "システム日付が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1005"
-                           MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                           MOVE    "患者番号構成情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1015"
-                           STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                               "������λ���Ʋ�������"
+                           STRING  "グループ医療機関が不整合です。"
+                               "処理を終了して下さい。"
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-ERRMSG
                            END-STRING
                        WHEN    OTHER
-                           MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                           MOVE    "システム項目が設定できません。"
                                                    TO  WRK-ERRMSG
                    END-EVALUATE
                WHEN    "E90"
-                   MOVE    "¾ü���ǻ�����Ǥ���"  TO  WRK-ERRMSG
+                   MOVE    "他端末で使用中です。"  TO  WRK-ERRMSG
                WHEN    "E91"
-                   MOVE    "�ꥯ�������ֹ椬�����Ǥ���"
+                   MOVE    "リクエスト番号が不正です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E97"
-                   MOVE   "�������Ƥ˸��꤬����ޤ���"
+                   MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E98"
-                   MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ�����"
+                   MOVE   "送信内容の読込ができませんでした。"
                                                    TO  WRK-ERRMSG
                WHEN    "E99"
-                   MOVE    "�桼���ɣĤ�̤��Ͽ�Ǥ���"
+                   MOVE    "ユーザＩＤが未登録です。"
                                                    TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1799,7 +1799,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥�ģ£ӣţ̣ţãԽ���
+      *    一時保存テーブルＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-SPATMP-DBSELECT-SEC                SECTION.
       *
@@ -1813,7 +1813,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥�ģ£ƣţԣãȽ���
+      *    一時保存テーブルＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-SPATMP-READ-SEC        SECTION.
       *
@@ -1832,7 +1832,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥륯����������
+      *    一時保存テーブルクローズ処理
       *****************************************************************
        900-SPATMP-DBCLOSE-SEC         SECTION.
       *
@@ -1844,7 +1844,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥�������
+      *    一時保存テーブル削除処理
       *****************************************************************
        900-SPATMP-DBDELETE-SEC         SECTION.
       *
@@ -1861,7 +1861,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥븡������
+      *    一時保存テーブル検索処理
       *****************************************************************
        900-SPATMP-CALL-SEC                SECTION.
       *
@@ -1876,7 +1876,7 @@
       *
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *

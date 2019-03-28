@@ -1,41 +1,41 @@
 kanri_cd    : "9707"
-name        : "¥æ¡¼¥¶¥×¥í¥°¥é¥à¡İ³°ÍèÃæÅÓ½ªÎ»¡ÊK02¡Ë"
+name        : "ãƒ¦ãƒ¼ã‚¶ãƒ—ãƒ­ã‚°ãƒ©ãƒ âˆ’å¤–æ¥ä¸­é€”çµ‚äº†ï¼ˆK02ï¼‰"
 class_cd    : "*"
 item_max    : 6
 item_list   :
 - item_no   : 1
   item      : "SYORINM"
-  item_jp   : "½èÍı¡¦Ä¢É¼Ì¾"
+  item_jp   : "å‡¦ç†ãƒ»å¸³ç¥¨å"
   type      : "X"
   start     : 1
   length    : 30
 - item_no   : 2
   item      : "SHELL"
-  item_jp   : "¼Â¹Ô¥¹¥¯¥ê¥×¥È"
+  item_jp   : "å®Ÿè¡Œã‚¹ã‚¯ãƒªãƒ—ãƒˆ"
   type      : "X"
   start     : 31
   length    : 100
 - item_no   : 3
   item      : "PRTNM"
-  item_jp   : "¥×¥ê¥ó¥¿Ì¾"
+  item_jp   : "ãƒ—ãƒªãƒ³ã‚¿å"
   type      : "X"
   start     : 131
   length    : 16
 - item_no   : 4
   item      : "EXECUTE-SW"
-  item_jp   : "¼Â¹Ô¤¹¤ë"
+  item_jp   : "å®Ÿè¡Œã™ã‚‹"
   type      : "X"
   start     : 147
   length    : 1
 - item_no   : 5
   item      : "EXECUTE-YTPE"
-  item_jp   : "¼Â¹Ô·Á¼°"
+  item_jp   : "å®Ÿè¡Œå½¢å¼"
   type      : "X"
   start     : 148
   length    : 1
 - item_no   : 6
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 149
   length    : 352

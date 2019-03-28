@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,17 +19,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCL0012.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ạ̃��ɣ�
-      *  ����ݡ��ͥ��̾  : �ạ̃��ɣ������Ѥ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/12/06    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＣＬＡＩＭ
+      *  コンポーネント名  : ＣＬＡＩＭ送信済み設定
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/12/06    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 03.05.00     NACL-¿��Ǽ  07/05/09  ���롼�׿����б�
-      * 04.08.00     NACL-¿��Ǽ  16/05/XX  API�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 03.05.00     NACL-多々納  07/05/09  グループ診療対応
+      * 04.08.00     NACL-多々納  16/05/XX  API対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,16 +42,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-UKETUKE         PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
       *01  IDX-AREA.
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -61,7 +61,7 @@
            03  WRK-ERRCD             PIC X(02).
            03  WRK-UPDCNT            PIC 9(02).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -69,33 +69,33 @@
                05  SYS-DD          PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����
+      *    受付
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -126,7 +126,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -139,13 +139,13 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
            MOVE    SYS-MM              TO  WRK-SYSMM
@@ -162,15 +162,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
-      *    ���եơ��֥��ɤ߹���
+      *    受付テーブル読み込み
            INITIALIZE                  UKETUKE-REC
            MOVE    LNK-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    LNK-PTID            TO  UKE-PTID
@@ -202,7 +202,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      (LNK-HKNCOMBI       =   "@@@@")  OR
                           ((LNK-HKNCOMBI   NOT =   "@@@@")  AND
                            (LNK-HKNCOMBI       =   UKE-HKNCOMBI))
-      *                ������λ
+      *                送信完了
                        MOVE    1                   TO  FLG-OK
                        MOVE    LNK-RC              TO  UKE-SRFLG
                        MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
@@ -213,7 +213,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "DBUPDATE"          TO  MCP-FUNC
                        MOVE    "tbl_uketuke"       TO  MCP-TABLE
       *****            MOVE    "key"               TO  MCP-PATHNAME
-      *ver.4.7   SRFLG�Τ߹���
+      *ver.4.7   SRFLGのみ更新
                        MOVE    "upd1"               TO  MCP-PATHNAME
 grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                            MCPDATA-REC
@@ -221,11 +221,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                       IF      MCP-RC          NOT =   ZERO 
                            DISPLAY "ORCL0012 UKETUKE UPD ERR:"  MCP-RC
                                    ",KEY:" UKE-KEY
-      *API�б�
+      *API対応
                            MOVE    "01"            TO  WRK-ERRCD
                        ELSE
                            ADD     1               TO  WRK-UPDCNT
-      *API�б�
+      *API対応
                        END-IF
                    END-IF
                END-IF
@@ -243,21 +243,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ������
+      *    終了　処理
       *****************************************************************
        300-END-SEC                SECTION.
       *
       *API
            IF      WRK-ERRCD           =   SPACE
                IF      WRK-UPDCNT          =   ZERO
-      *            �оݤʤ�
+      *            対象なし
                    MOVE    "01"            TO  LNK-ENDRC
                ELSE
-      *            ��������
+      *            更新あり
                    MOVE    "00"            TO  LNK-ENDRC
                END-IF
            ELSE
-      *        �������顼
+      *        更新エラー
                MOVE    "99"            TO  LNK-ENDRC
            END-IF
            .
@@ -265,7 +265,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���եޥ������ɹ�
+      *    受付マスター読込
       *****************************************************************
        910-UKETUKE-READ-SEC         SECTION.
       *

@@ -1,23 +1,23 @@
 kanri_cd    : "1003"
-name        : "°åÎÅµ¡´Ø¾ðÊó¡Ý¹­¹ð"
+name        : "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’åºƒå‘Š"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "EMAIL"
-  item_jp   : "£å¥á¡¼¥ë¥¢¥É¥ì¥¹"
+  item_jp   : "ï½…ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹"
   type      : "X"
   start     : 1
   length    : 100
 - item_no   : 2
   item      : "HPURL"
-  item_jp   : "£È£Ð¥¢¥É¥ì¥¹"
+  item_jp   : "ï¼¨ï¼°ã‚¢ãƒ‰ãƒ¬ã‚¹"
   type      : "X"
   start     : 101
   length    : 100
 - item_no   : 3
   item      : "USERURL"
-  item_jp   : "¥æ¡¼¥¶£Õ£Ò£ÌÀßÄê"
+  item_jp   : "ãƒ¦ãƒ¼ã‚¶ï¼µï¼²ï¼¬è¨­å®š"
   type      : "X"
   start     : 201
   length    : 200

@@ -1,14 +1,14 @@
 --                                    --
--- ÆşÎÏ¥»¥Ã¥È                         --
+-- å…¥åŠ›ã‚»ãƒƒãƒˆ                         --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¡¡¡¡Í­¸ú³«»ÏÇ¯·îÆü YUKOSTYMD     --
---   ¡¡¡¡Í­¸ú½ªÎ»Ç¯·îÆü YUKOEDYMD     --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ã€€ã€€æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥ YUKOSTYMD     --
+--   ã€€ã€€æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥ YUKOEDYMD     --
 --                                    --
 -- Create Date : 2006/03/01           --
 --                                    --
 
--- TBL_INPUTSETWK ºîÀ®               --
+-- TBL_INPUTSETWK ä½œæˆ               --
 
 CREATE TABLE "tbl_inputsetwk" (
 	"hospid" character(24) NOT NULL,
@@ -31,16 +31,16 @@ CREATE TABLE "tbl_inputsetwk" (
 	Constraint "tbl_inputsetwk_primary_key" Primary Key ("hospid", "setcd", "setseq")
 );
 
--- TBL_INPUTSET ¢ª TBL_INPUTSETWK   --
+-- TBL_INPUTSET â†’ TBL_INPUTSETWK   --
 
 insert into TBL_INPUTSETWK
 select * from TBL_INPUTSET;
 
--- TBL_INPUTSET ºï½ü               --
+-- TBL_INPUTSET å‰Šé™¤               --
 
 drop table TBL_INPUTSET;
 
--- TBL_INPUTSET ºîÀ®               --
+-- TBL_INPUTSET ä½œæˆ               --
 
 CREATE TABLE "tbl_inputset" (
 	"hospid" character(24) NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE "tbl_inputset" (
 	Constraint "tbl_inputset_primary_key" Primary Key ("hospid", "setcd", "yukostymd", "yukoedymd", "setseq")
 );
 
--- TBL_INPUTSETWK ¢ª TBL_INPUTSET   --
+-- TBL_INPUTSETWK â†’ TBL_INPUTSET   --
 
 insert into TBL_INPUTSET
 (hospid,
@@ -110,6 +110,6 @@ upymd,
 uphms
 from TBL_INPUTSETWK;
 
--- TBL_INPUTSETWK ºï½ü             --
+-- TBL_INPUTSETWK å‰Šé™¤             --
 
 drop table TBL_INPUTSETWK;

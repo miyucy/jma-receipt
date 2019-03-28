@@ -1,47 +1,47 @@
 kanri_cd    : "1041"
-name        : "Æş¶âÊıË¡¾ğÊó"
+name        : "å…¥é‡‘æ–¹æ³•æƒ…å ±"
 class_cd    : "*"
 item_max    : 7
 item_list   :
 - item_no   : 1
   item      : "NYKN-NAME"
-  item_jp   : "Æş¶âÊıË¡"
+  item_jp   : "å…¥é‡‘æ–¹æ³•"
   type      : "X"
   start     : 1
   length    : 30
 - item_no   : 2
   item      : "NYKN-TANNAME"
-  item_jp   : "Æş¶âÊıË¡¡ÊÃ»½ÌÌ¾¡Ë"
+  item_jp   : "å…¥é‡‘æ–¹æ³•ï¼ˆçŸ­ç¸®åï¼‰"
   type      : "X"
   start     : 31
   length    : 10
 - item_no   : 3
   item      : "NYKN-BUNRUI"
-  item_jp   : "Ê¬Îà¶èÊ¬"
+  item_jp   : "åˆ†é¡åŒºåˆ†"
   type      : "X"
   start     : 41
   length    : 2
 - item_no   : 4
   item      : "NYKN-JYOTAI"
-  item_jp   : "Æş¶â¾õÂÖ¡İ³°Íè"
+  item_jp   : "å…¥é‡‘çŠ¶æ…‹âˆ’å¤–æ¥"
   type      : "X"
   start     : 43
   length    : 1
 - item_no   : 5
   item      : "NYKN-JYOTAI-N"
-  item_jp   : "Æş¶â¾õÂÖ¡İÆş±¡¡¡Âà±¡»ş"
+  item_jp   : "å…¥é‡‘çŠ¶æ…‹âˆ’å…¥é™¢ã€€é€€é™¢æ™‚"
   type      : "X"
   start     : 44
   length    : 1
 - item_no   : 6
   item      : "NYKN-JYOTAI-T"
-  item_jp   : "Æş¶â¾õÂÖ¡İÆş±¡¡¡Äê´üÀÁµá"
+  item_jp   : "å…¥é‡‘çŠ¶æ…‹âˆ’å…¥é™¢ã€€å®šæœŸè«‹æ±‚"
   type      : "X"
   start     : 45
   length    : 1
 - item_no   : 7
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 46
   length    : 455

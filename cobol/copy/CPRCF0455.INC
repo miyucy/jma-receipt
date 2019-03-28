@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,42 +16,42 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�ץ����ٽ�     COPY (CPRCF0455.INC)               *
-      *                       ϫ�ҥ쥻�Ťδ�Ϣ�����ȡʳ����   *
+      *    レセプト明細書     COPY (CPRCF0455.INC)               *
+      *                       労災レセ電の関連コメント（外来）   *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  RECE455-REC.
            03  RECE455-KEY.
              05  RECE455-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                07  RECE455-HOSPNUM         PIC 9(02).
-      *����ǯ��
+      *診療年月
                07  RECE455-SRYYM           PIC 9(06).
-      *������ʬ
+      *入外区分
                07  RECE455-NYUGAIKBN       PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                07  RECE455-PTID            PIC 9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                07  RECE455-RECEKA          PIC X(02).
-      *�ݸ��ɣ�        
+      *保険ＩＤ        
                07  RECE455-HKNID           PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                07  RECE455-TEKSTYMD        PIC X(08). 
-      *���ֹ�
+      *剤番号
                07  RECE455-ZAINUM          PIC 9(08).
-      *Ϣ�ֹ�
+      *連番号
                07  RECE455-RENNUM          PIC 9(02).
       *
              05  RECE455-SHORI-RENNUM      PIC 9(01).
       *
              05  RECE455-SEQNO             PIC 9(02).
-      *�����Ⱦ���
+      *コメント情報
            03  RECE455-SRYACTINF.
-      *���ť�����
+      *診療コード
                05  RECE455-SRYCD           PIC X(09).
-      *����̾��
+      *漢字名称
                05  RECE455-NAME            PIC X(200).
-      *���ϥ�����
+      *入力コメント
                05  RECE455-INPUTCOMENT     PIC X(80).

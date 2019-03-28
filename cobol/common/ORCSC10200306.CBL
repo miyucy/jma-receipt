@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,44 +18,44 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC10200306.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ź԰٥����å�������ʿ��š�
-      *                      �ȣ���ǯ��������б�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/05/23    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 診療行為チェック、算定（診療）
+      *                      Ｈ１５年６月改正対応
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/05/23    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC��¿��Ǽ  01/04/19  ���ֳ��û������Ļ��û��ν�����
-      * 02.00.00     MCC��¿��Ǽ  01/08/09  ���Τν���
-      * 02.00.01     MCC��¿��Ǽ  02/03/01  �������ޡ�������β����
-      *                                     ��Τߤ�
-      * 02.00.02     MCC��¿��Ǽ  02/04/02  �������˼��´�������ͭ���
-      *                                     ��������û���������
-      * 02.00.03     MCC-¿��Ǽ   02/04/10  ϫ�����ɲ�
-      * 02.00.04     NACL-¿��Ǽ  02/08/09  ϫ�ҥ����å��ɲ�
-      * 02.00.05     NACL-¿��Ǽ  02/10/02  ���û������å����ɲ�
-      *                                     �ʤ��٤ƤοǶ�Υ����å���
-      * 02.00.06     NACL��¿��Ǽ 02/10/10  ��������û������å���̵ͭ
-      * 02.00.07     NACL��¿��Ǽ 02/10/30  �������޼��Ŵ������ν�ʣ�ʤ�
-      * 02.00.08     NACL��¿��Ǽ 02/10/31  ��������û���ư����ʤ����ɲ�
-      * 02.00.09     NACL��¿��Ǽ 02/11/11  �ģգͣͣٿǻ����ɲ�
-      * 02.00.10     NACL��¿��Ǽ 02/11/25  �ģգͣͣٿǻ����Υ����å���
-      *                                     �ˣ����ΤߤȤ���
-      * 02.00.11     NACL��¿��Ǽ 02/12/06  ��Ǥλ�ϫ�Ҥ��ִ����򤷤ʤ�
-      * 02.00.12     NACL-¿��Ǽ  02/12/17  �����Ƴ�����ɲá�143)
-      * 02.00.13     NACL-¿��Ǽ  03/03/14  �������޼��Ŵ�������̵ͭ�ɲ�
-      * 02.00.13     NACL-¿��Ǽ  03/04/04  ����û����λ�������å�����
-      * 02.00.14     NACL-¿��Ǽ  03/05/06  ������Ƚ�꽤��
-      * 02.00.16     NACL-¿��Ǽ  03/06/17  ���ž���������ʣ�ϣ�
-      * 02.00.17     NACL-¿��Ǽ  03/07/17  �������򸡺�����¾
-      * 02.00.18     NACL-¿��Ǽ  03/08/29  �ȣ�����������
-      *                                     ϫ�ҡ����������������ѻ�
-      *                                     �ʥ쥻�ť����ɤ��ѹ��ʤ���
-      * 02.00.19     NACL-¿��Ǽ  05/11/24  MONFUNC �б�
-      * 03.05.00     NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC−多々納  01/04/19  時間外加算の乳幼児加算の修正等
+      * 02.00.00     MCC−多々納  01/08/09  全体の修正
+      * 02.00.01     MCC−多々納  02/03/01  在宅薬剤、在宅器材の回数を１
+      *                                     回のみへ
+      * 02.00.02     MCC−多々納  02/04/02  慢性疼痛疾病管理料が有る時
+      *                                     外来管理加算を削除する
+      * 02.00.03     MCC-多々納   02/04/10  労災用追加
+      * 02.00.04     NACL-多々納  02/08/09  労災チェック追加
+      * 02.00.05     NACL-多々納  02/10/02  注加算チェックの追加
+      *                                     （すべての診区のチェック）
+      * 02.00.06     NACL−多々納 02/10/10  外来管理加算チェックの有無
+      * 02.00.07     NACL−多々納 02/10/30  特定薬剤治療管理料の重複なし
+      * 02.00.08     NACL−多々納 02/10/31  外来管理加算自動算定なしの追加
+      * 02.00.09     NACL−多々納 02/11/11  ＤＵＭＭＹ診察料追加
+      * 02.00.10     NACL−多々納 02/11/25  ＤＵＭＭＹ診察料のチェックを
+      *                                     Ｋ０２のみとする
+      * 02.00.11     NACL−多々納 02/12/06  初診の時労災の置換えをしない
+      * 02.00.12     NACL-多々納  02/12/17  在宅指導料の追加（143)
+      * 02.00.13     NACL-多々納  03/03/14  特定薬剤治療管理算定有無追加
+      * 02.00.13     NACL-多々納  03/04/04  在宅加算料の算定チェック修正
+      * 02.00.14     NACL-多々納  03/05/06  １月後の判定修正
+      * 02.00.16     NACL-多々納  03/06/17  診療情報提供料重複ＯＫ
+      * 02.00.17     NACL-多々納  03/07/17  算定履歴検索修正他
+      * 02.00.18     NACL-多々納  03/08/29  Ｈ１５．９から
+      *                                     労災・自賠責逓減制の廃止
+      *                                     （レセ電コードの変更なし）
+      * 02.00.19     NACL-多々納  05/11/24  MONFUNC 対応
+      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -69,7 +69,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -84,31 +84,31 @@
            03  FLG-KYUJITU         PIC 9(01).
            03  FLG-GAIKAN          PIC 9(01).
            03  FLG-OK              PIC 9(01).
-      *    ���úƿ�̵ͭ
+      *    電話再診有無
            03  FLG-TELSAI          PIC 9(01).
-      *    �������޼��Ŵ������
+      *    特定薬剤治療管理初回
            03  FLG-SYOKAI          PIC 9(01).
            03  FLG-SYOKAI2         PIC 9(01).
-      *    ��Ƴ��
+      *    指導料
            03  FLG-SIDOU           PIC 9(01).
       *
-      *    ��������û�
+      *    外来管理加算
            03  FLG-GAIRAI          PIC 9(01).
-      *    ��³�û�
+      *    継続加算
            03  FLG-KEIZOK          PIC 9(01).
-      *    ϫ�Ҳû�
+      *    労災加算
            03  FLG-RSIFLG          PIC 9(01).
       *
            03  FLG-ADD             PIC 9(01).
-      *    ¾�ݸ�����Ѥ�
+      *    他保険算定済み
            03  FLG-TAHOKEN         PIC 9(01).
-      *    �ģգͣͣٿǻ�����
+      *    ＤＵＭＭＹ診察料用
            03  FLG-KENSIN          PIC 9(01).
            03  FLG-DUMMY           PIC 9(01).
            03  FLG-DUMMY-ARI       PIC 9(01).
            03  FLG-DELETE          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -130,29 +130,29 @@
            03  IDX-GAIKAN          PIC 9(04).
            03  IDX-Y2              PIC 9(02).
            03  IDX-2               PIC 9(02).
-      *    �ǻ����ΰ���
+      *    診察料の位置
            03  IDX-SINSATU          PIC 9(04).
-      *    ���û�����
+      *    注加算位置
            03  IDX-CHU              PIC 9(04).
       *
            03  IDY                  PIC 9(04).
-      *    DUMMY�ǻ��������å�
+      *    DUMMY診察料チェック
            03  IDX-MAE-IDX          PIC 9(04).
            03  IDX-DUMMY            PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
-      *    �ѥ�̾
+      *    パス名
            03  WRK-DBPATH          PIC X(64).
       *
            03  WRK-IDX             PIC 9(03).
       *
            03  WRK-MOJI            PIC X(01). 
-      *    �û����顼ʬ
+      *    加算エラー分
            03  WRK-KASAN-NASI      PIC X(01). 
       *
            03  WRK-ERRCD           PIC X(04). 
@@ -161,16 +161,16 @@
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
       *
-      *    ϫ�ҵߵް��Ŵ����û�̵ͭ
+      *    労災救急医療管理加算有無
            03  WRK-RSISYOSIN       PIC 9(04).
       *
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-GEN    PIC 9(08).
-      *    ���ǻ������������û�ʬ
+      *    往診時、所定点数加算分
            03  WRK-TENSU-O1        PIC 9(08).
-      *    ���ǻ������������û���
+      *    往診時、所定点数加算外
            03  WRK-TENSU-O2        PIC 9(08).
       *
            03  WRK-TENSU1          PIC 9(08).
@@ -183,12 +183,12 @@
                05  WRK-KEI-DD          PIC 9(02).
            03  WRK-KEIYMDZEN           PIC X(08).
       *----(01.00.01) LINE ADD START ----------------------------------
-      *    ���Ļ��μ�ư�û�������
+      *    乳幼児の自動加算コード
            03  WRK-NYU-SRYCD           PIC X(09).
-      *    ���ϻ�ɽ����
+      *    入力時表示用
            03  IDX-INCNT               PIC 9(04).
            03  WRK-HEN-INPUTCD         PIC X(22).
-      *    ϫ���ѡ���������ɤ��ؤ�����
+      *    労災用、外来管理読み替え算定
            03  WRK-GAI-CNT             PIC 9(04).
            03  WRK-GAI-IDX             PIC 9(04).
            03  WRK-GAI-TEN             PIC 9(08).
@@ -200,14 +200,14 @@
       *
            03  WRK-SYOKAI-YMD          PIC X(08).
            03  WRK-SANTEI-CNT          PIC 9(04).
-      *    �������޽������
+      *    特定薬剤初回算定日
            03  WRK-SANTEI-YMD          PIC X(08).
            03  WRK-WYM.
                05  WRK-WYY             PIC X(02).
                05  WRK-WMM             PIC X(02).
            03  WRK-SYOKAI              PIC 9(04).
       *
-      *    �ǻ���������
+      *    診察料算定用
            03  WRK-KBN                 PIC X(01).
            03  WRK-KBN2                PIC X(01).
            03  WRK-KAISU               PIC 9(04).
@@ -216,39 +216,39 @@
            03  WRK-SINSATU-KBN         PIC X(01).
            03  WRK-SINSATU-KBN2        PIC X(01).
            03  WRK-SINSATU-KAISU       PIC 9(01).
-      *    �ǻ��������å���
+      *    診察料チェック用
            03  WRK-KEICD               PIC X(04).
            03  WRK-KEICD-IDX           PIC 9(04).
-      *������ä����봵��
+      *厚生大臣が定める患者
            03  WRK-TOKUTEI-KNJ       PIC  9(01).
-      *�͹���¡
+      *人工腎臓
            03  WRK-TOKUTEI-JNZ       PIC  9(01).
-      *������ä����봵�ԡʳ��������
+      *厚生大臣が定める患者（外来管理）
            03  WRK-TOKUTEIG-KNJ      PIC  9(01).
       *
-      *    ��ǻ�����
+      *    初診算定日
            03  WRK-SYOYMD              PIC X(08).
       *
-      *    ��ʣ�ٶ票�顼��
+      *    重複警句エラー用
            03  IDX-KEI                 PIC 9(04).
            03  FLG-KEI                 PIC 9(01).
-      *    ǯ��Ƚ����
+      *    年齢判定用
            03  WRK-KGNAGE              PIC 9(03).
            03  WRK-JGNAGE              PIC 9(03).
            03  FLG-NENREI-OK           PIC 9(01).
       *
-      *    ��¸�ѣӣУ�
+      *    保存用ＳＰＡ
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
-      *    ��¸�ѣӣУ�
+      *    保存用ＳＰＡ
        01  HZN2-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN2-//.
       *
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-      *    �������޴����û����ơ��֥�
+      *    特定薬剤管理加算料テーブル
        01  TBL-TOKUYAKU-AREA.
            03  FILLER              PIC X(09)   VALUE   "113000410".
            03  FILLER              PIC X(09)   VALUE   "180000110".
@@ -258,212 +258,212 @@
            03  TBL-TOKUYAKU-OCC    OCCURS   4  INDEXED  TBL-TOK.
                05  TBL-TOKSRYCD    PIC X(09).
       *
-      *    �ǻ����ơ��֥�
+      *    診察料テーブル
        01  TBL-SINSATU-AREA.
-      *    ������ʰ��� �±���
+      *    初診料（一般 病院）
            03  FILLER              PIC X(13)   VALUE   "101F111000110".
-      *    �������Ϸ�� �±���
+      *    初診料（老人 病院）
            03  FILLER              PIC X(13)   VALUE   "111F111700110".
-      *    ������ʰ��� ���Ž��
+      *    初診料（一般 診療所）
            03  FILLER              PIC X(13)   VALUE   "102F111003610".
-      *    �������Ϸ�� ���Ž��
+      *    初診料（老人 診療所）
            03  FILLER              PIC X(13)   VALUE   "112F111700210".
       *
-      *    �ƿ����ʰ��� �±���
+      *    再診料（一般 病院）
            03  FILLER              PIC X(13)   VALUE   "101 112007410".
-      *    ���úƿ����ʰ��� �±���
+      *    電話再診料（一般 病院）
            03  FILLER              PIC X(13)   VALUE   "101T112007950".
-      *    Ʊ���ƿǡʰ��� �±���
+      *    同日再診（一般 病院）
            03  FILLER              PIC X(13)   VALUE   "101D112008350".
-      *    ����Ʊ���ƿǡʰ��� �±���
+      *    電話同日再診（一般 病院）
            03  FILLER              PIC X(13)   VALUE   "101S112008850".
       *
-      *    �ƿ����ʰ��� ���Ž��
+      *    再診料（一般 診療所）
            03  FILLER              PIC X(13)   VALUE   "102 112009210".
-      *    ���úƿǡʰ��� ���Ž��
+      *    電話再診（一般 診療所）
            03  FILLER              PIC X(13)   VALUE   "102T112009750".
-      *    Ʊ���ƿǡʰ��� ���Ž��
+      *    同日再診（一般 診療所）
            03  FILLER              PIC X(13)   VALUE   "102D112010150".
-      *    ����Ʊ���ƿǡʰ��� ���Ž��
+      *    電話同日再診（一般 診療所）
            03  FILLER              PIC X(13)   VALUE   "102S112010650".
       *
-      *    �ƿ�����Ϸ�� �±���
+      *    再診料（老人 病院）
            03  FILLER              PIC X(13)   VALUE   "111 112702310".
-      *    ���úƿǡ�Ϸ�� �±���
+      *    電話再診（老人 病院）
            03  FILLER              PIC X(13)   VALUE   "111T112702750".
-      *    Ʊ���ƿǡ�Ϸ�� �±���
+      *    同日再診（老人 病院）
            03  FILLER              PIC X(13)   VALUE   "111D112703050".
-      *    Ʊ�����úƿǡ�Ϸ�� �±���
+      *    同日電話再診（老人 病院）
            03  FILLER              PIC X(13)   VALUE   "111S112703450".
       *
-      *    �ƿ�����Ϸ�� ���Ž��
+      *    再診料（老人 診療所）
            03  FILLER              PIC X(13)   VALUE   "112 112703710".
-      *    ���úƿǡ�Ϸ�� ���Ž��
+      *    電話再診（老人 診療所）
            03  FILLER              PIC X(13)   VALUE   "112T112704150".
-      *    Ʊ���ƿǡ�Ϸ�� ���Ž��
+      *    同日再診（老人 診療所）
            03  FILLER              PIC X(13)   VALUE   "112D112704450".
-      *    Ʊ�����úƿǡ�Ϸ�� ���Ž��
+      *    同日電話再診（老人 診療所）
            03  FILLER              PIC X(13)   VALUE   "112S112704850".
       *
       *
-      *    �����ʳ���ǻ���(�������� ���)
+      *    小児科外来診察料(院外処方 初診)
            03  FILLER              PIC X(13)   VALUE   "200F113003510".
-      *    �����ʳ���ǻ���(������� ���)
+      *    小児科外来診察料(院内処方 初診)
            03  FILLER              PIC X(13)   VALUE   "200F113003710".
-      *    �����ʳ���ǻ���(�������� �ƿ�)
+      *    小児科外来診察料(院外処方 再診)
            03  FILLER              PIC X(13)   VALUE   "200 113003610".
-      *    �����ʳ���ǻ���(������� �ƿ�)
+      *    小児科外来診察料(院内処方 再診)
            03  FILLER              PIC X(13)   VALUE   "200 113003810".
       *
       *
-      *    ���������
+      *    外来診療料
            03  FILLER              PIC X(13)   VALUE   "301 112011310".
-      *    Ʊ�����������
+      *    同日外来診療料
            03  FILLER              PIC X(13)   VALUE   "301D112011710".
-      *    �����������Ϸ�͡�
+      *    外来診療料（老人）
            03  FILLER              PIC X(13)   VALUE   "311 112705510".
-      *    Ʊ�������������Ϸ�͡�
+      *    同日外来診療料（老人）
            03  FILLER              PIC X(13)   VALUE   "311D112705850".
       *
       *
        01  TBL-SINSATU-AREAR       REDEFINES   TBL-SINSATU-AREA.
            03  TBL-SINSATU-OCC         OCCURS  28    INDEXED  TBL-IDX.
-      *        �������̡����������ʳ���ǻ������������������
+      *        １：一般、２：小児科外来診察料、３：外来診療料
                05  TBL-KAISU           PIC 9(01).
-      *        Ϸ�Ͱ��̶�ʬ�ʣ������̡�����Ϸ�͡�
+      *        老人一般区分（０：一般、１：老人）
                05  TBL-ROUJIN          PIC 9(01).
-      *        �±����̡ʣ����±����������Ž��
+      *        病院種別（１：病院、２：診療所）
                05  TBL-HOSPSBT         PIC 9(01).
-      *        D:Ʊ���ƿǡ�T�����úƿǡ�S:Ʊ�����úƿǡ�F:���
+      *        D:同日再診、T：電話再診、S:同日電話再診、F:初診
                05  TBL-KBN             PIC X(01).
-      *        ���ť�����
+      *        診療コード
                05  TBL-SRYCD           PIC X(09).
       *
        01  TBL-SIN-MAX                 PIC 9(04)   VALUE   28.
       *
       *
-      *    ��������û�����³�����û��ơ��֥�
+      *    外来管理加算・継続管理加算テーブル
        01  TBL-GAIRAI-AREA.
-      *    ����
+      *    一般
            03  FILLER              PIC X(13)   VALUE   "100G112011010".
       *
-      *    Ϸ�� �±�
+      *    老人 病院
            03  FILLER              PIC X(13)   VALUE   "111G112705110".
       *
-      *    Ϸ�� ���Ž�
+      *    老人 診療所
            03  FILLER              PIC X(13)   VALUE   "112G112705310".
       *
-      *    ��³�����û��ʰ��̡�
+      *    継続管理加算（一般）
            03  FILLER              PIC X(13)   VALUE   "000K112007170".
-      *    ��³�����û���Ϸ�͡�
+      *    継続管理加算（老人）
            03  FILLER              PIC X(13)   VALUE   "010K112702270".
       *
       *
        01  TBL-GAIRAI-AREAR       REDEFINES   TBL-GAIRAI-AREA.
            03  TBL-GAIRAI-OCC          OCCURS  5    INDEXED  TBLG-IDX.
-      *        ���
+      *        回数
                05  TBLG-KAISU           PIC 9(01).
-      *        Ϸ�Ͱ��̶�ʬ�ʣ������̡�����Ϸ�͡�
+      *        老人一般区分（０：一般、１：老人）
                05  TBLG-ROUJIN          PIC 9(01).
-      *        �±����̡ʣ����±����������Ž��
+      *        病院種別（１：病院、２：診療所）
                05  TBLG-HOSPSBT         PIC 9(01).
-      *         :��������û���K:��³�����û�
+      *         :外来管理加算、K:継続管理加算
                05  TBLG-KBN             PIC X(01).
-      *        ���ť�����
+      *        診療コード
                05  TBLG-SRYCD           PIC X(09).
       *
       *
-      *    ϫ�ҿǻ����ơ��֥�
+      *    労災診察料テーブル
        01  TBL-RSI-SINSATU-AREA.
-      *    �����
+      *    初診料
            03  FILLER              PIC X(13)   VALUE   "0 F 101110010".
-      *    �ƿ����ʣ�������
+      *    再診料（３月以内）
            03  FILLER              PIC X(13)   VALUE   "0 S 101120040".
-      *    �ƿ����ʣ���Ķ�ˣ������
+      *    再診料（３月超）５回以内
            03  FILLER              PIC X(13)   VALUE   "1 S 101120050".
-      *    �ƿ����ʣ���Ķ�ˣ���Ķ
+      *    再診料（３月超）５回超
            03  FILLER              PIC X(13)   VALUE   "5 S 101120060".
       *
-      *    ��������û��ʣ�������
+      *    外来管理加算（３月以内）
            03  FILLER              PIC X(13)   VALUE   "0 G 101120070".
-      *    ��������û��ʣ���Ķ�ˣ������
+      *    外来管理加算（３月超）５回以内
            03  FILLER              PIC X(13)   VALUE   "1 G 101120080".
-      *    ��������û��ʣ���Ķ�ˣ���Ķ
+      *    外来管理加算（３月超）５回超
            03  FILLER              PIC X(13)   VALUE   "5 G 101120090".
       *
        01  TBL-RSI-SINSATU-AREAR   REDEFINES   TBL-RSI-SINSATU-AREA.
            03  TBL-RSI-SINSATU-OCC     OCCURS  7    INDEXED  TBL-RSI.
-      *        ���
+      *        回数
                05  TBLR-KAISU           PIC 9(01).
                05  FILLER               PIC X(01).
-      *        F:��ǡ�S:�ƿǡ�G:��������û�
+      *        F:初診、S:再診、G:外来管理加算
                05  TBLR-KBN             PIC X(01).
                05  FILLER               PIC X(01).
-      *        ���ť�����
+      *        診療コード
                05  TBLR-SRYCD           PIC X(09).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    �����å��ޥ�����
+      *    チェックマスタ−
        01  CHK-REC.
            COPY    "CPCHK.INC".
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���Ź԰ٻ����Խ��ѥ�᥿
+      *    診療行為算定編集パラメタ
            COPY    "CPORCSC90.INC".
       *
-      *    ���Ź԰ٻ���������å��ѥ�᥿
+      *    診療行為算定歴チェックパラメタ
            COPY    "CPORCSC91.INC".
       *
-      *    ���Ź԰������Խ������ܥ����å�
+      *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
       *
-      *    �����Խ�
+      *    画面編集
            COPY    "CPORCSC94.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -474,7 +474,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -484,13 +484,13 @@
            INITIALIZE                  IDX-AREA
       *
            EVALUATE    LNK-ORCSC-KBN
-      *        ���̡������å����Խ�����ư����
+      *        剤別　チェック、編集、自動算定
                WHEN    "1"
                    PERFORM 100-SEL-SYORI-SEC
-      *        ���ΤΥ����å�
+      *        全体のチェック
                WHEN    "2"
                    PERFORM 200-ALL-SYORI-SEC
-      *        ��ư����
+      *        自動算定
                WHEN    "3"
                    PERFORM 300-AUTO-SYORI-SEC
                WHEN    OTHER
@@ -502,11 +502,11 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���̤Υ����å����Խ�����ư�������
+      *    剤別のチェック、編集、自動算定処理
       *****************************************************************
        100-SEL-SYORI-SEC                SECTION.
       *
-      *    �����å�����ư����
+      *    チェック、自動算定
            PERFORM 1001-NAI-CHK-SEC
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
@@ -516,7 +516,7 @@
                GO      TO      100-SEL-SYORI-EXT
            END-IF
       *
-      *    �����׻�
+      *    点数計算
            PERFORM 1002-TENSU-KEI-SEC
       *
            .
@@ -524,7 +524,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        1001-NAI-CHK-SEC                  SECTION.
       *
@@ -549,7 +549,7 @@
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
-      *                �ģգͣͣٿǻ���Ƚ��
+      *                ＤＵＭＭＹ診察料判定
                        PERFORM 10012-DUMMYSYORI-SEC
       ************ WHEN    "8"
                    WHEN    "."
@@ -557,28 +557,28 @@
                        CONTINUE
       *
                    WHEN    "1"
-      *                �굻��
+      *                手技料
                        PERFORM 10011-SYUGISYORI-SEC
       *
                    WHEN    "8"
-      *                �����ȤΥ����å�
+      *                コメントのチェック
                        PERFORM 10018-COMMENT-SEC
       *
                    WHEN    "7"
                        IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
-      *                    �ե����λ����顼
+      *                    フィルムの時エラー
                            MOVE    "0047"      TO  WRK-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR (IDX-Z)
                        END-IF
       *
-      *            ���ǡ����Ǥϥ��顼
+      *            酸素・窒素はエラー
                        IF      WRK-COM-TOKUKIZAISBT1 (IDX-Z) =   2
                            MOVE    "0039"      TO  WRK-ERRCD
                            MOVE    "1"         TO  WRK-COM-CUR  (IDX-Z)
                        END-IF
                END-EVALUATE
       *
-      *        ��ǡ��ƿǡ���Ƴ������λ�������ϣ��Τ�
+      *        初診、再診、指導、在宅の時、回数は１のみ
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR
                                                    "12"  OR
                                                    "13"  OR
@@ -600,18 +600,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������å�����
+      *    回数チェック処理
       *****************************************************************
        10012-KAISU-CHK-SEC            SECTION.
       *
-      *    ���ž��������ʣ��ˡ��ʣ¡ˡʣġˤϽ�ʣ�ϣˤȤ���
+      *    診療情報提供料（Ａ），（Ｂ）（Ｄ）は重複ＯＫとする
            IF     (IDX-SYU             >   ZERO )  AND
                   (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
                                                OR  "180016210"
                                                OR  "113004410"
-      *        ���¼����ո��������
+      *        傷病手当意見書交付料
                                                OR  "180000710"
-      *        ������Ʊ�ս������
+      *        療養費同意書交付料
                                                OR  "113004310" )
                CONTINUE
            ELSE
@@ -624,11 +624,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        10011-SYUGISYORI-SEC            SECTION.
       *
-      *    ����ǻ�����ͭ������ƿ�����������
+      *    在宅診察料が有る時、再診料を削除する
            IF      LNK-ORCSC-HOUMON-ARI    =   1
                IF      WRK-COM-SRYKBN (IDX-Z)  =   "12"
                    INITIALIZE              WRK-GMN-TBLREC(IDX-Z)
@@ -636,7 +636,7 @@
                    GO    TO      10011-SYUGISYORI-EXT
                END-IF
            END-IF
-      *    ����ǻ�����ͭ����������������ѤߤǤ��뤳��
+      *    在宅診察料が有る時、初診料が算定済みであること
            IF      LNK-ORCSC-HOUMON-ARI    =   1
       *********IF      LNK-ORCSC-LSTYMD    =   SPACE
                IF      LNK-ORCSC-SYOYMD    =   SPACE
@@ -646,12 +646,12 @@
                END-IF
            END-IF
       *
-      *    �ǻ�����Ƚ��
+      *    診察料の判定
            PERFORM 2001-SINSATU-CHK-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      10011-SYUGISYORI-EXT
            END-IF
-      *    ϫ�Ҥοǻ�����Ƚ��
+      *    労災の診察料の判定
            IF      SPA-HKNKBN          =   1
                PERFORM 10013-RSI-SINSATU-CHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
@@ -660,10 +660,10 @@
            END-IF
       *
            IF      SPA-NYUGAIKBN       =   "2"
-      *    ��������û�����³�����û���Ƚ��
+      *    外来管理加算、継続管理加算の判定
                PERFORM 100111-KEIZOKU-CHK-SEC
                IF      FLG-GAIRAI          =   1
-      *        ϫ���ɤ��ؤ��û�ʬ�ϳ�������û�����Ȥ��ʤ�
+      *        労災読み替え加算分は外来管理加算削除としない
                    IF      WRK-COM-RSIFLG2 (IDX-Z)     =   "1"
                        MOVE    ZERO            TO  FLG-GAIRAI
                    END-IF
@@ -673,8 +673,8 @@
                GO      TO      10011-SYUGISYORI-EXT
             END-IF
       *
-      *    Ϸ���������������������ͭ�������������û��������� 
-      *        ���ǲ���������ܰʳ��λ�
+      *    老人慢性疾患外来診療料が有る時、外来管理加算を削除する 
+      *        受診回数が３回目以外の時
            IF     (LNK-ORCSC-ROUMANSEI-ARI     NOT =   ZERO )  OR
                   (LNK-ORCSC-ROUMANSEI-ARI2    NOT =   ZERO  AND
                    LNK-ORCSC-SINSATU-CNT       NOT =   2    )
@@ -685,7 +685,7 @@
                END-IF
            END-IF
       *
-      *    ���úƿǤ�ͭ�������������û�����³�����û���������
+      *    電話再診が有る時、外来管理加算・継続管理加算を削除する
            IF      LNK-ORCSC-TELSAI-ARI    =   1
                IF     (FLG-GAIRAI          =   1  )  OR
                       (FLG-KEIZOK          =   1  )
@@ -695,7 +695,7 @@
                END-IF
            END-IF
       *
-      *    �������˼��´�������ͭ�������������û���������
+      *    慢性疼痛疾病管理料が有る時、外来管理加算を削除する
            IF     (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
       ************(LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
                   (LNK-ORCSC-GAIRAI-NASI   =   1  )
@@ -706,7 +706,7 @@
                END-IF
            END-IF
       *
-      *    ��������û�����³�����û��κޤϡ������٤ΤߤȤ���
+      *    外来管理加算・継続管理加算の剤は、１明細のみとする
            IF      WRK-KASAN-NASI      =   "1"
                IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"
                    MOVE    "0059"          TO  WRK-ERRCD
@@ -719,7 +719,7 @@
                MOVE    "1"                 TO  WRK-KASAN-NASI
            END-IF
       *
-      *    ����˼굻���ϣ��ĤΤ�
+      *    剤内に手技料は１つのみ
            IF      WRK-COM-DATAKBN (IDX-Z) =   "1"
                IF      IDX-SYU             >   ZERO
                    MOVE    "0019"          TO  WRK-ERRCD
@@ -730,19 +730,19 @@
                END-IF
            END-IF
       *
-      *    �û������å�
+      *    加算チェック
            IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
                PERFORM 1005-KASAN-CHK-SEC
            END-IF
       *
-      *    ǯ��û���������å�
+      *    年齢加算算定チェック
            PERFORM 1007-NENREI-SYORI-SEC
       *
-      *    ���ֲû������å�
+      *    時間加算チェック
            IF     WRK-COM-TIMEFLG (IDX-Z)  NOT =   ZERO
                PERFORM 1002-KASAN-SET-SEC
            ELSE
-      *        �����ξ�硢���ֳ���ʬ���оݤȤ���
+      *        入院の場合、時間外区分も対象とする
                IF      (SPA-NYUGAIKBN      =   "1"  )  AND
                        (LNK-ORCSC-TIMEFLG  NOT =   ZERO)  AND
                        (WRK-COM-DATAKBN(IDX-Z) =   "1" )
@@ -750,7 +750,7 @@
                END-IF
            END-IF
       *
-      *    ���ֲû������Ϥ��줿������ư���ؤ򤹤�
+      *    時間加算を入力された時、自動振替をする
            IF     (WRK-COM-DATAKBN (IDX-Z)     =   "2"  )  AND
                   (WRK-COM-TIMEKSNKBN(IDX-Z)   =   1  OR
                                                    2  OR
@@ -758,13 +758,13 @@
                                                    4  OR
                                                    5     ) AND
                   (WRK-COM-AUTOKBN (IDX-Z)     =   SPACE )
-      *        ǯ��û���ư�����ؤ�����
+      *        年齢加算自動振り替え処理
                IF      WRK-NYU-SRYCD   NOT =   SPACE
                    PERFORM 1008-NENREI-CHENGE-SEC
                END-IF
            END-IF
       *
-      *    ���ֳ�����Υ����å�
+      *    時間外特例のチェック
            IF      WRK-COM-INPUTCD (IDX-Z)   =   "111000870"  OR
                                                  "111700870"  OR
                                                  "112001410"  OR
@@ -777,14 +777,14 @@
                END-IF
            END-IF
       *
-      *    ���ޤȤ����Ϥϰʲ��оݳ�
+      *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      10011-SYUGISYORI-EXT
            END-IF
       *
       *
       *----(01.00.02) LINE ADD START ----------------------------------
-      *    ��������Ϸ�ͺ���������Ųʤ�������û����ɲ�
+      *    寝たきり老人在宅総合診療科を算定時、加算を追加
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "114701210"  OR
                                                    "114701710"
                PERFORM 1009-NETAKIRI-HEN-SEC
@@ -792,7 +792,7 @@
       *----(01.00.02) LINE ADD END   ----------------------------------
       *
       *----(01.00.03) LINE ADD START ----------------------------------
-      *    ���ž������������ϻ����������Υ����Ȥ�ư�û�
+      *    診療情報提供料を入力時、算定日のコメントを自動加算
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "180016110"  OR
                                                    "180016210"  OR
                                                    "180016310"  OR
@@ -800,7 +800,7 @@
                PERFORM 10010-COMMT-SEC
            END-IF
       *
-      *    �������޼��Ųû��������å�
+      *    特定薬剤治療加算料チェック
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "113000410"  OR
                                                    "180000110"  OR
                                                    "180000210"  OR
@@ -810,14 +810,14 @@
                PERFORM 10011-TOKUYAKU-SEC
            END-IF
       *
-      *    ���������ð�ʪ���Ŵ����������å�
+      *    悪性腫瘍特異物資治療管理料チェック
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "113001210"  OR
                                                    "113001310"  OR
                                                    "113002110"
                PERFORM 10012-AKUSEI-SEC
            END-IF
       *
-      *    ���ե��������λ�����Ǥ��ʤ������ɤΥ����å�
+      *    アフターケアの時算定できないコードのチェック
            IF      SPA-RSI-HKNKBN      =   "3"
                PERFORM 100113-RSI-AFTCHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
@@ -825,8 +825,8 @@
                END-IF
            END-IF
       *
-      *    ���������ʾ�ǺƿǤ������
-      *    �������������̵ͭ
+      *    ２００床以上で再診がある時
+      *    外来診療料算定有無
            IF     (SPA-BEDSUIPN        >=  200 )  AND
                   (SPA-HOSPSBT         =   1   )  AND
                   (WRK-COM-SRYKBN (IDX-Z)  =   "12")
@@ -840,11 +840,11 @@
       *
       *
       *****************************************************************
-      *    �ǻ����η������
+      *    診察料の決定処理
       *****************************************************************
        100121-SINSATU-CD-SEC           SECTION.
       *
-      *    �ǻ������å�
+      *    診察料セット
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                    AT   END
@@ -861,11 +861,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û�,��³�����û���Ƚ�����
+      *    外来管理加算,継続管理加算の判定処理
       *****************************************************************
        100111-KEIZOKU-CHK-SEC                  SECTION.
       *
-      *    ��������û�����³�����û���Ƚ��
+      *    外来管理加算、継続管理加算の判定
            MOVE    ZERO                TO  FLG-GAIRAI
            MOVE    ZERO                TO  FLG-KEIZOK
            SET     TBLG-IDX            TO  1
@@ -878,21 +878,21 @@
                                                TO  WRK-KBN
            END-SEARCH
            EVALUATE    WRK-KBN
-      *        ��������û�
+      *        外来管理加算
                WHEN    "G"
                    MOVE    1           TO  FLG-GAIRAI
-      *        ��³�����û�
+      *        継続管理加算
                WHEN    "K"
                    MOVE    1           TO  FLG-KEIZOK
            END-EVALUATE
       *
-      *    ���ݤǡ���³�����λ�
+      *    健保で、継続管理の時
       **** IF     (SPA-HKNKBN      NOT =   1   ) OR
       *           (FLG-KEIZOK          =   1   )
       *        GO      TO      100111-KEIZOKU-CHK-EXT
       **** END-IF
       *
-      *    ���������ʾ�ξ�硢���顼
+      *    ２００床以上の場合、エラー
            IF     (SPA-BEDSUIPN        >=  200 )  AND
                   (SPA-HOSPSBT         =   1   )
                IF     (FLG-KEIZOK          =   1 )  OR
@@ -903,28 +903,28 @@
                END-IF
            END-IF
       *
-      *    ���ݤλ�
+      *    健保の時
            IF      SPA-HKNKBN      NOT =   1
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
-      *    ϫ�ҤǷ�³�����λ�
+      *    労災で継続管理の時
            IF      FLG-KEIZOK          =   1
                IF      SPA-RSI-HKNKBN      =   "3"
-      *            ���ե��������λ����顼
+      *            アフターケアの時エラー
                    MOVE    "8006"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                END-IF
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       *
-      *    ϫ���ݸ��λ�����������û��ϥ��顼�Ȥ���
+      *    労災保険の時、外来管理加算はエラーとする
            IF      WRK-KBN         =   "G"
                MOVE    "8001"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                GO      TO      100111-KEIZOKU-CHK-EXT
            END-IF
       *
-      *    ϫ���ݸ��γ�������û���Ƚ��
+      *    労災保険の外来管理加算の判定
            MOVE    ZERO                TO  FLG-GAIRAI
            SET     TBL-RSI             TO  1
            SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
@@ -935,10 +935,10 @@
                    MOVE    1                   TO  FLG-ARI
                    MOVE    TBLR-KBN(TBL-RSI)   TO  WRK-KBN
            END-SEARCH
-      *    ϫ�Ҥγ�������û��������å�
+      *    労災の外来管理加算点数セット
            IF      WRK-KBN             =   "G"
                IF      SPA-RSI-HKNKBN      =   "3"
-      *            ���ե��������λ����顼
+      *            アフターケアの時エラー
                    MOVE    "8007"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                ELSE
@@ -953,13 +953,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ϫ�Ҥοǻ�����Ƚ������å�����
+      *    労災の診察料の判定チェック処理
       *****************************************************************
        10013-RSI-SINSATU-CHK-SEC       SECTION.
-      *    ϫ�Ҥοǻ�����Ƚ��
+      *    労災の診察料の判定
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110010"
-      *        ������λ������˼��Ǥ��ʤ�����
-      *        ������򸡺�����  ���ŵ��ء����ԣɣ�
+      *        初診料の時、過去に受診がないこと
+      *        受診歴を検索する  医療機関、患者ＩＤ
                INITIALIZE                  JYURRK-REC
                MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    SPA-PTID            TO  JYURRK-PTID
@@ -991,9 +991,9 @@
                END-IF
            END-IF
       *
-      *    �ߵް��Ŵ����û�
+      *    救急医療管理加算
       **** IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110030"
-      *        Ʊ����¤��դ�����
+      *        同一傷病に付き１回
       *        IF      LNK-ORCSC-RSI-KYUKASN   =   1
       *            MOVE    "8003"          TO  WRK-ERRCD
       *            MOVE    "1"             TO  WRK-COM-CUR
@@ -1002,9 +1002,9 @@
       *        END-IF
       **** END-IF
       *
-      *    ���ܤε��������谷��
+      *    療養の給付請求書取扱料
       **** IF      WRK-COM-INPUTCD(IDX-Z)  =   "101130020"
-      *        Ʊ����¤��դ�����
+      *        同一傷病に付き１回
       *        IF      LNK-ORCSC-RSI-KYUFU     =   1
       *            MOVE    "8011"          TO  WRK-ERRCD
       *            MOVE    "1"             TO  WRK-COM-CUR
@@ -1013,9 +1013,9 @@
       *        END-IF
       **** END-IF
       *
-      *    �ƿǻ����ܻ�Ƴ������
+      *    再診時療養指導管理料
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101120030"
-      *        ���������������顼
+      *        初診料算定時、エラー
                IF      LNK-ORCSC-SYOSIN2       =   1
                    MOVE    "8013"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR
@@ -1024,7 +1024,7 @@
                END-IF
            END-IF
       *
-      *    �ߵް��Ŵ����û����������������Τ�
+      *    救急医療管理加算（入院）入院日のみ
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110020"
                IF      SPA-SRYYMD          =   LNK-ORCSC-NYUINYMD
                    CONTINUE
@@ -1035,7 +1035,7 @@
                    GO      TO      10013-RSI-SINSATU-CHK-EXT
                END-IF
            END-IF
-      *    ϫ�Ҥλ���ϫ�ҥ����ɤ�Ƚ�ꤹ��
+      *    労災の時、労災コードで判定する
            IF      WRK-KAISU           =   ZERO
                PERFORM 20012-RSISINSATU-CHK-SEC
            END-IF
@@ -1045,45 +1045,45 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ե��������λ�����Ǥ��ʤ������ɤΥ����å�����
+      *    アフターケアの時算定できないコードのチェック処理
       *****************************************************************
        100113-RSI-AFTCHK-SEC           SECTION.
       *
-      *    ���𼫸�ƳǢ��Ƴ�����������å�
+      *    在宅自己導尿指導管理料チェック
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "114004410"
                MOVE    "8008"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO      TO      100113-RSI-AFTCHK-EXT
            END-IF
       *
-      *    �Ƥ󤫤��Ƴ�������å�
+      *    てんかん指導料チェック
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "113002850"
                MOVE    "8009"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO      TO      100113-RSI-AFTCHK-EXT
            END-IF
-      *    �ƿǻ����ܻ�Ƴ������
+      *    再診時療養指導管理料
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101120030"
                MOVE    "8012"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO      TO      100113-RSI-AFTCHK-EXT
            END-IF
       *
-      *    �ߵް��Ŵ����û�
+      *    救急医療管理加算
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110020"  OR
                                                "101110030"
                MOVE    "8015"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO      TO      100113-RSI-AFTCHK-EXT
            END-IF
-      *    ϫ�Ҥλ�Ƴ���û���
+      *    労災の指導料加算等
            IF      WRK-COM-INPUTCD(IDX-Z)  >=  "101130010"  AND
                                            <=  "101130100"
                MOVE    "8016"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO      TO      100113-RSI-AFTCHK-EXT
            END-IF
-      *    ������
+      *    在宅料
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "14"
                MOVE    "8017"          TO  WRK-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
@@ -1095,11 +1095,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �û��������å�����
+      *    加算料チェック処理
       *****************************************************************
        1005-KASAN-CHK-SEC                  SECTION.
       *
-      *    �û��ǡ����λ������˼굻�������뤳��
+      *    加算データの時、前に手技料があること
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1    >=  IDX-Z
@@ -1115,21 +1115,21 @@
       *
            END-PERFORM
       *
-      *    ���������ʳ���ǻ�������Ѥߤλ������ֳ��ΤߤϣϣˤȤ���
+      *    当日小児科外来診察料を算定済みの時、時間外のみはＯＫとする
            IF      LNK-ORCSC-SYONIKA-ARI2  =   1
                EVALUATE    WRK-COM-INPUTCD (IDX-Z) 
-      *            �ƿǻ����ֳ��û�
+      *            再診時時間外加算
                    WHEN    "112005770"
-      *            �ƿǻ������û�
+      *            再診時休日加算
                    WHEN    "112005870"
-      *            �ƿǻ�����û�
+      *            再診時深夜加算
                    WHEN    "112005970"
-      *            �ƿǻ����ֳ�����
+      *            再診時時間外特例
                    WHEN    "112006070"
                        GO      TO      1005-KASAN-CHK-EXT
                END-EVALUATE
            END-IF
-      *    ����������𤬤��ꡢ�����Ƴ���ϣϣˤȤ���
+      *    寝たきり在宅があり、在宅指導料はＯＫとする
            IF     (LNK-ORCSC-NETAKIRI-ARI  NOT =   ZERO  )  OR
                   (LNK-ORCSC-NETAKIRI-ARI2 NOT =   ZERO  )
                IF      WRK-COM-SRYSYUKBN (IDX-Z)   =   "143"
@@ -1137,9 +1137,9 @@
                END-IF
            END-IF
       *
-      *    ����û���
+      *    在宅加算料
            IF      WRK-COM-SRYSYUKBN (IDX-Z)  =   "143"
-      *        ����ǡ����Ƕ�ʬ���ʤ���Τ�ñ�ȣϣˤȤ���
+      *        在宅で、往診区分がないものは単独ＯＫとする
                IF     (WRK-COM-TNSSRYSYUKBN (IDX-Z)  =   "140" ) AND
                       (WRK-COM-OSINKBN (IDX-Z)       =   ZERO  )
                    MOVE    1                    TO  FLG-ARI
@@ -1156,11 +1156,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֲû��ɲý���
+      *    時間加算追加処理
       *****************************************************************
        1002-KASAN-SET-SEC              SECTION.
       *
-      *    ���Ļ�������ֳ����顼
+      *    乳幼児特例時間外エラー
            IF      WRK-COM-TIMEFLG(IDX-Z)  =   "5"
                                            OR  "6"
                                            OR  "7"
@@ -1170,7 +1170,7 @@
                GO      TO      1002-KASAN-SET-EXT
            END-IF
       *
-      *    �����ξ�硢���ֳ���ʬ���оݤȤ���
+      *    入院の場合、時間外区分も対象とする
            IF      (SPA-NYUGAIKBN      =   "1"     )  AND
                    (LNK-ORCSC-TIMEFLG  NOT =   ZERO)  AND
                    (WRK-COM-TIMEFLG(IDX-Z) =   ZERO)
@@ -1179,7 +1179,7 @@
            END-IF
            IF     (SPA-NYUGAIKBN       =   "1"  )  AND
                   (WRK-COM-TIMEFLG(IDX-Z)  NOT =   ZERO )
-      *        ���ֳ���ʬ��̵�����ϥ��ꥢ����
+      *        時間外区分の無い場合はクリアする
                IF     (WRK-GMN-INPUTCD(IDX-Z)(1:1)     NUMERIC) AND
                       (WRK-GMN-INPUTCD(IDX-Z)(2:1)     =   SPACE )  AND
                       (WRK-GMN-INPUTCD(IDX-Z)(3:)  NOT =   SPACE )
@@ -1194,7 +1194,7 @@
                    END-IF
                END-IF
            END-IF
-      *    �ǻ��λ���¾�λ��ֲû��⤹��ʳ���Τߡ�
+      *    診察の時、他の時間加算もする（外来のみ）
            IF       SPA-NYUGAIKBN      =   "2"
                MOVE    WRK-COM-TIMEFLG(IDX-Z)
                                        TO  LNK-ORCSC-TIMEFLG
@@ -1202,70 +1202,70 @@
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
-      *    ���ֲû�
+      *    時間加算
            EVALUATE    WRK-COM-SRYKBN(IDX-Z)
               WHEN     "11"
       *----(01.00.01) LINE UPD START ----------------------------------
-      *           ������û�
+      *           初診料加算
                   EVALUATE    WRK-COM-TIMEFLG(IDX-Z)  ALSO
                                                    LNK-ORCSC-ROUJIN
-      *            /* ���ֳ� */
+      *            /* 時間外 */
                        WHEN    1       ALSO     0
                            MOVE    "111000570"     TO  WRK-SRYCD
-      *            /* ���� */
+      *            /* 休日 */
                        WHEN    2       ALSO     0
                            MOVE    "111000670"     TO  WRK-SRYCD
-      *            /* ���� */
+      *            /* 深夜 */
                        WHEN    3       ALSO     0
                            MOVE    "111000770"     TO  WRK-SRYCD
-      *            /* ���ֳ����� */
+      *            /* 時間外特例 */
                        WHEN    4       ALSO     0
                            MOVE    "111000870"     TO  WRK-SRYCD
-      *            /* ���ֳ� ��Ϸ��
+      *            /* 時間外 　老人
                        WHEN    1       ALSO     1
                            MOVE    "111700570"     TO  WRK-SRYCD
-      *            /* ���� ��Ϸ��*/
+      *            /* 休日 　老人*/
                        WHEN    2       ALSO     1
                            MOVE    "111700670"     TO  WRK-SRYCD
-      *            /* ���� ��Ϸ��*/
+      *            /* 深夜 　老人*/
                        WHEN    3       ALSO     1
                            MOVE    "111700770"     TO  WRK-SRYCD
-      *            /* ���ֳ����� ��Ϸ��*/
+      *            /* 時間外特例 　老人*/
                        WHEN    4       ALSO     1
                            MOVE    "111700870"     TO  WRK-SRYCD
                    END-EVALUATE
       *----(01.00.01) LINE UPD END   ----------------------------------
               WHEN     "12"
-      *           �ƿ����û�
+      *           再診料加算
                   IF      WRK-KAISU                =   3
-      *               ���󤬳���ǻ����Ǥ����
+      *               今回が外来診察料である時
                       PERFORM 10022-GAIRAISIN-SET-SEC
                   ELSE
       *
                   EVALUATE    WRK-COM-TIMEFLG(IDX-Z)  ALSO
                                                       LNK-ORCSC-ROUJIN
-      *            /* ���ֳ� */
+      *            /* 時間外 */
                        WHEN    1       ALSO     0
                            MOVE    "112001110"     TO  WRK-SRYCD
-      *            /* ���� */
+      *            /* 休日 */
                        WHEN    2       ALSO     0
                            MOVE    "112001210"     TO  WRK-SRYCD
-      *            /* ���� */
+      *            /* 深夜 */
                        WHEN    3       ALSO     0
                            MOVE    "112001310"     TO  WRK-SRYCD
-      *            /* ���ֳ����� */
+      *            /* 時間外特例 */
                        WHEN    4       ALSO     0
                            MOVE    "112001410"     TO  WRK-SRYCD
-      *            /* ���ֳ� ��Ϸ��
+      *            /* 時間外 　老人
                        WHEN    1       ALSO     1
                            MOVE    "112701010"     TO  WRK-SRYCD
-      *            /* ���� ��Ϸ��*/
+      *            /* 休日 　老人*/
                        WHEN    2       ALSO     1
                            MOVE    "112701110"     TO  WRK-SRYCD
-      *            /* ���� ��Ϸ��*/
+      *            /* 深夜 　老人*/
                        WHEN    3       ALSO     1
                            MOVE    "112701210"     TO  WRK-SRYCD
-      *            /* ���ֳ����㡡Ϸ��*/
+      *            /* 時間外特例　老人*/
                        WHEN    4       ALSO     1
                            MOVE    "112701310"     TO  WRK-SRYCD
                    END-EVALUATE
@@ -1273,41 +1273,41 @@
                    END-IF
            END-EVALUATE
       *
-      *    �����ʳ�����Ųʤβû�
+      *    小児科外来診療科の加算
            IF      WRK-COM-TIMEFLG(IDX-Z)  NOT =   ZERO
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
-      *            ���
+      *            初診
                    WHEN    "113003510"
                    WHEN    "113003710"
                        EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
                            WHEN    1
-      *                        ��ǻ����ֳ��û�
+      *                        初診時時間外加算
                                MOVE    "111010470"     TO  WRK-SRYCD
                            WHEN    2
-      *                        ��ǻ������û�
+      *                        初診時休日加算
                                MOVE    "111010570"     TO  WRK-SRYCD
                            WHEN    3
-      *                        ��ǻ�����û�
+      *                        初診時深夜加算
                                MOVE    "111010670"     TO  WRK-SRYCD
                            WHEN    4
-      *                        ��ǻ�  ���ֳ�����
+      *                        初診時  時間外特例
                                MOVE    "111010770"     TO  WRK-SRYCD
                        END-EVALUATE
-      *            �ƿ�
+      *            再診
                    WHEN    "113003610"
                    WHEN    "113003810"
                        EVALUATE    WRK-COM-TIMEFLG(IDX-Z)
                            WHEN    1
-      *                        �ƿǻ����ֳ��û�
+      *                        再診時時間外加算
                                MOVE    "112005770"     TO  WRK-SRYCD
                            WHEN    2
-      *                        �ƿǻ������û�
+      *                        再診時休日加算
                                MOVE    "112005870"     TO  WRK-SRYCD
                            WHEN    3
-      *                        �ƿǻ�����û�
+      *                        再診時深夜加算
                                MOVE    "112005970"     TO  WRK-SRYCD
                            WHEN    4
-      *                        �ƿǻ�  ���ֳ�����
+      *                        再診時  時間外特例
                                MOVE    "112006070"     TO  WRK-SRYCD
                        END-EVALUATE
                END-EVALUATE
@@ -1317,7 +1317,7 @@
                GO      TO      1002-KASAN-SET-EXT
            END-IF
       *
-      *    ���ּ�ư�û���¸�ߥ����å�
+      *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1330,12 +1330,12 @@
                     MOVE    IDX1           TO  IDX-T
                END-IF
            END-PERFORM
-      *    ��ư�ɲ�
+      *    自動追加
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
       *
            IF      FLG-ADD             =   1
-      *        ǯ��û���ư�����ؤ�����
+      *        年齢加算自動振り替え処理
                IF      WRK-NYU-SRYCD   NOT =   SPACE
                    PERFORM 1008-NENREI-CHENGE-SEC
                END-IF
@@ -1346,33 +1346,33 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǻ������ֳ��Խ�����
+      *    外来診察料時間外編集処理
       *****************************************************************
        10022-GAIRAISIN-SET-SEC        SECTION.
       *
            EVALUATE    WRK-COM-TIMEFLG(IDX-Z)  ALSO   LNK-ORCSC-ROUJIN
-      *            /* ���ֳ� */
+      *            /* 時間外 */
                WHEN    1       ALSO     0
                    MOVE    "112006470"         TO  WRK-SRYCD
-      *            /* ���� */
+      *            /* 休日 */
                WHEN    2       ALSO     0
                    MOVE    "112006570"         TO  WRK-SRYCD
-      *            /* ���� */
+      *            /* 深夜 */
                WHEN    3       ALSO     0
                    MOVE    "112006670"         TO  WRK-SRYCD
-      *            /* ���ֳ����� */
+      *            /* 時間外特例 */
                WHEN    4       ALSO     0
                    MOVE    "112006770"         TO  WRK-SRYCD
-      *            /* ���ֳ� ��Ϸ��
+      *            /* 時間外 　老人
                WHEN    1       ALSO     1
                    MOVE    "112701710"         TO  WRK-SRYCD
-      *            /* ���� ��Ϸ��*/
+      *            /* 休日 　老人*/
                WHEN    2       ALSO     1
                    MOVE    "112701810"         TO  WRK-SRYCD
-      *            /* ���� ��Ϸ��*/
+      *            /* 深夜 　老人*/
                WHEN    3       ALSO     1
                    MOVE    "112701910"         TO  WRK-SRYCD
-      *            /* ���ֳ����㡡Ϸ��*/
+      *            /* 時間外特例　老人*/
                WHEN    4       ALSO     1
                    MOVE    "112702010"         TO  WRK-SRYCD
            END-EVALUATE
@@ -1382,11 +1382,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�û���¸�ߥ����å��ý���
+      *    自動加算　存在チェック加処理
       *****************************************************************
        1110-KASAN-CHK-SEC        SECTION.
       *
-      *    ���ּ�ư�û���¸�ߥ����å�
+      *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1403,7 +1403,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�û������ɲý���
+      *    自動加算１行追加処理
       *****************************************************************
        1100-KASAN-SET-SEC              SECTION.
       *
@@ -1415,7 +1415,7 @@
                MOVE    IDX-T           TO  IDX-S
            END-IF
       *
-      *    �����ޥ����Խ������ܥ����å�
+      *    点数マスタ編集・基本チェック
            MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
            INITIALIZE                  ORCSC92AREA
            IF      FLG-ARI             =   ZERO
@@ -1440,14 +1440,14 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    �����ʳ�����Ųʤλ���ǯ�𥨥顼�Ϥ��Τޤ�
+      *    小児科外来診療科の時、年齢エラーはそのまま
            IF      LNK-ORCSC-SYONIKA-ARI   NOT =   ZERO
                IF      LNK-SC92-ERRCD5 NOT =   SPACE
                    MOVE    SPACE           TO  LNK-SC92-ERRCD5
                END-IF
            END-IF
       *
-      *    ���顼�λ����ɲäʤ�
+      *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    HZN-SCR-REC         TO  WRK-SCR-REC
@@ -1467,7 +1467,7 @@
                                            TO  WRK-COM-SRYSYUKBN(IDX-S)
            END-IF
       *
-      *    ��ư�ɲ�ʬ�����ϻ����ɲá�
+      *    自動追加分（入力時に追加）
            MOVE    "2"                 TO  WRK-COM-AUTOKBN (IDX-S)
       *
            MOVE    1                   TO  FLG-ADD
@@ -1476,7 +1476,7 @@
        1100-KASAN-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ��û��ɲý���
+      *    年齢加算追加処理
       *****************************************************************
        1007-NENREI-SYORI-SEC           SECTION.
       *
@@ -1488,10 +1488,10 @@
                IF      FLG-NENREI-OK          =   1
       *
                MOVE    WRK-COM-AGEKSNSRYCD (IDX-Z IDX2)  TO  WRK-SRYCD
-      *        �û������å�
+      *        加算チェック
                PERFORM 1110-KASAN-CHK-SEC
                MOVE    IDX-Z               TO  IDX-S
-      *        �û��ɲ�
+      *        加算追加
                PERFORM 1100-KASAN-SET-SEC
                IF      FLG-ADD             =   1
                    MOVE    4                   TO  IDX2
@@ -1506,7 +1506,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ��û����ֳ���ư���ؽ���
+      *    年齢加算時間外自動振替処理
       *****************************************************************
        10071-NENREI-CHK-SEC           SECTION.
       *
@@ -1519,12 +1519,12 @@
            MOVE    WRK-COM-AGEKSNJGN  (IDX-Z IDX2)
                                        TO  WRK-JGNAGE(2:2)
       *
-      *    ����ǯ������å�
+      *    下限年齢チェック
            IF      WRK-COM-AGEKSNKGN  (IDX-Z IDX2) =   SPACE  OR  ZERO
                CONTINUE
            ELSE
                IF      WRK-COM-AGEKSNKGN  (IDX-Z IDX2) =   "AA"
-      *            ������Ƚ��
+      *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-DD     <   28   )
@@ -1541,12 +1541,12 @@
                END-IF
            END-IF
       *
-      *    ���ǯ������å�
+      *    上限年齢チェック
            IF      WRK-COM-AGEKSNJGN  (IDX-Z IDX2) =   SPACE  OR  ZERO
                CONTINUE
            ELSE
                IF      WRK-COM-AGEKSNJGN  (IDX-Z IDX2) =   "AA"
-      *            ������Ƚ��
+      *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM     =   ZERO )  AND
                           (LNK-ORCSC-NENREI-DD     <   28   )
@@ -1568,12 +1568,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ��û����ֳ���ư���ؽ���
+      *    年齢加算時間外自動振替処理
       *****************************************************************
        1008-NENREI-CHENGE-SEC           SECTION.
       *
            MOVE    WRK-NYU-SRYCD       TO  WRK-SRYCD
-      *    �û�¸�ߥ����å�
+      *    加算存在チェック
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   ZERO
                GO      TO      1008-NENREI-CHENGE-EXT
@@ -1582,25 +1582,25 @@
            MOVE    IDX-SYU             TO  IDX-S
            EVALUATE    WRK-COM-SRYKBN(IDX-SYU)
                WHEN    "11"
-      *            ���
+      *            初診
                    MOVE    "111011470"         TO  WRK-SRYCD
                    PERFORM 1100-KASAN-SET-SEC
                WHEN    "12"
                    IF      WRK-KAISU                =   3
-      *                ����ǻ��������Ļ��ˡʻ��ֲû�����
+      *                外来診察料（乳幼児）（時間加算等）
                        MOVE    "112007270"         TO  WRK-SRYCD
                        PERFORM 1100-KASAN-SET-SEC
                        IF      FLG-ADD             =   ZERO
-      *                    ����ǻ������Ļ��ˡʻ��ֲû�����
+      *                    外来診察料（幼児）（時間加算等）
                            MOVE    "112007370"         TO  WRK-SRYCD
                            PERFORM 1100-KASAN-SET-SEC
                        END-IF
                    ELSE
-      *                �ƿǡ����Ļ��ˡʻ��ֲû�����
+      *                再診（乳幼児）（時間加算等）
                        MOVE    "112006970"         TO  WRK-SRYCD
                        PERFORM 1100-KASAN-SET-SEC
                        IF      FLG-ADD             =   ZERO
-      *                    �ƿǡ��Ļ��ˡʻ��ֲû�����
+      *                    再診（幼児）（時間加算等）
                            MOVE    "112007070"         TO  WRK-SRYCD
                            PERFORM 1100-KASAN-SET-SEC
                        END-IF
@@ -1611,66 +1611,66 @@
        1008-NENREI-CHENGE-EXT.
            EXIT.
       *****************************************************************
-      *    ��������Ϸ�ͺ���������Ųʤ˲û��ɲý���
+      *    寝たきり老人在宅総合診療科に加算追加処理
       *****************************************************************
        1009-NETAKIRI-HEN-SEC           SECTION.
       *
-      *    ���˼�ưȯ��������硢��ư�û����ʤ�
+      *    既に自動発生した場合、自動加算しない
            IF      WRK-COM-AUTOFLG (IDX-Z)     =   "1"
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
            MOVE    "1"                 TO  WRK-COM-AUTOFLG (IDX-Z)
-      *    ���ʳ���ư�û����ʤ�
+      *    初回以外自動加算しない
            IF      LNK-ORCSC-NETAKIRI-ARI3 =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *    �������ϤΤ��������ư�û����ʤ�
-      *    ��������Ϣ�������û��ʣ�)
+      *    既に入力のある時、自動加算しない
+      *    ２４時間連携体制加算（１)
            MOVE    "114701870"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
-      *    ��������Ϣ�������û��ʣ�)
+      *    ２４時間連携体制加算（２)
            MOVE    "114703970"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
-      *    ��������Ϣ�������û��ʣ�)
+      *    ２４時間連携体制加算（３)
            MOVE    "114703770"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *    ��������Ϣ�������û��ʣ�)
+      *    ２４時間連携体制加算（１)
            MOVE    "114701870"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
-      *        ��ư�ɲ�ʬ��ߤ��
+      *        自動追加分を止める
                MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *    ��������Ϣ�������û��ʣ�)
+      *    ２４時間連携体制加算（２)
            MOVE    "114703970"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
-      *        ��ư�ɲ�ʬ��ߤ��
+      *        自動追加分を止める
                MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
       *
-      *    ��������Ϣ�������û��ʣ�)
+      *    ２４時間連携体制加算（３)
            MOVE    "114703770"         TO  WRK-SRYCD
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
-      *        ��ư�ɲ�ʬ��ߤ��
+      *        自動追加分を止める
                MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                GO      TO      1009-NETAKIRI-HEN-EXT
            END-IF
@@ -1679,10 +1679,10 @@
        1009-NETAKIRI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ž����󶡻������ɲý���
+      *    診療情報提供算定日追加処理
       *****************************************************************
        10010-COMMT-SEC           SECTION.
-      *    ���ž�������������
+      *    診療情報提供料算定日
            MOVE    "840000052"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
@@ -1694,10 +1694,10 @@
            IF      FLG-ADD             =   ZERO
                GO      TO      10010-COMMT-EXT
            END-IF
-      *    ���������Խ�
+      *    診療日を編集
            MOVE    SPA-SRYYMD(7:2)     TO  WRK-COM-ATAI1 (IDX-S)
       *
-      *    ���̺��Խ�
+      *    画面再編集
            INITIALIZE                  ORCSC94AREA
            MOVE    "1"                 TO  LNK-SC94-KBN
            MOVE    LNK-ORCSC-PG        TO  LNK-SC94-PG
@@ -1707,7 +1707,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ���������Խ�
+      *    診療日を編集
            INITIALIZE                  ORCSC92AREA
            MOVE    SPACE               TO  LNK-SC92-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
@@ -1730,11 +1730,11 @@
        10010-COMMT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������ð�ʪ���Ŵ������Υ����Ȳû�����
+      *    悪性腫瘍特異物資治療管理料のコメント加算処理
       *****************************************************************
        10012-AKUSEI-SEC           SECTION.
       *
-      *    ����ޡ���������̾
+      *    腫瘍マーカー検査名
            MOVE    "830000015"         TO  WRK-SRYCD
            PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
@@ -1751,11 +1751,11 @@
        10012-AKUSEI-EXT.
            EXIT.
       *****************************************************************
-      *    �������޼��Ųû��������å�����
+      *    特定薬剤治療加算料チェック処理
       *****************************************************************
        10011-TOKUYAKU-SEC              SECTION.
       *
-      *    �������޼��Ŵ���������ʤ��λ��������å����ʤ�
+      *    特定薬剤治療管理料算定なしの時、チェックしない
            IF      LNK-ORCSC-TOKUTEI-FLG   =   "1"
                CONTINUE
            ELSE
@@ -1763,12 +1763,12 @@
            END-IF
       *
            MOVE    ZERO                 TO  IDX-S
-      *    ����������Խ�
+      *    初回算定日の編集
            MOVE    SPACE               TO  WRK-SYOKAI-YMD
            MOVE    ZERO                TO  WRK-SYOKAI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   4
-      *        �������򸡺��ʿ������߽��
+      *        算定履歴検索（診療日降順）
                SET     TBL-TOK             TO  IDX
                MOVE    TBL-TOKSRYCD  (TBL-TOK) TO  WRK-SRYCD
                MOVE    "key3"              TO  WRK-DBPATH
@@ -1781,7 +1781,7 @@
                            MOVE    SANTEI-FSANTEIYMD
                                                   TO  WRK-SYOKAI-YMD
                        END-IF
-      *                ����ꤢ��
+      *                当月算定あり
                        IF      SANTEI-SRYYM        =   SPA-SRYYMD(1:6)
                            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
                            MOVE    SANTEI-MSANTEICNT   TO  WRK-SYOKAI
@@ -1802,24 +1802,24 @@
                PERFORM 990-DBCLOSE-SEC
            END-PERFORM
       *
-      *    �����λ�����������ȿ�������Ʊ���������ʬ�Ȥ���
+      *    訂正の時、初回算定日と診療日が同じ時、初回分とする
            IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
                   (WRK-SYOKAI-YMD       =   SPA-SRYYMD)
                MOVE    SPACE            TO  WRK-SYOKAI-YMD
            END-IF
-      *    ���Ǥ˽�����������������������������
+      *    すでに初回算定日がある時、初回算定日に入れる
            IF      LNK-ORCSC-TOKTEI-YMD    NOT =   SPACE
                MOVE    LNK-ORCSC-TOKTEI-YMD    TO  WRK-SYOKAI-YMD
            END-IF
       *
-      *    �������޼��Ŵ����û�������������Ȥ���
+      *    特定薬剤治療管理加算がある時、初回とする
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE ) OR
                               (WRK-ERRCD       NOT =   SPACE )
                EVALUATE    WRK-COM-INPUTCD (IDX1)
                    WHEN    "113000770"
-      *            �������޼��Ŵ�����������¸�ߤ��ʤ�����
+      *            特定薬剤治療管理料が当月存在しないこと
                        MOVE    "113000410"         TO  WRK-SRYCD
                        MOVE    "key"               TO  WRK-DBPATH
                        PERFORM 100111-SANTEI-KEN-SEC
@@ -1850,14 +1850,14 @@
                GO      TO      10011-TOKUYAKU-EXT
            END-IF
       *
-      *    ����
+      *    初回時
            IF      WRK-SYOKAI-YMD      =   SPACE
       *********MOVE    SPA-SYSYMD          TO  WRK-SANTEI-YMD
                MOVE    SPA-SRYYMD          TO  WRK-SANTEI-YMD
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
-      *            �������޼��Ŵ�����
+      *            特定薬剤治療管理料
                    WHEN    "113000410"
-      *                �������޼��Ŵ����û������ܼ�ưȯ��
+      *                特定薬剤治療管理加算１回目自動発生
                        MOVE    "113000770"     TO  WRK-SRYCD
                        PERFORM 1110-KASAN-CHK-SEC
                        IF      FLG-ARI         =   ZERO
@@ -1866,13 +1866,13 @@
                        ELSE
                            MOVE    IDX-T               TO  IDX-S
                        END-IF
-      *                �������޼��Ŵ�����������ɲ�
+      *                特定薬剤治療管理料初回算定追加
                        MOVE    "840000038"         TO  WRK-SRYCD
                        PERFORM 100112-COMMT1-SEC
-      *            �������޼��Ŵ������ʥ������ꥹ��������
+      *            特定薬剤治療管理料（ジギタリス製剤等）
                    WHEN    "180000110"
                    WHEN    "180000210"
-      *                �������޼��Ŵ����û�̵ͭ
+      *                特定薬剤治療管理加算有無
                        MOVE    "113000770"     TO  WRK-SRYCD
                        PERFORM 1110-KASAN-CHK-SEC
                        IF      FLG-ARI         =   ZERO
@@ -1880,14 +1880,14 @@
                        ELSE
                            MOVE    IDX-T               TO  IDX-S
                        END-IF
-      *                �������޼��Ŵ�����������ɲ�
+      *                特定薬剤治療管理料初回算定追加
                        MOVE    "840000038"         TO  WRK-SRYCD
                        PERFORM 100112-COMMT1-SEC
-      *            �������޼��Ŵ������ʣ����ܰʾ�ˤϥ��顼
+      *            特定薬剤治療管理料（４月目以上）はエラー
                    WHEN    "113000510"
       *!               MOVE    "0130"          TO  WRK-ERRCD
       *!               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *                �ٹ��
+      *                警告へ
                        IF     ( WRK-COM-KZMFLG (IDX-Z) =   SPACE )
                           AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
                            MOVE    IDX-Z            TO
@@ -1899,7 +1899,7 @@
                                                           (IDX-Z)
                            GO      TO      10011-TOKUYAKU-EXT
                        ELSE
-      *                    �������޼��Ŵ�����������ɲ�
+      *                    特定薬剤治療管理料初回算定追加
                            MOVE    IDX-Z               TO  IDX-S
                            MOVE    "840000038"         TO  WRK-SRYCD
                            PERFORM 100112-COMMT1-SEC
@@ -1907,13 +1907,13 @@
                END-EVALUATE
       *
            END-IF
-      *    �����ܰʹ�
-      *    �ˣ����Τ�
+      *    ２回目以降
+      *    Ｋ０２のみ
            IF     (WRK-SYOKAI-YMD  NOT =   SPACE  )  AND
                   (LNK-ORCSC-PG        =   "K02"  )
-      *        �������׻�
+      *        算定回数計算
                PERFORM 10013-SANTEI-CNT-SEC
-      *        ��������ܣ���
+      *        初回算定日＋３月
                MOVE    WRK-SYOKAI-YMD      TO  WRK-SYOKAI-YMD3
                COMPUTE WRK-SYO-MM3         =   WRK-SYO-MM3   +   3
                IF      WRK-SYO-MM3         >   12
@@ -1922,13 +1922,13 @@
                END-IF
       *
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
-      *            �������޼��Ŵ�����
+      *            特定薬剤治療管理料
                    WHEN    "113000410"
       ***************  IF      WRK-SANTEI-CNT      >=  3
                        IF      SPA-SRYYMD(1:6)     >=  WRK-SYOKAI-YMD3
                                                                (1:6)
-      ***H14.03.08 ���� ���ؤ��ʤ��ǡ��ٹ�ɽ��
-      *                   �����ܰʹߤؿ����ؤ�
+      ***H14.03.08 現在 振替えなしで、警告表示
+      *                   ４月目以降へ振り替え
       *                   MOVE    "113000510"          TO  WRK-SRYCD
       *                   MOVE    IDX-Z                TO  IDX-T
       *                   MOVE    1                    TO  FLG-ARI
@@ -1946,7 +1946,7 @@
                                                           (IDX-Z)
                            END-IF
                        END-IF
-      *            �������޼��Ŵ������ʣ����ܰʾ�ˤϥ��顼
+      *            特定薬剤治療管理料（４月目以上）はエラー
                    WHEN    "113000510"
       *****************IF      WRK-SANTEI-CNT      >=  3
                        IF      SPA-SRYYMD(1:6)     >=  WRK-SYOKAI-YMD3
@@ -1956,7 +1956,7 @@
       *!                   MOVE    "0130"          TO  WRK-ERRCD
       *!                   MOVE    "1"             TO  WRK-COM-CUR
       *!                                                      (IDX-Z)
-      *                   �ٹ��
+      *                   警告へ
                           IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE )
                              AND (LNK-ORCSC-KEI-IDX        =   ZERO  )
                               MOVE    IDX-Z            TO
@@ -1971,15 +1971,15 @@
                        END-IF
                END-EVALUATE
       *
-      *        �������޼��Ŵ�����������ɲ�
+      *        特定薬剤治療管理料初回算定追加
                MOVE    WRK-SYOKAI-YMD      TO  WRK-SANTEI-YMD
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
-      *            �������޼��Ŵ�����
+      *            特定薬剤治療管理料
                    WHEN    "113000410"
-      *            �������޼��Ŵ������ʥ������ꥹ��������
+      *            特定薬剤治療管理料（ジギタリス製剤等）
                    WHEN    "180000110"
                    WHEN    "180000210"
-      *            �������޼��Ŵ������ʣ����ܰʾ�ˤϥ��顼
+      *            特定薬剤治療管理料（４月目以上）はエラー
                    WHEN    "113000510"
                        IF      WRK-SYOKAI          =   ZERO
                            MOVE    IDX-Z               TO  IDX-S
@@ -1989,7 +1989,7 @@
                END-EVALUATE
            END-IF
       *
-      *    ¬������̾�����ȼ�ưȯ��
+      *    測定薬剤名コメント自動発生
            IF     (WRK-COM-INPUTCD (IDX-Z + 1) =   SPACE )  OR
                   (IDX-S                       >    ZERO  AND
                    WRK-COM-INPUTCD (IDX-S + 1) =   SPACE )
@@ -1999,7 +1999,7 @@
                END-IF
                PERFORM 100112-COMMT1-SEC
            END-IF
-      *    ��������򥻥åȤ���
+      *    初回算定日をセットする
            IF      WRK-SYOKAI-YMD      =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-SYOKAI-YMD
            END-IF
@@ -2009,7 +2009,7 @@
        10011-TOKUYAKU-EXT.
            EXIT.
       *****************************************************************
-      *    �������޼��Ŵ������Υ������ɲý���
+      *    特定薬剤治療管理料のコメント追加処理
       *****************************************************************
        100112-COMMT1-SEC           SECTION.
       *
@@ -2023,15 +2023,15 @@
            IF      FLG-ADD             =   ZERO
                GO      TO      100112-COMMT1-EXT
            END-IF
-      *    ¬������̾�����Ȥ��ɲ�
+      *    測定薬剤名コメントの追加
            IF      WRK-SRYCD           =   "830000014"
-      *        ��ư�ɲ�ʬ��ߤ��
+      *        自動追加分を止める
                MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
                MOVE    "1"                 TO  WRK-COM-CUR     (IDX-S)
                GO      TO      100112-COMMT1-EXT
            END-IF
       *
-      *    �������޼��Ŵ���������ꥳ����
+      *    特定薬剤治療管理料初回算定コメント
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY1-AREA
            MOVE    "11"                TO  LNK-DAY1-IRAI
@@ -2041,7 +2041,7 @@
            MOVE    LNK-DAY1-WYMD(2:2)  TO  WRK-COM-ATAI1 (IDX-S)
            MOVE    LNK-DAY1-WYMD(4:2)  TO  WRK-COM-ATAI2 (IDX-S)
       *
-      *    ���̺��Խ�
+      *    画面再編集
            INITIALIZE                  ORCSC94AREA
            MOVE    "1"                 TO  LNK-SC94-KBN
            MOVE    LNK-ORCSC-PG        TO  LNK-SC94-PG
@@ -2051,7 +2051,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ���������Խ�
+      *    診療日を編集
            INITIALIZE                  ORCSC92AREA
            MOVE    SPACE               TO  LNK-SC92-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
@@ -2074,7 +2074,7 @@
        100112-COMMT1-EXT.
            EXIT.
       *****************************************************************
-      *    �������޼��Ŵ������������׻�����
+      *    特定薬剤治療管理料算定回数計算処理
       *****************************************************************
        10013-SANTEI-CNT-SEC           SECTION.
       *
@@ -2082,14 +2082,14 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   4
                SET     TBL-TOK             TO  IDX
-      *        �������򸡺�
+      *        算定履歴検索
                INITIALIZE                  SANTEI-REC
                MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SPA-PTID            TO  SANTEI-PTID
                MOVE    TBL-TOKSRYCD (TBL-TOK)
                                            TO  SANTEI-SRYCD
                MOVE    WRK-SYOKAI-YMD      TO  SANTEI-FSANTEIYMD
-      *        ���������ʬ�ϡǣ��ǤǤ��뤳�ȤȤ���
+      *        算定履歴区分は’１’であることとする
                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                TO  SANTEI-SRYKA
       *
@@ -2109,7 +2109,7 @@
                    IF      SANTEI-MSANTEICNT   >   ZERO
                        ADD     SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
                    END-IF
-      *            �����λ�������ʬ���оݳ�
+      *            訂正の時、訂正分は対象外
                    IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
                           (SANTEI-SRYYM         =   SPA-SRYYMD(1:6))
                      MOVE  ZERO                 TO  IDX-Y2
@@ -2131,7 +2131,7 @@
                                                              (IDX-2)
                      END-PERFORM
                    END-IF
-      *            �����λ����������ʹߤ��оݳ�
+      *            訂正の時、訂正日以降は対象外
                    IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
                           (SANTEI-SRYYM        >   SPA-SRYYMD(1:6))
                        COMPUTE WRK-SANTEI-CNT  =   WRK-SANTEI-CNT
@@ -2151,11 +2151,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������򸡺�����
+      *    算定履歴検索処理
       *****************************************************************
        100111-SANTEI-KEN-SEC                  SECTION.
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
@@ -2163,7 +2163,7 @@
            IF      WRK-DBPATH          =   "key"
                MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
            END-IF
-      *    ���������ʬ�ϡǣ��ǤǤ��뤳�ȤȤ���
+      *    算定履歴区分は’１’であることとする
            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
            MOVE    ZERO                TO  SANTEI-SRYKA
       *
@@ -2184,19 +2184,19 @@
            EXIT.
       *
       *****************************************************************
-      *   �����ȤΥ����å�����
+      *   コメントのチェック処理
       *****************************************************************
        10018-COMMENT-SEC                  SECTION.
       *
-      *    ���ޤȤ����Ϥϰʲ��оݳ�
+      *    包括まとめ入力は以下対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      10018-COMMENT-EXT
            END-IF
       *
-      *    �������޼��Ŵ�������ꥳ���Ȥ�����н��Ȥ���
+      *    特定薬剤治療管理初回算定コメントがあれば初回とする
            IF     (WRK-COM-INPUTCD (IDX-Z) =   "840000038" ) AND
                   (LNK-ORCSC-TOKTEI-YMD    NOT =   SPACE   )
-      *        ���곫���������Ѵ�
+      *        特定開始日和暦変換
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY1-AREA
                MOVE    "11"                    TO  LNK-DAY1-IRAI
@@ -2206,11 +2206,11 @@
       *
                MOVE    WRK-COM-ATAI1 (IDX-Z)(1:2)  TO  WRK-WYY
                MOVE    WRK-COM-ATAI2 (IDX-Z)(1:2)  TO  WRK-WMM
-      *        �����ǯ�������Ȱ㤦�������ƥ���������Ȥ���
+      *        初回算定年月が前回初回と違う時システム日を初回算定とする
                IF      WRK-WYM             =   LNK-DAY1-WYMD(2:4)
                    CONTINUE
                ELSE
-      *            ����ǯ�������Ѵ�
+      *            診療年月和暦変換
                    INITIALIZE                      STS-AREA-DAY
                    INITIALIZE                      LNK-DAY1-AREA
                    MOVE    "11"                    TO  LNK-DAY1-IRAI
@@ -2222,7 +2222,7 @@
                    ELSE
       *!               MOVE    "0133"          TO  WRK-ERRCD
       *!               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *                �ٹ�Ȥ���
+      *                警告とする
                        IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
                           AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
                            MOVE    IDX-Z            TO
@@ -2240,7 +2240,7 @@
            END-IF
       *
       *
-      *    �������޼��Ŵ�������ꥳ���Ȥ�����н��Ȥ���
+      *    特定薬剤治療管理初回算定コメントがあれば初回とする
            IF     (WRK-COM-INPUTCD (IDX-Z) =   "840000038" ) AND
                   (LNK-ORCSC-TOKTEI-YMD    =   SPACE   )  AND
                   (WRK-COM-ATAI1 (IDX-Z)(1:2)  NOT =   SPACE) AND
@@ -2248,7 +2248,7 @@
       *
                MOVE    WRK-COM-ATAI1 (IDX-Z)(1:2)  TO  WRK-WYY
                MOVE    WRK-COM-ATAI2 (IDX-Z)(1:2)  TO  WRK-WMM
-      *        ����ǯ��������Ѵ�
+      *        入力年月を西暦変換
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY1-AREA
                MOVE    "12"                TO  LNK-DAY1-IRAI
@@ -2272,8 +2272,8 @@
                END-IF
            END-IF
       *
-      *    �ģգͣͣ٤οǻ���Ƚ��
-      *    �ˣ����Τ�
+      *    ＤＵＭＭＹの診察料判定
+      *    Ｋ０２のみ
            IF      LNK-ORCSC-PG        =   "K02"
                CONTINUE
            ELSE
@@ -2284,7 +2284,7 @@
                                                "820000005"  OR
                                                "820000006"
                IF      WRK-COM-SRYKBN(IDX-Z)   =   "11"  OR  "12"
-      *            Ʊ������ˣģգͣͣ٤��ʤ�����ưȯ������
+      *            同じ剤内にＤＵＭＭＹがない時自動発生する
                    PERFORM 100181-DUMMY-SYORI-SEC
                ELSE
                    MOVE    "0136"          TO  WRK-ERRCD
@@ -2297,7 +2297,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģգͣͣٿǻ�����ưȯ������
+      *    ＤＵＭＭＹ診察料自動発生処理
       *****************************************************************
        100181-DUMMY-SYORI-SEC          SECTION.
       *
@@ -2323,7 +2323,7 @@
       *
       *
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "11"
-      *        ���  Ʊ���ǻ��Ǥʤ�����
+      *        初診  同日診察でないこと
                IF     (LNK-ORCSC-SYORIFLG  =   ZERO       )  AND
                       (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
                       (LNK-ORCSC-SYOYMD    NOT =   LNK-ORCSC-LSTYMD)
@@ -2331,7 +2331,7 @@
                    MOVE    "1"             TO  WRK-COM-CUR (01)
                END-IF
            ELSE
-      *        �ƿ�  �����������ѤߤǤ��뤳��
+      *        再診  初診料が算定済みであること
                IF     (LNK-ORCSC-SYORIFLG  =   ZERO       )  AND
                       (LNK-ORCSC-LSTYMD    =   SPACE      )
                    MOVE    "0139"          TO  WRK-ERRCD
@@ -2341,7 +2341,7 @@
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      100181-DUMMY-SYORI-EXT
            END-IF
-      *    �ǻ�����ư����
+      *    診察料自動算定
            IF      WRK-COM-SRYKBN (IDX-Z)  =   "11"
                MOVE    "099110001"         TO  WRK-SRYCD
            ELSE
@@ -2354,7 +2354,7 @@
            MOVE    IDX-Z               TO  IDX-S
            PERFORM 1100-KASAN-SET-SEC
            IF      FLG-ADD             =   1
-      *        ��ư�ɲ�ʬ��ߤ��
+      *        自動追加分を止める
                MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
            END-IF
       *
@@ -2363,21 +2363,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģգͣͣٿǻ���Ƚ�����
+      *    ＤＵＭＭＹ診察料判定処理
       *****************************************************************
        10012-DUMMYSYORI-SEC          SECTION.
       *
-      *    �ˣ����Τ�
+      *    Ｋ０２のみ
            IF      LNK-ORCSC-PG        =   "K02"
                CONTINUE
            ELSE
                GO      TO      10012-DUMMYSYORI-EXT
            END-IF
       *
-      *    �ģգͣͣ٤οǻ���Ƚ��
+      *    ＤＵＭＭＹの診察料判定
            EVALUATE    WRK-COM-INPUTCD (IDX-Z)
                WHEN    "099110001"
-      *            ���  Ʊ���ǻ��Ǥʤ�����
+      *            初診  同日診察でないこと
                    IF     (LNK-ORCSC-SYORIFLG  =   ZERO       )  AND
                           (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
                           (LNK-ORCSC-SYOYMD    NOT =   LNK-ORCSC-LSTYMD)
@@ -2385,7 +2385,7 @@
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    END-IF
                WHEN    "099110001"
-      *            �ƿ�  �����������ѤߤǤ��뤳��
+      *            再診  初診料が算定済みであること
                    IF     (LNK-ORCSC-SYORIFLG  =   ZERO       )  AND
                           (LNK-ORCSC-LSTYMD    =   SPACE      )
                        MOVE    "0139"          TO  WRK-ERRCD
@@ -2398,7 +2398,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻��Խ�����
+      *    点数計算編集処理
       *****************************************************************
        1002-TENSU-KEI-SEC                  SECTION.
       *
@@ -2438,47 +2438,47 @@
                        CONTINUE
       *
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10021-KEISAN-SEC
                END-EVALUATE
            END-PERFORM
       *
-      *    �ǽ���
-      *    ���������׻�
+      *    最終行
+      *    薬剤点数計算
            MOVE    "2"                 TO  LNK-SC90-KBN
            MOVE    IDX-MAX             TO  LNK-SC90-IDX
            CALL    "ORCSC90"           USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    �������Խ�
+      *    往診料編集
            IF      WRK-COM-SRYKBN (IDX-MAX)    =   "14"
                MOVE    WRK-TENSU-O1        TO  LNK-SC90-TENSUKEI
            END-IF
-      *    ���û�
+      *    割合加算
            PERFORM 1006-KASAN-SET-SEC
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   LNK-SC90-TENGAKEI
                                        +   WRK-TENSU-O2
-      *    �������Խ�
+      *    各点数編集
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1 (IDX-MAX)
            COMPUTE WRK-COM-YKZTEN (IDX-MAX)
                                        =   LNK-SC90-ZAITEN
                                        +   LNK-SC90-GAITEN
-      *    �������
+      *    器材点数
            MOVE    LNK-SC90-KIZTEN     TO  WRK-COM-KIZAITEN (IDX-MAX)
       *
-      *    �����ס��׻�
+      *    点数計　計算
            COMPUTE WRK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
                                            +   LNK-SC90-ZAITEN
                                            +   LNK-SC90-GAITEN
                                            +   LNK-SC90-KIZTEN
-      *    ��
+      *    計
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
       *
-      *    ����ʬ�λ��������Ȥ���
+      *    院外分の時、ゼロとする
            IF      WRK-COM-SRYSYUKBN(IDX-MAX)  =   "148"  OR
                                                    "149"
                MOVE    ZERO            TO  WRK-COM-TENSU  (IDX-MAX)
@@ -2492,7 +2492,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻�����
+      *    点数計算処理
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
@@ -2503,7 +2503,7 @@
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    �������λ������Ƕ�ʬ�ˤ�ꡢ�������פ��ѹ�����
+      *    往診料の時、往診区分により、点数集計を変更する
            IF     (WRK-COM-INPUTCD (IDX-Z)(1:1)    =   "1"  ) AND
                   (WRK-COM-SRYKBN      (IDX-Z)     =   "14" )  AND
                   (WRK-COM-TENSIKIBETU (IDX-Z) NOT =   5    )  AND
@@ -2518,7 +2518,7 @@
                END-EVALUATE
            END-IF
       *
-      *    �굻��Ƚ��
+      *    手技料判定
            IF      (WRK-MOJI                   =   "1"  )  AND
                    (WRK-COM-DATAKBN (IDX-Z)    =   "1"  )
                MOVE    IDX-Z               TO  IDX-SYU
@@ -2529,7 +2529,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���û��׻�����
+      *    割合加算計算処理
       *****************************************************************
        1006-KASAN-SET-SEC              SECTION.
       *
@@ -2568,17 +2568,17 @@
        1006-KASAN-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ź԰٥����å�����
+      *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC               SECTION.
       *
-      *    ��ʣ�����å�
+      *    重複チェック
            PERFORM 2000-JYUFUKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-ALL-SYORI-EXT
            END-IF
       *
-      *    ���ޤȤ����Ϥ��оݳ�
+      *    包括まとめ入力は対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      200-ALL-SYORI-EXT
            END-IF
@@ -2624,29 +2624,29 @@
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE     )   OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-      *        �ǻ�����Ƚ��
+      *        診察料の判定
                IF      IDX-SINSATU         =   ZERO
                    PERFORM 2001-SINSATU-CHK-SEC
                    MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
                    MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                    MOVE    WRK-KBN2        TO  WRK-SINSATU-KBN2
                    MOVE    IDX-Z           TO  IDX-SINSATU
-      *            ϫ�Ҥλ���ϫ�ҥ����ɤ�Ƚ�ꤹ��
+      *            労災の時、労災コードで判定する
                    IF      SPA-HKNKBN      =   1
                        PERFORM 20012-RSISINSATU-CHK-SEC
                    END-IF
                END-IF
       *
-      *        ��������û�����³�����û���Ƚ��
+      *        外来管理加算、継続管理加算の判定
                PERFORM 100111-KEIZOKU-CHK-SEC
-      *        ϫ�ҥ����ɤ�Ƚ��
+      *        労災コードの判定
                PERFORM 200112-RSI-KEI-CHK-SEC
       *
       *********IF    ( WRK-COM-ZAIEND(IDX-Z)   NOT =    "1"   )  OR
-      *              ��������û�����³�û��ʳ��Υ����å�
+      *              外来管理加算、継続加算以外のチェック
                IF    ( FLG-GAIRAI              =    1   OR
                        FLG-KEIZOK              =    1   OR
-      *                ϫ��ʬ�ʳ�
+      *                労災分以外
                        FLG-RSIFLG              =    1         )
                    CONTINUE
                ELSE
@@ -2660,7 +2660,7 @@
                            MOVE   IDX-Z            TO  IDX-SYU2
                        END-IF
                    ELSE
-      *                ¾�ʤˤƼ��ǺѤߤ�ǻ����Ȥ���
+      *                他科にて受診済みも診察料とする
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "830000021")
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "12"      )
                            ADD     1               TO  IDX-ZAI2
@@ -2669,7 +2669,7 @@
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
                            ADD     1               TO  IDX-ZAI1
                        END-IF
-      *                �ǻ����ģգͣͣ٤�ǻ����Ȥ���
+      *                診察料ＤＵＭＭＹも診察料とする
                        IF     (WRK-COM-INPUTCD(IDX-Z)  =  "099110001")
                          AND  (WRK-COM-SRYKBN (IDX-Z)  =  "11"      )
                            ADD     1               TO  IDX-ZAI1
@@ -2683,7 +2683,7 @@
       *
                IF     (WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR "12" ) AND
                       (WRK-COM-DATAKBN(IDX-Z)  =   "1"           )
-      *            ��������û�����³�û���Ʊ���ƿǡ�Ʊ�����úƿ�
+      *            外来管理加算、継続加算、同日再診、同日電話再診
                    IF      (FLG-GAIRAI         =   1  )  OR
                            (FLG-KEIZOK         =   1  )  OR
                            (FLG-RSIFLG         =   1  )  OR
@@ -2700,20 +2700,20 @@
                        END-IF
                    END-IF
                END-IF
-      *        ʻ�ѻ�������å�
+      *        併用算定チェック
       *?0608   IF      WRK-COM-SDOKNRYO (IDX-Z)    NOT =   ZERO
       *************PERFORM 220-SDOKNRYO-CHK-SEC
       *???     END-IF
       *
-      *        ��������û���������å�
+      *        外来管理加算算定チェック
                IF     (WRK-COM-SRYKBN (IDX-Z)  =    "12" )  AND
                       (WRK-COM-DATAKBN(IDX-Z)  =    "1" )
                    MOVE    IDX-Z               TO  IDX-SYU
                END-IF
       *
-      *        ��������û�����
+      *        外来管理加算算定
                IF     FLG-GAIRAI          =   1
-      *            ��������û��ϣ��ĤΤ�
+      *            外来管理加算は１つのみ
                    IF      IDX-GAIKAN          >   ZERO
                        MOVE    "0058"          TO  SPA-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
@@ -2728,7 +2728,7 @@
                    MOVE    1               TO  FLG-GAIKAN
                 END-IF
       * 
-      *         ��Ƴ��������������å�
+      *         指導料・初診日チェック
                 IF      WRK-COM-INPUTCD(IDX-Z) =   "113001810"  OR
                                                    "113001910"  OR
                                                    "113002010"  OR
@@ -2738,61 +2738,61 @@
                    MOVE    ZERO                TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
-      *         ������������
+      *         皮膚科特定疾患
                IF      WRK-COM-INPUTCD(IDX-Z) =    "113002310"
                                                OR  "113000910"
                    MOVE    1                   TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
       *
-      *D        Ϸ���������³���������Ųʥ����å�
+      *D        老人慢性疾病外来総合診療科チェック
       *D        IF      WRK-COM-INPUTCD(IDX-Z) =   "113701010"  OR
       *D                                           "113701110"  OR
       *D                                           "113701510" 
       *D           PERFORM 230-ROUMANSEI-SYOSIN-SEC
       *D       END-IF
       *
-      *        �����ʳ�����Ųʥ����å�
-      *            ���
+      *        小児科外来診療科チェック
+      *            初診
                IF      WRK-COM-INPUTCD(IDX-Z) =   "113003510"  OR
                                                   "113003710"
                    ADD     1               TO  IDX-ZAI1
                END-IF
-      *            �ƿ�
+      *            再診
                IF      WRK-COM-INPUTCD(IDX-Z) =   "113003610"  OR
                                                   "113003810"
                    ADD     1               TO  IDX-ZAI2
                END-IF
       *
-      *        �ƿǤΣ����ܰʹߤ�Ƚ��
+      *        再診の４回目以降の判定
                EVALUATE    WRK-COM-INPUTCD (IDX-Z)
-      *            �͹���¡��
+      *            人工腎臓１
                    WHEN    "140036710"
-      *            �͹���¡���ʣ����ְʾ��
+      *            人工腎臓１（４時間以上）
                    WHEN    "140036810"
-      *            �͹���¡���ʣ����ְʾ��
+      *            人工腎臓１（５時間以上）
                    WHEN    "140037910"
-      *            �͹���¡��
+      *            人工腎臓２
                    WHEN    "140007710"
-      *            �͹���¡���ʣ����ְʾ��
+      *            人工腎臓２（４時間以上）
                    WHEN    "140078100"
-      *            �͹���¡���ʣ����ְʾ��
+      *            人工腎臓２（５時間以上）
                    WHEN    "140038010"
                        MOVE    1           TO  LNK-ORCSC-TOKUTEI-JNZ
       *
-      *        ������ä����봵��Ƚ��
-      *            �������˼���������
+      *        厚生大臣が定める患者判定
+      *            慢性疼痛疾患管理料
                    WHEN    "113006510"
                        MOVE    1           TO  LNK-ORCSC-TOKUTEI-KNJ
-      *        ������ä����봵��Ƚ��ʳ�������û���
-      *            ��������
+      *        厚生大臣が定める患者判定（外来管理加算）
+      *            ？？？？
       *            WHEN    "113006510"
       **************   MOVE    1           TO  LNK-ORCSC-TOKUTEIG-KNJ
                END-EVALUATE
       *
-      *        �������޼��Ŵ�������ꥳ���ȥ����å�
+      *        特定薬剤治療管理初回算定コメントチェック
                IF      WRK-COM-INPUTCD (IDX-Z) =   "840000038"
-      *            ���곫���������Ѵ�
+      *            特定開始日和暦変換
                    INITIALIZE                      STS-AREA-DAY
                    INITIALIZE                      LNK-DAY1-AREA
                    MOVE    "11"                TO  LNK-DAY1-IRAI
@@ -2806,12 +2806,12 @@
                    END-IF
                END-IF
       *
-      *        ¾�ݸ�����Ѥ�
+      *        他保険算定済み
                IF      WRK-COM-INPUTCD(IDX-Z) =   "099999902"
                    MOVE    1               TO  FLG-TAHOKEN
                END-IF
       *
-      *        ���Ǥ���Υ�����
+      *        検診からのコメント
                IF      WRK-COM-SRYKBN (IDX-Z) =   "11"  OR  "12"
                    IF      WRK-COM-INPUTCD(IDX-Z)  =  "820000003"  OR
                                                       "820000004"  OR
@@ -2831,7 +2831,7 @@
                    END-IF
                END-IF
       *
-      *        ���û������ɤΥ����å��ʤ��٤ƤοǶ�ǹԤ���
+      *        注加算コードのチェック（すべての診区で行う）
                IF      (WRK-COM-SRYKBN     (IDX-Z)
                                            =   "95" OR  "96"
                                                     OR  "99")   OR
@@ -2849,7 +2849,7 @@
                GO      TO      200-ALL-SYORI-EXT
            END-IF
       *
-      *    �Ƹ��Ǥ���Υ��ߡ�����������ǻ�����������
+      *    各検診からのダミーがある時、診察料を削除する
            IF    ((FLG-KENSIN          =   1  )  OR
                   (FLG-DUMMY-ARI       =   1  ))  AND
                  ((IDX-ZAI1            >   ZERO) OR
@@ -2859,7 +2859,7 @@
                    GO      TO      200-ALL-SYORI-EXT
                END-IF
            END-IF
-      *    ��������ƿ����ν�ʣ�����å�
+      *    初診料・再診料の重複チェック
            IF     (IDX-ZAI1            >   ZERO) AND
                   (IDX-ZAI2            >   ZERO) AND
                   (IDX-SYU2            >   ZERO)
@@ -2874,7 +2874,7 @@
                MOVE    "1"             TO  WRK-COM-CUR (IDX-SYU2)
                GO      TO      200-ALL-SYORI-EXT
            END-IF
-      *    �����������Ϥλ���ɬ��������Ǥ��뤳��
+      *    新規患者入力の時、必ず初診料であること
            IF     (LNK-ORCSC-PG        =   "K02"  )  AND
                   (LNK-ORCSC-SYOSIN    =   1      )
                IF     (IDX-ZAI1            =   ZERO) AND
@@ -2885,7 +2885,7 @@
                    GO      TO      200-ALL-SYORI-EXT
                END-IF
            END-IF
-      *    ¾�ݸ�����ѤߤΥ����Ȥ���������ǻ������ʤ�����
+      *    他保険算定済みのコメントがある時、診察料がないこと
            IF     (FLG-TAHOKEN         =   1    )  AND
                   (IDX-SYU2            >   ZERO )
                IF      (IDX-ZAI1       >   ZERO )  OR
@@ -2896,17 +2896,17 @@
                END-IF
            END-IF
       *
-      *    ��ǡ��ƿ����λ�������å�
-      *    �����������λ��������å��ʤ�
+      *    初診・再診料の算定チェック
+      *    訂正・入院の時、チェックなし
            IF     (LNK-ORCSC-SYORIFLG  =   ZERO )  AND
                   (SPA-NYUGAIKBN       =   "2"  )
                IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
                       (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
-      *               Ʊ���ƿ�̵ͭ
+      *               同日再診有無
                       (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
-      *            ϫ�Ҥˤ�Ʊ���ƿǤϤʤ��Τǥ����å��ʤ�
+      *            労災には同日再診はないのでチェックなし
                    IF     (SPA-HKNKBN          =   1  )
-      *            �����˿ǻ��������ꤷ�Ƥʤ��Ȥ��ϥ����å��ʤ�
+      *            当日に診察料が算定してないときはチェックなし
                        OR (SPA-DOUJITU         =   ZERO)
                        CONTINUE
                    ELSE
@@ -2916,19 +2916,19 @@
                END-IF
            END-IF
       *
-      *    �ʲ�����ΤߤȤ���
+      *    以下外来のみとする
            IF      SPA-NYUGAIKBN       =   "1"
                 GO      TO      200-ALL-SYORI-EXT
            END-IF
       *
            IF      SPA-HKNKBN          =   1
-      *        ϫ�Ҥλ�����������û����ɤ��ؤ������å�
+      *        労災の時、外来管理加算の読み替えチェック
                IF      IDX-ZAI1            =   ZERO
-      *            �ƿǤλ��Τ�
+      *            再診の時のみ
                    PERFORM 20011-RSIGAIKAN-SYORI-SEC
                END-IF
            ELSE
-      *        ϫ�Ұʳ��γ�������û��λ�������å�
+      *        労災以外の外来管理加算の算定チェック
                PERFORM 20012-GAIKAN-SYORI-SEC
            END-IF
       *
@@ -2945,7 +2945,7 @@
                END-IF
            END-IF
       *
-      *    ϫ�Ҥǵߵް��Ŵ����û�����Ͻ����������ΤߤȤ���
+      *    労災で救急医療管理加算算定は初診料算定時のみとする
            IF      WRK-RSISYOSIN       >   ZERO
                IF     (IDX-ZAI1        >   ZERO  )  AND
                       (IDX-ZAI2        =   ZERO  )
@@ -2957,11 +2957,11 @@
                END-IF
            END-IF
       *
-      *    �͹���¡��������äˤ��ƿ������ؤ�����
+      *    人工腎臓・厚生大臣による再診料振替え処理
            IF      SPA-HKNKBN          =   ZERO
                CONTINUE
            ELSE
-      *        ϫ��
+      *        労災
                PERFORM 20014-RSISAISIN-SYORI-SEC
            END-IF
            IF      LNK-ORCSC-KIDCD NOT =   SPACE
@@ -2969,7 +2969,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *        �������޼��Ŵ������λ�������å�
+      *        特定薬剤治療管理料の算定チェック
                PERFORM 20010-TOKUTEI-ALLCHK-SEC
            END-IF
       *
@@ -2977,7 +2977,7 @@
        200-ALL-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ��ʣ�����å�����
+      *    重複チェック処理
       *****************************************************************
        2000-JYUFUKU-CHK-SEC               SECTION.
       *
@@ -2987,24 +2987,24 @@
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
                MOVE    ZERO                TO  FLG-CHK
                MOVE    ZERO                TO  FLG-KEI
-      *        �ǻ��Ǽ굻�λ�����ʣ�����å���Ԥ�
+      *        診察で手技の時、重複チェックを行う
                IF     (WRK-COM-SRYKBN(IDX-Z)(1:1)  =   "1"   )  AND
                       (WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"  )   AND
                       (WRK-COM-DATAKBN(IDX-Z)      =   "1"  )
-      *            �������޼��Ŵ��������оݳ��Ȥ���
+      *            特定薬剤治療管理料は対象外とする
                    IF    WRK-COM-INPUTCD(IDX-Z)      =   "113000410" OR
                                                          "113000510"
                        CONTINUE
                    ELSE
                        MOVE    1                 TO  FLG-CHK
                    END-IF
-      *            ���ž��������ʣ��ˡ�(��),(��)�Ͻ�ʣ���ٹ�Ȥ���
+      *            診療情報提供料（Ａ），(Ｂ),(Ｄ)は重複時警告とする
                    IF    WRK-COM-INPUTCD (IDX-Z) =   "180016110"
                                                  OR  "180016210"
                                                  OR  "113004410"
                       MOVE    1                  TO  FLG-KEI
                    END-IF
-      *            ���¼����ո����������������Ʊ�ս���������оݳ�
+      *            傷病手当意見書交付料・療養費同意書交付料は対象外
                    IF    WRK-COM-INPUTCD(IDX-Z)      =   "180000710"
                                                      OR  "113004310"
                        MOVE    ZERO              TO  FLG-CHK
@@ -3024,11 +3024,11 @@
                                            =   WRK-COM-SRYKBN(IDX-Z2))
                          AND  (WRK-COM-INPUTCD (IDX-Z)
                                            =   WRK-COM-INPUTCD(IDX-Z2))
-      *                    �ٹ�
+      *                    警告
                            IF      FLG-KEI         =   1
                                MOVE    IDX-Z2          TO  IDX-KEI
                            ELSE
-      *                    ���顼
+      *                    エラー
                                MOVE    "0134"          TO  SPA-ERRCD
                                MOVE    "1"             TO  WRK-COM-CUR
                                                               (IDX-Z2)
@@ -3036,7 +3036,7 @@
                        END-IF
                    END-PERFORM
       *
-      *            �ٹ�
+      *            警告
                    IF      FLG-KEI         =   1
                        IF     (IDX-KEI         =   ZERO )  AND
                               (WRK-COM-KAISU(IDX-Z)    >   1  )
@@ -3062,11 +3062,11 @@
        2000-JYUFUKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ǻ��������å�����
+      *    診察料チェック処理
       *****************************************************************
        2001-SINSATU-CHK-SEC                  SECTION.
       *
-      *    �ǻ������å�
+      *    診察料セット
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                    AT   END
@@ -3080,23 +3080,23 @@
                        MOVE    SPACE               TO  WRK-KBN2
            END-SEARCH
       *
-      *    ϫ���ݸ��Υ����å�
+      *    労災保険のチェック
            IF      SPA-HKNKBN          =   1
-      *        ϫ���ݸ��λ������úƿǰʳ��ϥ��顼�Ȥ���
+      *        労災保険の時、電話再診以外はエラーとする
                IF     (WRK-KAISU       =   ZERO    )  AND
                       (WRK-KBN         =   SPACE   )  AND
                       (WRK-KBN2        =   SPACE   )
                    CONTINUE
                ELSE
       *
-      *            ���úƿǤ⥨�顼
+      *            電話再診もエラー
                    IF      WRK-KBN         =   "T" OR  "S"
                        MOVE    "8021"          TO  WRK-ERRCD
                    ELSE
                        MOVE    "8001"          TO  WRK-ERRCD
                    END-IF
                    MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-      *            ����ǻ�����Ƚ��ʣ��������ʾ�ˤϣϣˤȤ���
+      *            外来診察料の判定（２００床以上）はＯＫとする
                    IF     (SPA-BEDSUIPN        >=  200 )  AND
                           (SPA-HOSPSBT         =   1   )
                        IF      WRK-KAISU           =   3
@@ -3108,7 +3108,7 @@
                END-IF
            END-IF
       *
-      *    �������Ƚ��
+      *    初診料の判定
            IF      WRK-KBN         NOT =   SPACE
                IF      WRK-KBN             =   "F"
                    MOVE    1               TO  LNK-ORCSC-SYOSIN2
@@ -3117,20 +3117,20 @@
                END-IF
            END-IF
       *
-      *    ����ǻ�����Ƚ��ʣ��������ʾ��
+      *    外来診察料の判定（２００床以上）
            IF     (SPA-BEDSUIPN        >=  200 )  AND
                   (SPA-HOSPSBT         =   1   )
                IF      WRK-KAISU           =   3
                    CONTINUE
                ELSE
-      *            ���úƿǤϥ��顼�Ȥ���
+      *            電話再診はエラーとする
                    IF      WRK-KBN         =   "T" OR  "S"
                        MOVE    "8050"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
                END-IF
            END-IF
-      *    �ǻ�������
+      *    診察料あり
            IF      WRK-KAISU           >   ZERO
                MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
            END-IF
@@ -3139,11 +3139,11 @@
        2001-SINSATU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ϫ�ҿǻ�����Ƚ�����
+      *    労災診察料の判定処理
       *****************************************************************
        20012-RSISINSATU-CHK-SEC          SECTION.
       *
-      *    �ǻ�������
+      *    診察料検索
            SET     TBL-RSI              TO  1
            SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
               AT   END
@@ -3156,19 +3156,19 @@
            END-SEARCH
       *
            IF      WRK-KBN             =   "F"  OR  "S"
-      *        �ǻ�������
+      *        診察料あり
                MOVE    1               TO  LNK-ORCSC-SINSATU-ARI
       *
                MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
                MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
                MOVE    IDX-Z           TO  IDX-SINSATU
       *
-      *        ʿ������ǯ��������������ѻߤȤ���
+      *        平成１５年９月１日から逓減廃止とする
                IF      SPA-SRYYMD          >=  "20030901"
                    CONTINUE
                ELSE
       *
-      *        ȯ��������ʹߤβ�������å�
+      *        発生日３月以降の回数チェック
                IF      SPA-SRYYMD      >=  SPA-RSI-HASSYOYMD3
                    IF      LNK-ORCSC-SINSATU-CNT   >=  5
                        IF      WRK-KAISU       NOT =   5
@@ -3191,11 +3191,11 @@
        20012-RSISINSATU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ϫ�ҥ����ɤ�Ƚ�����
+      *    労災コードの判定処理
       *****************************************************************
        200112-RSI-KEI-CHK-SEC          SECTION.
       *
-      *    ϫ�Ҥεߵް��Ŵ����û����ƿ������ܻ�Ƴ�����оݳ��Ȥ���
+      *    労災の救急医療管理加算、再診料療養指導料は対象外とする
            IF       WRK-COM-INPUTCD(IDX-Z) =    "101110030"  OR
                                                 "101120030"
                                            OR   "101110020"
@@ -3204,7 +3204,7 @@
                MOVE    ZERO                TO  FLG-RSIFLG
            END-IF
       *
-      *    ϫ�Ҥεߵް��Ŵ����û�����̵ͭ
+      *    労災の救急医療管理加算算定有無
            IF       WRK-COM-INPUTCD(IDX-Z) =   "101110030"
                MOVE    IDX-Z               TO  WRK-RSISYOSIN
            END-IF
@@ -3214,16 +3214,16 @@
        200112-RSI-KEI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��������û��������ɲý���
+      *    外来管理加算コード追加処理
       *****************************************************************
        20011-GAIKASAN-SET-SEC                  SECTION.
-      *    ϫ�Ҥγ�������û�
+      *    労災の外来管理加算
            IF      SPA-HKNKBN          =   1
                PERFORM 200111-RSI-GAIKASAN-SEC
                GO      TO      20011-GAIKASAN-SET-EXT
            END-IF
       *
-      *    ���̤λ����±������Ž��Ʊ��
+      *    一般の時、病院・診療所は同じ
            IF      LNK-ORCSC-ROUJIN    =   ZERO
                MOVE    ZERO            TO  WRK-HOSPSBT
            ELSE
@@ -3232,7 +3232,7 @@
       *
            MOVE    "G"                 TO  WRK-KBN
       *
-      *    �ǻ������å�
+      *    診察料セット
            SET     TBLG-IDX             TO  1
            SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
                    AT   END
@@ -3252,18 +3252,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û��������ɲý�����ϫ�ҡ�
+      *    外来管理加算コード追加処理（労災）
       *****************************************************************
        200111-RSI-GAIKASAN-SEC            SECTION.
       *
-      *    ��������û��������ɲ�
+      *    外来管理加算コード追加
            IF      SPA-SRYYMD          <   SPA-RSI-HASSYOYMD3
-      *        �������
+      *        ３月以内
                MOVE    ZERO                TO  WRK-KAISU
                MOVE    "G"                 TO  WRK-KBN
            ELSE
                IF      LNK-ORCSC-SINSATU-CNT     >=  5
-      *            ����ʹߤ�Ʊ����ܰʹ�
+      *            ３月以降の同月５回目以降
                    MOVE    5                   TO  WRK-KAISU
                    MOVE    "G"                 TO  WRK-KBN
                ELSE
@@ -3272,14 +3272,14 @@
                END-IF
            END-IF
       *
-      *    ʿ������ǯ��������������ѻߤȤ���
+      *    平成１５年９月１日から逓減廃止とする
            IF      SPA-SRYYMD          >=  "20030901"
                MOVE    ZERO                TO  WRK-KAISU
                MOVE    "G"                 TO  WRK-KBN
            END-IF
       *
       *
-      *    �ǻ�������
+      *    診察料検索
            SET     TBL-RSI              TO  1
            SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
               AT   END
@@ -3297,18 +3297,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û��������ɲý���
+      *    外来管理加算コード追加処理
       *****************************************************************
        2001-GAIKASAN-SEC            SECTION.
       *
-      *    ��������û������ɥ��å�
+      *    外来管理加算コードセット
            MOVE    ZERO                TO  FLG-ARI
            PERFORM 20011-GAIKASAN-SET-SEC
       *
            COMPUTE IDX-S               =   IDX-Z   +  1
       *
            MOVE    ZERO                TO  FLG-ADD
-      *    �����ޥ����Խ������ܥ����å�
+      *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    "1"                 TO  LNK-SC92-KBN
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
@@ -3327,7 +3327,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ���顼�λ����ɲäʤ�
+      *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
@@ -3344,7 +3344,7 @@
            MOVE    WRK-COM-SRYSYUKBN (IDX-S - 1)
                                        TO  WRK-COM-SRYSYUKBN(IDX-S)
       *
-      *    ��ư�ɲ�ʬ�����ϻ����ɲá�
+      *    自動追加分（入力時に追加）
       **** MOVE    "1"                 TO  WRK-COM-AUTOKBN (IDX-S)
            MOVE    SPACE               TO  WRK-COM-AUTOKBN (IDX-S)
       *
@@ -3355,11 +3355,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ƴ������������å�����
+      *    指導料初診日チェック処理
       *****************************************************************
        230-SIDOU-SYOSIN-SEC            SECTION.
       *
-      *    ���úƿǤλ������顼�Ȥ���
+      *    電話再診の時、エラーとする
            IF      LNK-ORCSC-TELSAI-ARI    =   1
                MOVE    "0077"          TO  SPA-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
@@ -3368,12 +3368,12 @@
       *
       *
            IF      LNK-ORCSC-SYORIFLG      =   1
-      *        ���������ν�ǻ�����
+      *        訂正時点の初診算定日
                MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
            ELSE
                MOVE    LNK-ORCSC-SYOYMD        TO  WRK-SYOYMD
            END-IF
-      *    �ǽ��ౡ������������ౡ��
+      *    最終退院日がある時、退院日
            IF     (LNK-ORCSC-TAIINYMD  =   SPACE )  OR
                   (LNK-ORCSC-TAIINYMD  <=  WRK-SYOYMD)
                CONTINUE
@@ -3386,7 +3386,7 @@
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
                MOVE    SPA-SRYYMD          TO  WRK-KEIYMDZEN
            ELSE
-      *        ������������ܣ����
+      *        初診料算定日＋１月後
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -3408,7 +3408,7 @@
                    CONTINUE
                WHEN    WRK-KEIYMD          >   SPA-SRYYMD
       *!           MOVE    "0034"          TO  SPA-ERRCD
-      *            ���������Ķ�����Ʊ�������ϣ�
+      *            １月後の前営業日と同じ時、ＯＫ
                    IF      FLG-SIDOU       =   1
                        MOVE    "0034"          TO  SPA-ERRCD
                    ELSE
@@ -3436,7 +3436,7 @@
            EXIT.
       *D
       *****************************************************************
-      *    Ϸ������������������ǻ����Ȥν���������å�
+      *    老人慢性疾患外来総合診察料との初診日チェック
       *****************************************************************
       *230-ROUMANSEI-SYOSIN-SEC            SECTION.
       *
@@ -3444,7 +3444,7 @@
       *    IF      LNK-ORCSC-SYOYMD    =   SPACE
       *        MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
       *    ELSE
-      *        ������������ܣ����
+      *        初診料算定日＋１月後
       *        MOVE    LNK-ORCSC-SYOYMD    TO  WRK-KEIYMD
       *        COMPUTE WRK-KEI-MM          =   WRK-KEI-MM
       *                                    +   1
@@ -3455,14 +3455,14 @@
       *        END-IF
       *    END-IF
       *    IF      LNK-ORCSC-SYOYMD(7:2)   =   "01"
-      *        ������������������λ�����
+      *        初診料算定日が１日の時翌月から
       *        IF      WRK-KEIYMD(1:6)     <=  SPA-SRYYMD(1:6)
       *            CONTINUE
       *        ELSE
       *            MOVE    "0034"              TO  SPA-ERRCD
       *        END-IF
       *    ELSE
-      *        ������������������ʳ��λ����⡹���
+      *        初診料算定日が１日以外の時、翌々月から
       *        IF      WRK-KEIYMD(1:6)     <   SPA-SRYYMD(1:6)
       *            CONTINUE
       *        ELSE
@@ -3478,7 +3478,7 @@
       *D   EXIT.
       *
       *****************************************************************
-      *    �������޼��Ŵ������λ�������å�����
+      *    特定薬剤治療管理料の算定チェック処理
       *****************************************************************
        20010-TOKUTEI-ALLCHK-SEC                SECTION.
       *
@@ -3487,12 +3487,12 @@
                               (SPA-ERRCD   NOT =   SPACE  )  OR
                               (WRK-GMN-INPUTCD(IDX-Z)  =   SPACE  AND
                                WRK-COM-INPUTCD(IDX-Z)  =   SPACE  )
-      *        �������޼��Ųû��������å�
+      *        特定薬剤治療加算料チェック
                IF      WRK-COM-INPUTCD (IDX-Z)     =   "180000110"  OR
                                                        "180000210"
                    MOVE    ZERO                TO  FLG-SYOKAI2
                    IF      LNK-ORCSC-TOKTEI-YMD    NOT  =  SPACE
-      *                �������򸡺�
+      *                算定履歴検索
                        MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
                        MOVE    "key3"              TO  WRK-DBPATH
                        PERFORM 100111-SANTEI-KEN-SEC
@@ -3500,7 +3500,7 @@
                        MOVE    WRK-DBPATH          TO  MCP-PATHNAME
                        PERFORM 990-DBCLOSE-SEC
                        IF      FLG-SANTEI          =   ZERO
-      *                    �����λ�������ʬ�ϥ����å����ʤ�
+      *                    訂正の時、当日分はチェックしない
                            IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
                                   (SANTEI-SRYYM         =   SPA-SRYYMD
                                                             (1:6))
@@ -3509,7 +3509,7 @@
                                    MOVE    1           TO  FLG-SYOKAI2
                                END-IF
                            END-IF
-      *                    ����ν������������λ������λ��ϣϣ�
+      *                    今回の初回算定日より前の算定日の時はＯＫ
                            IF     (LNK-ORCSC-TOKTEI-YMD
                                                  >   SANTEI-FSANTEIYMD)
                                OR (FLG-SYOKAI    =   1     )
@@ -3530,11 +3530,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û��λ�������å�����
+      *    外来管理加算の算定チェック処理
       *****************************************************************
        20012-GAIKAN-SYORI-SEC       SECTION.
       *
-      *    ������������������ʤ�
+      *    外来診療料算定時算定なし
            IF     (SPA-BEDSUIPN        >=  200 )  AND
                   (SPA-HOSPSBT         =   1   )
                GO      TO      20012-GAIKAN-SYORI-EXT
@@ -3549,7 +3549,7 @@
                IF     (IDX-SYU             >   ZERO )  AND
                       (IDX-GAIKAN          =   ZERO )  AND
                       (LNK-ORCSC-GAIFLG    =   ZERO )  AND
-      *                ��ư����ʤ��λ����ɲä��ʤ�
+      *                自動算定なしの時、追加しない
                       (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
                    IF     (LNK-ORCSC-ROUMANSEI-ARI     NOT =   ZERO ) OR
                           (LNK-ORCSC-ROUMANSEI-ARI2    NOT =   ZERO  AND
@@ -3564,7 +3564,7 @@
                            UNTIL  WRK-COM-DATAKBN (IDX-Z + 1) NOT =  "2"
                                ADD     1               TO  IDX-Z
                        END-PERFORM
-      *                ��������û��������ɲý���
+      *                外来管理加算コード追加処理
                        PERFORM 2001-GAIKASAN-SEC
                    END-IF
                END-IF
@@ -3575,22 +3575,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҳ�������û����ɤ��ؤ�����
+      *    労災外来管理加算の読み替え処理
       *****************************************************************
        20011-RSIGAIKAN-SYORI-SEC       SECTION.
       *
-      *    ������������������ʤ�
+      *    外来診療料算定時算定なし
            IF     (SPA-BEDSUIPN        >=  200 )  AND
                   (SPA-HOSPSBT         =   1   )
                GO    TO      20011-RSIGAIKAN-SYORI-EXT
            END-IF
       *
-      *    ���ե��������λ�����������û����ꤷ�ʤ�
+      *    アフターケアの時、外来管理加算を算定しない
            IF      SPA-RSI-HKNKBN      =   "3"
                GO    TO      20011-RSIGAIKAN-SYORI-EXT
            END-IF
       *
-      *    ��������û����ʤ��Ȥ���ϫ�ҤΥ����ɤ������ޥ����򸡺�
+      *    外来管理加算がないとき、労災のコードで点数マスタを検索
            IF      LNK-ORCSC-GAIRAI-TEN    =   ZERO
                PERFORM 200111-RSI-GAIKASAN-SEC
                MOVE    WRK-SRYCD           TO  TNS-SRYCD
@@ -3630,7 +3630,7 @@
                    END-IF
                 END-IF
            END-PERFORM
-      *    �ǽ���ɤ��ؤ�ʬ�β�������ʾ�λ������顼
+      *    最初の読み替え分の回数が１以上の時、エラー
            IF      WRK-GAI-CNT     >   ZERO
                IF      WRK-COM-KAISU (WRK-GAI-IDX)   >   1
                    MOVE    "0140"          TO  SPA-ERRCD
@@ -3639,7 +3639,7 @@
            END-IF
       *
            IF      WRK-GAI-CNT         >   1
-      *        ��������û����ɤ��ؤ���
+      *        外来管理加算へ読み替える
                MOVE    ZERO                TO  WRK-GAI-CNT
                PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE   )   OR
@@ -3660,7 +3660,7 @@
                            IF      IDX-Z       NOT =   WRK-GAI-IDX
                                MOVE    1           TO  WRK-COM-RSIGIRI
                                                             (IDX-Z)
-      *                        ϫ�Ҥλ����ɤ��ؤ�����
+      *                        労災の時、読み替えあり
                                MOVE    "1"         TO  LNK-ORCSC-RSIOK
                            END-IF
                        END-IF
@@ -3668,11 +3668,11 @@
                END-PERFORM
            END-IF
       *
-      *    ��������û��ԲĤΥ����ɤ����ꡢ�������ʲ��μ굻��¸�ߤ��ʤ�
+      *    外来管理加算不可のコードがあり、５２点以下の手技が存在しない
            IF     (FLG-GAIKAN              =   1   OR
                    LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  AND
                   (WRK-GAI-CNT             =   ZERO)
-      *        ��������û����
+      *        外来管理加算削除
                IF      IDX-GAIKAN          >   ZERO
                    MOVE    "0102"              TO  LNK-ORCSC-KIDCD
                    MOVE    IDX-GAIKAN          TO  LNK-ORCSC-CHK-IDX
@@ -3690,22 +3690,22 @@
                             OR   ( WRK-COM-ZAIEND (IDX-Z)     =  "1" )
                            ADD     1               TO  IDX-Z
                        END-PERFORM
-      *                ��������û��������ɲý���
+      *                外来管理加算コード追加処理
                        PERFORM 2001-GAIKASAN-SEC
-      *                ϫ���ɤ��ؤ��û�ʬ
+      *                労災読み替え加算分
                        IF      FLG-ADD         =   1
                            MOVE    "1"             TO  WRK-COM-RSIFLG2
                                                                (IDX-S)
                        END-IF
                    END-IF
                ELSE
-      *            ��������û�������Ǥ����
+      *            外来管理加算が算定できる時
                    IF     (IDX-SYU2            >   ZERO )  AND
                           (FLG-GAIKAN          =   ZERO )  AND
                           (IDX-GAIKAN          =   ZERO )  AND
                           (LNK-ORCSC-SYOSIN    =   ZERO )  AND
                           (LNK-ORCSC-SYOSIN2   =   ZERO )
-      *                ��ư����ʤ��λ����ɲä��ʤ�
+      *                自動算定なしの時、追加しない
                  AND  (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" )
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
@@ -3714,11 +3714,11 @@
                             OR     WRK-COM-ZAIEND (IDX-Z)    =  "1"
                            ADD     1               TO  IDX-Z
                        END-PERFORM
-      *                ��������û��������ɲý���
+      *                外来管理加算コード追加処理
                        PERFORM 2001-GAIKASAN-SEC
                    END-IF
-      *            ��������û��κ��
-      *            �ǻ�����¸�ߤ�������������û��������
+      *            外来管理加算の削除
+      *            診察料が存在せず、外来管理加算がある時
                    IF     (IDX-SYU2            =   ZERO )  AND
                           (FLG-GAIKAN          =   ZERO )  AND
                           (IDX-GAIKAN          >   ZERO )  AND
@@ -3736,16 +3736,16 @@
       *
       *
       *****************************************************************
-      *    ϫ�ҿ͹���¡��������äˤ��ƿ������ؤ�����
+      *    労災人工腎臓・厚生大臣による再診料振替え処理
       *****************************************************************
        20014-RSISAISIN-SYORI-SEC                SECTION.
       *
-      *    ������Ķ�ǣ����ܰʹߤλ����͹���¡��������ѹ�����
+      *    ３ヶ月超で５回目以降の時、人工腎臓があれば変更する
            IF      WRK-SINSATU-KAISU       =   5
              IF  ( LNK-ORCSC-SAISIN-CHK    =   ZERO  )  OR
                  ((LNK-ORCSC-TOKUTEI-JNZ   NOT =  WRK-TOKUTEI-JNZ ) OR
                   (LNK-ORCSC-TOKUTEI-KNJ   NOT =  WRK-TOKUTEI-KNJ ) )
-      *        �͹���¡����������
+      *        人工腎臓・慢性疼痛
                IF     (LNK-ORCSC-TOKUTEI-JNZ   =   1   )  OR
                       (LNK-ORCSC-TOKUTEI-KNJ   =   1   )  OR
                       (LNK-ORCSC-TOKUTEI-KNJ2  =   1   )
@@ -3762,7 +3762,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���û������ɤΥ����å�����
+      *    注加算コードのチェック処理
       *****************************************************************
        290-CHUKSNCHK-SEC                SECTION.
       *
@@ -3771,7 +3771,7 @@
                    UNTIL      (IDX         >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD(IDX)    =   SPACE )
                IF      IDX             NOT =   IDX-Z
-      *                    ���û������ɡ����֤�Ʊ�������顼
+      *                    注加算コード、通番が同じ時エラー
                    IF      (WRK-COM-SRYKBN (IDX)
                                            =   WRK-COM-SRYKBN
                                                            (IDX-Z)) AND
@@ -3783,7 +3783,7 @@
                                                              (IDX-Z))
                        MOVE    "0042"          TO  SPA-ERRCD
                        MOVE    IDX             TO  IDX-CHU
-      *                Ʊ�������ɤǼ�ưȯ���ξ��ϣϣˤȤ���
+      *                同じコードで自動発生の場合はＯＫとする
                        IF     (WRK-COM-AUTOKBN (IDX)   =   "2" ) AND
                               (WRK-COM-INPUTCD (IDX)   =
                                                WRK-COM-INPUTCD(IDX-Z))
@@ -3792,7 +3792,7 @@
                        END-IF
                    END-IF
                END-IF
-      *        �ǻ����ʳ��ϡ�����Υ����å��Ȥ���
+      *        診察料以外は、剤内のチェックとする
                IF      WRK-COM-ZAIEND (IDX)    =   "1"
                    IF      WRK-COM-SRYKBN (IDX-Z)  =   "11"  OR  "12"
                        CONTINUE
@@ -3816,32 +3816,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ߡ��ǻ����������
+      *    ダミー診察料削除処理
       *****************************************************************
        291-DUMMY-DELETE-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-DUMMY
            MOVE    ZERO                TO  IDX-MAE-IDX
            MOVE    ZERO                TO  IDX-DUMMY
-      *    �ǻ���
+      *    診察料
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD(IDX)    =   SPACE AND
                                WRK-COM-INPUTCD(IDX)    =   SPACE )
-      *        �ǻ����Υ����å�
+      *        診察料のチェック
                IF     (WRK-GMN-INPUTCD (IDX)   NOT =   SPACE )  AND
                       (WRK-COM-SRYKBN  (IDX)       =   "11" OR
                                                        "12"  )  AND
-      *        ϫ�Ҥο��ؤ��Ϻ�����ʤ�
+      *        労災の振替えは削除しない
                       (WRK-COM-RSIFLG2 (IDX)       =   SPACE )
                    PERFORM 2911-SINSATU-CHK-SYORI-SEC
                    IF      FLG-ARI             =   1
-      *                �ޤ�������
+      *                剤を削除する
                        MOVE    1                   TO  FLG-DUMMY
                        PERFORM 2912-ZAIDEL-SYORI-SEC
                    END-IF
                END-IF
-      *        �ģգͣͣ٥��å�
+      *        ＤＵＭＭＹセット
                IF     (IDX-DUMMY               =   ZERO )  AND
                       (IDX                     >   1    )  AND
                       (WRK-COM-ZAIEND(IDX - 1) =   "1"  ) AND
@@ -3885,7 +3885,7 @@
                    END-IF
                END-IF
            END-PERFORM
-      *    �ģգͣͣٿǻ�����ǽ��
+      *    ＤＵＭＭＹ診察料を最初へ
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX         >   SPA-MAX-LINE
@@ -3913,7 +3913,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǻ����������
+      *    診察料削除処理
       *****************************************************************
        2912-ZAIDEL-SYORI-SEC                SECTION.
       *
@@ -3934,12 +3934,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǻ��������ý���
+      *    診察料チェッ処理
       *****************************************************************
        2911-SINSATU-CHK-SYORI-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-ARI
-      *    �ǻ������å�
+      *    診察料セット
            SET     TBL-IDX             TO  1
            SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
                    AT   END
@@ -3952,7 +3952,7 @@
                GO      TO      2911-SINSATU-CHK-SYORI-EXT
            END-IF
       *
-      *    ��������û�����³�����û���Ƚ��
+      *    外来管理加算、継続管理加算の判定
            SET     TBLG-IDX            TO  1
            SEARCH  TBL-GAIRAI-OCC      VARYING   TBLG-IDX
                    AT   END
@@ -3965,7 +3965,7 @@
                GO      TO      2911-SINSATU-CHK-SYORI-EXT
            END-IF
       *
-      *    ϫ���ݸ��γ�������û���Ƚ��
+      *    労災保険の外来管理加算の判定
            SET     TBL-RSI             TO  1
            SEARCH  TBL-RSI-SINSATU-OCC  VARYING   TBL-RSI
               AT   END
@@ -3981,7 +3981,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�������
+      *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
       *
@@ -3990,7 +3990,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -4026,7 +4026,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ޥ����ɤ߹���
+      *    算定歴マスタ読み込み
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
@@ -4044,7 +4044,7 @@
        920-SANTEI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -4063,7 +4063,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -4076,7 +4076,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -4091,7 +4091,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

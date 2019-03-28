@@ -1,59 +1,59 @@
 kanri_cd    : "9101"
-name        : "°åÎÅ¾ğÊóÏ¢·È´ğÈ×ÍÑ¾ğÊó"
+name        : "åŒ»ç™‚æƒ…å ±é€£æºåŸºç›¤ç”¨æƒ…å ±"
 class_cd    : "*"
 item_max    : 9
 item_list   :
 - item_no   : 1
   item      : "COOPBASE"
-  item_jp   : "Ï¢·È´ğÈ×ÍÑ¥Ç¡¼¥¿ºîÀ®"
+  item_jp   : "é€£æºåŸºç›¤ç”¨ãƒ‡ãƒ¼ã‚¿ä½œæˆ"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "FILE-DIR"
-  item_jp   : "Ï¢·È´ğÈ×ÍÑ¥Ç¥¤¥ì¥¯¥È¥ê"
+  item_jp   : "é€£æºåŸºç›¤ç”¨ãƒ‡ã‚¤ãƒ¬ã‚¯ãƒˆãƒª"
   type      : "X"
   start     : 2
   length    : 200
 - item_no   : 3
   item      : "SYREC"
-  item_jp   : "½ıÉÂÌ¾¥ì¥³¡¼¥Éµ­Ï¿"
+  item_jp   : "å‚·ç—…åãƒ¬ã‚³ãƒ¼ãƒ‰è¨˜éŒ²"
   type      : "X"
   start     : 202
   length    : 1
 - item_no   : 4
   item      : "JIHI"
-  item_jp   : "¼«ÈñÊİ¸±Ê¬ºîÀ®"
+  item_jp   : "è‡ªè²»ä¿é™ºåˆ†ä½œæˆ"
   type      : "X"
   start     : 203
   length    : 1
 - item_no   : 5
   item      : "PTNUM"
-  item_jp   : "ÃÏ°èÏ¢·È£É£Ä¤¬¶õÇò¤Î¾ì¹ç¤Ë´µ¼ÔÈÖ¹æ¤òµ­Ï¿"
+  item_jp   : "åœ°åŸŸé€£æºï¼©ï¼¤ãŒç©ºç™½ã®å ´åˆã«æ‚£è€…ç•ªå·ã‚’è¨˜éŒ²"
   type      : "X"
   start     : 204
   length    : 1
 - item_no   : 6
   item      : "SYBYO"
-  item_jp   : "½ıÉÂÌ¾Ì¾¾ÎÁ´µ­Ï¿"
+  item_jp   : "å‚·ç—…ååç§°å…¨è¨˜éŒ²"
   type      : "X"
   start     : 205
   length    : 1
 - item_no   : 7
   item      : "SYBYO"
-  item_jp   : "¿ÇÎÅ¹Ô°Ù¥ì¥³¡¼¥É¡¢°åÌôÉÊ¥ì¥³¡¼¥É¤ËÌ¾¾Î¤òµ­Ï¿"
+  item_jp   : "è¨ºç™‚è¡Œç‚ºãƒ¬ã‚³ãƒ¼ãƒ‰ã€åŒ»è–¬å“ãƒ¬ã‚³ãƒ¼ãƒ‰ã«åç§°ã‚’è¨˜éŒ²"
   type      : "X"
   start     : 206
   length    : 1
 - item_no   : 8
   item      : "COOPBASE2"
-  item_jp   : "Ï¢·È´ğÈ×ÍÑ¥Ç¡¼¥¿ºîÀ®¡ÊÅöÆü¼õ¿ÇÊ¬¡Ë"
+  item_jp   : "é€£æºåŸºç›¤ç”¨ãƒ‡ãƒ¼ã‚¿ä½œæˆï¼ˆå½“æ—¥å—è¨ºåˆ†ï¼‰"
   type      : "X"
   start     : 207
   length    : 1
 - item_no   : 9
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 208
   length    : 294

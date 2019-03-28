@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI052R9V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : �����
-      *  ����ݡ��ͥ��̾  : �ޥ�������
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  16/10/31    NACL�����ġ���������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : 月次統計
+      *  コンポーネント名  : マスタ取得
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  16/10/31    NACL−太田　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -49,7 +49,7 @@
            03  IDX0                    PIC 9(05).
            03  IDXE                    PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-MOTOPG              PIC X(08).
            03  WRK-SYMD.
@@ -75,7 +75,7 @@
            03  WRK-TABLE               PIC X(64).
            03  WRK-PATHNAME            PIC X(64).
       *
-      *    �������ΰ�
+      *    固定値領域
        01  CONST-AREA.
            03  CONST-MODE-G.
                05  CONST-MODE-INFO     PIC X(02)   VALUE "00".
@@ -83,32 +83,32 @@
                05  CONST-MODE-STATUS   PIC X(02)   VALUE "02".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ǥ��쥯�ȥ��������
+      *    一時ディレクトリ作成サブ
            COPY    "CPORCSTEMPDIR.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1010.INC".
       *
-      *    API XML�������
+      *    API XML用定義体
            COPY    "CPAPIV3REQ.INC".
            COPY    "CPMEV3REQ.INC".
            COPY    "CPMEV3RES.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
             COPY   "MCPAREA".
@@ -125,7 +125,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -133,15 +133,15 @@
            DISPLAY     "* master_exportv3 start *"
            DISPLAY     "*************************"
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
       *
-      *    �����
+      *    主処理
            IF    ( SPA-ERRCD           =   SPACE )
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *    �ֵ��ΰ��Խ�
+      *    返却領域編集
            PERFORM 300-END-SEC
       *
            DISPLAY     "***********************"
@@ -154,7 +154,7 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -165,7 +165,7 @@
            INITIALIZE                  MEREQ-AREA
            INITIALIZE                  MERES-AREA
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -174,7 +174,7 @@
       *
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -184,7 +184,7 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -223,7 +223,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -256,7 +256,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -272,7 +272,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -301,7 +301,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    時刻編集処理
       *****************************************************************
        800-TIME-SEC                    SECTION.
       *
@@ -316,7 +316,7 @@
        800-TIME-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
@@ -325,83 +325,83 @@
            WHEN    ZERO
                EVALUATE    MEREQ-REQNUM
                WHEN    "00"
-                   MOVE    "���ｪλ"      TO  SPA-ERRMSG
+                   MOVE    "正常終了"      TO  SPA-ERRMSG
                WHEN    "01"
-                   MOVE    "�����»ܽ�λ"  TO  SPA-ERRMSG
+                   MOVE    "処理実施終了"  TO  SPA-ERRMSG
                WHEN    "02"
-                   MOVE    "������ǧ��λ"  TO  SPA-ERRMSG
+                   MOVE    "処理確認終了"  TO  SPA-ERRMSG
                END-EVALUATE
            WHEN    "E04"
-               MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+               MOVE    "電子カルテＵＩＤが未設定です。"
                                            TO  SPA-ERRMSG
            WHEN    "E05"
-               MOVE    "���륫�գɣĤ�̤����Ǥ���"
+               MOVE    "オルカＵＩＤが未設定です。"
                                            TO  SPA-ERRMSG
            WHEN    "E11"
-               MOVE    "������������ǤϤ���ޤ���"
+               MOVE    "基準日が暦日ではありません。"
                                            TO  SPA-ERRMSG
            WHEN    "E12"
-               MOVE    "�ޥ����ɣĤ�̤����Ǥ���"
+               MOVE    "マスタＩＤが未設定です。"
                                            TO  SPA-ERRMSG
            WHEN    "E13"
-               MOVE    "��������ޥ�����¸�ߤ��ޤ���"
+               MOVE    "該当するマスタが存在しません。"
                                        TO  SPA-ERRMSG
            WHEN    "E20"
-               MOVE    "����ִ���������Ǥ��ޤ���Ǥ�����"
+               MOVE    "ジョブ管理が削除できませんでした。"
                                            TO  SPA-ERRMSG
            WHEN    "E21"
-               MOVE    "����ִ����������Ǥ��ޤ���Ǥ�����"
+               MOVE    "ジョブ管理が更新できませんでした。"
                                            TO  SPA-ERRMSG
            WHEN    "E22"
-               MOVE    "�����ƥ����������Ǥ��ޤ���Ǥ�����"
+               MOVE    "システム管理が削除できませんでした。"
                                            TO  SPA-ERRMSG
            WHEN    "E23"
-               MOVE    "�����ƥ�����������Ǥ��ޤ���Ǥ�����"
+               MOVE    "システム管理が更新できませんでした。"
                                            TO  SPA-ERRMSG
       *
            WHEN    "E40"
-               MOVE    "�оݤΥ���ִ���������ޤ���"
+               MOVE    "対象のジョブ管理がありません。"
                                            TO  SPA-ERRMSG
            WHEN    "E41"
-               MOVE    "�оݤν����Ϥ���ޤ���"
+               MOVE    "対象の処理はありません。"
                                            TO  SPA-ERRMSG
       *
            WHEN    "E88"
-               MOVE    "�ģ���ᡲ�ɣ䤬�����Ǥ��ޤ���"
+               MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
                                            TO  SPA-ERRMSG 
            WHEN    "8900"
-               MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+               MOVE    "システム項目が設定できません。"
                                            TO  SPA-ERRMSG
            WHEN    "8901"
-               MOVE    "�������󤬼����Ǥ��ޤ���"
+               MOVE    "職員情報が取得できません。"
                                            TO  SPA-ERRMSG
            WHEN    "8902"
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+               MOVE    "医療機関情報が取得できません。"
                                            TO  SPA-ERRMSG
            WHEN    "8903"
-               MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+               MOVE    "システム日付が取得できません。"
                                            TO  SPA-ERRMSG
            WHEN    "8905"
-               MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+               MOVE    "患者番号構成情報が取得できません。"
                                            TO  SPA-ERRMSG
            WHEN    "8915"
-               STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
+               STRING  "グループ医療機関が不整合です。"
                                                DELIMITED  BY  SIZE
-                       "������λ���Ʋ�������"
+                       "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
            WHEN    "E91"
-               MOVE    "�ꥯ�������ֹ椬�����Ǥ���"
+               MOVE    "リクエスト番号が不正です。"
                                            TO  SPA-ERRMSG
            WHEN    "E97"
-               MOVE   "�������Ƥ˸��꤬����ޤ���"
+               MOVE   "送信内容に誤りがあります。"
                                            TO  SPA-ERRMSG
            WHEN    "E98"
-               MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ�����"
+               MOVE   "送信内容の読込ができませんでした。"
                                            TO  SPA-ERRMSG
            WHEN    "E99"
-               MOVE    "�桼���ɣĤ�̤��Ͽ�Ǥ���"
+               MOVE    "ユーザＩＤが未登録です。"
                                            TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -414,7 +414,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        900-MEREQ-READ-SEC              SECTION.
       *
@@ -438,7 +438,7 @@
        900-MEREQ-READ-EXT.
            EXIT.
       *****************************************************************
-      *    XML�����񤭽Ф�
+      *    XML情報を書き出す
       *****************************************************************
        900-XML-WRITE-SEC               SECTION.
       *
@@ -487,7 +487,7 @@
        900-XML-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    XMLREAD����
+      *    XMLREAD処理
       *****************************************************************
        910-XMLREAD-SEC                 SECTION.
       *
@@ -500,7 +500,7 @@
        910-XMLREAD-EXT.
            EXIT.
       *****************************************************************
-      *    XMLWRITE����
+      *    XMLWRITE処理
       *****************************************************************
        910-XMLWRITE-SEC                 SECTION.
       *
@@ -513,7 +513,7 @@
        910-XMLWRITE-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����ཪλ�����ʥ��顼����
+      *    プログラム終了処理（エラー時）
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
@@ -531,7 +531,7 @@
        990-EXIT-PROGRAM-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ���¹Խ���
+      *    終了前実行処理
       *****************************************************************
        990-TERMINATE-SEC               SECTION.
       *

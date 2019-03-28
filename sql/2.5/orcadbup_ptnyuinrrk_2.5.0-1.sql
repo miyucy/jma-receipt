@@ -1,22 +1,22 @@
 --
--- ´µ¼ÔÆş±¡ÍúÎò¥Æ¡¼¥Ö¥ë¹½Â¤ÊÑ¹¹
+-- æ‚£è€…å…¥é™¢å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ å¤‰æ›´
 --
--- Âà±¡»öÍ³(TAIINCD)ÄÉ²Ã
+-- é€€é™¢äº‹ç”±(TAIINCD)è¿½åŠ 
 -- 
 -- Create Date : 2004/10/13           --
 --
 
--- (1) tbl_ptnyuinrrk_wk ºîÀ®
+-- (1) tbl_ptnyuinrrk_wk ä½œæˆ
 CREATE TABLE "tbl_ptnyuinrrk_wk" AS
 	SELECT
 	*
 	FROM tbl_ptnyuinrrk
 ;
 
--- (2) tbl_ptnyuinrrk ºï½ü
+-- (2) tbl_ptnyuinrrk å‰Šé™¤
 DROP TABLE tbl_ptnyuinrrk;
 
--- (3) tbl_ptnyuinrrk ºîÀ®
+-- (3) tbl_ptnyuinrrk ä½œæˆ
 CREATE TABLE "tbl_ptnyuinrrk" (
 	"hospid" character(24) NOT NULL,
 	"ptid" numeric(10,0) NOT NULL,
@@ -136,5 +136,5 @@ uphms
 FROM tbl_ptnyuinrrk_wk ;
 
 
--- (5) tbl_ptnyuinrrk_wk ºï½ü
+-- (5) tbl_ptnyuinrrk_wk å‰Šé™¤
 DROP TABLE tbl_ptnyuinrrk_wk;

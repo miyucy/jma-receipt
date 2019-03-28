@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,49 +16,49 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK1901.INC)            *
-      *         �ʣ���������                                     *
-      *         ���ŵ����Խ�����ݰ��ŵ���̾�ξ���               *
+      *         システム管理マスタ     (CPSK1901.INC)            *
+      *         （１９０１）                                     *
+      *         医療機関編集情報−医療機関名称情報               *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SYS-1901-REC.
            03  SYS-1901-KEY.
                05  SYS-1901-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-1901-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-1901-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-1901-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-1901-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-1901-TBL.
-      *���ŵ���̾�Ρʣ����ܡ�
+      *医療機関名称（１行目）
                05  SYS-1901-HOSPNAME1   PIC  X(160).
-      *���ŵ���̾�Ρʣ����ܡ�
+      *医療機関名称（２行目）
                05  SYS-1901-HOSPNAME2   PIC  X(160).
-      *���ŵ���̾�Ρʣ����ܡ�
+      *医療機関名称（３行目）
                05  SYS-1901-HOSPNAME3   PIC  X(160).
-      *���ŵ���̾�Ρʣ����ܡ�ʸ����
+      *医療機関名称（１行目）文字数
                05  SYS-1901-HOSPNAME1MOJI
                                         PIC  9(02).
-      *ͽ��
+      *予備
            03  SYS-1901-YOBI            PIC  X(18).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-1901-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-1901-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-1901-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-1901-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-1901-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-1901-UPD-KEY.
                05  SYS-1901-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1901-UPD-KANRICD     PIC X(04).

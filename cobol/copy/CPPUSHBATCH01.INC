@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,25 +18,25 @@
        01  PUSHBA01-REC.
            03  PUSHBA01-EVENT                  PIC X(50).
            03  PUSHBA01-BODY.
-      *        ¥«¥ë¥ÆUID
+      *        ã‚«ãƒ«ãƒ†UID
                05  PUSHBA01API-KARTE-UID       PIC X(36).
-      *        ¥ª¥ë¥«UID
+      *        ã‚ªãƒ«ã‚«UID
                05  PUSHBA01API-ORCA-UID        PIC X(36).
-      *        ½èÍý·ë²Ì
+      *        å‡¦ç†çµæžœ
                05  PUSHBA01API-RESULT          PIC X(3).
-      *        ¿ÇÎÅÇ¯·î
+      *        è¨ºç™‚å¹´æœˆ
                05  PUSHBA01-PERFORM-MONTH      PIC X(7).
-      *        ´ð½àÆü
+      *        åŸºæº–æ—¥
                05  PUSHBA01-PERFORM-DATE       PIC X(10).
-      *        ½èÍý¶èÊ¬
+      *        å‡¦ç†åŒºåˆ†
                05  PUSHBA01-REQUEST-MODE       PIC X(1).
-      *        ³«»ÏÆü
+      *        é–‹å§‹æ—¥
                05  PUSHBA01-START-DATE         PIC X(10).
-      *        ½ªÎ»Æü
+      *        çµ‚äº†æ—¥
                05  PUSHBA01-END-DATE           PIC X(10).
-      *        ½èÍý·ï¿ô
+      *        å‡¦ç†ä»¶æ•°
                05  PUSHBA01-OUTPUT-COUNT       PIC X(10).
-      *        ½èÍý·ï¿ô¡Ê¥Ç¡¼¥¿¡Ë
+      *        å‡¦ç†ä»¶æ•°ï¼ˆãƒ‡ãƒ¼ã‚¿ï¼‰
                05  PUSHBA01-NUMBER-OF-RECORDS  PIC X(10).
-      *        ½èÍý·ï¿ô¡ÊÄ¢É¼¡Ë
+      *        å‡¦ç†ä»¶æ•°ï¼ˆå¸³ç¥¨ï¼‰
                05  PUSHBA01-NUMBER-OF-SHEETS   PIC X(10).

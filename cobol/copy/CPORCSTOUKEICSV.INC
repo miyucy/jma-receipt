@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      * ���ףãӣ����極�֥ѥ�᥿        CPORCSTOUKEICSV.INC    *
+      * 統計ＣＳＶ制御サブパラメタ        CPORCSTOUKEICSV.INC    *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSTOUKEICSVAREA.
-      *    ������ʬ                              
+      *    処理区分                              
            03  STOUKEICSV-MODE         PIC X(03).
-      *    ����������     
+      *    復帰コード     
            03  STOUKEICSV-RETURN       PIC S9(03).
-      *    Ϣ��
+      *    連番
            03  STOUKEICSV-RENNUM       PIC 9(04).
-      *    �ˣţ�
+      *    ＫＥＹ
            03  STOUKEICSV-TBL-KEY      PIC X(08).
-      *    ���롼��
+      *    グループ
            03  STOUKEICSV-TBL-GROUP    PIC X(14).
-      *    ����ǯ��
+      *    診療年月
            03  STOUKEICSV-SRYYM        PIC X(06).
-      *    ����ǯ����
+      *    請求年月日
            03  STOUKEICSV-SRYYMD       PIC X(08).
-      *    ������ɣ�
+      *    シェルＩＤ
            03  STOUKEICSV-SHELLID      PIC X(20).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  STOUKEICSV-PTID         PIC 9(10).
-      *    ������Ϣ��
+      *    処理内連番
            03  STOUKEICSV-SHORI-RENNUM PIC 9(04).
-      *    �����ѥե饰	
+      *    印刷済フラグ	
            03  STOUKEICSV-PUTFLG       PIC X(01).
-      *    ������ʬ
+      *    入外区分
            03  STOUKEICSV-NYUGAIKBN    PIC X(01).
-      *    ���Ǽ���
+      *    先格納場所
            03  STOUKEICSV-TO-FOLDER    PIC X(200).
-      *    ��ե�����̾
+      *    先ファイル名
            03  STOUKEICSV-TO-DATA      PIC X(200).
-      *    �����ɶ�ʬ�ʶ��򡢣����ӡݣ��� �����ţգá�
+      *    コード区分（空白、１：Ｓ−ｊｉｓ ２：ＥＵＣ）
            03  STOUKEICSV-CODE-TYPE    PIC X(01).
-      *    Ģɼ�����ȥ�
+      *    帳票タイトル
            03  STOUKEICSV-TITLE        PIC X(100).
-      *    Ģɼ�ǡ���
+      *    帳票データ
            03  STOUKEICSV-CSVDATA      PIC X(20000).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSPTNUM.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : 
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ¥µº‘»÷πÊ∆˛ŒœΩËÕ˝
-      *   ÷µ—•®•È°º•≥°º•…  : 00:¿µæÔ°°99:∫Æ∫ﬂ•®•È°º
-      *                      10:¬–æ›•«°º•ø§ §∑
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  02.06.04    ¬ø°π«º        ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : 
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ÊÇ£ËÄÖÁï™Âè∑ÂÖ•ÂäõÂá¶ÁêÜ
+      *  ËøîÂç¥„Ç®„É©„Éº„Ç≥„Éº„Éâ  : 00:Ê≠£Â∏∏„ÄÄ99:Ê∑∑Âú®„Ç®„É©„Éº
+      *                      10:ÂØæË±°„Éá„Éº„Çø„Å™„Åó
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  02.06.04    Â§ö„ÄÖÁ¥ç        Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘        ∆¸…’      ∆‚Õ∆
-      *  02.07.00    NACL-¬¿≈ƒ     05/10/24  MONFUNC ¬–±˛
-      *  03.03.00    NACL-¬ø°π«º   06/10/06  Ãæ¡∞∏°∫˜§Œƒ…≤√
-      *  03.05.00    NACL-¬ø°π«º  07/04/XX  •∞•Î°º•◊ø«Œ≈¬–±˛
-      *  04.04.00    NACL-¬ø°π«º  09/01/29  À‹±° ¨±°¬–±˛
-      *  04.05.00    NACL-¬ø°π«º  09/10/27  ≥»ƒ•¥¡ª˙¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ        Êó•‰ªò      ÂÜÖÂÆπ
+      *  02.07.00    NACL-Â§™Áî∞     05/10/24  MONFUNC ÂØæÂøú
+      *  03.03.00    NACL-Â§ö„ÄÖÁ¥ç   06/10/06  ÂêçÂâçÊ§úÁ¥¢„ÅÆËøΩÂä†
+      *  03.05.00    NACL-Â§ö„ÄÖÁ¥ç  07/04/XX  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
+      *  04.04.00    NACL-Â§ö„ÄÖÁ¥ç  09/01/29  Êú¨Èô¢ÂàÜÈô¢ÂØæÂøú
+      *  04.05.00    NACL-Â§ö„ÄÖÁ¥ç  09/10/27  Êã°ÂºµÊº¢Â≠óÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,14 +48,14 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-PTNUM           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -65,7 +65,7 @@
            03  IDX-S1              PIC 9(04).
            03  IDX-S2              PIC 9(04).
       *
-      *    •Ô°º•ØŒŒ∞Ë
+      *    „ÉØ„Éº„ÇØÈ†òÂüü
        01  WRK-AREA.
            03  WRK-PTNUM           PIC X(20).
            03  WRK-PTID            PIC 9(10).
@@ -83,55 +83,55 @@
            03  WRK-KANACHK-SYUBETU     PIC 9(01).
            03  WRK-KANACHK-OUT-INPUT   PIC X(1000).
       *
-      *     ›¬∏•π•—ŒŒ∞Ë
+      *    ‰øùÂ≠ò„Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ¥µº‘•ﬁ•π•ø°›
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø‚àí
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *    ¥µº‘»÷πÊ —¥π•ﬁ•π•ø
+      *    ÊÇ£ËÄÖÁï™Âè∑Â§âÊèõ„Éû„Çπ„Çø
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„Çø
            COPY    "CPSYSKANRI.INC".
-      *    ¥µº‘»÷πÊπΩ¿Æ¥…Õ˝æ Û
+      *    ÊÇ£ËÄÖÁï™Âè∑ÊßãÊàêÁÆ°ÁêÜÊÉÖÂ†±
            COPY  "CPSK1009.INC".
       *
            COPY    "MCPAREA".
       *
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
+      *    ÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØ„Éë„É©„É°„Çø
            COPY    "CPORCSKANACHK.INC".
-      *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
+      *    ÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØ„Éë„É©„É°„Çø
            COPY    "CPORCSKANACHK2.INC".
-      *   ¥µº‘»÷πÊ —¥π•µ•÷
+      *   ÊÇ£ËÄÖÁï™Âè∑Â§âÊèõ„Çµ„Éñ
            COPY    "CPORCSPTID.INC".
       *
-      *    ≥»ƒ• ∏ª˙¬–±˛
+      *    Êã°ÂºµÊñáÂ≠óÂØæÂøú
            COPY    "CPORCSSTRING.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *    COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSPTNUM.INC".
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
@@ -140,7 +140,7 @@
            .
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -150,14 +150,14 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            MOVE    SPA-AREA            TO  WRK-SPA-AREA
       *
-      *    ¥µº‘»÷πÊπΩ¿Æ ‘Ω∏
+      *    ÊÇ£ËÄÖÁï™Âè∑ÊßãÊàêÁ∑®ÈõÜ
            PERFORM 1000-SYS1009-HEN-SEC
       *
            IF      SPA-ENCODING        =   2
-      *        ≥»ƒ•¥¡ª˙¬–±˛
+      *        Êã°ÂºµÊº¢Â≠óÂØæÂøú
                INITIALIZE                  ORCSKANACHK2AREA
                MOVE    "1"                 TO  KANACHK2-SYORI
                MOVE    SPTNUM-PTNUM        TO  KANACHK2-MAE-INPUT
@@ -169,13 +169,13 @@
                MOVE    KANACHK2-MAX        TO  WRK-KANACHK-MAX
                MOVE    KANACHK2-SYUBETU    TO  WRK-KANACHK-SYUBETU
                IF      KANACHK2-RC      NOT =   ZERO
-      *        ∫Æ∫ﬂ•®•È°º
+      *        Ê∑∑Âú®„Ç®„É©„Éº
                    MOVE    99              TO  SPTNUM-RC
                    MOVE    ZERO            TO  WRK-KANACHK-MAX
                    MOVE    9               TO  WRK-KANACHK-SYUBETU
                END-IF
            ELSE
-      *        ≥»ƒ•¥¡ª˙…‘≤ƒ
+      *        Êã°ÂºµÊº¢Â≠ó‰∏çÂèØ
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    SPTNUM-PTNUM        TO  KANACHK-MAE-INPUT
@@ -187,23 +187,23 @@
                MOVE    KANACHK-MAX         TO  WRK-KANACHK-MAX
                MOVE    KANACHK-SYUBETU     TO  WRK-KANACHK-SYUBETU
                IF      KANACHK-RC       NOT =   ZERO
-      *        ∫Æ∫ﬂ•®•È°º
+      *        Ê∑∑Âú®„Ç®„É©„Éº
                    MOVE    99              TO  SPTNUM-RC
                    MOVE    ZERO            TO  WRK-KANACHK-MAX
                    MOVE    9               TO  WRK-KANACHK-SYUBETU
                END-IF
            END-IF
-      *    ∫«¬Á∑ÂøÙ§¨£≤£∞∞ æÂ§Œª˛°¢£≤£∞§»§π§Î
+      *    ÊúÄÂ§ßÊ°ÅÊï∞„ÅåÔºíÔºê‰ª•‰∏ä„ÅÆÊôÇ„ÄÅÔºíÔºê„Å®„Åô„Çã
            IF      WRK-KANACHK-MAX     >   20
                MOVE    20              TO  WRK-KANACHK-MAX
            END-IF
       *
            EVALUATE    WRK-KANACHK-SYUBETU
                WHEN    1
-      *            »æ≥—° ¥µº‘»÷πÊ°À
+      *            ÂçäËßíÔºàÊÇ£ËÄÖÁï™Âè∑Ôºâ
                    PERFORM 100-PTID-SET-SEC
                WHEN    2
-      *            ¡¥≥—° ¥µº‘ª·Ãæ°À
+      *            ÂÖ®ËßíÔºàÊÇ£ËÄÖÊ∞èÂêçÔºâ
                    MOVE    WRK-KANACHK-OUT-INPUT   TO  SPTNUM-PTNUM
                    PERFORM 200-NAME-SET-SEC
       *
@@ -218,21 +218,21 @@
            .
       *
       *****************************************************************
-      *    ¥µº‘»÷πÊπΩ¿Æ¥…Õ˝æ Û ‘Ω∏ΩËÕ˝
+      *    ÊÇ£ËÄÖÁï™Âè∑ÊßãÊàêÁÆ°ÁêÜÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        1000-SYS1009-HEN-SEC                SECTION.
       *
-      *    ∞ÂŒ≈µ°¥ÿ»÷πÊ
+      *    ÂåªÁôÇÊ©üÈñ¢Áï™Âè∑
            IF      SPTNUM-GRPHOSPNUM    NOT =   ZERO
                MOVE    SPTNUM-GRPHOSPNUM        TO  WRK-SPA-HOSPNUM
-      *        ¥µº‘»÷πÊπΩ¿Æ¥…Õ˝æ Û ‘Ω∏
+      *        ÊÇ£ËÄÖÁï™Âè∑ÊßãÊàêÁÆ°ÁêÜÊÉÖÂ†±Á∑®ÈõÜ
                PERFORM 10001-SYS1009-SPA-SEC
            END-IF
            .
        1000-SYS1009-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘»÷πÊπΩ¿Æ¥…Õ˝æ Û ‘Ω∏ΩËÕ˝
+      *    ÊÇ£ËÄÖÁï™Âè∑ÊßãÊàêÁÆ°ÁêÜÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        10001-SYS1009-SPA-SEC                SECTION.
       *
@@ -263,7 +263,7 @@
                                        TO  WRK-SPA-1009-HJNKSIRENNUMKBN
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                        TO  WRK-SPA-1009-HJNKSIRENNUMKETA
-      *≥»ƒ•πΩ¿Æ∂Ë ¨
+      *Êã°ÂºµÊßãÊàêÂå∫ÂàÜ
                MOVE    SYS-1009-KKCKSIKBN
                                        TO  WRK-SPA-1009-KKCKSIKBN
                MOVE    SYS-1009-KKCKSIMAEKETA
@@ -279,13 +279,13 @@
       *
       *
       *****************************************************************
-      *    ¥µº‘£…£ƒ∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÔº©Ôº§Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        100-PTID-SET-SEC                SECTION.
       *
            MOVE    1                   TO  SPTNUM-SYUBETU
       *
-      *    ∂ı«Ú§ÚΩ¸§Ø(…∏Ω‡πΩ¿Æ°¢øÙª˙∑ø°À
+      *    Á©∫ÁôΩ„ÇíÈô§„Åè(Ê®ôÊ∫ñÊßãÊàê„ÄÅÊï∞Â≠óÂûãÔºâ
            IF     (SPA-1009-PTNUMKSIKBN    =   "2" )  OR
                  ((SPA-1009-PTNUMKSIKBN    =   "1" ) AND
                   (SPA-1009-JIYKSIKBN      =   "2" ))
@@ -323,7 +323,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘ª·Ãæ∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÊ∞èÂêçÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        200-NAME-SET-SEC                SECTION.
       *
@@ -333,10 +333,10 @@
                                        TO  WRK-NAME
       *    COMPUTE IDX                 =   KANACHK2-MAX  +  1
       *    MOVE    "%"                 TO  WRK-NAME(IDX:1)
-      *    …Ù ¨∏°∫˜
+      *    ÈÉ®ÂàÜÊ§úÁ¥¢
            PERFORM 201-NAME-HEN-SEC
       *
-      *    ¥¡ª˙∏°∫˜
+      *    Êº¢Â≠óÊ§úÁ¥¢
            INITIALIZE                  PTINF-REC
            MOVE    WRK-SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    SPACE               TO  PTINF-NAME
@@ -345,7 +345,7 @@
            MOVE    WRK-NAME
                                        TO  PTINF-KANANAME
       *
-      *    ¥µº‘•ﬁ•π•ø°º§Ú¥¡ª˙ª·Ãæ§«∏°∫˜
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø„Éº„ÇíÊº¢Â≠óÊ∞èÂêç„ÅßÊ§úÁ¥¢
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -373,7 +373,7 @@
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ¥µº‘∑ËƒÍ
+      *    ÊÇ£ËÄÖÊ±∫ÂÆö
            IF      IDX                 =   1
                INITIALIZE                      ORCSPTIDAREA
                MOVE    WRK-SPA-HOSPNUM     TO  SPTID-HOSPNUM
@@ -387,11 +387,11 @@
                    MOVE    SPTID-PTNUM         TO  SPTNUM-PTNUM
                END-IF
            END-IF
-      *    ¥µº‘§ §∑
+      *    ÊÇ£ËÄÖ„Å™„Åó
            IF      IDX                 =   0
                MOVE    10                  TO  SPTNUM-RC
            END-IF
-      *    ¥µº‘ £øÙ
+      *    ÊÇ£ËÄÖË§áÊï∞
            IF      IDX                 >   1
                MOVE    20                  TO  SPTNUM-RC
            END-IF
@@ -401,26 +401,26 @@
            EXIT.
       *    
       *****************************************************************
-      *    ª·Ãæ…Ù ¨∏°∫˜ ‘Ω∏ΩËÕ˝
+      *    Ê∞èÂêçÈÉ®ÂàÜÊ§úÁ¥¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        201-NAME-HEN-SEC                 SECTION.
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-      *    °ˆ§Œº°§Œ°°∫ÔΩ¸
+      *    Ôºä„ÅÆÊ¨°„ÅÆ„ÄÄÂâäÈô§
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "sub"               TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "°ˆ°°"              TO  ORCSSTR-STRING2
-           MOVE    "°ˆ"                TO  ORCSSTR-STRING3
+           MOVE    "Ôºä„ÄÄ"              TO  ORCSSTR-STRING2
+           MOVE    "Ôºä"                TO  ORCSSTR-STRING3
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            MOVE    ORCSSTR-STRING1     TO  WRK-NAME
-      *    °ˆ§œª·Ãæ§«∏°∫˜§»§π§Î
+      *    Ôºä„ÅØÊ∞èÂêç„ÅßÊ§úÁ¥¢„Å®„Åô„Çã
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "°ˆ"                TO  ORCSSTR-STRING2
+           MOVE    "Ôºä"                TO  ORCSSTR-STRING2
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1        =   ZERO
@@ -458,7 +458,7 @@
                MOVE    SPACE           TO  WRK-NAME
                STRING  WRK-NAME1       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
-                       "°°"            DELIMITED  BY  SIZE
+                       "„ÄÄ"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                                        INTO    WRK-NAME
@@ -468,7 +468,7 @@
                   (WRK-NAME2       NOT =   SPACE )
                MOVE    SPACE           TO  WRK-NAME
                STRING  "%"             DELIMITED  BY  SIZE
-                       "°°"            DELIMITED  BY  SIZE
+                       "„ÄÄ"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                                        INTO    WRK-NAME
@@ -488,7 +488,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘•ﬁ•π•ø°º∆…π˛ΩËÕ˝
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø„ÉºË™≠ËæºÂá¶ÁêÜ
       *****************************************************************
        910-PTINF-READ-SEC        SECTION.
       *
@@ -506,7 +506,7 @@
        910-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    •∑•π•∆•‡¥À‹•¡•ß•√•ØΩËÕ˝
+      *    „Ç∑„Çπ„ÉÜ„É†Âü∫Êú¨„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        900-SYSKANRI-KEY10-SEC     SECTION.
       *
@@ -536,7 +536,7 @@
        900-SYSKANRI-KEY10-EXT.
            EXIT.
       *****************************************************************
-      *    •∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -549,7 +549,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -564,7 +564,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

@@ -13,7 +13,7 @@ xml_medicalav3res5 {
 	Api_Result				varchar(3);
 	Api_Result_Message			varchar(100);
 	Reskey					varchar(100);
-#--- ´µ¼Ô¾ðÊó
+#--- æ‚£è€…æƒ…å ±
 	Patient_Information {
 		Patient_ID			varchar(20);
         	WholeName			varchar(100);
@@ -21,90 +21,90 @@ xml_medicalav3res5 {
         	BirthDate			varchar(10);
         	Sex				varchar(1);
     	};
-#--- ¿ÇÎÅÆüÉÕ
+#--- è¨ºç™‚æ—¥ä»˜
 	Perform_Date				varchar(07);
-#---    ¿ÇÎÅÆâÍÆ¡ÊÅêÌô¡Ë
+#---    è¨ºç™‚å†…å®¹ï¼ˆæŠ•è–¬ï¼‰
 	Medical_Information  {
 		Medical_Info  {
-#---            ¿ÇÎÅ²Ê
+#---            è¨ºç™‚ç§‘
 	       		Department_Code			varchar(2);
 	        	Department_Name			varchar(20);
-#---            ÊÝ¸±ÁÈ¹ç¤»
+#---            ä¿é™ºçµ„åˆã›
 			Insurance_Combination_Number	varchar(04);
          	   	InsuranceProvider_WholeName	varchar(20);
             		PublicInsurance_Information   {
                 		PublicInsurance_Name	varchar(20);
             		} [4];
-#---                    ÊÝ¸±ÁÈ¹ç¤»¾õÂÖ
+#---                    ä¿é™ºçµ„åˆã›çŠ¶æ…‹
 			Insurance_Combination_Mode      varchar(01);
 #---
 			Medical_Class_Group		varchar(02);
 			Medical_Class			varchar(03);
 			Medical_Class_Name		varchar(40);
-#---                    »»ÄêÆü¡Ê¹ç·×¡Ë
+#---                    ç®—å®šæ—¥ï¼ˆåˆè¨ˆï¼‰
 			Medical_Day_Information  {
 			    Medical_Day_Info     {
 				Medical_Class_Number	varchar(03);
 				} [31] ;
 			} [1] ;
-#---                    Æ±ÆüºÆÆþ±¡Æü
+#---                    åŒæ—¥å†å…¥é™¢æ—¥
 			Readmission_Day_Information  {
 			    Readmission_Day_Info     {
 				Readmission_Day		varchar(02);
 				Readmission_Class_Number	varchar(03);
 				} [31] ;
 			};
-#----->                 ºÞÅÀ¿ô
+#----->                 å‰¤ç‚¹æ•°
 			Medical_Point 			varchar(08);
-#----->                 Êñ³ç¶èÊ¬
+#----->                 åŒ…æ‹¬åŒºåˆ†
 			Medical_Inclusion_Class		varchar(05);
 			Medication_Info    {
 				Medication_Code		varchar(09);
 				Medication_Name		varchar(80);
 				Medication_Number	varchar(11);
-#----->                         Ã±°Ì¥³¡¼¥É
+#----->                         å˜ä½ã‚³ãƒ¼ãƒ‰
 				Medication_Unit_Code		varchar(3);
 				Medication_Unit_Code_Name	varchar(24);
 				Medication_Auto_Addition 	varchar(01);
 			} [50];
 		}[100] ;
 		};
-#---    ¿ÇÎÅÆâÍÆ¡ÊÆþ±¡Ä´ºÞÎÁ¼«Æ°»»Äê¡Ë
+#---    è¨ºç™‚å†…å®¹ï¼ˆå…¥é™¢èª¿å‰¤æ–™è‡ªå‹•ç®—å®šï¼‰
 	Ad_Dispensing_Information  {
 		Ad_Dispensing_Info  {
-#---            ¿ÇÎÅ²Ê
+#---            è¨ºç™‚ç§‘
 	       		Department_Code			varchar(2);
 	        	Department_Name			varchar(20);
-#---            ÊÝ¸±ÁÈ¹ç¤»
+#---            ä¿é™ºçµ„åˆã›
 			Insurance_Combination_Number	varchar(04);
          	   	InsuranceProvider_WholeName	varchar(20);
             		PublicInsurance_Information   {
                 		PublicInsurance_Name	varchar(20);
             		} [4];
-#---                    ÊÝ¸±ÁÈ¹ç¤»¾õÂÖ
+#---                    ä¿é™ºçµ„åˆã›çŠ¶æ…‹
 			Insurance_Combination_Mode      varchar(01);
-#---                    ºÞÈÖ¹æ
+#---                    å‰¤ç•ªå·
 			Medical_Number			varchar(08);
 #---
 			Medical_Class_Group		varchar(02);
 			Medical_Class			varchar(03);
 			Medical_Class_Name		varchar(40);
-#---                    »»ÄêÆü¡Ê¹ç·×¡Ë
+#---                    ç®—å®šæ—¥ï¼ˆåˆè¨ˆï¼‰
 			Medical_Day_Information  {
 			    Medical_Day_Info     {
 				Medical_Class_Number	varchar(03);
 				} [31] ;
 			} [1] ;
-#---                    Æ±ÆüºÆÆþ±¡Æü
+#---                    åŒæ—¥å†å…¥é™¢æ—¥
 			Readmission_Day_Information  {
 			    Readmission_Day_Info     {
 				Readmission_Day		varchar(02);
 				Readmission_Class_Number	varchar(03);
 				} [31] ;
 			};
-#----->                 ºÞÅÀ¿ô
+#----->                 å‰¤ç‚¹æ•°
 			Medical_Point 			varchar(08);
-#----->                 Êñ³ç¶èÊ¬
+#----->                 åŒ…æ‹¬åŒºåˆ†
 			Medical_Inclusion_Class		varchar(05);
 			Medication_Info    {
 				Medication_Code		varchar(09);
@@ -113,7 +113,7 @@ xml_medicalav3res5 {
 			} [5];
 		}[10] ;
 		};
-#--- ¥á¥Ã¥»¡¼¥¸
+#--- ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Medical_Message_Information {
         Medical_Message_Info {
        		Medical_Result			varchar(4);

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,27 +18,27 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC30200204.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ź԰٥����å�����������͡�
-      *                      �ȣ������������б�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 診療行為チェック、算定（注射）
+      *                      Ｈ１４．４改正対応
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC��¿��Ǽ  01/04/19  �����Ź԰���ǡ���ũ�ϣ���Ȥ���
-      * 01.00.02     MCC��¿��Ǽ  01/05/16  ��ũ���ͤ�Ƚ�����ż��̤Ȥ���
-      * 01.00.03     NACL��¿��Ǽ 02/11/22  ��ũ����Ʊ����ʣ���顼�ɲ�
-      * 01.00.04     NACL��¿��Ǽ 02/12/09  ư̮���ͥ��顼�ɲ�
-      * 01.00.05     NACL��¿��Ǽ 03/01/07  ������ũ�����ɲ�
-      * 01.00.06     NACL��¿��Ǽ 03/04/01  �濴��̮��ưȯ���ɲ�
-      * 01.00.07     NACL��¿��Ǽ 03/04/10  �鲼�������Ѵ��ʤ�(312)�ɲ�
-      * 01.00.08     NACL��¿��Ǽ 03/09/04  ������Ȥλ��ꥨ�顼�ɲ�
-      * 01.00.09     NACL��¿��Ǽ 03/10/03  ������Ȥλ��ꥨ�顼��ٹ��
-      * 01.00.10     NACL-¿��Ǽ  05/12/14  MONFUNC �б�
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC−多々納  01/04/19  １診療行為内で、点滴は１回とする
+      * 01.00.02     MCC−多々納  01/05/16  点滴注射の判定を診療種別とする
+      * 01.00.03     NACL−多々納 02/11/22  点滴注射同時重複エラー追加
+      * 01.00.04     NACL−多々納 02/12/09  動脈注射エラー追加
+      * 01.00.05     NACL−多々納 03/01/07  入院点滴処理追加
+      * 01.00.06     NACL−多々納 03/04/01  中心静脈自動発生追加
+      * 01.00.07     NACL−多々納 03/04/10  皮下筋注射変換なし(312)追加
+      * 01.00.08     NACL−多々納 03/09/04  手術料との算定エラー追加
+      * 01.00.09     NACL−多々納 03/10/03  手術料との算定エラーを警告へ
+      * 01.00.10     NACL-多々納  05/12/14  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -53,7 +53,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
@@ -76,7 +76,7 @@
            03  FLG-TENTEKI         PIC 9(01).
       *
            03  FLG-SYUGIADD        PIC 9(01).
-      *    ư̮����
+      *    動脈注射
            03  FLG-DOUCHU          PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
@@ -86,7 +86,7 @@
            03  FLG-GAZO-ARI        PIC 9(01).
       *
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -109,7 +109,7 @@
       *
            03  IDX-HAI             PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
            03  WRK-SRYCD-2         PIC X(09).
@@ -128,18 +128,18 @@
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
       *
-      *    �������ܣ�ǯ
+      *    入院日＋１年
            03  WRK-NYMD.
                05  WRK-NYY             PIC 9(04).
                05  WRK-NMM             PIC 9(02).
                05  WRK-NDD             PIC 9(02).
-      *    ������ã��
+      *    ６歳到達日
            03  WRK-BYMD.
                05  WRK-BYY             PIC 9(04).
                05  WRK-BMM             PIC 9(02).
                05  WRK-BDD             PIC 9(02).
       *
-      *    �굻������
+      *    手技別日付
            03  WRK-TEN-SRYCD       PIC X(09).
            03  WRK-TEN-SRYCD1      PIC X(09).
            03  WRK-TEN-SRYCD2      PIC X(09).
@@ -148,10 +148,10 @@
                05  WRK-NIDAY           PIC 9(01)   OCCURS   31.
       *
            03  WRK-TEN-AUTO        PIC X(01).
-      *    ǯ��Ƚ����
+      *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
-      *    �����β��
+      *    入院の回数
            03  WRK-NISUU-AREA.
                05  WRK-NISUU-TBL           OCCURS   31.
                    07  WRK-DAY             PIC 9(02).
@@ -164,15 +164,15 @@
            03  WRK-H-DAY               PIC 9(02).
            03  WRK-H-SEL               PIC X(01).
       *
-      *    �������
+      *    最大液量
            03  WRK-MAX-RYOU            PIC 9(04).
            03  WRK-EKIRYOU             PIC 9(09)V99.
            03  WRK-GOK-RYOU            PIC 9(09)V99.
-      *    ���ż���
+      *    診療種別
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-SRYKBN              PIC X(02).
       *
-      *    ��ѥ����å�
+      *    手術チェック
            03  FLG-SYUJUTU             PIC 9(01).
            03  IDX-CHU                 PIC 9(04).
       *
@@ -185,26 +185,26 @@
                05  TBL-TEN-SRYCD2      PIC X(09).
                05  TBL-AUTO-SRYCD      PIC X(09).
                05  TBL-TEN-IDX         PIC 9(04).
-      *        ���̵ͭ
+      *        手術有無
                05  TBL-SYU-DAY         PIC 9(01).
                05  TBL-SYU-IDX         PIC 9(04).
-      *        ����������ũ̵ͭ
+      *        画像診断点滴有無
                05  TBL-GAZ-DAY         PIC 9(01).
                05  TBL-GAZ-IDX         PIC 9(04).
-      *        ��ʪ��Ū����
+      *        生物学的製剤
                05  TBL-SEIBUTU         PIC 9(01).
                05  TBL-SEIBUTU-IDX     PIC 9(04).
                05  TBL-SEIBUTU-ARI     PIC X(09).
-      *        ���ǲû�
+      *        麻毒加算
                05  TBL-MADOKU          PIC 9(01).
                05  TBL-MADOKU-IDX      PIC 9(04).
                05  TBL-MADOKU-ARI      PIC X(09).
-      *        ��Ѱʳ�����
+      *        手術以外液量
                05  TBL-CHUSYA-2        PIC 9(09)V99.
                05  TBL-SEIBUTU-2       PIC 9(01).
                05  TBL-MADOKU-2        PIC 9(01).
       *
-      *   �濴��̮
+      *   中心静脈
        01  TBL-IVH-NISUU-AREA.
            03  TBL-IVH-NISUU-OCC           OCCURS   31.
                05  TBL-IVH-DAY             PIC 9(01).
@@ -214,20 +214,20 @@
                05  TBL-IVH-CHUIDX          PIC 9(04).
       *
                05  TBL-IVHA-SRYCD          PIC X(09).
-      *        ���̵ͭ
+      *        手術有無
                05  TBL-IVH-SYU-DAY         PIC 9(01).
       *
-      *        ��ʪ��Ū����
+      *        生物学的製剤
                05  TBL-IVH-SEIBUTU         PIC 9(01).
-      *        ���ǲû�
+      *        麻毒加算
                05  TBL-IVH-MADOKU          PIC 9(01).
-      *    ������ʬ
+      *    前回算定分
                05  TBL-IVH2-CHUSYA         PIC 9(09)V99.
-      *        ��ʪ��Ū����
+      *        生物学的製剤
                05  TBL-IVH2-SEIBUTU        PIC 9(01).
-      *        ���ǲû�
+      *        麻毒加算
                05  TBL-IVH2-MADOKU         PIC 9(01).
-      *    ��Ѱʳ�����
+      *    手術以外液量
                05  TBL-IVH-CHUSYA-2        PIC 9(09)V99.
                05  TBL-IVH-SEIBUTU-2       PIC 9(01).
                05  TBL-IVH-MADOKU-2        PIC 9(01).
@@ -245,57 +245,57 @@
            03  WRK-KEY-SRYYM               PIC X(06).
            03  WRK-KEY-SRYCD               PIC X(09).
       *
-      *    ��¸�ѣӣУ�
+      *    保存用ＳＰＡ
        01  HZN-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HZN-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    �����å��ޥ�����
+      *    チェックマスタ−
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ������������
+      *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *
-      *    ���Ź԰ٻ����Խ��ѥ�᥿
+      *    診療行為算定編集パラメタ
            COPY    "CPORCSC90.INC".
       *
-      *    �����̻������Խ��ѥ�᥿
+      *    入院通算日数編集パラメタ
            COPY    "CPORCSTUSAN.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���Ź԰ٻ���������å��ѥ�᥿
+      *    診療行為算定歴チェックパラメタ
            COPY    "CPORCSC91.INC".
-      *    ���Ź԰������Խ������ܥ����å�
+      *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
@@ -303,20 +303,20 @@
       *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -327,7 +327,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -336,17 +336,17 @@
            INITIALIZE                  IDX-AREA
       *
            EVALUATE    LNK-ORCSC-KBN
-      *        ���̡������å����Խ�����ư����
+      *        剤別　チェック、編集、自動算定
                WHEN    "1"
                    PERFORM 100-SEL-SYORI-SEC
-      *        ���ΤΥ����å�
+      *        全体のチェック
                WHEN    "2"
                    IF      SPA-HKNCOMBINUM     =   "9999"
                        CONTINUE
                    ELSE
                        PERFORM 200-ALL-SYORI-SEC
                    END-IF
-      *        ��ư����
+      *        自動算定
                WHEN    "3"
                    IF     (SPA-HKNCOMBINUM     =   "9999" )  OR
                           (LNK-ORCSC-PG    NOT =   "K02"  )
@@ -362,11 +362,11 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���̤Υ����å����Խ�����ư�������
+      *    剤別のチェック、編集、自動算定処理
       *****************************************************************
        100-SEL-SYORI-SEC                SECTION.
       *
-      *    �����å�����ư����
+      *    チェック、自動算定
            PERFORM 1001-NAI-CHK-SEC
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
@@ -374,7 +374,7 @@
                GO      TO      100-SEL-SYORI-EXT
            END-IF
       *
-      *    �����׻�
+      *    点数計算
            PERFORM 1002-TENSU-KEI-SEC
            IF      SPA-ERRCD           =   SPACE
                MOVE    WRK-ERRCD          TO  SPA-ERRCD
@@ -385,7 +385,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        1001-NAI-CHK-SEC                  SECTION.
       *
@@ -444,25 +444,25 @@
                        END-IF
       *
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10011-CHK-SEC
                END-EVALUATE
            END-PERFORM
       *
-      *    ��ũ�λ����굻���μ�ư����
+      *    点滴の時、手技料の自動修正
            IF      WRK-COM-SRYSYUKBN(01)   =   "330"
                PERFORM 1002-TENTEKI-CHK-SEC
            END-IF
       *
-      *    �鲼���ͤλ����굻���μ�ư����
+      *    皮下注射の時、手技料の自動修正
            IF      WRK-COM-SRYSYUKBN(01)   =   "310"
                PERFORM 1002-CHUSYA-CHK-SEC
            END-IF
       *
-      *    ���̤Τߤλ����굻���μ�ưȯ��
+      *    種別のみの時、手技料の自動発生
            IF     (FLG-SYUGI           =   ZERO  )  AND
                   (WRK-ERRCD           =   SPACE )
-      *        ���ޤΤߤλ��оݳ�
+      *        薬剤のみの時対象外
                IF      WRK-COM-SRYSYUKBN(01)(3:1)  =   "1"
                    CONTINUE
                ELSE
@@ -471,7 +471,7 @@
            END-IF
       *
            IF      IDX-SYU             >   ZERO
-      *        ��ư�û����ɲä���
+      *        自動加算を追加する
                PERFORM 1004-JIDO-KASAN-SEC
            END-IF
       *
@@ -484,13 +484,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        10011-CHK-SEC                  SECTION.
       *
-      *    �ƥ����å�����
+      *    各チェック処理
            EVALUATE    WRK-MOJI
-      *        �굻��
+      *        手技料
                WHEN    "1"
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "1"
                        IF      FLG-SYUGI           =   1
@@ -499,33 +499,33 @@
                                                                (IDX-Z)
                        END-IF
                        MOVE    1                   TO  FLG-SYUGI
-      *                ���Ϥ�ͭ�ä�������ư�û������ϤȤ���
+      *                入力が有った時、自動加算を入力とする
                        MOVE    SPACE                TO  WRK-COM-AUTOKBN
                                                                 (IDX-Z)
-      *                �굻���ΰ��֥��å�
+      *                手技料の位置セット
                        MOVE    IDX-Z               TO  IDX-SYU
                    END-IF
-      *            �������κ����ƤΥ����å�
+      *            入院時の剤内容のチェック
                    IF     (WRK-COM-DATAKBN (IDX-Z) =   "2" ) AND
                           (SPA-NYUGAIKBN           =   "1"   )
                        PERFORM 1005-ZAI-CHK-SEC
                    END-IF
       *
-      *        ����
+      *        薬剤
                WHEN    "6"
-      *            ���Ƕ�ʬ
+      *            麻毒区分
                    IF      WRK-COM-MADOKUKBN (IDX-Z)   =   1
                        MOVE   1                TO  FLG-MADOKU
                    END-IF
-      *            ��ʪ��Ū���޶�ʬ
+      *            生物学的製剤区分
                    IF      WRK-COM-SEIBUTUKBN(IDX-Z)   =   1
                        MOVE   1                TO  FLG-SEIBUTU
                    END-IF
-      *            ���ͱ��̲û�
+      *            注射液量加算
                    COMPUTE WRK-CHUSYA      =  (WRK-COM-CSYYOURYO(IDX-Z)
                                            *   WRK-COM-SURYO  (IDX-Z))
                                            +   WRK-CHUSYA
-      *            �����������ޤȼ굻����ʬ����
+      *            入院時の薬剤と手技料を分ける
                    IF    (SPA-NYUGAIKBN        =   "1" ) AND
                          (FLG-SYUGI            =   1   ) AND
                          (WRK-COM-SRYSYUKBN (IDX-Z)    =   "330" OR
@@ -533,18 +533,18 @@
                        MOVE    "9020"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
-      *            �����Ѵ�
+      *            残量廃棄
                    PERFORM 1006-HAIKI-SYORI-SEC
       *
-      *        ���
+      *        器材
                WHEN    "7"
-      *                �ե����λ����顼
+      *                フィルムの時エラー
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "3"
                        MOVE    "0047"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
                    END-IF
       *
-      *            ���ǡ����Ǥϥ��顼
+      *            酸素・窒素はエラー
                    IF      WRK-COM-TOKUKIZAISBT1 (IDX-Z) =   2
                        MOVE    "0039"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
@@ -555,11 +555,11 @@
        10011-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ������Ȥ�̵ͭ
+      *    残量廃棄コメントの有無
       *****************************************************************
        1006-HAIKI-SYORI-SEC           SECTION.
       *
-      *    ����ץ�λ��������ʲ�Ƚ��
+      *    アンプルの時、小数以下判定
            IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
                MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
                IF     (WRK-SURYO-S2              >   ZERO    )  AND
@@ -573,7 +573,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����κ����ƥ����å�����
+      *    入院の剤内容チェック処理
       *****************************************************************
        1005-ZAI-CHK-SEC           SECTION.
       *
@@ -583,14 +583,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �굻����ưȯ��������
+      *    手技料自動発生成処理
       *****************************************************************
        1003-SYUGIJIDOU-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
            EVALUATE    WRK-COM-SRYSYUKBN (01)
-      *        �鲼��������
+      *        皮下筋肉注射
                WHEN    "310"
                    MOVE    "130000510"         TO  WRK-SRYCD
       ********     IF      LNK-ORCSC-ROUJIN      =   ZERO
@@ -598,10 +598,10 @@
       *            ELSE
       *                MOVE    "130700510"     TO  WRK-SRYCD
       *******      END-IF
-      *        �鲼��������
+      *        皮下筋肉注射
                WHEN    "312"
                    MOVE    "130000510"         TO  WRK-SRYCD
-      *        ��̮����
+      *        静脈注射
                WHEN    "320"
                    MOVE    "130003510"         TO  WRK-SRYCD
       *********    IF      LNK-ORCSC-ROUJIN      =   ZERO
@@ -609,7 +609,7 @@
       *            ELSE
       *                MOVE    "130700610"     TO  WRK-SRYCD
       ********     END-IF
-      *        ��ũ����
+      *        点滴注射
                WHEN    "330"
       *************IF      LNK-ORCSC-ROUJIN      =   ZERO
                        IF      LNK-ORCSC-NENREI-YY     <   6
@@ -620,11 +620,11 @@
       ************ ELSE
       *                MOVE    "130700710"     TO  WRK-SRYCD
       ************ END-IF
-      *            Ʊ�������ܰʹ�
+      *            同日２回目以降
       *????        IF      LNK-ACCT2-SRYCD     NOT =   SPACE
       *????            MOVE    "099303301"         TO  WRK-SRYCD
       *????        END-IF
-      *            �����λ���ȯ�����ʤ�
+      *            入院の時、発生しない
                    IF      SPA-NYUGAIKBN           =   "1"
                        MOVE    SPACE               TO  WRK-SRYCD
                    END-IF
@@ -643,7 +643,7 @@
                END-IF
            END-IF
       *
-      *    Ʊ�������ܷٹ�
+      *    同日２回目警告
            IF     (LNK-ACCT2-SRYCD NOT =   SPACE   )  AND
                   (IDX-SYU             >   ZERO    )  AND
                   (WRK-COM-SRYSYUKBN (01)  =   "330")
@@ -661,11 +661,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ũ�λ��������ˤ��굻�����ѹ�
+      *    点滴の時、液料により手技料を変更
       *****************************************************************
        1002-TENTEKI-CHK-SEC                  SECTION.
       *
-      *    Ʊ�������ܰʹߤ��ѹ��ʤ�
+      *    同日２回目以降は変更なし
            IF     (IDX-SYU             >   ZERO    )  AND
                   (WRK-COM-INPUTCD(IDX-SYU)
                                        =   "099303301")
@@ -673,9 +673,9 @@
                                        +   WRK-CHUSYA
            END-IF
       *
-      *    ���̤ˤ�ꡢ�굻���ѹ�
+      *    液量により、手技料変更
            MOVE    "130009310"         TO  WRK-SRYCD
-      *    �����λ��ʤ�
+      *    入院の時なし
            IF      SPA-NYUGAIKBN       =   "1"
                MOVE    SPACE               TO  WRK-SRYCD
            END-IF
@@ -686,12 +686,12 @@
       *        MOVE    "130700950"         TO  WRK-SRYCD
       *****END-IF
            IF      LNK-ORCSC-NENREI-YY     <   6
-      *        ����̤���ǡ�100ml �ʾ�
+      *        ６歳未満で　100ml 以上
                IF      WRK-CHUSYA      >=  100
                    MOVE    "130003710"     TO  WRK-SRYCD
                END-IF
            ELSE
-      *        ���аʾ�ǡ�500ml �ʾ�
+      *        ６歳以上で　500ml 以上
                IF      WRK-CHUSYA      >=  500
                    MOVE    "130003810"     TO  WRK-SRYCD
       **********   IF      LNK-ORCSC-ROUJIN    =   ZERO
@@ -702,7 +702,7 @@
                END-IF
            END-IF
       *
-      *    Ʊ�������ܰʹߤ��ѹ��ʤ�
+      *    同日２回目以降は変更なし
       *****IF     (IDX-SYU             >   ZERO    )  AND
       *           (WRK-COM-INPUTCD(IDX-SYU)
       *                                =   "099303301")
@@ -732,7 +732,7 @@
                IF      FLG-ADD             =   1
                    MOVE    "1"             TO  WRK-COM-AUTOKBN (IDX-S)
       *
-      *            ���ż��̺��Խ�
+      *            診療種別再編集
                    IF      WRK-COM-SRYSYUKBN(IDX-SYU) 
                                            NOT =   WRK-COM-SRYSYUKBN
                                                              (01)
@@ -757,7 +757,7 @@
       *
            END-IF
       *
-      *    Ʊ�������ܷٹ�
+      *    同日２回目警告
            IF     (LNK-ACCT2-SRYCD NOT =   SPACE   )  AND
                   (IDX-SYU             >   ZERO    )
                IF     (WRK-COM-KZMFLG (IDX-SYU)    =   SPACE )
@@ -773,11 +773,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �鲼�ڤλ��������ˤ��굻�����ѹ�
+      *    皮下筋の時、液料により手技料を変更
       *****************************************************************
        1002-CHUSYA-CHK-SEC                  SECTION.
       *
-      *    ���̤���5ML�ʾ�λ�����̮���ͤ��ѹ�
+      *    液量が、5ML以上の時、静脈注射へ変更
            MOVE    SPACE               TO  WRK-SRYCD
            IF      WRK-CHUSYA          >=  5
       ******** IF      LNK-ORCSC-ROUJIN      =   ZERO
@@ -790,7 +790,7 @@
            IF     (IDX-SYU             >   ZERO    )  AND
                   (WRK-COM-INPUTCD(IDX-SYU)
                                    NOT =   WRK-SRYCD )
-      *        �鲼�������ͤλ��Τ�
+      *        皮下筋肉注射の時のみ
              AND  (WRK-COM-INPUTCD(IDX-SYU)
                                        =   "130000510" )
                MOVE    IDX-SYU             TO  IDX-T
@@ -800,7 +800,7 @@
                IF      FLG-ADD             =   1
                    MOVE    "1"             TO  WRK-COM-AUTOKBN (IDX-S)
       *
-      *            ���ż��̺��Խ�
+      *            診療種別再編集
                    IF      WRK-COM-SRYSYUKBN(IDX-SYU) 
                                            NOT =   WRK-COM-SRYSYUKBN
                                                              (01)
@@ -811,8 +811,8 @@
                            MOVE    WRK-COM-SRYSYUKBN(IDX-SYU)
                                                TO  WRK-GMN-INPUTCD
                                                             (01)(2:3)
-      *                    ���ż���̾�Ρʸ���Ȥ����
-                           MOVE    "��̮����"
+      *                    診療種別名称（固定とする）
+                           MOVE    "静脈注射"
                                                TO  WRK-GMN-MEISYO (01)
                        END-IF
       *
@@ -837,29 +837,29 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�û���������
+      *    自動加算作成処理
       *****************************************************************
        1004-JIDO-KASAN-SEC           SECTION.
       *
-      *    �굻����ľ�����ɲä���
+      *    手技料の直下に追加する
            MOVE    IDX-SYU             TO  IDX-S
       *
-      *    ǯ��û����åȽ���
+      *    年齢加算セット処理
            PERFORM 1007-NYUYOJI-SET-SEC
       *
-      *    ��ʪ��Ū����
+      *    生物学的製剤
            IF      FLG-SEIBUTU         =   1
                MOVE    "130000110"         TO  WRK-SRYCD
-      *        �û������å�����
+      *        加算チェック処理
                PERFORM 1100-KASAN-CHK-SEC
                MOVE    ZERO                TO  FLG-SYUGIADD
                PERFORM 1100-JIDOTUIKA-SEC
            END-IF
       *
-      *    ���ǲû�
+      *    麻毒加算
            IF      FLG-MADOKU          =   1
                MOVE    "130000310"         TO  WRK-SRYCD
-      *        �û������å�����
+      *        加算チェック処理
                PERFORM 1100-KASAN-CHK-SEC
                MOVE    ZERO                TO  FLG-SYUGIADD
                PERFORM 1100-JIDOTUIKA-SEC
@@ -869,7 +869,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ��û��ɲý����ʶ��̡�
+      *    年齢加算追加処理（共通）
       *****************************************************************
        1007-NYUYOJI-SET-SEC            SECTION.
       *
@@ -877,11 +877,11 @@
                    UNTIL      (IDX2        >   4       )   OR
                               (WRK-COM-AGEKSNSRYCD(IDX-SYU IDX2)
                                            =   SPACE  OR  ZERO )
-      *        �û��ɲ�
+      *        加算追加
                MOVE    WRK-COM-AGEKSNSRYCD (IDX-SYU IDX2)
                                            TO  WRK-SRYCD
                MOVE    IDX-SYU             TO  IDX-S
-      *        �û������å�����
+      *        加算チェック処理
                PERFORM 1100-KASAN-CHK-SEC
                MOVE    ZERO                TO  FLG-SYUGIADD
                PERFORM 1100-JIDOTUIKA-SEC
@@ -895,11 +895,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�û���¸�ߥ����å��ý���
+      *    自動加算　存在チェック加処理
       *****************************************************************
        1100-KASAN-CHK-SEC        SECTION.
       *
-      *    ���ּ�ư�û���¸�ߥ����å�
+      *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -916,7 +916,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�û������ɲý���
+      *    自動加算１行追加処理
       *****************************************************************
        1100-JIDOTUIKA-SEC           SECTION.
       *
@@ -928,7 +928,7 @@
                MOVE    IDX-T           TO  IDX-S
            END-IF
       *
-      *    �����ޥ����Խ������ܥ����å�
+      *    点数マスタ編集・基本チェック
            MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
            INITIALIZE                  ORCSC92AREA
            IF      FLG-ARI             =   ZERO
@@ -952,7 +952,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ���顼�λ����ɲäʤ�
+      *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE           TO  SPA-ERRCD
@@ -964,7 +964,7 @@
            END-IF
       *
            MOVE    1                   TO  FLG-ADD
-      *    �굻�����ѹ��λ������Ŷ�ʬ�Υ��åȤϤ��ʤ�
+      *    手技料の変更の時、診療区分のセットはしない
            IF     (FLG-SYUGIADD         =   1    )  OR
                   (IDX-S               =   1  OR  ZERO )
               GO      TO      1100-JIDOTUIKA-EXT
@@ -983,7 +983,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻��Խ�����
+      *    点数計算編集処理
       *****************************************************************
        1002-TENSU-KEI-SEC                  SECTION.
       *
@@ -1024,42 +1024,42 @@
                        CONTINUE
       *
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10021-KEISAN-SEC
                END-EVALUATE
            END-PERFORM
       *
-      *    �ǽ���
-      *    ���������׻�
+      *    最終行
+      *    薬剤点数計算
            MOVE    "2"                 TO  LNK-SC90-KBN
            MOVE    IDX-MAX             TO  LNK-SC90-IDX
            CALL    "ORCSC90"           USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    ���û�
+      *    割合加算
            PERFORM 1006-KASAN-SET-SEC
       *
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   LNK-SC90-TENGAKEI
-      *    �������Խ�
+      *    各点数編集
            MOVE    LNK-SC90-TENSUKEI   TO  WRK-COM-SYUTEN1 (IDX-MAX)
            COMPUTE WRK-COM-YKZTEN (IDX-MAX)
                                        =   LNK-SC90-ZAITEN
                                        +   LNK-SC90-GAITEN
-      *    �������
+      *    器材点数
            MOVE    LNK-SC90-KIZTEN     TO  WRK-COM-KIZAITEN (IDX-MAX)
       *
-      *    �����ס��׻�
+      *    点数計　計算
            COMPUTE WRK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
                                            +   LNK-SC90-ZAITEN
                                            +   LNK-SC90-GAITEN
                                            +   LNK-SC90-KIZTEN
-      *    ��
+      *    計
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
       *
-      *    ���å��ѹ������
+      *    セット用合計点数
            MOVE    WRK-COM-KEI  (IDX-MAX)  TO  LNK-ORCSC-ZAIKEI
            MOVE    WRK-COM-TENSU(IDX-MAX)  TO  LNK-ORCSC-ZAITEN
       *
@@ -1068,7 +1068,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻�����
+      *    点数計算処理
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
@@ -1080,16 +1080,16 @@
                                        ORCSC90AREA
                                        WRK-SCR-REC
       *
-      *    �굻��Ƚ��
+      *    手技料判定
            IF      (WRK-MOJI                   =   "1"  )  AND
                    (WRK-COM-DATAKBN (IDX-Z)    =   "1"  )
                MOVE    IDX-Z               TO  IDX-SYU
            END-IF
-      *    �ƥ����å�����
+      *    各チェック処理
       **** EVALUATE    WRK-MOJI
-      *        ����
+      *        薬剤
       *        WHEN    "6"
-      *            �Ѵ���ͭ�ä������˴������Ȥ��ɲä���
+      *            廃棄が有った時、破棄コメントを追加する
       *            IF     (LNK-SC90-HAIKI          =   1 )
       *                MOVE    IDX-Z               TO  IDX-HAI
       *                PERFORM 10011-HAIKI-ADD-SEC
@@ -1101,7 +1101,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �˴������ȼ�ưȯ��������
+      *    破棄コメント自動発生成処理
       *****************************************************************
        10011-HAIKI-ADD-SEC             SECTION.
       *
@@ -1120,16 +1120,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���û��׻�����
+      *    割合加算計算処理
       *****************************************************************
        1006-KASAN-SET-SEC              SECTION.
-      *    ��ư�û��ʳ��βû��ʻ��ֳ���ǯ��ʳ���
+      *    自動加算以外の加算（時間外、年齢以外）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
-      *        �굻������������������Ȥ���
+      *        手技料の点数を所定点数とする
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
                       (WRK-COM-SANFLG     (IDX)    =   ZERO)
@@ -1148,7 +1148,7 @@
            COMPUTE LNK-SC90-TENSUKEI   =   LNK-SC90-TENSUKEI
                                        +   WRK-TENSUKEI-G
       *
-      *    ��ư�û��βû��ʻ��ֳ���ǯ���
+      *    自動加算の加算（時間外、年齢）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE )   OR
@@ -1174,20 +1174,20 @@
            EXIT.
      *
       *****************************************************************
-      *    ��ũ���Ͳû���������
+      *    点滴注射加算作成処理
       *****************************************************************
-      *��α
+      *保留
        510242-TEN-KASAN-SEC           SECTION.
       *
-      *    ���̤ˤ�ꡢ�굻���ɲ�
+      *    液量により、手技料追加
            MOVE    SPACE               TO  WRK-SRYCD
            IF      LNK-ORCSC-NENREI-YY   <   6
-      *        ����̤���ǡ�100ml �ʾ�
+      *        ６歳未満で　100ml 以上
                IF      WRK-CHUSYA      >=  100
                    MOVE    "130003710"     TO  WRK-SRYCD
                END-IF
            ELSE
-      *        ���аʾ�ǡ�500ml �ʾ�
+      *        ６歳以上で　500ml 以上
                IF      WRK-CHUSYA      >=  500
                    MOVE    "130003810"     TO  WRK-SRYCD
                END-IF
@@ -1202,7 +1202,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ź԰٥����å�����
+      *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *----(01.00.01) LINE ADD START ----------------------------------
@@ -1216,7 +1216,7 @@
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
-      *        ��ũ�ϣ���ΤߤȤ���ʳ���Τߡ�
+      *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
                                                        "960") AND
@@ -1229,7 +1229,7 @@
                    END-IF
                    MOVE    1               TO  FLG-TENTEKI
                END-IF
-      *        ư̮���ͤϣ���ΤߤȤ���
+      *        動脈注射は１回のみとする
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
                                                        "960") AND
@@ -1241,27 +1241,27 @@
                    END-IF
                    MOVE    1               TO  FLG-DOUCHU
                END-IF
-      *        ��Ѥ����������ũ�굻���ϻ���Ǥ��ʤ�
+      *        手術がある時、点滴手技料は算定できない
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)      =   "500" )  AND
                       (WRK-COM-INPUTCD  (IDX)(1:1) =   "1"   )  AND
                       (WRK-COM-DATAKBN  (IDX)      =   "1"   )
                    MOVE    1                   TO  FLG-SYUJUTU
                END-IF
-      *        ���ͤ�Ƚ��ʳ���Τߡ�
+      *        注射の判定（外来のみ）
                IF     (SPA-NYUGAIKBN           =   "2"   )  AND
                       (WRK-COM-SRYKBN (IDX)    =   "31" OR
                                                    "32" OR
                                                    "33"  )  AND
                       (WRK-COM-INPUTCD(IDX)(1:1)  =  "1" )  AND
                       (WRK-COM-DATAKBN(IDX)    =   "1"   )
-      *          �ٹ�ɽ���ʤ��ξ��Τ�
+      *          警告表示なしの場合のみ
                  AND  (WRK-COM-KZMFLG (IDX)    =   SPACE )
                    IF      IDX-CHU             =   ZERO
                        MOVE    IDX                 TO  IDX-CHU
                    END-IF
                END-IF
-      *****    ��ũ�ϣ���ΤߤȤ���
+      *****    点滴は１回のみとする
       *        IF     (WRK-GMN-INPUTCD (IDX)(1:1)   =   "."  )  AND
       *               (WRK-COM-SRYSYUKBN (IDX)      =   "330")
       *            IF      FLG-TENTEKI         =   1
@@ -1273,7 +1273,7 @@
            END-PERFORM
       *----(01.00.01) LINE ADD START ----------------------------------
       *
-      *    ��Ѥ�����������ͤμ굻���Ϸٹ�Ȥ���
+      *    手術がある時、注射の手技料は警告とする
            IF     (FLG-SYUJUTU         =   1  )  AND
                   (IDX-CHU             >   ZERO )
                IF      WRK-COM-KZMFLG (IDX-CHU)    =   SPACE
@@ -1289,16 +1289,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�������
+      *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
-      *    �����λ�����ưȯ������
+      *    入院の時、自動発生する
            IF      SPA-NYUGAIKBN       =   "2"
-      *        ����λ�����ũ���̥����å�
+      *        外来の時、点滴液量チェック
                PERFORM 3001-GAIRAI-TENTEKI-SEC
            ELSE
-      *        �����λ�����ũ�굻����ưȯ��
+      *        入院の時、点滴手技料自動発生
                PERFORM 3002-NYUIN-TENTEKI-SEC
            END-IF
       *
@@ -1306,7 +1306,7 @@
        300-AUTO-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����λ�����ũ�굻����ưȯ������
+      *    入院の時、点滴手技料自動発生処理
       *****************************************************************
        3002-NYUIN-TENTEKI-SEC         SECTION.
       *
@@ -1319,7 +1319,7 @@
                    UNTIL     ( IDX     >   SPA-MAX-LINE )  OR
                              ((WRK-GMN-INPUTCD(IDX)  =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDX)  =   SPACE ))
-      *        ��ũ�λ��Τ�
+      *        点滴の時のみ
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
                                                    OR  "332"
                    MOVE    1                   TO  FLG-OK
@@ -1329,55 +1329,55 @@
                            MOVE    WRK-COM-NYUINDAY(IDX IDY)
                                                    TO  TBL-DAY(IDY)
                         IF      WRK-COM-SRYSYUKBN (IDX)     =   "330"
-      *                    ���̽���
+      *                    液量集計
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-CHUSYA (IDY)
                                                = (WRK-COM-CSYYOURYO(IDX)
                                                *   WRK-COM-SURYO  (IDX))
                                                +   TBL-CHUSYA (IDY)
-      *                        ��ʪ��Ū���޶�ʬ
+      *                        生物学的製剤区分
                                IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
                                    MOVE    1           TO  TBL-SEIBUTU
                                                                    (IDY)
                                END-IF
-      *                        ����
+      *                        麻毒
                                IF      WRK-COM-MADOKUKBN(IDX)  =   1
                                    MOVE    1           TO  TBL-MADOKU
                                                                    (IDY)
                                END-IF
                            END-IF
                         ELSE
-      *                 ��Ѱʳ�
-      *                    ���̽���
+      *                 手術以外
+      *                    液量集計
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-CHUSYA-2 (IDY)
                                                = (WRK-COM-CSYYOURYO(IDX)
                                                *   WRK-COM-SURYO  (IDX))
                                                +   TBL-CHUSYA-2 (IDY)
-      *                        ��ʪ��Ū���޶�ʬ
+      *                        生物学的製剤区分
                                IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
                                    MOVE    1           TO  TBL-SEIBUTU-2
                                                                    (IDY)
                                END-IF
-      *                        ����
+      *                        麻毒
                                IF      WRK-COM-MADOKUKBN(IDX)  =   1
                                    MOVE    1           TO  TBL-MADOKU-2
                                                                    (IDY)
                                END-IF
                            END-IF
                         END-IF
-      *                    �굻
+      *                    手技
                            IF     (WRK-COM-INPUTCD(IDX)(1:1)  =   "1")
                            AND    (WRK-COM-DATAKBN(IDX)       =   "1")
                                MOVE    WRK-COM-INPUTCD(IDX)
                                                TO  TBL-TEN-SRYCD(IDY)
                                MOVE    IDX     TO  TBL-TEN-IDX  (IDY)
                            END-IF
-      *                    ����
+      *                    麻毒
                            IF      WRK-COM-INPUTCD(IDX)  =   "130000310"
                                MOVE    IDX     TO  TBL-MADOKU-IDX (IDY)
                            END-IF
-      *                    ��ʪ��Ū����
+      *                    生物学的製剤
                            IF      WRK-COM-INPUTCD(IDX)  =   "130000110"
                                MOVE    IDX     TO  TBL-SEIBUTU-IDX (IDY)
                            END-IF
@@ -1385,7 +1385,7 @@
                    END-PERFORM
                END-IF
       *
-      *        �濴��̮������
+      *        中心静脈の薬剤
                IF      WRK-COM-SRYSYUKBN (IDX)     =   "350"
                                                    OR  "352"
                    MOVE    1                   TO  FLG-OK
@@ -1395,7 +1395,7 @@
                            MOVE    WRK-COM-NYUINDAY(IDX IDY)
                                                    TO  TBL-IVH-DAY(IDY)
                          IF      WRK-COM-SRYSYUKBN (IDX)     =   "350"
-      *                    ���̽���
+      *                    液量集計
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-IVH-CHUSYA (IDY)
                                                =   WRK-COM-SURYO  (IDX)
@@ -1404,19 +1404,19 @@
                                    MOVE    IDX       TO  TBL-IVH-CHUIDX
                                                                  (IDY)
                                END-IF
-      *                        ��ʪ��Ū���޶�ʬ
+      *                        生物学的製剤区分
                                IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
                                    MOVE    1       TO  TBL-IVH-SEIBUTU
                                                                    (IDY)
                                END-IF
-      *                        ����
+      *                        麻毒
                                IF      WRK-COM-MADOKUKBN(IDX)  =   1
                                    MOVE    1       TO  TBL-IVH-MADOKU
                                                                    (IDY)
                                END-IF
                            END-IF
                          ELSE
-      *                    ��Ѱʳ�
+      *                    手術以外
                            IF      WRK-COM-INPUTCD(IDX)(1:1)   =   "6"
                                COMPUTE TBL-IVH-CHUSYA-2 (IDY)
                                                =   WRK-COM-SURYO  (IDX)
@@ -1425,12 +1425,12 @@
                                    MOVE    IDX       TO  TBL-IVH-CHUIDX
                                                                  (IDY)
                                END-IF
-      *                        ��ʪ��Ū���޶�ʬ
+      *                        生物学的製剤区分
                                IF      WRK-COM-SEIBUTUKBN(IDX)   =   1
                                    MOVE    1       TO  TBL-IVH-SEIBUTU-2
                                                                    (IDY)
                                END-IF
-      *                        ����
+      *                        麻毒
                                IF      WRK-COM-MADOKUKBN(IDX)  =   1
                                    MOVE    1       TO  TBL-IVH-MADOKU-2
                                                                    (IDY)
@@ -1441,20 +1441,20 @@
                    END-PERFORM
                END-IF
       *
-      *        �濴��̮�λ�
+      *        中心静脈の時
                IF      WRK-COM-INPUTCD (IDX)   =   "130004410"
                    PERFORM VARYING     IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
                        IF      WRK-COM-NYUINDAY (IDX IDY)  >   ZERO
                            MOVE    1                   TO  FLG-OK
-      *                    �굻
+      *                    手技
                            MOVE    WRK-COM-INPUTCD(IDX)
                                                TO  TBL-IVH-SRYCD(IDY)
                            MOVE    IDX         TO  TBL-IVH-IDX  (IDY)
                        END-IF
                    END-PERFORM
                END-IF
-      *        ���
+      *        手術
                IF     (WRK-COM-SRYSYUKBN(IDX)  =   "500" )  AND
                       (WRK-COM-INPUTCD (IDX)(1:1)  =   "1")
                    PERFORM VARYING     IDY     FROM    1   BY  1
@@ -1467,7 +1467,7 @@
                        END-IF
                    END-PERFORM
                END-IF
-      *        �������Ǥ���ũ
+      *        画像診断の点滴
                IF     (WRK-COM-SRYSYUKBN(IDX)  =   "731" )  AND
                       (WRK-COM-TNSSRYSYUKBN(IDX)   =   "330" )  AND
                       (WRK-COM-DATAKBN  (IDX)  =   "1"   )
@@ -1485,17 +1485,17 @@
            IF      FLG-OK              =   ZERO
                CONTINUE
            ELSE
-      *        �����Τ��٤Ƥ���ũ���̤򽸷פ���
+      *        当日のすべての点滴液量を集計する
                PERFORM 3001-EKIRYO-SYUKEI-SEC
-      *        �����Τ��٤Ƥμ�Ѥ�̵ͭ��Ƚ��
+      *        当日のすべての手術の有無を判定
                PERFORM 3003-SYUJYU-CHK-SEC
-      *        �����Τ��٤Ƥβ�����ũ�굻��̵ͭ��Ƚ��
+      *        当日のすべての画像点滴手技の有無を判定
                PERFORM 3003-GAZOU-CHK-SEC
            END-IF
       *
            MOVE    ZERO                TO  IDXS
       *
-      *    ��Ѥ˴ط��ʤ���ũ���Խ�
+      *    手術に関係ない点滴の編集
            IF     (FLG-OK              =   ZERO  )  OR
                   (SPA-ERRCD       NOT =   SPACE )
                CONTINUE
@@ -1503,7 +1503,7 @@
                PERFORM 3007-TENTEKI-HEN-SEC
            END-IF
       *
-      *    �濴��̮ȯ�������å�
+      *    中心静脈発生チェック
            IF     (FLG-OK              =   ZERO  )  OR
                   (SPA-ERRCD       NOT =   SPACE )
                CONTINUE
@@ -1511,7 +1511,7 @@
                PERFORM 3004-IVH-AUTO-SEC
            END-IF
       *
-      *    ��ũ����ȯ�������å�
+      *    点滴注射発生チェック
            IF     (FLG-OK              =   ZERO  )  OR
                   (SPA-ERRCD       NOT =   SPACE )
                CONTINUE
@@ -1531,11 +1531,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����굻����ưȯ������
+      *    入院手技料自動発生処理
       *****************************************************************
        30021-NYUIN-AUTO-SEC         SECTION.
       *
-      *    ��ũ�굻����ưȯ��
+      *    点滴手技料自動発生
            INITIALIZE                  WRK-NISUU-HEN-AREA
            MOVE    SPACE               TO  WRK-TEN-SRYCD
            MOVE    SPACE               TO  WRK-TEN-SRYCD2
@@ -1569,7 +1569,7 @@
                 PERFORM 3002-AUTO-HENSYU-SEC
            END-IF
       *
-      *    ��ʪ��Ū���޲û���ưȯ��
+      *    生物学的製剤加算自動発生
            INITIALIZE                  WRK-NISUU-HEN-AREA
            MOVE    SPACE               TO  WRK-TEN-SRYCD
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -1593,7 +1593,7 @@
                PERFORM 3002-AUTO-HENSYU-SEC
            END-IF
       *
-      *    ���ǲû���ưȯ��
+      *    麻毒加算自動発生
            INITIALIZE                  WRK-NISUU-HEN-AREA
            MOVE    SPACE               TO  WRK-TEN-SRYCD
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -1622,7 +1622,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����λ�����ũ���̥����å�����
+      *    外来の時、点滴液量チェック処理
       *****************************************************************
        3001-GAIRAI-TENTEKI-SEC         SECTION.
       *
@@ -1635,7 +1635,7 @@
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
-      *        ��ũ�ϣ���ΤߤȤ���ʳ���Τߡ�
+      *        点滴は１回のみとする（外来のみ）
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  NOT =   "950"  AND
                                                        "960") AND
@@ -1647,7 +1647,7 @@
                        MOVE    IDX             TO  IDX-CHU
                    END-IF
                END-IF
-      *        ���ͱ��̲û�
+      *        注射液量加算
                IF     (SPA-NYUGAIKBN           =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)  =   "330"
                                                OR  "331"  )  AND
@@ -1659,7 +1659,7 @@
                        MOVE    IDX             TO  IDX-CHU
                    END-IF
                END-IF
-      *        ���
+      *        手術
                IF     (SPA-NYUGAIKBN               =   "2"   )  AND
                       (WRK-COM-SRYSYUKBN(IDX)      =   "500" )  AND
                       (WRK-COM-INPUTCD  (IDX)(1:1) =   "1"   )  AND
@@ -1667,13 +1667,13 @@
                    MOVE    1                   TO  FLG-SYUJUTU
                END-IF
            END-PERFORM
-      *    ����������ξ���˼굻��������ϡ������å����ʤ�
-      *    ��Ѥ�������оݳ�
+      *    今回と前回の両方に手技がある場合は、チェックしない
+      *    手術がある時対象外
            IF    ((IDX-SYU             >   ZERO ) AND
                   (LNK-ACCT2-SRYCD NOT =   SPACE) )  OR
                   (FLG-SYUJUTU         =   1      )  OR
                   (WRK-CHUSYA          =   ZERO   )  OR
-      *           �������ũ���ʤ���
+      *           前回に点滴がない時
                  ((LNK-ACCT2-CSYYOURYO =   ZERO   ) AND
                   (LNK-ACCT2-SRYCD     =   SPACE  ))
                CONTINUE
@@ -1684,11 +1684,11 @@
        3001-GAIRAI-TENTEKI-EXT.
            EXIT.
       *****************************************************************
-      *    ������ũ���̥����å�����
+      *    外来点滴液量チェック処理
       *****************************************************************
        30011-GAIRAI-TEN-CHK-SEC         SECTION.
       *
-      *    ����������ι�ױ���Ƚ��
+      *    外来の当日の合計液量判定
            COMPUTE WRK-CHUSYA      =   WRK-CHUSYA
                                    +   LNK-ACCT2-CSYYOURYO
            IF      LNK-ORCSC-NENREI-YY     <   6
@@ -1719,11 +1719,11 @@
        30011-GAIRAI-TEN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ũ���̽��׽���
+      *    点滴液量集計処理
       *****************************************************************
        3001-EKIRYO-SYUKEI-SEC         SECTION.
       *
-      *    ����ǯ��ο��Ų�ץޥ����ɤ߹���
+      *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
@@ -1757,20 +1757,20 @@
       ***              END-IF
                    END-IF
                END-PERFORM
-      *        �����λ������פʤ�
+      *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG =   "1"    )  AND
                       (ACCT-SRYKA         =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI      =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
-      *        ���ޤȤ���оݳ�
+      *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
       *
-      *        �����������
+      *        回数があるもの
                IF      FLG-ZAIARI          =   1
-      *            ���Ź԰٤����̽���
+      *            診療行為より液量集計
                    PERFORM 30011-SRYACT-HEN-SEC
                END-IF
       *
@@ -1787,11 +1787,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������Խ�����
+      *    診療行為マスター編集処理
       *****************************************************************
        30011-SRYACT-HEN-SEC            SECTION.
       *
-      *    ���Ų�ץޥ�����������Ź԰٥ޥ������򸡺�����
+      *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM         TO  SRY-HOSPNUM
@@ -1828,7 +1828,7 @@
                                                    OR  "332"
                                                    OR  "350"
                                                    OR  "353" )
-      *                �����ޥ�����ꡢ���̼���
+      *                点数マスタより、液量取得
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        IF      FLG-TENSU           =   ZERO
@@ -1841,17 +1841,17 @@
                                                                   (IDX2)
                            END-IF
                            ADD     WRK-EKIRYOU         TO  WRK-GOK-RYOU
-      *                    ��ʪ��Ū���޶�ʬ
+      *                    生物学的製剤区分
                            IF      TNS-SEIBUTUGAKUKBN  =   1
                                MOVE    1               TO  FLG-SEIBUTU
                            END-IF
-      *                    ����
+      *                    麻毒
                            IF      TNS-MADOKUKBN       =   1
                                MOVE    1               TO  FLG-MADOKU
                            END-IF
                        END-IF
                    END-IF
-      *            �굻������ũ��
+      *            手技料（点滴）
                    IF      SRY-SRYCD (IDX2)        =   "130003710"
                                                    OR  "130003810"
                                                    OR  "130700310"
@@ -1862,15 +1862,15 @@
                        MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD
                        MOVE    SRY-AUTOKBN (IDX2)  TO  WRK-TEN-AUTO
                    END-IF
-      *            �굻�����濴��̮��
+      *            手技料（中心静脈）
                    IF      SRY-SRYCD (IDX2)        =   "130004410"
                        MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD1
                    END-IF
-      *            �굻�������ǡ�
+      *            手技料（麻毒）
                    IF      SRY-SRYCD (IDX2)        =   "130000310"
                        MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD3
                    END-IF
-      *            �굻������ʪ��Ū��
+      *            手技料（生物学的）
                    IF      SRY-SRYCD (IDX2)        =   "130000110"
                        MOVE    SRY-SRYCD (IDX2)    TO  WRK-TEN-SRYCD2
                    END-IF
@@ -1884,7 +1884,7 @@
            MOVE    "tbl_sryact"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���̤α��̽���
+      *    日別の液量集計
            IF      WRK-SRYSYUKBN       =   "350"
                                        OR  "353"
                PERFORM 300112-IVH-TBL-SEC
@@ -1896,7 +1896,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ��ũ�����̤α��̽��׽���
+      *     点滴の日別の液量集計処理
       *****************************************************************
        300111-TENTEKI-TBL-SEC         SECTION.
       *
@@ -1921,7 +1921,7 @@
                                                TO  TBL-TEN-SRYCD(IDY)
                        END-IF
                    END-IF
-      *            �濴��̮
+      *            中心静脈
                    IF      WRK-TEN-SRYCD1  NOT =   SPACE
                        IF     (TBL-IVH-SRYCD (IDY) NOT =   SPACE )  AND
                               (TBL-IVH-IDX   (IDY)     >   ZERO  )
@@ -1934,7 +1934,7 @@
                                                                  (IDY)
                        END-IF
                    END-IF
-      *            ��ʪ��Ū���޶�ʬ
+      *            生物学的製剤区分
                    IF      FLG-SEIBUTU         =   1
                      IF      WRK-SRYSYUKBN       =   "330"
                        MOVE    1               TO  TBL-SEIBUTU (IDY)
@@ -1945,7 +1945,7 @@
                    IF      WRK-TEN-SRYCD2  NOT =   SPACE
                        MOVE    WRK-TEN-SRYCD2  TO  TBL-SEIBUTU-ARI(IDY)
                    END-IF
-      *            ����
+      *            麻毒
                    IF      FLG-MADOKU          =   1
                      IF      WRK-SRYSYUKBN       =   "330"
                        MOVE    1               TO  TBL-MADOKU (IDY)
@@ -1963,18 +1963,18 @@
            EXIT.
       *
       *****************************************************************
-      *     �濴��̮�����̤α��̽��׽���
+      *     中心静脈の日別の液量集計処理
       *****************************************************************
        300112-IVH-TBL-SEC         SECTION.
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
                IF      ACCT-DAY (1 IDY)    >   ZERO
-      *            ��ʪ��Ū���޶�ʬ
+      *            生物学的製剤区分
                    IF      FLG-SEIBUTU         =   1
                        MOVE    1               TO  TBL-IVH2-SEIBUTU(IDY)
                    END-IF
-      *            ����
+      *            麻毒
                    IF      FLG-MADOKU          =   1
                        MOVE    1               TO  TBL-IVH2-MADOKU(IDY)
                    END-IF
@@ -1985,11 +1985,11 @@
            EXIT.
       *
       *****************************************************************
-      *     �����Τ��٤Ƥμ�Ѥ�̵ͭ��Ƚ�����
+      *     当日のすべての手術の有無を判定処理
       *****************************************************************
        3003-SYUJYU-CHK-SEC         SECTION.
       *
-      *    ����ǯ��ο��Ų�ץޥ����ɤ߹���
+      *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
@@ -2011,27 +2011,27 @@
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
                MOVE    1                   TO  FLG-ZAIARI
-      *        �����λ������פʤ�
+      *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
-      *        �굻���������ʤ���Τ��оݳ�
+      *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1        =   ZERO
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
-      *        ���ޤȤ���оݳ�
+      *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
-      *        ͢���Ƚ��
+      *        輸血の判定
                IF      FLG-ZAIARI          =   1
-      *            ���Ź԰٤��
+      *            診療行為より
                    PERFORM 30031-SRYACT-YUKETU-SEC
                END-IF
       *
-      *        ����Խ�
+      *        回数編集
                IF      FLG-ZAIARI          =   1
                   PERFORM VARYING     IDY     FROM    1   BY  1
                           UNTIL       IDY     >   31
@@ -2055,12 +2055,12 @@
            EXIT.
       *
       *****************************************************************
-      *     ���Ź԰٤��͢���Ƚ�����
+      *     診療行為より輸血の判定処理
       *****************************************************************
        30031-SRYACT-YUKETU-SEC         SECTION.
       *
       *
-      *    ���Ų�ץޥ�����������Ź԰٥ޥ������򸡺�����
+      *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
@@ -2085,7 +2085,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SRYACT          =   ZERO
-      *        ͢��λ��оݳ�
+      *        輸血の時対象外
                IF      SRY-SRYSYUKBN       =   "510"
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
@@ -2096,11 +2096,11 @@
            EXIT.
       *
       *****************************************************************
-      *     �����Τ��٤Ƥβ���������ũ��̵ͭ��Ƚ�����
+      *     当日のすべての画像診断点滴の有無を判定処理
       *****************************************************************
        3003-GAZOU-CHK-SEC         SECTION.
       *
-      *    ����ǯ��ο��Ų�ץޥ����ɤ߹���
+      *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
@@ -2122,25 +2122,25 @@
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
                MOVE    1                   TO  FLG-ZAIARI
-      *        �����λ������פʤ�
+      *        訂正の時、集計なし
                IF     (LNK-ORCSC-SYORIFLG  =   "1"    )  AND
                       (ACCT-SRYKA          =   LNK-ORCSC-OLD-SRYKA) AND
                       (ACCT-HKNCOMBI       =   LNK-ORCSC-OLD-HKNCOMBI)
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
-      *        �굻���������ʤ���Τ��оݳ�
+      *        手技料点数がないものは対象外
                IF      ACCT-SYUTEN1       =   ZERO
                    MOVE    ZERO               TO  FLG-ZAIARI
                END-IF
-      *        ���ޤȤ���оݳ�
+      *        包括まとめは対象外
                IF      ACCT-HKNCOMBI           =   "9999"
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
                IF      FLG-ZAIARI         =   1
-      *            ���Ź԰٤����̽���
+      *            診療行為より液量集計
                    PERFORM 30031-SRYACT-HEN-SEC
       *
-      *            ����Խ�
+      *            回数編集
                    IF      FLG-GAZO-ARI        =   1
                        PERFORM VARYING IDY     FROM    1   BY  1
                            UNTIL       IDY     >   31
@@ -2165,11 +2165,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������Խ������ʲ������ǡ�
+      *    診療行為マスター編集処理（画像診断）
       *****************************************************************
        30031-SRYACT-HEN-SEC            SECTION.
       *
-      *    ���Ų�ץޥ�����������Ź԰٥ޥ������򸡺�����
+      *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
@@ -2198,7 +2198,7 @@
                                   (SRY-SRYCD(IDX2)     =   SPACE )
                    IF     (SRY-SRYCD (IDX2)(1:2)   =   "13")  AND
                           (SRY-SRYSYUKBN           =   "731")
-      *                �����ޥ������
+      *                点数マスタより
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        IF     (TNS-SRYSYUKBN   =   "330" )  AND
@@ -2222,16 +2222,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ѥ˴ط��ʤ���ũ���Խ�����
+      *    手術に関係ない点滴の編集処理
       *****************************************************************
        3007-TENTEKI-HEN-SEC         SECTION.
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-      *        �������ɣ֣��Ѥ��Խ�
+      *        手術日をＩＶＨ用に編集
                MOVE    TBL-SYU-DAY(IDY)    TO  TBL-IVH-SYU-DAY(IDY)
                IF      TBL-SYU-DAY   (IDY)     =   ZERO
-      *            ��Ѥ��ʤ���
+      *            手術がない時
                    COMPUTE TBL-CHUSYA (IDY)    =   TBL-CHUSYA (IDY)
                                                +   TBL-CHUSYA-2 (IDY)
                    IF      TBL-SEIBUTU-2(IDY)  =   1
@@ -2241,12 +2241,12 @@
                        MOVE    TBL-MADOKU-2(IDY)   TO  TBL-MADOKU (IDY)
                    END-IF
                ELSE
-      *            ��Ѥ����ꡢ��ѳ�����ũ�������
+      *            手術があり、手術外の点滴がある時
                    IF     (TBL-CHUSYA   (IDY)  >   ZERO ) AND
                           (TBL-CHUSYA-2 (IDY)  =   ZERO )
                        CONTINUE
                    ELSE
-      *                ��ѤϤʤ���ΤȤ���
+      *                手術はないものとする
                        MOVE    ZERO                TO  TBL-SYU-DAY(IDY)
                    END-IF
                    IF      TBL-CHUSYA-2 (IDY)  >   ZERO
@@ -2255,9 +2255,9 @@
                        MOVE    TBL-MADOKU-2(IDY)   TO  TBL-MADOKU (IDY)
                    END-IF
                END-IF
-      *        �濴��̮
+      *        中心静脈
                IF      TBL-IVH-SYU-DAY (IDY)   =   ZERO
-      *            ��Ѥ��ʤ���
+      *            手術がない時
                    COMPUTE TBL-IVH-CHUSYA(IDY) =   TBL-IVH-CHUSYA (IDY)
                                                +   TBL-IVH-CHUSYA-2(IDY)
                    IF      TBL-IVH-SEIBUTU-2(IDY)  =   1
@@ -2269,12 +2269,12 @@
                                                TO  TBL-IVH-MADOKU (IDY)
                    END-IF
                ELSE
-      *            ��Ѥ����ꡢ��ѳ�����ũ�������
+      *            手術があり、手術外の点滴がある時
                    IF     (TBL-IVH-CHUSYA   (IDY)  >   ZERO ) AND
                           (TBL-IVH-CHUSYA-2 (IDY)  =   ZERO )
                        CONTINUE
                    ELSE
-      *                ��ѤϤʤ���ΤȤ���
+      *                手術はないものとする
                        MOVE    ZERO            TO  TBL-IVH-SYU-DAY(IDY)
                    END-IF
                    IF      TBL-IVH-CHUSYA-2 (IDY)  >   ZERO
@@ -2292,18 +2292,18 @@
        3007-TENTEKI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �濴��̮ȯ�������å�����
+      *    中心静脈発生チェック処理
       *****************************************************************
        3004-IVH-AUTO-SEC         SECTION.
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-      *        �濴��̮�����ޤ����ꡢ��Ѥ��ʤ���
+      *        中心静脈の薬剤があり、手術がない時
                IF     (TBL-IVH-CHUSYA (IDY)    >   ZERO )  AND
                       (TBL-IVH-SRYCD  (IDY)    =   SPACE )  AND
                       (TBL-IVH-DAY    (IDY)    >   ZERO )  AND
                       (TBL-IVH-SYU-DAY(IDY)    =   ZERO )
-      *           ��ũ���ʤ���
+      *           点滴がない時
                    IF    ((TBL-TEN-IDX   (IDY)     >   ZERO  )  OR
                           (TBL-TEN-SRYCD (IDY)     =   SPACE )) AND
                           (TBL-TEN-SRYCD2(IDY)     =   SPACE )
@@ -2322,22 +2322,22 @@
                        END-IF
                    END-IF
                END-IF
-      *        ��Ѥ�¸�ߤ��������ũ�굻�ϻ���Ǥ��ʤ�
+      *        手術が存在する時、点滴手技は算定できない
                IF     (TBL-IVH-SYU-DAY (IDY)   >   ZERO )  AND
                       (TBL-IVH-SRYCD (IDY) NOT =   SPACE)
                    IF      TBL-IVH-IDX (IDY)   >   ZERO
-      *                �굻�����顼
+      *                手技料エラー
                        MOVE    "9027"              TO  SPA-ERRCD
                        MOVE    TBL-IVH-IDX (IDY)   TO  IDX-K
                        MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
                    END-IF
                END-IF
-      *        ��Ѥ�¸�ߤ��������ũ�굻�ϻ���Ǥ��ʤ�
+      *        手術が存在する時、点滴手技は算定できない
                IF     (TBL-SYU-IDX (IDY)   >   ZERO )  AND
                       (TBL-IVH-SRYCD (IDY) NOT =   SPACE)
                    IF      TBL-SYU-IDX (IDY)   >   ZERO
-      *                �굻�����顼
+      *                手技料エラー
                        MOVE    TBL-SYU-IDX (IDY)   TO  IDX-KBN
                        MOVE    IDY                 TO  IDX-IDY
                        IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
@@ -2348,12 +2348,12 @@
                        END-IF
                    END-IF
                END-IF
-      *        ��ũ�μ굻��¸�ߤ���������顼�Ȥ���
+      *        点滴の手技が存在する時、エラーとする
                IF     (TBL-TEN-IDX   (IDY)     >   ZERO )  AND
                      ((TBL-IVH-SRYCD (IDY) NOT =   SPACE)  OR
                       (TBL-IVHA-SRYCD(IDY) NOT =   SPACE))
                    IF      TBL-TEN-IDX  (IDY)      >   ZERO
-      *                �굻�����顼
+      *                手技料エラー
                        MOVE    "9025"              TO  SPA-ERRCD
                        MOVE    TBL-TEN-IDX  (IDY)  TO  IDX-K
                        MOVE    "1"                 TO  WRK-COM-CUR
@@ -2372,7 +2372,7 @@
                END-IF
            END-IF
       *
-      *    �濴��̮��ưȯ��
+      *    中心静脈自動発生
            INITIALIZE                  WRK-NISUU-HEN-AREA
            MOVE    SPACE               TO  WRK-TEN-SRYCD
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -2394,19 +2394,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ũ����ȯ�������å�����
+      *    点滴注射発生チェック処理
       *****************************************************************
        3005-TENTEKI-AUTO-SEC         SECTION.
       *
-      *    ������ã��
+      *    ６歳到達日
            MOVE    SPA-BIRTHDAY        TO  WRK-BYMD
            COMPUTE WRK-BYY             =   WRK-BYY
                                        +   6
-      *    Ϸ��
+      *    老人
            MOVE    SPACE               TO  WRK-NYMD
            IF     (LNK-ORCSC-ROUJIN    =   1  )  AND
                   (LNK-ORCSC-NYUINYMD  NUMERIC )
-      *        �����������
+      *        入院歴より決定
                PERFORM 30051-NYUINREKI-SEC
       *******  MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
       *        COMPUTE WRK-NYY             =   WRK-NYY
@@ -2414,12 +2414,12 @@
            END-IF
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   31
-      *        ����̤��
+      *        ６歳未満
                IF      WRK-BYMD(1:6)       >   SPA-SRYYMD(1:6)
                    MOVE    "130003710"     TO  WRK-SRYCD
                    MOVE    100             TO  WRK-MAX-RYOU
                END-IF
-      *        ����
+      *        ６歳
                IF      WRK-BYMD(1:6)       =  SPA-SRYYMD(1:6)
                    IF      WRK-BDD         <=  IDY
                        MOVE    "130003810"     TO  WRK-SRYCD
@@ -2429,15 +2429,15 @@
                        MOVE    100             TO  WRK-MAX-RYOU
                    END-IF
                END-IF
-      *        ���аʾ�
+      *        ６歳以上
                IF      WRK-BYMD(1:6)       <   SPA-SRYYMD(1:6)
                    MOVE    "130003810"     TO  WRK-SRYCD
                    MOVE    500             TO  WRK-MAX-RYOU
                END-IF
-      *        Ϸ��
+      *        老人
                IF      (LNK-ORCSC-ROUJIN   =   1     )  AND
                        (WRK-NYMD       NOT =   SPACE )
-      *        �������飱ǯ����
+      *        入院から１年以内
                    IF      SPA-SRYYMD(1:6)     <   WRK-NYMD(1:6)
                        MOVE    "130700310"         TO  WRK-SRYCD
                    ELSE
@@ -2445,10 +2445,10 @@
                    END-IF
                    IF      SPA-SRYYMD(1:6)    =   WRK-NYMD(1:6)
                        IF      WRK-NDD        >   IDY
-      *                ��ǯ����
+      *                １年以内
                            MOVE    "130700310"         TO  WRK-SRYCD
                        ELSE
-      *                ��ǯ�ʰʾ�
+      *                １年以以上
                            MOVE    "130700410"         TO  WRK-SRYCD
                        END-IF
                    END-IF
@@ -2457,14 +2457,14 @@
                IF      TBL-CHUSYA (IDY)    >=  WRK-MAX-RYOU
                    IF     (TBL-TEN-SRYCD(IDY)  =   SPACE )  AND
                           (TBL-SYU-DAY (IDY)   =   ZERO  )
-      *                ���Ǥˡ��������Ǥ���ũ�����ꤵ��Ƥ���Ȥ�
+      *                すでに、画像診断の点滴が算定されているとき
                        IF     ((TBL-GAZ-DAY (IDY)  >   ZERO  )  AND
                                (TBL-GAZ-IDX (IDY)  =   ZERO  ))  OR
                               ((TBL-IVH-SRYCD(IDY) NOT =   SPACE )  OR
                                (TBL-IVHA-SRYCD(IDY)    NOT =   SPACE))
                            CONTINUE
                        ELSE
-      *                �굻����ư����
+      *                手技料自動算定
                            MOVE    WRK-SRYCD       TO  TBL-AUTO-SRYCD
                                                                 (IDY)
                        END-IF
@@ -2472,7 +2472,7 @@
                ELSE
                    IF     (TBL-TEN-IDX  (IDY)  >   ZERO ) AND
                           (TBL-TEN-SRYCD(IDY)  NOT =   "130004410")
-      *                ���̥��顼
+      *                液量エラー
                        MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
                        MOVE    IDY                 TO  IDX-IDY
                        IF      WRK-COM-NYU-KZMFLG (IDX-KBN IDY)
@@ -2483,7 +2483,7 @@
                        END-IF
                    END-IF
                END-IF
-      *        ���ǡ���ʪ�Υ����å�
+      *        麻毒・生物のチェック
                IF     (TBL-SEIBUTU   (IDY)     =   ZERO )  AND
                       (TBL-IVH-SEIBUTU (IDY)   =   ZERO )  AND
                       (TBL-SEIBUTU-IDX(IDY)    >   ZERO )
@@ -2500,7 +2500,7 @@
                    MOVE    "1"                     TO  WRK-COM-CUR
                                                               (IDX-K)
                END-IF
-      *        ��ũ�굻���ѹ����顼
+      *        点滴手技の変更エラー
                IF     (TBL-TEN-SRYCD (IDY) NOT =   SPACE)  AND
                       (TBL-TEN-SRYCD2(IDY) NOT =   SPACE)  AND
                       (TBL-TEN-IDX   (IDY)     >   ZERO )
@@ -2515,17 +2515,17 @@
                    MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
                END-IF
-      *        ��Ѥ�¸�ߤ��������ũ�굻�ϻ���Ǥ��ʤ�
+      *        手術が存在する時、点滴手技は算定できない
                IF     (TBL-SYU-DAY (IDY)       >   ZERO )  AND
                       (TBL-TEN-SRYCD (IDY) NOT =   SPACE)
                    IF      TBL-TEN-IDX (IDY)   >   ZERO
-      *                �굻�����顼
+      *                手技料エラー
                        MOVE    "9016"              TO  SPA-ERRCD
                        MOVE    TBL-TEN-IDX (IDY)   TO  IDX-K
                        MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
                    ELSE
-      *                �굻�����顼�ʷٹ��
+      *                手技料エラー（警告）
                        IF      TBL-SYU-IDX (IDY)   >   ZERO
                            MOVE    TBL-SYU-IDX (IDY)   TO  IDX-KBN
                            MOVE    IDY                 TO  IDX-IDY
@@ -2538,7 +2538,7 @@
                        END-IF
                    END-IF
                END-IF
-      *        �������Ǥ���ũ�굻��¸�ߤ����
+      *        画像診断の点滴手技が存在する時
                IF      TBL-GAZ-DAY (IDY)   >   ZERO
                    IF     (TBL-TEN-SRYCD (IDY) NOT =   SPACE) OR
                           (TBL-TEN-SRYCD2(IDY) NOT =   SPACE)
@@ -2551,13 +2551,13 @@
                    END-IF
                    IF      SPA-ERRCD       NOT =   SPACE
                    IF      TBL-GAZ-IDX (IDY)   >   ZERO
-      *                �굻�����顼
+      *                手技料エラー
                        MOVE    "9022"              TO  SPA-ERRCD
                        MOVE    TBL-GAZ-IDX (IDY)   TO  IDX-K
                        MOVE    "1"                 TO  WRK-COM-CUR
                                                               (IDX-K)
                    ELSE
-      *                �굻�����顼�ʷٹ��
+      *                手技料エラー（警告）
                        MOVE    SPACE               TO  SPA-ERRCD
                        IF      TBL-TEN-IDX (IDY)   >   ZERO
                            MOVE    TBL-TEN-IDX (IDY)   TO  IDX-KBN
@@ -2589,7 +2589,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������������������������
+      *    入院歴より入院開始日決定処理
       *****************************************************************
        30051-NYUINREKI-SEC         SECTION.
       *
@@ -2602,7 +2602,7 @@
            CALL    "ORCSTUSAN"         USING   ORCSTUSANAREA
                                                SPA-AREA
       *
-      *    �̻������������
+      *    通算入院日を求める
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -2618,7 +2618,7 @@
            IF      WRK-NYMD            =   SPACE
                MOVE    LNK-ORCSC-NYUINYMD  TO  WRK-NYMD
            END-IF
-      *    ��������꣱ǯ��
+      *    入院日より１年後
            COMPUTE WRK-NYY             =   WRK-NYY
                                        +   1
       *
@@ -2628,7 +2628,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ũ�굻���ɲý���
+      *    点滴手技料追加処理
       *****************************************************************
        3002-AUTO-HENSYU-SEC         SECTION.
       *
@@ -2643,7 +2643,7 @@
            ADD     1                   TO  IDXS
            MOVE    WRK-TEN-SRYCD       TO  LNK-ORCSC-SRYCD (03 IDXS)
            MOVE    TNS-TEN             TO  LNK-ORCSC-TENSU (03 IDXS)
-      *    ǯ��û�����
+      *    年齢加算処理
            PERFORM 30021-NENREI-KASAN-SEC
            IF      FLG-ERR             =   ZERO
                PERFORM 30022-NISUU-SET-SEC
@@ -2658,7 +2658,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ��û��ɲý���
+      *    年齢加算追加処理
       *****************************************************************
        30021-NENREI-KASAN-SEC            SECTION.
       *
@@ -2670,11 +2670,11 @@
                MOVE    WRK-SRYCD           TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   ZERO
-      *            ǯ������å�
+      *            年齢チェック
                    PERFORM 30021-NENREI-CHK-SEC
                    IF      FLG-CHK              =   ZERO
       *
-      *                �û����׻�
+      *                加算料計算
                        MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD-KS
                                                        (03 IDXS)
                        MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU-KS
@@ -2689,7 +2689,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ������å�����
+      *    年齢チェック処理
       *****************************************************************
        30021-NENREI-CHK-SEC             SECTION.
       *
@@ -2699,12 +2699,12 @@
            MOVE    TNS-KGNAGE          TO  WRK-KGNAGE(2:2)
            MOVE    TNS-JGNAGE          TO  WRK-JGNAGE(2:2)
       *
-      *    ����ǯ������å�
+      *    下限年齢チェック
            IF      TNS-KGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
                IF      TNS-KGNAGE          =   "AA"
-      *            ������Ƚ��
+      *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY   =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM   =   ZERO )  AND
                           (LNK-ORCSC-NENREI-DD   <   28   )
@@ -2719,12 +2719,12 @@
                END-IF
            END-IF
       *
-      *    ���ǯ������å�
+      *    上限年齢チェック
            IF      TNS-JGNAGE          =   SPACE  OR  ZERO
                CONTINUE
            ELSE
                IF      TNS-JGNAGE          =   "AA"
-      *            ������Ƚ��
+      *            新生児判定
                    IF     (LNK-ORCSC-NENREI-YY    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-MM    =   ZERO )  AND
                           (LNK-ORCSC-NENREI-DD    <   28   )
@@ -2746,7 +2746,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������ư�������
+      *    入院の日数自動算定処理
       *****************************************************************
        30022-NISUU-SET-SEC         SECTION.
       *
@@ -2825,7 +2825,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -2862,7 +2862,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        900-SRYACT-NEXT-SEC         SECTION.
       *
@@ -2880,7 +2880,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ����ɤ߹���
+      *    診療会計マスタ読み込み
       *****************************************************************
        940-SRYACCT-READ-SEC         SECTION.
       *
@@ -2897,7 +2897,7 @@
        940-SINACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2910,7 +2910,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2925,7 +2925,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

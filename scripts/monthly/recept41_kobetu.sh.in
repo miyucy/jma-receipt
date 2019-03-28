@@ -10,25 +10,25 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ϫ�ҥ쥻�ťե�������̺�������
-#        ${1}-${11} �����ģ��Ѹ������
-#        ${13} Ϣ��
-#        ${17} �쥻�ťե����������
+#    労災レセ電ファイル個別作成処理
+#        ${1}-${11} 印刷ＤＢ用固定引数
+#        ${13} 連番
+#        ${17} レセ電ファイル出力先
 #        ${18} JOBID 
 #        ${19} SHELLID
-#        ${20} ���顼�ե�����̾ 
-#        ${21} �ե�����������ʬ
+#        ${20} エラーファイル名 
+#        ${21} ファイル出力先区分
 #            8:haori(check) 9:haori
-#        ${22} ü����𥢥ɥ쥹
+#        ${22} 端末ｉｐアドレス
 #        ${23} HOSPNUM
-#        ${24} �쥻�ץȺ�����ʬ
-#            1:����ѥ쥻��2:�����ѥ쥻
-#        ${25} �ɾ��ܵ�������ʬ
-#            1:��������
-#        ${26} �쥻�ťǡ���������¸�����ʬ
-#            1:������¸����
-#        ${28} �쥻�ťǡ��������å���̵ͭ
-#            1:�����å�����
+#        ${24} レセプト作成区分
+#            1:提出用レセ、2:点検用レセ
+#        ${25} 症状詳記作成区分
+#            1:作成する
+#        ${26} レセ電データ履歴保存設定区分
+#            1:履歴保存する
+#        ${28} レセ電データチェックの有無
+#            1:チェックする
 #        ${32} MONBLOB-ID(data-id)
 #-------------------------------------------#
 
@@ -39,7 +39,7 @@ fi
         fi
 
 cleanup(){
-##      �ѥ�᡼���ե�������
+##      パラメータファイル削除
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
@@ -67,14 +67,14 @@ trap cleanup EXIT
 ##  2HD flesize  
     fixedsize=1441500
 
-##  ���顼�ե�������
+##  エラーファイル削除
     echo "errfile = [" ${MCP_TEMPDIR}/${20}  "]" 
     rm  -f ${MCP_TEMPDIR}/${20}
 
-#   �������
+#   一時請求
     RECEFILE1="RREC"
     RECEFILE2="RECEDEN"
-#   ������
+#   再請求
     RECEFILE3="RREC"
     RECEFILE4="UKSRECE"
 
@@ -99,7 +99,7 @@ trap cleanup EXIT
         fi
     fi
 
-#   �����ե�������
+#   該当ファイル削除
     rm  ${17}${23}${RECEFILE1}*.UKE
     rm  ${MCP_TEMPDIR}/${23}${RECEFILE1}*.UKE
     rm  ${MCP_TEMPDIR}/${23}${RECEFILE2}*.txt
@@ -110,7 +110,7 @@ trap cleanup EXIT
     rm -fr "${MCP_TEMPDIR}/${23}Rousai_"*
     rm -fr "${MCP_TEMPDIR}/${23}TRousai_"*
 
-#   �쥻�ťե��������
+#   レセ電ファイル作成
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM710 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${13},${17},${18},${19},${21},$fixedsize,${24},${23},${20} 
     if  [ -e ${MCP_TEMPDIR}/${20} ]; then
@@ -118,7 +118,7 @@ trap cleanup EXIT
         exit 
     fi
 
-#   ����ե��������
+#   一時フォルダ作成
     if  [ ${21} -eq '8' ]; then
         if  [ ${24} -eq '2' ]; then
             ROUSAI_FOLDER1="${23}_CTRousai_${5}"
@@ -164,12 +164,12 @@ trap cleanup EXIT
     fi
 
 
-#   �����������Ѵ�
-    echo "�ե�����ν���(sjis�Ѵ�)"
+#   漢字コード変換
+    echo "ファイルの処理(sjis変換)"
 
     cd ${MCP_TEMPDIR}/
 
-#   �켡����
+#   一次請求
     all=`ls  ${23}${RECEFILE2}*.txt`
  
     for f in $all ; do
@@ -177,7 +177,7 @@ trap cleanup EXIT
       echo "mm = " ${f:9:2} 
       echo "nn = " ${f:11:2} 
 
-#       �����ƥ���������ϡ�������¸��Ԥ�ʤ��ˤΤȤ�
+#       システム管理場所出力（履歴保存を行わない）のとき
         if ( [ ${21} -eq '3' ]|| [ ${21} -eq '4' ] ) && [ ${26} -eq '0' ]; then
             echo ${17}${23}${RECEFILE1}${f:9:2}${f:11:2}.UKE 
             nkf -s $f > ${17}${23}${RECEFILE1}${f:9:2}${f:11:2}.UKE
@@ -187,7 +187,7 @@ trap cleanup EXIT
         fi
     done
 
-#   ������
+#   再請求
     all=`ls  ${23}${RECEFILE4}*.txt`
  
     for f in $all ; do
@@ -195,7 +195,7 @@ trap cleanup EXIT
       echo "mm = " ${f:9:2} 
       echo "nn = " ${f:11:2} 
 
-#       �����ƥ���������ϡ�������¸��Ԥ�ʤ��ˤΤȤ�
+#       システム管理場所出力（履歴保存を行わない）のとき
         if ( [ ${21} -eq '3' ]|| [ ${21} -eq '4' ] ) && [ ${26} -eq '0' ]; then
             echo ${17}${23}${RECEFILE3}${f:9:2}${f:11:2}.UKS 
             nkf -s $f > ${17}${23}${RECEFILE3}${f:9:2}${f:11:2}.UKS
@@ -205,7 +205,7 @@ trap cleanup EXIT
         fi
     done
 
-#   �쥻�ťǡ��������å�
+#   レセ電データチェック
     if  [ ${28} -eq '1' ]; then
         rennum=1
 
@@ -248,7 +248,7 @@ trap cleanup EXIT
             if  [ ${f: -4} = '.UKE' ]; then
 	        SKYKBN="1"
             else
-#              ������
+#              再請求
 	        SKYKBN="2"
             fi
 	    PRM="${23},${f: -12},$(basename ${UTF8FILE}),$(basename ${ERRFILE}),$(basename ${ERRLOG}),${SKYKBN},${24}"
@@ -281,10 +281,10 @@ trap cleanup EXIT
         fi
     fi
 
-#   �����ƥ���������ϤΤȤ�
+#   システム管理場所出力のとき
     if  [ ${21} -eq '3' ]|| [ ${21} -eq '4' ]; then
         if  [ ${26} -eq '1' ]; then
-#           ������¸��Υե�����إե��������
+#           履歴保存先のフォルダへファイル作成
             RIREKI_FOLDER1="${17}${ROUSAI_FOLDER1}/"
             RIREKI_FOLDER="${RIREKI_FOLDER1}Kobetsu/"
 
@@ -305,20 +305,20 @@ trap cleanup EXIT
                  rm ${RIREKI_FOLDER}*
                  echo "--- rm rireki holder file ---"
             fi
-#           �������
+#           一時請求
             cp ${OUT_FOLDER}${RECEFILE1}*.UKE ${RIREKI_FOLDER}
             chmod -R g+r ${RIREKI_FOLDER}${RECEFILE1}*.UKE
-#           ������
+#           再請求
             cp ${OUT_FOLDER}${RECEFILE3}*.UKS ${RIREKI_FOLDER}
             chmod -R g+r ${RIREKI_FOLDER}${RECEFILE3}*.UKS
         else
-#           ������¸��Ԥ�ʤ��Ȥ�
+#           履歴保存を行わないとき
             chmod -R g+r ${17}${23}${RECEFILE1}*.UKE
             chmod -R g+r ${17}${23}${RECEFILE3}*.UKS
         fi
     fi
 
-#   ���饤�������¸
+#   クライアント保存
     if  [ ${21} -eq '5' ]; then
         cd  ${MCP_TEMPDIR}/
         echo "--- zip name [" ${ROUSAI_FOLDER}.zip "]"
@@ -334,7 +334,7 @@ trap cleanup EXIT
 	fi
     fi
 
-#   �ãġݣҽ��ϤΤȤ�iso�ե��������
+#   ＣＤ−Ｒ出力のときisoファイル作成
     if  [ ${21} -eq '6' ]; then
         cd  ${MCP_TEMPDIR}/
         echo "--- iso name [" ${MCP_TEMPDIR}/${ROUSAI_FOLDER}.iso "]"
@@ -349,7 +349,7 @@ trap cleanup EXIT
 	fi
     fi
 
-#   �����̣��Уɺ���
+#   大容量ＡＰＩ作成
     if  [ ${21} -eq '8' ]||[ ${21} -eq '9' ]; then
         cd  ${MCP_TEMPDIR}/
         FILENM="${ROUSAI_FOLDER}.zip"

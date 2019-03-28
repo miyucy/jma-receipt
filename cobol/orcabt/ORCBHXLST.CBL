@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBHXLST.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ģɼ
-      *  ����ݡ��ͥ��̾  : �������ޥ�������ɽ�����ʰ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/08/08    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 随時帳票
+      *  コンポーネント名  : チェクマスタ一覧表印刷（一括）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/08/08    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL������   05.02.08  ORCHXLST���Խ�������ܹ�
-      *  03.05.00    NACL-����    07/06/04  ���롼�׿����б�
-      *  04.08.01    NACL-����    17/01/16  Ŭ����̾�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−太田   05.02.08  ORCHXLSTに編集処理を移行
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *  04.08.01    NACL-森脇    17/01/16  適応病名対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -37,14 +37,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -52,26 +52,26 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
       *----(04.08.01)--ADD-START---
            03  FLG-CHKSND              PIC 9(01).
       *----(04.08.01)--ADD-END-----
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-JOB-UPDCNT                PIC 9(05).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -81,12 +81,12 @@
            03  WRK-PARA-SRYCD          PIC X(09).
            03  WRK-PARA-SRYCD-END      PIC X(09).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
       *----(04.08.01)--ADD-START--
@@ -94,59 +94,59 @@
            COPY    "CPCHKSND.INC".
       *----(04.08.01)--ADD-END----
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *----(04.08.01)--ADD-START--
-      *    ��������å��ޥ����Խ�����
+      *    一時チェックマスタ編集サブ
            COPY    "CPORCSS013.INC".
       *
            COPY    "CPORCSS013.INC"    REPLACING
                                        //SS013-// BY //TSS013-//.
       *----(04.08.01)--ADD-END----
       *
-      *    ���������Ѵ��ΰ�
+      *    一覧印刷変換領域
            COPY    "CPORCHXLST.INC".
       *
-      *    �����Ѵ�
+      *    全角変換
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -154,7 +154,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -168,7 +168,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -181,7 +181,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -215,18 +215,18 @@
                                        WRK-PARA-SRYCD-END
            END-UNSTRING
       *
-      *    ����ͥ��å�
+      *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBHXLST"         TO  JOB-PGID
-           MOVE    "�����å��ޥ�������������"
+           MOVE    "チェックマスタ一覧一括印刷"
                                        TO  JOB-SHELLMSG
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
@@ -241,14 +241,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ͥ��å�
+      *    初期値セット
       *****************************************************************
        110-SYOKI-SET-SEC           SECTION.
       *
-      *    �ӣУ����ꥢ���åȽ���
+      *    ＳＰＡエリアセット処理
            PERFORM 110-SPA-SET-SEC
       *
-      *    �����ѥ�᥿���ꥢ���åȽ���
+      *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC
       *
            .
@@ -256,11 +256,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ����ꥢ���åȽ���
+      *    ＳＰＡエリアセット処理
       *****************************************************************
        110-SPA-SET-SEC                 SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            INITIALIZE                      SPA-AREA
            MOVE    LNK-PRTKANRI-SKYYMD
                                        TO  SPA-SYSYMD
@@ -272,11 +272,11 @@
        110-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ѥ�᥿���ꥢ���åȽ���
+      *    印刷パラメタエリアセット処理
       *****************************************************************
        110-ORCSPRTAREA-SET-SEC         SECTION.
       *
-      *    �����ѥ�᥿�Խ�
+      *    印刷パラメタ編集
            INITIALIZE                      ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
            MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
@@ -292,7 +292,7 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           MOVE    "�����å��ޥ�������������"
+           MOVE    "チェックマスタ一覧一括印刷"
                                        TO  SPRT-TITLE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -304,7 +304,7 @@
            EXIT.
       *----(04.08.01)--UPD-START---
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -348,7 +348,7 @@
       *----(04.08.01)--UPD-END-----
       *----(04.08.01)--ADD-START---
       *****************************************************************
-      *    Ŭ����̾�ޥ�������ɽ���Ͻ���
+      *    適応病名マスタ一覧表開始処理
       *****************************************************************
        2002-TEKBYO-START-SEC           SECTION.
       *
@@ -391,7 +391,7 @@
        2002-TEKBYO-START-EXT.
            EXIT.
       *****************************************************************
-      *    Ŭ����̾�ޥ�������ɽ��λ����
+      *    適応病名マスタ一覧表終了処理
       *****************************************************************
        2001-TEKBYO-END-SEC             SECTION.
       *
@@ -410,12 +410,12 @@
            EXIT.
       *----(04.08.01)--ADD-END-----
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-JOB-UPDCNT            =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -423,7 +423,7 @@
            DISPLAY "*** ORCBHXLST PAGE:" CNT-JOB-UPDCNT  " ***"
            DISPLAY "*** ORCBHXLST END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -440,7 +440,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -454,7 +454,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -474,7 +474,7 @@
       *
       *----(04.08.01)--ADD-START---
       *****************************************************************
-      *    �����å��ޥ�������������
+      *    チェックマスタ２検索処理
       *****************************************************************
        900-CHKSND-KEY23-SEL-SEC        SECTION.
       *
@@ -502,7 +502,7 @@
        900-CHKSND-KEY23-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������
+      *    チェックマスタ２検索処理
       *****************************************************************
        900-CHKSND-KEY23-FET-SEC        SECTION.
       *
@@ -522,7 +522,7 @@
        900-CHKSND-KEY23-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -539,7 +539,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -553,7 +553,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -567,7 +567,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -581,7 +581,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ģţ̣ţԣŽ���
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -595,7 +595,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -610,7 +610,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *----(04.08.01)--ADD-END-----
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -625,7 +625,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -649,7 +649,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

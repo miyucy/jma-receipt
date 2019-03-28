@@ -1,8 +1,8 @@
 --                                    --
--- ��Ǽ�ơ��֥���ѹ�                 --
+-- 収納テーブルの変更                 --
 --                                    --
--- ���ܤ��ɲ�                         --
---   ���񣶤��飱��  JIHI_6           --
+-- 項目の追加                         --
+--   自費６から１０  JIHI_6           --
 --                   JIHI_6_TAX       --
 --                   JIHI_7           --
 --                   JIHI_7_TAX       --
@@ -12,27 +12,27 @@
 --                   JIHI_9_TAX       --
 --                   JIHI_10          --
 --                   JIHI_10_TAX      --
---   ��§�����ݴ�����ô���           --
+--   変則助成−患者負担金額           --
 --                   JYO_HKNFTNMONEY  --
---   ��§�����ݷ׻���ô��             --
+--   変則助成−計算負担金             --
 --                   JYO_COMPFTN      --
---   ��§�����ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+--   変則助成−計算負担金（円単位記録用）
 --                   JYO_COMPFTN_ENTANI --
---   ���ȶ��        DISCOUNT_MONEY   --
+--   減免金額        DISCOUNT_MONEY   --
 --                                    --
--- ��Ǽ�ơ��֥�����ץ쥳���ɺ��     --
---   ������                         --
---   ��ɼ�ֹ�9000000--9099999���о�   --
---   ������ʬ = '1'                   --
---   ��ɼ������ʬ = '3'               --
+-- 収納テーブルの不要レコード削除     --
+--   削除条件                         --
+--   伝票番号9000000--9099999が対象   --
+--   入外区分 = '1'                   --
+--   伝票作成区分 = '3'               --
 --                                    --
 -- Create Date : 2005/07/13           --
 --                                    --
--- TBL_SYUNOU_PRV ���               --
+-- TBL_SYUNOU_PRV 削除               --
 
 drop table TBL_SYUNOU_PRV;
 
--- TBL_SYUNOU_PRV ����               --
+-- TBL_SYUNOU_PRV 作成               --
 
 
 create	table	tbl_syunou_prv	(

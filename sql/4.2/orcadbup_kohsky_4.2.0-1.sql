@@ -1,15 +1,15 @@
 --                                    --
--- ¸øÈñÀÁµá½ñ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹           --
+-- å…¬è²»è«‹æ±‚æ›¸ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´           --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¥Õ¥é¥°                           --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ãƒ•ãƒ©ã‚°                           --
 --                                    --
 -- Create Date : 2008/03/12           --
 --                                    --
 \set ON_ERROR_STOP
 
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_kohsky
    add column flg1 numeric(1);
 alter table tbl_kohsky
@@ -21,7 +21,7 @@ alter table tbl_kohsky
 alter table tbl_kohsky
    add column flg5 numeric(1);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_kohsky
    alter flg1 set default 0;
 alter table tbl_kohsky

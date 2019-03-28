@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,51 +18,51 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0551.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץȡ�ϫ�ҡ������ա�
-      *  ����ݡ��ͥ��̾  : ���̳��ϫ�Ҽ��������ٽ�ե��������
-      *                      �������Խ���ϫ�ҡ������աˡʥ쥻���ѡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  13/02/12    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      コメント編集（労災・自賠責）（レセ電用）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  13/02/12    NACL−門脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-ƣ��    13/08/20  �����������ǻϤޤ륳���ɤ���
-      *                                     ��쥻�ץȤ��оݳ��Ȥ���
-      *  04.07.02    NACL-����    13/09/25  ϫ�ҥޥ����ɲ��б�
-      *                                     �����úƿ���������
-      *  04.07.03    NACL-ƣ��    14/03/30  ʿ������ǯ��������б�
-      *                                     �����⡼�ɤη�³���륹�ڡ���
-      *                                     �ε�Ͽ��ˡ���ѹ�
-      *  04.07.04    NACL-����    14/04/07  ʿ������ǯ��������б�
-      *  04.07.05    NACL-����    14/05/08  �ߵް��Ŵ����û��λ���������
-      *                                     ����
-      *  04.07.06    NACL-����    14/07/08  ���٤�������Ķ��������б�
-      *  04.07.07    NACL-����    14/09/01  ʿ������ǯ����������б�
-      *  04.07.08    NACL-����    14/11/12  �������ǥե����ʬ����б�����
-      *  04.07.09    NACL-����    14/12/15  ʿ������ǯ��������б�
-      *                                     �ʽ�ƿ��������ŷ�Ψ�б���
-      *  04.07.10    NACL-����    15/03/09  ˬ����Ťˤ����뵭Ͽ�񥳥����б�
-      *  04.07.11    NACL-����    15/03/16  ʿ������ǯ��������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    13/08/20  ０９５９３で始まるコードがあ
+      *                                     るレセプトは対象外とする
+      *  04.07.02    NACL-門脇    13/09/25  労災マスタ追加対応
+      *                                     （電話再診料　等）
+      *  04.07.03    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *                                     漢字モードの継続するスペース
+      *                                     の記録方法の変更
+      *  04.07.04    NACL-門脇    14/04/07  平成２６年４月改正対応
+      *  04.07.05    NACL-門脇    14/05/08  救急医療管理加算の算定日記載
+      *                                     やめる
+      *  04.07.06    NACL-門脇    14/07/08  明細が５０を超える場合の対応
+      *  04.07.07    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.08    NACL-門脇    14/11/12  画像診断フイルム分画数対応修正
+      *  04.07.09    NACL-門脇    14/12/15  平成２７年１月改正対応
+      *                                     （初再診料・低妥結率対応）
+      *  04.07.10    NACL-門脇    15/03/09  訪問診療にかかる記録書コメント対応
+      *  04.07.11    NACL-門脇    15/03/16  平成２７年４月改正対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-����    14/07/23  ����ʸ���ʾ��ʸ������
-      *                                     �ʥ���ѥ�����Υ�˥󥰽�����
-      *  04.08.03    NACL-����    16/03/28  ʿ������ǯ��������б�
-      *  04.08.04    NACL-����    16/05/18  ���Ļ������ȼ�ư���ܾ�､��
-      *  04.08.05    NACL-����    16/09/15  ��ϥӥ�ޥ����ɲ��б�
-      *  04.08.06    NACL-����    16/09/27  ���𴵼�ˬ���ϥӥ�ơ�������Ƴ
-      *                                     �������λ������������б�
-      *  04.08.07    NACL-����    16/12/07  ��֥�˥���󥰲û���������ǯ��
-      *                                     �����ȵ��ܽ���
-      *  04.08.08    NACL-ƣ��    17/03/02  ̤�����ɲ������ॳ�����ѻ��б�
-      *  04.08.09    NACL-����    18/03/27  ʿ������ǯ��������б�
-      *  04.08.10    NACL-����    18/05/07  ʿ������ǯ��������б�
-      *  04.08.11    NACL-����    18/06/21  ��ϥӥ곫�������ܽ���
-      *  04.08.12    NACL-����    18/07/02  ��ϥӥ곫�������ܽ���
-      *  04.08.13    NACL-����    18/09/27  ���򼰥������б�
-      *  04.08.14    NACL-����    18/10/26  ���������Խ�����
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
+      *  04.08.03    NACL-門脇    16/03/28  平成２８年４月改正対応
+      *  04.08.04    NACL-門脇    16/05/18  乳幼児コメント自動記載条件修正
+      *  04.08.05    NACL-門脇    16/09/15  リハビリマスタ追加対応
+      *  04.08.06    NACL-門脇    16/09/27  在宅患者訪問リハビリテーション指導
+      *                                     管理料の算定日コメント対応
+      *  04.08.07    NACL-門脇    16/12/07  遠隔モニタリング加算の前回算定年月
+      *                                     コメント記載修正
+      *  04.08.08    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
+      *  04.08.09    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *  04.08.10    NACL-門脇    18/05/07  平成３０年４月改正対応
+      *  04.08.11    NACL-門脇    18/06/21  リハビリ開始日記載修正
+      *  04.08.12    NACL-門脇    18/07/02  リハビリ開始日記載修正
+      *  04.08.13    NACL-門脇    18/09/27  選択式コメント対応
+      *  04.08.14    NACL-門脇    18/10/26  薬剤逓減編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -99,7 +99,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE451-KEY
                                    FILE    STATUS  IS  STS-RECE451.
-      *���
+      *ワーク
            SELECT  RECE449-FILE    ASSIGN  RECE449PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
@@ -117,7 +117,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE455-KEY
                                    FILE    STATUS  IS  STS-RECE455.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -144,7 +144,7 @@
        01  RECE451-REC. 
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //RECE451//.
-      *���
+      *ワーク
        FD  RECE449-FILE.
        01  RECE449-REC. 
            COPY    "CPRCF0441.INC" REPLACING   //RECE441//
@@ -159,12 +159,12 @@
        01  RECE455-REC. 
            COPY    "CPRCF0455.INC".
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *     �쥻�ץ����٥ե����� ̾���ΰ� 
+      *     レセプト明細ファイル 名称領域 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE41//.
@@ -197,11 +197,11 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE455//.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE41          PIC X(02).
            03  STS-RECE44          PIC X(02).
@@ -213,7 +213,7 @@
            03  STS-RECE455         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE44          PIC 9(01).
@@ -275,7 +275,7 @@
            03  FLG-ETC             PIC 9(01).
            03  FLG-SENTAKU-OKIKAE  PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE44          PIC 9(06).
@@ -295,7 +295,7 @@
            03  CNT-DOUDEN2         PIC 9(06).
            03  CNT-KENSA           PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -353,7 +353,7 @@
            03  RIHA-ST             PIC 9(02).
            03  RIHA-ST2            PIC 9(02).
       *     
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM              PIC  X(06).
@@ -400,7 +400,7 @@
            03  TBL-SANTEI-DAY.
                05  TB-SANTEI-DAY   PIC 9(02)   OCCURS  31.
       *
-      *    �������ŷ�ʬ
+      *    該当診療月分
            03  TBL-RIHASANTEI-DAY.
                05  TB-RIHASANTEI-DAY PIC 9(01) OCCURS  31.
       *
@@ -408,18 +408,18 @@
                05  TB-RIHASANTEI-DAY-END
                                      PIC 9(01) OCCURS  31.
       *
-      *    ľ��ʬ
+      *    直近分
            03  WRK-RIHASANTEI-YMD.
                05  WRK-RIHASANTEI-YM PIC 9(06).
                05  WRK-RIHASANTEI-DD PIC 9(02).
       *
-      *    ľ��ʬ������
+      *    直近分退避用
            03  WRK-RIHASANTEI-YMD2   PIC X(08).
       *
-      *    ���������ľ�Ὢλ��
+      *    前月以前の直近終了日
            03  WRK-RIHASANTEI-END    PIC X(08).
       *
-      *    ��������ǯ������˻����������뤫
+      *    ２００６年４月１日に算定日があるか
            03  WRK-RIHASANTEI41-FLG  PIC 9(01).
       *
            03  WRK-HKNCOMBINUMX      PIC X(04).
@@ -560,10 +560,10 @@
            03  WRK-ERR-FILE-MSG        PIC X(100).
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-RECE44-REC. 
@@ -611,236 +611,236 @@
            03  WRK-JIDO-SETCOMFLG            PIC  X(01).
            03  WRK-JIDO-JYOUGEFLG            PIC  9(01).
       *
-      *    ���������Ѵ��ΰ�
+      *    日付全角変換領域
        01  TBL-DAY-AREA.
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
+           03  FILLER              PIC X(04)  VALUE "　１".
+           03  FILLER              PIC X(04)  VALUE "　２".
+           03  FILLER              PIC X(04)  VALUE "　３".
+           03  FILLER              PIC X(04)  VALUE "　４".
+           03  FILLER              PIC X(04)  VALUE "　５".
+           03  FILLER              PIC X(04)  VALUE "　６".
+           03  FILLER              PIC X(04)  VALUE "　７".
+           03  FILLER              PIC X(04)  VALUE "　８".
+           03  FILLER              PIC X(04)  VALUE "　９".
+           03  FILLER              PIC X(04)  VALUE "１０".
+           03  FILLER              PIC X(04)  VALUE "１１".
+           03  FILLER              PIC X(04)  VALUE "１２".
+           03  FILLER              PIC X(04)  VALUE "１３".
+           03  FILLER              PIC X(04)  VALUE "１４".
+           03  FILLER              PIC X(04)  VALUE "１５".
+           03  FILLER              PIC X(04)  VALUE "１６".
+           03  FILLER              PIC X(04)  VALUE "１７".
+           03  FILLER              PIC X(04)  VALUE "１８".
+           03  FILLER              PIC X(04)  VALUE "１９".
+           03  FILLER              PIC X(04)  VALUE "２０".
+           03  FILLER              PIC X(04)  VALUE "２１".
+           03  FILLER              PIC X(04)  VALUE "２２".
+           03  FILLER              PIC X(04)  VALUE "２３".
+           03  FILLER              PIC X(04)  VALUE "２４".
+           03  FILLER              PIC X(04)  VALUE "２５".
+           03  FILLER              PIC X(04)  VALUE "２６".
+           03  FILLER              PIC X(04)  VALUE "２７".
+           03  FILLER              PIC X(04)  VALUE "２８".
+           03  FILLER              PIC X(04)  VALUE "２９".
+           03  FILLER              PIC X(04)  VALUE "３０".
+           03  FILLER              PIC X(04)  VALUE "３１".
        01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
            03  TBL-DAY             PIC X(04)   OCCURS   31.
       *
        01  MAX-MEISAISU            PIC 9(07).
       *
-      *    ������
+      *    固定値
        01  CONST-AREA.
-      *    �����Ȥ��˼���
+      *    慢性とう痛疾患
            03  CONS-MANSEI          PIC X(09) VALUE "113006510".
-      *    ������Ʃ�ϻ�Ƴ������
+      *    在宅血液透析指導管理料
            03  CONS-TOSEKI          PIC X(09) VALUE "114009310".
-      *    Ǿ��ɼ�������ȯ����
+      *    脳血管疾患急性発症日
            03  CONS-KYUSEI          PIC X(09) VALUE "099800101".
-      *    �˥������¸�ɴ������ʽ���
+      *    ニコチン依存症管理料（初回）
            03  CONS-NIKOCHIN        PIC X(09) VALUE "113008310".
-      *    ������©���Լ��Ŵ����û��ʣ����ܡ�
+      *    重度喘息患者治療管理加算（１月目）
            03  CONS-ZENSOKU         PIC X(09) VALUE "113008070".
-      *    �����ϳ�����
+      *    心大リハ開始日
            03  CONS-SINDAI          PIC X(09) VALUE "099800111".
-      *    �Ƶ۴��ϳ�����
+      *    呼吸器リハ開始日
            03  CONS-KOKYUKI         PIC X(09) VALUE "099800141".
-      *    Ǿ��ɼ�������ϳ�����
+      *    脳血管疾患等リハ開始日
            03  CONS-NOUKE           PIC X(09) VALUE "099800121".
-      *    ��ư���ϳ�����
+      *    運動器リハ開始日
            03  CONS-UNDOKI          PIC X(09) VALUE "099800131".
-      *    ���´��ԥ�ϳ�����
+      *    難病患者リハ開始日
            03  CONS-NANBYO          PIC X(09) VALUE "099800161".
-      *    �㳲���ʼԡ˥�ϳ�����
+      *    障害児（者）リハ開始日
            03  CONS-SYOGAI          PIC X(09) VALUE "099800171".
-      *    �ݿ���ˡ������
+      *    摂食療法開始日
            03  CONS-SESSYOKU        PIC X(09) VALUE "099800151".
-      *    ���Ѿɸ�����ϳ�����
+      *    廃用症候群リハ開始日
            03  CONS-HAIYO           PIC X(09) VALUE "099800191".
       *
-      *    �����Ͻ�λ��
+      *    心大リハ終了日
            03  CONS-SINDAI-E        PIC X(09) VALUE "099800112".
-      *    �Ƶ۴��Ͻ�λ��
+      *    呼吸器リハ終了日
            03  CONS-KOKYUKI-E       PIC X(09) VALUE "099800142".
-      *    Ǿ��ɼ�������Ͻ�λ��
+      *    脳血管疾患等リハ終了日
            03  CONS-NOUKE-E         PIC X(09) VALUE "099800122".
-      *    ��ư���Ͻ�λ��
+      *    運動器リハ終了日
            03  CONS-UNDOKI-E        PIC X(09) VALUE "099800132".
-      *    ���´��ԥ�Ͻ�λ��
+      *    難病患者リハ終了日
            03  CONS-NANBYO-E        PIC X(09) VALUE "099800162".
-      *    �㳲���ʼԡ˥�Ͻ�λ��
+      *    障害児（者）リハ終了日
            03  CONS-SYOGAI-E        PIC X(09) VALUE "099800172".
-      *    �ݿ���ˡ��λ��
+      *    摂食療法終了日
            03  CONS-SESSYOKU-E      PIC X(09) VALUE "099800152".
-      *    ���Ѿɸ�����ϳ�����
+      *    廃用症候群リハ開始日
            03  CONS-HAIYO-E         PIC X(09) VALUE "099800192".
       *
-      *    �����ϲû�������
+      *    心大リハ加算開始日
            03  CONS-SINDAI-K        PIC X(09) VALUE "099800211".
-      *    �Ƶ۴��ϲû�������
+      *    呼吸器リハ加算開始日
            03  CONS-KOKYUKI-K       PIC X(09) VALUE "099800241".
-      *    ���Ѿɸ�����ϲû�������
+      *    廃用症候群リハ加算開始日
            03  CONS-HAIYO-K         PIC X(09) VALUE "099800291".
       *
-      *    �����ɼ�����ϥӥ�ơ�������ش������ʣ���
+      *    心大血管疾患リハビリテーション医学管理料（１）
            03  CONS-SINDAI-IGAKU1   PIC X(09) VALUE "180029910".
-      *    �����ɼ�����ϥӥ�ơ�������ش������ʣ���
+      *    心大血管疾患リハビリテーション医学管理料（２）
            03  CONS-SINDAI-IGAKU2   PIC X(09) VALUE "180030010".
-      *    �Ƶ۴��ϥӥ�ơ�������ش������ʣ���
+      *    呼吸器リハビリテーション医学管理料（１）
            03  CONS-KOKYUKI-IGAKU1  PIC X(09) VALUE "180030510".
-      *    �Ƶ۴��ϥӥ�ơ�������ش������ʣ���
+      *    呼吸器リハビリテーション医学管理料（２）
            03  CONS-KOKYUKI-IGAKU2  PIC X(09) VALUE "180030610".
-      *    Ǿ��ɼ�������ϥӥ�ơ�������ش������ʣ���
+      *    脳血管疾患等リハビリテーション医学管理料（１）
            03  CONS-NOUKE-IGAKU1    PIC X(09) VALUE "180030110".
-      *    Ǿ��ɼ�������ϥӥ�ơ�������ش������ʣ���
+      *    脳血管疾患等リハビリテーション医学管理料（２）
            03  CONS-NOUKE-IGAKU2    PIC X(09) VALUE "180030210".
-      *    ��ư���ϥӥ�ơ�������ش������ʣ���
+      *    運動器リハビリテーション医学管理料（１）
            03  CONS-UNDOKI-IGAKU1   PIC X(09) VALUE "180030310".
-      *    ��ư���ϥӥ�ơ�������ش������ʣ���
+      *    運動器リハビリテーション医学管理料（２）
            03  CONS-UNDOKI-IGAKU2   PIC X(09) VALUE "180030410".
       *
-      *    �����ɼ�����ϼ»�
+      *    心大血管疾患リハ実施
            03  CONS-SINDAI-DUMMY    PIC X(09) VALUE "099800311".
-      *    �Ƶ۴��ϼ»�
+      *    呼吸器リハ実施
            03  CONS-KOKYUKI-DUMMY   PIC X(09) VALUE "099800341".
-      *    Ǿ��ɼ�����ϼ»�
+      *    脳血管疾患リハ実施
            03  CONS-NOUKE-DUMMY     PIC X(09) VALUE "099800321".
-      *    ��ư���ϼ»�
+      *    運動器リハ実施
            03  CONS-UNDOKI-DUMMY    PIC X(09) VALUE "099800331".
       *
-      *    ����������������󥻥�����ʣ����ܡ�
+      *    小児特定疾患カウンセリング料（１回目）
            03  CONS-SYOUNI          PIC X(09) VALUE "113000810".
       *
-      *    ��¡�ڡ����᡼������Ƴ�������ʱ�֥�˥���󥰡�
+      *    心臓ペースメーカー指導管理料（遠隔モニタリング）
            03  CONS-SINPESU         PIC X(09) VALUE "113001510".
-      *    ��֥�˥���󥰲û�
+      *    遠隔モニタリング加算
            03  CONS-SINPESU2        PIC X(09) VALUE "113018070".
       *
-      *    ǧ����ˡ��ǧ�ι�ư��ˡ
+      *    認知療法・認知行動療法
            03  CONS-NINRYO          PIC X(09) VALUE "180033210".
-      *    ǧ����ˡ��ǧ�ι�ư��ˡ�������ʵߵ������������ݷ������
+      *    認知療法・認知行動療法（精神科救急体制の精神保健指定医）
            03  CONS-NINRYO2         PIC X(09) VALUE "180035910".
-      *    ǧ����ˡ��ǧ�ι�ư��ˡ�������ݷ�����ȴǸ�դ���Ʊ�ǹԤ�����
+      *    認知療法・認知行動療法（精神保健指定医と看護師が共同で行う場合）
            03  CONS-NINRYO5         PIC X(09) VALUE "180047810".
-      *    ǧ����ˡ��ǧ�ι�ư��ˡ�ʰ�ա�
+      *    認知療法・認知行動療法（医師）
            03  CONS-NINRYO8         PIC X(09) VALUE "180056410".
       *
-      *    ǧ�ξ�������Ǵ�������
+      *    認知症専門診断管理料２
            03  CONS-NINSEN          PIC X(09) VALUE "113014610".
-      *    ������ư�������Ƴ������
+      *    小児運動器疾患指導管理料
            03  CONS-SYOUNDO         PIC X(09) VALUE "113024310".
-      *    ���ܡ���ϫξΩ�ٱ��Ƴ��
+      *    療養・就労両立支援指導料
            03  CONS-RYOSYU          PIC X(09) VALUE "113027910".
-      *    ǧ�ξɥ��ݡ��Ȼ�Ƴ��
+      *    認知症サポート指導料
            03  CONS-NINSAPO         PIC X(09) VALUE "113028310".
       *
-      *    ������ӽ��۰����ؼ���
+      *    介護職員等喀痰吸引等指示料
            03  CONS-KAISYOKU        PIC X(09) VALUE "114020910".
       *
-      *    �ߵް��Ŵ����û�
+      *    救急医療管理加算
            03  CONS-KYUKYU          PIC X(09) VALUE "101110030".
            03  CONS-KYUKYU2         PIC X(09) VALUE "101800890".
       *
-      *    ��¡�ڡ����᡼������Ƴ�����������ѷ���ư����ư���
+      *    心臓ペースメーカー指導管理料（着用型自動除細動器）
            03  CONS-SINPESUR1       PIC X(09) VALUE "113015010".
-      *    ��¡�ڡ����᡼������Ƴ�������ʥ�������������ư��ܹԴ��û��ޤ��
+      *    心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
            03  CONS-SINPESUR2       PIC X(09) VALUE "113015130".
-      *    ��¡�ڡ����᡼������Ƴ�������ʥ��ʳ���
+      *    心臓ペースメーカー指導管理料（イ以外）
            03  CONS-SINPESUR3       PIC X(09) VALUE "113001610".
       *
-      *    ���󴵼Ի�Ƴ�������ʰ�ա��Ǹ�դ�����Ū�԰·ڸ��Τ������ܡ�
+      *    がん患者指導管理料（医師・看護師が心理的不安軽減のため面接）
            03  CONS-GANSIDO1        PIC X(09) VALUE "113015310".
-      *    ���󴵼Ի�Ƴ�������ʰ����������������ޤ�ɬ��������ʸ��������
+      *    がん患者指導管理料（医師等が坑悪性腫瘍剤の必要性等を文書説明）
            03  CONS-GANSIDO2        PIC X(09) VALUE "113015410".
       *
-      *    ���𴵼Զ�Ʊ������������
+      *    在宅患者共同診療料開始日
            03  CONS-ZAIKYO          PIC X(09) VALUE "099140004".
       *
-      *    �����ˤ��������ɷ�ˡ������
+      *    磁気による膀胱等刺激法開始日
            03  CONS-BOKOHO1         PIC X(09) VALUE "099400001".
-      *    �����ˤ��������ɷ�ˡ
+      *    磁気による膀胱等刺激法
            03  CONS-BOKOHO2         PIC X(09) VALUE "140055110".
       *
-      *    �̱�������������ˡ������
+      *    通院・在宅精神療法開始日
            03  CONS-TUINZAI         PIC X(09) VALUE "099830102".
       *
-      *    ��¸�ɽ�����ˡ������
+      *    依存症集団療法開始日
            03  CONS-IZONSYO         PIC X(09) VALUE "099830103".
       *
-      *    �����ʣӣü�����������ץ������û�������
+      *    精神科ＳＣ疾患別等専門プログラム加算開始日
            03  CONS-SCPRO           PIC X(09) VALUE "099830104".
       *
-      *    �����ʽžɴ����������ٱ����������ñ���ʪ���͡�
+      *    精神科重症患者早期集中支援管理料１（単一建物１人）
            03  CONS-SEIJYU          PIC X(09) VALUE "180042110".
-      *    �����ʽžɴ����������ٱ����������ñ���ʪ���͡�
+      *    精神科重症患者早期集中支援管理料２（単一建物１人）
            03  CONS-SEIJYU2         PIC X(09) VALUE "180042410".
-      *    �����ʽžɴ����������ٱ����������ñ���ʪ���Ͱʾ��
+      *    精神科重症患者早期集中支援管理料１（単一建物２人以上）
            03  CONS-SEIJYU3         PIC X(09) VALUE "180048710".
-      *    �����ʽžɴ����������ٱ����������ñ���ʪ���Ͱʾ��
+      *    精神科重症患者早期集中支援管理料２（単一建物２人以上）
            03  CONS-SEIJYU4         PIC X(09) VALUE "180048810".
       *
-      *    �����ʺ��𴵼Իٱ���������ʽ���Ū�ٱ�ɬ�סˡ�ñ���ʪ���͡�
+      *    精神科在宅患者支援管理料１（集中的支援必要）（単一建物１人）
            03  CONS-SEIZAI          PIC X(09) VALUE "180057210".
-      *    �����ʺ��𴵼Իٱ���������ʽ���Ū�ٱ�ɬ�סˡ�ñ���ʪ���Ͱʾ��
+      *    精神科在宅患者支援管理料１（集中的支援必要）（単一建物２人以上）
            03  CONS-SEIZAI2         PIC X(09) VALUE "180057310".
-      *    �����ʺ��𴵼Իٱ���������ʽ��������㳲�ԡˡ�ñ���ʪ���͡�
+      *    精神科在宅患者支援管理料１（重度精神障害者）（単一建物１人）
            03  CONS-SEIZAI3         PIC X(09) VALUE "180057410".
-      *    �����ʺ��𴵼Իٱ���������ʽ��������㳲�ԡˡ�ñ���ʪ���Ͱʾ��
+      *    精神科在宅患者支援管理料１（重度精神障害者）（単一建物２人以上）
            03  CONS-SEIZAI4         PIC X(09) VALUE "180057510".
-      *    �����ʺ��𴵼Իٱ���������ʥ��ڤӥ��ʳ��ˡ�ñ���ʪ���͡�
+      *    精神科在宅患者支援管理料１（イ及びロ以外）（単一建物１人）
            03  CONS-SEIZAI5         PIC X(09) VALUE "180057610".
-      *    �����ʺ��𴵼Իٱ���������ʥ��ڤӥ��ʳ��ˡ�ñ���ʪ���Ͱʾ��
+      *    精神科在宅患者支援管理料１（イ及びロ以外）（単一建物２人以上）
            03  CONS-SEIZAI6         PIC X(09) VALUE "180057710".
-      *    �����ʺ��𴵼Իٱ���������ʽ���Ū�ٱ�ɬ�סˡ�ñ���ʪ���͡�
+      *    精神科在宅患者支援管理料２（集中的支援必要）（単一建物１人）
            03  CONS-SEIZAI7         PIC X(09) VALUE "180057810".
-      *    �����ʺ��𴵼Իٱ���������ʽ���Ū�ٱ�ɬ�סˡ�ñ���ʪ���Ͱʾ��
+      *    精神科在宅患者支援管理料２（集中的支援必要）（単一建物２人以上）
            03  CONS-SEIZAI8         PIC X(09) VALUE "180057910".
-      *    �����ʺ��𴵼Իٱ���������ʽ��������㳲�ԡˡ�ñ���ʪ���͡�
+      *    精神科在宅患者支援管理料２（重度精神障害者）（単一建物１人）
            03  CONS-SEIZAI9         PIC X(09) VALUE "180058010".
-      *    �����ʺ��𴵼Իٱ���������ʽ��������㳲�ԡˡ�ñ���ʪ���Ͱʾ��
+      *    精神科在宅患者支援管理料２（重度精神障害者）（単一建物２人以上）
            03  CONS-SEIZAI10        PIC X(09) VALUE "180058110".
       *
-      *    ����Ⱦ�Ƿ����ܷдɱ���ˡ��Ƴ������
+      *    在宅半固形栄養経管栄養法指導管理料
            03  CONS-ZAIHANKO        PIC X(09) VALUE "114045510".
       *
-      *    ������žɲ�ͽ�ɥ�������Ƴ���ʽ���
+      *    乳腺炎重症化予防ケア・指導料（初回）
            03  CONS-NYUSEN          PIC X(09) VALUE "113024410".
-      *    ������žɲ�ͽ�ɥ�������Ƴ���ʣ����ܤ��飴���ܤޤǡ�
+      *    乳腺炎重症化予防ケア・指導料（２回目から４回目まで）
            03  CONS-NYUSEN2         PIC X(09) VALUE "113024510".
       *
-      *    ���������ˡ��Ƴ�������ʤ���¾��
+      *    在宅酸素療法指導管理料（その他）
            03  CONS-ZAISAN          PIC X(09) VALUE "114003710".
-      *    �����³�۰��Ƶ���ˡ��Ƴ��������
+      *    在宅持続陽圧呼吸療法指導管理料２
            03  CONS-YOUATU2         PIC X(09) VALUE "114040810".
       *
-      *    �ⵤ�����Ǽ��šʸ��������϶��������
+      *    高気圧酸素治療（減圧症又は空気塞栓）
            03  CONS-KIATU           PIC X(09) VALUE "140057510".
-      *    �ⵤ�����Ǽ��šʤ���¾�Τ�Ρ�
+      *    高気圧酸素治療（その他のもの）
            03  CONS-KIATU2          PIC X(09) VALUE "140057610".
-      *    �ⵤ�����Ǽ��ų�����
+      *    高気圧酸素治療開始日
            03  CONS-KIATU3          PIC X(09) VALUE "099400002".
       *
-      *    ���𴵼Զ�Ʊ�������ơ��֥�
+      *    在宅患者共同診療料テーブル
        01  TBL-ZAIKYO-CHECK-AREA.
            03  FILLER          PIC X(09)   VALUE    "114027610".
            03  FILLER          PIC X(09)   VALUE    "114027710".
@@ -852,7 +852,7 @@
       *
        01  TBL-ZAIKYO-CHECK-MAX     PIC 9(02)   VALUE     4.
       *
-      *    ʣ�����Ųʼ��Ǥ�����ơ��֥�
+      *    複数診療科受診の退避テーブル
        01  TBL-JUSHIN-INF.
            03  TBL-JUSHIN-INF2      OCCURS   100.
                05  TBL-JUSHIN-SRYKA       PIC X(02).
@@ -899,7 +899,7 @@
                05  TBL-HASSYO-TAIHI-DAY-OCC       OCCURS  31.
                    07  TBL-HASSYO-TAIHI-SANTEI    PIC 9(01).
       *
-      *****�ʥ�ϲû��ѡ�
+      *****（リハ加算用）
        01  TBL-HASSYO9-INF.
            03  TBL-HASSYO9-SINDAI-COMMENT    PIC 9(01).
            03  TBL-HASSYO9-KOKYUKI-COMMENT   PIC 9(01).
@@ -923,7 +923,7 @@
            03  TBL-HOMONCOM-SETFLG          PIC 9(01).
            03  TBL-HOMONCOM-NINZU           PIC 9(03)  OCCURS  31.
       *
-      *    ���ǡʶ�ۡ����̡˾���
+      *    酸素（金額・数量）情報
        01  TBL-SANSO-INF.
            03  TBL-SANSO-INF2       OCCURS    10.
                05  TBL-SANSO-TEN          PIC 9(09)V9(02).
@@ -931,7 +931,7 @@
            03  TBL-SANSO-INF3.
                05  TBL-KASAN-SRYSURYO     PIC 9(05)V9(05).
       *
-      *    ������������
+      *    薬剤逓減情報
        01  TBL-YAKUTEI-INF.
            03  TBL-YT1-OCC                      OCCURS 100.
              05  TBL-YT1-KEY.
@@ -954,7 +954,7 @@
                    11  TBL-YT1-KAISU            PIC 9(03).
              05  TBL-YT1-FLG                    PIC 9(01).
       *
-      *    �¤��ؤ���
+      *    並び替え用
       *01  WRK-YAKUTEI-DATA                     PIC X(2933).
        01  WRK-YAKUTEI-DATA                     PIC X(2947).
       *
@@ -962,7 +962,7 @@
        01  WRK-YAKUTEI-ZAINUM                   PIC 9(08).
        01  WRK-YAKUTEI-ZAINUM2                  PIC 9(08).
       *
-      *    ������������ʥ���ñ�̤��Խ��ơ��֥��
+      *    薬剤逓減情報（キー単位の編集テーブル）
        01  TBL-YAKUTEI-INF2.
            03  TBL-YT2-DAY                    OCCURS      31.
              05  TBL-YT2X-KAIT                  OCCURS     9.
@@ -1000,7 +1000,7 @@
                    09  TBL-YT2Y2-RUIKEITOTAL4     PIC 9(14).
                    09  TBL-YT2Y2-MEISAISU         PIC 9(04).
       *
-      *    ������������ʤޤȤ��Ѥ��Խ��ơ��֥��
+      *    薬剤逓減情報（まとめ用の編集テーブル）
        01  TBL-YAKUTEI-INF3.
            03  TBL-YT3-XXX                    OCCURS     100.
              05  TBL-YT3X-KAIT.
@@ -1038,7 +1038,7 @@
                    09  TBL-YT3Y2-RUIKEITOTAL4     PIC 9(14).
                    09  TBL-YT3Y2-MEISAISU         PIC 9(04).
       *
-      *    ���� 
+      *    酸素 
            COPY    "CMSANSOTBL.INC".
       *
            COPY    "MCPAREA".
@@ -1046,72 +1046,72 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���Ų��ܾ���
+      *    診療科目情報
            COPY    "CPSK1005.INC".
       *
-      *    ���Ź԰�
+      *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ����
+      *    点数
            COPY    "CPTENSU.INC".
       *
-      *    ���������ղ�
+      *    算定履歴付加
        01  SANTEIPLUS-REC.
            COPY    "CPSANTEIPLUS.INC".
       *
-      *    �쥻�ץȵ���
+      *    レセプト記載
        01  RKISAI-REC.
            COPY    "CPRECEKISAI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *     
-      *    �����Ѵ�����
+      *    数値変換サブ
            COPY    "CPORCSNUM.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ����饤����������˴ؤ�뻻����������å�����
+      *    オンライン診療料等に関わる算定履歴チェックサブ
            COPY    "CPORCSRECESRCHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       ****************************************************************
@@ -1124,7 +1124,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -1138,7 +1138,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -1149,17 +1149,17 @@
            INITIALIZE                  SPA-AREA
            INITIALIZE                  RECEERR
       *
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
       *
            PERFORM 110-FILE-OPEN-SEC
       *
            PERFORM 120-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCR0551"      TO  JOB-PGID
-           MOVE    "�������Խ���ϫ�ҡ������աˡʥ쥻���ѡ�" 
+           MOVE    "コメント編集（労災・自賠責）（レセ電用）" 
                                    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *    
@@ -1169,7 +1169,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
@@ -1314,7 +1314,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -1378,42 +1378,42 @@
                IF   RECE41-HKNKBN    NOT  =  "4" AND "6"
                   EVALUATE      RECE44-SRYKBN
                       WHEN      "11"
-      *               �ʽ��������ʡ��Υ�����ȡ�
+      *               （初診料算定科：のカウント）
                          IF  RECE44-SYOSANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
                          END-IF
                       WHEN      "12"
-      *               �ʺƿ�������ʡ��Υ�����ȡ�
+      *               （再診料算定科：のカウント）
                          IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
                          END-IF
-      *               �����úƿǤΥ�����ȡ�
+      *               （電話再診のカウント）
                          IF  RECE44-DENWASAI-COMMENT     =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DENWA
                          END-IF
-      *               ��Ʊ���ƿǤΥ�����ȡ�
+      *               （同日再診のカウント）
                          IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
                          END-IF
-      *               ��Ʊ�����úƿǤΥ�����ȡ�
+      *               （同日電話再診のカウント）
                          IF  RECE44-DOUDENSAI-COMMENT    =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN
                          END-IF
-      *               �����úƿǡʣ���ǯ���������³�ˤΥ�����ȡ�
+      *               （電話再診（３０年３月以前継続）のカウント）
                          IF  RECE44-DENWASAI2-COMMENT    =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DENWA2
                          END-IF
-      *               ��Ʊ�����úƿǡʣ���ǯ���������³�ˤΥ�����ȡ�
+      *               （同日電話再診（３０年３月以前継続）のカウント）
                          IF  RECE44-DOUDENSAI2-COMMENT   =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN2
                          END-IF
                       WHEN      "13"
-      *               ���ౡ����Ʊ��Ƴ�����̴�����Ƴ�û��˴ؤ����Խ���
+      *               （退院時共同指導料特別管理指導加算に関する編集）
                          IF  RECE44-FLG-TAKYO-COMMENT    =  "1"
                             MOVE  1           TO  FLG-TAKYO-HENSYU
                          END-IF
                       WHEN      "14"
-      *               �ʺ߻ٱ�˴ؤ�����ŤΥ�����ȡ�
+      *               （在支援に関する診療のカウント）
                          IF  RECE44-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE44-REC  TO  WRK-RECE44-REC
                             EVALUATE  RECE44-FLG-ZAISIEN-COMMENT
@@ -1423,17 +1423,17 @@
                                 MOVE  2  TO  TBL-ZAISIEN-COMMENT
                             END-EVALUATE
                          END-IF
-      *               �ʱ��Ǥ˴ؤ����Խ���
+      *               （往診に関する編集）
                          IF  RECE44-FLG-OSIN-COMMENT     =  "2"
                             MOVE  1           TO  FLG-OSIN-HENSYU
                          END-IF
                       WHEN      "40"
-      *               �ʲ�ã���������
+      *               （介達牽引あり）
                          IF  RECE44-KAITATU-COMMENT      =  "1"
                             MOVE   1   TO  TBL-HASSYO-KAITATU-COMMENT
                          END-IF
                       WHEN      "80"
-      *               �ʥ�ϥӥꤢ���
+      *               （リハビリあり）
                          IF  RECE44-SINDAI-COMMENT       =  "1"
                             MOVE   1   TO  TBL-HASSYO-SINDAI-COMMENT
                             PERFORM  VARYING  IDX1  FROM  1  BY  1
@@ -1535,7 +1535,7 @@
                             END-PERFORM
                          END-IF
                       WHEN      "99"
-      *                  ��ˬ����Ťˤ����뵭Ͽ�񥳥��Ȥ˴ؤ����Խ���
+      *                  （訪問診療にかかる記録書コメントに関する編集）
                          IF  RECE44-HOMONCOMFLG          =  "2"
                             PERFORM  VARYING  IDX1  FROM  1  BY  1
                                       UNTIL   IDX1   >   31
@@ -1550,42 +1550,42 @@
                ELSE                                                     
                   EVALUATE      RECE44-SRYKBN  
                       WHEN      "11"
-      *               �ʽ��������ʡ��Υ�����ȡ�
+      *               （初診料算定科：のカウント）
                          IF  RECE44-SYOSANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
                          END-IF
                       WHEN      "12"
-      *               �ʺƿ�������ʡ��Υ�����ȡ�
+      *               （再診料算定科：のカウント）
                          IF  RECE44-SAISANTEIKA-COMMENT  =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-SANTEIKA
                          END-IF
-      *               �����úƿǤΥ�����ȡ�
+      *               （電話再診のカウント）
                          IF  RECE44-DENWASAI-COMMENT     =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DENWA
                          END-IF
-      *               ��Ʊ���ƿǤΥ�����ȡ�
+      *               （同日再診のカウント）
                          IF  RECE44-DOUJITUSAI-COMMENT   =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUJITU
                          END-IF
-      *               ��Ʊ�����úƿǤΥ�����ȡ�
+      *               （同日電話再診のカウント）
                          IF  RECE44-DOUDENSAI-COMMENT    =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN
                          END-IF
-      *               �����úƿǡʣ���ǯ���������³�ˤΥ�����ȡ�
+      *               （電話再診（３０年３月以前継続）のカウント）
                          IF  RECE44-DENWASAI2-COMMENT    =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DENWA2
                          END-IF
-      *               ��Ʊ�����úƿǡʣ���ǯ���������³�ˤΥ�����ȡ�
+      *               （同日電話再診（３０年３月以前継続）のカウント）
                          IF  RECE44-DOUDENSAI2-COMMENT   =  "1"
                             ADD    RECE44-ZAIKAISU   TO   CNT-DOUDEN2
                          END-IF
                       WHEN      "13"
-      *               ���ౡ����Ʊ��Ƴ�����̴�����Ƴ�û��˴ؤ����Խ���
+      *               （退院時共同指導料特別管理指導加算に関する編集）
                          IF  RECE44-FLG-TAKYO-COMMENT    =  "1"
                             MOVE  1           TO  FLG-TAKYO-HENSYU
                          END-IF
                       WHEN      "14"
-      *               �ʺ߻ٱ�˴ؤ�����ŤΥ�����ȡ�
+      *               （在支援に関する診療のカウント）
                          IF  RECE44-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE44-REC  TO  WRK-RECE44-REC
                             EVALUATE  RECE44-FLG-ZAISIEN-COMMENT
@@ -1595,17 +1595,17 @@
                                 MOVE  2  TO  TBL-ZAISIEN-COMMENT
                             END-EVALUATE
                          END-IF
-      *               �ʱ��Ǥ˴ؤ����Խ���
+      *               （往診に関する編集）
                          IF  RECE44-FLG-OSIN-COMMENT     =  "2"
                             MOVE  1           TO  FLG-OSIN-HENSYU
                          END-IF
                       WHEN      "40"
                       WHEN      "80"
-      *               �ʲ�ã���������
+      *               （介達牽引あり）
                          IF  RECE44-KAITATU-COMMENT      =  "1"
                             MOVE   1   TO  TBL-HASSYO-KAITATU-COMMENT
                          END-IF
-      *               �ʥ�ϥӥꤢ���
+      *               （リハビリあり）
                          IF  RECE44-SINDAI-COMMENT       =  "1"
                             MOVE   1   TO  TBL-HASSYO-SINDAI-COMMENT
                             PERFORM  VARYING  IDX1  FROM  1  BY  1
@@ -1707,7 +1707,7 @@
                             END-PERFORM
                          END-IF
                       WHEN      "99"
-      *                  ��ˬ����Ťˤ����뵭Ͽ�񥳥��Ȥ˴ؤ����Խ���
+      *                  （訪問診療にかかる記録書コメントに関する編集）
                          IF  RECE44-HOMONCOMFLG          =  "2"
                             PERFORM  VARYING  IDX1  FROM  1  BY  1
                                       UNTIL   IDX1   >   31
@@ -1729,7 +1729,7 @@
       *
            INITIALIZE    WRK-JIDO-SETCOM-AREA
       *
-      *    ȯ�����Υ�����
+      *    発症日のコメント
            IF   RECE41-SRYYM      >=    "200604"
                PERFORM   2001-HASSYO-HANTEI-SEC
            ELSE
@@ -1738,13 +1738,13 @@
                PERFORM   2001-KYUSEIHASSYO-HANTEI-SEC
            END-IF
       *
-      *    ʣ�����Ųʼ���
+      *    複数診療科受診
       *
            IF   CNT-SANTEIKA   >  ZERO
       *
              MOVE       ZERO             TO  CNT-JUSHIN
              INITIALIZE                      TBL-JUSHIN-INF
-      *      ���Ųʤμ���
+      *      診療科の取得
              INITIALIZE                      SYS-1005-REC
              MOVE    "1005"              TO  SYS-1005-KANRICD
              MOVE    RECE41-SRYYM        TO  SYS-1005-STYUKYMD(1:6)
@@ -1765,7 +1765,7 @@
                    MOVE    SYS-1005-KBNCD  TO TBL-JUSHIN-SRYKA(IDX)
                    MOVE    SYS-1005-SRYKANAME   
                                            TO TBL-JUSHIN-SRYKANAME(IDX)
-      *            ��������ơ��֥뤫����Ų���μ������򸡺����å�
+      *            受診履歴テーブルから診療科毎の受診日を検索セット
                    PERFORM   2001-JUSHIN-KENSAKU-SEC
       *
                    MOVE    "tbl_syskanri"  TO  MCP-TABLE
@@ -1778,7 +1778,7 @@
              MOVE    "key2"              TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
       *
-      *      ʣ���ο��Ųʼ��Ǥ����뤫Ƚ��
+      *      複数の診療科受診があるか判定
              MOVE       ZERO       TO   IDZ  
              INITIALIZE            WRK-FREE-AREA
       *
@@ -1789,14 +1789,14 @@
                    PERFORM  2001-FREE-COMMENT-SEC
                END-IF
              END-PERFORM
-      *      ʣ�����Ųʼ��ǤΥ������Խ�
+      *      複数診療科受診のコメント編集
              IF    CNT-JUSHIN  >   1
                     PERFORM   2001-JUSHIN-COMMENT-SEC
              END-IF
       *
            END-IF
       *
-      *    ���úƿǡ�Ʊ��ʣ���ƿ�
+      *    電話再診・同日複数再診
       *
            IF   CNT-DENWA     >   ZERO
            OR   CNT-DOUJITU   >   ZERO
@@ -1806,23 +1806,23 @@
                   PERFORM    2001-DENWA-DOUJITU-COMMENT-SEC
            END-IF
       *
-      *    �����ս����ͼ�
+      *    自賠責従来様式
            IF   RECE41-HKNKBN     =   "4"
            AND  WRK-PARA-RECEKBN  =   "5"
              EVALUATE  RECE41-JIBAIKBN
-      *        �û�Ψ
+      *        加算率
                WHEN     "1"
                   PERFORM    2001-KASANRITU-COMMENT-SEC
                WHEN     "2"
-      *           ��������ñ��
+      *           薬剤等点単価
                   IF    RECE41-SYUTENTANKA  =  RECE41-YKZTENTANKA
                      CONTINUE
                   ELSE
                      PERFORM    2001-YKZTENTANKA-COMMENT-SEC
                   END-IF
-      *           ���Ļ����Ļ��Υ�����
+      *           乳幼児・幼児のコメント
                   IF   RECE41-NYUYOJIFLG   NOT =   SPACE
-      *             ������ǡ��������������ʳ������Ǥ�����
+      *             誕生月で、誕生日が１日以外の日である場合
                     IF  (RECE41-BIRTHDAY(5:2)      =  RECE41-SRYYM(5:2))
                     AND (RECE41-BIRTHDAY(7:2)  NOT =  "01"             )
                     AND (RECE41-AGE                =   5               )
@@ -1833,11 +1833,11 @@
              END-EVALUATE
            END-IF
       *
-      *    �軰�Թ԰�
+      *    第三者行為
            IF   RECE41-HKNKBN     =   "6"
-      *           ���Ļ����Ļ��Υ�����
+      *           乳幼児・幼児のコメント
                   IF   RECE41-NYUYOJIFLG   NOT =   SPACE
-      *             ������ǡ��������������ʳ������Ǥ�����
+      *             誕生月で、誕生日が１日以外の日である場合
                     IF  (RECE41-BIRTHDAY(5:2)      =  RECE41-SRYYM(5:2))
                     AND (RECE41-BIRTHDAY(7:2)  NOT =  "01"             )
                     AND (RECE41-AGE                =   5               )
@@ -1847,24 +1847,24 @@
                   END-IF
            END-IF
       *
-      *    �߻ٱ祳����
+      *    在支援コメント
            IF     TBL-ZAISIEN-COMMENT   NOT =  ZERO
                PERFORM     2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
-      *    ǥ�ؤΥ�����
+      *    妊婦のコメント
            IF     RECE41-NINPUFLG   =   1
                PERFORM     2001-NINPU-COMMENT-SEC
            END-IF
       *
       *+++++++++++++++++++++++++++++++++++++++++++++++++
-      *    ��������û�����)�Υ����ȡʥ쥻���ѡ�
+      *    外来管理加算（特)のコメント（レセ電用）
            IF     RECE41-GAITOKU-PRTKBN1    =  "1"
                PERFORM     2001-GAITOK-COMMENT-SEC
            END-IF
       *+++++++++++++++++++++++++++++++++++++++++++++++++
       *
-      *    �ѥ�᡼�������ե��������Խ�
+      *    パラメータ０４ファイルより編集
            PERFORM 800-RECE41-SET44-SEC
            MOVE    ZERO                TO  RECE44-ZAINUM
       *
@@ -1918,7 +1918,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SAIDOU-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -1957,7 +1957,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GAIRIHA-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������ʬ
+      *               診区１３・１４共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -1967,7 +1967,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NYUSEN-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2003,15 +2003,15 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIYAK-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������ʬ
+      *               診区１３・１４共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱���������ȶ���ʬ
+      *               診区１４・８０と共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINRYO-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2086,7 +2086,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-RIHASEN-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱���������ȶ���ʬ
+      *               診区１４・８０と共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINRYO-HANTEI-SEC
                       END-IF
@@ -2102,7 +2102,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SIPPUCOM-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2147,7 +2147,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SAIDOU-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2186,7 +2186,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-GAIRIHA-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������ʬ
+      *               診区１３・１４共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
@@ -2196,7 +2196,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NYUSEN-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2232,15 +2232,15 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ZAIYAK-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������ʬ
+      *               診区１３・１４共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-SINPESUR-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱���������ȶ���ʬ
+      *               診区１４・８０と共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINRYO-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2305,7 +2305,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KYOKUIN-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱���������ȶ���ʬ
+      *               診区１４・８０と共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-NINRYO-HANTEI-SEC
                       END-IF
@@ -2327,7 +2327,7 @@
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-KIATU-HANTEI-SEC
                       END-IF
-      *               �Ƕ裱������������������������ʬ
+      *               診区１２・１３・１４・８０共用分
                       IF   FLG-COMMENT  =  ZERO
                         PERFORM    2001-ONLINE-HANTEI-SEC
                       END-IF
@@ -2352,18 +2352,18 @@
       *
            END-PERFORM
       *
-      *****���������������˴ؤ����Խ���****
+      *****内服薬剤料逓減に関する編集２****
            PERFORM     240-YAKUTEI-HENSYU2-SEC
       *
-      *****�����Խ���**********************
+      *****差込編集２**********************
            PERFORM     250-SASHIKOMI2-SEC
       *
-      *****���򼰥������Խ�**************
+      *****選択式コメント編集**************
            IF   RECE41-SRYYM  >=  "201810"
              PERFORM   270-SENTAKUCOM-HENSYU-SEC
            END-IF
       *
-      *****�ط��������Խ�****************
+      *****関係コメント編集****************
            PERFORM     260-SETCOM-HENSYU-SEC
       *
            PERFORM 990-RECE41-READ-SEC
@@ -2373,11 +2373,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ơ��֥뤫����Ų���μ������򸡺����å�
+      *    受診履歴テーブルから診療科毎の受診日を検索セット
       *****************************************************************
        2001-JUSHIN-KENSAKU-SEC             SECTION.
       *
-      *    ������θ���
+      *    受診歴の検索
            INITIALIZE                      JYURRK-REC
            MOVE    RECE41-HOSPNUM      TO  JYURRK-HOSPNUM
            MOVE    RECE41-PTID         TO  JYURRK-PTID
@@ -2447,7 +2447,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʣ�����Ųʼ��Ǥβʡ����դ��Խ�
+      *    複数診療科受診の科・日付の編集
       *****************************************************************
        2001-FREE-COMMENT-SEC          SECTION.
       *
@@ -2481,7 +2481,7 @@
                     IF  IDY     <  10 
                        ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                       MOVE    "��"
+                       MOVE    "　"
                            TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
       *
                        ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
@@ -2491,12 +2491,12 @@
       *
                        ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                       MOVE    "��"
+                       MOVE    "日"
                            TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                     ELSE
                        ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                       MOVE    "��"
+                       MOVE    "　"
                            TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
       *
                        ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
@@ -2506,7 +2506,7 @@
       *
                        ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                       MOVE    "��"
+                       MOVE    "日"
                            TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                     END-IF
                     MOVE      1              TO  FLG-FIRST
@@ -2516,12 +2516,12 @@
                           PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                          MOVE    "��"
+                          MOVE    "、"
                                     TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                        ELSE
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "、"
                                     TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
       *
                        END-IF
@@ -2535,7 +2535,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2) 
                        ELSE
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
@@ -2545,7 +2545,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2) 
                        END-IF
                     ELSE
@@ -2553,12 +2553,12 @@
                           PERFORM  20011-FREE-COMMENT-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                          MOVE    "��"
+                          MOVE    "、"
                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                        ELSE
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "、"
                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                        END-IF
       *
@@ -2571,7 +2571,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                        ELSE
                           ADD   2  TO  WK-FREE-YUKOKETA(IDZ)
@@ -2581,7 +2581,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME(IDZ)(WRK-KETA:2)
                        END-IF
                     END-IF
@@ -2594,7 +2594,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʣ�����Ųʼ��Ǥβʡ����դ��Խ��ʲ��ԡ�
+      *    複数診療科受診の科・日付の編集（改行）
       *****************************************************************
        20011-FREE-COMMENT-KAIGYO-SEC          SECTION.
       *
@@ -2602,18 +2602,18 @@
       *
            MOVE    WRK-KETA-TAIHI  TO  WRK-KETA
            MOVE    WRK-KETA2       TO  WK-FREE-YUKOKETA(IDZ)
-           MOVE    ALL "��"        TO  WK-FREE-NAME(IDZ)(1:WRK-KETA)
+           MOVE    ALL "　"        TO  WK-FREE-NAME(IDZ)(1:WRK-KETA)
       *
            .
        20011-FREE-COMMENT-KAIGYO-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ʣ�����Ųʼ��ǤΥ������Խ�
+      *    複数診療科受診のコメント編集
       *****************************************************************
        2001-JUSHIN-COMMENT-SEC          SECTION.
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                TO  IDX-RECE45
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
@@ -2622,7 +2622,7 @@
            MOVE    "810000001"  TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
            MOVE    ZERO         TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
            MOVE    7            TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-           MOVE    "ʣ�����Ųʼ���"
+           MOVE    "複数診療科受診"
                                 TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
            MOVE    "1"          TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
@@ -2640,7 +2640,7 @@
                 MOVE   "1"      TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM 
       *
-      *    �ʡ����դ��Խ���ޤ�����Ƥ���֥ե�����κƺ���
+      *    科・日付の編集を含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -2687,7 +2687,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���úƿǡ�Ʊ��ʣ���ƿǤΥ������Խ�
+      *    電話再診・同日複数再診のコメント編集
       *****************************************************************
        2001-DENWA-DOUJITU-COMMENT-SEC          SECTION.
       *
@@ -2721,13 +2721,13 @@
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
            MOVE    ZERO                TO  IDX40
-      *    ���úƿǤΥ����Ȥ�����
+      *    電話再診のコメントの挿入
            IF    CNT-DENWA     >   ZERO
              ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(1 1)
              MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(1 1)
              MOVE    9                 TO  WRK-RECE45XX-YUKOKETA(1 1)
-             MOVE    "���úƿǡʡ������"
+             MOVE    "電話再診（　　回）"
                                        TO  WRK-RECE45XX-NAME(1 1)
       *
              MOVE    CNT-DENWA         TO  DAY-IDX2
@@ -2738,14 +2738,14 @@
              MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
                                        TO  RECE459-SRYACT-TBL(IDX40)
            END-IF
-      *    Ʊ��ʣ���ƿǤΥ����Ȥ�����
+      *    同日複数再診のコメントの挿入
            IF    CNT-DOUJITU   >   ZERO
              ADD     1                 TO  IDX40
              IF   RECE41-SRYYM      >=    "201004"
                MOVE  "810000001"       TO  WRK-RECE45XX-SRYCD(2 1)
                MOVE  ZERO              TO  WRK-RECE45XX-SRYSURYO(2 1)
                MOVE  9                 TO  WRK-RECE45XX-YUKOKETA(2 1)
-               MOVE  "Ʊ���ƿǡʡ������"
+               MOVE  "同日再診（　　回）"
                                        TO  WRK-RECE45XX-NAME(2 1)
       *
                MOVE  CNT-DOUJITU       TO  DAY-IDX2
@@ -2759,7 +2759,7 @@
                MOVE  "810000001"       TO  WRK-RECE45XX-SRYCD(2 1)
                MOVE  ZERO              TO  WRK-RECE45XX-SRYSURYO(2 1)
                MOVE  11                TO  WRK-RECE45XX-YUKOKETA(2 1)
-               MOVE  "Ʊ��ʣ���ƿǡʡ������"
+               MOVE  "同日複数再診（　　回）"
                                        TO  WRK-RECE45XX-NAME(2 1)
       *
                MOVE  CNT-DOUJITU       TO  DAY-IDX2
@@ -2771,13 +2771,13 @@
                                        TO  RECE459-SRYACT-TBL(IDX40)
              END-IF
            END-IF
-      *    Ʊ�����úƿǤΥ����Ȥ�����
+      *    同日電話再診のコメントの挿入
            IF    CNT-DOUDEN    >   ZERO
              ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(3 1)
              MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(3 1)
              MOVE    11                TO  WRK-RECE45XX-YUKOKETA(3 1)
-             MOVE    "Ʊ�����úƿǡʡ������"
+             MOVE    "同日電話再診（　　回）"
                                        TO  WRK-RECE45XX-NAME(3 1)
       *
              MOVE    CNT-DOUDEN        TO  DAY-IDX2
@@ -2788,13 +2788,13 @@
              MOVE    WRK-RECE45XX-SRYACT-TBL(3 1)
                                        TO  RECE459-SRYACT-TBL(IDX40)
            END-IF
-      *    ���úƿǡʣ���ǯ���������³�ˤΥ����Ȥ�����
+      *    電話再診（３０年３月以前継続）のコメントの挿入
            IF    CNT-DENWA2    >   ZERO
              ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(4 1)
              MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(4 1)
              MOVE    20                TO  WRK-RECE45XX-YUKOKETA(4 1)
-             MOVE    "���úƿǡʣ���ǯ���������³�ˡʡ������"
+             MOVE    "電話再診（３０年３月以前継続）（　　回）"
                                        TO  WRK-RECE45XX-NAME(4 1)
       *
              MOVE    CNT-DENWA2        TO  DAY-IDX2
@@ -2805,13 +2805,13 @@
              MOVE    WRK-RECE45XX-SRYACT-TBL(4 1)
                                        TO  RECE459-SRYACT-TBL(IDX40)
            END-IF
-      *    Ʊ�����úƿǡʣ���ǯ���������³�ˤΥ����Ȥ�����
+      *    同日電話再診（３０年３月以前継続）のコメントの挿入
            IF    CNT-DOUDEN2   >   ZERO
              ADD     1                 TO  IDX40
              MOVE    "810000001"       TO  WRK-RECE45XX-SRYCD(5 1)
              MOVE    ZERO              TO  WRK-RECE45XX-SRYSURYO(5 1)
              MOVE    22                TO  WRK-RECE45XX-YUKOKETA(5 1)
-             MOVE    "Ʊ�����úƿǡʣ���ǯ���������³�ˡʡ������"
+             MOVE    "同日電話再診（３０年３月以前継続）（　　回）"
                                        TO  WRK-RECE45XX-NAME(5 1)
       *
              MOVE    CNT-DOUDEN2       TO  DAY-IDX2
@@ -2830,7 +2830,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Խ�
+      *    回数編集
       *****************************************************************
        20011-KAISU-HENSYU-SEC          SECTION.
       *
@@ -2856,7 +2856,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǥ�ؤΥ������Խ�
+      *    妊婦のコメント編集
       *****************************************************************
        2001-NINPU-COMMENT-SEC          SECTION.
       *
@@ -2872,7 +2872,7 @@
            MOVE    "99"                TO  RECE459-SRYKBN
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
-      *    ��ǥ�ء�
+      *    「妊婦」
            MOVE    "820100348"         TO  WRK-TENSU-SRYCD
            MOVE    RECE41-SRYYM        TO  WRK-TENSU-SRYYM
            PERFORM 900-TENSU-TBL-SEC
@@ -2892,7 +2892,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ȯ���������뤫Ƚ��
+      *    発症日があるか判定
       *****************************************************************
        2001-HASSYO-HANTEI-SEC          SECTION.
       *
@@ -3006,15 +3006,15 @@
            EXIT.
       *
       *****************************************************************
-      *    Ǿ��ɼ�������ȯ���������뤫Ƚ��
-      *    Ǿ��ɼ�������ȯ�����Σ����������⤫Ƚ��
+      *    脳血管疾患急性発症日があるか判定
+      *    脳血管疾患急性発症日の１８０日以内か判定
       *****************************************************************
        2001-KYUSEIHASSYO-HANTEI-SEC          SECTION.
       *
            MOVE     ZERO     TO     FLG-KYUSEI-COMMENT
            MOVE     ZERO     TO     WRK-KYUSEIYMD
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
            MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -3092,7 +3092,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ǿ��ɼ�������ȯ�������θ���
+      *    脳血管疾患急性発症日等の検索
       *****************************************************************
        20011-KYUSEIHASSYO-KENSAKU-SEC          SECTION.
       *
@@ -3302,8 +3302,8 @@
                  MOVE    "key2"               TO  MCP-PATHNAME
                  PERFORM  900-SANTEIPLUS-READ-SEC
                  PERFORM  UNTIL   FLG-SANTEIPLUS     =   1
-      *            ��ϥ����Ȥν�λ���ȿ��ŷ������å�
-      *            �������ֹ�䣰�Υǡ�����
+      *            リハコメントの終了日と診療月をチェック
+      *            （履歴番号＞０のデータ）
                    IF     SANTEIPLUS-RENNUM   NOT =  ZERO
                     IF  ( SANTEIPLUS-ENDYMD       =  SPACE        )
                     OR  ((SANTEIPLUS-ENDYMD   NOT =  SPACE       ) AND
@@ -3322,7 +3322,7 @@
                      END-IF
                      IF   FLG-COMOKIKAE  =    1
                      AND  FLG-COMARI2    =   ZERO
-                      IF   SANTEIPLUS-COMMENT(1:8)  = "��ѡ���"
+                      IF   SANTEIPLUS-COMMENT(1:8)  = "手術　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    1    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
@@ -3330,7 +3330,7 @@
                            COMPUTE  IDZ  =  IDZ - 1
                         END-IF
                       END-IF
-                      IF   SANTEIPLUS-COMMENT(1:12) = "������������"
+                      IF   SANTEIPLUS-COMMENT(1:12) = "急性増悪　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    2    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
@@ -3338,7 +3338,7 @@
                            COMPUTE  IDZ  =  IDZ - 1
                         END-IF
                       END-IF
-                      IF   SANTEIPLUS-COMMENT(1:8) = "���ǡ���"
+                      IF   SANTEIPLUS-COMMENT(1:8) = "診断　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    3    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-NAME(IDZ)
@@ -3364,11 +3364,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ǿ��ɼ�������ȯ�����Υ������Խ�
+      *    脳血管疾患急性発症日のコメント編集
       *****************************************************************
        20011-KYUSEIHASSYO-COMMENT-SEC          SECTION.
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO         TO  IDX-RECE45
            MOVE    SPACE        TO  WRK-RECE45XX-REC
            INITIALIZE               WRK-RECE45XX-REC
@@ -3377,7 +3377,7 @@
            MOVE    "810000001"  TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
            MOVE    ZERO         TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
            MOVE    9            TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-           MOVE    "ȯ�ɡ����������"
+           MOVE    "発症　　　月　　日"
                                 TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
            MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
            MOVE    TBL-DAY(DAY-IDX2)
@@ -3401,7 +3401,7 @@
                 MOVE   "1"      TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM
       *
-      *    �ʡ����դ��Խ���ޤ�����Ƥ���֥ե�����κƺ���
+      *    科・日付の編集を含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -3446,11 +3446,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ȯ�����Υ������Խ�
+      *    発症日のコメント編集
       *****************************************************************
        20011-HASSYO-COMMENT-SEC          SECTION.
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO         TO  IDX-RECE45
            MOVE    SPACE        TO  WRK-RECE45XX-REC
            INITIALIZE               WRK-RECE45XX-REC
@@ -3464,7 +3464,7 @@
            EVALUATE      WRK-SRYCD
              WHEN       CONS-KYUSEI
                MOVE    19   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "Ǿ��ɼ�������ȯ�ɡ�����ǯ���������"
+               MOVE    "脳血管疾患急性発症　　　年　　月　　日"
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                MOVE    21   TO  IDC1
                MOVE    27   TO  IDC2
@@ -3475,7 +3475,7 @@
                MOVE    "40" TO  WRK-SRYKBN
              WHEN       CONS-SINDAI
                MOVE    23   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "�����ɼ�����ϡ����ų��ϡ�����ǯ���������"
+               MOVE    "心大血管疾患リハ：治療開始　　　年　　月　　日"
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                MOVE    29   TO  IDC1
                MOVE    35   TO  IDC2
@@ -3503,7 +3503,7 @@
                  WHEN       0
                  WHEN       3
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE  "����������ϲû���ȯ�ɡ�����ǯ���������"
+                   MOVE  "早期・初期リハ加算：発症　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3511,7 +3511,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE  "����������ϲû�����ѡ�����ǯ���������"
+                   MOVE  "早期・初期リハ加算：手術　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3519,7 +3519,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    24  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE  "����������ϲû�����������������ǯ���������"
+               MOVE  "早期・初期リハ加算：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    31  TO  IDC1
                    MOVE    37  TO  IDC2
@@ -3547,7 +3547,7 @@
                EVALUATE   FLG-COMOKIKAE2
                  WHEN       0
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "Ǿ��ɼ�������ϡ�ȯ�ɡ�����ǯ���������"
+                   MOVE    "脳血管疾患等リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
@@ -3555,7 +3555,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "Ǿ��ɼ�������ϡ���ѡ�����ǯ���������"
+                   MOVE    "脳血管疾患等リハ：手術　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
@@ -3564,7 +3564,7 @@
                  WHEN       2
                    MOVE    23  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE
-                       "Ǿ��ɼ�������ϡ���������������ǯ���������"
+                       "脳血管疾患等リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    29  TO  IDC1
                    MOVE    35  TO  IDC2
@@ -3572,7 +3572,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       3
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "Ǿ��ɼ�������ϡ����ǡ�����ǯ���������"
+                   MOVE    "脳血管疾患等リハ：診断　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
@@ -3602,7 +3602,7 @@
                  WHEN       1
                  WHEN       3
                    MOVE    20  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "���Ѿɸ�����ϡ����ǡ�����ǯ���������"
+                   MOVE    "廃用症候群リハ：診断　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    23  TO  IDC1
                    MOVE    29  TO  IDC2
@@ -3611,7 +3611,7 @@
                  WHEN       2
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
                    MOVE
-                       "���Ѿɸ�����ϡ���������������ǯ���������"
+                       "廃用症候群リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3640,7 +3640,7 @@
                  WHEN       0
                  WHEN       3
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE  "����������ϲû���ȯ�ɡ�����ǯ���������"
+                   MOVE  "早期・初期リハ加算：発症　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3648,7 +3648,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE  "����������ϲû�����ѡ�����ǯ���������"
+                   MOVE  "早期・初期リハ加算：手術　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3656,7 +3656,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    24  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE  "����������ϲû�����������������ǯ���������"
+               MOVE  "早期・初期リハ加算：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    31  TO  IDC1
                    MOVE    37  TO  IDC2
@@ -3684,7 +3684,7 @@
                EVALUATE   FLG-COMOKIKAE2
                  WHEN       0
                    MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "��ư���ϡ�ȯ�ɡ�����ǯ���������"
+                   MOVE    "運動器リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
@@ -3692,7 +3692,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "��ư���ϡ���ѡ�����ǯ���������"
+                   MOVE    "運動器リハ：手術　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
@@ -3700,7 +3700,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    20  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "��ư���ϡ���������������ǯ���������"
+                   MOVE    "運動器リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    23  TO  IDC1
                    MOVE    29  TO  IDC2
@@ -3708,7 +3708,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       3
                    MOVE    18  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "��ư���ϡ����ǡ�����ǯ���������"
+                   MOVE    "運動器リハ：診断　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    19  TO  IDC1
                    MOVE    25  TO  IDC2
@@ -3734,7 +3734,7 @@
                END-IF
              WHEN       CONS-KOKYUKI
                MOVE    20   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "�Ƶ۴��ϡ����ų��ϡ�����ǯ���������"
+               MOVE    "呼吸器リハ：治療開始　　　年　　月　　日"
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                MOVE    23   TO  IDC1
                MOVE    29   TO  IDC2
@@ -3762,7 +3762,7 @@
                  WHEN       0
                  WHEN       3
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE  "����������ϲû���ȯ�ɡ�����ǯ���������"
+                   MOVE  "早期・初期リハ加算：発症　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3770,7 +3770,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    22  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE  "����������ϲû�����ѡ�����ǯ���������"
+                   MOVE  "早期・初期リハ加算：手術　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    27  TO  IDC1
                    MOVE    33  TO  IDC2
@@ -3778,7 +3778,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    24  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE  "����������ϲû�����������������ǯ���������"
+               MOVE  "早期・初期リハ加算：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    31  TO  IDC1
                    MOVE    37  TO  IDC2
@@ -3804,7 +3804,7 @@
                END-IF
              WHEN       CONS-SESSYOKU
                MOVE    21   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "�ݿ���ǽ��ˡ�����ų��ϡ�����ǯ���������"
+               MOVE    "摂食機能療法：治療開始　　　年　　月　　日"
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
@@ -3832,7 +3832,7 @@
                  WHEN       0
                  WHEN       3
                    MOVE    19  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "���´��ԥ�ϡ�ȯ�ɡ�����ǯ���������"
+                   MOVE    "難病患者リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
@@ -3840,7 +3840,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       1
                    MOVE    19  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "���´��ԥ�ϡ���ѡ�����ǯ���������"
+                   MOVE    "難病患者リハ：手術　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    21  TO  IDC1
                    MOVE    27  TO  IDC2
@@ -3848,7 +3848,7 @@
                    PERFORM 200111-HASSYO-COMMENT-DATE-SEC
                  WHEN       2
                    MOVE    21  TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-                   MOVE    "���´��ԥ�ϡ���������������ǯ���������"
+                   MOVE    "難病患者リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                    MOVE    25  TO  IDC1
                    MOVE    31  TO  IDC2
@@ -3874,7 +3874,7 @@
                END-IF
              WHEN       CONS-SYOGAI
                MOVE    21   TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-               MOVE    "�㳲���ʼԡ˥�ϡ�ȯ�ɡ�����ǯ���������"
+               MOVE    "障害児（者）リハ：発症　　　年　　月　　日"
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
                MOVE    25   TO  IDC1
                MOVE    31   TO  IDC2
@@ -3915,7 +3915,7 @@
                 MOVE   "1"      TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
            END-PERFORM
       *
-      *    �ʡ����դ��Խ���ޤ�����Ƥ���֥ե�����κƺ���
+      *    科・日付の編集を含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -3961,7 +3961,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ȯ�����Υ������Խ���ǯ������
+      *    発症日のコメント編集（年月日）
       *****************************************************************
        200111-HASSYO-COMMENT-DATE-SEC          SECTION.
       *
@@ -4008,7 +4008,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ�ȯ���������뤫Ƚ��
+      *    リハビリ発症日があるか判定
       *****************************************************************
        20011-RIHABIRIHASSYO-HANTEI-SEC          SECTION.
       *
@@ -4016,9 +4016,9 @@
            MOVE     SPACE    TO     WRK-RIHASANTEI-END
            INITIALIZE               TBL-RIHASANTEI-DAY-END
       *
-      *    ��Ͻ�λ��
+      *    リハ終了日
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
            MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -4091,9 +4091,9 @@
            MOVE     SPACE    TO     WRK-RIHASANTEI-YMD2
            MOVE     ZERO     TO     WRK-RIHASANTEI41-FLG
       *
-      *    ��ϳ�����
+      *    リハ開始日
       *
-      *    �������Ƭ�Υ�ϥӥ껻����
+      *    当月の先頭のリハビリ算定日
            MOVE     ZERO           TO    RIHA-ST2
            PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
                      UNTIL   RIHA-IDX    >   31
@@ -4103,7 +4103,7 @@
               END-IF
            END-PERFORM
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
            MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -4214,7 +4214,7 @@
       *
       ***
       *
-      *    �������Ƭ�Υ�ϥӥ곫����
+      *    当月の先頭のリハビリ開始日
            MOVE     99             TO    RIHA-ST
            PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
                      UNTIL   RIHA-IDX    >   31
@@ -4224,8 +4224,8 @@
               END-IF
            END-PERFORM
       *
-      *    ������Ƭ�Υ�ϥӥ곫���������������Υ�ϥӥ껻�������ʤ����
-      *    ���������ľ��Υ�ϥӥ곫�����򥯥ꥢ����
+      *    当月先頭のリハビリ開始日より前に当月のリハビリ算定日がなければ
+      *    前月以前の直近のリハビリ開始日をクリアする
            MOVE     ZERO           TO    FLG-OK
            IF  WRK-RIHASANTEI-YMD  NOT = SPACE
              PERFORM  VARYING  RIHA-IDX  FROM  1  BY  1
@@ -4240,8 +4240,8 @@
              END-IF
            END-IF
       *
-      *    ������Ƭ�Υ�ϥӥ껻���������������Υ�ϥӥ꽪λ���������
-      *    ���������ľ��Υ�ϥӥ곫�����򥯥ꥢ����
+      *    当月先頭のリハビリ算定日より前に当月のリハビリ終了日があれば
+      *    前月以前の直近のリハビリ開始日をクリアする
            IF  WRK-RIHASANTEI-YMD  NOT = SPACE
            AND RIHA-ST2            NOT = ZERO
              PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
@@ -4253,8 +4253,8 @@
              END-PERFORM
            END-IF
       *
-      *    ����Υ�ϥӥ곫�������������Υ�ϥӥ껻�������ʤ����
-      *    ����Υ�ϥӥ곫�����򥯥ꥢ����
+      *    当月のリハビリ開始日より後に当月のリハビリ算定日がなければ
+      *    当月のリハビリ開始日をクリアする
            PERFORM  VARYING  RIHA-IDX  FROM  31  BY  -1
                      UNTIL   RIHA-IDX    <    1
               IF    TB-RIHASANTEI-DAY(RIHA-IDX)  NOT = ZERO
@@ -4303,8 +4303,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥꡦ���������ղ�Ƚ��
-      *    �ʥ�ϳ������ν�λ���ȿ��ŷ������å��ˡ������ֹ�ᣰ�Υǡ�����
+      *    リハビリ・算定履歴付加判定
+      *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
        200111-RIHA-SANTEIPLUS-SEC          SECTION.
       *
@@ -4347,8 +4347,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥꡦ���������ղ�Ƚ��
-      *    �ʥ�ϳ������ν�λ���ȿ��ŷ������å��ˡ������ֹ�ᣰ�Υǡ�����
+      *    リハビリ・算定履歴付加判定
+      *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
        200111-RIHA-SANTEIPLUS2-SEC          SECTION.
       *
@@ -4387,7 +4387,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ս����ͼ����û�Ψ �Υ������Խ�
+      *    自賠責従来様式：加算率 のコメント編集
       *****************************************************************
        2001-KASANRITU-COMMENT-SEC          SECTION.
       *
@@ -4402,13 +4402,13 @@
            PERFORM 800-RECE41-SET459-SEC
            MOVE    99999998            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
-      *    �û�Ψ�Υ����Ȥ�����
+      *    加算率のコメントの挿入
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
            MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
            MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
            MOVE    9                    TO  WRK-RECE45XX-YUKOKETA(1 1)
-           MOVE    "�û�Ψ�ʡ���������"
+           MOVE    "加算率（　．　　）"
                                         TO  WRK-RECE45XX-NAME(1 1)
       *
            MOVE    RECE41-KSNRATE(1:1)  TO  DAY-IDX3
@@ -4431,7 +4431,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �û�Ψ�Խ�
+      *    加算率編集
       *****************************************************************
        20011-KASANRITU-HENSYU-SEC          SECTION.
       *
@@ -4454,7 +4454,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ս����ͼ�����������ñ�� �Υ������Խ�
+      *    自賠責従来様式：薬剤等点単価 のコメント編集
       *****************************************************************
        2001-YKZTENTANKA-COMMENT-SEC          SECTION.
       *
@@ -4469,19 +4469,19 @@
            PERFORM 800-RECE41-SET459-SEC
            MOVE    99999998            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
-      *    ��������ñ���Υ����Ȥ�����
+      *    薬剤等点単価のコメントの挿入
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
            MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
            MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
            MOVE    13                   TO  WRK-RECE45XX-YUKOKETA(1 1)
-           MOVE    "�������ʣ���ñ���������ߡ�"
+           MOVE    "薬剤等（１点単価　　　円）"
                                         TO  WRK-RECE45XX-NAME(1 1)
       *
            MOVE    RECE41-YKZTENTANKA(1:1)  TO  DAY-IDX3
            PERFORM    20011-KASANRITU-HENSYU-SEC
-           IF      WRK-HENSYU-KASANRITU2   =   "��"
-              MOVE   "��"   TO   WRK-HENSYU-KASANRITU2
+           IF      WRK-HENSYU-KASANRITU2   =   "０"
+              MOVE   "　"   TO   WRK-HENSYU-KASANRITU2
            END-IF
            MOVE    WRK-HENSYU-KASANRITU2 TO WRK-RECE45XX-NAME(1 1)(19:2)
            MOVE    RECE41-YKZTENTANKA(2:1)  TO  DAY-IDX3
@@ -4498,7 +4498,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ս����ͼ������Ļ����Ļ��Υ������Խ�
+      *    自賠責従来様式：乳幼児・幼児のコメント編集
       *****************************************************************
        2001-NYUYOJI-COMMENT-SEC          SECTION.
       *
@@ -4513,11 +4513,11 @@
            PERFORM 800-RECE41-SET459-SEC
            MOVE    99999990            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
-      *    ���Ļ����Ļ��Υ����Ȥ�����
+      *    乳幼児・幼児のコメントの挿入
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
            IF   RECE41-SRYYM  >= "201810"
-      *      �ַ������ޤ����Ļ���
+      *      「月の途中まで乳幼児」
              MOVE  "820100005"  TO  WRK-TENSU-SRYCD
              MOVE  RECE41-SRYYM TO  WRK-TENSU-SRYYM
              PERFORM 900-TENSU-TBL-SEC
@@ -4531,7 +4531,7 @@
              MOVE  "810000001"  TO  WRK-RECE45XX-SRYCD(1 1)
              MOVE   ZERO        TO  WRK-RECE45XX-SRYSURYO(1 1)
              MOVE   11          TO  WRK-RECE45XX-YUKOKETA(1 1)
-             MOVE  "����������ޤ����Ļ�"
+             MOVE  "　　月　　日まで乳幼児"
                                 TO  WRK-RECE45XX-NAME(1 1)
       *
              MOVE  RECE41-BIRTHDAY(5:2) TO  DAY-IDX2
@@ -4554,7 +4554,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �߻ٱ�Υ������Խ�
+      *    在支援のコメント編集
       *****************************************************************
        2001-ZAISIEN-COMMENT-SEC          SECTION.
       *
@@ -4569,7 +4569,7 @@
            PERFORM 800-RECE41-SET459-SEC
            MOVE    99999965            TO  RECE459-ZAINUM
            MOVE    WRK-RECE44-SRYKBN   TO  RECE459-SRYKBN
-      *    �߻ٱ祳���Ȥ�����
+      *    在支援コメントの挿入
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
            MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
@@ -4577,9 +4577,9 @@
            MOVE    3                    TO  WRK-RECE45XX-YUKOKETA(1 1)
            EVALUATE  TBL-ZAISIEN-COMMENT
              WHEN      1
-               MOVE    "�߻ٱ�"         TO  WRK-RECE45XX-NAME(1 1)
+               MOVE    "在支援"         TO  WRK-RECE45XX-NAME(1 1)
              WHEN      2
-               MOVE    "�߻���"         TO  WRK-RECE45XX-NAME(1 1)
+               MOVE    "在支病"         TO  WRK-RECE45XX-NAME(1 1)
            END-EVALUATE
       *
            MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
@@ -4592,7 +4592,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û�����)�Υ������Խ��ʥ쥻���ѡ�
+      *    外来管理加算（特)のコメント編集（レセ電用）
       *****************************************************************
        2001-GAITOK-COMMENT-SEC          SECTION.
       *
@@ -4608,16 +4608,16 @@
            MOVE    99999986            TO  RECE459-ZAINUM
            MOVE    "99"                TO  RECE459-SRYKBN
       *
-      *    �֡���)�������߲���פΥ���������
+      *    「（特)　５２×回数」のコメント挿入
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
            MOVE    "810000001"         TO  WRK-RECE45XX-SRYCD(1 1)
            MOVE    ZERO                TO  WRK-RECE45XX-SRYSURYO(1 1)
            MOVE    9                   TO  WRK-RECE45XX-YUKOKETA(1 1)
       *
-           MOVE    "���áˡ�"          TO  WRK-RECE45XX-NAME(1 1)(1:8)
+           MOVE    "（特）　"          TO  WRK-RECE45XX-NAME(1 1)(1:8)
       *
-           MOVE    "����������"    TO  WRK-TNSKAI
+           MOVE    "　　　　　"    TO  WRK-TNSKAI
            MOVE    RECE41-GAITOKU-KAISU1
                                    TO  WRK-ZAIKAISUX
            INITIALIZE                  ORCSKANACHKAREA
@@ -4630,7 +4630,7 @@
            AND     KANACHK-MAX     >   ZERO
              MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                    TO  WRK-TNSKAI
-             MOVE    "��"          TO  WRK-TNSKAI(5:2)
+             MOVE    "×"          TO  WRK-TNSKAI(5:2)
            END-IF
            MOVE    WRK-TNSKAI          TO  WRK-RECE45XX-NAME(1 1)(9:10)
       *
@@ -4646,7 +4646,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǡ�Ʊ��ʣ�����Ųʡˤ����뤫Ƚ��
+      *    初診（同日複数診療科）があるか判定
       *****************************************************************
        2001-SYODOU-HANTEI-SEC          SECTION.
       *
@@ -4668,7 +4668,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǡ�Ʊ��ʣ�����ŲʡˤΥ������Խ�
+      *    初診（同日複数診療科）のコメント編集
       *****************************************************************
        20011-SYODOU-COMMENT-SEC          SECTION.
       *
@@ -4680,8 +4680,8 @@
                        OR     (RECE44-SYODOU-SRYKA(IDX)  =  SPACE)
       *
              ADD      1                  TO  IDZ
-             MOVE    "ʣ�黻����Ųʡ�"  TO  WK-FREE-NAME2(IDZ)(1:16)
-      *      ���Ųʤμ���
+             MOVE    "複初算定診療科："  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      診療科の取得
              INITIALIZE                      SYS-1005-REC
              MOVE    "1005"              TO  SYS-1005-KANRICD
              MOVE    RECE44-SYODOU-SRYKA(IDX)
@@ -4725,7 +4725,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                TO  IDX-RECE45
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
@@ -4762,7 +4762,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ƿǡ�Ʊ���������ܡˤ����뤫Ƚ��
+      *    再診（同一日２科目）があるか判定
       *****************************************************************
        2001-SAIDOU-HANTEI-SEC          SECTION.
       *
@@ -4784,7 +4784,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ƿǡ�Ʊ���������ܡˤΥ������Խ�
+      *    再診（同一日２科目）のコメント編集
       *****************************************************************
        20011-SAIDOU-COMMENT-SEC          SECTION.
       *
@@ -4796,8 +4796,8 @@
                        OR     (RECE44-SAIDOU-SRYKA(IDX)  =  SPACE)
       *
              ADD      1                  TO  IDZ
-             MOVE    "ʣ�ƻ�����Ųʡ�"  TO  WK-FREE-NAME2(IDZ)(1:16)
-      *      ���Ųʤμ���
+             MOVE    "複再算定診療科："  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      診療科の取得
              INITIALIZE                      SYS-1005-REC
              MOVE    "1005"              TO  SYS-1005-KANRICD
              MOVE    RECE44-SAIDOU-SRYKA(IDX)
@@ -4841,7 +4841,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                TO  IDX-RECE45
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
@@ -4878,10 +4878,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ����饤������������뤫Ƚ��
-      *    ����饤���ش����������뤫Ƚ��
-      *    ����饤�����������ʺ߰����ɡʷ��ˬ����šˡˤ����뤫Ƚ��
-      *    �����ʥ���饤���������������뤫Ƚ��
+      *    オンライン診療料があるか判定
+      *    オンライン医学管理料があるか判定
+      *    オンライン在宅管理料（在医総管（月１回訪問診療））があるか判定
+      *    精神科オンライン在宅管理料があるか判定
       *****************************************************************
        2001-ONLINE-HANTEI-SEC          SECTION.
       *
@@ -4901,7 +4901,7 @@
                  ADD        1       TO     IDZ
       *
                  MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                 MOVE   "����ꡡ���������"
+                 MOVE   "初回算定　　　月　　日"
                                     TO     WK-FREE-NAME2(IDZ)
                  MOVE   WRK-NINRYO-FSANTEIYMD(5:2)   TO  DAY-IDX2
                  MOVE   TBL-DAY(DAY-IDX2)
@@ -4986,14 +4986,14 @@
                   WHEN      "1"
                   WHEN      "2"
                     MOVE       17      TO     WK-FREE-YUKOKETA2(IDZ)
-                    MOVE   "�����������곫��ǯ�����ǯ������"
+                    MOVE   "管理料等算定開始年月　　　年　　月"
                                        TO     WK-FREE-NAME2(IDZ)
                     MOVE       23      TO     IDX41
                     MOVE       29      TO     IDX42
                   WHEN      "3"
                   WHEN      "4"
                     MOVE       16      TO     WK-FREE-YUKOKETA2(IDZ)
-                    MOVE   "���������곫��ǯ�����ǯ������"
+                    MOVE   "管理料算定開始年月　　　年　　月"
                                        TO     WK-FREE-NAME2(IDZ)
                     MOVE       21      TO     IDX41
                     MOVE       27      TO     IDX42
@@ -5039,7 +5039,7 @@
              IF   IDZ    NOT =  ZERO
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -5085,7 +5085,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������˼��������������뤫Ƚ��
+      *    慢性疼痛疾患管理料があるか判定
       *****************************************************************
        2001-SHIDOU-HANTEI-SEC          SECTION.
       *
@@ -5093,7 +5093,7 @@
       *
              MOVE    ZERO                TO  FLG-SHIDOU-COMMENT
       *
-      *      �������򸡺�
+      *      算定履歴検索
              INITIALIZE                  SANTEI-REC
              MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
              MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -5124,7 +5124,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������˼����������Υ������Խ�
+      *    慢性疼痛疾患管理料のコメント編集
       *****************************************************************
        20011-SHIDOU-COMMENT-SEC          SECTION.
       *
@@ -5160,7 +5160,7 @@
            MOVE    "810000001"          TO  RECE459-SRYCD(2)
            MOVE    ZERO                 TO  RECE459-SRYSURYO(2)
            MOVE    15                   TO  RECE459-YUKOKETA(2)
-           MOVE    "�������˼���������������������"
+           MOVE    "慢性疼痛疾患管理算定日　　　日"
                                         TO  RECE459-NAME(2)
            MOVE     TB-SANTEI-DAY(1)    TO  DAY-IDX
            MOVE     TBL-DAY(DAY-IDX)    TO  RECE459-NAME(2)(25:4)
@@ -5176,7 +5176,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �˥������¸�ɴ�������������©���Լ��Ŵ����û������뤫Ƚ��
+      *    ニコチン依存症管理料・重度喘息患者治療管理加算があるか判定
       *****************************************************************
        2001-NIKOCHINTOU-HANTEI-SEC          SECTION.
       *
@@ -5193,7 +5193,7 @@
              MOVE     ZERO     TO     FLG-NIKOCHINTOU-COMMENT
              MOVE     SPACE    TO     WRK-NIKOCHINTOU-YMD
       *
-      *      �������򸡺�
+      *      算定履歴検索
              INITIALIZE                  SANTEI-REC
              MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
              MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -5248,7 +5248,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �˥������¸�ɴ�������������©���Լ��Ŵ����û��Υ������Խ�
+      *    ニコチン依存症管理料・重度喘息患者治療管理加算のコメント編集
       *****************************************************************
        20011-NIKOCHINTOU-COMMENT-SEC          SECTION.
       *
@@ -5257,7 +5257,7 @@
       *
            ADD      1            TO  IDZ
            IF    RECE44-FLG-NIKOCHIN-COMMENT   =    "1"
-                 MOVE    "����ꡡ���������"
+                 MOVE    "初回算定　　　月　　日"
                                  TO  WK-FREE-NAME2(IDZ)(1:22)
                  MOVE    WRK-NIKOCHINTOU-YMD(5:2)   TO  DAY-IDX2
                  MOVE    TBL-DAY(DAY-IDX2)
@@ -5268,7 +5268,7 @@
                  MOVE    11      TO  WK-FREE-YUKOKETA2(IDZ)
            END-IF
            IF    RECE44-FLG-ZENSOKU-COMMENT    =    "1"
-                 MOVE    "�裱���ܼ��Ŵ��������������"
+                 MOVE    "第１回目治療管理　　　月　　日"
                                  TO  WK-FREE-NAME2(IDZ)(1:30)
                  MOVE    WRK-NIKOCHINTOU-YMD(5:2)   TO  DAY-IDX2
                  MOVE    TBL-DAY(DAY-IDX2)
@@ -5286,7 +5286,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -5318,7 +5318,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������������󥻥�����ʣ����ܡˤ����뤫Ƚ��
+      *    小児特定疾患カウンセリング料（１回目）があるか判定
       *****************************************************************
        2001-SYOUNI-HANTEI-SEC          SECTION.
       *
@@ -5328,7 +5328,7 @@
       *
              MOVE        ZERO        TO      FLG-SYOUNI-COMMENT
       *
-      *      �������򸡺�
+      *      算定履歴検索
              INITIALIZE                      SANTEI-REC
              MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
              MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -5361,7 +5361,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������������󥻥������������Խ�
+      *    小児特定疾患カウンセリング料初回算定日編集
       *****************************************************************
        20011-SYOUNI-COMMENT-SEC          SECTION.
       *
@@ -5370,7 +5370,7 @@
       *
            ADD      1            TO  IDZ
       *
-           MOVE    "�裱���ܥ����󥻥�󥰡�����ǯ���������"
+           MOVE    "第１回目カウンセリング　　　年　　月　　日"
                                  TO  WK-FREE-NAME2(IDZ)(1:42)
            MOVE     21           TO  WK-FREE-YUKOKETA2(IDZ)
       *
@@ -5419,7 +5419,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -5451,7 +5451,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���¼�����ո�������������뤫Ƚ��
+      *    傷病手当金意見書交付料があるか判定
       *****************************************************************
        2001-SYOBYO-HANTEI-SEC          SECTION.
       *
@@ -5468,7 +5468,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ʊ�ս�����������뤫Ƚ��
+      *    療養費同意書交付料があるか判定
       *****************************************************************
        2001-RYOYO-HANTEI-SEC          SECTION.
       *
@@ -5485,7 +5485,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¡�ڡ����᡼������Ƴ�������ʱ�֥�˥���󥰡ˤ����뤫Ƚ��
+      *    心臓ペースメーカー指導管理料（遠隔モニタリング）があるか判定
       *****************************************************************
        2001-SINPESU-HANTEI-SEC          SECTION.
       *
@@ -5550,7 +5550,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       13      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "������ǯ�����ǯ������"
+                MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
                 MOVE       15      TO     IDX41
                 MOVE       21      TO     IDX42
@@ -5591,7 +5591,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -5628,7 +5628,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��֥�˥���󥰲û������뤫Ƚ��
+      *    遠隔モニタリング加算があるか判定
       *****************************************************************
        20011-SINPESU-CHECK-SEC          SECTION.
       *
@@ -5671,8 +5671,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¡�ڡ����᡼������Ƴ�������ʥ��ˤ����뤫Ƚ��
-      *    ��֥�˥���󥰲û������뤫Ƚ��
+      *    心臓ペースメーカー指導管理料（ロ）があるか判定
+      *    遠隔モニタリング加算があるか判定
       *****************************************************************
        2001-SINPESUR-HANTEI-SEC          SECTION.
       *
@@ -5752,7 +5752,7 @@
                   WHEN     "1"
                   WHEN     "2"
                      MOVE    13    TO     WK-FREE-YUKOKETA2(IDZ)
-                     MOVE   "������ǯ�����ǯ������"
+                     MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
                      MOVE    15    TO     IDX41
                      MOVE    21    TO     IDX42
@@ -5760,7 +5760,7 @@
                   WHEN     "A"
                   WHEN     "B"
                      MOVE    18    TO     WK-FREE-YUKOKETA2(IDZ)
-                     MOVE   "��Ƴ������������ǯ�����ǯ������"
+                     MOVE   "指導管理料前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
                      MOVE    25    TO     IDX41
                      MOVE    31    TO     IDX42
@@ -5802,7 +5802,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -5839,7 +5839,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���󴵼Ի�Ƴ�����������������뤫Ƚ��
+      *    がん患者指導管理料２・３があるか判定
       *****************************************************************
        2001-GANSIDO-HANTEI-SEC          SECTION.
       *
@@ -5908,11 +5908,11 @@
       *
                   IF   WRK-GANSIDO-YMD(IDX26)(1:6) = RECE41-SRYYM
                     MOVE     15      TO     WK-FREE-YUKOKETA2(IDZ)
-                    MOVE   "�������������ǯ���������"
+                    MOVE   "当月算定日　　　年　　月　　日"
                                      TO     WK-FREE-NAME2(IDZ)
                   ELSE
                     MOVE     15      TO     WK-FREE-YUKOKETA2(IDZ)
-                    MOVE   "������������ǯ���������"
+                    MOVE   "過去算定日　　　年　　月　　日"
                                      TO     WK-FREE-NAME2(IDZ)
                   END-IF
       *
@@ -5963,7 +5963,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -6000,8 +6000,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ������žɲ�ͽ�ɥ�������Ƴ���ʽ��ˤ����뤫Ƚ��
-      *    ������žɲ�ͽ�ɥ�������Ƴ���ʣ����ܤ��飴���ܤޤǡˤ����뤫Ƚ��
+      *    乳腺炎重症化予防ケア・指導料（初回）があるか判定
+      *    乳腺炎重症化予防ケア・指導料（２回目から４回目まで）があるか判定
       *****************************************************************
        2001-NYUSEN-HANTEI-SEC          SECTION.
       *
@@ -6077,7 +6077,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE     "�̻��»ܲ���ʡ������"
+                MOVE     "通算実施回数（　　回）"
                                    TO     WK-FREE-NAME2(IDZ)
                 MOVE      WRK-ZAIKYO-KAISU TO  DAY-IDX2
                 MOVE      TBL-DAY(DAY-IDX2)
@@ -6091,7 +6091,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -6127,7 +6127,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ı��ܿ�����Ƴ�������뤫Ƚ��
+      *    集団栄養食事指導料があるか判定
       *****************************************************************
        2001-SYUEIYO-HANTEI-SEC          SECTION.
       *
@@ -6144,7 +6144,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ˬ��Ǹ�ؼ��������뤫Ƚ��
+      *    訪問看護指示料があるか判定
       *****************************************************************
        2001-HOUSIJI-HANTEI-SEC          SECTION.
       *
@@ -6161,8 +6161,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ʃ���Ѳ��Ƴ�����������뤫Ƚ��
-      *    ������Ʃ�ϻ�Ƴ�����������������ǣ�����⤫Ƚ��
+      *    在宅血液透析頻回指導管理料があるか判定
+      *    在宅血液透析指導管理料算定日の歴月で２月以内か判定
       *****************************************************************
        2001-HINKAI-HANTEI-SEC          SECTION.
       *
@@ -6180,7 +6180,7 @@
              MOVE     ZERO     TO     FLG-HINKAI-COMMENT
              MOVE     ZERO     TO     WRK-TOSEKIYMD
       *
-      *      �������򸡺�
+      *      算定履歴検索
              INITIALIZE                  SANTEI-REC
              MOVE    RECE41-HOSPNUM      TO  SANTEI-HOSPNUM
              MOVE    RECE41-PTID         TO  SANTEI-PTID
@@ -6255,24 +6255,24 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ʃ���Ѳ��Ƴ�������Υ������Խ�
+      *    在宅血液透析頻回指導管理料のコメント編集
       *****************************************************************
        20011-HINKAI-COMMENT-SEC          SECTION.
       *
              PERFORM    200111-RECE45-TAIHI-SEC
       *
-      *      �ңţãţ����ե���������Ƥ�ơ��֥������
+      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
              MOVE    SPACE                TO  WRK-RECE45XX-REC
              INITIALIZE                       WRK-RECE45XX-REC
-      *      �����Ȥ�����
+      *      コメントの挿入
              COMPUTE  MAX-MEISAISU        =   RECE44-MEISAISU  +  1
       *
              MOVE    "810000001"
                             TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
              MOVE    ZERO   TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
              MOVE    16     TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
-             MOVE    "����Ƴ���������������������"
+             MOVE    "初回指導管理算定日　　　月　　日"
                             TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
              MOVE    WRK-TOSEKIYMD(5:2)   TO  DAY-IDX2
              MOVE    TBL-DAY(DAY-IDX2)
@@ -6296,10 +6296,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ǧ�ξ�������Ǵ������������뤫Ƚ��
-      *    ������ư�������Ƴ�����������뤫Ƚ��
-      *    ���ܡ���ϫξΩ�ٱ��Ƴ�������뤫Ƚ��
-      *    ǧ�ξɥ��ݡ��Ȼ�Ƴ�������뤫Ƚ��
+      *    認知症専門診断管理料２があるか判定
+      *    小児運動器疾患指導管理料があるか判定
+      *    療養・就労両立支援指導料があるか判定
+      *    認知症サポート指導料があるか判定
       *****************************************************************
        2001-NINSEN-HANTEI-SEC          SECTION.
       *
@@ -6362,7 +6362,7 @@
                 EVALUATE  RECE44-FLG-NINSEN-COMMENT
                   WHEN    "1"
                     MOVE    17     TO     WK-FREE-YUKOKETA2(IDZ)
-                    MOVE   "������ǯ����������ǯ���������"
+                    MOVE   "前回算定年月日　　　年　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                     INITIALIZE                      STS-AREA-DAY
@@ -6406,7 +6406,7 @@
                   WHEN    "3"
                   WHEN    "4"
                     MOVE    13     TO     WK-FREE-YUKOKETA2(IDZ)
-                    MOVE   "������ǯ�����ǯ������"
+                    MOVE   "前回算定年月　　　年　　月"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                     INITIALIZE                      STS-AREA-DAY
@@ -6444,7 +6444,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       6       TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "�ʽ�����"  TO     WK-FREE-NAME2(IDZ)
+                MOVE   "（初回算定）"  TO     WK-FREE-NAME2(IDZ)
              END-IF
       *
              IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
@@ -6455,7 +6455,7 @@
       *
              PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *      �ңţãţ����ե���������Ƥ�ơ��֥������
+      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
              MOVE    SPACE                TO  WRK-RECE45XX-REC
              INITIALIZE                       WRK-RECE45XX-REC
@@ -6490,7 +6490,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ౡ����Ʊ��Ƴ�����̴�����Ƴ�û������뤫Ƚ��
+      *    退院時共同指導料特別管理指導加算があるか判定
       *****************************************************************
        2001-TAKYOKSN-HANTEI-SEC          SECTION.
       *
@@ -6508,7 +6508,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ϥӥ�ơ������������������������ȼͿ����������뤫Ƚ��
+      *    外来リハビリテーション診療料・外来放射線照射診療料があるか判定
       *****************************************************************
        2001-GAIRIHA-HANTEI-SEC          SECTION.
       *
@@ -6525,7 +6525,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǡ����̱��Ǥ����뤫Ƚ��
+      *    往診・特別往診があるか判定
       *****************************************************************
        2001-OSIN-HANTEI-SEC          SECTION.
       *
@@ -6543,7 +6543,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼�ˬ������������뤫Ƚ��
+      *    在宅患者訪問診療料があるか判定
       *****************************************************************
        2001-ZAIHOU-HANTEI-SEC          SECTION.
       *
@@ -6560,7 +6560,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼�ˬ����ũ���ʹ�����Ƴ�����������ũ���ͤ����뤫Ƚ��
+      *    在宅患者訪問点滴注射管理指導料算定時の点滴注射があるか判定
       *****************************************************************
        2001-HOUTEN-HANTEI-SEC          SECTION.
       *
@@ -6575,7 +6575,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼�ˬ����ũ���ʹ�����Ƴ�����������ũ���ͤΥ������Խ�
+      *    在宅患者訪問点滴注射管理指導料算定時の点滴注射のコメント編集
       *****************************************************************
        20011-HOUTEN-COMMENT-SEC          SECTION.
       *
@@ -6583,18 +6583,18 @@
       *
              PERFORM    200111-RECE45-TAIHI-SEC
       *
-      *      �ңţãţ����ե���������Ƥ�ơ��֥������
+      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
              MOVE    SPACE                TO  WRK-RECE45XX-REC
              INITIALIZE                       WRK-RECE45XX-REC
-      *      �����Ȥ�����
+      *      コメントの挿入
              ADD     1                    TO  IDX-RECE45
       *
              MOVE    "810000001"
                             TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
              MOVE    ZERO   TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
              MOVE    4      TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-             MOVE    "��ˬ����"
+             MOVE    "（訪点）"
                             TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
              MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
@@ -6605,7 +6605,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ӽ��۰����ؼ��������뤫Ƚ��
+      *    介護職員等喀痰吸引等指示料があるか判定
       *****************************************************************
        2001-KAISYOKU-HANTEI-SEC          SECTION.
       *
@@ -6657,7 +6657,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       17      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "�������ǯ����������ǯ���������"
+                MOVE   "前回交付年月日　　　年　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                 INITIALIZE                         STS-AREA-DAY
@@ -6704,7 +6704,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       6       TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "�ʽ����ա�"  TO     WK-FREE-NAME2(IDZ)
+                MOVE   "（初回交付）"  TO     WK-FREE-NAME2(IDZ)
              END-IF
       *
              IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
@@ -6715,7 +6715,7 @@
       *
              PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *      �ңţãţ����ե���������Ƥ�ơ��֥������
+      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
              MOVE    SPACE                TO  WRK-RECE45XX-REC
              INITIALIZE                       WRK-RECE45XX-REC
@@ -6750,7 +6750,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����³�۰��Ƶ���ˡ��Ƴ�����������뤫Ƚ��
+      *    在宅持続陽圧呼吸療法指導管理料があるか判定
       *****************************************************************
        2001-YOUATU-HANTEI-SEC          SECTION.
       *
@@ -6767,7 +6767,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����³�۰��Ƶ���ˡ��Ƴ�������Υ������Խ�
+      *    在宅持続陽圧呼吸療法指導管理料のコメント編集
       *****************************************************************
        20011-YOUATU-COMMENT-SEC          SECTION.
       *
@@ -6777,7 +6777,7 @@
            INITIALIZE            WRK-FREE-AREA2
       *
            ADD      1            TO  IDZ
-           MOVE    "�»���������ǯ���������"
+           MOVE    "実施日　　　年　　月　　日"
                                  TO  WK-FREE-NAME2(IDZ)(1:26)
       *
            INITIALIZE                      STS-AREA-DAY
@@ -6822,7 +6822,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -6854,7 +6854,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼Զ�Ʊ�����������뤫Ƚ��
+      *    在宅患者共同診療料があるか判定
       *****************************************************************
        2001-ZAIKYO-HANTEI-SEC          SECTION.
       *
@@ -6864,7 +6864,7 @@
       *
              IF   WRK-ZAIKYO-YMD   NOT =  SPACE
       *
-      *         ���𴵼Զ�Ʊ�������������κ޸���
+      *         在宅患者共同診療料開始日の剤検索
                 MOVE       ZERO                 TO  WRK-ZAIKYO-KAISU
                 MOVE       ZERO                 TO  FLG-ZAIKYOCOMARI
                 PERFORM    20011-ZAIKYO-KENSAKU-SEC
@@ -6932,7 +6932,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "����ꡡ���������"
+                MOVE   "初回算定　　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                 MOVE    WRK-ZAIKYO-YMD(5:2)   TO  DAY-IDX2
@@ -6953,7 +6953,7 @@
                   ADD        1       TO     IDZ
       *
                   MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE     "�̻��»ܲ���ʡ������"
+                  MOVE     "通算実施回数（　　回）"
                                      TO     WK-FREE-NAME2(IDZ)
                   MOVE      WRK-ZAIKYO-KAISU TO  DAY-IDX2
                   MOVE      TBL-DAY(DAY-IDX2)
@@ -6968,7 +6968,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -7116,7 +7116,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼Զ�Ʊ�������������κ޸���
+      *    在宅患者共同診療料開始日の剤検索
       *****************************************************************
        20011-ZAIKYO-KENSAKU-SEC          SECTION.
       *
@@ -7236,7 +7236,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼�ˬ���ϥӥ�ơ�������Ƴ�����������뤫Ƚ��
+      *    在宅患者訪問リハビリテーション指導管理料があるか判定
       *****************************************************************
        2001-ZAIRIHA-HANTEI-SEC          SECTION.
       *
@@ -7253,7 +7253,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���𴵼�ˬ�����޴�����Ƴ�������뤫Ƚ��
+      *    在宅患者訪問薬剤管理指導料があるか判定
       *****************************************************************
        2001-ZAIYAK-HANTEI-SEC          SECTION.
       *
@@ -7271,7 +7271,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ˬ����Ťˤ����뵭Ͽ�񥳥��ȡ������Ϳ��ˤ����뤫Ƚ��
+      *    訪問診療にかかる記録書コメント（日・人数）があるか判定
       *****************************************************************
        2001-HOMONCOM-HANTEI-SEC          SECTION.
       *
@@ -7290,10 +7290,10 @@
       *
                IF    TBL-HOMONCOM-NINZU(IDX)  NOT = ZERO
                  ADD      1                TO  IDZ
-                 MOVE     "�����������������ʡ������͡�"
+                 MOVE     "　　　　　　　日（　　　人）"
                                            TO  WK-FREE-NAME2(IDZ)
                  IF    IDZ  =  1
-                   MOVE   "���ſͿ���"     TO  WK-FREE-NAME2(IDZ)(1:10)
+                   MOVE   "診療人数："     TO  WK-FREE-NAME2(IDZ)(1:10)
                  END-IF
                  MOVE     TBL-DAY(IDX)     TO  WK-FREE-NAME2(IDZ)(11:4)
                  INITIALIZE                    WRK-CHAR-HENKAN-AREA
@@ -7316,7 +7316,7 @@
       *
              PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *      �ңţãţ����ե���������Ƥ�ơ��֥������
+      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
              MOVE    SPACE                TO  WRK-RECE45XX-REC
              INITIALIZE                       WRK-RECE45XX-REC
@@ -7350,7 +7350,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ˤ��������ɷ�ˡ�����뤫Ƚ��
+      *    磁気による膀胱等刺激法があるか判定
       *****************************************************************
        2001-BOKOHO-HANTEI-SEC          SECTION.
       *
@@ -7489,7 +7489,7 @@
                              (IDX26        < IDX28               ))
                          OR ((SANTEI-SRYYM = WRK-BOKOHO-YMD9(1:6)) AND
                              (IDX26       >= IDX29               ))
-      *                  ���»������̻��»����Ȥ��Ƶ��ܤ��ʤ�
+      *                  初回実施日は通算実施日として記載しない
                          OR ((SANTEI-SRYYM = WRK-BOKOHO-YMD(1:6) ) AND
                              (IDX26        = IDX28               ))
                            CONTINUE
@@ -7523,7 +7523,7 @@
                ADD        1       TO     IDZ
       *
                MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-               MOVE   "���»ܡ����������"
+               MOVE   "初回実施　　　月　　日"
                                   TO     WK-FREE-NAME2(IDZ)
       *
                MOVE    WRK-BOKOHO-YMD(5:2)   TO  DAY-IDX2
@@ -7549,14 +7549,14 @@
                    ADD        1       TO     IDX27
                    IF    IDX27   <    10
                      MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                     MOVE     "�����ܡ������������"
+                     MOVE     "　回目　　　　月　　日"
                                         TO     WK-FREE-NAME2(IDZ)
                      MOVE      IDX27    TO     DAY-IDX2
                      MOVE      TBL-DAY(DAY-IDX2)(3:2)
                                         TO     WK-FREE-NAME2(IDZ)(1:2)
                    ELSE
                      MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                     MOVE     "�������ܡ����������"
+                     MOVE     "　　回目　　　月　　日"
                                         TO     WK-FREE-NAME2(IDZ)
                      MOVE      IDX27    TO     DAY-IDX2
                      MOVE      TBL-DAY(DAY-IDX2)
@@ -7580,7 +7580,7 @@
       *
                PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *        �ңţãţ����ե���������Ƥ�ơ��֥������
+      *        ＲＥＣＥ０５ファイルの内容をテーブルに退避
                MOVE    ZERO                 TO  IDX-RECE45
                MOVE    SPACE                TO  WRK-RECE45XX-REC
                INITIALIZE                       WRK-RECE45XX-REC
@@ -7616,7 +7616,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ⵤ�����Ǽ��Ť����뤫Ƚ��
+      *    高気圧酸素治療があるか判定
       *****************************************************************
        2001-KIATU-HANTEI-SEC          SECTION.
       *
@@ -7698,7 +7698,7 @@
                   ADD        1       TO     IDZ
       *
                   MOVE       9       TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "ȯ�ɡ����������"
+                  MOVE   "発症　　　月　　日"
                                      TO     WK-FREE-NAME2(IDZ)
       *
                   MOVE    WRK-ZAIKYO-YMD(5:2)  TO  DAY-IDX2
@@ -7719,7 +7719,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "���»ܡ����������"
+                MOVE   "初回実施　　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                 MOVE    WRK-SJIYMD(5:2)   TO  DAY-IDX2
@@ -7738,7 +7738,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "�̻��»ܲ���ʡ������"
+                MOVE   "通算実施回数（　　回）"
                                    TO     WK-FREE-NAME2(IDZ)
                 MOVE    WRK-ZAIKYO-KAISU  TO  DAY-IDX2
                 MOVE    TBL-DAY(DAY-IDX2)
@@ -7752,7 +7752,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -7788,7 +7788,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �͹���¡���Υ����Ȥ����뤫Ƚ��
+      *    人工腎臓等のコメントがあるか判定
       *****************************************************************
        2001-JINZOUETC-HANTEI-SEC          SECTION.
       *
@@ -7812,7 +7812,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɽ걢���ĺ����֤Υ����Ȥ����뤫Ƚ��
+      *    局所陰圧閉鎖処置のコメントがあるか判定
       *****************************************************************
        2001-KYOKUIN-HANTEI-SEC          SECTION.
       *
@@ -7836,7 +7836,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Υ����Ȥ����뤫Ƚ��
+      *    手術日のコメントがあるか判定
       *****************************************************************
        2001-SHUJUTSU-HANTEI-SEC          SECTION.
       *
@@ -7853,7 +7853,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Υ����Ȥ����뤫Ƚ��
+      *    麻酔日のコメントがあるか判定
       *****************************************************************
        2001-MASUI-HANTEI-SEC          SECTION.
       *
@@ -7870,7 +7870,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ʸ����ˤΥ����Ȥ����뤫Ƚ��
+      *    （検選）のコメントがあるか判定
       *****************************************************************
        2001-KENSEN-HANTEI-SEC          SECTION.
       *
@@ -7884,7 +7884,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ʸ��������Υ������Խ�
+      *    （検選）等のコメント編集
       *****************************************************************
        20011-KENSENTOU-COMMENT-SEC          SECTION.
       *
@@ -7921,7 +7921,7 @@
                          (WRK-RECE45XX-YUKOKETA(IDX-RECE45 1) * 2) + 1
       *
                         IF   WRK-RECE45XX-YUKOKETA(IDX-RECE45 1) <=  96
-                          MOVE    "����"   TO
+                          MOVE    "　×"   TO
                            WRK-RECE45XX-NAME(IDX-RECE45 1)(IDV:4)
                         END-IF
       *
@@ -7947,7 +7947,7 @@
       *
            END-PERFORM
       *
-      *    ����������Ȥ�ޤ�����Ƥ���֥ե�����κƺ���
+      *    手術日コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -7997,7 +7997,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʣ£ΣС��Σԡݣ���£ΣС��ȣ��ΣСˤ����뤫Ƚ��
+      *    検査（ＢＮＰ、ＮＴ−ｐｒｏＢＮＰ、ＨＡＮＰ）があるか判定
       *****************************************************************
        2001-KENSA-HANTEI-SEC          SECTION.
       *
@@ -8018,7 +8018,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ãԡ��ͣңɤ����뤫Ƚ��
+      *    ＣＴ・ＭＲＩがあるか判定
       *****************************************************************
        2001-CTMRI-HANTEI-SEC          SECTION.
       *
@@ -8035,7 +8035,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Υ������Խ��ʺ��������
+      *    手術日等のコメント編集（差込：上）
       *****************************************************************
        20011-SHUJUTSU-ETC-COMMENT-SEC          SECTION.
       *
@@ -8048,7 +8048,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -8077,7 +8077,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Υ������Խ����ʺ���������
+      *    手術日等のコメント編集２（差込：下）
       *****************************************************************
        20011-SHUJUTSU-ETC2-COMMENT-SEC          SECTION.
       *
@@ -8090,7 +8090,7 @@
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -8122,13 +8122,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ�Υ������Խ��ʺ��������
+      *    包括診療分のコメント編集（差込：上）
       *****************************************************************
        20011-HOKATU-COMMENT-SEC          SECTION.
       *
            PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -8137,7 +8137,7 @@
            MOVE  "810000001"    TO  WRK-RECE45XX-SRYCD(IDX-RECE45 1)
            MOVE   ZERO          TO  WRK-RECE45XX-SRYSURYO(IDX-RECE45 1)
            MOVE   6             TO  WRK-RECE45XX-YUKOKETA(IDX-RECE45 1)
-           MOVE  "�������š�" TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
+           MOVE  "【包括診療】" TO  WRK-RECE45XX-NAME(IDX-RECE45 1)
            MOVE  "1"            TO  WRK-RECE45XX-SIKFLG(IDX-RECE45 1)
       *
            PERFORM    200111-SRYACTINF-HENSYU-SEC
@@ -8147,7 +8147,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������γ���
+      *    算定日の確定
       *****************************************************************
        200111-SANTEI-DAY-SEC          SECTION.
       *
@@ -8168,7 +8168,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������դ��Խ�
+      *    手術日等の日付の編集
       *****************************************************************
        20011-FREE-COMMENT2-SEC          SECTION.                         
       *
@@ -8180,25 +8180,25 @@
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "���"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+                 MOVE    "手術"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
               WHEN    2
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "�»�"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+                 MOVE    "実施"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
               WHEN    3
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "����"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+                 MOVE    "算定"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
               WHEN    4
                  MOVE     16         TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     8          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "���ա���ǯ������"
+                 MOVE    "交付　　年　　月"
                                  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
       *
                  INITIALIZE                      STS-AREA-DAY
@@ -8240,20 +8240,20 @@
                                            WRK-KETA-TAIHI
                  MOVE     4          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "�����»�"
+                 MOVE    "検査実施"
                              TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
               WHEN    8
                  MOVE     4          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     2          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "���"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+                 MOVE    "麻酔"  TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
               WHEN    9
                  MOVE     8          TO    WRK-KETA
                                            WRK-KETA-TAIHI
                  MOVE     4          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
-                 MOVE    "ˬ���Ƴ"
+                 MOVE    "訪問指導"
                              TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
            END-EVALUATE
       *
@@ -8275,7 +8275,7 @@
       *
                        ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                       MOVE    "��"
+                       MOVE    "　"
                            TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
       *
                        ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
@@ -8285,7 +8285,7 @@
       *
                        ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                       MOVE    "��"
+                       MOVE    "日"
                            TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                     ELSE
       *
@@ -8299,7 +8299,7 @@
                        ELSE
                          ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                          COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                         MOVE    "��"
+                         MOVE    "　"
                              TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
       *
                          ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
@@ -8309,7 +8309,7 @@
                        END-IF
                        ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                        COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                       MOVE    "��"
+                       MOVE    "日"
                            TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                     END-IF
                     MOVE      1              TO  FLG-FIRST
@@ -8322,12 +8322,12 @@
                           PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                          MOVE    "��"
+                          MOVE    "、"
                                     TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                        ELSE
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "、"
                                     TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
       *
                        END-IF
@@ -8341,7 +8341,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2) 
                        ELSE
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
@@ -8351,7 +8351,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2) 
                        END-IF
                     ELSE
@@ -8362,12 +8362,12 @@
                           PERFORM  200111-FREE-COMMENT2-KAIGYO-SEC
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  1
-                          MOVE    "��"
+                          MOVE    "、"
                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                        ELSE
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                          MOVE    "��"
+                          MOVE    "、"
                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                        END-IF
       *
@@ -8380,7 +8380,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                        ELSE
                           ADD   2  TO  WK-FREE-YUKOKETA2(IDZ)
@@ -8390,7 +8390,7 @@
       *
                           ADD   1  TO  WK-FREE-YUKOKETA2(IDZ)
                           COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-                          MOVE    "��"
+                          MOVE    "日"
                                    TO  WK-FREE-NAME2(IDZ)(WRK-KETA:2)
                        END-IF
                     END-IF
@@ -8402,7 +8402,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������դ��Խ��ʲ��ԡ�
+      *    手術日等の日付の編集（改行）
       *****************************************************************
        200111-FREE-COMMENT2-KAIGYO-SEC          SECTION.                  
       *
@@ -8410,7 +8410,7 @@
       *
            MOVE    WRK-KETA-TAIHI  TO  WRK-KETA
            MOVE    WRK-KETA2       TO  WK-FREE-YUKOKETA2(IDZ)
-           MOVE    ALL "��"        TO  WK-FREE-NAME2(IDZ)(1:WRK-KETA)
+           MOVE    ALL "　"        TO  WK-FREE-NAME2(IDZ)(1:WRK-KETA)
       *
            IF    WRK-JIDO-SETCOMATFLG  NOT = ZERO
              MOVE  "2"                   TO  WK-FREE-MEISKYFLG2(IDZ)
@@ -8422,7 +8422,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ�Υ������Խ�
+      *    リハビリのコメント編集
       *****************************************************************
        2001-RIHA-COMMENT-SEC          SECTION.
       *
@@ -8432,18 +8432,18 @@
       *
              PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *      �ңţãţ����ե���������Ƥ�ơ��֥������
+      *      ＲＥＣＥ０５ファイルの内容をテーブルに退避
              MOVE    ZERO                 TO  IDX-RECE45
              MOVE    SPACE                TO  WRK-RECE45XX-REC
              INITIALIZE                       WRK-RECE45XX-REC
-      *      ��ϥӥꥳ���Ȥ�����
+      *      リハビリコメントの挿入
              COMPUTE  MAX-MEISAISU        =   RECE44-MEISAISU  +  1
       *
              MOVE    "810000001"
                             TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
              MOVE    ZERO   TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
              MOVE    7      TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
-             MOVE    "�»�����������"
+             MOVE    "実施日数　　日"
                             TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
              MOVE    "1"    TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
              MOVE    ZERO                 TO  CNT-RIHA
@@ -8472,7 +8472,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ��ش������Υ������Խ�
+      *    リハビリ医学管理料のコメント編集
       *****************************************************************
        2001-RIHAIGAKU-COMMENT-SEC          SECTION.
       *
@@ -8506,7 +8506,7 @@
            END-EVALUATE
       ***
            MOVE          SPACE          TO  WRK-RIHAIGAKU-FSANTEIYMD
-      *    ��ش������������򸡺�
+      *    医学管理：算定履歴検索
            INITIALIZE                       SANTEI-REC
            MOVE    RECE41-HOSPNUM       TO  SANTEI-HOSPNUM
            MOVE    RECE41-PTID          TO  SANTEI-PTID
@@ -8524,7 +8524,7 @@
            END-IF
       ***
            INITIALIZE      WRK-RIHAIGAKU-SANTEI-AREA
-      *    ��ϼ»ܥ��ߡ����������򸡺�
+      *    リハ実施ダミー：算定履歴検索
            INITIALIZE                       SANTEI-REC
            MOVE    RECE41-HOSPNUM       TO  SANTEI-HOSPNUM
            MOVE    RECE41-PTID          TO  SANTEI-PTID
@@ -8562,7 +8562,7 @@
                          TO  WRK-RECE45XX-SRYCD(MAX-MEISAISU 1)
            MOVE    ZERO  TO  WRK-RECE45XX-SRYSURYO(MAX-MEISAISU 1)
            MOVE    9     TO  WRK-RECE45XX-YUKOKETA(MAX-MEISAISU 1)
-           MOVE    "���ϡ����������"
+           MOVE    "開始　　　月　　日"
                          TO  WRK-RECE45XX-NAME(MAX-MEISAISU 1)
            MOVE    "1"   TO  WRK-RECE45XX-SIKFLG(MAX-MEISAISU 1)
            IF      WRK-RIHAIGAKU-FSANTEIYMD  NOT = SPACE
@@ -8585,7 +8585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ��ش������Υ������Խ��ʥ�ϼ»�����
+      *    リハビリ医学管理料のコメント編集（リハ実施日）
       *****************************************************************
        20011-RIHAIGAKU-DUMMY-COM-SEC          SECTION.
       *
@@ -8627,7 +8627,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ʥ�����ˤΥ����Ȥ����뤫Ƚ��
+      *    （リハ選）のコメントがあるか判定
       *****************************************************************
        2001-RIHASEN-HANTEI-SEC          SECTION.
       *
@@ -8641,10 +8641,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ǧ����ˡ��ǧ�ι�ư��ˡ�����뤫Ƚ��
-      *    �����ʽžɴ����������ٱ�����������뤫Ƚ��
-      *    �����ʺ��𴵼Իٱ�����������뤫Ƚ��
-      *    ����Ⱦ�Ƿ����ܷдɱ���ˡ��Ƴ�����������뤫Ƚ��
+      *    認知療法・認知行動療法があるか判定
+      *    精神科重症患者早期集中支援管理料があるか判定
+      *    精神科在宅患者支援管理料があるか判定
+      *    在宅半固形栄養経管栄養法指導管理料があるか判定
       *****************************************************************
        2001-NINRYO-HANTEI-SEC          SECTION.
       *
@@ -8668,7 +8668,7 @@
                   ADD        1       TO     IDZ
       *
                   MOVE       11      TO     WK-FREE-YUKOKETA2(IDZ)
-                  MOVE   "����ꡡ���������"
+                  MOVE   "初回算定　　　月　　日"
                                      TO     WK-FREE-NAME2(IDZ)
                   MOVE   WRK-NINRYO-FSANTEIYMD(5:2)   TO  DAY-IDX2
                   MOVE   TBL-DAY(DAY-IDX2)
@@ -8685,7 +8685,7 @@
       *
                   PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *           �ңţãţ����ե���������Ƥ�ơ��֥������
+      *           ＲＥＣＥ０５ファイルの内容をテーブルに退避
                   MOVE    ZERO                 TO  IDX-RECE45
                   MOVE    SPACE                TO  WRK-RECE45XX-REC
                   INITIALIZE                       WRK-RECE45XX-REC
@@ -8791,7 +8791,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �̱�������������ˡ�ʣ�����̤���˲û������뤫Ƚ��
+      *    通院・在宅精神療法（２０歳未満）加算があるか判定
       *****************************************************************
        2001-TUINZAI-HANTEI-SEC          SECTION.
       *
@@ -8870,7 +8870,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       16      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "�����ʤ���Ƽ��Ǥ�����������ǯ���������"
+                MOVE   "精神科を初めて受診した日　　　年　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                 INITIALIZE                         STS-AREA-DAY
@@ -8919,7 +8919,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -8956,8 +8956,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¸�ɽ�����ˡ�����뤫Ƚ��
-      *    ������������ץ������û������뤫Ƚ��
+      *    依存症集団療法があるか判定
+      *    疾患別等専門プログラム加算があるか判定
       *****************************************************************
        2001-IZONSYO-HANTEI-SEC          SECTION.
       *
@@ -8987,7 +8987,7 @@
                 ADD        1       TO     IDZ
       *
                 MOVE       12      TO     WK-FREE-YUKOKETA2(IDZ)
-                MOVE   "���ų����������������"
+                MOVE   "治療開始日　　　月　　日"
                                    TO     WK-FREE-NAME2(IDZ)
       *
                 MOVE    WRK-ZAIKYO-YMD(5:2)   TO  DAY-IDX2
@@ -9005,7 +9005,7 @@
       *
                 PERFORM  200111-RECE45-TAIHI-SEC
       *
-      *         �ңţãţ����ե���������Ƥ�ơ��֥������
+      *         ＲＥＣＥ０５ファイルの内容をテーブルに退避
                 MOVE    ZERO                 TO  IDX-RECE45
                 MOVE    SPACE                TO  WRK-RECE45XX-REC
                 INITIALIZE                       WRK-RECE45XX-REC
@@ -9041,7 +9041,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������������Ķ��ͳ�����Ȥ����뤫Ƚ��
+      *    院外湿布薬７０枚超理由コメントがあるか判定
       *****************************************************************
        2001-SIPPUCOM-HANTEI-SEC          SECTION.
       *
@@ -9138,7 +9138,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ߵް��Ŵ����û���Ƚ��
+      *    救急医療管理加算の判定
       *****************************************************************
        2001-KYUKYU-HANTEI-SEC          SECTION.
       *
@@ -9174,7 +9174,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ߵް��Ŵ����û��Υ������Խ�
+      *    救急医療管理加算のコメント編集
       *****************************************************************
        2001-KYUKYU-COMMENT-SEC          SECTION.
       *
@@ -9216,7 +9216,7 @@
            MOVE    ZERO                 TO  RECE459-SRYSURYO(2)
            MOVE    9                    TO  RECE459-YUKOKETA(2)
       * 
-           MOVE    "���ꡡ���������" TO  RECE459-NAME(2)
+           MOVE    "算定　　　月　　日" TO  RECE459-NAME(2)
            MOVE     WRK-TAIHI-SRYYMD(5:2)
                                         TO  DAY-IDX2
            MOVE     TBL-DAY(DAY-IDX2)   TO  RECE459-NAME(2)(7:4)
@@ -9238,7 +9238,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������˴ؤ����Խ�
+      *    内服薬剤料逓減に関する編集
       *****************************************************************
        2001-YAKUTEI-HENSYU-SEC          SECTION.
       *
@@ -9291,7 +9291,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������Υ����å�
+      *    院外湿布薬のチェック
       *****************************************************************
        2001-INGAISIPPU-CHECK-SEC          SECTION.
       *
@@ -9313,7 +9313,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������Υ������Ѵ�
+      *    院外湿布薬のコメント変換
       *****************************************************************
        2001-INGAISIPPU-COMMENT-SEC          SECTION.
       *
@@ -9418,7 +9418,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ο����Խ�
+      *    院外湿布薬の数量編集
       *****************************************************************
        20011-INGAISIPPU-SURYO-SEC          SECTION.
       *
@@ -9430,7 +9430,7 @@
            MOVE    SPACE           TO  WRK-SURYO-N
            MOVE    SPACE           TO  WRK-SRYSURYOW
       * 
-      *    ����ɽ�����Խ���Ⱦ�ѡ�
+      *    数字表示用編集（半角）
            MOVE    RECE45-SRYSURYO(IDX)
                                    TO  WRK-SURYO
            MOVE    WRK-SURYO-S1    TO  WRK-SURYO-Z1
@@ -9449,14 +9449,14 @@
            IF    WRK-SURYO-Z3  NOT =  SPACE
                  MOVE    "."       TO  WRK-SURYO-Z2
            END-IF
-      *    ɽ��ʸ�����������
+      *    表示文字数カウント
            PERFORM  VARYING  IDX35  FROM  1  BY  1
                      UNTIL   IDX35   >   11
              IF  WRK-SURYO-X(IDX35:1)  NOT =  SPACE
                  IF  WRK-SURYOST  =  ZERO
                      MOVE    IDX35    TO   WRK-SURYOST
                  END-IF
-      *          ���̷���������(�����ܡ��ԥꥪ��)
+      *          数量桁数カウント(６桁目：ピリオド)
                  ADD     1            TO   WRK-SURYOKETA
                  IF  IDX35  <  6
                      ADD     1        TO   WRK-SURYOKETA1
@@ -9472,7 +9472,7 @@
                MOVE    1               TO  WRK-SURYOKETA1
                ADD     1               TO  WRK-SURYOKETA
            END-IF
-      *    �����Ѵ�
+      *    全角変換
            IF  WRK-SURYOKETA1          >   ZERO
                INITIALIZE              WRK-CHAR2-HENKAN-AREA
                MOVE    WRK-SURYO-Z1 (WRK-SURYOST:WRK-SURYOKETA1)
@@ -9482,7 +9482,7 @@
                MOVE    WRK-CHAR2-N     TO  WRK-SURYO-N1
            END-IF
            IF  WRK-SURYOKETA2          >   ZERO
-               MOVE    "��"            TO  WRK-SURYO-N2
+               MOVE    "．"            TO  WRK-SURYO-N2
                INITIALIZE              WRK-CHAR2-HENKAN-AREA
                MOVE    WRK-SURYO-Z3 (1:WRK-SURYOKETA2)
                                        TO  WRK-CHAR2-X
@@ -9499,7 +9499,7 @@
            MOVE        RECE45-NAME(IDX)  TO  WRK-INGAISIPPU-NAME
            MOVE        SPACE             TO  RECE45-NAME(IDX)
            STRING  WRK-INGAISIPPU-NAME   DELIMITED  BY  " "
-                   "��"                  DELIMITED  BY  SIZE
+                   "　"                  DELIMITED  BY  SIZE
                    WRK-SRYSURYOW         DELIMITED  BY  " "
                    RECE45-TANINAME(IDX)  DELIMITED  BY  " "
                    INTO                  RECE45-NAME(IDX)
@@ -9519,7 +9519,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Ⱦ�Ѣ������Ѵ�����
+      *    数値半角→全角変換処理
       *****************************************************************
        200111-INGAISIPPU-HENKAN-SEC    SECTION.
       *
@@ -9530,7 +9530,7 @@
                      UNTIL   IDX35   >   WRK-CHAR2-CNT
              IF     WRK-CHAR2-X(IDX35:1)  IS  NUMERIC
                IF      WRK-CHAR2-X(IDX35:1)  =  "0"
-                 MOVE    "��"  TO  WRK-CHAR2-N(WRK-CHAR2-IDX:)
+                 MOVE    "０"  TO  WRK-CHAR2-N(WRK-CHAR2-IDX:)
                ELSE
                  MOVE  WRK-CHAR2-X(IDX35:1)
                                TO  IDX19
@@ -9549,7 +9549,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ���ž������
+      *    レセプト０４転送処理
       *****************************************************************
        2099-RECE44-TENSOU-SEC     SECTION.
       *
@@ -9566,7 +9566,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ���ž������
+      *    レセプト０５転送処理
       *****************************************************************
        20991-RECE45-TENSOU-SEC     SECTION.
       *
@@ -9603,7 +9603,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������������
+      *    ０５　退避処理
       *****************************************************************
        200111-RECE45-TAIHI-SEC     SECTION.
       *
@@ -9623,7 +9623,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ӣң٣��ãԣɣΣ��Խ�����
+      *    ０５　ＳＲＹＡＣＴＩＮＦ編集処理
       *****************************************************************
        200111-SRYACTINF-HENSYU-SEC     SECTION.
       *
@@ -9671,7 +9671,7 @@
              END-PERFORM
            END-IF
       *
-      *    ����������Ȥ�ޤ�����Ƥ���֥ե�����κƺ���
+      *    手術日コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -9725,11 +9725,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������˴ؤ����Խ���
+      *    内服薬剤料逓減に関する編集２
       *****************************************************************
        240-YAKUTEI-HENSYU2-SEC          SECTION.
       *
-      *    �¤��ؤ�
+      *    並び替え
            PERFORM    VARYING   IDX6    FROM   1   BY   1
                        UNTIL   (IDX6                     >   100 )
                          OR    (TBL-YT1-RECE44-REC(IDX6) =  SPACE)
@@ -9750,7 +9750,7 @@
       *
            END-PERFORM
       *
-      *    ���Ͻ���
+      *    出力処理
            INITIALIZE                   TBL-YAKUTEI-INF2
            INITIALIZE                   TBL-YAKUTEI-INF3
            MOVE       SPACE     TO      WRK-TAIHI-YT1-KEY
@@ -9952,7 +9952,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������˴ؤ���ե�����ޤȤ����
+      *    内服薬剤料逓減に関するファイルまとめ処理
       *****************************************************************
        2401-YAKUTEI-MATOME-SEC          SECTION.
       *
@@ -10044,7 +10044,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������˴ؤ���ե��������
+      *    内服薬剤料逓減に関するファイル出力
       *****************************************************************
        2402-YAKUTEI-WRITE-SEC          SECTION.
       *
@@ -10127,7 +10127,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������˴ؤ���ե�������ϡʣ����ե������
+      *    内服薬剤料逓減に関するファイル出力（４５ファイル）
       *****************************************************************
        24021-YAKUTEI-RECE45-TENSOU-SEC          SECTION.
       *
@@ -10164,11 +10164,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ���
+      *    差込編集２
       *****************************************************************
        250-SASHIKOMI2-SEC     SECTION.
       *
-      *    �ѥ�᡼���������ե��������Խ�
+      *    パラメータ４４９ファイルより編集
            PERFORM 800-RECE41-SET449-SEC
       *@@@@
            MOVE    SPACE               TO  RECE449-SRYKBN
@@ -10193,15 +10193,15 @@
                OR     ( RECE41-TEKSTYMD  NOT =   RECE449-TEKSTYMD     )
       *
                MOVE   ZERO   TO  FLG-COMMENT
-      *        �ʻ��Ƿ׻����Υ����ȤΥ��åȡ�
+      *        （酸素計算式のコメントのセット）
                IF   FLG-COMMENT  =  ZERO
                  PERFORM    2501-SANSO-HANTEI-SEC
                END-IF
-      *        �ʥե����Υ����ȤΥ��åȡ�
+      *        （フイルムのコメントのセット）
                IF   FLG-COMMENT  =  ZERO
                  PERFORM    2502-FILM-HANTEI-SEC
                END-IF
-      *        �ʳ�������û����ɤ��ؤ��ˤΥ��åȡ�
+      *        （外来管理加算（読み替え）のセット）
                IF   FLG-COMMENT  =  ZERO
                  PERFORM    2503-GAIKAN-HANTEI-SEC
                END-IF
@@ -10218,7 +10218,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ǥ����뤫Ƚ��
+      *    酸素があるか判定
       *****************************************************************
        2501-SANSO-HANTEI-SEC          SECTION.
       *
@@ -10238,7 +10238,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ǥο��̡�ñ������
+      *    酸素の数量・単価退避
       *****************************************************************
        25011-SANSO-TAIHI-SEC          SECTION.
       *
@@ -10306,7 +10306,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǤΥ������Խ��ʺ���������
+      *    酸素のコメント編集（差込：下）
       *****************************************************************
        25011-SANSO-COMMENT-SEC          SECTION.
       *
@@ -10318,7 +10318,7 @@
       *
            PERFORM  250111-RECE459-TAIHI-SEC
       *
-      *    �ңţãţ������ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ４５９ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -10341,7 +10341,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ƿ׻����Խ�
+      *    酸素計算式編集
       *****************************************************************
        250111-SANSO-FREE-COMMENT-SEC          SECTION.                 
       *
@@ -10353,22 +10353,22 @@
                        OR     (TBL-SANSO-TEN(IDX)  =  ZERO)
       *
              IF   IDX  >  1
-                MOVE    "��"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                MOVE    "＋"   TO  WK-FREE-NAME3(WRK-KETA:2)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  2
              END-IF
       *
-             MOVE    "��"   TO  WK-FREE-NAME3(WRK-KETA:2)
+             MOVE    "（"   TO  WK-FREE-NAME3(WRK-KETA:2)
              COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-      *ñ��
+      *単価
              MOVE     TBL-SANSO-TEN(IDX)   TO   WRK-KEISAN
              COMPUTE  WRK-KEISAN2  = (TBL-SANSO-TEN(IDX) -  WRK-KEISAN)
                                    *   1000
       *
              PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
-             MOVE    "�ߡ�" TO  WK-FREE-NAME3(WRK-KETA:4)
+             MOVE    "円×" TO  WK-FREE-NAME3(WRK-KETA:4)
              COMPUTE  WRK-KETA   =  WRK-KETA   +  4
-      *����
+      *数量
              MOVE     TBL-SANSO-SRYSURYO(IDX)  TO  WRK-KEISAN
              COMPUTE  WRK-KEISAN2  
                              = (TBL-SANSO-SRYSURYO(IDX) -  WRK-KEISAN)
@@ -10377,7 +10377,7 @@
              PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
              IF    TBL-KASAN-SRYSURYO  =  ZERO
-                MOVE    "�̡ߣ�������" TO  WK-FREE-NAME3(WRK-KETA:12)
+                MOVE    "Ｌ×１．３）" TO  WK-FREE-NAME3(WRK-KETA:12)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  12
       *
       ***       COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
@@ -10387,7 +10387,7 @@
                                                                 + 0.5
                 COMPUTE  WRK-KEISAN4  = WRK-KEISAN4 + WRK-KEISAN3
              ELSE
-                MOVE    "�̡ߣ�������" TO  WK-FREE-NAME3(WRK-KETA:12)
+                MOVE    "Ｌ×１．３×" TO  WK-FREE-NAME3(WRK-KETA:12)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  12
       *
                 MOVE     TBL-KASAN-SRYSURYO  TO  WRK-KEISAN
@@ -10397,7 +10397,7 @@
       *
                 PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
-                MOVE    "��" TO  WK-FREE-NAME3(WRK-KETA:2)
+                MOVE    "）" TO  WK-FREE-NAME3(WRK-KETA:2)
                 COMPUTE  WRK-KETA   =  WRK-KETA   +  2
       *
       ***       COMPUTE  WRK-KEISAN3   =   WRK-KEISAN3  +
@@ -10412,7 +10412,7 @@
            END-PERFORM
       *
            IF   IDX  =  2
-              MOVE    "�ࣱ����"  TO  WK-FREE-NAME3(WRK-KETA:8)
+              MOVE    "÷１０＝"  TO  WK-FREE-NAME3(WRK-KETA:8)
               COMPUTE  WRK-KETA   =  WRK-KETA   +  8
       *
       ***     COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
@@ -10422,16 +10422,16 @@
       *
               PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
-              MOVE    "��"   TO  WK-FREE-NAME3(WRK-KETA:2)
+              MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
               COMPUTE  WRK-KETA   =  WRK-KETA   +  2
            ELSE
               IF   IDX  >  2
                   MOVE   WK-FREE-NAME3  TO  WK-FREE-NAME3-TAIHI
-                  MOVE    "��"    TO   WK-FREE-NAME3(1:2)
+                  MOVE    "（"    TO   WK-FREE-NAME3(1:2)
                   MOVE   WK-FREE-NAME3-TAIHI
                                   TO   WK-FREE-NAME3(3:)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
-                  MOVE    "�ˡࣱ����"  TO  WK-FREE-NAME3(WRK-KETA:10)
+                  MOVE    "）÷１０＝"  TO  WK-FREE-NAME3(WRK-KETA:10)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  10
       *
       ***         COMPUTE  WRK-KEISAN =   WRK-KEISAN3  +  0.5
@@ -10441,7 +10441,7 @@
       *
                   PERFORM  2501111-SANSO-FREE-COM-NUM-SEC
       *
-                  MOVE    "��"   TO  WK-FREE-NAME3(WRK-KETA:2)
+                  MOVE    "点"   TO  WK-FREE-NAME3(WRK-KETA:2)
                   COMPUTE  WRK-KETA   =  WRK-KETA   +  2
               END-IF
            END-IF
@@ -10475,7 +10475,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ƿ׻����������Խ�
+      *    酸素計算式・数値編集
       *****************************************************************
        2501111-SANSO-FREE-COM-NUM-SEC          SECTION.          
       *
@@ -10516,10 +10516,10 @@
                 MOVE  WRK-KEISAN2(1:IDX5) TO  WRK-KEISAN-TAIHI
       *
                 IF    WRK-KEISAN  NOT  =  ZERO
-                   MOVE    "��"     TO  WK-FREE-NAME3(WRK-KETA:2)
+                   MOVE    "．"     TO  WK-FREE-NAME3(WRK-KETA:2)
                    COMPUTE  WRK-KETA   =  WRK-KETA   +  2
                 ELSE
-                   MOVE    "����"   TO  WK-FREE-NAME3(WRK-KETA:4)
+                   MOVE    "０．"   TO  WK-FREE-NAME3(WRK-KETA:4)
                    COMPUTE  WRK-KETA   =  WRK-KETA   +  4
                 END-IF
       *
@@ -10536,7 +10536,7 @@
       *
            IF    WRK-KEISAN    =  ZERO
            AND   WRK-KEISAN2   =  ZERO
-               MOVE    "��"   TO  WK-FREE-NAME3(WRK-KETA:2)
+               MOVE    "０"   TO  WK-FREE-NAME3(WRK-KETA:2)
                COMPUTE  WRK-KETA   =  WRK-KETA   +  2
            END-IF
       *
@@ -10545,7 +10545,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������
+      *    ４５９　退避処理
       *****************************************************************
        250111-RECE459-TAIHI-SEC     SECTION.
       *
@@ -10565,7 +10565,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ӣң٣��ãԣɣΣ��Խ�����
+      *    ４５９　ＳＲＹＡＣＴＩＮＦ編集処理
       *****************************************************************
        250111-SRYACTINF2-HENSYU-SEC     SECTION.
       *
@@ -10599,7 +10599,7 @@
       *
            IF     WRK-GYOSUU   NOT =  ZERO
       *
-      *      ����Ψ���Ϲⵤ�����ǲû��ʹߤ����٤򤺤餹
+      *      補正率又は高気圧酸素加算以降の明細をずらす
              IF   WRK-JYUNBAN  NOT =  ZERO
       *
                PERFORM   VARYING   IDX   FROM   IDX-RECE45   BY  -1
@@ -10615,7 +10615,7 @@
       *
              END-IF
       *
-      *      �׻����κ�������
+      *      計算式の差し込み
              IF   WRK-JYUNBAN  NOT =  ZERO
                  MOVE      WRK-JYUNBAN    TO     MAX-MEISAISU
              ELSE
@@ -10645,7 +10645,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե���ब���뤫Ƚ��
+      *    フイルムがあるか判定
       *****************************************************************
        2502-FILM-HANTEI-SEC          SECTION.
       *
@@ -10663,13 +10663,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����Υ������Խ��ʺ���������
+      *    フイルムのコメント編集（差込：下）
       *****************************************************************
        25021-FILM-COMMENT-SEC          SECTION.
       *
            PERFORM  250111-RECE459-TAIHI-SEC
       *
-      *    �ңţãţ������ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ４５９ファイルの内容をテーブルに退避
            MOVE    ZERO       TO     IDX-RECE45
            MOVE    SPACE      TO     WRK-RECE45XX-REC
            INITIALIZE                WRK-RECE45XX-REC
@@ -10682,7 +10682,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ӣң٣��ãԣɣΣ��Խ�����
+      *    ４５９　ＳＲＹＡＣＴＩＮＦ編集処理
       *****************************************************************
        250211-SRYACTINF2-HENSYU-SEC     SECTION.
       *
@@ -10726,7 +10726,7 @@
       *
            END-PERFORM
       *
-      *    �ե����ʹߤ����٤򤺤餹
+      *    フィルム以降の明細をずらす
            IF   WRK-JYUNBAN  NOT =  ZERO
       *
                PERFORM   VARYING   IDX   FROM   IDX-RECE45   BY  -1
@@ -10740,7 +10740,7 @@
       *
                END-PERFORM
       *
-      *        ʬ����κ�������
+      *        分画数の差し込み
                MOVE   WRK-JYUNBAN     TO  MAX-MEISAISU
       *
                ADD    1               TO  MAX-MEISAISU
@@ -10750,12 +10750,12 @@
       *
                MOVE   WRK-RECE45XX-SRYKAISU(WRK-JYUNBAN 1)
                                       TO  WRK-SRYKAISU-X
-      *        �����Ѵ�
+      *        全角変換
                INITIALIZE                     WRK-CHAR-HENKAN-AREA
                MOVE     WRK-SRYKAISU-X  TO    WRK-CHAR-X
                PERFORM  2502111-NUM-ZENKAKU-HENKAN-SEC
                STRING   WRK-CHAR-N      DELIMITED  BY  SPACE
-                        "ʬ��"          DELIMITED  BY  SIZE
+                        "分画"          DELIMITED  BY  SIZE
                                         INTO  WRK-BUNKAKU-N
                END-STRING
                COMPUTE WRK-BUNKAKUKETA   =   WRK-CHAR-N-CNT  +  4
@@ -10780,7 +10780,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Ⱦ�Ѣ������Ѵ�����
+      *    数値半角→全角変換処理
       *****************************************************************
        2502111-NUM-ZENKAKU-HENKAN-SEC    SECTION.
       *
@@ -10791,7 +10791,7 @@
                       UNTIL    IDX18     >     3
               IF  WRK-CHAR-X(IDX18:1)  IS   NUMERIC
                  IF   WRK-CHAR-X(IDX18:1) = "0"
-                   MOVE   "��"      TO  WRK-CHAR-N(WRK-CHAR-IDX:)
+                   MOVE   "０"      TO  WRK-CHAR-N(WRK-CHAR-IDX:)
                  ELSE
                    MOVE   WRK-CHAR-X(IDX18:1)
                                     TO  IDX19
@@ -10808,7 +10808,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û����ɤ��ؤ���������ɬ�פ�Ƚ��
+      *    外来管理加算（読み替え）挿入が必要か判定
       *****************************************************************
        2503-GAIKAN-HANTEI-SEC          SECTION.
       *
@@ -10825,13 +10825,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û����ɤ��ؤ��������Խ�
+      *    外来管理加算（読み替え）挿入編集
       *****************************************************************
        25031-GAIKAN-INS-HENSYU-SEC          SECTION.
       *
            PERFORM  250111-RECE459-TAIHI-SEC
       *
-      *    �ңţãţ������ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ４５９ファイルの内容をテーブルに退避
            MOVE    ZERO                 TO  IDX-RECE45
            MOVE    SPACE                TO  WRK-RECE45XX-REC
            INITIALIZE                       WRK-RECE45XX-REC
@@ -10864,7 +10864,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û����ɤ��ؤ��������Խ���
+      *    外来管理加算（読み替え）挿入編集２
       *****************************************************************
        25032-GAIKAN-INS-HENSYU2-SEC     SECTION.
       *
@@ -10934,7 +10934,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������û����ɤ��ؤ��������Խ����ʿ��Ź԰٥ơ��֥��Խ���
+      *    外来管理加算（読み替え）挿入編集２（診療行為テーブル編集）
       *****************************************************************
        250321-GAIKAN-TBL-HENSYU-SEC     SECTION.
       *
@@ -11019,11 +11019,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ӣң٣��ãԣɣΣ��Խ������ʶ��̡�
+      *    ４５９　ＳＲＹＡＣＴＩＮＦ編集処理（共通）
       *****************************************************************
        2509-SRYACTINF2-KYOTU-HEN-SEC     SECTION.
       *
-      *    �����Ȥ�ޤ�����Ƥ���֥ե�����κƺ���
+      *    コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -11072,7 +11072,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ�����ž������
+      *    レセプト４４９転送処理
       *****************************************************************
        2599-RECE449-TENSOU-SEC     SECTION.
       *
@@ -11085,7 +11085,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ�����ž������
+      *    レセプト４５９転送処理
       *****************************************************************
        25991-RECE459-TENSOU-SEC     SECTION.
       *
@@ -11121,11 +11121,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���򼰥������Խ�
+      *    選択式コメント編集
       *****************************************************************
        270-SENTAKUCOM-HENSYU-SEC     SECTION.
       *
-      *    �ѥ�᡼���������ե��������Խ�
+      *    パラメータ４４１ファイルより編集
            PERFORM 800-RECE41-SET441-SEC
       *@@@@
            MOVE    SPACE               TO  RECE441-SRYKBN
@@ -11166,7 +11166,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���򼰥������Խ���
+      *    選択式コメント編集２
       *****************************************************************
        2701-SENTAKUCOM-HENSYU2-SEC     SECTION.
       *
@@ -11261,7 +11261,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���򼰥������Խ���
+      *    選択式コメント編集３
       *****************************************************************
        27011-SENTAKUCOM-HENSYU3-SEC     SECTION.
       *
@@ -11297,7 +11297,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���򼰥������Խ���
+      *    選択式コメント編集４
       *****************************************************************
        2702-SENTAKUCOM-HENSYU4-SEC     SECTION.
       *
@@ -11367,11 +11367,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ط��������Խ�
+      *    関係コメント編集
       *****************************************************************
        260-SETCOM-HENSYU-SEC     SECTION.
       *
-      *    �ѥ�᡼���������ե��������Խ�
+      *    パラメータ４４１ファイルより編集
            PERFORM 800-RECE41-SET441-SEC
       *@@@@
            MOVE    SPACE               TO  RECE441-SRYKBN
@@ -11428,7 +11428,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ط��������Խ���
+      *    関係コメント編集２
       *****************************************************************
        2601-SETCOM-HENSYU2-SEC     SECTION.
       *
@@ -11690,7 +11690,7 @@
       *44
                           "170016010"                              )
       *
-      *<ϫ����>
+      *<労災用>
       *16
                     OR   (RECE451-SRYCD(IDX) =
                           "101800230" OR "101800240" OR "101800250" OR
@@ -11757,7 +11757,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ط��������Խ���
+      *    関係コメント編集３
       *****************************************************************
        26011-SETCOM-HENSYU3-SEC     SECTION.
       *
@@ -11771,7 +11771,7 @@
            MOVE    WRK-HEN-SEQNO         TO  RECE455-SEQNO
       *
            MOVE    RECE451-SRYCD(IDX)    TO  RECE455-SRYCD
-      *    ��������Ѷ����������
+      *    後ろの全角空白を削除する
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    "1"                 TO  KANACHK-SYORIKBN
@@ -11784,7 +11784,7 @@
                                        TO  RECE451-NAME(IDX) 
            END-IF
            MOVE    RECE451-NAME(IDX)     TO  RECE455-NAME
-      *    ��������Ѷ����������
+      *    後ろの全角空白を削除する
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    "1"                 TO  KANACHK-SYORIKBN
@@ -11822,7 +11822,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -11837,7 +11837,7 @@
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ������Ͻ���
+      *            ジョブ管理開始処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -11858,7 +11858,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC            SECTION.
       *
@@ -11869,26 +11869,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC      SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -11920,7 +11920,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -11933,7 +11933,7 @@
            CLOSE                       RECE459-FILE
            CLOSE                       RECE455-FILE
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -11955,7 +11955,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����Խ������ʣ�����
+      *    レセプト４１データ編集処理（４４）
       *****************************************************************
        800-RECE41-SET44-SEC           SECTION.
       *
@@ -11973,7 +11973,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����Խ������ʣ�������
+      *    レセプト４１データ編集処理（４４９）
       *****************************************************************
        800-RECE41-SET449-SEC           SECTION.
       *
@@ -11993,7 +11993,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����Խ������ʣ�������
+      *    レセプト４１データ編集処理（４４１）
       *****************************************************************
        800-RECE41-SET441-SEC           SECTION.
       *
@@ -12011,7 +12011,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����Խ������ʣ�������
+      *    レセプト４１データ編集処理（４５９）
       *****************************************************************
        800-RECE41-SET459-SEC           SECTION.
       *
@@ -12029,7 +12029,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����Խ������ʣ�����
+      *    レセプト４４データ編集処理（４５）
       *****************************************************************
        800-RECE44-SET45-SEC           SECTION.
       *
@@ -12047,7 +12047,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ǡ����Խ������ʣ�����
+      *    レセプト４４９データ編集処理（４５）
       *****************************************************************
        800-RECE449-SET45-SEC           SECTION.
       *
@@ -12065,7 +12065,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ǡ����Խ������ʣ�������
+      *    レセプト４４９データ編集処理（４５９）
       *****************************************************************
        800-RECE449-SET459-SEC           SECTION.
       *
@@ -12083,7 +12083,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ǡ����Խ������ʣ�������
+      *    レセプト４４１データ編集処理（４５１）
       *****************************************************************
        800-RECE441-SET451-SEC           SECTION.
       *
@@ -12101,7 +12101,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ףңɣԣŽ���
+      *    レセプト４４９ＷＲＩＴＥ処理
       *****************************************************************
        800-RECE449-WRITE-SEC           SECTION.
       *
@@ -12125,7 +12125,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ףңɣԣŽ���
+      *    レセプト４５９ＷＲＩＴＥ処理
       *****************************************************************
        800-RECE459-WRITE-SEC           SECTION.
       *
@@ -12149,7 +12149,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ףңɣԣŽ���
+      *    レセプト４４１ＷＲＩＴＥ処理
       *****************************************************************
        800-RECE441-WRITE-SEC           SECTION.
       *
@@ -12185,7 +12185,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������ףңɣԣŽ���
+      *    レセプト４５１ＷＲＩＴＥ処理
       *****************************************************************
        800-RECE451-WRITE-SEC           SECTION.
       *
@@ -12209,7 +12209,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����縡������
+      *    レセプト０２データ順検索処理
       *****************************************************************
        990-RECE41-READ-SEC           SECTION.
       *
@@ -12228,9 +12228,9 @@
                        PERFORM 500-FILE-ERR-ABORT-SEC
                    END-IF
       *
-      *            ��̳�ҳ������ե������������������ΤȤ��оݳ�
-      *            ������ŵ��ؤǤϤʤ��Ȥ��оݳ�
-      *            �����������ǻϤޤ륳���ɤ�����Ȥ��оݳ�
+      *            公務災害、アフターケア、種別不明のとき対象外
+      *            指定医療機関ではないとき対象外
+      *            ０９５９３で始まるコードがあるとき対象外
                    IF  (   RECE41-SRYYM        <   201307 )
                    OR  (   RECE41-PTNUM        =   SPACE  )
                    OR  (   RECE41-TSTPTNUMKBN  =   "1"    )
@@ -12258,7 +12258,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ����ǡ����ɤ�
+      *    レセプト０４データ読み
       ****************************************************************
        990-RECE44-NEXT-SEC           SECTION.
       *
@@ -12285,7 +12285,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ������ǡ����ɤ�
+      *    レセプト４４９データ読み
       ****************************************************************
        990-RECE449-NEXT-SEC           SECTION.
       *
@@ -12312,7 +12312,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ������ǡ����ɤ�
+      *    レセプト４４１データ読み
       ****************************************************************
        990-RECE441-NEXT-SEC           SECTION.
       *
@@ -12339,7 +12339,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ����ǡ����ɤ�
+      *    レセプト０５データ読み
       ****************************************************************
        990-RECE45-NEXT-SEC           SECTION.
       *
@@ -12366,7 +12366,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ������ǡ����ɤ�
+      *    レセプト４５９データ読み
       ****************************************************************
        990-RECE459-NEXT-SEC           SECTION.
       *
@@ -12393,7 +12393,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ������ǡ����ɤ�
+      *    レセプト４５１データ読み
       ****************************************************************
        990-RECE451-NEXT-SEC           SECTION.
       *
@@ -12420,7 +12420,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɤ߹���
+      *    算定履歴マスタ読み込み
       *****************************************************************
        900-SANTEI-INV-SEC             SECTION.
       *
@@ -12452,7 +12452,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ޥ����ɤ߹���
+      *    算定歴マスタ読み込み
       *****************************************************************
        900-SANTEI-READ-SEC         SECTION.
       *
@@ -12470,7 +12470,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ɹ�
+      *    システム管理マスター読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -12488,7 +12488,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ�
+      *    受診履歴読込
       *****************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
@@ -12506,7 +12506,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰��ɹ�
+      *    診療行為読込
       *****************************************************************
        900-SRYACT-READ-SEC           SECTION.
       *
@@ -12524,7 +12524,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ղ��ɹ�
+      *    算定履歴付加読込
       *****************************************************************
        900-SANTEIPLUS-READ-SEC           SECTION.
       *
@@ -12542,7 +12542,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȵ���
+      *    レセプト記載
       *****************************************************************
        900-RKISAI-READ-SEC           SECTION.
       *
@@ -12560,7 +12560,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ����ȥޥ����ɤ߹���
+      *    患者コメントマスタ読み込み
       *****************************************************************
        900-PTCOM-READ-SEC           SECTION.
       *
@@ -12594,7 +12594,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ơ��֥�θ���
+      *    点数テーブルの検索
       *****************************************************************
        900-TENSU-TBL-SEC               SECTION.
       *
@@ -12633,7 +12633,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -12650,7 +12650,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -12663,7 +12663,7 @@
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -12689,7 +12689,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -12701,7 +12701,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -12713,7 +12713,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -12726,7 +12726,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
@@ -12744,7 +12744,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -12762,7 +12762,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -12776,7 +12776,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

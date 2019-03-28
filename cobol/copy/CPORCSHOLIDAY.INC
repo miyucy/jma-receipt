@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,16 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    µÙÆü¥Á¥§¥Ã¥¯¥µ¥Ö             COPY (CPORCSHOLIDAY.INC) *
+      *    ä¼‘æ—¥ãƒã‚§ãƒƒã‚¯ã‚µãƒ–             COPY (CPORCSHOLIDAY.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01 SHOLIDAY-AREA.
           03 SHOLIDAY-DATE          PIC X(08).
-      *   12/29-1/3¤ÎÊ¿Æü¤ò½ËÆü¤Ë´Þ¤Þ¤Ê¤¤
+      *   12/29-1/3ã®å¹³æ—¥ã‚’ç¥æ—¥ã«å«ã¾ãªã„
           03 SHOLIDAY-HOLIDAY       PIC 9(01).
-      *   12/29-1/3¤ÎÊ¿Æü¤ò½ËÆü¤Ë´Þ¤à
+      *   12/29-1/3ã®å¹³æ—¥ã‚’ç¥æ—¥ã«å«ã‚€
           03 SHOLIDAY-HOLIDAY-PLUS  PIC 9(01).
           03 SHOLIDAY-RC            PIC 9(02).

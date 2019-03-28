@@ -1,16 +1,16 @@
 --                                      --
--- ¥ì¥»¥×¥ÈÌÀºÙ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹           --
--- ¹àÌÜÄÉ²Ã                             --
---   ¡¡¡¡¡¡¡¡¥×¥ê¥ó¥¿Ì¾¡¡(PRTNM)        --
--- ¹àÌÜÊÑ¹¹                             --
---   ¡¡¡¡¡¡¡¡Ï¢ÈÖ¡¡¡¡¡¡¡¡(RENNUM)       --
+-- ãƒ¬ã‚»ãƒ—ãƒˆæ˜Žç´°ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´           --
+-- é …ç›®è¿½åŠ                              --
+--   ã€€ã€€ã€€ã€€ãƒ—ãƒªãƒ³ã‚¿åã€€(PRTNM)        --
+-- é …ç›®å¤‰æ›´                             --
+--   ã€€ã€€ã€€ã€€é€£ç•ªã€€ã€€ã€€ã€€(RENNUM)       --
 --                                      --
 -- Create Date : 2006/06/01             --
 --                                      --
 
 \set ON_ERROR_STOP
 
--- TBL_RECEPRTWWK ºîÀ®                 --
+-- TBL_RECEPRTWWK ä½œæˆ                 --
 create table TBL_RECEPRTWWK (
 PRTID				char(4)		not null,
 RECEYM				char(6)		not null,
@@ -45,16 +45,16 @@ OPID				varchar(16),
 constraint TBL_RECEPRTWWK_primary_key primary key (PRTID,RECEYM,
 CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,TEKSTYMD,ZAITAKU,CHOUKI,PTNUM,RENNUM,RECENUM));
 
--- TBL_RECEPRT ¢ª TBL_RECEPRTWWK   --
+-- TBL_RECEPRT â†’ TBL_RECEPRTWWK   --
 
 insert into TBL_RECEPRTWWK
 select * from TBL_RECEPRT;
 
--- TBL_RECEPRT ºï½ü               --
+-- TBL_RECEPRT å‰Šé™¤               --
 
 drop table TBL_RECEPRT;
 
--- TBL_RECEPRT ºîÀ®               --
+-- TBL_RECEPRT ä½œæˆ               --
 
 create table TBL_RECEPRT (
 PRTID				char(4)		not null,
@@ -91,7 +91,7 @@ OPID				varchar(16),
 constraint TBL_RECEPRT_primary_key primary key (PRTID,RECEYM,
 CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,TEKSTYMD,ZAITAKU,CHOUKI,PTNUM,RENNUM,RECENUM));
 
--- TBL_RECEPRTWWK ¢ª TBL_RECEPRT   --
+-- TBL_RECEPRTWWK â†’ TBL_RECEPRT   --
 
 insert into TBL_RECEPRT
 (PRTID,
@@ -158,6 +158,6 @@ TERMID,
 OPID
 from TBL_RECEPRTWWK;
 
--- TBL_RECEPRTWWK ºï½ü             --
+-- TBL_RECEPRTWWK å‰Šé™¤             --
 
 drop table TBL_RECEPRTWWK;

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI021SUB3V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���������Խ����֡ʰ��β���
-      *                      ��J02�оݤ�SPA��API�ֵ��Խ���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  18/12/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 診療内容編集サブ（一体化）
+      *                      （J02対象をSPAとAPI返却編集）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  18/12/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -40,7 +40,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PARA                PIC 9(01).
@@ -57,7 +57,7 @@
            03  FLG-SP                  PIC 9(01).
            03  FLG-CHOZAIAUTO          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -76,14 +76,14 @@
            03  IDH                 PIC 9(04).
            03  IDX-IDH             PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *01  CNT-AREA.
       *    03  CNT-SRYCNT              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
-      *    �����Ѵ���
+      *    数値変換用
            03  WRK-SURYO               PIC S9(08)V9(05).
            03  WRK-SURYO-S             PIC 9(08)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO-S.
@@ -110,7 +110,7 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBNMEI        PIC X(40).
            03  WRK-SRYCD               PIC X(09).
-      *    ��縡����
+      *    包括検査数
            03  WRK-HOUKNS-CNT          PIC 9(02).
       *
            03  WRK-HKNCOMBI            PIC X(04).
@@ -118,96 +118,96 @@
            03  WRK-SRYKA-NAME          PIC X(20).
       *
       *
-      *    Ⱦ�������Ѵ�
+      *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
            03  WRK-MAX                 PIC 9(04).
            03  WRK-LEN                 PIC 9(04).
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
-      *    �ݸ��Ȥ߹�碌�ơ��֥�
+      *    保険組み合わせテーブル
        01  TBL-HKNCOMIB-AREA.
          02  TBL-HKNCOMBI-REC              OCCURS   100.
            COPY    "CPHKNCOMBI.INC"    REPLACING
                                      //COMB-// BY //TBL-COMB-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *    COPY    "CPORCSMCNDATE.INC".
       *
       *    COPY    "CPORCXKANACONV.INC".
       *
       *    COPY    "CPORCSKANACHK.INC".
-      *    �����Ѵ�����
+      *    日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���Ź԰����Ϲ����Ѵ��ѥ�᥿�������λ������Ѵ���
+      *    診療行為入力項目変換パラメタ（入院の算定日変換）
       *    COPY    "CPORCSC97.INC".
       *
-      *    ������Ѵ��ѥ�᥿
+      *    一括日変換パラメタ
       *    COPY    "CPORCSNDAYCHG.INC".
       *
-      *    �ӣУ��ѥ�᥿��ORCSC97.CBL �Ѥ�DAMMY)
+      *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
       *01  SPA-SCR-REC.
       *    COPY    "CPK02SPASCR.INC".
       *
       *H30.XX
-      *    �ݸ��ȹ礻���å��ΰ�
+      *    保険組合せセット領域
       *    COPY    "CPORCSAPIHKN.INC".
       *!!!!!
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
-      *    ���Ųʾ���
+      *    診療科情報
            COPY    "CPSK1005.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ų�����þ���ޥ�����
+      *    診療会計附加情報マスタ−
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ����̾�ơ��֥�
+      *    一般名テーブル
       *01  GENERICNAME-REC.
       *    COPY    "CPGENERICNAME.INC".
       *
-      *     �ѥ�᥿�ơ��֥�
+      *     パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
@@ -216,14 +216,14 @@
       *
       *    COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
       *
            COPY    "MCPAREA".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ���оݥǡ����Խ��ΰ�
+      *    剤対象データ編集領域
            COPY    "CPORAPI021SUB3V3.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -233,7 +233,7 @@
            .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -245,9 +245,9 @@
            INITIALIZE                  ORAPISUB3-HENSYU-AREA
            INITIALIZE                  TBL-HKNCOMIB-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            PERFORM 200-MAIN-SEC
       *
       *
@@ -258,11 +258,11 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -272,11 +272,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �ѥ�᥿�����Ų�ץޥ��������Խ�
+      *    パラメタより診療会計マスターを編集
            INITIALIZE                      PARA-REC
            MOVE    "J02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -317,9 +317,9 @@
       *
            IF     (FLG-HENCHK          =   1     )
               AND (FLG-PARA            =   ZERO  )
-      *        �޿������С�
+      *        剤数オーバー
                MOVE    "AP03"              TO  ORAPISUB3-ERRCD
-               MOVE    "�޿����������ʾ�Ȥʤ�ޤ�"
+               MOVE    "剤数が最大件数以上となります"
                                            TO  ORAPISUB3-ERRMSG
            END-IF
       *
@@ -327,7 +327,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *   ���Ų�ץޥ����������������Խ�����
+      *   診療会計マスターより画面内容編集処理
       *****************************************************************
        20021-SRYACCT-SPA-SEC             SECTION.
       *
@@ -341,9 +341,9 @@
            MOVE    ACCT-JIHOKBN        TO  ORAPISUB3-JIHOKBN (IDX)
            MOVE    ACCT-ZAITEN         TO  ORAPISUB3-ZAITEN (IDX)
            MOVE    ACCT-ZAIKBN         TO  ORAPISUB3-ZAIKBN (IDX)
-      *    �޲��
+      *    剤回数
            MOVE    ACCT-DAY-AREA       TO  ORAPISUB3-NAI-DAY-AREA(IDX)
-      *    ���������������Խ�
+      *    点数検索用日付編集
            MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
            MOVE    01                  TO  WRK-SRYDD
            PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -356,33 +356,33 @@
       *
            INITIALIZE                  SRYACCTPLUS-REC
            IF      ACCT-ZAIREQFLG      =   "1"
-      *        ���þ��󤢤�
+      *        附加情報あり
                PERFORM 940-SRYACCTPLUS-READ-SEC
-      *        ����
+      *        減点
                IF     (ACCTP-PLUSKBN       =   1    )
                  AND  (ACCT-ZAITEN         >   ZERO )
                    MOVE    1               TO  ORAPISUB3-PLUSKBN(IDX)
                END-IF
            END-IF
       *
-      *    ���Ų�̾���Խ�
+      *    診療科名称編集
            PERFORM 20022-SRYKA-HEN-SEC
       *
-      *    �ݸ��ȹ礻̾���Խ�
+      *    保険組合せ名称編集
            PERFORM 20023-HKNCOMBI-HEN-SEC
       *
-      *    ���Ź԰������Խ�
+      *    診療行為内容編集
            PERFORM 20021-SRYACT-HEN-SEC
       *
            .
        20021-SRYACCT-SPA-EXT.
            EXIT.
       *****************************************************************
-      *   ���Ų�̾���Խ�����
+      *   診療科名称編集処理
       *****************************************************************
        20022-SRYKA-HEN-SEC            SECTION.
       *
-      *    ���Ų�̾��
+      *    診療科名称
            MOVE    SPACE               TO  WRK-SRYKA-NAME
            PERFORM VARYING     IDX-C   FROM    1   BY  1
                    UNTIL      (IDX-C       >=  IDX  )
@@ -396,14 +396,14 @@
                END-IF
            END-PERFORM
            IF      WRK-SRYKA-NAME      =   SPACE
-      *        ���Ųʤ�¸�ߥ����å�
+      *        診療科の存在チェック
                MOVE    SPACE               TO  SYS-1005-REC
                INITIALIZE                  SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
                MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
                MOVE    WRK-SRYYMD          TO  SYS-1005-STYUKYMD
                MOVE    WRK-SRYYMD          TO  SYS-1005-EDYUKYMD
-      *        �����ƥ��������
+      *        システム管理検索
                MOVE    SYS-1005-REC        TO  SYSKANRI-REC
                PERFORM 900-SYSKANRI-SEL-SEC
                IF      FLG-SYSKANRI        =   ZERO
@@ -417,11 +417,11 @@
        20022-SRYKA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   �ݸ��ȹ礻̾���Խ�����
+      *   保険組合せ名称編集処理
       *****************************************************************
        20023-HKNCOMBI-HEN-SEC            SECTION.
       *
-      *    �ݸ��ȹ礻̾��
+      *    保険組合せ名称
            MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
       *
            MOVE    ZERO                TO  IDX-IDH
@@ -435,48 +435,48 @@
            END-PERFORM
            IF      IDX-IDH             =   ZERO
                IF      ACCT-HKNCOMBI       =   "9999"
-                   MOVE    "���ʬ����"    TO  ORAPISUB3-MAIN-INS-NAME
+                   MOVE    "包括分入力"    TO  ORAPISUB3-MAIN-INS-NAME
                                                            (IDX)
                ELSE
                    PERFORM 2002121-HKNCOMBI-HENSYU-SEC
                END-IF
            END-IF
-      *    �ݸ��ȹ礻�ֹ�ʤ�
+      *    保険組合せ番号なし
            IF      IDX-IDH             =   ZERO
                MOVE    "1"             TO  ORAPISUB3-COMBINATION-MODE
                                                                (IDX)
                GO      TO    20023-HKNCOMBI-HEN-EXT
            END-IF
       *
-      *    �ݸ�̾��
-      *    ���ݸ���û������̾
+      *    保険名称
+      *    主保険−短縮制度名
            MOVE    TBL-COMB-SYU-TANSEIDONAME(IDX-IDH)
                                    TO  ORAPISUB3-MAIN-INS-NAME (IDX)
-      *    �������
+      *    公費情報
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL      (IDK     >   4   )
                            OR (TBL-COMB-KOHHKNNUM (IDX-IDH IDK)
                                        =   SPACE)
-      *        ����μ���
+      *        公費の種類
                MOVE    TBL-COMB-KOH-TANSEIDONAME(IDX-IDH IDK)
                                    TO  ORAPISUB3-INSURANCE-NAME
                                                       (IDX IDK)
            END-PERFORM
       *
            IF      TBL-COMB-DELKBN(IDX-IDH)    NOT  =   SPACE
-      *         ���ʬ
+      *         削除分
                 MOVE    "1"            TO  ORAPISUB3-COMBINATION-MODE
                                                                (IDX)
            END-IF
       *
-      *    ͭ������Ƚ��
+      *    有効期間判定
            MOVE    ZERO                TO  FLG-HKN-CHK
            MOVE    ACCT-SRYYM          TO  WRK-ACTSRYYM
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
                IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
                    MOVE    IDX-D               TO  WRK-ACTSRYDD
-      *            �ݸ��ȹ礻���ֳ�
+      *            保険組合せ期間外
                    IF     (WRK-ACTSRYYMD       <   TBL-COMB-TEKSTYMD
                                                             (IDX-IDH))
                      OR   (WRK-ACTSRYYMD       >   TBL-COMB-TEKEDYMD
@@ -486,7 +486,7 @@
                    END-IF
                END-IF
            END-PERFORM
-      *    ���ֳ�����
+      *    期間外あり
            IF      FLG-HKN-CHK     =   1
                 MOVE    "2"        TO  ORAPISUB3-COMBINATION-MODE
                                                               (IDX)
@@ -495,7 +495,7 @@
        20023-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   �ݸ��ȹ礻�����Խ�����
+      *   保険組合せ内容編集処理
       *****************************************************************
        2002121-HKNCOMBI-HENSYU-SEC             SECTION.
       *
@@ -539,16 +539,16 @@
        2002121-HKNCOMBI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *   ���Ų�ץޥ����������������Խ�����
+      *   診療会計マスターより画面内容編集処理
       *****************************************************************
        20021-SRYACT-HEN-SEC            SECTION.
       *
            MOVE    ZERO                TO  IDY
-      *    ��縡����
+      *    包括検査数
            MOVE    ZERO                TO  WRK-HOUKNS-CNT
            MOVE    ZERO                TO  FLG-CHOZAIAUTO
       *
-      *    ���Ź԰٥ޥ������ɤ߹���
+      *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -571,17 +571,17 @@
            END-IF
       *
            IF      FLG-SRYACT          =   ZERO
-      *        ���ż��̶�ʬ
+      *        診療種別区分
                MOVE    SRY-SRYSYUKBN       TO  ORAPISUB3-SRYSYUKBN
                                                               (IDX)
-      *        ������
+      *        自費金額
                MOVE    SRY-JIHIMONEYTOTAL  TO
                                            ORAPISUB3-JIHIMONEYTOTAL
                                                               (IDX)
            END-IF
       *
            PERFORM UNTIL       FLG-SRYACT      =   1
-      *        �������Խ�
+      *        剤明細編集
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
                                   (IDY         >=  50  )  OR
@@ -603,10 +603,10 @@
                                                                (IDX IDY)
                    MOVE    SRY-INPUTNUM (IDZ)  TO  ORAPISUB3-INPUTNUM
                                                                (IDX IDY)
-      *            ������������
+      *            換算数量入力
                    MOVE    SRY-KANSURYO (IDZ)  TO  ORAPISUB3-KANSURYO
                                                                (IDX IDY)
-      *            API���Խ�
+      *            API用編集
                    PERFORM 200211-APMEI-HEN-SEC
                END-IF
                END-PERFORM
@@ -619,7 +619,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    API���Խ�
+      *    API用編集
            PERFORM 200212-APHEAD-HEN-SEC
       *
            .
@@ -627,13 +627,13 @@
            EXIT.
       *
       *****************************************************************
-      *     API���Խ�����
+      *     API剤編集処理
       *****************************************************************
        200212-APHEAD-HEN-SEC          SECTION.
       *
-      *    ������
+      *    剤点数
            IF      ORAPISUB3-ZAITEN (IDX)  NOT =   ZERO
-      *        ����
+      *        減点
                IF     (ORAPISUB3-PLUSKBN(IDX)  =   1    )
                    COMPUTE WRK-SURYO       =   ORAPISUB3-ZAITEN (IDX)
                                            *   -1
@@ -644,7 +644,7 @@
                MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                            TO  ORAPISUB3-MDC-POINT(IDX)
            END-IF
-      *    �޶��
+      *    剤金額
            IF      ORAPISUB3-JIHIMONEYTOTAL(IDX)   >   ZERO
                MOVE    ORAPISUB3-JIHIMONEYTOTAL(IDX)
                                            TO  WRK-SURYO
@@ -652,11 +652,11 @@
                MOVE    WRK-SURYO-HX(1:WRK-S-MAX)
                                            TO  ORAPISUB3-MDC-MONEY(IDX)
            END-IF
-      *    �޶�ʬ�����ʬ��
+      *    剤区分（包括分）
            IF      ORAPISUB3-JIHOKBN (IDX) =   "1"
                 MOVE    "1"            TO  ORAPISUB3-MDC-CODE (IDX)
            END-IF
-      *    ���Ŷ�ʬ
+      *    診療区分
            MOVE    ORAPISUB3-SRYKBN(IDX)   TO  WRK-SRYKBN
            MOVE    ORAPISUB3-SRYSYUKBN(IDX)    TO  WRK-SRYSYUKBN
            IF      WRK-SRYSYUKBN       =   SPACE
@@ -667,12 +667,12 @@
            MOVE    WRK-SRYSYUKBNMEI    TO  ORAPISUB3-MDC-CLASS-NAME
                                                                 (IDX)
       *
-      *    ��縡���θ�����
+      *    包括検査の検査数
            IF     (WRK-HOUKNS-CNT      >   ZERO )
                  MOVE    WRK-HOUKNS-CNT    TO  ORAPISUB3-HKTKNSA-CNT
                                                                  (IDX)
            END-IF
-      *    ����Ĵ������ư�����
+      *    入院調剤料自動算定剤
            IF      FLG-CHOZAIAUTO      =   1
                 MOVE    "1"            TO  ORAPISUB3-CHOUZAIAUTO (IDX)
            END-IF
@@ -681,16 +681,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    剤明細編集処理
       *****************************************************************
        200211-APMEI-HEN-SEC          SECTION.
       *
-      *    ������
+      *    コード
            MOVE    SRY-SRYCD  (IDZ)    TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-NAME            TO  ORAPISUB3-PRSCRPT-NAME 
                                                              (IDX IDY)
-      *    ������̾��
+      *    コメント名称
            IF    ((SRY-SRYCD  (IDZ)(1:1)   =   "8"  )  OR
                   (SRY-SRYCD  (IDZ)(1:3)   =   "008"
                                            OR  "001")  OR
@@ -699,10 +699,10 @@
                PERFORM 200211-PTCOM-SET-SEC
            END-IF
       *
-      *    ����
+      *    数量
            MOVE    SRY-SRYSURYO(IDZ)   TO  WRK-SURYO
            IF      WRK-SURYO           =   ZERO
-      *        ZERO �ϣ��Ȥ����CLAIM�ǥ��������
+      *        ZERO は１とする（CLAIMでゼロあり）
                MOVE    1                   TO  WRK-SURYO
            END-IF
            PERFORM 810-NUMHENKAN-SEC
@@ -710,10 +710,10 @@
                                        TO  ORAPISUB3-PRSCRPT-NUMBER
                                                              (IDX IDY)
       *
-      *    ñ�̥�����
+      *    単位コード
            IF     (SRY-SRYCD (IDZ)(1:1)    =   "6"
                                            OR  "7" )
-      *        ���ޡ����
+      *        薬剤・器材
                MOVE    TNS-TANICD      TO  ORAPISUB3-PRSCRPT-TANICD
                                                              (IDX IDY)
                MOVE    TNS-TANINAME    TO  ORAPISUB3-PRSCRPT-TANICD-NAME
@@ -733,7 +733,7 @@
                END-IF
            END-IF
       *
-      *    ʬ������Խ�
+      *    分画数を編集
            IF     (SRY-SRYKBN              =   "70" )
               AND (SRY-SRYCD(IDZ)(1:1)     =   "7"  )
               AND (SRY-SRYKAISU(IDZ)   NOT =   ZERO )
@@ -744,7 +744,7 @@
                                                              (IDX IDY)
            END-IF
       *
-      *    �����ۡ������ն��
+      *    自費金額・自賠責金額
            IF     (SRY-SRYKBN          =   "96"
                                        OR  "95"  )
            OR     (SRY-SRYSYUKBN       =   "809" )
@@ -756,14 +756,14 @@
                                                              (IDX IDY)
                END-IF
            END-IF
-      *    ���ξ���̾���Ϥ������
+      *    器材の商品名入力がある時
            IF     (SRY-SRYCD(IDZ)(1:1) =   "7" )
              AND  (SRY-MEISKYFLG(IDZ)  =   "1" )
-      *        ��ྦ��̾�б�
+      *        器材商品名対応
                MOVE    "2"             TO  ORAPISUB3-PRSCRPT-CONTKBN
                                                              (IDX IDY)
            END-IF
-      *    ��³������
+      *    継続コメント
            IF    ((SRY-SRYCD(IDZ)(1:1) =   "8"  )
              OR   (SRY-SRYCD(IDZ)(1:3) =   "008"))
              AND  (SRY-MEISKYFLG(IDZ)  =   "2"   )
@@ -771,7 +771,7 @@
                                                              (IDX IDY)
            END-IF
       *
-      *    ��ư�����ʬ
+      *    自動算定区分
            IF      SRY-AUTOKBN (IDZ)   =   "2"
                                        OR  "3"
                                        OR  "4"
@@ -782,7 +782,7 @@
                                                              (IDX IDY)
            END-IF
       *
-      *    ��縡����Ƚ��
+      *    包括検査の判定
            IF     (SRY-SRYCD(IDZ)(1:1) =   "1" )  AND
                   (SRY-SRYKBN          =   "60" ) AND
                   (TNS-DATAKBN         =   1    ) AND
@@ -790,7 +790,7 @@
                ADD     1                   TO  WRK-HOUKNS-CNT
            END-IF
       *
-      *    ����Ĵ������ư�����ʬ
+      *    入院調剤料自動算定区分
            IF     (ACCT-NYUGAIKBN      =   "1" )
               AND (SRY-SRYKBN          =   "24"
                                        OR  "26" )
@@ -802,7 +802,7 @@
        200211-APMEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ����Ȥ����Խ�����
+      *    患者コメントから編集する
       *****************************************************************
        200211-PTCOM-SET-SEC              SECTION.
       *
@@ -811,10 +811,10 @@
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD (IDZ)     TO  PTCOM-SRYCD
            MOVE    SRY-INPUTNUM(IDZ)   TO  PTCOM-RENNUM
-      *�祭���Ǹ���
+      *主キーで検索
            PERFORM 950-PTCOM-READ-SEC
            IF      FLG-PTCOM           =   ZERO
-      *        ̾��
+      *        名称
                MOVE    PTCOM-INPUTCOMENT   TO  ORAPISUB3-PRSCRPT-NAME 
                                                            (IDX IDY)
       *
@@ -834,7 +834,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ���ż��̶�ʬ̾�Ρ����Ź԰ٶ�ʬ���å�
+      *     診療種別区分名称、診療行為区分セット
       *****************************************************************
        510-SRYKBN-MEI-SEC            SECTION.
       *
@@ -856,7 +856,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    数値変換編集処理
       *****************************************************************
        810-NUMHENKAN-SEC             SECTION.
       *
@@ -885,7 +885,7 @@
            IF      WRK-SURYO-Z3        NOT =   SPACE
                MOVE    "."                 TO  WRK-SURYO-Z2
            END-IF
-      *    ����
+      *    左詰
            MOVE    SPACE              TO  WRK-SURYO-HX
            MOVE    1                  TO  IDXR
            MOVE    ZERO               TO  WRK-S-MAX
@@ -895,7 +895,7 @@
                    MOVE    WRK-SURYO-X (IDXM:1)    TO  WRK-SURYO-HX
                                                        (IDXR:1)
                    COMPUTE IDXR            =   IDXR    +   1
-      *            ���
+      *            桁数
                    ADD     1               TO  WRK-S-MAX
                END-IF
            END-PERFORM
@@ -904,7 +904,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -923,7 +923,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -959,7 +959,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ղþ��󸡺�����
+      *    点数マスタ付加情報検索処理
       *****************************************************************
        9101-TENSUPLUS-READ-SEC          SECTION.
       *
@@ -997,7 +997,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        930-SRYACT-RAED-SEC         SECTION.
       *
@@ -1015,7 +1015,7 @@
        930-SRYACT-RAED-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�����þ��󸡺�����
+      *    診療会計附加情報検索処理
       *****************************************************************
        940-SRYACCTPLUS-READ-SEC       SECTION.
       *
@@ -1055,7 +1055,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ����ȥޥ����ɤ߹���
+      *    患者コメントマスタ読み込み
       *****************************************************************
        950-PTCOM-READ-SEC           SECTION.
       *
@@ -1088,7 +1088,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-SEL-SEC         SECTION.
       *
@@ -1112,7 +1112,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1121,7 +1121,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1135,7 +1135,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -1149,7 +1149,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

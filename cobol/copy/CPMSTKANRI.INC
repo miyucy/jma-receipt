@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥Þ¥¹¥¿´ÉÍý¾ðÊó¡¡    ¡¡ COPY  (CPMSTKANRI.INC)  *
+      *    ãƒžã‚¹ã‚¿ç®¡ç†æƒ…å ±ã€€    ã€€ COPY  (CPMSTKANRI.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  MSTKANRI-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  MSTKANRI-KEY.
                05  MSTKANRI-HOSPNUM        PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  MSTKANRI-KANRICD        PIC  X(08).
-      *Ì¾¾Î
+      *åç§°
                05  MSTKANRI-NAME           PIC  X(64).
-      *£Ä£Â¥ì¥³¡¼¥É¥Ð¡¼¥¸¥ç¥ó£±
+      *ï¼¤ï¼¢ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼‘
            03  MSTKANRI-DBRVERSION1        PIC  X(64).
-      *£Ä£Â¥ì¥³¡¼¥É¥Ð¡¼¥¸¥ç¥ó£²
+      *ï¼¤ï¼¢ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼’
            03  MSTKANRI-DBRVERSION2        PIC  X(64).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  MSTKANRI-TERMID             PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  MSTKANRI-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  MSTKANRI-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  MSTKANRI-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  MSTKANRI-UPHMS              PIC  X(06).

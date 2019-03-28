@@ -1,9 +1,9 @@
 --                                              --
--- •”•Â°º∫∆∫Ó¿Æ                                 --
--- view_bd001  º˝«º£±                           --
--- view_bd002  º˝«º£≤                           --
--- view_bd003  º˝«º£≥                           --
--- view_q001   æ»≤Ò£±                           --
+-- „Éì„É•„ÉºÂÜç‰ΩúÊàê                                 --
+-- view_bd001  ÂèéÁ¥çÔºë                           --
+-- view_bd002  ÂèéÁ¥çÔºí                           --
+-- view_bd003  ÂèéÁ¥çÔºì                           --
+-- view_q001   ÁÖß‰ºöÔºë                           --
 --                                              --
 -- Create Date : 2008/03/07                     --
 --                                              --
@@ -33,7 +33,7 @@ CREATE VIEW view_bd001 AS
        AND (c.tstptnumkbn <> '1'::bpchar));
 
 COMMENT 
-        ON VIEW view_bd001 IS 'º˝«º•”•Â°º';
+        ON VIEW view_bd001 IS 'ÂèéÁ¥ç„Éì„É•„Éº';
 
 CREATE VIEW view_bd002 AS
     SELECT a.hospnum,
@@ -336,7 +336,7 @@ CREATE VIEW view_bd002 AS
        AND (c.tstptnumkbn <> '1'::bpchar));
 
 COMMENT 
-        ON VIEW view_bd002 IS 'º˝«º•”•Â°º2';
+        ON VIEW view_bd002 IS 'ÂèéÁ¥ç„Éì„É•„Éº2';
 
 CREATE VIEW view_bd003 AS
     SELECT a.hospnum,
@@ -355,7 +355,7 @@ CREATE VIEW view_bd003 AS
            denpnum));
 
 COMMENT 
-        ON VIEW view_bd003 IS 'º˝«º•”•Â°º3';
+        ON VIEW view_bd003 IS 'ÂèéÁ¥ç„Éì„É•„Éº3';
 
 CREATE VIEW view_q001 AS
     SELECT tbl_hkncombi.hospnum,
@@ -438,5 +438,5 @@ CREATE VIEW view_q001 AS
        AND (tbl_jyurrk.sryymd <= tbl_ptkohinf.tekedymd));
 
 COMMENT 
-        ON VIEW view_q001 IS '¥µº‘æ»≤Ò•”•Â°º';
+        ON VIEW view_q001 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº';
 

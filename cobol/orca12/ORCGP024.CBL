@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,38 +18,38 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGP024.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : �����Ծ���ʣУ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 所得者情報（Ｐ０２４）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-����     01/05/10  �����Ѵ��奼��ɽ���ѹ�
-      *  01.00.02    MCC-¿��Ǽ   01/06/13  ��Ͽ�塢���Ź԰����ܤ��ɲ�
-      *  01.00.04    MCC-����     01/05/10  �����Ѵ��奼��ɽ���ѹ�
-      *  01.00.05    MCC-¿��Ǽ   01/07/02  �������ϥ����å������ɲ�
-      *  02.00.00    NACL-¿��Ǽ  02/07/30  ���󥿡��ե������ѹ�
-      *  02.00.01    NACL-¿��Ǽ  03/02/13  ����ɸ����ô�������ɲ�
-      *  02.00.02    NACL-¿��Ǽ  03/03/24  ������ô���ɲ�
-      *  02.00.03    NACL-¿��Ǽ  03/10/14  ������ô�۽���Խ��ɲ�
-      *  02.00.04    NACL-¿��Ǽ  05/02/10  ����μ�����ֹ�ɽ���ɲ�
-      *  02.00.05    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  02.00.06    NACL-¿��Ǽ  06/03/10  �����̱���̾���ѹ��б�
-      *  03.02.00    NACL-¿��Ǽ  06/09/07  Ϸ��ʡ��ǯ�������ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
-      *  03.05.01    NACL-¿��Ǽ  07/07/20  ǧ������ɲ��б�
-      *  04.05.00    NACL-¿��Ǽ  09/07/XX  ���Ը�����ô�۵�ǽ�ɲ�
-      *                                     ������ô��̤���Ϸٹ��б�
-      *  04.07.00    NACL-¿��Ǽ  11/11/07  ����������ô���ѹ��б�
-      *  04.07.00    NACL-¿��Ǽ  14/06/04  ������ô�۾�·���б�
-      *  04.07.00    NACL-¿��Ǽ  14/12/XX  �������б�
-      *  04.08.00    NACL-¿��Ǽ  16/05/31  ���������б�
-      *  04.08.00    NACL-¿��Ǽ  16/11/15  HAORI¾�б�
-      *  04.08.00    NACL-¿��Ǽ  17/05/XX  �����س����б�
-      *  05.00.00    NACL-¿��Ǽ  18/11/XX  092 �Τ������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-太田     01/05/10  日付変換後ゼロ表示変更
+      *  01.00.02    MCC-多々納   01/06/13  登録後、診療行為遷移を追加
+      *  01.00.04    MCC-太田     01/05/10  日付変換後ゼロ表示変更
+      *  01.00.05    MCC-多々納   01/07/02  日付入力チェックサブ追加
+      *  02.00.00    NACL-多々納  02/07/30  インターフェース変更
+      *  02.00.01    NACL-多々納  03/02/13  食事標準負担減額日追加
+      *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
+      *  02.00.03    NACL-多々納  03/10/14  公費負担額初期編集追加
+      *  02.00.04    NACL-多々納  05/02/10  特定の受給者番号表示追加
+      *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  02.00.06    NACL-多々納  06/03/10  精神通院、名称変更対応
+      *  03.02.00    NACL-多々納  06/09/07  老齢福祉年金受給証追加
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/07/20  認定情報追加対応
+      *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
+      *                                     公費負担額未入力警告対応
+      *  04.07.00    NACL-多々納  11/11/07  地方公費負担額変更対応
+      *  04.07.00    NACL-多々納  14/06/04  公費負担額上限件数対応
+      *  04.07.00    NACL-多々納  14/12/XX  難病等対応
+      *  04.08.00    NACL-多々納  16/05/31  原爆一般対応
+      *  04.08.00    NACL-多々納  16/11/15  HAORI他対応
+      *  04.08.00    NACL-多々納  17/05/XX  境界層該当対応
+      *  05.00.00    NACL-多々納  18/11/XX  092 肝がん治療対応
       ****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -62,18 +62,18 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������Ͽ�����ΰ�
+      *    患者登録スパ領域
            COPY    "P02COMMON-SPA".
-      *    ���Բ��̥����ΰ�
+      *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA            PIC 9(01).
            03  FLG-END             PIC 9(01).
@@ -87,7 +87,7 @@
            03  FLG-ENDYMD          PIC 9(01).
            03  FLG-CHKNO           PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -100,7 +100,7 @@
            03  IDF                 PIC 9(04).
            03  IDX-F               PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -115,7 +115,7 @@
            03  WRK-NAIBU-IDX-AREA.
                05  WRK-G-IDX       PIC 9(04).
                05  WRK-N-IDX       PIC 9(04).
-      *        1:�����ơ��֥� /2:ǯ��ơ��֥�
+      *        1:所得テーブル /2:年金テーブル
                05  WRK-W-TBL       PIC 9(01).
            03  WRK-TSY-SMAX        PIC 9(04).
            03  WRK-TNK-SMAX        PIC 9(04).
@@ -125,7 +125,7 @@
            03  WRK-WWYMD           PIC X(10).
       *----(01.00.01) LINE ADD END   --------------------------------
            03  WRK-SELNUM          PIC 9(04).
-      *    ���Ϲ���̾
+      *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
            03  WRK-Z7                  PIC Z,ZZZ,ZZZ.
@@ -138,11 +138,11 @@
       *
            03  WRK-FILEMEI             PIC X(20).
       *
-      *    ǧ���ϰ϶�ʬ�Խ�����
+      *    認定範囲区分編集処理
            03  WRK-HKNTEKKBN-MEI       PIC X(12).
            03  WRK-HKNTEKKBN           PIC X(01).
            03  IDX-TEK                 PIC 9(04).
-      *    ¾������ô���ϲ��̤�
+      *    他一部負担入力画面へ
            03  WRK-TGAIJGNGAK-G.
                05  WRK-TGAIJGNGAK      PIC 9(07)   OCCURS   10.
            03  WRK-TNYUJGNGAK          PIC 9(07).
@@ -168,13 +168,13 @@
            03  WRK-KYOUKAI             PIC X(01).
            03  WRK-KYOUKAI-MEI         PIC X(20).
       *
-      *    ǧ���ϰϰ���ɽ��
+      *    認定範囲一覧表示
        01  TBL-HKNTEKKBN-AREA.
-           03  FILLER              PIC X(14)   VALUE   "0 ���о�".
-           03  FILLER              PIC X(14)   VALUE   "1 ���оݳ�".
-           03  FILLER              PIC X(14)   VALUE   "2 �ϤΤ��о�".
-           03  FILLER              PIC X(14)   VALUE   "3 ���Τ��о�".
-           03  FILLER              PIC X(14)   VALUE   "4 �ϡܿ��о�".
+           03  FILLER              PIC X(14)   VALUE   "0 全対象".
+           03  FILLER              PIC X(14)   VALUE   "1 地対象外".
+           03  FILLER              PIC X(14)   VALUE   "2 地のみ対象".
+           03  FILLER              PIC X(14)   VALUE   "3 食のみ対象".
+           03  FILLER              PIC X(14)   VALUE   "4 地＋食対象".
        01  TBL-HKNTEKKBN-AREAR     REDEFINES   TBL-HKNTEKKBN-AREA.
            03  TBL-HKNTEKKBN-G     PIC X(14)   OCCURS   5.
       *
@@ -192,17 +192,17 @@
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
       *
-      *������
+      *公費件数
        01  TBL-MAX-KOH             PIC 9(03)   VALUE   60.
       *
-      *���������ô���
+      *公費一部負担件数
        01  MAX-KOHFTN              PIC 9(03)   VALUE   300.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
@@ -210,58 +210,58 @@
            COPY    "CPPARA.INC"
                               REPLACING  //PARA-// BY //HZN-PARA-//.
       *
-      *   �����������
+      *   低所得者履歴
       *
        01  LNK-TSY-AREA.
            02  LNK-TSY-REC           OCCURS  20.
            COPY    "CPTSYRRK.INC"
                             REPLACING  //TSYRRK-// BY //LNK-TSY-//.
       *
-      *   ǯ������
+      *   年金履歴
        01  LNK-TNK-AREA.
            02  LNK-TNK-REC           OCCURS  20.
            COPY    "CPTNKRRK.INC"
                               REPLACING  //TNKRRK-// BY //LNK-TNK-//.
       *
-      *    ������ô��¸
+      *    公費負担保存
        01  LNK-PTKOHFTN-AREA.
            02  LNK-PTKOHFTN-REC           OCCURS  200.
            COPY    "CPPTKOHFTN.INC"
                        REPLACING  //PTKOHFTN-// BY //LNK-PTKOHFTN-//.
-      *    ������ô
+      *    公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
       *
-      *    ������ô������¸
+      *    公費負担更新保存
        01  HZN-PTKOHFTN-AREA.
            03  HZN-PTKOHFTN-OCC           OCCURS  60.
                05  HZN-PTKOHFTN-OCC2          OCCURS  200.
                    07  HZN-PTKOHFTN-REC       PIC X(200).
-      *    ���Ը�����ô
+      *    患者公費負担
        01  PTKOHFTNETC-REC.
            COPY    "CPPTKOHFTNETC.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   �����Ѵ��ΰ�
+      *   数字変換領域
            COPY    "CPORCSNUM.INC".
       *----(01.00.04) LINE ADD START ----------------------------------
       *
-      *   ���������Ѵ�����
+      *   画面日付変換サブ
           COPY    "CPORCSGDAY.INC".
       *----(01.00.04) LINE ADD END   ----------------------------------
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -280,7 +280,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -299,10 +299,10 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"         ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
@@ -320,7 +320,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -328,7 +328,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ��������Խ�
+      *    初期画面編集
            PERFORM 300-SCREEN-SEC
       *
            .
@@ -336,16 +336,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    �ѥ�᥿�ե����븡������
+      *    パラメタファイル検索処理
            PERFORM 320-PARAFILE-KENSAKU-SEC
       *
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
       *
-      *    ��������Խ�
+      *    初期画面編集
            PERFORM 310-SPASET-SEC
       *
            MOVE    1       TO  SPA-GMN24-CUR
@@ -355,7 +355,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ե����븡������
+      *    パラメタファイル検索処理
       *****************************************************************
        320-PARAFILE-KENSAKU-SEC             SECTION.
       *
@@ -438,11 +438,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-      *    ��������Խ�
+      *    低所得者編集
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   20 )
@@ -476,7 +476,7 @@
                    MOVE    WRK-HENYMD    TO  SPA-GMN24-TSYLSKJGNSTYMDW
                                                                 (IDX)
                END-IF
-      *        ɸ����ô�۸��۳�����
+      *        標準負担額減額開始日
                MOVE    LNK-TSY-SKJNINSTYMD (IDX)
                                           TO  SPA-NAI24-TSYLNINYMD
                                                                   (IDX)
@@ -489,7 +489,7 @@
                    MOVE    WRK-HENYMD      TO  SPA-GMN24-TSYLNINYMD
                                                                 (IDX)
                END-IF
-      *        ǧ���ϰ϶�ʬ
+      *        認定範囲区分
                IF      LNK-TSY-HKNTEKKBN (IDX) =   SPACE
                    MOVE    "0"             TO  LNK-TSY-HKNTEKKBN (IDX)
                END-IF
@@ -500,7 +500,7 @@
                MOVE    WRK-HKNTEKKBN-MEI       TO  SPA-GMN24-TSYLHKNKBN
                                                                 (IDX)
       *H29.6
-      *        �����س�����ʬ
+      *        境界層該当区分
                IF      LNK-TSY-KYOUKAISOUKBN (IDX) =   SPACE
                    MOVE    "0"         TO  LNK-TSY-KYOUKAISOUKBN (IDX)
                END-IF
@@ -511,7 +511,7 @@
                MOVE    WRK-KYOUKAI-MEI TO  SPA-GMN24-TSYLKYOUKAI(IDX)
            END-PERFORM
       *
-      *    ǯ���Խ�
+      *    年金編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL     ( IDX     >   20 )
                    OR        ( IDX     >   SPA-TNK-MAX )
@@ -531,7 +531,7 @@
                    PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
                    MOVE    WRK-HENYMD  TO  SPA-GMN24-TNKDPEDYMDW(IDX)
                END-IF
-      *        �����ʡ��
+      *        高齢者福祉
                MOVE    LNK-TNK-RRI-FUKUSHI-KBN(IDX)
                                        TO  SPA-GMN24-TFUKUSHI-KBN(IDX)
                PERFORM VARYING     IDF     FROM    1   BY  1
@@ -543,7 +543,7 @@
                                         TO  SPA-GMN24-TFUKUSHI-MEI(IDX)
                    END-IF
                END-PERFORM
-      *        ɸ����ô�۸��۳�����
+      *        標準負担額減額開始日
                MOVE    LNK-TNK-SKJNINSTYMD (IDX)
                                           TO  SPA-NAI24-TNKLNINYMD
                                                                   (IDX)
@@ -556,7 +556,7 @@
                    MOVE    WRK-HENYMD      TO  SPA-GMN24-TNKLNINYMD
                                                                 (IDX)
                END-IF
-      *        ǧ���ϰ϶�ʬ
+      *        認定範囲区分
                IF      LNK-TNK-HKNTEKKBN (IDX) =   SPACE
                    MOVE    "0"             TO  LNK-TNK-HKNTEKKBN (IDX)
                END-IF
@@ -567,7 +567,7 @@
                MOVE    WRK-HKNTEKKBN-MEI       TO  SPA-GMN24-TNKLHKNKBN
                                                                 (IDX)
       *H29.6
-      *        �����س�����ʬ
+      *        境界層該当区分
                IF      LNK-TNK-KYOUKAISOUKBN (IDX) =   SPACE
                    MOVE    "0"         TO  LNK-TNK-KYOUKAISOUKBN (IDX)
                END-IF
@@ -578,12 +578,12 @@
                MOVE    WRK-KYOUKAI-MEI TO  SPA-GMN24-TNKLKYOUKAI(IDX)
            END-PERFORM
       *
-      *    ����������ֹ��ȿ�Ǥ����ʤ�
+      *    前回の選択番号は反映させない
            MOVE    ZERO                TO  SPA-MAE24-FTNSELNUM
            INITIALIZE                  SPA-GMN24-FTN-AREA
            INITIALIZE                  SPA-GMN24-FTN-AREA2
       *
-      *    ������ô�κǽ������Ȥ���
+      *    公費負担の最初を選択とする
            IF      (SPA-GMN24-FTNSELNUM    =   ZERO )  AND
                    (SPA-MAE24-FTNSELNUM    =   ZERO )  AND
                    (SPA-FTN1-MAX           >   ZERO )
@@ -595,7 +595,7 @@
                INITIALIZE                  SPA-GMN24-KOHFTNTBL2
                MOVE    1                   TO  SPA-NAI24-INIT2
            END-IF
-      *    ���Ф��ѹ�
+      *    見出し変更
       *    PERFORM 3101-KOH-MEISAI-SEC
       *
            .
@@ -603,11 +603,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ǧ���ϰ϶�ʬ�Խ�����
+      *    認定範囲区分編集処理
       *****************************************************************
        3101-KOH-MEISAI-SEC              SECTION.
       *
-      *    ����μ�����ֹ��Խ�
+      *    特定の受給者番号編集
            MOVE    SPACE               TO  SPA-GMN24-JKYSNUM
       *H28.11
            MOVE    ZERO                TO  SPA-NAI24-FTNSYORI
@@ -620,34 +620,34 @@
                                            OR  "016"
                                            OR  "091"
                                            OR  "021"
-      *                   �α꼣�š��ɲ�
+      *                   肝炎治療　追加
                                            OR  "038"
-      *                   �����ݸ�ɲ�
+      *                   生活保護　追加
                                            OR  "012"    )
-      *               �̳�ƻ����������
+      *               北海道の地方公費
                  OR   ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "183" ) AND
                        (SPA-PREFNUM        =    01   )) 
       *H26.12
-      *            �������ꡡ�ȣ����������ޤ�
+      *            小児特定　Ｈ２６．１２まで
                  OR   ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "052" ) AND
                        (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            <=  "20141231" ))
-      *H27.1         ����
+      *H27.1         難病
                  OR   ( SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "054"     )
-      *H30.11        �Τ�����
+      *H30.11        肝がん治療
                  OR   ( SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "092"     )
       *
-                   MOVE    "������ֹ桧"      TO  SPA-GMN24-JKYSNUM
+                   MOVE    "受給者番号："      TO  SPA-GMN24-JKYSNUM
                    MOVE    SPA-NAI24-TJKYSNUM (SPA-NAI24-FTNSELNUM)
                                                TO  SPA-GMN24-JKYSNUM
                                                           (13:)
                END-IF
            END-IF
-      *    ���Ф�̾��
+      *    見出し名称
            IF     (SPA-NAI24-FTNSELNUM >   ZERO   ) 
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "021"
@@ -656,30 +656,30 @@
                                            OR  "016"     )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20060401"  )
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "¾������ô�߷�"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      ¾������ôͭ
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+      *H28.11      他一部負担有
                    MOVE    1                    TO  SPA-NAI24-FTNSYORI
                ELSE
-                   MOVE    "�����³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG2
+                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
                END-IF
       *
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "960"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20061001"  )
-                   MOVE    "���踺�ۡʡ��"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "�������ۡʡ��"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      �󸺳�
+                   MOVE    "外来減額（％）"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院減額（％）"     TO  SPA-GMN24-FTNMSG2
+      *H28.11      ％減額
                    MOVE    2                    TO  SPA-NAI24-FTNSYORI
                END-IF
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "961"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20061001"  )
-                   MOVE    "���踺�ۡʱߡ�"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "�������ۡʱߡ�"     TO  SPA-GMN24-FTNMSG2
+                   MOVE    "外来減額（円）"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院減額（円）"     TO  SPA-GMN24-FTNMSG2
                END-IF
       *
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
@@ -687,63 +687,63 @@
                                            OR  "024"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20061001"  )
-                   MOVE    "������ʬ��³�"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "�������ܾ�³�"     TO  SPA-GMN24-FTNMSG2
+                   MOVE    "医療部分上限額"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "食事療養上限額"     TO  SPA-GMN24-FTNMSG2
                END-IF
-      *        �α꼣��̾��
+      *        肝炎治療名称
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "038"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20061001"  )
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "¾������ô�߷�"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      ¾������ôͭ
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+      *H28.11      他一部負担有
                    MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-IF
       *H30.11
-      *        �Τ�����̾��
+      *        肝がん治療名称
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "092"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20181201"  )
-                   MOVE    "�����³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG2
+                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
       *??          MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-IF
       *
       *H26.12
-      *        ���¡���������(H27.1�����̾��
+      *        難病・小児特定(H27.1から）名称
                IF    ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "052"
                                            OR  "054"       )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20150101"  ))
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "¾������ô�߷�"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      ¾������ôͭ
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+      *H28.11      他一部負担有
                    MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-IF
       *H28.6
-      *        ��������
+      *        原爆一般
                IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "019"   )  AND
                       (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
                                            >=   "20160401"  )
-                   MOVE    "������ô�ʡ��"     TO  SPA-GMN24-FTNMSG1
-                   MOVE    "������ô�ʡ��"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      �󸺳�
+                   MOVE    "外来負担（％）"     TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院負担（％）"     TO  SPA-GMN24-FTNMSG2
+      *H28.11      ％減額
                    MOVE    2                    TO  SPA-NAI24-FTNSYORI
                END-IF
       *ver.4.7
-      *        �������������
+      *        地方公費の設定
                EVALUATE    SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
                WHEN    "1"
-                   MOVE    "�����³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG2
+                   MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
                WHEN    "2"
-                   MOVE    "������³�"         TO  SPA-GMN24-FTNMSG1
-                   MOVE    "¾������ô�߷�"     TO  SPA-GMN24-FTNMSG2
-      *H28.11      ¾������ôͭ
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+      *H28.11      他一部負担有
                    MOVE    1                    TO  SPA-NAI24-FTNSYORI
                END-EVALUATE
            END-IF
@@ -753,7 +753,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǧ���ϰ϶�ʬ�Խ�����
+      *    認定範囲区分編集処理
       *****************************************************************
        41002-HKNTEKKBN-HEN-SEC              SECTION.
       *
@@ -772,23 +772,23 @@
       *
       *
       *****************************************************************
-      *    �����س�����ʬ�Խ�����
+      *    境界層該当区分編集処理
       *****************************************************************
        41003-KYOUKAI-HEN-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-KYOUKAI-MEI
            EVALUATE    WRK-KYOUKAI
                WHEN    "0"
-                   MOVE    "����������"  TO  WRK-KYOUKAI-MEI
+                   MOVE    "境界層非該当"  TO  WRK-KYOUKAI-MEI
                WHEN    "1"
-                   MOVE    "�����س���"    TO  WRK-KYOUKAI-MEI
+                   MOVE    "境界層該当"    TO  WRK-KYOUKAI-MEI
            END-EVALUATE
            .
        41003-KYOUKAI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ������ô����Խ�����
+      *    公費負担初期編集処理
       *****************************************************************
        3102-KOHFTN-HEN-SEC              SECTION.
       *
@@ -809,9 +809,9 @@
       *
            INITIALIZE                  SPA-GMN24-KOHFTNTBL2
            MOVE    1                   TO  SPA-NAI24-INIT2
-      *    ���Ф��ѹ�
+      *    見出し変更
            PERFORM 3101-KOH-MEISAI-SEC
-      *    �оݤΥǡ�����ѥ�᥿�ե��������Խ�����
+      *    対象のデータをパラメタファイルより編集する
            PERFORM 31022-KOHFTN-SPAHENSYU-SEC
       *
            IF      SPA-FTN2-MAX        =   ZERO
@@ -825,11 +825,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�����ô�Խ������
+      *    患者公費負担編集定処理
       *****************************************************************
        31022-KOHFTN-SPAHENSYU-SEC          SECTION.
       *
-      *    �оݤΥǡ�����ѥ�᥿�ե��������Խ�����
+      *    対象のデータをパラメタファイルより編集する
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -855,7 +855,7 @@
            PERFORM
                UNTIL   FLG-PARA            =   1
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
-      *        ����ɣĤ�Ʊ����Τ��оݤȤ���
+      *        公費ＩＤの同じものを対象とする
                IF      PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
                                                         (WRK-FTN1-IDX)
                    ADD     1                   TO  IDX
@@ -875,7 +875,7 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���̥ơ��֥���Խ�����
+      *    画面テーブルへ編集する
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-FTN2-MAX
                MOVE    LNK-PTKOHFTN-REC (IDX)  TO  PTKOHFTN-REC
@@ -896,14 +896,14 @@
                MOVE    PTKOHFTN-TERMID(1:1)    TO  SPA-NAI24-TFTNETCKBN
                                                                   (IDX)
                IF     (PTKOHFTN-TERMID(1:1)    =   SPACE )
-      *H28.11 �����ʬȽ���
+      *H28.11 設定区分判定へ
       *            IF     (SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
       *                                        =   "015"
       *                                        OR  "016"
       *                                        OR  "021"
       *                                        OR  "038"    )
       *H26.12
-      *                ���¡����������H26.1�����
+      *                難病・小児特定（H26.1から）
       *              OR  ((SPA-NAI24-KOHNUM  (WRK-FTN1-IDX)
       *                                        =   "052"
       *                                        OR  "054"   )  AND
@@ -912,11 +912,11 @@
       ***            OR  ((SPA-NAI24-KOHNUM (WRK-FTN1-IDX)
       *                                        =   "281" ) AND
       ***                 (SPA-PREFNUM         =    07   ))
-      *              ����������о�
+      *              地方公費の対象
       *              OR   (SPA-NAI24-TJYOGENKBN (WRK-FTN1-IDX)
       *********                                =   "2"    )
       *H28.11
-      *            ¾������ô����
+      *            他一部負担あり
                    IF      SPA-NAI24-FTNSYORI  =   1
                        PERFORM 31021-PTKOHFTNETC-HEN-SEC
                    END-IF
@@ -928,7 +928,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�����ô̵ͭȽ�����
+      *    患者公費負担有無判定処理
       *****************************************************************
        31021-PTKOHFTNETC-HEN-SEC          SECTION.
       *
@@ -967,7 +967,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -976,11 +976,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-      *    �����������Τʤ��������Ϥ������ܤμ�����
+      *    カーソル指定のない時、入力した項目の次ぎへ
            IF     (SPA-ERRCD           =   SPACE)  AND
                   (SPA-GMN24-CUR       =   ZERO )
                PERFORM 50011-INPUT-CUR-SEC
@@ -999,14 +999,14 @@
                    MOVE    "P024_TSYTEKK"      TO  MCP-WIDGET
                WHEN    06
                    MOVE    "P024_TSYNINSTYMD"   TO  MCP-WIDGET
-      *        �����س���
+      *        境界層該当
                WHEN    07
                    MOVE    "P024_TSYKYOUKAI"    TO  MCP-WIDGET
                WHEN    08
                    MOVE    "BT1"                TO  MCP-WIDGET
                WHEN    09
                    MOVE    "BT2"                TO  MCP-WIDGET
-      *        ��������ǯ���
+      *        所得１（年金）
                WHEN    10
                    MOVE    "P024_TNKSELNUM"     TO  MCP-WIDGET
                WHEN    11
@@ -1025,7 +1025,7 @@
                    MOVE    "BN1"                TO  MCP-WIDGET
                WHEN    19
                    MOVE    "BN2"                TO  MCP-WIDGET
-      *        ������ô
+      *        公費負担
                WHEN    30
                    MOVE    "P024_FTNSELNUM"     TO  MCP-WIDGET
                WHEN    31
@@ -1049,7 +1049,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
@@ -1092,7 +1092,7 @@
                    MOVE    13          TO  SPA-GMN24-CUR
                WHEN    "P024_TNKKYOUKAI"
                    MOVE    18          TO  SPA-GMN24-CUR
-      *        ������ô
+      *        公費負担
                WHEN    "P024_FTNSELNUM"
                    MOVE    31          TO  SPA-GMN24-CUR
                WHEN    "P024_FTNSELNUM2"
@@ -1102,7 +1102,7 @@
                WHEN    "P024_FTNTEKEDYMD"
                    MOVE    34          TO  SPA-GMN24-CUR
       *H30.11
-      *            �Τ����Ť����Ϥʤ�
+      *            肝がん治療は入力なし
                    IF     (SPA-NAI24-FTNSELNUM >   ZERO  )
                      AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                                =   "092" )
@@ -1126,44 +1126,44 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ��Ͽ����
+      *    登録処理
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
-      *    ���������
+      *    低所得更新
                WHEN    "CLICKED"       ALSO    "BT1"
                    PERFORM 411-TSKRRK-KOUSIN-SEC
-      *    ��������
+      *    低所得削除
                WHEN    "CLICKED"       ALSO    "BT2"
                    PERFORM 412-TSKRREK-DELETE-SEC
-      *    ǯ�⹹��
+      *    年金更新
                WHEN    "CLICKED"       ALSO    "BN1"
                    PERFORM 413-TNKRRK-KOUSIN-SEC
-      *    ǯ����
+      *    年金削除
                WHEN    "CLICKED"       ALSO    "BN2"
                    PERFORM 414-TNKRRK-DELETE-SEC
-      *    ������ô��Ͽ
+      *    公費負担登録
                WHEN    "CLICKED"       ALSO    "BF1"
                    PERFORM 415-KOHFTN-KOUSIN-SEC
-      *    ������ô���
+      *    公費負担削除
                WHEN    "CLICKED"       ALSO    "BF2"
                    PERFORM 416-KOHFTN-DELETE-SEC
-      *    ����ʣ��
+      *    次月複写
                WHEN    "CLICKED"       ALSO    "BF3"
                    PERFORM 417-KOHFTN-COPY-SEC
-      *    ¾������ô����
+      *    他一部負担入力
                WHEN    "CLICKED"       ALSO    "BF4"
                    PERFORM 418-KOHFTN-P02K-SEC
       *H28.11
-      *HAORI�б�
+      *HAORI対応
                WHEN    "CLICKED"       ALSO    "APIV3"
                    PERFORM 2009-API-SYORI-SEC
       *
-      *     �ʳ��ϥ��顼
+      *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-GMN24-CUR
@@ -1174,12 +1174,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ�����
+      *    低所得者／更新
       *****************************************************************
        411-TSKRRK-KOUSIN-SEC           SECTION.
       *
            MOVE    1                   TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF  SPA-ERRCD           NOT =   SPACE
                GO      TO              411-TSKRRK-KOUSIN-EXT
@@ -1221,7 +1221,7 @@
            PERFORM 41002-HKNTEKKBN-HEN-SEC
            MOVE    WRK-HKNTEKKBN-MEI   TO  SPA-GMN24-TSYLHKNKBN (IDX)
       *H29.6
-      *    �����س�����ʬ
+      *    境界層該当区分
            MOVE    SPA-GMN24-TSYKYOUKAI
                                        TO  SPA-NAI24-TSYLKYOUKAI(IDX)
            MOVE    SPA-GMN24-TSYKYOUKAI    TO  WRK-KYOUKAI
@@ -1237,7 +1237,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ����
+      *    低所得者／削除
       *****************************************************************
        412-TSKRREK-DELETE-SEC          SECTION.
       *
@@ -1268,12 +1268,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿����
+      *    年金／更新
       *****************************************************************
        413-TNKRRK-KOUSIN-SEC           SECTION.
       *
            MOVE    2                   TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF  SPA-ERRCD           NOT =   SPACE
                GO      TO              413-TNKRRK-KOUSIN-EXT
@@ -1312,7 +1312,7 @@
            PERFORM 41002-HKNTEKKBN-HEN-SEC
            MOVE    WRK-HKNTEKKBN-MEI   TO  SPA-GMN24-TNKLHKNKBN (IDX)
       *H29.6
-      *    �����س�����ʬ
+      *    境界層該当区分
            MOVE    SPA-GMN24-TNKKYOUKAI
                                        TO  SPA-NAI24-TNKLKYOUKAI(IDX)
            MOVE    SPA-GMN24-TNKKYOUKAI    TO  WRK-KYOUKAI
@@ -1328,7 +1328,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿���
+      *    年金／削除
       *****************************************************************
        414-TNKRRK-DELETE-SEC           SECTION.
       *
@@ -1356,19 +1356,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ô��������
+      *    公費負担更新処理
       *****************************************************************
        415-KOHFTN-KOUSIN-SEC           SECTION.
       *
            MOVE    3                   TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO              415-KOHFTN-KOUSIN-EXT
            END-IF
       *
            IF      SPA-NAI24-FTNSELNUM2    =   ZERO
-      *        �ɲ�
+      *        追加
                IF      SPA-FTN2-MAX            >=  MAX-KOHFTN
       **********   MOVE    "2443"              TO  SPA-ERRCD
                    MOVE    "2444"              TO  SPA-ERRCD
@@ -1399,7 +1399,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ô�����
+      *    公費負担／削除
       *****************************************************************
        416-KOHFTN-DELETE-SEC          SECTION.
       *
@@ -1409,7 +1409,7 @@
       *
            MOVE    "1"                 TO  SPA-NAI24-FTNDELKBN2
                                                 (SPA-NAI24-FTNSELNUM2)
-      *    ¾������ô�ۺ��
+      *    他一部負担額削除
            IF      SPA-NAI24-TFTNETCKBN (SPA-NAI24-FTNSELNUM2)
                                        =   "1"
                                        OR  "2"
@@ -1425,7 +1425,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¾������ô�ۺ������
+      *    他一部負担額削除処理
       *****************************************************************
        4161-KOHFTNETC-DELCHK-SEC             SECTION.
       *
@@ -1448,10 +1448,10 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-      *        ¾������ô������
+      *        他一部負担履歴削除
                PERFORM 41611-KOHFTNETC-DEL-SEC
            ELSE
-      *        ¾������ô�߷��Խ�
+      *        他一部負担累計編集
                IF      SPA-GMN24-TNYUJGNGAK (SPA-NAI24-FTNSELNUM2)
                                            NOT =   ZERO
                    MOVE    SPA-GMN24-TNYUJGNGAK (SPA-NAI24-FTNSELNUM2)
@@ -1464,7 +1464,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ô�ۼ���ʣ�̽���
+      *    公費負担額次月複写処理
       *****************************************************************
        41611-KOHFTNETC-DEL-SEC             SECTION.
       *
@@ -1494,7 +1494,7 @@
                                                 (SPA-NAI24-FTNSELNUM))
                AND    (PTKOHFTNETC-SRYYMD(1:6)
                                            =   WRK-YMD(1:6))
-      *            ���
+      *            削除
                    MOVE    PARA-REC            TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_para"          TO  MCP-TABLE
@@ -1511,7 +1511,7 @@
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �����о��Խ�
+      *    更新対象編集
            PERFORM VARYING     IDX3    FROM    1   BY   1
                    UNTIL      (IDX3    >   MAX-KOHFTN  )
                IF      SPA-NAI24-KOHFTN-ID (IDX3)   =   ZERO
@@ -1537,23 +1537,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ô�ۼ���ʣ�̽���
+      *    公費負担額次月複写処理
       *****************************************************************
        417-KOHFTN-COPY-SEC             SECTION.
       *
-      *    ������
+      *    選択解除
            INITIALIZE                  SPA-GMN24-FTN-AREA2
-      *    �оݤθ���Ǥ��뤳��
+      *    対象の公費であること
            IF      (SPA-NAI24-FTNSELNUM >   ZERO   )
       *
-      *H28.11 �����ʬȽ���
+      *H28.11 設定区分判定へ
       *        IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "015"
       *                                    OR  "016"
       *                                    OR  "021"
       *                                    OR  "038"    )
       *H26.12
-      *            ���¡����������H26.1�����
+      *            難病・小児特定（H26.1から）
       *          OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "052"
       *                                    OR  "054"   )  AND
@@ -1562,14 +1562,14 @@
       ***        OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "281" ) AND
       ***             (SPA-PREFNUM         =    07   ))
-      *          ����������о�
+      *          地方公費の対象
       *          OR   (SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
       *                                    =   "2"    )
       *H28.11
-      *        ¾������ô����
+      *        他一部負担あり
                IF      SPA-NAI24-FTNSYORI  =   1
       *H30.11
-      *            �Τ�����
+      *            肝がん治療
                  OR   (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "092"   )
                    CONTINUE
@@ -1579,12 +1579,12 @@
            ELSE
                MOVE    "2440"              TO  SPA-ERRCD
            END-IF
-      *    ʣ�̸�Ƚ��
+      *    複写元判定
            IF      (SPA-ERRCD          =   SPACE  )  AND
                    (SPA-FTN2-MAX       =   ZERO   )
                MOVE    "2441"              TO  SPA-ERRCD
            END-IF
-      *    ��λ��Ƚ��
+      *    終了日判定
            IF      SPA-ERRCD           =   SPACE
                MOVE    ZERO                TO  IDX-F
                MOVE    SPACE               TO  WRK-FTNEDYMD
@@ -1599,7 +1599,7 @@
                    END-IF
                END-PERFORM
            END-IF
-      *    ����λǯ��Ὢλ��Ƚ��
+      *    公費終了年月＝終了日判定
            IF      (SPA-ERRCD          =   SPACE  )  AND
                    (SPA-NAI24-TFTNEDYMD(IDX-F)
                                    NOT =   "99999999" ) AND
@@ -1614,7 +1614,7 @@
       ****     MOVE    "2443"              TO  SPA-ERRCD
                MOVE    "2444"              TO  SPA-ERRCD
            END-IF
-      *    ������ô��ʣ��
+      *    公費負担額複写
            IF      (SPA-ERRCD          =   SPACE  ) 
                PERFORM 4171-KOHFTN-COPY-SYORI-SEC
            ELSE
@@ -1625,13 +1625,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ô��ʣ�̽���
+      *    公費負担額複写処理
       *****************************************************************
        4171-KOHFTN-COPY-SYORI-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-ENDYMD
            IF      SPA-NAI24-TFTNEDYMD (IDX-F) =   "99999999"
-      *        ����ǯ�����η�����λ���Ȥ���
+      *        開始年月日の月末を終了日とする
                MOVE    SPACE               TO  STS-AREA-DAY
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY7-AREA
@@ -1644,7 +1644,7 @@
                MOVE    LNK-DAY7-KOYOMI     TO  SPA-NAI24-TFTNEDYMD
                                                              (IDX-F)
                MOVE    1                   TO  FLG-ENDYMD
-      *        ����ν�λ��
+      *        公費の終了日
                IF      SPA-NAI24-TFTNEDYMD (IDX-F)
                                            >   SPA-NAI24-TKOHEDYMD
                                                (SPA-NAI24-FTNSELNUM)
@@ -1659,13 +1659,13 @@
                MOVE    WRK-HENYMD          TO  SPA-GMN24-TFTNEDYMD
                                                             (IDX-F)
            END-IF
-      *    ����ν�λ��
+      *    公費の終了日
            IF      SPA-NAI24-TFTNEDYMD (IDX-F)
                                            >=  SPA-NAI24-TKOHEDYMD
                                                (SPA-NAI24-FTNSELNUM)
                GO      TO      4171-KOHFTN-COPY-SYORI-EXT
            END-IF
-      *    �ǽ�������
+      *    最終月の翌月
            MOVE    SPA-NAI24-TFTNEDYMD (IDX-F)
                                            TO  WRK-YMD
            IF      WRK-MM              =   12
@@ -1676,7 +1676,7 @@
                COMPUTE WRK-FTNSTMM         =   WRK-MM   +   1
            END-IF
            MOVE    01                  TO  WRK-FTNSTDD
-      *    ������
+      *    月末日
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
@@ -1696,14 +1696,14 @@
                MOVE    "99999999"          TO  WRK-FTNEDYMD
            END-IF
       *
-      *    �ɲ�
+      *    追加
            ADD     1                       TO  SPA-FTN2-MAX
            MOVE    SPA-FTN2-MAX            TO  IDX
            MOVE    SPA-GMN24-TGAIJGNGAK(IDX-F)
                                        TO  SPA-GMN24-TGAIJGNGAK (IDX)
            MOVE    ZERO                TO  SPA-GMN24-TNYUJGNGAK (IDX)
       *H30.11
-      *    �Τ����Ť�ξ��ʣ��
+      *    肝がん治療は両方複写
            IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                            =   "092"   )
                MOVE    SPA-GMN24-TGAIJGNGAK(IDX-F)
@@ -1730,20 +1730,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ¾������ô���Ͻ���
+      *    他一部負担入力処理
       *****************************************************************
        418-KOHFTN-P02K-SEC             SECTION.
       *
-      *    �оݤθ���Ǥ��뤳��
+      *    対象の公費であること
            IF      (SPA-NAI24-FTNSELNUM >   ZERO   )
-      *H28.11 �����ʬȽ���
+      *H28.11 設定区分判定へ
       *        IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "015"
       *                                    OR  "016"
       *                                    OR  "021"
       *                                    OR  "038"    )
       *H26.12
-      *            ���¡����������H26.1�����
+      *            難病・小児特定（H26.1から）
       *          OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "052"
       *                                    OR  "054"   )  AND
@@ -1753,11 +1753,11 @@
       **         OR  ((SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "281" ) AND
       **              (SPA-PREFNUM         =    07   ))
-      *            ����������о�ʬ
+      *            地方公費の対象分
       *          OR   (SPA-NAI24-TJYOGENKBN (SPA-NAI24-FTNSELNUM)
       *****                                =   "2"    )
       *H28.11
-      *        ¾������ô����
+      *        他一部負担あり
                IF      SPA-NAI24-FTNSYORI  =   1
                    CONTINUE
                ELSE
@@ -1768,7 +1768,7 @@
                MOVE    "2445"              TO  SPA-ERRCD
                MOVE    30                  TO  SPA-GMN24-CUR
            END-IF
-      *    ������������
+      *    上限履歴の選択
            IF     (SPA-ERRCD               =   SPACE  )  AND
                   (SPA-NAI24-FTNSELNUM2    =   ZERO   )
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1796,7 +1796,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¾������ô�����ϲ��̽���
+      *    他一部負担金入力画面処理
       *****************************************************************
        4181-P02K-SYORI-SEC              SECTION.
       *
@@ -1810,7 +1810,7 @@
                                        TO  SPA-P02K-NAI-SRYYMD
            MOVE    SPA-NAI24-TFTNEDYMD (SPA-NAI24-FTNSELNUM2)
                                        TO  SPA-P02K-NAI-ENDYMD
-      *    ����ǯ������
+      *    開始年月末日
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
@@ -1822,7 +1822,7 @@
                                            LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI(7:2)
                                        TO  SPA-P02K-NAIMATU
-      *    Ʊ��ǯ��ϤޤȤ��
+      *    同じ年月はまとめる
            MOVE    SPACE               TO  SPA-P02K-FTNRUIKBN
            MOVE    ZERO                TO  IDK2
            MOVE    ZERO                TO  WRK-TGAIJGNGAK-G
@@ -1835,7 +1835,7 @@
                    ADD     1                   TO  IDK2
                    MOVE    SPA-GMN24-TGAIJGNGAK (IDK)
                                                TO  WRK-TGAIJGNGAK (IDK2)
-      *            ��ô�߷�
+      *            負担累計
                    ADD     SPA-GMN24-TNYUJGNGAK (IDK)
                                                TO  SPA-P02K-TNYUJGNGAK
                    IF      SPA-NAI24-TFTNETCKBN (IDK)
@@ -1856,13 +1856,13 @@
                            MOVE    SPA-NAI24-TFTNEDYMD (IDK)
                                                TO  SPA-P02K-NAI-ENDYMD
                        END-IF
-      *                ��³��Խ�
+      *                上限額編集
                        ADD     SPA-GMN24-TGAIJGNGAK (IDK)
                                                TO  SPA-P02K-GAIJGNGAKKEI
                        ADD     1               TO  IDK2
                        MOVE    SPA-GMN24-TGAIJGNGAK (IDK)
                                                TO  WRK-TGAIJGNGAK (IDK2)
-      *                ��ô�߷�
+      *                負担累計
                        ADD     SPA-GMN24-TNYUJGNGAK (IDK)
                                                TO  SPA-P02K-TNYUJGNGAK
                        IF      SPA-NAI24-TFTNETCKBN (IDK)
@@ -1872,19 +1872,19 @@
                    END-IF
                END-IF
            END-PERFORM
-      *    ����ǯ��Ὢλǯ��
+      *    開始年月＝終了年月
            IF      SPA-P02K-NAI-ENDYMD(1:6)
                                    NOT =   SPA-P02K-NAI-SRYYMD (1:6)
                MOVE    LNK-DAY7-KOYOMI     TO  SPA-P02K-NAI-ENDYMD
            END-IF
-      *    �����Ѵ�
+      *    和暦変換
            MOVE    SPA-P02K-NAI-SRYYMD TO  WRK-SYMD
            PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
            MOVE    WRK-HENYMD          TO  SPA-P02K-GMN-SRYYMD
            MOVE    SPA-P02K-NAI-ENDYMD TO  WRK-SYMD
            PERFORM 410112-SE-WAFORMAT-YMDEDIT-SEC
            MOVE    WRK-HENYMD          TO  SPA-P02K-GMN-ENDYMD
-      *    ��³�ɽ��
+      *    上限額表示
            MOVE    SPACE               TO  WRK-MSG
            MOVE    SPACE               TO  WRK-MSG01
            IF      IDK2                >   1
@@ -1920,12 +1920,12 @@
                                            INTO    SPA-P02K-MSG06
                END-STRING
            END-IF
-      *    ¾������ô�߷�����
+      *    他一部負担累計入力
            MOVE    SPACE               TO  SPA-P02K-MSG07
            IF      SPA-P02K-FTNRUIKBN  =   SPACE
                IF      SPA-P02K-TNYUJGNGAK     >   ZERO
                    MOVE    SPA-P02K-TNYUJGNGAK     TO  WRK-Z8
-                   STRING    "¾������ô�߷ס�"
+                   STRING    "他一部負担累計："
                              WRK-Z8        DELIMITED  BY  SIZE
                                            INTO    SPA-P02K-MSG07
                    END-STRING
@@ -1976,7 +1976,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    数量編集処理
       *****************************************************************
        41812-KINGAK-HEN-SEC           SECTION.
       *
@@ -1993,36 +1993,36 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ����
+      *    登録処理
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
       *
-      *    ������ǯ��쥳���ɿ���������
+      *    所得・年金レコード数を一時退避
            MOVE    SPA-TSY-MAX     TO  WRK-TSY-SMAX
            MOVE    SPA-TNK-MAX     TO  WRK-TNK-SMAX
-      *    �ѥ�᥿�ե�����Ƹ�������
+      *    パラメタファイル再検索処理
            INITIALIZE                  LNK-TNK-AREA
            INITIALIZE                  LNK-TSY-AREA
            PERFORM 320-PARAFILE-KENSAKU-SEC
-      *    ���ɽ�����ν�����ǯ��쥳���ɿ�����¸
+      *    初期表示時の所得・年金レコード数を保存
            MOVE    SPA-TSY-MAX     TO  WRK-TSY-MAX
            MOVE    SPA-TNK-MAX     TO  WRK-TNK-MAX
            MOVE    WRK-TSY-SMAX    TO  SPA-TSY-MAX
            MOVE    WRK-TNK-SMAX    TO  SPA-TNK-MAX
       *
-      *    �������Ƥ�ѥ�᥿���Ͻ���
+      *    画面内容をパラメタ出力処理
            PERFORM 500-SPA-PARA-TSYRRK-SEC
            PERFORM 500-SPA-PARA-TNKRRK-SEC
-      *    ������ô
+      *    公費負担
            MOVE    SPACE               TO  HZN-PTKOHFTN-AREA
            INITIALIZE                  HZN-PTKOHFTN-AREA
            IF      SPA-GMN24-FTNSELNUM NOT =   ZERO
                PERFORM 410131-KOHFTN-PARA-SEC
-      *        ���Ը�����ô��
+      *        患者公費負担額
                PERFORM 410132-KOHFTNETC-PARA-SEC
            END-IF
       *
-      *    ������ô����Ͽ�����å�
+      *    公費負担の登録チェック
            IF      SPA-TAGU-FLG        =   ZERO
                IF      SPA-NAI-KOHRRKKBN-FLG   =   "1"
                    IF      SPA-P024-KOHKEIFLG  =   ZERO
@@ -2034,7 +2034,7 @@
        490-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ������Բ��̤����Ƥ�ѥ�᥿����¸
+      *    低所得者画面の内容をパラメタへ保存
       *****************************************************************
        500-SPA-PARA-TSYRRK-SEC         SECTION.
       *
@@ -2044,20 +2044,20 @@
                    UNTIL     ( IDX         >   20          )
                    OR        ( IDX         >   SPA-TSY-MAX )
       *********MOVE    SPACE               TO  LNK-TSY-KEY-O   (IDX)
-      *        ���ɽ�����ν����쥳���ɿ�����ξ��
+      *        初期表示時の所得レコード数以内の場合
                IF      IDX                 <=  WRK-TSY-MAX
-      *            ����ǡ����ξ��
+      *            削除データの場合
                    IF  SPA-GMN24-TSYDELKBN(IDX)   =   "1"
                        MOVE    ALL "9"     TO  LNK-TSY-UPYMD      (IDX)
                    ELSE
-      **************   �ѹ�������ž��
+      **************   変更前キー転送
       *                MOVE    LNK-TSY-HOSPNUM (IDX)
       *                                    TO  LNK-TSY-HOSPNUM-O   (IDX)
       *                MOVE    LNK-TSY-PTID   (IDX)
       *                                    TO  LNK-TSY-PTID-O     (IDX)
       *                MOVE    LNK-TSY-NINSTYMD (IDX)
       **************                       TO  LNK-TSY-NINSTYMD-O (IDX)
-      *                ǧ������ѹ������ѹ�ǯ����������ǯ����ž��
+      *                認定期間変更時、変更年月日・更新年月日転送
                        IF  ( SPA-GMN24-TSYDPSTYMD(IDX)
                                    NOT =   LNK-TSY-NINSTYMD(IDX)) OR
                            ( SPA-GMN24-TSYDPEDYMD(IDX)
@@ -2077,13 +2077,13 @@
                                            TO  LNK-TSY-NINEDYMD   (IDX)
                            MOVE    SPA-GMN24-TSYLSKJGNSTYMD (IDX)
                                            TO  LNK-TSY-SKJGNSTYMD (IDX)
-      *                    ����ɸ����ô�۸��۳�����
+      *                    食事標準負担額減額開始日
                            MOVE    SPA-NAI24-TSYLNINYMD (IDX)
                                            TO  LNK-TSY-SKJNINSTYMD (IDX)
-      *                    �ݸ�Ŭ�Ѷ�ʬ
+      *                    保険適用区分
                            MOVE    SPA-NAI24-TSYLHKNKBN (IDX)
                                            TO  LNK-TSY-HKNTEKKBN   (IDX)
-      *                    �����س�����ʬ
+      *                    境界層該当区分
                            MOVE    SPA-NAI24-TSYLKYOUKAI (IDX)
                                            TO  LNK-TSY-KYOUKAISOUKBN
                                                                   (IDX)
@@ -2092,7 +2092,7 @@
                    MOVE    IDX             TO  IDY
                    PERFORM 510-PARA-TSYRRK-OUT-SEC
                ELSE
-      *        ���ɽ�����ν����쥳���ɿ���Ķ������
+      *        初期表示時の所得レコード数を超える場合
                    IF  SPA-GMN24-TSYDELKBN (IDX)   =   SPACE
                        ADD     1               TO  IDY
       *
@@ -2108,15 +2108,15 @@
                                                                  (IDY)
                        MOVE    SPA-TERMID      TO  LNK-TSY-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TSY-CREYMD (IDY)
-      *                ����ɸ����ô�۸��۳�����
+      *                食事標準負担額減額開始日
                        MOVE    SPA-NAI24-TSYLNINYMD (IDX)
                                                TO  LNK-TSY-SKJNINSTYMD
                                                                   (IDY)
-      *                �ݸ�Ŭ�Ѷ�ʬ
+      *                保険適用区分
                        MOVE    SPA-NAI24-TSYLHKNKBN (IDX)
                                                TO  LNK-TSY-HKNTEKKBN
                                                                   (IDY)
-      *                �����س�����ʬ
+      *                境界層該当区分
                        MOVE    SPA-NAI24-TSYLKYOUKAI (IDX)
                                                TO  LNK-TSY-KYOUKAISOUKBN
                                                                   (IDY)
@@ -2136,11 +2136,11 @@
            EXIT.
            .
       *****************************************************************
-      *    ������Բ��̤����Ƥ�ѥ�᥿����¸
+      *    低所得者画面の内容をパラメタへ保存
       *****************************************************************
        510-PARA-TSYRRK-OUT-SEC         SECTION.
       *
-      *    �ѥ�᥿��Ͽ
+      *    パラメタ登録
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2205,7 +2205,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ǯ����̤����Ƥ�ѥ�᥿����¸
+      *    年金画面の内容をパラメタへ保存
       *****************************************************************
        500-SPA-PARA-TNKRRK-SEC         SECTION.
       *
@@ -2215,20 +2215,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL     ( IDX         >   20          )
                    OR        ( IDX         >   SPA-TNK-MAX )
       *********MOVE    SPACE               TO  LNK-TNK-KEY-O(IDX)
-      *        ���ɽ�����ν����쥳���ɿ�����ξ��
+      *        初期表示時の所得レコード数以内の場合
                IF  IDX                     <=  WRK-TNK-MAX
-      *            ����ǡ����ξ��
+      *            削除データの場合
                    IF  SPA-GMN24-TNKDELKBN(IDX)   =   "1"
                        MOVE    ALL "9"     TO  LNK-TNK-UPYMD   (IDX)
                    ELSE
-      ************     �ѹ�������ž��
+      ************     変更前キー転送
       *                MOVE    LNK-TNK-HOSPNUM (IDX)
       *                                    TO  LNK-TNK-HOSPNUM-O(IDX)
       *                MOVE    LNK-TNK-PTID (IDX)
       *                                    TO  LNK-TNK-PTID-O  (IDX)
       *                MOVE    LNK-TNK-STYMD (IDX)
       ************                         TO  LNK-TNK-STYMD-O (IDX)
-      *                ǧ������ѹ������ѹ�ǯ����������ǯ����ž��
+      *                認定期間変更時、変更年月日・更新年月日転送
                        IF  (SPA-GMN24-TNKDPSTYMD(IDX)
                                    NOT =   LNK-TNK-STYMD(IDX))  OR
                            (SPA-GMN24-TNKDPEDYMD(IDX)
@@ -2249,13 +2249,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  LNK-TNK-SKJNINSTYMD(IDX)
                          MOVE    SPA-NAI24-TNKLHKNKBN (IDX)
                                            TO  LNK-TNK-HKNTEKKBN  (IDX)
-      *                  �����س�����ʬ
+      *                  境界層該当区分
                          MOVE    SPA-NAI24-TNKLKYOUKAI (IDX)
                                            TO  LNK-TNK-KYOUKAISOUKBN
                                                                 (IDX)
       *
                        END-IF
-      *                �����ʡ��
+      *                高齢者福祉
                        IF  (SPA-GMN24-TFUKUSHI-KBN(IDX)
                                    NOT =   LNK-TNK-RRI-FUKUSHI-KBN(IDX))
                            MOVE    SPA-GMN24-TFUKUSHI-KBN(IDX)
@@ -2266,7 +2266,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX             TO  IDY
                    PERFORM 510-PARA-TNKRRK-OUT-SEC
                ELSE
-      *        ���ɽ�����ν����쥳���ɿ���Ķ������
+      *        初期表示時の所得レコード数を超える場合
                    IF  SPA-GMN24-TNKDELKBN (IDX)   =   SPACE
                        ADD     1               TO  IDY
       *
@@ -2282,15 +2282,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDY)
                        MOVE    SPA-TERMID      TO  LNK-TNK-TERMID (IDY)
                        MOVE    SPA-SYSYMD      TO  LNK-TNK-CREYMD (IDY)
-      *                ����ɸ����ô�۸��۳�����
+      *                食事標準負担額減額開始日
                        MOVE    SPA-NAI24-TNKLNINYMD (IDX)
                                                TO  LNK-TNK-SKJNINSTYMD
                                                                   (IDY)
-      *                �ݸ�Ŭ�Ѷ�ʬ
+      *                保険適用区分
                        MOVE    SPA-NAI24-TNKLHKNKBN (IDX)
                                                TO  LNK-TNK-HKNTEKKBN
                                                                   (IDY)
-      *                �����س�����ʬ
+      *                境界層該当区分
                        MOVE    SPA-NAI24-TNKLKYOUKAI (IDX)
                                            TO  LNK-TNK-KYOUKAISOUKBN
                                                                 (IDY)
@@ -2310,11 +2310,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
            .
       *****************************************************************
-      *    ������Բ��̤����Ƥ�ѥ�᥿����¸
+      *    低所得者画面の内容をパラメタへ保存
       *****************************************************************
        510-PARA-TNKRRK-OUT-SEC         SECTION.
       *
-      *    �ѥ�᥿��Ͽ
+      *    パラメタ登録
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2379,11 +2379,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô����Ͽ�����å�����
+      *    公費負担の登録チェック処理
       *****************************************************************
        410132-KOHFTN-CHK-SEC          SECTION.
       *
-      *    ���򤬤ʤ�����������ô�ơ��֥��Խ�
+      *    選択がない時、公費負担テーブル編集
            IF     (SPA-FTN1-MAX        >   ZERO )  AND
                   (SPA-GMN24-FTNSELNUM =   ZERO )
                PERFORM 4101321-KOHFTN-TBL-SEC
@@ -2394,14 +2394,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL      (IDX2    >   SPA-FTN1-MAX  )
                          OR   (SPA-ERRCD   NOT =   SPACE )
              MOVE    ZERO              TO  FLG-CHKNO
-      *      ��³ۤ�ɬ�ܤǤʤ����(�룳�������ݡ�������������αˮ�͡�
+      *      上限額が必須でないもの(結３５、生保、精神入院、残留邦人）
              IF     (SPA-NAI24-KOHNUM (IDX2)   =   "011"
                                                OR  "012"
                                                OR  "020"
                                                OR  "025" )
       *H28.6
                 OR  (SPA-NAI24-KOHNUM (IDX2)   =   "019" )
-      *H30.11   �Τ�����
+      *H30.11   肝がん治療
                 OR  (SPA-NAI24-KOHNUM (IDX2)   =   "092" )
                MOVE    1                   TO  FLG-CHKNO
              END-IF
@@ -2409,17 +2409,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              IF     (SPA-NAI24-KOHNUM    (IDX2)   =   "964"     )
                AND  (SPA-NAI24-TKOHSTYMD (IDX2)   >=  "20150101")
                EVALUATE    SPA-NAI24-TJKYSNUM (IDX2)(1:2)
-                   WHEN    "��"
-                   WHEN    "��"
-                   WHEN    "��"
-                   WHEN    "��"
-                   WHEN    "��"
+                   WHEN    "ア"
+                   WHEN    "イ"
+                   WHEN    "ウ"
+                   WHEN    "エ"
+                   WHEN    "オ"
                        MOVE    1                   TO  FLG-CHKNO
                END-EVALUATE
              END-IF
       *
              IF      FLG-CHKNO         =   ZERO
-      *        ����ͭ���ʸ���Τ�Ƚ��
+      *        当日有効な公費のみ判定
                IF     (SPA-NAI24-TKOHSTYMD (IDX2)  <=  SPA-SYSYMD )
                  AND  (SPA-NAI24-TKOHEDYMD (IDX2)  >=  SPA-SYSYMD )
                  AND  (SPA-NAI24-FTNDELKBN (IDX2)  =   SPACE      )
@@ -2448,17 +2448,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô�ơ��֥��Խ�����
+      *    公費負担テーブル編集処理
       *****************************************************************
        4101321-KOHFTN-TBL-SEC          SECTION.
       *
-      *    ������ô������¸
+      *    公費負担更新保存
            MOVE    SPACE               TO  HZN-PTKOHFTN-AREA
            INITIALIZE                  HZN-PTKOHFTN-AREA
            MOVE    ZERO                TO  IDP-1
            MOVE    ZERO                TO  IDP-2
       *
-      *    �оݤΥǡ�����ѥ�᥿�ե��������Խ�����
+      *    対象のデータをパラメタファイルより編集する
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2486,7 +2486,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                UNTIL  (FLG-PARA            =   1  )  OR
                       (SPA-ERRCD       NOT =   SPACE )
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
-      *        ����ɣĤ��ơ��֥�ˤ��뤳�ȡʤʤ���ΤϺ���Ȥ����
+      *        公費ＩＤがテーブルにあること（ないものは削除とする）
                MOVE    ZERO            TO  FLG-OK
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   SPA-FTN1-MAX
@@ -2517,40 +2517,40 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ������������ֹ�����
+      *    低所得　選択番号選択
                WHEN    ANY             ALSO    "P024_TSYLIST"
                    PERFORM 41012-TSYLIST-SEC
-      *    ��ǯ�⡡�����ֹ�����
+      *    低年金　選択番号選択
                WHEN    ANY             ALSO    "P024_TNKLIST"
                    PERFORM 41012-TNKLIST-SEC
-      *    ������ô���ֹ�����
+      *    公費負担額番号選択
                WHEN    "ACTIVATE"      ALSO    "P024_FTNSELNUM"
                    PERFORM 41013-FTNSELNUM-SEC
                    GO      TO      200-ENTRY-EXT
-      *    ������ô���ֹ�����
+      *    公費負担額番号選択
                WHEN    "ACTIVATE"      ALSO    "P024_FTNSELNUM2"
                    PERFORM 41014-FTNSELNUM2-SEC
                    GO      TO      200-ENTRY-EXT
-      *    ������ô���ֹ�����
+      *    公費負担額番号選択
                WHEN    ANY             ALSO    "P024_PTKOHFTN"
                    PERFORM 41015-KOHFTNLIST-SEC
                    GO      TO      200-ENTRY-EXT
-      *    ������ô���ֹ�����
+      *    公費負担額番号選択
                WHEN    ANY             ALSO    "P024_PTKOHFTN2"
                    PERFORM 41016-KOHFTNLIST2-SEC
                    GO      TO      200-ENTRY-EXT
            END-EVALUATE
       *
            MOVE    ZERO                TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            .
@@ -2559,7 +2559,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        400-GMN-INPUT-SEC          SECTION.
       *
@@ -2571,7 +2571,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����������
+      *    低所得者選択
       *****************************************************************
        41012-TSYLIST-SEC           SECTION.
       *
@@ -2603,7 +2603,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿�����ֹ�����
+      *    年金／選択番号選択
       *****************************************************************
        41012-TNKLIST-SEC           SECTION.
       *
@@ -2635,7 +2635,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        41012-TNKLIST-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�����������ֹ�����
+      *    公費負担／公費選択番号選択
       *****************************************************************
        41015-KOHFTNLIST-SEC           SECTION.
       *
@@ -2665,16 +2665,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        41015-KOHFTNLIST-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�����������ֹ�����
+      *    公費負担／公費選択番号選択
       *****************************************************************
        41013-FTNSELNUM-SEC           SECTION.
       *
            MOVE    P02-P024-FTNSELNUM  TO  SPA-GMN24-FTNSELNUM
-      *    �ѹ�������������ߤι���ʬ��ѥ�᥿��
+      *    変更がある時、現在の更新分をパラメタへ
            IF     (SPA-GMN24-FTNSELNUM NOT =   SPA-MAE24-FTNSELNUM )
       *      OR  ((SPA-MAE24-FTNSELNUM NOT =   ZERO    )  AND
       *           (SPA-GMN24-FTNSELNUM     =   SPA-MAE24-FTNSELNUM))
-      *        ����̤����λ��������ʤ�
+      *        前回が未選択の時、更新なし
       *        IF     (SPA-MAE24-FTNSELNUM     =   ZERO
       *                                        OR  SPACE )
       *            CONTINUE
@@ -2721,13 +2721,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    SPA-GMN24-FTNSELNUM TO  SPA-MAE24-FTNSELNUM
       *
-      *    ���Ф��ѹ�
+      *    見出し変更
            PERFORM 3101-KOH-MEISAI-SEC
       *
-      *    �оݤΥǡ�����ѥ�᥿�ե��������Խ�����
+      *    対象のデータをパラメタファイルより編集する
            PERFORM 31022-KOHFTN-SPAHENSYU-SEC
       *
-      *    �����ʤ��Ȥ�����������Ƥ���ɽ��
+      *    １件もないとき、公費の内容を初期表示
            IF      SPA-FTN2-MAX        =   ZERO
                MOVE    SPA-GMN24-TKOHSTYMD (WRK-FTN1-IDX)
                                           TO  SPA-GMN24-FTNSTYMD
@@ -2749,17 +2749,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        41013-FTNSELNUM-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�ѥ�᥿�ѹ�����
+      *    公費負担パラメタ変更処理
       *****************************************************************
        410131-KOHFTN-PARA-SEC           SECTION.
       *
-      *    ������ô������¸
+      *    公費負担更新保存
            MOVE    SPACE               TO  HZN-PTKOHFTN-AREA
            INITIALIZE                  HZN-PTKOHFTN-AREA
            MOVE    ZERO                TO  IDP-1
            MOVE    ZERO                TO  IDP-2
       *
-      *    �оݤΥǡ�����ѥ�᥿�ե��������Խ�����
+      *    対象のデータをパラメタファイルより編集する
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2787,7 +2787,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                UNTIL  (FLG-PARA            =   1  )  OR
                       (SPA-ERRCD       NOT =   SPACE )
                MOVE    PARA-DATA-REC           TO  PTKOHFTN-REC
-      *        ����ɣĤ��ơ��֥�ˤ��뤳�ȡʤʤ���ΤϺ���Ȥ����
+      *        公費ＩＤがテーブルにあること（ないものは削除とする）
                MOVE    ZERO            TO  FLG-OK
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   SPA-FTN1-MAX
@@ -2802,7 +2802,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
       *
                IF      FLG-OK              =   1
-      *            ��������ʬ�ʳ�
+      *            今回選択分以外
                    IF     (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
                           (PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
                                                  (SPA-NAI24-FTNSELNUM))
@@ -2820,9 +2820,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ���ߤι���ʬ��ѥ�᥿��
+      *    現在の更新分をパラメタへ
            IF      SPA-FTN2-MAX        =   ZERO
-      *        �ѥ�᥿����
+      *        パラメタ更新
                PERFORM 410132-KOHFTN-PARA-INS-SEC
                GO      TO      410131-KOHFTN-PARA-EXT
            END-IF
@@ -2843,17 +2843,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    �ѥ�᥿�ɲ�
+      *    パラメタ追加
            PERFORM 410132-KOHFTN-PARA-INS-SEC
            .
        410131-KOHFTN-PARA-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�ơ��֥��ɲý���
+      *    公費負担テーブル追加処理
       *****************************************************************
        4101313-KOHFTN-TBL-HEN-SEC           SECTION.
       *
-      *    ����ɣ���˥ơ��֥���¸
+      *    公費ＩＤ毎にテーブル保存
            IF      PTKOHFTN-KOHID  NOT =   WRK-KOHID
                ADD     1                   TO  IDP-1
                IF      IDP-1               >   TBL-MAX-KOH
@@ -2872,20 +2872,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        4101313-KOHFTN-TBL-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�ơ��֥��ɲý���
+      *    公費負担テーブル追加処理
       *****************************************************************
        410131-KOHFTN-TBL-INS-SEC           SECTION.
       *
-      *    ������ô�Խ�
+      *    公費負担編集
            INITIALIZE                      PTKOHFTN-REC
            MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
            MOVE    SPA-NAI24-KOHID  (SPA-NAI24-FTNSELNUM)
                                        TO  PTKOHFTN-KOHID
-      *    Ϣ�֤����
+      *    連番を再番
            ADD     1                   TO  IDP-2
            MOVE    IDP-2               TO  PTKOHFTN-RENNUM
-      *    Ŭ�ѳ���ǯ����
+      *    適用開始年月日
            MOVE    SPA-NAI24-TFTNSTYMD(IDX)
                                        TO  PTKOHFTN-TEKSTYMD
            MOVE    SPA-NAI24-TFTNEDYMD(IDX)
@@ -2908,11 +2908,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        410131-KOHFTN-TBL-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�ѥ�᥿�ɲý���
+      *    公費負担パラメタ追加処理
       *****************************************************************
        410132-KOHFTN-PARA-INS-SEC           SECTION.
       *
-      *    �������
+      *    削除する
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2952,7 +2952,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        410132-KOHFTN-PARA-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�����ô�ۥѥ�᥿�ѹ�����
+      *    患者公費負担額パラメタ変更処理
       *****************************************************************
        410132-KOHFTNETC-PARA-SEC           SECTION.
       *
@@ -2978,7 +2978,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM
                UNTIL   FLG-PARA            =   1
                MOVE    PARA-DATA-REC       TO  PTKOHFTNETC-REC
-      *        ����ɣĤ��ơ��֥�ˤ��뤳�ȡʤʤ���ΤϺ���Ȥ����
+      *        公費ＩＤがテーブルにあること（ないものは削除とする）
                MOVE    ZERO            TO  FLG-OK
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   SPA-FTN1-MAX
@@ -2993,7 +2993,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
       *
                IF      FLG-OK              =   ZERO
-      *            ���
+      *            削除
                    MOVE    PARA-REC            TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_para"          TO  MCP-TABLE
@@ -3019,7 +3019,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            OR  "021"
                                            OR  "038"    )
       *H26.12
-      *          ���¡����������H26.1�����
+      *          難病・小児特定（H26.1から）
                  OR  ((SPA-NAI24-KOHNUM  (IDX2)
                                            =   "052"
                                            OR  "054"   )  AND
@@ -3028,12 +3028,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ***        OR  ((SPA-NAI24-KOHNUM (IDX2)
       *                                    =   "281" ) AND
       **              (SPA-PREFNUM         =    07   ))
-      *          ����������о�
+      *          地方公費の対象
                  OR   (SPA-NAI24-TJYOGENKBN (IDX2)
                                            =   "2"    )
-      *            ������ʬ
+      *            今回削除分
                    IF      SPA-NAI24-FTNDELKBN (IDX2)  =   "1" 
-      *                �����о��Խ�
+      *                更新対象編集
                        PERFORM VARYING     IDX3    FROM    1   BY   1
                                UNTIL      (IDX3    >   MAX-KOHFTN  )
                            IF      SPA-NAI24-KOHFTN-ID (IDX3)  =   ZERO
@@ -3057,7 +3057,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        410132-KOHFTNETC-PARA-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�����������ֹ�����
+      *    公費負担／公費選択番号選択２
       *****************************************************************
        41016-KOHFTNLIST2-SEC           SECTION.
       *
@@ -3088,7 +3088,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41016-KOHFTNLIST2-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�����������ֹ�����
+      *    公費負担／公費選択番号選択
       *****************************************************************
        41014-FTNSELNUM2-SEC           SECTION.
       *
@@ -3119,7 +3119,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    P02-P024-FTNSELNUM2     TO  SPA-GMN24-FTNSELNUM2
            ELSE
       *
-      *    �оݤΥǡ������Խ�����
+      *    対象のデータを編集する
            MOVE    WRK-FTN1-IDX        TO  IDX
            MOVE    SPA-NAI24-TFTNSTYMD(IDX)    TO  SPA-NAI24-FTNSTYMD
            MOVE    SPA-NAI24-TFTNEDYMD(IDX)    TO  SPA-NAI24-FTNEDYMD
@@ -3142,19 +3142,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å����̲��̽���
+      *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
            END-IF
       *
-      *    ��Ͽ����ɬ�����ϥ����å�
+      *    登録時、必須入力チェック
            IF      FLG-TOUROKU     NOT =   ZERO
                PERFORM 4109-TOUROKU-CHK-SEC
            END-IF
@@ -3165,11 +3165,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
-      *    ������������ֹ�
+      *    低所得　選択番号
            IF      P02-P024-TSRSELNUM  =   SPA-MAE24-TSYSELNUM
                MOVE    ZERO                TO  FLG-IN-TSYSELNUM
            ELSE
@@ -3183,7 +3183,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    P02-P024-TSYTEKK        TO  SPA-GMN24-TSYTEKKBN-G
            MOVE    P02-P024-TSYKYOUKAI     TO  SPA-GMN24-TSYKYOUKAI-G
       *
-      *    ��ǯ�⡡�����ֹ�
+      *    低年金　選択番号
            IF      P02-P024-TNKSELNUM  =   SPA-MAE24-TNKSELNUM
                MOVE    ZERO                TO  FLG-IN-TNKSELNUM
            ELSE
@@ -3197,7 +3197,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    P02-P024-TNKTEKK    TO  SPA-GMN24-TNKTEKKBN-G
            MOVE    P02-P024-TNKKYOUKAI TO  SPA-GMN24-TNKKYOUKAI-G
       *
-      *    ������ô�⡡�����ֹ�
+      *    公費負担金　選択番号
       *****MOVE    P02-P024-FTNSELNUM2 TO  SPA-GMN24-FTNSELNUM2
            MOVE    P02-P024-FTNTEKSTYMD    TO  SPA-GMN24-FTNSTYMD
            MOVE    P02-P024-FTNTEKEDYMD    TO  SPA-GMN24-FTNEDYMD
@@ -3209,81 +3209,81 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å����̲��̽���
+      *    基本チェックと別画面処理
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *    ������������ֹ�
+      *    低所得　選択番号
            PERFORM 41012-TSYSELNUM-SEC
-      *    ���������ǯ����
+      *    低所得開始年月日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYSTYMD-SEC
            END-IF
-      *    �������λǯ����
+      *    低所得終了年月日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYEDYMD-SEC
            END-IF
-      *    �����ǧ���ϰ�
+      *    低所得認定範囲
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYKEKKBN-SEC
            END-IF
-      *    ��������۳�����
+      *    低所得減額開始日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYNINYMD-SEC
            END-IF
-      *    ����ɸ����ô���۳�����
+      *    食事標準負担減額開始日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYSKJGNSTYMD-SEC
            END-IF
       *H29.6
-      *    �����س���
+      *    境界層該当
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TSYKYOUKAI-SEC
            END-IF
       *
-      *    ��ǯ�⡡�����ֹ�
+      *    低年金　選択番号
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-NENINSELNUM-SEC
            END-IF
-      *    ��ǯ�Ⳬ��ǯ����
+      *    低年金開始年月日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TNKSTYMD-SEC
            END-IF
-      *    ��ǯ�⽪λǯ����
+      *    低年金終了年月日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TNKEDYMD-SEC
            END-IF
-      *    ��ǯ��ǧ���ϰ�
+      *    低年金認定範囲
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TNKKEKKBN-SEC
            END-IF
-      *    ��ǯ�⸺�۳�����
+      *    低年金減額開始日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TNKNINYMD-SEC
            END-IF
-      *    ��ǯ�����ʡ��ǯ��
+      *    低年金高齢福祉年金
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-FUKUSHI-SEC
            END-IF
       *H29.6
-      *    �����س���
+      *    境界層該当
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41012-TNKKYOUKAI-SEC
            END-IF
       *
-      *    ������ô ������
+      *    公費負担 開始日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41031-FTNSTYMD-SEC
            END-IF
-      *    ������ô ��λ��
+      *    公費負担 終了日
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41031-FTNEDYMD-SEC
            END-IF
-      *    ������ô �����³�
+      *    公費負担 外来上限額
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41031-GAIJGNGAK-SEC
            END-IF
-      *    ������ô ������³�
+      *    公費負担 入院上限額
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41032-NYUJGNGAK-SEC
            END-IF
@@ -3293,7 +3293,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ������ֹ� 
+      *    低所得者／選択番号 
       *****************************************************************
        41012-TSYSELNUM-SEC           SECTION.
       *
@@ -3325,7 +3325,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41012-TSYSELNUM-EXT
            END-IF
       *
-      *    ����ǡ����������������ǥå��������
+      *    削除データを除く内部インデックスを取得
            INITIALIZE                   WRK-NAIBU-IDX-AREA
            MOVE    SPA-NAI24-TSYSELNUM  TO  WRK-G-IDX
            MOVE    1                    TO  WRK-W-TBL
@@ -3361,7 +3361,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-TSYTEKKBN-G
                MOVE    SPA-NAI24-TSYLHKNKBN (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYTEKKBN
-      *        �����س���
+      *        境界層該当
                MOVE    SPACE            TO  SPA-GMN24-TSYKYOUKAI-G
                MOVE    SPA-NAI24-TSYLKYOUKAI (WRK-N-IDX)
                                         TO  SPA-GMN24-TSYKYOUKAI
@@ -3374,7 +3374,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41012-TSYSELNUM-EXT.
            EXIT.
       *****************************************************************
-      *    ������ԡ�����ǯ���� 4121120--->H12.11.20
+      *    低所得者／開始年月日 4121120--->H12.11.20
       *****************************************************************
        41012-TSYSTYMD-SEC           SECTION.
       *
@@ -3384,7 +3384,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                   41012-TSYSTYMD-EXT
            END-IF
       *
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-TSYSTYMDW     TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -3401,7 +3401,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ���λǯ���� 4121120--->H12.11.20
+      *    低所得者／終了年月日 4121120--->H12.11.20
       *****************************************************************
        41012-TSYEDYMD-SEC           SECTION.
       *
@@ -3420,7 +3420,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ALL "9"             TO  SPA-GMN24-TSYEDYMD
                GO  TO                      41012-TSYEDYMD-EXT
            END-IF
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-TSYEDYMDW     TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -3434,7 +3434,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                   41012-TSYEDYMD-EXT
            END-IF
       *
-      *H30.5  Ʊ���б�
+      *H30.5  同日対応
            IF  SPA-GMN24-TSYSTYMD       <=  SPA-GMN24-TSYEDYMD
                CONTINUE
            ELSE
@@ -3447,7 +3447,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ�ǧ���ϰ�
+      *    低所得者／認定範囲
       *****************************************************************
        41012-TSYKEKKBN-SEC           SECTION.
       *
@@ -3478,14 +3478,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ����۳�����
+      *    低所得者／減額開始日
       *****************************************************************
        41012-TSYNINYMD-SEC           SECTION.
       *
            IF      SPA-GMN24-TSYNINSTYMD   =   SPACE
                MOVE    SPACE               TO  SPA-NAI24-TSYNINSTYMD
            ELSE
-      *        ���ղ��̥����å�����
+      *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN24-TSYNINSTYMD   TO  SGDAY-INDAY
                CALL    "ORCSGDAY"          USING
@@ -3515,7 +3515,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ԡ�Ĺ�������������۳�����
+      *    低所得者／長期入院食事減額開始日
       *****************************************************************
        41012-TSYSKJGNSTYMD-SEC           SECTION.
       *
@@ -3523,7 +3523,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE               TO  SPA-GMN24-TSYSKJGNSTYMD
            ELSE
       *
-      *        ���ղ��̥����å�����
+      *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN24-TSYSKJGNSTYMDW
                                            TO  SGDAY-INDAY
@@ -3550,7 +3550,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-GMN24-TSYSKJGNSTYMD NOT =   SPACE )
-      *        Ĺ�������������㸺�۳������ϥ��顼
+      *        長期入院該当日＜減額開始日はエラー
                IF     (SPA-NAI24-TSYNINSTYMD   =   SPACE )  OR
                       (SPA-GMN24-TSYSKJGNSTYMD <  SPA-NAI24-TSYNINSTYMD)
                    MOVE    "2423"          TO  SPA-ERRCD
@@ -3564,11 +3564,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *H29.6
       *****************************************************************
-      *    ������ԡ������س���
+      *    低所得者／境界層該当
       *****************************************************************
        41012-TSYKYOUKAI-SEC           SECTION.
       *
-      *    ǧ��������ǧ���ϰϤ����Ϥǽ��ɽ��
+      *    認定日から認定範囲の入力で初期表示
            IF     (SPA-GMN24-TSYEDYMDW    NOT =   SPACE )
              AND  (SPA-GMN24-TSYSTYMDW    NOT =   SPACE )
              AND  (SPA-GMN24-TSYTEKKBN    NOT =   SPACE )
@@ -3605,7 +3605,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41012-TSYKYOUKAI-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ�⡿�����ֹ� 
+      *    年金／選択番号 
       *****************************************************************
        41012-NENINSELNUM-SEC           SECTION.
       *
@@ -3637,7 +3637,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO               41012-NENINSELNUM-EXT
            END-IF
       *
-      *    ����ǡ����������������ǥå��������
+      *    削除データを除く内部インデックスを取得
            INITIALIZE                   WRK-NAIBU-IDX-AREA
            MOVE    SPA-NAI24-TNKSELNUM  TO  WRK-G-IDX
            MOVE    2                    TO  WRK-W-TBL
@@ -3672,7 +3672,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE            TO  SPA-GMN24-TNKTEKKBN-G
                MOVE  SPA-NAI24-TNKLHKNKBN (WRK-N-IDX)
                                         TO  SPA-GMN24-TNKTEKKBN
-      *        �����س���
+      *        境界層該当
                MOVE    SPACE            TO  SPA-GMN24-TNKKYOUKAI-G
                MOVE    SPA-NAI24-TNKLKYOUKAI (WRK-N-IDX)
                                         TO  SPA-GMN24-TNKKYOUKAI
@@ -3686,7 +3686,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿����ǯ���� 4121120--->H12.11.20
+      *    年金／開始年月日 4121120--->H12.11.20
       *****************************************************************
        41012-TNKSTYMD-SEC       SECTION.
       *
@@ -3696,7 +3696,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                   41012-TNKSTYMD-EXT
            END-IF
       *
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-TNKSTYMDW     TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -3713,7 +3713,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿��λǯ���� 4121120--->H12.11.20
+      *    年金／終了年月日 4121120--->H12.11.20
       *****************************************************************
        41012-TNKEDYMD-SEC           SECTION.
       *
@@ -3731,7 +3731,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ALL "9"             TO  SPA-GMN24-TNKEDYMD
                GO  TO                      41012-TNKEDYMD-EXT
            END-IF
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-TNKEDYMDW     TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -3745,7 +3745,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                   41012-TNKEDYMD-EXT
            END-IF
       *
-      *H30.5  Ʊ���б�
+      *H30.5  同日対応
            IF      SPA-GMN24-TNKSTYMD  <=  SPA-GMN24-TNKEDYMD
                CONTINUE
            ELSE
@@ -3757,7 +3757,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿Ϸ��ʡ��ǯ�����Ծڥ����å�
+      *    年金／老齢福祉年金受給者証チェック
       *****************************************************************
        41012-FUKUSHI-SEC           SECTION.
       *
@@ -3784,7 +3784,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        41012-FUKUSHI-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ�⡿ǧ���ϰ�
+      *    年金／認定範囲
       *****************************************************************
        41012-TNKKEKKBN-SEC             SECTION.
       *
@@ -3815,14 +3815,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ǯ�⡿���۳�����
+      *    年金／減額開始日
       *****************************************************************
        41012-TNKNINYMD-SEC           SECTION.
       *
            IF      SPA-GMN24-TNKNINSTYMD   =   SPACE
                MOVE    SPACE               TO  SPA-NAI24-TNKNINSTYMD
            ELSE
-      *        ���ղ��̥����å�����
+      *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    SPA-GMN24-TNKNINSTYMD   TO  SGDAY-INDAY
                CALL    "ORCSGDAY"          USING
@@ -3853,11 +3853,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *H29.6
       *****************************************************************
-      *    ������ԡ������س���
+      *    低所得者／境界層該当
       *****************************************************************
        41012-TNKKYOUKAI-SEC           SECTION.
       *
-      *    ǧ��������ǧ���ϰϤ����Ϥǽ��ɽ��
+      *    認定日から認定範囲の入力で初期表示
            IF     (SPA-GMN24-TNKEDYMDW    NOT =   SPACE )
              AND  (SPA-GMN24-TNKSTYMDW    NOT =   SPACE )
              AND  (SPA-GMN24-TNKTEKKBN    NOT =   SPACE )
@@ -3894,7 +3894,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô������ǯ����
+      *    公費負担／開始年月日
       *****************************************************************
        41031-FTNSTYMD-SEC           SECTION.
       *
@@ -3904,7 +3904,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41031-FTNSTYMD-EXT
            END-IF
       *
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-FTNSTYMD  TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -3916,7 +3916,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "2432"              TO  SPA-ERRCD
                MOVE    32                  TO  SPA-GMN24-CUR
            END-IF
-      *    �оݸ���δ��֤Ǥ��뤳��
+      *    対象公費の期間であること
            IF     (SPA-NAI24-FTNSELNUM     =   ZERO     )
              AND  (SPA-ERRCD               =   SPACE    )
                MOVE    "2430"              TO  SPA-ERRCD
@@ -3935,7 +3935,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô����λǯ��
+      *    公費負担／終了年月
       *****************************************************************
        41031-FTNEDYMD-SEC           SECTION.
       *
@@ -3950,7 +3950,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  ((FLG-TOUROKU     NOT =   ZERO  )  OR
                   (WRK-MCP-WIDGET      =   "P024_FTNTEKEDYMD"))
              AND  (SPA-NAI24-FTNSELNUM >   ZERO     )
-      *        ����ν�λ��
+      *        公費の終了日
                MOVE    SPA-GMN24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
                                            TO  SPA-GMN24-FTNEDYMD
                MOVE    SPA-NAI24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)
@@ -3968,7 +3968,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41031-FTNEDYMD-EXT
            END-IF
       *
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                      ORCSGDAYAREA
            MOVE    SPA-GMN24-FTNEDYMD  TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -3981,7 +3981,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    33                  TO  SPA-GMN24-CUR
                GO      TO      41031-FTNEDYMD-EXT
            END-IF
-      *    �оݸ���δ��֤Ǥ��뤳��
+      *    対象公費の期間であること
            IF     (SPA-NAI24-FTNSELNUM     =   ZERO     )
              AND  (SPA-ERRCD               =   SPACE    )
                MOVE    "2430"              TO  SPA-ERRCD
@@ -4008,12 +4008,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô �����³�
+      *    公費負担 外来上限額
       *****************************************************************
        41031-GAIJGNGAK-SEC           SECTION.
       *
       *H30.11
-      *    �Τ����Ť����Ϥʤ�
+      *    肝がん治療は入力なし
            IF      SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
                                        =   "092"
                MOVE    ZERO             TO  SPA-NAI24-GAIJGNGAK
@@ -4036,7 +4036,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SNUM-OUTNUM      TO  SPA-NAI24-GAIJGNGAK
                MOVE    SNUM-OUTNUM      TO  WRK-Z7
                MOVE    WRK-Z7           TO  SPA-GMN24-GAIJGNGAK
-      *        ���۳��λ����������ޤ�
+      *        減額割合の時、１００まで
                IF     (SPA-NAI24-FTNSELNUM >   ZERO  )
       *H28.11    AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "960"   )
@@ -4056,7 +4056,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô ������³�
+      *    公費負担 入院上限額
       *****************************************************************
        41032-NYUJGNGAK-SEC           SECTION.
       *
@@ -4074,7 +4074,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SNUM-OUTNUM      TO  SPA-NAI24-NYUJGNGAK
                MOVE    SNUM-OUTNUM      TO  WRK-Z7
                MOVE    WRK-Z7           TO  SPA-GMN24-NYUJGNGAK
-      *        ���۳��λ����������ޤ�
+      *        減額割合の時、１００まで
                IF     (SPA-NAI24-FTNSELNUM >   ZERO  )
       *H28.11    AND  (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
       *                                    =   "960"   )
@@ -4094,24 +4094,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ****************************************************************
-      **    ��Ͽ����Ϣ�����å�����
+      **    登録前関連チェック処理
       ****************************************************************
        4109-TOUROKU-CHK-SEC             SECTION.
-      *    ����������Ͽ
+      *    所得履歴登録
            IF      FLG-TOUROKU         =   1
                PERFORM 41091-SYOTOKU-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      4109-TOUROKU-CHK-EXT
                END-IF
            END-IF
-      *    Ϸǯʡ��ǯ��������Ͽ
+      *    老年福祉年金履歴登録
            IF      FLG-TOUROKU         =   2
                PERFORM 41092-RFUKUSI-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    GO      TO      4109-TOUROKU-CHK-EXT
                END-IF
            END-IF
-      *    ������ô����Ͽ
+      *    公費負担額登録
            IF      FLG-TOUROKU         =   3
                PERFORM 41093-KOHFTN-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -4124,7 +4124,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ****************************************************************
-      **    ����������Ͽ�������å�����
+      **    所得履歴登録前チェック処理
       ****************************************************************
        41091-SYOTOKU-CHK-SEC             SECTION.
       *
@@ -4134,7 +4134,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE     2              TO  SPA-GMN24-CUR
                GO      TO      41091-SYOTOKU-CHK-EXT
            END-IF
-      *    Ĺ�������������㸺�۳������ϥ��顼
+      *    長期入院該当日＜減額開始日はエラー
            IF     (SPA-GMN24-TSYSKJGNSTYMD  NOT =   SPACE ) AND
                  ((SPA-NAI24-TSYNINSTYMD    =   SPACE )  OR
                   (SPA-GMN24-TSYSKJGNSTYMD  <   SPA-NAI24-TSYNINSTYMD))
@@ -4147,9 +4147,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    5                   TO  SPA-GMN24-CUR
                GO      TO      41091-SYOTOKU-CHK-EXT
            END-IF
-      *    �����س���
+      *    境界層該当
            IF      SPA-GMN24-TSYKYOUKAI    =   SPACE
-      *        ���ɽ��������
+      *        初期表示を設定
                MOVE    "2424"              TO  SPA-ERRCD
                MOVE    7                   TO  SPA-GMN24-CUR
                GO      TO      41091-SYOTOKU-CHK-EXT
@@ -4163,7 +4163,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDX     >   SPA-TSY-MAX
                IF  ( SPA-GMN24-TSYDELKBN(IDX)   =   SPACE )  AND
                    ( WRK-N-IDX              NOT =   IDX   )
-      *        ɽ������������ϳ��ϡ���λ����ޤ�ǡ�����¸�ߤ��ʤ�����
+      *        表示明細中に入力開始・終了日を含むデータが存在しないこと
                    IF  ( SPA-GMN24-TSYEDYMD
                                        <   SPA-GMN24-TSYDPSTYMD(IDX)) OR
                        ( SPA-GMN24-TSYSTYMD
@@ -4181,7 +4181,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ****************************************************************
-      **    ����������Ͽ�������å�����
+      **    所得履歴登録前チェック処理
       ****************************************************************
        41092-RFUKUSI-CHK-SEC             SECTION.
       *
@@ -4203,7 +4203,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    13                  TO  SPA-GMN24-CUR
                GO      TO      41092-RFUKUSI-CHK-EXT
            END-IF
-      *    �����س���
+      *    境界層該当
            IF      SPA-GMN24-TNKKYOUKAI    =   SPACE
                MOVE    "2425"              TO  SPA-ERRCD
                MOVE    16                  TO  SPA-GMN24-CUR
@@ -4211,7 +4211,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *
-      *    ɽ���������Ʊ��������¸�ߤ��ʤ�����
+      *    表示明細中に同開始日が存在しないこと
            INITIALIZE                  WRK-NAIBU-IDX-AREA
            MOVE    SPA-NAI24-TNKSELNUM TO  WRK-G-IDX
            MOVE    2                   TO  WRK-W-TBL
@@ -4220,7 +4220,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDX     >   SPA-TNK-MAX
              IF  ( SPA-GMN24-TNKDELKBN(IDX)   =   SPACE )  AND
                  ( WRK-N-IDX              NOT =   IDX   )
-      *        ɽ������������ϳ��ϡ���λ����ޤ�ǡ�����¸�ߤ��ʤ�����
+      *        表示明細中に入力開始・終了日を含むデータが存在しないこと
                IF  ( SPA-GMN24-TNKEDYMD < SPA-GMN24-TNKDPSTYMD(IDX)) OR
                    ( SPA-GMN24-TNKSTYMD > SPA-GMN24-TNKDPEDYMD(IDX))
                    CONTINUE
@@ -4239,17 +4239,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ****************************************************************
-      **    ��������ǥå��������������ʺ���ǡ���������
+      **    内部インデックス取得処理　（削除データ除く）
       ****************************************************************
        4501-NAIBU-IDX-GET-SEC             SECTION.
       **
-      * / WRK-G-IDX...���̾奤��ǥå���
-      *   WRK-N-IDX...����ǡ�����������Ū�ʥ���ǥå���
+      * / WRK-G-IDX...画面上インデックス
+      *   WRK-N-IDX...削除データ除く内部的なインデックス
       *
            MOVE    ZERO                   TO  WRK-N-IDX
            MOVE    ZERO                   TO  IDY
            EVALUATE    WRK-W-TBL
-      *    �����ơ��֥������
+      *    所得テーブルより取得
            WHEN    1
                PERFORM   VARYING   IDX    FROM    1   BY  1
                          UNTIL    (IDX            >   20         )
@@ -4263,7 +4263,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  END-IF
                END-PERFORM
       *
-      *    ǯ��ơ��֥������
+      *    年金テーブルより取得
            WHEN    2
                PERFORM   VARYING   IDX    FROM    1   BY  1
                          UNTIL    (IDX            >   20         )
@@ -4282,11 +4282,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô�����������å�����
+      *    公費負担更新前チェック処理
       *****************************************************************
        41093-KOHFTN-CHK-SEC             SECTION.
       *
-      *    ���������ֹ�
+      *    公費選択番号
            IF      SPA-NAI24-FTNSELNUM =   ZERO
                MOVE    "2430"              TO  SPA-ERRCD
                MOVE    30                  TO  SPA-GMN24-CUR
@@ -4300,7 +4300,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41093-KOHFTN-CHK-EXT
            END-IF
       *
-      *    ���֤���ʣ���ʤ�����
+      *    期間が重複しないこと
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL      (IDX     >   SPA-FTN2-MAX )  OR
                               (SPA-ERRCD   NOT =   SPACE )
@@ -4317,7 +4317,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
-      *    �����ѹ�����¾������ô��������å�
+      *    期間変更時の他一部負担履歴チェック
            IF      SPA-NAI24-FTNSELNUM2   >   ZERO
                IF     (SPA-NAI24-FTNSTYMD(1:6)
                                        =   SPA-NAI24-TFTNSTYMD
@@ -4337,45 +4337,45 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *H28.11
-      *HAORI�б�
+      *HAORI対応
       *****************************************************************
-      *    HAORI���б�����
+      *    HAORI　対応処理
       *****************************************************************
        2009-API-SYORI-SEC             SECTION.
       *
            EVALUATE    SPA-MCP-WIDGET
            WHEN    "01"
-      *    ���Ф��Խ��Τ�
-      *        ���Ф��ѹ�
+      *    見出し編集のみ
+      *        見出し変更
                PERFORM 3101-KOH-MEISAI-SEC
            WHEN    "02"
-      *    ����ɣ�����
+      *    公費ＩＤ選択
                INITIALIZE                  SPA-GMN24-KOHFTNTBL2
                MOVE    1                   TO  SPA-NAI24-INIT2
                MOVE    SPA-NAI24-FTNSELNUM TO  WRK-FTN1-IDX
-      *        ���Ф��ѹ�
+      *        見出し変更
                PERFORM 3101-KOH-MEISAI-SEC
-      *        �оݤΥǡ�����ѥ�᥿�ե��������Խ�����
+      *        対象のデータをパラメタファイルより編集する
                PERFORM 31022-KOHFTN-SPAHENSYU-SEC
            WHEN    "03"
-      *    ������ô�����å�
-      *        ������ô ������
+      *    公費負担チェック
+      *        公費負担 開始日
                PERFORM 41031-FTNSTYMD-SEC
-      *        ������ô ��λ��
+      *        公費負担 終了日
                IF      SPA-ERRCD           =   SPACE
-      *           ������ô����Խ�����
+      *           公費負担初期編集処理
                   PERFORM 41031-FTNEDYMD-SEC
                END-IF
-      *        ������ô �����³�
+      *        公費負担 外来上限額
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 41031-GAIJGNGAK-SEC
                END-IF
-      *        ������ô ������³�
+      *        公費負担 入院上限額
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 41032-NYUJGNGAK-SEC
                END-IF
            WHEN    "04"
-      *    ¾������ô����
+      *    他一部負担選択
                PERFORM 4181-P02K-SYORI-SEC
            END-EVALUATE
            .
@@ -4383,7 +4383,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������FORMAT�����Խ�
+      *    西暦→和暦FORMAT日付編集
       *****************************************************************
        410112-SE-WAFORMAT-YMDEDIT-SEC             SECTION.
       *
@@ -4411,7 +4411,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������FORMAT�����Խ�
+      *    和暦→和暦FORMAT日付編集
       *****************************************************************
        410113-WA-FOMAT-YMDEDIT-SEC     SECTION.
       *
@@ -4432,7 +4432,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������������Խ�
+      *    和暦→西暦日付編集
       *****************************************************************
        410114-WA-SE-YMDEDIT-SEC        SECTION.
       *
@@ -4453,11 +4453,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ե������������
+      *    パラメタファイル作成処理
       *****************************************************************
        400-PARA-INSERT-SEC           SECTION.
       *
-      *    �ѥ�᥿��Ͽ
+      *    パラメタ登録
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
@@ -4512,7 +4512,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -4531,7 +4531,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�����ô�ɤ߹��߽���
+      *    患者公費負担読み込み処理
       *****************************************************************
        990-PTKOHFTNETC-READ-SEC        SECTION.
       *
@@ -4548,7 +4548,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        990-PTKOHFTNETC-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -4561,7 +4561,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -4576,7 +4576,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -4589,7 +4589,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

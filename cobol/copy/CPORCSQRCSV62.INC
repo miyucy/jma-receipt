@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,54 +16,54 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ������Ģ�ѣҥǡ������ϥѥ�᥿    COPY (CPORCSQRCSV62.INC)
+      *    お薬手帳ＱＲデータ出力パラメタ    COPY (CPORCSQRCSV62.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCSQRCSV62AREA.
-      *    Ģɼ̾
+      *    帳票名
            03  ORCSQRCSV62-FORM-ID         PIC X(06).
-      *    �������
+      *    処理回数
            03  ORCSQRCSV62-CNT             PIC 9(03).
       *
-      *    ���̾���
+      *    共通情報
            03  ORCSQRCSV62-IN01-G.
-      *        ����ǯ����
+      *        診療年月日
                05  ORCSQRCSV62-SRYYMD        PIC  X(08).
-      *        ���ֹ�
+      *        県番号
                05  ORCSQRCSV62-PREFNUM       PIC  9(02).
-      *        ���ŵ��إ�����
+      *        医療機関コード
                05  ORCSQRCSV62-HOSPCD        PIC  9(07).
-      *        ���ŵ��ؼ���
+      *        医療機関種別
                05  ORCSQRCSV62-HOSPSBT       PIC  9(01).
-      *        ���ŵ���̾��
+      *        医療機関名称
                05  ORCSQRCSV62-HOSPNAME      PIC  X(120).
-      *        ���ŵ���͹��
+      *        医療機関郵便
                05  ORCSQRCSV62-HOSPPOST      PIC  X(08).
-      *        ���ŵ��ؽ���
+      *        医療機関住所
                05  ORCSQRCSV62-HOSPADRS      PIC  X(800).
-      *        ���ŵ��������ֹ�
+      *        医療機関電話番号
                05  ORCSQRCSV62-HOSPTEL       PIC  X(13).
-      *        ���Ų�
+      *        診療科
       *        05  ORCSQRCSV62-RECESRYKA     PIC  X(02).
       *        05  ORCSQRCSV62-SRYKANAME     PIC  X(40).
-      *        ��վ���
-      *        �ɥ�����������
+      *        医師情報
+      *        ドクターコード
                05  ORCSQRCSV62-DRCD          PIC  X(05).
-      *        �եꥬ��
+      *        フリガナ
                05  ORCSQRCSV62-DR-KANANAME   PIC  X(40).
-      *        ��̾
+      *        氏名
                05  ORCSQRCSV62-DR-NAME       PIC  X(40).
-      *        ���Ծ���
+      *        患者情報
                05  ORCSQRCSV62-NAME          PIC  X(40).
                05  ORCSQRCSV62-KANANAME      PIC  X(40).
                05  ORCSQRCSV62-SEX           PIC  X(02).
                05  ORCSQRCSV62-BIRTHDAY      PIC  X(08).
       *
-      *    �ѣ��Ѻ��������
+      *    ＱＲ用剤毎の内容
            03  ORCSQRCSV62-NAIYOU-AREA.
                05  ORCSQRCSV62-NAIYOU-TBL       OCCURS   50.
                    07  ORCSQRCSV62-SRYKBN           PIC X(02).
@@ -76,35 +76,35 @@
                        09  ORCSQRCSV62-SURYOU           PIC 9(05)V9(05).
                        09  ORCSQRCSV62-YKZKBN           PIC X(01).
                        09  ORCSQRCSV62-TANINAME         PIC X(12).
-      *                �������޶�ʬ
+      *                内服点剤区分
                        09  ORCSQRCSV62-NAIHENKBN        PIC X(01).
-      *                ��ˡ�����ȶ�ʬ
+      *                用法コメント区分
                        09  ORCSQRCSV62-YCOMMNTKBN       PIC X(01).
       *
-      *    ��������
+      *    備考内容
            03  ORCSQRCSV62-BIKOU-AREA.
                05  ORCSQRCSV62-BIKOU-TBL       OCCURS   10.
                    07  ORCSQRCSV62-BIKOU       PIC X(100).
       *
-      *    �ե�����̾�Ȥ�Ω�ƹ���
+      *    ファイル名組み立て項目
            03  ORCSQRCSV62-SYSTIME         PIC 9(08).
       *
-      *    �ѣңãӣ֥ե�����̾
+      *    ＱＲＣＳＶファイル名
            03  ORCSQRCSV62-CSV-FILENAME    PIC X(256).
-      *    �ѣҽ��϶�ʬ
+      *    ＱＲ出力区分
            03  ORCSQRCSV62-QR-KBN          PIC X(01).
-      *    �ѣңãӣֽ�����ʬ
+      *    ＱＲＣＳＶ処理区分
            03  ORCSQRCSV62-CSV-KBN         PIC X(01).
-      *    ȯ�Բ��̶�ʬ
+      *    発行画面区分
            03  ORCSQRCSV62-PGKBN           PIC X(01).
       *
-      *����
-      *    ���顼������
+      *出力
+      *    エラーコード
            03  ORCSQRCSV62-ERRCD           PIC 9(01).
       *
-      *    �꥿���󥳡���(�ѣҲ����С������)
+      *    リターンコード(ＱＲ画像バージョン)
            03  ORCSQRCSV62-RET-VERSION     PIC 9(02).
-      *    �꥿���󥳡���(�ѣҲ����ե������)
+      *    リターンコード(ＱＲ画像ファイル数)
            03  ORCSQRCSV62-RET-COUNT       PIC 9(02).
       *    qrencode return-code
            03  ORCSQRCSV62-RET             PIC X(01).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,23 +16,23 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    �����ʥ��᡼��       COPY  (CPMEDIMAGE.INC)                *
+      *    医薬品イメージ       COPY  (CPMEDIMAGE.INC)                *
       *****************************************************************
       *****************************************************************
-      * ���ԡ��罤������
-      * Maj/Min/Rev    ������      ����        ����
+      * コピー句修正履歴
+      * Maj/Min/Rev    修正者      日付        内容
       *****************************************************************
        01  MEDIMAGE-REC.
            03  MEDIMG-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  MEDIMG-HOSPNUM            PIC 9(2).
-      *�����ʥ�����
+      *医薬品コード
                05  MEDIMG-SRYCD              PIC X(9).
-      *���᡼����ʬ
+      *イメージ区分
                05  MEDIMG-IMAGEKBN           PIC 9(1).
-      *���᡼���ǡ���
+      *イメージデータ
            03  MEDIMG-IMAGEDATA              PIC X(500000).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  MEDIMG-OPID                   PIC X(16).
-      *����ǯ����
+      *更新年月日
            03  MEDIMG-UPYMD                  PIC X(08).

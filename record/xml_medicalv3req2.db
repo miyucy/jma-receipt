@@ -11,9 +11,9 @@ xml_medicalv3req2 {
     		Perform_Date		varchar(10);
 		Perform_Time		varchar(8);
 		Orca_Uid		varchar(36);
-#--- ½èÍı¶èÊ¬
+#--- å‡¦ç†åŒºåˆ†
 		Patient_Mode		varchar(06);
-#--- ÅÁÉ¼ÈÖ¹æ
+#--- ä¼ç¥¨ç•ªå·
 		Invoice_Number		varchar(07);
 		Select_Mode		varchar(01);
 		Select_Answer		varchar(03);
@@ -44,12 +44,12 @@ xml_medicalv3req2 {
 			};
 		Outside_Class		varchar(5);
 		Medical_OffTime		varchar(1);
-#-----  Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»¥³¥á¥ó¥È»»Äê¤Ê¤·
+#-----  è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›ã‚³ãƒ¡ãƒ³ãƒˆç®—å®šãªã—
 		Medical_Change_Auto		varchar(1);
 #-----
 		Medical_Information  {
 			Medical_Info  {
-#-----  Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»ÀÚÂØ
+#-----  è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›åˆ‡æ›¿
 				Medication_Change_Info   {
 				    Change_Mode			varchar(03);
 				    Change_Insurance_Combination_Number	varchar(04);
@@ -67,11 +67,11 @@ xml_medicalv3req2 {
 				Medication_Input_Info  {
 					Medication_Input_Code	varchar(08);
 					} [5] ;
-#----->                         ¥Õ¥£¥ë¥àÊ¬²è¿ô
+#----->                         ãƒ•ã‚£ãƒ«ãƒ åˆ†ç”»æ•°
 				Medication_Film_Comp_Number	varchar(03);
 				Medication_Continue		varchar(01);
 				Medication_Internal_Kinds	varchar(01);
-#----->                         ²Ã»»¼«Æ°»»Äê¤Ê¤·
+#----->                         åŠ ç®—è‡ªå‹•ç®—å®šãªã—
 				Medication_No_Addition_Class	varchar(03);
 				Medication_Auto_Addition	varchar(01);
 				} [50] ;

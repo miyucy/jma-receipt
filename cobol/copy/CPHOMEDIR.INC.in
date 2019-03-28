@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,20 +16,20 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    �ǥ��쥯�ȥ���ֻ���                                        *
+      *    ディレクトリ位置指定                                        *
       *----------------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  02/10/02  �����ȥۡ����ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  02/10/02  サイトホーム追加
       ************************************************************
        01  HOMEDIR-AREA.
            03  HOMEDIR-NAME             PIC X(100)   VALUE
            "@prefix@/".
-      *    �����ȥۡ���
+      *    サイトホーム
            03  HOMEDIR-SITE-NAME        PIC X(100)   VALUE
            "@sitedir@/".
-      *    �ѥå��ۡ���
+      *    パッチホーム
            03  HOMEDIR-PATCH-NAME       PIC X(100)   VALUE
            "@patchdir@/".
       *

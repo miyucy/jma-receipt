@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,52 +16,52 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    �����԰٥ޥ���     COPY (CPNYUINACT.INC)     *
+      *    入院行為マスタ     COPY (CPNYUINACT.INC)     *
       *-------------------------------------------------*
       *01  NYUIN-SRYACT-REC.
            03  NSRY-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  NSRY-HOSPNUM          PIC 9(2).
-      *������ʬ
+      *入外区分
                05  NSRY-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  NSRY-PTID            PIC  9(10).
-      *���Ų�
+      *診療科
                05  NSRY-SRYKA           PIC  X(02).
-      *����ǯ��
+      *診療年月
                05  NSRY-SRYYM           PIC  X(06).
-      *���ֹ�
+      *剤番号
                05  NSRY-ZAINUM          PIC  9(08).
-      *Ϣ�ֹ�
+      *連番号
                05  NSRY-RENNUM          PIC  9(02).
-      *���ż��̶�ʬ
+      *診療種別区分
            03  NSRY-SRYSYUKBN           PIC  X(03).
-      *���Ŷ�ʬ
+      *診療区分
            03  NSRY-SRYKBN              PIC  X(02).
-      *�����۷�
+      *自費金額計
            03  NSRY-JIHIMONEYTOTAL      PIC  9(07).
-      *���Ź԰٥ơ��֥�
+      *診療行為テーブル
            03  NSRY-SRYACT-TBL          OCCURS   5.
-      *���ť�����
+      *診療コード
                05  NSRY-SRYCD           PIC  X(09).
-      *����
+      *数量
                05  NSRY-SRYSURYO        PIC  9(05)V9(03).
-      *���
+      *回数
                05  NSRY-SRYKAISU        PIC  9(03).
-      *��ư�����ʬ
+      *自動算定区分
                05  NSRY-AUTOKBN         PIC  X(01).
-      *̾�������ֹ�
+      *名称入力番号
                05  NSRY-INPUTNUM        PIC  9(03).
-      *������
+      *自費金額
                05  NSRY-JIHIMONEY       PIC  9(07).
-      *ü���ɣ�
+      *端末ＩＤ
            03  NSRY-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  NSRY-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  NSRY-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  NSRY-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  NSRY-UPHMS               PIC  X(06).
       *

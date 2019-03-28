@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,59 +16,59 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         Æþ±¡ÎÁ¼èÆÀ¥µ¥Ö      COPY   (CPORCSNYUINRYO.INC)  *
+      *         å…¥é™¢æ–™å–å¾—ã‚µãƒ–      COPY   (CPORCSNYUINRYO.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SNYUINRYO-AREA.
-      *    ¿ÇÎÅÆü
+      *    è¨ºç™‚æ—¥
            03  SNYUINRYO-SRYYMD            PIC X(08).
-      *    ¼«Æ°ÀßÄê¶èÊ¬
+      *    è‡ªå‹•è¨­å®šåŒºåˆ†
            03  SNYUINRYO-AUTOSET           PIC X(01).
-      *    ½èÍý¶èÊ¬ (01:Æþ±¡¡Ë
+      *    å‡¦ç†åŒºåˆ† (01:å…¥é™¢ï¼‰
            03  SNYUINRYO-SYORIKBN          PIC X(02).
-      *    ÉÂÅïÈÖ¹æ
+      *    ç—…æ£Ÿç•ªå·
            03  SNYUINRYO-BTUNUM            PIC X(02).
-      *    ÉÂ¼¼ÈÖ¹æ
+      *    ç—…å®¤ç•ªå·
            03  SNYUINRYO-BRMNUM            PIC X(06).
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
            03  SNYUINRYO-HKNCOMBI          PIC 9(04).
-      *    ÄÉ²Ã¥³¡¼¥É
+      *    è¿½åŠ ã‚³ãƒ¼ãƒ‰
            03  SNYUINRYO-EXTRA-G.
                05  SNYUINRYO-EXTRA-KBN     PIC X(01).
                05  SNYUINRYO-EXTRA-CD      PIC X(02).
       *
-      *    Æþ±¡ÎÁ·ï¿ô
+      *    å…¥é™¢æ–™ä»¶æ•°
            03  SNYUINRYO-MAX               PIC 9(05).
            03  SNYUINRYO-OCC               OCCURS  100.
       *
-      *        Ï¢ÈÖ
+      *        é€£ç•ª
                05  SNYUINRYO-NO            PIC X(02).
-      *        Ì¾¾Î
+      *        åç§°
                05  SNYUINRYO-NAME          PIC X(60).
-      *        ÆâÉô¥³¡¼¥É
+      *        å†…éƒ¨ã‚³ãƒ¼ãƒ‰
                05  SNYUINRYO-NYUINRYO-G.
                    07  SNYUINRYO-NYUINRYO-KBN
                                            PIC X(01).
                    07  SNYUINRYO-NYUINRYO-CD
                                            PIC X(02).
-      *        Æþ±¡ÎÁ¥³¡¼¥É
+      *        å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
                05  SNYUINRYO-SRYCD         PIC X(09).
-      *        ÆÃÎã»»Äê¥³¡¼¥É
+      *        ç‰¹ä¾‹ç®—å®šã‚³ãƒ¼ãƒ‰
                05  SNYUINRYO-NASRYCD       PIC X(09).
-      *        Æþ±¡ÎÁ¤Î¼ïÎà¡Ê½é´üÉ½¼¨ÍÑ¡Ë
+      *        å…¥é™¢æ–™ã®ç¨®é¡žï¼ˆåˆæœŸè¡¨ç¤ºç”¨ï¼‰
                05  SNYUINRYO-TYPE          PIC X(02).
-      *    ¿ÇÎÅ¥³¡¼¥É¹ç·×
+      *    è¨ºç™‚ã‚³ãƒ¼ãƒ‰åˆè¨ˆ
            03  SNYUINRYO-SRYCDTTL          PIC 9(14).
-      *    ÉÂÅïÀßÄêÆþ±¡ÎÁ¥³¡¼¥É
+      *    ç—…æ£Ÿè¨­å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
            03  SNYUINRYO-BTU-KHNSRYCD      PIC X(09).
-      *    ÀßÄêÆþ±¡ÎÁ¥³¡¼¥É
+      *    è¨­å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
            03  SNYUINRYO-TOKHIGAITOKBN     PIC X(01).
            03  SNYUINRYO-TOKNYUIN-G.
                05  SNYUINRYO-TOKNYUIN-KBN  PIC X(01).
                05  SNYUINRYO-TOKNYUIN-CD   PIC X(02).
-      *    Æþ±¡ÎÁÅùÁªÂò
-      *    ¡ÊÆÃÄêÆþ±¡ÎÁ¡¢Ã»´üÂÚºß°Ê³°¤Î¥³¡¼¥É¤ÎÊÖµÑ¤¬¤¢¤ë¾ì¹ç¤Ï£±¡Ë
+      *    å…¥é™¢æ–™ç­‰é¸æŠž
+      *    ï¼ˆç‰¹å®šå…¥é™¢æ–™ã€çŸ­æœŸæ»žåœ¨ä»¥å¤–ã®ã‚³ãƒ¼ãƒ‰ã®è¿”å´ãŒã‚ã‚‹å ´åˆã¯ï¼‘ï¼‰
            03  SNYUINRYO-SELECT            PIC 9(01).

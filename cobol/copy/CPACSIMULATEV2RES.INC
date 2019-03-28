@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ���ô��׻�����
+      *    ＡＰＩレスポンス負担金計算情報
       *                                 COPY (CPACSIMULATEV2RES.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
         01  XML-ACSIMULATERES.
             03  ACSRES-CONTEXT             PIC S9(9)   BINARY.
@@ -35,12 +35,12 @@
               05  ACSRES-API-RESULT-MSG    PIC X(100).
               05  ACSRES-RESKEY            PIC X(100).
               05  ACSRES-PERFORM-DATE      PIC X(10).
-      *       ���ֳ���ʬ�ʿǻ�����
+      *       時間外区分（診察料）
               05  ACSRES-TIME-CLASS        PIC X(1).
-      *       ���Ų�
+      *       診療科
               05  ACSRES-APPOINT-DEP-CODE  PIC X(2).
               05  ACSRES-APPOINT-DEP-NAME  PIC X(80).
-      *       ���Ծ���
+      *       患者情報
               05  ACSRES-PATIENT-INFOMATION.
                 07  ACSRES-PATIENTID       PIC X(20).
                 07  ACSRES-NAME            PIC X(100).
@@ -48,79 +48,79 @@
                 07  ACSRES-BIRTHDAY        PIC X(10).
                 07  ACSRES-SEX             PIC X(01).
                 07  ACSRES-RATE            PIC X(12).
-      *         �ݸ�����
+      *         保険情報
                 07  ACSRES-INSURANCE-G.
-      *             �ݸ��ȹ礻�ֹ�
+      *             保険組合せ番号
                     09  ACSRES-COMBINATION-NUMBER  PIC X(4).
-      *             �ݸ��μ���
+      *             保険の種類
                     09  ACSRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *             �ݸ����ֹ�
+      *             保険者番号
                     09  ACSRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *             �ݸ��μ���̾��
+      *             保険の種類名称
                     09  ACSRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *             ����
+      *             記号
                     09  ACSRES-MAIN-MARK              PIC X(80).
-      *             �ֹ�
+      *             番号
                     09  ACSRES-MAIN-NUMBER            PIC X(80).
-      *             ��³��ʬ
+      *             継続区分
                     09  ACSRES-MAIN-CONTINUATION      PIC X(01).
-      *             �����ʬ
+      *             補助区分
                     09  ACSRES-MAIN-ASSISTANCE        PIC X(01).
-      *             �����ʬ̾��
+      *             補助区分名称
                     09  ACSRES-MAIN-ASSISTANCE-NAME   PIC X(10).
-      *             �ܿͲ�²��ʬ
+      *             本人家族区分
                     09  ACSRES-MAIN-FAMILY            PIC X(01).
-      *             ���ݸ���̾
+      *             被保険者名
                     09  ACSRES-MAIN-POLICYHOLDER      PIC X(100).
-      *             ͭ��������
+      *             有効開始日
                     09  ACSRES-MAIN-START-DATE        PIC X(10).
-      *             ͭ����λ��
+      *             有効終了日
                     09  ACSRES-MAIN-END-DATE          PIC X(10).
-      *             �������
+      *             公費情報
                     09  ACSRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *               ����μ���
+      *               公費の種類
                       11  ACSRES-INSURANCE-CLASS         PIC X(03).
-      *               ����μ���̾��
+      *               公費の種類名称
                       11  ACSRES-INSURANCE-NAME          PIC X(20).
-      *               ��ô���ֹ�
+      *               負担者番号
                       11  ACSRES-PROVIDER-NUMBER         PIC X(08).
-      *               ������ֹ�
+      *               受給者番号
                       11  ACSRES-RECIPIENT-NUMBER        PIC X(20).
-      *               ��������ôΨ�ʳ��
+      *               入院−負担率（割）
                       11  ACSRES-RATE-ADMISSION          PIC X(04).
-      *               �����ݸ����
+      *               入院−固定額
                       11  ACSRES-MONEY-ADMISSION         PIC X(06).
-      *               �������ôΨ�ʳ��
+      *               外来−負担率（割）
                       11  ACSRES-RATE-OUTPATIENT         PIC X(04).
-      *               ����ݸ����
+      *               外来−固定額
                       11  ACSRES-MONEY-OUTPATIENT        PIC X(06).
-      *               ͭ��������
+      *               有効開始日
                       11  ACSRES-INSURANCE-START-DATE    PIC X(10).
-      *               ͭ����λ��
+      *               有効終了日
                       11  ACSRES-INSURANCE-END-DATE      PIC X(10).
       *
-      *         ��ô�۾���
+      *         負担額情報
                 07  ACSRES-SYUNOU-ARA.
-      *             ������
+      *             請求金額
                     09  ACSRES-SKYMONEY            PIC  X(10).
-      *             �ݸ�Ŭ�Ѷ��
+      *             保険適用金額
                     09  ACSRES-HKNTEKMONEY         PIC  X(10).
-      *             ������
+      *             自費金額
                     09  ACSRES-JIHIMONEY           PIC  X(10).
-      *             ���ް�����ô��
+      *             薬剤一部負担金
                     09  ACSRES-YKZ-FTN             PIC  X(10).
-      *             Ϸ�Ͱ�����ô��
+      *             老人一部負担金
                     09  ACSRES-RJN-FTN             PIC  X(10).
-      *             ���������ô��
+      *             公費一部負担金
                     09  ACSRES-KOH-FTN             PIC  X(10).
-      *             ϫ�Ҷ�۹��
+      *             労災金額合計
                     09  ACSRES-RSI-TOTALMONEY      PIC  X(10).
-      *         ������������
+      *         請求点数情報
                 07  ACSRES-SYUNOU-ARA.
-      *             �ݸ��������
+      *             保険合計点数
                     09  ACSRES-TOTAL-HKNTEN        PIC  X(10).
-      *             �ݸ�����
+      *             保険点数
                     09  ACSRES-HKNTEN-G.
                         11  ACSRES-HKNTEN-TBL      OCCURS   16.
                             13  ACSRES-HKNTEN-MEI      PIC  X(30).

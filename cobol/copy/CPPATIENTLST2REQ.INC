@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,13 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £¡£–£…•Í•Ø•®•π•»¥µº‘æ Û∞ÏÕ˜ºË∆¿      COPY (CPPATIENTLST2SEQ.INC)
+      *    Ôº°Ôº∞Ôº©„É™„ÇØ„Ç®„Çπ„ÉàÊÇ£ËÄÖÊÉÖÂ†±‰∏ÄË¶ßÂèñÂæó      COPY (CPPATIENTLST2SEQ.INC)
       ******************************************************************
         01  XML-PATIENTLST2REQ.
             03  PATLSTREQ-OBJECT           PIC X(36).
             03  PATLSTREQ-MODE             PIC S9(9)   BINARY.
             03  PATLSTREQ-PATIENTINFOREQ.
-      *       ¥µº‘»÷πÊ
+      *       ÊÇ£ËÄÖÁï™Âè∑
               05  PATLSTREQ-PATIENTID-G.
                   07  PATLSTREQ-PATIENTID     PIC X(20)
                                            OCCURS   100.

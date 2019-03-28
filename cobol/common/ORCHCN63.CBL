@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCN63.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ʬ���������ٽ�
-      *  ����ݡ��ͥ��̾  : ʬ���������ٽ�ʣȣãΣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/08/26    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 分娩費用明細書
+      *  コンポーネント名  : 分娩費用明細書（ＨＣＮ６３）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/08/26    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,43 +34,43 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC.
            03  PRT-PRTDATA         PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
            COPY    "CPASGNPARA.INC".
       *
-      *    Ģɼ�ΰ�
+      *    帳票領域
            COPY    "HCN63V2.INC"   REPLACING  //HCN63V2//
                                    BY         //HCN63//.
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-BUNBEN          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-HOSPNAME        PIC X(100).
            03  WRK-HOSPNAME-R      REDEFINES   WRK-HOSPNAME.
@@ -100,7 +100,7 @@
                05  WRK-STR1        PIC X(100).
                05  WRK-STR2        PIC X(100).
       *
-      *    �ץ�����४�ץ����
+      *    プログラムオプション
        01  PO-AREA.
            03  PO-IN               PIC X(25).
            03  PO-OT               PIC X(100).
@@ -108,61 +108,61 @@
            03  PO-KANANAME         PIC X(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ŵ��ؾ���ݴ��ܾ���
+      *    医療機関情報−基本情報
            COPY    "CPSK1001.INC".
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            COPY    "CPSK1002.INC".
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY    "CPSK1034.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
-      *    ���ŵ���̾���Խ�����
+      *    医療機関名称編集情報
            COPY    "CPSK1901.INC".
-      *    ���ŵ��ؽ����Խ�����
+      *    医療機関住所編集情報
            COPY    "CPSK1902.INC".
       *
-      *    ʬ�ھ���
+      *    分娩情報
        01  BUNBEN-REC.
            COPY    "CPBUNBEN.INC".
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ�����
+      *    全角変換サブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
            COPY    "CPORCHCN63.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -177,7 +177,7 @@
                                    .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -190,7 +190,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -203,24 +203,24 @@
       *
            MOVE    ONPRTDATA-DATA  TO  ORCHCN63AREA
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            PERFORM 900-1034-READ-SEC
       *
-      *    ���ŵ��ؾ���ݴ��ܾ���
+      *    医療機関情報−基本情報
            PERFORM 900-1001-READ-SEC
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            PERFORM 900-1002-READ-SEC
            MOVE    SYS-1002-ADRS   TO  WRK-HOSPADRS
            MOVE    SYS-1002-TEL    TO  WRK-HOSPTEL
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
       *
-      *    ʬ�ھ���
+      *    分娩情報
            PERFORM 900-BUNBEN-READ-SEC
-      *    ���Ծ���
+      *    患者情報
            PERFORM 900-PTINF-READ-SEC
       *
            PERFORM 1001-PROGRAM-OPTION-SEC
@@ -230,7 +230,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ�����Խ�����
+      *    プログラムオプション編集処理
       *****************************************************************
        1001-PROGRAM-OPTION-SEC     SECTION.
       *
@@ -253,7 +253,7 @@
        1001-PROGRAM-OPTION-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ�����Խ�����
+      *    プログラムオプション編集処理
       *****************************************************************
        10011-ORCSPRGOPTION-SEC     SECTION.
       *
@@ -273,39 +273,39 @@
        10011-ORCSPRGOPTION-EXT.
            EXIT.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            INITIALIZE                  HCN63
       *
-      *    ʬ�ڶ�ʬ
+      *    分娩区分
            EVALUATE    BUNBEN-BUNBENKBN
                WHEN    1
                    IF    ( PO-BUNBEN-TITLE     =   "1" OR "2" )
-                       MOVE    "������ʬ�ڡ�"  TO  HCN63-BUNBENKBN
+                       MOVE    "（正常分娩）"  TO  HCN63-BUNBENKBN
                    END-IF
-      *            ʬ�ڲ����
-                   MOVE    "�ݡ�������"        TO  HCN63-KAIJO-MONEY
-      *            ʬ����
+      *            分娩介助料
+                   MOVE    "−　　　　"        TO  HCN63-KAIJO-MONEY
+      *            分娩料
                    MOVE    BUNBEN-BUNBEN-MONEY TO  WRK-Z10
                    MOVE    WRK-Z10             TO  WRK-MOJI-IN
                    PERFORM 31011-KANA-HEN-SEC
                    MOVE    WRK-MOJI-OUT        TO  HCN63-BUNBEN-MONEY
                WHEN    2
                    IF    ( PO-BUNBEN-TITLE     =   "1" )
-                       MOVE    "�ʰ۾�ʬ�ڡ�"  TO  HCN63-BUNBENKBN
+                       MOVE    "（異常分娩）"  TO  HCN63-BUNBENKBN
                    END-IF
-      *            ʬ�ڲ����
+      *            分娩介助料
                    MOVE    BUNBEN-KAIJO-MONEY  TO  WRK-Z10
                    MOVE    WRK-Z10             TO  WRK-MOJI-IN
                    PERFORM 31011-KANA-HEN-SEC
                    MOVE    WRK-MOJI-OUT        TO  HCN63-KAIJO-MONEY
-      *            ʬ����
-                   MOVE    "�ݡ�������"        TO  HCN63-BUNBEN-MONEY
+      *            分娩料
+                   MOVE    "−　　　　"        TO  HCN63-BUNBEN-MONEY
            END-EVALUATE
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    BUNBEN-PTNUM    TO  HCN63-PTNUM
       *
            IF    ( PO-KANANAME     =   "1" )
@@ -313,133 +313,133 @@
                                    TO  HCN63-KANANAME
            END-IF
       *
-      *    ���Ի�̾
+      *    患者氏名
            IF    ( PTINF-NAME (31:)    =   SPACE )
                MOVE    PTINF-NAME  TO  HCN63-NAME
            ELSE
                MOVE    PTINF-NAME  TO  HCN63-NAME2
            END-IF
       *
-      *    ���ե��å�
+      *    日付セット
            MOVE    SPA-SYSYMD      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  HCN63-PRTYMD
       *
-      *    �л���
+      *    出産日
            MOVE    BUNBEN-BIRTHDAY TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  HCN63-BIRTHDAY
       *
-      *    ľ�ܻ�ʧ����
+      *    直接支払制度
            EVALUATE    BUNBEN-RIYOUKBN
                WHEN    "0"
-                   MOVE    "���Ѥ��ʤ�"    TO  HCN63-RIYOUKBN
+                   MOVE    "利用しない"    TO  HCN63-RIYOUKBN
                    MOVE
-        "�������ٽ�����ƤˤĤ��Ƥϡ�ľ�ܻ�ʧ���١פ����Ѥ��Ƥ��ޤ���"
+        "この明細書の内容については「直接支払制度」を利用していません。"
                                            TO  HCN63-COMMENT
                WHEN    "1"
-                   MOVE    "���Ѥ���"      TO  HCN63-RIYOUKBN
+                   MOVE    "利用する"      TO  HCN63-RIYOUKBN
                    MOVE
-              "�������ٽ�����Ƥϡ����������פ����Ƥ���㤢��ޤ���"
+              "この明細書の内容は「専用請求書」の内容と相違ありません。"
                                            TO  HCN63-COMMENT
            END-EVALUATE
       *
-      *    ���ʰ���������ٶ�ʬ
+      *    産科医療補償制度区分
            EVALUATE    BUNBEN-SANKAKBN
                WHEN    "1"
-                   MOVE    "�о�"          TO  HCN63-SANKAKBN
+                   MOVE    "対象"          TO  HCN63-SANKAKBN
                WHEN    "2"
-                   MOVE    "�оݳ�"        TO  HCN63-SANKAKBN
+                   MOVE    "対象外"        TO  HCN63-SANKAKBN
                WHEN    "3"
-                   MOVE    "����"          TO  HCN63-SANKAKBN
+                   MOVE    "混在"          TO  HCN63-SANKAKBN
            END-EVALUATE
       *
-      *    ��������
+      *    入院日数
            IF    ( BUNBEN-NYUGAIKBN    =   "1" )
-               MOVE    "��������"      TO  HCN63-LBLNISSU
+               MOVE    "入院日数"      TO  HCN63-LBLNISSU
            ELSE
-               MOVE    "��������"      TO  HCN63-LBLNISSU
+               MOVE    "診療日数"      TO  HCN63-LBLNISSU
            END-IF
            MOVE    BUNBEN-NYUIN-DAY    TO  WRK-Z03
            MOVE    WRK-Z03             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-NYUIN-DAY
       *
-      *    ������
+      *    入院料
            MOVE    BUNBEN-NYU-MONEY    TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-NYU-MONEY
       *
-      *    ��������
+      *    室料差額
            MOVE    BUNBEN-RMSGK-MONEY  TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-RMSGK-MONEY
       *
-      *    �����������ݰ���
+      *    新生児管理保育料
            MOVE    BUNBEN-SHIN-MONEY   TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-SHIN-MONEY
       *
-      *    ������������
+      *    検査・薬剤料
            MOVE    BUNBEN-KNS-MONEY    TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-KNS-MONEY
       *
-      *    ���֡�������
+      *    処置・手当料
            MOVE    BUNBEN-SYC-MONEY    TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-SYC-MONEY
       *
-      *    ���ʰ������������
+      *    産科医療補償制度料
            MOVE    BUNBEN-SNK-MONEY    TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-SNK-MONEY
       *
-      *    ����¾
+      *    その他
            MOVE    BUNBEN-ETC-MONEY    TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-ETC-MONEY
       *
-      *    ������ô����
+      *    一部負担金等
            MOVE    BUNBEN-ICBFTN-MONEY TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-ICBFTN-MONEY
       *
-      *    ǥ�ع����ô��
+      *    妊婦合計負担額
            MOVE    BUNBEN-NINPUFTN-MONEY
                                        TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-NINPUFTN-MONEY
       *
-      *    ���������
+      *    代理受取額
            MOVE    BUNBEN-DAIRI-MONEY  TO  WRK-Z10
            MOVE    WRK-Z10             TO  WRK-MOJI-IN
            PERFORM 31011-KANA-HEN-SEC
            MOVE    WRK-MOJI-OUT        TO  HCN63-DAIRI-MONEY
       *
-      *    �����
+      *    所在地
            MOVE    WRK-HOSPADRS    TO  HCN63-HOSPADRS
-           INSPECT HCN63-HOSPADRS      REPLACING ALL "  " BY "��"
-      *    ���ŵ���̾��
+           INSPECT HCN63-HOSPADRS      REPLACING ALL "  " BY "　"
+      *    医療機関名称
            MOVE    WRK-HOSPNAME    TO  HCN63-HOSPNAME
-           INSPECT HCN63-HOSPNAME      REPLACING ALL "  " BY "��"
-      *    �����ֹ�
+           INSPECT HCN63-HOSPNAME      REPLACING ALL "  " BY "　"
+      *    電話番号
            MOVE    WRK-HOSPTEL     TO  HCN63-HOSPTEL
       *
-      *    ʸ����
+      *    文字１
            MOVE    SPACE           TO  HCN63-MOJI1
       *    IF    ( BUNBEN-NINPUFTN-MONEY   >   BUNBEN-DAIRI-MONEY )
                MOVE    1           TO  WRK-PNT
-               STRING  "���������"  DELIMITED   BY  SIZE
+               STRING  "代理受取額"  DELIMITED   BY  SIZE
                INTO    HCN63-MOJI1
                WITH POINTER WRK-PNT
                END-STRING
@@ -450,7 +450,7 @@
                MOVE    WRK-MOJI-OUT    TO  WRK-MOJI-IN
                PERFORM 31011-KANA-HEN-SEC
                STRING  WRK-MOJI-OUT    DELIMITED   BY  SPACE
-                       "�ߤˤĤ�������������"
+                       "円につき、現金精算は"
                INTO    HCN63-MOJI1
                WITH POINTER WRK-PNT
                END-STRING
@@ -463,17 +463,17 @@
                MOVE    WRK-MOJI-OUT   TO  WRK-MOJI-IN
                PERFORM 31011-KANA-HEN-SEC
                STRING  WRK-MOJI-OUT    DELIMITED   BY  SPACE
-                       "��"
+                       "円"
                INTO    HCN63-MOJI1
                WITH POINTER WRK-PNT
                END-STRING
       *    END-IF
       *
-      *    �л�����
+      *    出産児数
            MOVE    SPACE           TO  WRK-MOJI-IN
-           STRING  "�ʽл�������"      DELIMITED BY SIZE
+           STRING  "（出産児数："      DELIMITED BY SIZE
                    BUNBEN-BIRTHCNT     DELIMITED BY SIZE
-                   "�͡�"              DELIMITED BY SIZE
+                   "人）"              DELIMITED BY SIZE
                    INTO                WRK-MOJI-IN
            END-STRING
            PERFORM 31011-KANA-HEN-SEC
@@ -481,16 +481,16 @@
       *
            IF    ( BUNBEN-RIYOUKBN     =   "1" )
             AND  ( BUNBEN-BUNBENKBN    =   "1" )
-      *        ʸ����
-               STRING  "���嵭������ô�����ϡ�����������"
+      *        文字２
+               STRING  "※上記一部負担金等は、専用請求書上"
                                            DELIMITED   BY  SIZE
-                       "�֤���¾�פ����ѤȤ��Ʒ׾夷�Ƥ��ޤ���"
+                       "「その他」の費用として計上しています。"
                                            DELIMITED   BY  SIZE
                INTO    HCN63-MOJI2
                END-STRING
            END-IF
       *
-      *    ����
+      *    備考
       *     MOVE    BUNBEN-BIKOU        TO  WRK-MOJI-IN
       *     PERFORM 31011-KANA-HEN-SEC
       *     MOVE    WRK-MOJI-OUT        TO  HCN63-BIKOU
@@ -508,7 +508,7 @@
                INTO    HCN63-LOPTION
                END-STRING
            END-IF
-      *    Ģɼ��������
+      *    帳票印刷処理
            PERFORM 400-PRT-WRITE-SEC
       *
            .
@@ -516,11 +516,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���Ͻ���
+      *    帳票出力処理
       *****************************************************************
        400-PRT-WRITE-SEC           SECTION.
       *
-      *    �����ѥե��������
+      *    印刷用ファイル作成
            MOVE    SPA-HOSPNUM     TO  HC01PARA-HOSPNUM
            MOVE    "HC63"          TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
@@ -536,13 +536,13 @@
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
-      *    �����ѥǡ�������
+      *    印刷用データ出力
            MOVE    HCN63           TO  PRT-PRTDATA
            WRITE                       PRT-REC
       *
            CLOSE                       PRT-FILE
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            INITIALIZE                  ORCSMKPRTAREA
            MOVE    "HC01.sh"       TO  MKPRT-ID
            MOVE    "HCN63V2.red"   TO  MKPRT-DIA
@@ -550,7 +550,7 @@
            MOVE    ASGNPARA        TO  MKPRT-DAT
            MOVE    SYS-1034-PRTNM(13)
                                    TO  MKPRT-PRTNM
-           MOVE   "ʬ���������ٽ�" TO  MKPRT-INFO
+           MOVE   "分娩費用明細書" TO  MKPRT-INFO
            CALL   "ORCSMKPRT1"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -560,7 +560,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -569,7 +569,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ͤ����
+      *    左詰め処理
       *****************************************************************
        31011-LTRIM-SEC             SECTION.
       *
@@ -588,11 +588,11 @@
        31011-LTRIM-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        31011-KANA-HEN-SEC          SECTION.
       *
-      *    �����Ѵ�
+      *    全角変換
            MOVE    SPACE           TO  ORCSKANACHKAREA
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"             TO  KANACHK-SYORI
@@ -607,7 +607,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -620,14 +620,14 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3
                                    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "　"
       *
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹���
+      *    システム管理マスタ読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
       *
@@ -657,11 +657,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؾ���ݴ��ܾ����ɤ߹���
+      *    医療機関情報−基本情報読み込み
       *****************************************************************
        900-1001-READ-SEC           SECTION.
       *
-      *    ���ŵ��ؾ���ݴ��ܾ����ɤ߹���
+      *    医療機関情報−基本情報読み込み
            MOVE    SPACE           TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"          TO  SYS-1001-KANRICD
@@ -682,11 +682,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ�����ɤ߹���
+      *    医療機関情報−所在地、連絡先読み込み
       *****************************************************************
        900-1002-READ-SEC           SECTION.
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ�����ɤ߹���
+      *    医療機関情報−所在地、連絡先読み込み
            MOVE    SPACE           TO  SYS-1002-REC
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"          TO  SYS-1002-KANRICD
@@ -707,11 +707,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץ��̾������ƾ����ɤ߹���
+      *    出力先プリンタ名割り当て情報読み込み
       *****************************************************************
        900-1034-READ-SEC           SECTION.
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                  SYS-1034-REC
            INITIALIZE                  ORCSPRTNMAREA
            MOVE    "2"             TO  ORCSPRTNM-KBN
@@ -730,11 +730,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
       *****************************************************************
        900-1900-READ-SEC           SECTION.
       *
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
            MOVE    SPACE           TO  SYS-1900-REC
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
@@ -747,9 +747,9 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(11) NOT =   SPACE
-      *            ���ŵ���̾���Խ�����
+      *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
-      *            ���ŵ��ؽ����Խ�����
+      *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
                END-IF
            ELSE
@@ -761,11 +761,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
            MOVE    SPACE           TO  SYS-1901-REC
            INITIALIZE                  SYS-1901-REC
            MOVE    "1901"          TO  SYS-1901-KANRICD
@@ -791,11 +791,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
            MOVE    "1902"          TO  SYS-1902-KANRICD
@@ -820,7 +820,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʬ�ھ���
+      *    分娩情報
       *****************************************************************
        900-BUNBEN-READ-SEC         SECTION.
       *
@@ -861,7 +861,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ���
+      *    患者情報
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -899,7 +899,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɹ����Ͻ���
+      *    ＤＢ読込開始処理
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
@@ -914,7 +914,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɹ���������
+      *    ＤＢ読込検索処理
       *****************************************************************
        920-DBFETCH-SEC             SECTION.
       *
@@ -929,7 +929,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɹ���λ����
+      *    ＤＢ読込終了処理
       *****************************************************************
        930-DBCLOSE-SEC             SECTION.
       *

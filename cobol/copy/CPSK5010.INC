@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,76 +16,76 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5004.INC)   *
-      *         ¡Ê£µ£°£±£°¡Ë                            *
-      *         Æþ±¡ÀÁµá´ÉÍý¥Þ¥¹¥¿                      *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5004.INC)   *
+      *         ï¼ˆï¼•ï¼ï¼‘ï¼ï¼‰                            *
+      *         å…¥é™¢è«‹æ±‚ç®¡ç†ãƒžã‚¹ã‚¿                      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-5010-REC.
            03  SYS-5010-KEY.
                05  SYS-5010-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5010-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-5010-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5010-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5010-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5010-TBL.
                05  SYS-5010-SEIKYU-DAY-VAL.
-      *£±´üÀÁµáÆü
+      *ï¼‘æœŸè«‹æ±‚æ—¥
                    07  SYS-5010-SEIKYU-DAY1 PIC  9(02).
-      *£²´üÀÁµáÆü
+      *ï¼’æœŸè«‹æ±‚æ—¥
                    07  SYS-5010-SEIKYU-DAY2 PIC  9(02).
-      *£³´üÀÁµáÆü
+      *ï¼“æœŸè«‹æ±‚æ—¥
                    07  SYS-5010-SEIKYU-DAY3 PIC  9(02).
                05  SYS-5010-SEIKYU-DAY-R    REDEFINES
                    SYS-5010-SEIKYU-DAY-VAL.
                    07  SYS-5010-SEIKYU-DAY-OCC   OCCURS  3.
                        09  SYS-5010-SEIKYU-DAY
                                             PIC  9(02).
-      *        Í½È÷
+      *        äºˆå‚™
                05  SYS-5010-YOBI1           PIC  X(10).
-      *        Æþ¶â¶èÊ¬
+      *        å…¥é‡‘åŒºåˆ†
                05  SYS-5010-NYUKINKBN       PIC  X(01).
-      *        ºÆ½èÍý¶èÊ¬
+      *        å†å‡¦ç†åŒºåˆ†
                05  SYS-5010-SAISYORIKBN     PIC  X(01).
-      *        Æþ¶â°õ»ú¶èÊ¬
+      *        å…¥é‡‘å°å­—åŒºåˆ†
                05  SYS-5010-NYUKINPRTKBN    PIC  X(01).
-      *        ºï½ü¶èÊ¬
+      *        å‰Šé™¤åŒºåˆ†
                05  SYS-5010-DELKBN          PIC  X(01).
-      *        ÀÁµá½ñÈ¯¹ÔÊýË¡¶èÊ¬
+      *        è«‹æ±‚æ›¸ç™ºè¡Œæ–¹æ³•åŒºåˆ†
                05  SYS-5010-SKYSUMKBN       PIC  X(01).
-      *        ¼«Æ°Á«°Ü¶èÊ¬
+      *        è‡ªå‹•é·ç§»åŒºåˆ†
                05  SYS-5010-CHGWINDOWKBN    PIC  X(01).
-      *        ÀÁµá½ñ°õºþ¶èÊ¬
+      *        è«‹æ±‚æ›¸å°åˆ·åŒºåˆ†
                05  SYS-5010-SKYPRTKBN       PIC  X(01).
-      *        ÌÀºÙ½ñ°õºþ¶èÊ¬
+      *        æ˜Žç´°æ›¸å°åˆ·åŒºåˆ†
                05  SYS-5010-SRYPRTKBN       PIC  X(01).
-      *        ´µ¼Ô¸ÄÊÌ¾ðÊó»²¾È¶èÊ¬
+      *        æ‚£è€…å€‹åˆ¥æƒ…å ±å‚ç…§åŒºåˆ†
                05  SYS-5010-PTINFREFKBN     PIC  X(01).
-      *        ½ÐÎÏ½ç¶èÊ¬
+      *        å‡ºåŠ›é †åŒºåˆ†
                05  SYS-5010-PRTJYUN         PIC  X(02).
-      *        Âà±¡´µ¼Ô½¸·×¶èÊ¬
+      *        é€€é™¢æ‚£è€…é›†è¨ˆåŒºåˆ†
                05  SYS-5010-TAIINGRPKBN     PIC  X(01).
-      *        Í½È÷
+      *        äºˆå‚™
                05  SYS-5010-YOBI2           PIC  X(472).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5010-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5010-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5010-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5010-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5010-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5010-UPD-KEY.
                05  SYS-5010-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5010-UPD-KANRICD     PIC X(04).

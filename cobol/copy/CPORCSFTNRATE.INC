@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,31 +15,31 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ************************************************************
-      *    ���Խ��������Խ��ѥ�᥿
+      *    患者所得情報編集パラメタ
       *    COPY  (CPORCSFTNRATE.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSFTNRATEAREA.
-      *������
-      *    ���ŵ��أɣ�
+      *入力値
+      *    医療機関ＩＤ
            03  LNK-FTNRATE-HOSPNUM         PIC  9(02).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  LNK-FTNRATE-PTID            PIC  9(10).
-      *    ����ǯ����
+      *    処理年月日
            03  LNK-FTNRATE-SRYYMD          PIC  X(08).
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            03  LNK-FTNRATE-HKNCOMBINUM     PIC  X(04).
-      *    �ݸ��ȹ礻�����Ѥߡ�1:�����Ѥߡ�
+      *    保険組合せ検索済み（1:検索済み）
            03  LNK-FTNRATE-KBN             PIC  X(01).
       *
-      *�ֵѹ���
+      *返却項目
            03  LNK-FTNRATE-HENKYAKU-AREA.
                05  LNK-FTNRATE-NYUIN       PIC  9(03).
                05  LNK-FTNRATE-GAIRAI      PIC  9(03).
       *
-      *����������
+      *復帰コード
            03  LNK-FTNRATE-RC              PIC S9(09) BINARY.
       *

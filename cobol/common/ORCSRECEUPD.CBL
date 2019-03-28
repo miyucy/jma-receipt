@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSRECEUPD.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : 
-      *  ������            : �쥻�ץȴ�����������
-      *  05/02/08    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 
+      *  管理者            : レセプト管理更新処理
+      *  05/02/08    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *
-      *  04.07.01    NACL-¿��Ǽ  14/05/15  �쥻�ץȰ��������ޤ��ΤȤ���
-      *                                     �������ʤ�
-      *                                     �������оݳ��Ȥ���
-      *                                     �軰�Թ԰٤ΤȤ��ϰ���ʬ�⹹�� 
+      *  04.07.01    NACL-多々納  14/05/15  レセプト一括作成がまだのときは
+      *                                     更新しない
+      *                                     入院は対象外とする
+      *                                     第三者行為のときは医保分も更新 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -45,16 +45,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-JYURRK          PIC 9(01).
            03  FLG-RECEUPD         PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
       *
-      *    1:���ݤΤ� 2:�軰�Թ԰٤Τ� 9:ξ������
+      *    1:医保のみ 2:第三者行為のみ 9:両方あり
            03  FLG-DAISANSYA       PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -68,45 +68,45 @@
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
-      *    �쥻�ץȺ�����������
+      *    レセプト作成管理退避
        01  WRK-RECEUPD-REC.
            COPY    "CPRECEUPD.INC" REPLACING  //RECEUPD-//
                                    BY         //WRK-RECEUPD-//.
       *     
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    �쥻�ץȺ�������
+      *    レセプト作成管理
        01  RECEUPD-REC.
            COPY    "CPRECEUPD.INC".
       *
-      *    �쥻�ץȴ���     
+      *    レセプト管理     
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -120,7 +120,7 @@ grpsys      COPY    "COMMON-SPA".
            SPA-AREA.
      *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *    
@@ -128,7 +128,7 @@ grpsys      COPY    "COMMON-SPA".
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -150,42 +150,42 @@ grpsys      COPY    "COMMON-SPA".
                                            FLG-DAISANSYA
       *
            IF      LNK-UPD-SYORI       =   "2"
-      *        �������оݳ�
+      *        入院は対象外
                IF      LNK-UPD-NYUGAIKBN   =   "1"
                                DISPLAY "NYUIN "
                    GO  TO  000-PROC-EXT
                END-IF
       *
-      *        ������Υ쥻�ץȰ�������̵ͭ
+      *        該当月のレセプト一括作成の有無
                INITIALIZE                  RECE07-REC
-      *        0:����
-      *        1:ϫ�ҡ���̳�ҳ���ϫ�ҽ���
-      *        2:�����ա�ϫ�ҽ���
-      *        4:�����աʷ��ݽ���
-      *        5:��̳�ҳ��ʷ��ݽ���
-      *        6:����
-      *        7:�����ա��軰�Թ԰١�
+      *        0:医保
+      *        1:労災、公務災害（労災準拠）
+      *        2:自賠責（労災準拠）
+      *        4:自賠責（健保準拠）
+      *        5:公務災害（健保準拠）
+      *        6:公害
+      *        7:自賠責（第三者行為）
                EVALUATE    LNK-UPD-HKNKBN
                    WHEN    "0"
-      *                ����
+      *                医保
                        MOVE    "HC06"              TO  RECE07-PRTID
                        MOVE    "0"                 TO  RECE07-RECEKBN
                    WHEN    "1"
                    WHEN    "5"
-      *                ϫ��
+      *                労災
                        MOVE    "HC21"              TO  RECE07-PRTID
                        MOVE    "3"                 TO  RECE07-RECEKBN
                    WHEN    "2"
                    WHEN    "4"
-      *                �����աʿ��ͼ���
+      *                自賠責（新様式）
                        MOVE    "HC23"              TO  RECE07-PRTID
                        MOVE    "4"                 TO  RECE07-RECEKBN
                    WHEN    "7"
-      *                �����ա��軰�Թ԰١�
+      *                自賠責（第三者行為）
                        MOVE    "HC23"              TO  RECE07-PRTID
                        MOVE    "8"                 TO  RECE07-RECEKBN
                    WHEN    "6"
-      *                ����
+      *                公害
                        MOVE    "HC25"              TO  RECE07-PRTID
                        MOVE    "6"                 TO  RECE07-RECEKBN
                END-EVALUATE
@@ -201,7 +201,7 @@ grpsys         MOVE    LNK-UPD-HOSPNUM     TO  RECE07-HOSPNUM
                    EVALUATE    LNK-UPD-HKNKBN
                        WHEN    "2"
                        WHEN    "4"
-      *                    �����աʽ����ͼ���
+      *                    自賠責（従来様式）
                            INITIALIZE                  RECE07-REC
                            MOVE    "HC23"          TO  RECE07-PRTID
                            MOVE    "5"             TO  RECE07-RECEKBN
@@ -224,7 +224,7 @@ grpsys                     MOVE    LNK-UPD-HOSPNUM TO  RECE07-HOSPNUM
                    END-EVALUATE
                END-IF
       *
-      *        �軰�Թ԰٤ΤȤ��ϰ���ʬ������å�
+      *        第三者行為のときは医保分もチェック
                EVALUATE    LNK-UPD-HKNKBN
                    WHEN    "7"
                        INITIALIZE                  RECE07-REC
@@ -289,7 +289,7 @@ grpsys                 MOVE    LNK-UPD-HOSPNUM TO  RECE07-HOSPNUM
            .
       *     
       *****************************************************************
-      *    �쥻�ץȺ��������Խ�����
+      *    レセプト作成管理編集処理
       *****************************************************************
        200-HENSYU-SEC            SECTION.
       *
@@ -312,7 +312,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR          LNK-UPD-RC NOT =   ZERO
                INITIALIZE                  RECEUPD-REC
                MOVE    JYURRK-HKNKBN   TO  RECEUPD-HKNKBN
-      *        �軰�Թ԰٤ǰ��ݤΤ�¸�ߤ���Ȥ�
+      *        第三者行為で医保のみ存在するとき
                IF      FLG-DAISANSYA   =   1
                    MOVE    "0"             TO  RECEUPD-HKNKBN
                END-IF
@@ -320,7 +320,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      LNK-UPD-RC      =   "2"
                    CONTINUE
                ELSE
-      *            �軰�Թ԰٤ǰ��ݡ��軰�Թ԰٤�ξ��¸�ߤ���Ȥ�
+      *            第三者行為で医保、第三者行為が両方存在するとき
                    IF      FLG-DAISANSYA   =   9
                        INITIALIZE                  RECEUPD-REC
                        MOVE    "0"             TO  RECEUPD-HKNKBN
@@ -342,7 +342,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȺ���������������
+      *    レセプト作成管理更新処理
       *****************************************************************
        2001-RECEUPD-SEC         SECTION.
       *
@@ -393,7 +393,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȺ��������ɹ�
+      *    レセプト作成管理読込
       *****************************************************************
        900-RECEUPD-READ-SEC         SECTION.
       *
@@ -433,7 +433,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ�
+      *    受診履歴読込
       *****************************************************************
        900-JYURRK-READ-N-SEC         SECTION.
       *
@@ -459,7 +459,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    �쥻�ץȴ����ɹ�
+      *    レセプト管理読込
       *****************************************************************
        900-RECE07-INV-SEC         SECTION.
       *
@@ -489,7 +489,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -500,7 +500,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -512,7 +512,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -524,7 +524,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

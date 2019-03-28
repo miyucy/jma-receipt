@@ -1,35 +1,35 @@
 kanri_cd    : "9001"
-name        : "£Ã£Ì£Á£É£ÍÄÌ¿®Áê¼êÀè¾ğÊó"
+name        : "ï¼£ï¼¬ï¼¡ï¼©ï¼­é€šä¿¡ç›¸æ‰‹å…ˆæƒ…å ±"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "ADDRESS"
-  item_jp   : "Á÷¿®¥¢¥É¥ì¥¹"
+  item_jp   : "é€ä¿¡ã‚¢ãƒ‰ãƒ¬ã‚¹"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "PORT1"
-  item_jp   : "¥İ¡¼¥È¡İ¼õÉÕ"
+  item_jp   : "ãƒãƒ¼ãƒˆâˆ’å—ä»˜"
   type      : "X"
   start     : 41
   length    : 5
 - item_no   : 3
   item      : "PORT2"
-  item_jp   : "¥İ¡¼¥È¡İÀÁµá"
+  item_jp   : "ãƒãƒ¼ãƒˆâˆ’è«‹æ±‚"
   type      : "X"
   start     : 46
   length    : 5
 - item_no   : 4
   item      : "MEMO"
-  item_jp   : "¥á¥â"
+  item_jp   : "ãƒ¡ãƒ¢"
   type      : "X"
   start     : 51
   length    : 40
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 91
   length    : 409

@@ -1,13 +1,13 @@
 --                                    --
--- ею©Т╔ч╔╧╔©╔в╔И╔╧                   --
--- е╨иу╩ЯнамялТ╨чй╛нЮ╤Хй╛╓нди╡ц       --
+-- Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ц┐≈Ц┐╘Ц┌╧                   --
+-- Ф╥╩Д╩≤ХЁ┤Ф√≥Г■╗Х√╛Е┴╓Е┬├И║·Е▄╨Е┬├Ц│╝Х©╫Е┼═       --
 --                                    --
---   е╨иу╩ЯнамялТ╨чй╛нЮ╤Хй╛(TENPUYAKKBN) --
+--   Ф╥╩Д╩≤ХЁ┤Ф√≥Г■╗Х√╛Е┴╓Е┬├И║·Е▄╨Е┬├(TENPUYAKKBN) --
 --                                    --
 -- Create Date : 2003/08/05           --
 --                                    --
 
--- TBL_TENSUPLUSWK  ╨Ню╝              --
+-- TBL_TENSUPLUSWK  Д╫°Ф┬░              --
 
 create table TBL_TENSUPLUSWK (
 SRYCD				char(9)		not null,
@@ -24,16 +24,16 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_TENSUPLUSWK_primary_key primary key (SRYCD,YUKOSTYMD,YUKOEDYMD));
 
--- TBL_TENSUPLUS ╒╙ TBL_TENSUPLUSWK   --
+-- TBL_TENSUPLUS Б├▓ TBL_TENSUPLUSWK   --
 
 insert into TBL_TENSUPLUSWK
 select * from TBL_TENSUPLUS;
 
--- TBL_TENSUPLUS ╨О╫Э               --
+-- TBL_TENSUPLUS Е┴┼И≥╓               --
 
 drop table TBL_TENSUPLUS;
 
--- TBL_TENSUPLUS ╨Ню╝               --
+-- TBL_TENSUPLUS Д╫°Ф┬░               --
 
 create table TBL_TENSUPLUS (
 SRYCD				char(9)		not null,
@@ -51,7 +51,7 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_TENSUPLUS_primary_key primary key (SRYCD,YUKOSTYMD,YUKOEDYMD));
 
--- TBL_TENSUPLUSWK ╒╙ TBL_TENSUPLUS   --
+-- TBL_TENSUPLUSWK Б├▓ TBL_TENSUPLUS   --
 
 insert into TBL_TENSUPLUS
 (SRYCD,
@@ -85,6 +85,6 @@ UPHMS
 from TBL_TENSUPLUSWK;
 
 
--- TBL_TENSUPLUSWK ╨О╫Э             --
+-- TBL_TENSUPLUSWK Е┴┼И≥╓             --
 
 drop table TBL_TENSUPLUSWK;

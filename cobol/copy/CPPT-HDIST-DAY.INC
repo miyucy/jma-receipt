@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ���ԥ쥻�ץ�ʬ��ơ��֥�       (CPPT-HDIST-DAY.INC)
+      *  患者レセプト分割テーブル       (CPPT-HDIST-DAY.INC)
       *****************************************************************
-      *  ��������
-      * Maj/Min/Rev  ������       ����      ����
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
       *01  PT-HDIST-DAY-REC.
            03  PT-HDIST-DAY-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PT-HDIST-DAY-HOSPNUM    PIC 9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PT-HDIST-DAY-PTID       PIC 9(10).
-      *������ʬ
+      *入外区分
                05  PT-HDIST-DAY-NYUGAIKBN  PIC X(01).
-      *����ǯ��
+      *診療年月
                05  PT-HDIST-DAY-SRYYM      PIC X(06).
-      *��ʬ��
+      *振分日
                05  PT-HDIST-DAY-DAY        PIC X(02).
-      *�쥻�ץȶ�ʬ
+      *レセプト区分
                05  PT-HDIST-DAY-RECEIPT-KBN
                                            PIC X(01).
-      *�ݸ��ȹ礻����ʣ����� �������
+      *保険組合せ情報（１：前 ２：後）
            03  PT-HDIST-DAY-HKNCOMBI-INF.
                05  PT-HDIST-DAY-HKNCOMBI-OCC   OCCURS 2.
                    07  PT-HDIST-DAY-HKNCOMBI-T OCCURS 20.
-      *�ݸ��ȹ礻
+      *保険組合せ
                        09  PT-HDIST-DAY-HKNCOMBI
                                            PIC 9(04).
-      *����ե饰
+      *削除フラグ
                        09  PT-HDIST-DAY-DLTFLG
                                            PIC X(01).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PT-HDIST-DAY-TERMID         PIC X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PT-HDIST-DAY-OPID           PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  PT-HDIST-DAY-CREYMD         PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  PT-HDIST-DAY-UPYMD          PIC X(08).
-      *��������
+      *更新時間
            03  PT-HDIST-DAY-UPHMS          PIC X(06).

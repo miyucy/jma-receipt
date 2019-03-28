@@ -1,5 +1,5 @@
 --                                    --
---  ¼ıÇ¼¥Æ¡¼¥Ö¥ëÊÑ¹¹¤ËÈ¼¤¦½èÍı        --
+--  åç´ãƒ†ãƒ¼ãƒ–ãƒ«å¤‰æ›´ã«ä¼´ã†å‡¦ç†        --
 --                                    --
 
 \set ON_ERROR_STOP
@@ -19,5 +19,5 @@ CREATE VIEW "view_bd002" as SELECT a.*,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd002" IS '¼ıÇ¼¥Ó¥å¡¼2';
+COMMENT ON VIEW "view_bd002" IS 'åç´ãƒ“ãƒ¥ãƒ¼2';
 

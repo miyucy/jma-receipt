@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥È£Ã£Ì£Á£É£ÍÀÁµáÁ÷¿®¼èÆÀ (xml2)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼£ï¼¬ï¼¡ï¼©ï¼­è«‹æ±‚é€ä¿¡å–å¾— (xml2)
       *                                      COPY (CPCLAIMACCOUNTV02REQ.INC)
       ******************************************************************
        01  XML-CLAIM-ACCOUNTV2REQ.
@@ -29,22 +29,22 @@
            02  CLACREQ-MODE              PIC S9(9)   BINARY.
            02  CLACREQ-RECORDNAME        PIC X(128).
            02  CLACREQ-CLAIM-FRONT.
-      *        ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *        ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
                03  CLACREQ-REQUEST-NUMBER    PIC X(02).
-      *        Á÷¿®ÍÑ¥³¡¼¥É
+      *        é€ä¿¡ç”¨ã‚³ãƒ¼ãƒ‰
                03  CLACREQ-SEND-CHARACTER-CODE   PIC X(01).
-      *        ´µ¼ÔÈÖ¹æ
+      *        æ‚£è€…ç•ªå·
                03  CLACREQ-PATIENTID         PIC X(20).
-      *        ¿ÇÎÅÆüÉÕ
+      *        è¨ºç™‚æ—¥ä»˜
                03  CLACREQ-PERFORM-DATE      PIC X(10).
-      *        ¿ÇÎÅ²Ê
+      *        è¨ºç™‚ç§‘
                03  CLACREQ-DEP-CODE          PIC X(02).
-      *        ¥É¥¯¥¿¡¼
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼
                03  CLACREQ-DR-CODE           PIC X(05).
-      *        ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *        ä¿é™ºçµ„åˆã›ç•ªå·
                03  CLACREQ-COMBINATION-NUMBER      PIC X(04).
-      *        ÅÁÉ¼ÈÖ¹æ
+      *        ä¼ç¥¨ç•ªå·
                03  CLACREQ-INVOICE-NUMBER    PIC X(07).
-      *        ÄûÀµ¶èÊ¬¡Ê£±¡§ÄûÀµ¡Ë
+      *        è¨‚æ­£åŒºåˆ†ï¼ˆï¼‘ï¼šè¨‚æ­£ï¼‰
                03  CLACREQ-UPDATE-CODE       PIC X(01).
       *

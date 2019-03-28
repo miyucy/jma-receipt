@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,27 +18,27 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSPRT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : Ģɼ����
-      *  ����ݡ��ͥ��̾  : Ģɼ���������������ģ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/04/16    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 帳票管理
+      *  コンポーネント名  : 帳票印刷管理・印刷ＤＢ制御
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/04/16    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    02/10/10  �����ȶ�ʬ�ɲ�
-      *  01.00.02    NACL-ƣ��    03/03/03  �����ѥե饰�ɲ�
-      *  01.01.02    NACL-ƣ��    03/03/04  �����ģ¤ؤΥץ��̾�ɲäˤ��
-      *                                     ����
-      *  01.03.01    NACL-ƣ��    03/07/07  �ץ�ӥ塼��ǽ�ɲ�
-      *                                     ���ˤ��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02/10/10  サイト区分追加
+      *  01.00.02    NACL-藤原    03/03/03  印刷済フラグ追加
+      *  01.01.02    NACL-藤原    03/03/04  印刷ＤＢへのプリンタ名追加による
+      *                                     修正
+      *  01.03.01    NACL-藤原    03/07/07  プレビュー機能追加
+      *                                     ★にて追加
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.01.01    NACL-ƣ��    07/11/22  �����쥻�ץ��б�
+      *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
-      *  04.07.01    NACL-ƣ��    13/09/20  �軰�Թ԰��б�
+      *  04.07.01    NACL-藤原    13/09/20  第三者行為対応
      *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,7 +48,7 @@
        DATA                    DIVISION.
        WORKING-STORAGE         SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
       *
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
@@ -58,44 +58,44 @@
            COPY    "ENUM-VALUE".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���������ģ�
+      *    印刷管理ＤＢ
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ģ�
+      *    印刷ＤＢ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".          
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ����ǥ��쥯�ȥ��������
+      *    一時ディレクトリ取得サブ
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *     
       *****************************************************************
       *
        LINKAGE                 SECTION.
-      *   �����ģ����極��
+      *   印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
 grpsys*
 grpsys     COPY    "COMMON-SPA".
@@ -108,11 +108,11 @@ grpsys     COPY    "COMMON-SPA".
                .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    SPA-MW���ͤ����
+      *    SPA-MWの値を取得
            INITIALIZE                  SGETTEMP-AREA
            CALL    "ORCSGETTEMP"       USING
                                        SGETTEMP-AREA
@@ -121,7 +121,7 @@ grpsys     COPY    "COMMON-SPA".
            IF      SPRT-GYOUMU-CD  NOT NUMERIC
                    MOVE  99            TO  SPRT-GYOUMU-CD
            END-IF
-      *    �����⡼�ɤΥ����å�
+      *    処理モードのチェック
            EVALUATE    SPRT-MODE
                WHEN    "INS"
                        PERFORM 110-INS-SEC
@@ -136,7 +136,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT PROGRAM
            .
       *****************************************************************
-      *    �����ģ��ɲý���
+      *    印刷ＤＢ追加処理
       *****************************************************************
        110-INS-SEC                 SECTION.
       *
@@ -157,7 +157,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       * 
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        140-DEL-SEC                 SECTION.
       *
@@ -167,7 +167,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       * 
       *****************************************************************
-      *    ���������ģ¹�������
+      *    印刷管理ＤＢ更新処理
       *****************************************************************
        200-PRTKANRI-HENSYU-SEC         SECTION.
       *
@@ -197,7 +197,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                MOVE    SPRT-SHORI-RENNUM   TO  PRTKANRI-SHORI-RENNUM
 grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                MOVE    SPRT-SKYYMD         TO  PRTKANRI-SKYYMD
-      * �� �ץ�ӥ塼�б�
+      * ★ プレビュー対応
       *        MOVE    SPRT-SRYYM          TO  PRTKANRI-SRYYM
       *        MOVE    SPRT-PRIORITY       TO  PRTKANRI-PRIORITY
                EVALUATE    SPRT-PRIORITY
@@ -232,7 +232,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PRTKANRI-HOSPNUM
                            MOVE    SPRT-PRIORITY      TO  
                                                       PRTKANRI-PRIORITY
                END-EVALUATE
-      * �� end
+      * ★ end
                MOVE    1                   TO  PRTKANRI-PAGE
                IF      SPRT-PRTFLG         =   "1" OR "D"
                    MOVE    SPRT-PRTFLG         TO  PRTKANRI-PRTFLG
@@ -280,7 +280,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
       * 
       *****************************************************************
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新処理
       *****************************************************************
        210-PRTDATA-HENSYU-SEC          SECTION.
       * 
@@ -297,7 +297,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
            MOVE    SPRT-SHORI-RENNUM   TO  PRTDATA-SHORI-RENNUM
            MOVE    SPRT-SKYYMD         TO  PRTDATA-SKYYMD
            MOVE    SPRT-PTID           TO  PRTDATA-PTID 
-      * �� �ץ�ӥ塼�б�
+      * ★ プレビュー対応
       *    MOVE    SPRT-SRYYM          TO  PRTDATA-SRYYM
       *    MOVE    SPRT-PRIORITY       TO  PRTDATA-PRIORITY
                EVALUATE    SPRT-PRIORITY
@@ -332,7 +332,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PRTDATA-HOSPNUM
                            MOVE    SPRT-PRIORITY      TO  
                                                       PRTDATA-PRIORITY
                END-EVALUATE
-      * �� end
+      * ★ end
            MOVE    PRTKANRI-PAGE       TO  PRTDATA-PAGE
            IF      SPRT-PRTFLG         =   "1" OR "D"
                MOVE    SPRT-PRTFLG         TO  PRTDATA-PRTFLG
@@ -383,7 +383,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���������ޥ����ɹ�
+      *    印刷管理マスタ読込
       *****************************************************************
        910-PRTKANRI-INV-SEC         SECTION.
       *
@@ -414,7 +414,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            .
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -425,7 +425,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -437,7 +437,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -449,7 +449,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

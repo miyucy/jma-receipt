@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,63 +16,63 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ºÞËè½èÊý°ìÈÌÌ¾ÊÔ½¸¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSCGENNAME.INC)
+      *    å‰¤æ¯Žå‡¦æ–¹ä¸€èˆ¬åç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSCGENNAME.INC)
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSCGENNAMEAREA.
       *
-      *ÆþÎÏ
-      *½èÍý¶èÊ¬¡Ê£±¡§±¡ÆâÈ½Äê¤Ê¤·¡Ë
+      *å…¥åŠ›
+      *å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šé™¢å†…åˆ¤å®šãªã—ï¼‰
            03  ORCSCGENN-SYORIKBN        PIC  X(01).
-      *½èÍý¶èÊ¬£²¡Ê£±¡§¥Þ¥¹¥¿¸¡º÷¤Ê¤·¡Ë
+      *å‡¦ç†åŒºåˆ†ï¼’ï¼ˆï¼‘ï¼šãƒžã‚¹ã‚¿æ¤œç´¢ãªã—ï¼‰
            03  ORCSCGENN-SYORIKBN2       PIC  X(01).
-      *¿ÇÎÅÆüÉÕ
+      *è¨ºç™‚æ—¥ä»˜
            03  ORCSCGENN-SRYYMD          PIC  X(08).
-      *¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹²Ä½ðÌ¾(SYS-1030-KOUHATUKA)
+      *å¾Œç™ºåŒ»è–¬å“ã¸ã®å¤‰æ›´å¯ç½²å(SYS-1030-KOUHATUKA)
            03  ORCSCGENN-1030-KOUHATUKA  PIC  X(01).
-      *¸åÈ¯ÉÊÊÑ¹¹ÉÔ²Ä¡Ê½èÊýËè¡ËÍ­
+      *å¾Œç™ºå“å¤‰æ›´ä¸å¯ï¼ˆå‡¦æ–¹æ¯Žï¼‰æœ‰
            03  ORCSCGENN-KOUHATU-IN      PIC  X(01).
-      *¿ÇÎÅ¼ïÊÌ
+      *è¨ºç™‚ç¨®åˆ¥
            03  ORCSCGENN-SRYKBN          PIC  X(02).
            03  ORCSCGENN-SRYSYUKBN       PIC  X(03).
-      *ºÞÅÀ¿ô
+      *å‰¤ç‚¹æ•°
            03  ORCSCGENN-ZAITEN          PIC  9(07).
       *
-      *ºÞÆâÍÆ
+      *å‰¤å†…å®¹
            03  ORCSCGENN-DATA-AREA.
-      *£Í£Á£Ø
+      *ï¼­ï¼¡ï¼¸
                05  ORCSCGENN-TBLMAX         PIC  9(03).
                05  ORCSCGENN-DATA-TBL       OCCURS   50.
       *IN
-      *            ¿ÇÎÅ¥³¡¼¥É
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  ORCSCGENN-SRYCD          PIC X(09).
-      *            ¿ÇÎÅ¥³¡¼¥É(²èÌÌÉ½¼¨¡Ë
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰(ç”»é¢è¡¨ç¤ºï¼‰
                    07  ORCSCGENN-INPUTCD        PIC X(20).
       *
-      *            ÅÀ¿ô¥Þ¥¹¥¿¡Ê¸åÈ¯ÉÊ¶èÊ¬¡Ë
+      *            ç‚¹æ•°ãƒžã‚¹ã‚¿ï¼ˆå¾Œç™ºå“åŒºåˆ†ï¼‰
                    07  ORCSCGENN-TNS-KOUHATUKBN     PIC 9(01).
-      *            ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¡Ê°ìÈÌÌ¾µ­ºÜ¶èÊ¬¡Ë
+      *            ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ ï¼ˆä¸€èˆ¬åè¨˜è¼‰åŒºåˆ†ï¼‰
                    07  ORCSCGENN-IPN-KISAIKBN       PIC 9(01).
       *
-      *            °ìÈÌÌ¾¥³¡¼¥É¡ÊÌô²Á´ð½à¥³¡¼¥É¡Ë
+      *            ä¸€èˆ¬åã‚³ãƒ¼ãƒ‰ï¼ˆè–¬ä¾¡åŸºæº–ã‚³ãƒ¼ãƒ‰ï¼‰
                    07  ORCSGETGE-YAKKAKJNCD     PIC X(12).
-      *            °ìÈÌÌ¾¾Î
+      *            ä¸€èˆ¬åç§°
                    07  ORCSCGENN-GENERICNAME    PIC X(200).
       *OUT
-      *            ½èÊý¤»¤óÌ¾¾Î¡¡¡Ê½èÍý¶èÊ¬£²¡á£±¡¡¤Ï¤Ê¤·¡Ë
+      *            å‡¦æ–¹ã›ã‚“åç§°ã€€ï¼ˆå‡¦ç†åŒºåˆ†ï¼’ï¼ï¼‘ã€€ã¯ãªã—ï¼‰
                    07  ORCSCGENN-HEN-NAME       PIC X(100).
-      *            Ì¾¾Î¶èÊ¬¡Ê1:°ìÈÌÌ¾,2¡§½èÊýÌ¾¾Î¡¢3¡§½èÊýÌ¾¡Ê°ìÈÌ¡Ë
+      *            åç§°åŒºåˆ†ï¼ˆ1:ä¸€èˆ¬å,2ï¼šå‡¦æ–¹åç§°ã€3ï¼šå‡¦æ–¹åï¼ˆä¸€èˆ¬ï¼‰
                    07  ORCSCGENN-NAME-KBN       PIC X(01).
-      *            ½èÊý¤»¤óÃ±°ÌÌ¾¾Î
+      *            å‡¦æ–¹ã›ã‚“å˜ä½åç§°
                    07  ORCSCGENN-HEN-TANINAME   PIC X(24).
       *
       *
            03  ORCSCGENN-OUT-AREA.
-      *        ±¡Æâ¡¦±¡³°¶èÊ¬¡Ê£±¡§±¡Æâ¡¢£²¡§±¡³°¡Ë
+      *        é™¢å†…ãƒ»é™¢å¤–åŒºåˆ†ï¼ˆï¼‘ï¼šé™¢å†…ã€ï¼’ï¼šé™¢å¤–ï¼‰
                05  ORCSCGENN-INNAIKBN        PIC X(01).
-      *        ¥¨¥é¡¼¥³¡¼¥É
+      *        ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
                05  ORCSCGENN-ERRCD           PIC 9(01).
       *

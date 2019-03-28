@@ -21,7 +21,7 @@ xml_patientmodv3res5 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
     	};
-#---    ÂĞ¾İ¸øÈñ¾ğÊó¡Ê¥ê¥¯¥¨¥¹¥È¡á£°£±¡Ë
+#---    å¯¾è±¡å…¬è²»æƒ…å ±ï¼ˆãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼ï¼ï¼‘ï¼‰
  	PublicInsurance_Information   {
             PublicInsurance_Info      {
                 PublicInsurance_Id			varchar(10);
@@ -32,67 +32,67 @@ xml_patientmodv3res5 {
                 Certificate_ExpiredDate			varchar(10);
         	} [60];
         };
-#---    ¸øÈñÉéÃ´³Û¾ğÊó¡Ê¥ê¥¯¥¨¥¹¥È¡á£²¡¢£³¡Ë
+#---    å…¬è²»è² æ‹…é¡æƒ…å ±ï¼ˆãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼ï¼’ã€ï¼“ï¼‰
 	Pi_Money_Information	{
-#---        ÁªÂò¸øÈñ£É£Ä
+#---        é¸æŠå…¬è²»ï¼©ï¼¤
             Sel_PublicInsurance_Id		varchar(10);
-#---        ÁªÂò¸øÈñ¼ïÎà
+#---        é¸æŠå…¬è²»ç¨®é¡
             Sel_PublicInsurance_Class		varchar(03);
             Sel_PublicInsurance_Name		varchar(20);
-#---        ÁªÂò¼õµë¼ÔÈÖ¹æ
+#---        é¸æŠå—çµ¦è€…ç•ªå·
             Sel_PublicInsuredPerson_Number	varchar(20);
-#---        ³«»ÏÆü
+#---        é–‹å§‹æ—¥
             Sel_Certificate_IssuedDate		varchar(10);
             Sel_Certificate_ExpiredDate		varchar(10);
-#---        ÉéÃ´³Û£±Ì¾¾Î
+#---        è² æ‹…é¡ï¼‘åç§°
             Sel_Pi_Money_Name1			varchar(20);
             Sel_Pi_Money_Name2			varchar(20);
-#---        ¸øÈñÉéÃ´³Û¾õÂÖ
+#---        å…¬è²»è² æ‹…é¡çŠ¶æ…‹
             Sel_Pi_Money_Class			varchar(01);
-#---        ¸øÈñÉéÃ´³Û°ìÍ÷
+#---        å…¬è²»è² æ‹…é¡ä¸€è¦§
 	    Pi_Money_Info 	{
-#---            ½èÍı¶èÊ¬
+#---            å‡¦ç†åŒºåˆ†
             	Pi_Money_Line_Mode		varchar(6);
-#---            Ï¢ÈÖ
+#---            é€£ç•ª
             	Pi_Money_Number			varchar(03);
-#---            ³«»ÏÆü
+#---            é–‹å§‹æ—¥
             	Pi_Money_StartDate		varchar(10);
             	Pi_Money_ExpiredDate		varchar(10);
-#---            ¾å¸Â³Û£±
+#---            ä¸Šé™é¡ï¼‘
             	Pi_Money_Money1			varchar(7);
-#---            ¾å¸Â³Û£²
+#---            ä¸Šé™é¡ï¼’
             	Pi_Money_Money2			varchar(7);
-#---            ¸øÈñÂ¾°ìÉôÉéÃ´³ÛÀßÄêÍ­
+#---            å…¬è²»ä»–ä¸€éƒ¨è² æ‹…é¡è¨­å®šæœ‰
             	Pi_Money_Etc_Class		varchar(1);
-#---            ¥¨¥é¡¼¥³¡¼¥É
+#---            ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [300];
         };
-#---    Â¾°ìÉôÉéÃ´³Û¾ğÊó
+#---    ä»–ä¸€éƒ¨è² æ‹…é¡æƒ…å ±
 	Pi_Etc_Money_Information	{
-#---        ÁªÂòÏ¢ÈÖ
+#---        é¸æŠé€£ç•ª
             Sel_Pi_Etc_Money_Number			varchar(03);
-#---        ³«»ÏÆü
+#---        é–‹å§‹æ—¥
             Sel_Pi_Etc_Money_StartDate		varchar(10);
-#---        ´ü´Ö³«»ÏÆü
+#---        æœŸé–“é–‹å§‹æ—¥
             Chk_Pi_Etc_Money_StartDate		varchar(10);
-#---        ´ü´Ö½ªÎ»Æü¡Ê³«»ÏÆü¤Î·îËö¡Ë
+#---        æœŸé–“çµ‚äº†æ—¥ï¼ˆé–‹å§‹æ—¥ã®æœˆæœ«ï¼‰
             Chk_Pi_Etc_Money_EndDate		varchar(10);
-#---        ¾å¸Â³Û£±
+#---        ä¸Šé™é¡ï¼‘
             Chk_Pi_Etc_Money_Money1		varchar(7);
-#---        Â¾°ìÉôÉéÃ´³ÛÎß·×
+#---        ä»–ä¸€éƒ¨è² æ‹…é¡ç´¯è¨ˆ
             Chk_Total_Money2		varchar(7);
-#---        ¼«±¡ÉéÃ´³Û¹ç·×
+#---        è‡ªé™¢è² æ‹…é¡åˆè¨ˆ
             Chk_Total_My_Money		varchar(7);
 	    Pi_Etc_Money_Info 	{
-#---            Ç¯·îÆü
+#---            å¹´æœˆæ—¥
             	Pi_Etc_Money_Date		varchar(10);
-#---            Æş³°¶èÊ¬
+#---            å…¥å¤–åŒºåˆ†
 		Pi_Etc_Money_InOut 		varchar(01);
-#---            ÉéÃ´¶â³Û
+#---            è² æ‹…é‡‘é¡
 		Pi_Etc_Money_Money		varchar(7);
-#---            ¥¨¥é¡¼¥³¡¼¥É
+#---            ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
             	} [100];

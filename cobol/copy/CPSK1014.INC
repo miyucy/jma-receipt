@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,52 +16,52 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK1014.INC)   *
-      *         �ʣ���������                            *
-      *         �����Ź԰ٴ���                        *
+      *         システム管理マスタ     (CPSK1014.INC)   *
+      *         （１０１４）                            *
+      *         包括診療行為管理                        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SYS-1014-REC.
            03  SYS-1014-KEY.
                05  SYS-1014-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-1014-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-1014-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-1014-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-1014-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-1014-TBL.
-      *��绻����ˡ
+      *包括算定方法
                05  SYS-1014-SANTEI-HOU       PIC  X(01).
-      *��绻���ʬ
+      *包括算定区分
                05  SYS-1014-SANTEI-KBN       PIC  X(01).
-      *��绻��롼���������ʬ��
+      *包括算定ルール（入外区分）
                05  SYS-1014-NYUGAIKBN        PIC  X(01).
-      *��绻��롼����ݸ��ȹ礻��ʬ�ˡ�ϫ�ҡ��������褫����ʳ���
+      *包括算定ルール（保険組合せ区分）（労災・自賠責毎かそれ以外）
                05  SYS-1014-HKNCOMBI-KBN     PIC  X(01).
-      *��绻��롼��ʿ��Ŷ�ʬ�̡�
+      *包括算定ルール（診療区分別）
                05  SYS-1014-SRYKBN-G.
                    07  SYS-1014-SRYKBN-KBN   PIC X(01)
                                              OCCURS   50.
-      *ͽ��
+      *予備
            03  SYS-1014-YOBI            PIC  X(446).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-1014-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-1014-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-1014-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-1014-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-1014-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-1014-UPD-KEY.
                05  SYS-1014-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1014-UPD-KANRICD     PIC X(04).

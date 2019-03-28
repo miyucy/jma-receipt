@@ -1,35 +1,35 @@
 kanri_cd    : "1044"
-name        : "Ä¢É¼¥ª¥Õ¥»¥Ã¥È¾ğÊó"
+name        : "å¸³ç¥¨ã‚ªãƒ•ã‚»ãƒƒãƒˆæƒ…å ±"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "FORMID"
-  item_jp   : "Ä¢É¼£É£Ä¡Ê£í£ï£î£ğ£å¡Ë"
+  item_jp   : "å¸³ç¥¨ï¼©ï¼¤ï¼ˆï½ï½ï½ï½ï½…ï¼‰"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "PRTNM"
-  item_jp   : "½ĞÎÏ¥×¥ê¥ó¥¿Ì¾"
+  item_jp   : "å‡ºåŠ›ãƒ—ãƒªãƒ³ã‚¿å"
   type      : "X"
   start     : 21
   length    : 16
 - item_no   : 3
   item      : "OFFSET-X"
-  item_jp   : "¥ª¥Õ¥»¥Ã¥È¡Ê£øÊı¸ş¡Ë"
+  item_jp   : "ã‚ªãƒ•ã‚»ãƒƒãƒˆï¼ˆï½˜æ–¹å‘ï¼‰"
   type      : "X"
   start     : 37
   length    : 5
 - item_no   : 4
   item      : "OFFSET-Y"
-  item_jp   : "¥ª¥Õ¥»¥Ã¥È¡Ê£ùÊı¸ş¡Ë"
+  item_jp   : "ã‚ªãƒ•ã‚»ãƒƒãƒˆï¼ˆï½™æ–¹å‘ï¼‰"
   type      : "X"
   start     : 42
   length    : 5
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 47
   length    : 454

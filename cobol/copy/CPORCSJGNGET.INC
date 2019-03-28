@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,80 +16,80 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ������³ۼ����ѥѥ�᥿������ COPY (CPORCSJGNGET.INC)
-      *                          ���ѥץ������  (ORCSJGNGET)
+      *    公費月上限額取得用パラメタ　　　 COPY (CPORCSJGNGET.INC)
+      *                          使用プログラム  (ORCSJGNGET)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    06/03/20  ¾���ŵ�����������ô�߷��ɲ�
-      *  01.00.02    NACL-����    09/07/10  ¾���ŵ�����������ô�߷�
-      *                                     �Խ��ե饰�ɲ�
-      *  04.07.01    NACL-����    11/09/01  �����ƥ��������������ǽ�ɲ��б�
-      *                                     ����Ŭ�ѳ������ɲ�
-      *                                     ��ƻ�ܸ��ֹ��ɲ�
-      *                                     �оݶ�ʬ�ǥե��������
-      *                                     �Խ��ե饰
-      *                                     �оݶ�ʬ�ɲ�
-      *  04.07.02    NACL-����    15/01/26  ʿ������ǯ��������б�
-      *                                     ����ƻ�ܸ��ȼ������б���
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    06/03/20  他医療機関等一部負担累計追加
+      *  01.00.02    NACL-門脇    09/07/10  他医療機関等一部負担累計
+      *                                     編集フラグ追加
+      *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
+      *                                     公費適用開始日追加
+      *                                     都道府県番号追加
+      *                                     対象区分デフォルト設定
+      *                                     編集フラグ
+      *                                     対象区分追加
+      *  04.07.02    NACL-門脇    15/01/26  平成２７年１月改正対応
+      *                                     （都道府県独自難病対応）
       ************************************************************
        01  LNK-ORCSJGNGET-REC.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  LNK-ORCSJGNGET-HOSPNUM       PIC 9(2).
-      *������ʬ
+      *入外区分
            03  LNK-ORCSJGNGET-NYUGAIKBN     PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
            03  LNK-ORCSJGNGET-PTID          PIC  9(10).
-      *�����ݸ��ֹ�
+      *公費保険番号
            03  LNK-ORCSJGNGET-KOHHKNNUM     PIC  X(03).
-      *����ɣ�
+      *公費ＩＤ
            03  LNK-ORCSJGNGET-KOHID         PIC  9(10).
-      *���ŷ�
+      *診療月
            03  LNK-ORCSJGNGET-SRYYM         PIC  X(06).
-      *�������Ὢλ��
+      *入院請求終了日
            03  LNK-ORCSJGNGET-SKYEDYMD      PIC  X(08).
-      *����Ŭ�ѳ�����
+      *公費適用開始日
            03  LNK-ORCSJGNGET-TEKSTYMD      PIC  X(08).
-      *��ƻ�ܸ��ֹ�
+      *都道府県番号
            03  LNK-ORCSJGNGET-PREFNUM       PIC  X(02).
-      *�оݶ�ʬ�ǥե��������
+      *対象区分デフォルト設定
            03  LNK-ORCSJGNGET-SETKBN        PIC  9(01).
-      *���¡���������Ŭ�Ѷ�ʬ�б��ե饰�ǥե��������
+      *難病・小児慢性適用区分対応フラグデフォルト設定
            03  LNK-ORCSJGNGET-SETKBN2       PIC  9(01).
-      *�Խ��ե饰
-      *���ʶ���ˡ���³����Ϥ��оݥ����å���Ԥ�ʤ�
-      *���������������������������������оݶ�ʬ�Ⱦ�³ۤ��ֵ�
-      *���ʣ����ˡ���³����Ϥ��оݥ����å���Ԥ�
-      *���������������������񡡡��������оݶ�ʬ���ֵ�
-      *����������������������ʳ����������顼���ֵ�
-      *���ʣ����ˡ���³����Ϥ��оݥ����å���Ԥ�
-      *���������������������񡡡��������оݶ�ʬ�Ⱦ�³ۤ��ֵ�
-      *����������������������ʳ����������顼���ֵ�
+      *編集フラグ
+      *　（空白）：上限額入力の対象チェックを行わない
+      *　　　　　　　　　　　　　　→　対象区分と上限額を返却
+      *　（１　）：上限額入力の対象チェックを行う
+      *　　　　　　　地方公費　　　→　対象区分を返却
+      *　　　　　　　地方公費以外　→　エラーを返却
+      *　（２　）：上限額入力の対象チェックを行う
+      *　　　　　　　地方公費　　　→　対象区分と上限額を返却
+      *　　　　　　　地方公費以外　→　エラーを返却
            03  LNK-ORCSJGNGET-HENFLG        PIC  X(01).
       *
-      *�ֵ���
+      *返却値
       *
            03  LNK-ORCSJGNGET-OUT-AREA.
-      *�����³�
+      *外来上限額
              05  LNK-ORCSJGNGET-GAIJGNGAK   PIC  9(07).
-      *������³�
+      *入院上限額
              05  LNK-ORCSJGNGET-NYUJGNGAK   PIC  9(07).
-      *¾���ŵ�����������ô�߷ס�024,079:�������ܾ�³ۡ�
+      *他医療機関等一部負担累計（024,079:食事療養上限額）
              05  LNK-ORCSJGNGET-TAFTNRUIKEI PIC  9(07).
-      *¾���ŵ�����������ô�߷��Խ��ե饰
+      *他医療機関等一部負担累計編集フラグ
              05  LNK-ORCSJGNGET-TAFTNFLG    PIC  9(01).
-      *�оݶ�ʬ
-      *���ʣ��ˡ���³����Ϥ��оݳ�
-      *���ʣ��ˡ���³����Ϥ��оݡ���������ˡ������³ۡ�������³�
-      *���ʣ��ˡ���³����Ϥ��оݡ���������ˡ�������³ۡ�¾������ô�߷�
-      *���ʣ��ˡ���³����Ϥ��оݡ���������ʳ���
+      *対象区分
+      *　（０）：上限額入力の対象外
+      *　（１）：上限額入力の対象（地方公費）　外来上限額・入院上限額
+      *　（２）：上限額入力の対象（地方公費）　入外上限額・他一部負担累計
+      *　（９）：上限額入力の対象（地方公費以外）
              05  LNK-ORCSJGNGET-TAISYOKBN   PIC  9(01).
-      *���¡���������Ŭ�Ѷ�ʬ�б��ե饰
+      *難病・小児慢性適用区分対応フラグ
              05  LNK-ORCSJGNGET-TEKIYOFLG   PIC  9(01).
       *
-      *����������
+      *復帰コード
       *
            03  LNK-ORCSJGNGET-RC            PIC  9(02).
       *

@@ -1,23 +1,23 @@
 --                                     --
--- ÀÁµá´ÉÍý¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹              --
+-- è«‹æ±‚ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´              --
 --                                     --
--- ¹àÌÜ¤ÎÄÉ²Ã                          --
---   ¡¡¡¡¡¡       ÉéÃ´¶â³Û             --
+-- é …ç›®ã®è¿½åŠ                           --
+--   ã€€ã€€ã€€       è² æ‹…é‡‘é¡             --
 --                FTNMONEY_FTN         --
---   ¡¡¡¡¡¡       ÉéÃ´¶â³Û¡Ê¹µ½ü³Û¡Ë   --
+--   ã€€ã€€ã€€       è² æ‹…é‡‘é¡ï¼ˆæŽ§é™¤é¡ï¼‰   --
 --                FTNMONEY_KOJ         --
---                µ­ºÜ³°¸øÈñ¡ÝÉéÃ´¶â³Û --
---                ETC-FTNMONEY-FTN1¡Á4 --
---                µ­ºÜ³°¸øÈñ¡Ý¹µ½ü³Û   --
---                ETC-FTNMONEY-KOJ1¡Á4 --
---                °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñ--
---                      É¸½àÉéÃ´³Û¶èÊ¬  --
+--                è¨˜è¼‰å¤–å…¬è²»âˆ’è² æ‹…é‡‘é¡ --
+--                ETC-FTNMONEY-FTN1ã€œ4 --
+--                è¨˜è¼‰å¤–å…¬è²»âˆ’æŽ§é™¤é¡   --
+--                ETC-FTNMONEY-KOJ1ã€œ4 --
+--                ä¸€éƒ¨è² æ‹…é‡‘ãƒ»é£Ÿäº‹ç™‚é¤Šè²»--
+--                      æ¨™æº–è² æ‹…é¡åŒºåˆ†  --
 --                SHOKUJIFTNKBN        --
 --                                     --
 -- Create Date : 2005/03/14            --
 --                                     --
 
--- TBL_SEIKYUWK ºîÀ®                   --
+-- TBL_SEIKYUWK ä½œæˆ                   --
 
 create table TBL_SEIKYUWK (
 HOSPID				char(24)	not null,
@@ -440,16 +440,16 @@ UPDYMD				char(8),
 constraint TBL_SEIKYUWK_primary_key primary key (HOSPID,SRYYM,NYUGAIKBN,
 PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD));
 
--- TBL_SEIKYU ¢ª TBL_SEIKYUWK   --
+-- TBL_SEIKYU â†’ TBL_SEIKYUWK   --
 
 insert into TBL_SEIKYUWK
 select * from TBL_SEIKYU;
 
--- TBL_SEIKYU ºï½ü               --
+-- TBL_SEIKYU å‰Šé™¤               --
 
 drop table TBL_SEIKYU;
 
--- TBL_SEIKYU ºîÀ®               --
+-- TBL_SEIKYU ä½œæˆ               --
 
 create table TBL_SEIKYU (
 HOSPID				char(24)	not null,
@@ -891,7 +891,7 @@ UPDYMD				char(8),
 constraint TBL_SEIKYU_primary_key primary key (HOSPID,SRYYM,NYUGAIKBN,
 PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD));
 
--- TBL_SEIKYUWK ¢ª TBL_SEIKYU   --
+-- TBL_SEIKYUWK â†’ TBL_SEIKYU   --
 
 insert into TBL_SEIKYU
 (HOSPID,				
@@ -1751,7 +1751,7 @@ CREYMD,
 UPDYMD				
  from TBL_SEIKYUWK;
 
--- TBL_SEIKYUWK ºï½ü             --
+-- TBL_SEIKYUWK å‰Šé™¤             --
 
 drop table TBL_SEIKYUWK;
 

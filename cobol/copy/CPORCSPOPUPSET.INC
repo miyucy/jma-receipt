@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,20 +16,20 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Ծ������Υѥ�᥿����COPY (CPORCSPOPUPSET.INC)
+      *    患者情報通知パラメタ　　COPY (CPORCSPOPUPSET.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSPOPUPSETAREA.
       *
-      *�ݸ���ǧ����
+      *保険確認日付
            03  ORCSPOPUPSET-HKNCHK     PIC X(01).
-      *��⣱
+      *メモ１
            03  ORCSPOPUPSET-MEMO1      PIC X(01).
-      *��⣲
+      *メモ２
            03  ORCSPOPUPSET-MEMO2      PIC X(01).
-      *ɽ������
+      *表示内容
            03  ORCSPOPUPSET-BODY       PIC X(1000).
       *

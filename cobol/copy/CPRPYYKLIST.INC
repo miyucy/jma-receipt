@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -27,7 +27,7 @@
               05  RPYL-PRINTER                 PIC X(20).
               05  RPYL-PRTYMD                  PIC X(10).
               05  RPYL-SRYYMD                  PIC X(10).
-      *       ������ʬ�ʣ���ͽ�����������̤��������
+      *       処理区分（１：予約一覧、２：未院一覧）
               05  RPYL-HAKKOKBN                PIC X(01).
               05  RPYL-SRYNAIYO-AREA.
                 07  RPYL-SRYNAIYO              PIC X(02).
@@ -49,9 +49,9 @@
                   09  RPYL-TDR-KANANAME        PIC X(50).
                 07  RPYL-TPTINF.
                   09  RPYL-TPTNUM              PIC X(20).
-      *           ͽ�󴵼Ի�̾
+      *           予約患者氏名
                   09  RPYL-TYYKNAME            PIC X(50).
-      *           ���Ծ���
+      *           患者情報
                   09  RPYL-TNAME               PIC X(50).
                   09  RPYL-TKANANAME           PIC X(50).
                   09  RPYL-TBIRTHDAY           PIC X(10).

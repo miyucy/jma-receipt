@@ -1,14 +1,14 @@
 \set ON_ERROR_STOP
 --
--- ´µ¼ÔÆş±¡ÍúÎò¥Æ¡¼¥Ö¥ë¹½Â¤ÊÑ¹¹
+-- æ‚£è€…å…¥é™¢å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«æ§‹é€ å¤‰æ›´
 --
--- Æş±¡ÍúÎòºÇÂç»ŞÈÖ¹æ(MAXEDANUM)ÄÉ²Ã
--- Æş±¡¿©»ö¶èÊ¬(SKJKBN)ÄÉ²Ã
--- ÁªÄêÆş±¡¶èÊ¬(SENTEIKBN)ÄÉ²Ã
+-- å…¥é™¢å±¥æ­´æœ€å¤§æç•ªå·(MAXEDANUM)è¿½åŠ 
+-- å…¥é™¢é£Ÿäº‹åŒºåˆ†(SKJKBN)è¿½åŠ 
+-- é¸å®šå…¥é™¢åŒºåˆ†(SENTEIKBN)è¿½åŠ 
 -- 
 -- Create Date : 2006/12/19           --
 --
---  ¹àÌÜÄÉ²Ã                        --
+--  é …ç›®è¿½åŠ                         --
 alter table TBL_PTNYUINRRK
    add column MAXEDANUM  numeric(03);
 alter table TBL_PTNYUINRRK
@@ -17,16 +17,16 @@ alter table TBL_PTNYUINRRK
    add column SENTEIKBN  character(1);
 
 
---  ¥¼¥íÀßÄê                       --
+--  ã‚¼ãƒ­è¨­å®š                       --
 alter table TBL_SYUNOU
    alter GRP_HAKHOUFLG set default 0;
 
 
---  ºÇÂç»ŞÈÖ¹æ¥»¥Ã¥È
+--  æœ€å¤§æç•ªå·ã‚»ãƒƒãƒˆ
 update tbl_ptnyuinrrk set maxedanum = (select max(b.rrkedanum) from tbl_ptnyuinrrk b where tbl_ptnyuinrrk.hospid = b.hospid and tbl_ptnyuinrrk.ptid = b.ptid and tbl_ptnyuinrrk.rrknum = b.rrknum group by b.hospid,b.ptid,b.rrknum);
 
---  ¿©»ö¶èÊ¬¥»¥Ã¥È
+--  é£Ÿäº‹åŒºåˆ†ã‚»ãƒƒãƒˆ
 update tbl_ptnyuinrrk set skjkbn = '1' where (jtikbn <> '5') and (jtikbn <> '6');
 
---  ÁªÄêÆş±¡¶èÊ¬¥»¥Ã¥È
+--  é¸å®šå…¥é™¢åŒºåˆ†ã‚»ãƒƒãƒˆ
 update tbl_ptnyuinrrk set senteikbn = '1' where (jtikbn <> '5') and (jtikbn <> '6');

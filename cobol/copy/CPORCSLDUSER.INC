@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �桼�����������֡�COPY (CPORCSLDUSER.INC)
+      *    ユーザー一覧サブ　COPY (CPORCSLDUSER.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SLDUSER-AREA.
            03  SLDUSER-MY-LD               PIC 9(03).
@@ -28,10 +28,10 @@
            03  SLDUSER-MAX                 PIC 9(05).
            03  SLDUSER-ID                  PIC X(64).
            03  SLDUSER-KBN                 PIC 9(02).
-      *        KBN 1:������2:���̾���
-      *            3:���ݥåץ��åס�4:���̥ݥåץ��åס�
-      *            5:��������������6:���̥�����������
-      *            7:��祢�ܡ��ȡ�8:���̥��ܡ���
+      *        KBN 1:一括情報／2:個別情報／
+      *            3:一括ポップアップ／4:個別ポップアップ／
+      *            5:一括ダイアログ／6:個別ダイアログ／
+      *            7:一括アボート／8:個別アボート
            03  SLDUSER-MESSAGE             PIC X(256).
            03  SLDUSER-OCC                 OCCURS  100.
                05  SLDUSER-HOSPNUM         PIC 9(02).

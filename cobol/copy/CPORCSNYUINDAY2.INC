@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,81 +16,81 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥Ñ¥é¥á¥¿¡¡COPY (CPORCSNYUINDAY2.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORORCSNYUINDAY2)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´ØÈÖ¹æ
-      *      ´µ¼Ô£É£Ä
-      *      »»ÄêÇ¯·î
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€COPY (CPORCSNYUINDAY2.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORORCSNYUINDAY2)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ç•ªå·
+      *      æ‚£è€…ï¼©ï¼¤
+      *      ç®—å®šå¹´æœˆ
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSNYUINDAY2-AREA.
       *
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  LNK-NYUINDAY-HOSPNUM           PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-NYUINDAY-PTID              PIC  9(10).
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-NYUINDAY-SANTEIYM          PIC  X(06).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-NYUINDAY-HENKYAKU-AREA.
-      *Æþ±¡¶èÊ¬
+      *å…¥é™¢åŒºåˆ†
              05  LNK-NYUINDAY-TBL.
-      *  ¡Ê¶õÇò¡§ÂÐ¾Ý³°¡¡£±¡§Æþ±¡Ãæ¤ÇÆþ±¡ÎÁÌ¤»»ÄêÆü¡Ë
+      *  ï¼ˆç©ºç™½ï¼šå¯¾è±¡å¤–ã€€ï¼‘ï¼šå…¥é™¢ä¸­ã§å…¥é™¢æ–™æœªç®—å®šæ—¥ï¼‰
                07  LNK-NYUINDAY-KBN           PIC  X(01)  OCCURS  31.
       *
-      *Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊËô¤Ï£³¡ËÆþ±¡¶èÊ¬
+      *çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ï¼ˆåˆã¯ï¼“ï¼‰å…¥é™¢åŒºåˆ†
              05  LNK-NYUINDAY-TANKI2-TBL.
-      *  ¡Ê¶õÇò¡§ÂÐ¾Ý³°
-      *    ¡¡£±¡§Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊËô¤Ï£³¡Ë¤ÇÆþ±¡ÎÁÌ¤»»ÄêÆü
-      *      £²¡§Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊËô¤Ï£³¡Ë¡ÝÀ¸³èÎÅÍÜ¤ÇÆþ±¡ÎÁÌ¤»»ÄêÆü¡Ë
+      *  ï¼ˆç©ºç™½ï¼šå¯¾è±¡å¤–
+      *    ã€€ï¼‘ï¼šçŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ï¼ˆåˆã¯ï¼“ï¼‰ã§å…¥é™¢æ–™æœªç®—å®šæ—¥
+      *      ï¼’ï¼šçŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ï¼ˆåˆã¯ï¼“ï¼‰âˆ’ç”Ÿæ´»ç™‚é¤Šã§å…¥é™¢æ–™æœªç®—å®šæ—¥ï¼‰
                07  LNK-NYUINDAY-TANKI2-KBN    PIC  X(01)  OCCURS  31.
       *
-      *Ê¿À®£²£¶Ç¯²þÄê¤ÇÄÉ²Ã¤Ë¤Ê¤Ã¤¿Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³Æþ±¡¶èÊ¬
-      *  ¡Ê¶õÇò¡§ÂÐ¾Ý³°
-      *    ¡¡£±¡§Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¤ÇÆþ±¡ÎÁÌ¤»»ÄêÆü
-      *      £²¡§Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡ÝÀ¸³èÎÅÍÜ¤ÇÆþ±¡ÎÁÌ¤»»ÄêÆü¡Ë
+      *å¹³æˆï¼’ï¼–å¹´æ”¹å®šã§è¿½åŠ ã«ãªã£ãŸçŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“å…¥é™¢åŒºåˆ†
+      *  ï¼ˆç©ºç™½ï¼šå¯¾è±¡å¤–
+      *    ã€€ï¼‘ï¼šçŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“ã§å…¥é™¢æ–™æœªç®—å®šæ—¥
+      *      ï¼’ï¼šçŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“âˆ’ç”Ÿæ´»ç™‚é¤Šã§å…¥é™¢æ–™æœªç®—å®šæ—¥ï¼‰
                07  LNK-NYUINDAY-TANKI3-KBN    PIC  X(01)  OCCURS  31.
       *
-      *µßµÞÈÂÁ÷¿ÇÎÅÎÁ»»Äê¶èÊ¬
+      *æ•‘æ€¥æ¬é€è¨ºç™‚æ–™ç®—å®šåŒºåˆ†
              05  LNK-NYUINDAY-KYUKYU-TBL.
-      *  ¡Ê¶õÇò¡§Ì¤»»Äê ¡¡£±¡§»»Äê¡Ë
+      *  ï¼ˆç©ºç™½ï¼šæœªç®—å®š ã€€ï¼‘ï¼šç®—å®šï¼‰
                07  LNK-NYUINDAY-KYUKYU-KBN    PIC  X(01)  OCCURS  31.
       *
-      *Æ±ÆüºÆÆþ±¡È½ÄêÍÑ
+      *åŒæ—¥å†å…¥é™¢åˆ¤å®šç”¨
              05  LNK-NYUINDAY-DOUJITSU-TBL.
-      *        Æ±ÆüºÆÆþ±¡¶èÊ¬¡Ê¶õÇò¡§Æ±ÆüºÆÆþ±¡°Ê³° ¡¡£±¡§Æ±ÆüºÆÆþ±¡¡Ë
+      *        åŒæ—¥å†å…¥é™¢åŒºåˆ†ï¼ˆç©ºç™½ï¼šåŒæ—¥å†å…¥é™¢ä»¥å¤– ã€€ï¼‘ï¼šåŒæ—¥å†å…¥é™¢ï¼‰
                07  LNK-NYUINDAY-DOUJITSU-KBN  PIC  X(01)  OCCURS  31.
-      *        Âà±¡ºÆÆþ±¡¤ÎÊÝ¸±ÊÑÆ°¶èÊ¬
-      *        ¡Ê£±¡§°åÊÝ¤«¤é°åÊÝ¡¡£²¡§°åÊÝ¤«¤é°åÊÝ°Ê³°¡¡
-      *          £³¡§°åÊÝ°Ê³°¤«¤é°åÊÝ¡¡£´¡§°åÊÝ°Ê³°¤«¤é°åÊÝ°Ê³°¡Ë
+      *        é€€é™¢å†å…¥é™¢ã®ä¿é™ºå¤‰å‹•åŒºåˆ†
+      *        ï¼ˆï¼‘ï¼šåŒ»ä¿ã‹ã‚‰åŒ»ä¿ã€€ï¼’ï¼šåŒ»ä¿ã‹ã‚‰åŒ»ä¿ä»¥å¤–ã€€
+      *          ï¼“ï¼šåŒ»ä¿ä»¥å¤–ã‹ã‚‰åŒ»ä¿ã€€ï¼”ï¼šåŒ»ä¿ä»¥å¤–ã‹ã‚‰åŒ»ä¿ä»¥å¤–ï¼‰
                07  LNK-NYUINDAY-DOUJITSU-HKNHENKBN PIC X(01) OCCURS 31.
       *
-      *        Æ±ÆüºÆÆþ±¡¡ÊÆþ±¡Ê¬¡Ë¤ÎÊÝ¸±ÁÈ¹ç¤»
+      *        åŒæ—¥å†å…¥é™¢ï¼ˆå…¥é™¢åˆ†ï¼‰ã®ä¿é™ºçµ„åˆã›
                07  LNK-NYUINDAY-DOUJITSU-HKNCOMBI PIC 9(04) OCCURS  31.
-      *        Æ±ÆüºÆÆþ±¡¡ÊÆþ±¡Ê¬¡Ë¤ÎÊÝ¸±¼ïÎà
-      *        ¡Ê£±¡§¼ÒÊÝ¡¡£²¡§¹ñÊÝ¡¡£³¡§¸å´ü¹âÎð¡¡£´¡§Ï«ºÒ¡¡£µ¡§¼«Çå
-      *          £¶¡§¸ø³²¡¡£·¡§¼«Èñ¡¡£¸¡§¼£¸³¡Ë
+      *        åŒæ—¥å†å…¥é™¢ï¼ˆå…¥é™¢åˆ†ï¼‰ã®ä¿é™ºç¨®é¡ž
+      *        ï¼ˆï¼‘ï¼šç¤¾ä¿ã€€ï¼’ï¼šå›½ä¿ã€€ï¼“ï¼šå¾ŒæœŸé«˜é½¢ã€€ï¼”ï¼šåŠ´ç½ã€€ï¼•ï¼šè‡ªè³ 
+      *          ï¼–ï¼šå…¬å®³ã€€ï¼—ï¼šè‡ªè²»ã€€ï¼˜ï¼šæ²»é¨“ï¼‰
                07  LNK-NYUINDAY-DOUJITSU-HKNSYU   PIC X(01) OCCURS  31.
-      *        Æ±ÆüºÆÆþ±¡¡ÊÆþ±¡Ê¬¡Ë¤Î¿©»ö³«»Ï»þ´Ö¶èÊ¬
-      *       ¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§Ä«¤«¤é¡¿£²¡§Ãë¤«¤é¡¿£³¡§Í¼¤«¤é¡Ë
+      *        åŒæ—¥å†å…¥é™¢ï¼ˆå…¥é™¢åˆ†ï¼‰ã®é£Ÿäº‹é–‹å§‹æ™‚é–“åŒºåˆ†
+      *       ï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šæœã‹ã‚‰ï¼ï¼’ï¼šæ˜¼ã‹ã‚‰ï¼ï¼“ï¼šå¤•ã‹ã‚‰ï¼‰
                07  LNK-NYUINDAY-DOUJITSU-SKJKBN PIC X(01) OCCURS  31.
       *
-      *        Æ±ÆüºÆÆþ±¡¡ÊÂà±¡Ê¬¡Ë¤ÎÊÝ¸±ÁÈ¹ç¤»
+      *        åŒæ—¥å†å…¥é™¢ï¼ˆé€€é™¢åˆ†ï¼‰ã®ä¿é™ºçµ„åˆã›
                07  LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI PIC 9(04) OCCURS 31.
-      *        Æ±ÆüºÆÆþ±¡¡ÊÂà±¡Ê¬¡Ë¤ÎÊÝ¸±¼ïÎà
-      *        ¡Ê£±¡§¼ÒÊÝ¡¡£²¡§¹ñÊÝ¡¡£³¡§¸å´ü¹âÎð¡¡£´¡§Ï«ºÒ¡¡£µ¡§¼«Çå
-      *          £¶¡§¸ø³²¡¡£·¡§¼«Èñ¡¡£¸¡§¼£¸³¡Ë
+      *        åŒæ—¥å†å…¥é™¢ï¼ˆé€€é™¢åˆ†ï¼‰ã®ä¿é™ºç¨®é¡ž
+      *        ï¼ˆï¼‘ï¼šç¤¾ä¿ã€€ï¼’ï¼šå›½ä¿ã€€ï¼“ï¼šå¾ŒæœŸé«˜é½¢ã€€ï¼”ï¼šåŠ´ç½ã€€ï¼•ï¼šè‡ªè³ 
+      *          ï¼–ï¼šå…¬å®³ã€€ï¼—ï¼šè‡ªè²»ã€€ï¼˜ï¼šæ²»é¨“ï¼‰
                07  LNK-NYUINDAY-DOUJITSU-T-HKNSYU  PIC X(01) OCCURS  31.
-      *        Æ±ÆüºÆÆþ±¡¡ÊÂà±¡Ê¬¡Ë¤Î¿©»ö½ªÎ»»þ´Ö¶èÊ¬
-      *       ¡Ê£°¡§¿©¤Ê¤·¡¿£±¡§Ä«¤Þ¤Ç¡¿£²¡§Ãë¤Þ¤Ç¡¿£³¡§Í¼¤Þ¤Ç¡Ë
+      *        åŒæ—¥å†å…¥é™¢ï¼ˆé€€é™¢åˆ†ï¼‰ã®é£Ÿäº‹çµ‚äº†æ™‚é–“åŒºåˆ†
+      *       ï¼ˆï¼ï¼šé£Ÿãªã—ï¼ï¼‘ï¼šæœã¾ã§ï¼ï¼’ï¼šæ˜¼ã¾ã§ï¼ï¼“ï¼šå¤•ã¾ã§ï¼‰
                07  LNK-NYUINDAY-DOUJITSU-T-SKJKBN PIC X(01) OCCURS  31.
       *
-      *Éüµ¢¥³¡¼¥É¡Ê£±¡§»»ÄêÇ¯·î¥¨¥é¡¼¡¡£²¡§´µ¼Ô¸¡º÷¥¨¥é¡¼
-      *            £³¡§Æþ±¡²ñ·×¤Ê¤·¡¡£´¡§Æþ±¡¶èÊ¬ÀßÄê¤Ê¤·¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šç®—å®šå¹´æœˆã‚¨ãƒ©ãƒ¼ã€€ï¼’ï¼šæ‚£è€…æ¤œç´¢ã‚¨ãƒ©ãƒ¼
+      *            ï¼“ï¼šå…¥é™¢ä¼šè¨ˆãªã—ã€€ï¼”ï¼šå…¥é™¢åŒºåˆ†è¨­å®šãªã—ï¼‰
            03  LNK-NYUINDAY-RC                PIC S9(9) BINARY.
       *

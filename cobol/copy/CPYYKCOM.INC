@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,37 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  Í½Ìó¥³¥á¥ó¥È¥Þ¥¹¥¿¡¼       (CPYYKCOM.INC) 
+      *  äºˆç´„ã‚³ãƒ¡ãƒ³ãƒˆãƒžã‚¹ã‚¿ãƒ¼       (CPYYKCOM.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  YYKCOM-REC.
            03  YYKCOM-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  YYKCOM-HOSPNUM          PIC 9(2).
-      *¿ÇÎÅÆâÍÆ
+      *è¨ºç™‚å†…å®¹
                05  YYKCOM-SRYNAIYO         PIC X(02).
-      *¥É¥¯¥¿¡¼¥³¡¼¥É
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
                05  YYKCOM-DRCD             PIC X(05).
-      *Í½ÌóÇ¯·îÆü
+      *äºˆç´„å¹´æœˆæ—¥
                05  YYKCOM-YYKYMD           PIC X(08).
-      *¥­¡¼Í½Ìó»þ´Ö
+      *ã‚­ãƒ¼äºˆç´„æ™‚é–“
                05  YYKCOM-KEYYYKTIME       PIC 9(04).
-      *Í½Ìó£É£Ä
+      *äºˆç´„ï¼©ï¼¤
                05  YYKCOM-YYKID            PIC 9(02).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  YYKCOM-RENNUM           PIC 9(01).
-      *¥á¥â
+      *ãƒ¡ãƒ¢
            03  YYKCOM-COMMENT              PIC X(100).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  YYKCOM-TERMID               PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  YYKCOM-OPID                 PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  YYKCOM-CREYMD               PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  YYKCOM-UPYMD                PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  YYKCOM-UPHMS                PIC  X(06).

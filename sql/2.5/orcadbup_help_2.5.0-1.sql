@@ -1,13 +1,13 @@
 --                                    --
---  ¥Ø¥ë¥×¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹              --
+--  ãƒ˜ãƒ«ãƒ—ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´              --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     ÌÜ¼¡£²¥Õ¥é¥°   MENU2FLG        --
+-- é …ç›®ã®è¿½åŠ                          --
+--     ç›®æ¬¡ï¼’ãƒ•ãƒ©ã‚°   MENU2FLG        --
 --                                    --
 -- Update Date : 2005/03/17           --
 --                                    --
 
--- TBL_HELPWK ºîÀ®                    --
+-- TBL_HELPWK ä½œæˆ                    --
 
 create table TBL_HELPWK (
 	HELPKBN				char(1) 	not null,
@@ -25,16 +25,16 @@ create table TBL_HELPWK (
 	UPHMS				char(6),
 constraint TBL_HELPWK_primary_key primary key (HELPKBN,KEY_OPID,LDNAME,MENUNUM1,MENUNUM2,EDANUM));
 
--- TBL_HELP ¢ª TBL_HELPWK      --
+-- TBL_HELP â†’ TBL_HELPWK      --
 
 insert into tbl_helpwk
 select * from tbl_help;
 
--- TBL_HELP ºï½ü               --
+-- TBL_HELP å‰Šé™¤               --
 
 drop table tbl_help;
 
--- TBL_HELP ºîÀ®               --
+-- TBL_HELP ä½œæˆ               --
 
 create table TBL_HELP (
 	HELPKBN				char(1) 	not null,
@@ -57,7 +57,7 @@ create index idx_help_key_opid on tbl_help ( key_opid );
 
 create index idx_help_menu on tbl_help ( menu );
 
--- TBL_HELPWK ¢ª TBL_HELP   --
+-- TBL_HELPWK â†’ TBL_HELP   --
 
 insert into tbl_help
 (helpkbn,
@@ -91,6 +91,6 @@ upymd,
 uphms
  from tbl_helpwk;
 
--- TBL_HELPWK ºï½ü        --
+-- TBL_HELPWK å‰Šé™¤        --
 
 drop table tbl_helpwk;

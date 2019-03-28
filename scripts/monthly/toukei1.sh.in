@@ -10,11 +10,11 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ╥Н╪║еЩ╥в╔г║╪╔©╨Ню╝
+#    Ф°┬Ф╛║Г╣╠Х╗┬Ц┐┤Ц┐╪Ц┌©Д╫°Ф┬░
 #        $1  TERMID 
 #        $2  HOSPID
 #        $3  HPSPCD   
-#        $4  ╦╘хж╧Ф
+#        $4  Г°▄Г∙╙Е▐╥
 #        $5  SRYYM 
 #        $6  NYUGAIKBN 
 #        $7  FILENM1
@@ -26,11 +26,11 @@ fi
 #        ${13} JOBID
 #        ${14} SHELLID
 #        ${15} ERRFILENM
-#        ${16} ╔у╔║╔╓╔К╫пноюХ╤Хй╛║й©гне║к
-#        ${17} ╔у╔║╔╓╔К╫пноюХ╤Хй╛║йибл╬║к
+#        ${16} Ц┐∙Ц┌║Ц┌╓Ц┐╚Е┤╨Е┼⌡Е┘┬Е▄╨Е┬├О╪┬Х╗╨Г≥┌О╪┴
+#        ${17} Ц┐∙Ц┌║Ц┌╓Ц┐╚Е┤╨Е┼⌡Е┘┬Е▄╨Е┬├О╪┬Г≈┘Е░█О╪┴
 #        ${19} HOSPNUM
-#        ${20} FILENM1 FOLDER║йл╓╩хмя║к
-#        ${21} FILENM2 FOLDER║йл╓╩хмя║к
+#        ${20} FILENM1 FOLDERО╪┬Ф°╙Д╫©Г■╗О╪┴
+#        ${21} FILENM2 FOLDERО╪┬Ф°╙Д╫©Г■╗О╪┴
 #-------------------------------------------#
 
 export  PATH=$SITESCRIPTSDIR/allways:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allways:$PATH
@@ -46,7 +46,7 @@ export  PATH=$SITESCRIPTSDIR/allways:$PATCHSCRIPTSDIR/allways:$SCRIPTSDIR/allway
         echo "arg17 = [" ${17} "]" 
         echo "arg19 = [" ${19} "]" 
 
-##      ╔╗╔И║╪╔у╔║╔╓╔К╨О╫Э
+##      Ц┌╗Ц┐╘Ц┐╪Ц┐∙Ц┌║Ц┌╓Ц┐╚Е┴┼И≥╓
 	echo "errfile = [" ${MCP_TEMPDIR}/${15}  "]" 
         rm  -f ${MCP_TEMPDIR}/${15}
 
@@ -76,7 +76,7 @@ e2utf8(){
             exit 
 	fi
 
-#       ╢а╩З╔Ё║╪╔ийя╢╧
+#       Ф╪╒Е╜≈Ц┌ЁЦ┐╪Ц┐┴Е╓┴Ф▐⌡
 
         case ${12} in
           2)

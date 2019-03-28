@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG012.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : Ĵ�������ɽ
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/12/03    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 調整金一覧表
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/12/03    NACL-太田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-����    07/06/06  ���롼�׿����б�
-      *  04.08.01    NACL-����    15/08/24  �ãӣֽ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-森脇    07/06/06  グループ診療対応
+      *  04.08.01    NACL-森脇    15/08/24  ＣＳＶ出力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -36,14 +36,14 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    Ĵ������󥽡��ȥե�����
+      *    調整金情報ソートファイル
            SELECT  BG012SRT-FILE   ASSIGN   BG012SRTPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BG012SRT-KEY
                                    FILE    STATUS  IS  STS-BG012SRT.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -51,7 +51,7 @@
        FILE                        SECTION.
       *
       *
-      *    Ĵ������󥽡��ȥե�����
+      *    調整金情報ソートファイル
        FD  BG012SRT-FILE.
        01  BG012SRT-REC.
            02  BG012SRT-KEY.
@@ -65,13 +65,13 @@
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
                                            BY //BG012SRT-SYU-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ֹ��
+      *    患者番号順
        01  BG012SRT01-REC.
            02  BG012SRT01-KEY.
                03  BG012SRT01-KEY-SRYKA        PIC X(002).
@@ -87,7 +87,7 @@
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
                                            BY //BG012SRT01-SYU-//.
       *
-      *    ����ǯ����
+      *    診療年月日
        01  BG012SRT02-REC.
            02  BG012SRT02-KEY.
                03  BG012SRT02-KEY-SRYKA        PIC X(002).
@@ -103,7 +103,7 @@
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
                                            BY //BG012SRT02-SYU-//.
       *
-      *    ��ɼ�ֹ�
+      *    伝票番号
        01  BG012SRT03-REC.
            02  BG012SRT03-KEY.
                03  BG012SRT03-KEY-SRYKA        PIC X(002).
@@ -117,7 +117,7 @@
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
                                            BY //BG012SRT03-SYU-//.
       *
-      *    ���ʻ�̾��
+      *    カナ氏名順
        01  BG012SRT04-REC.
            02  BG012SRT04-KEY.
                03  BG012SRT04-KEY-SRYKA        PIC X(002).
@@ -134,24 +134,24 @@
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-//
                                            BY //BG012SRT04-SYU-//.
       *
-      *    Ĵ������󥽡��ȥե�����
+      *    調整金情報ソートファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //BG012SRT//.
       *
            COPY    "CPRECEERR.INC".
       *
-      *    �������ΰ�
+      *    印刷用領域
            COPY    "HCM42V01.INC"          REPLACING  //HCM42V01//
                                            BY         //HCM42//.
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
            03  STS-BG012SRTCL                      PIC X(02).
            03  STS-BG012SRT                        PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-SYUNOU                          PIC 9(01).
@@ -161,13 +161,13 @@
            03  FLG-SYSKANRI                        PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE                            PIC 9(05).
            03  CNT-LINE                            PIC 9(05).
            03  CNT-SEQ                             PIC 9(08).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX1                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -176,7 +176,7 @@
            03  IDW2                                PIC 9(04).
       *----(04.08.01)--ADD-END-----
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -190,7 +190,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-PARA-KAKBN                      PIC X(01).
            03  WRK-PARA-NYUGAIKBN                  PIC X(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR                         PIC X(200).
       *----(04.08.01)--UPD-START---
@@ -234,7 +234,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-CHOSEIMEI                       PIC X(20).
       *
       *----(04.08.01)--ADD-START---
-      *    �ãӣ֥ǡ��������Խ���
+      *    ＣＳＶデータ数字編集用
            03  WRK-REC             PIC X(20000).
            03  WRK-REC-LENGTH      PIC 9(05).
            03  WRK-HENSYU-AREA.
@@ -244,7 +244,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
                05  WRK-SYOSUU      PIC 9(01).
                05  WRK-RECEND      PIC 9(01).
       *
-      *    �ãӣ֥ǡ��������Խ���
+      *    ＣＳＶデータ日付編集用
        01  WRK-HEN-YMD-OT.
            03  WRK-HEN-YY-OT       PIC X(04).
            03  FILLER              PIC X(01)   VALUE   "/". 
@@ -253,12 +253,12 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-HEN-DD-OT       PIC X(02).
       *
        01  WRK-CONS-AREA.
-      *    �����
+      *    コンマ
            03  WRK-KUGIRI          PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO          PIC X(01)   VALUE   X"0D".
       *
-      *    �ãӣ֥ǡ����ե�����̾
+      *    ＣＳＶデータファイル名
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
@@ -288,13 +288,13 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  WRK-CSV-Z7          PIC -999999.
            03  WRK-CSV-Z11         PIC -9999999999.
       *
-      *    �ãӣ֥ǡ����إå�������
+      *    ＣＳＶデータヘッダー情報
        01  CSV-HEAD-01.
-           03  FILLER              PIC X(06)   VALUE   "�¤ӽ�".
+           03  FILLER              PIC X(06)   VALUE   "並び順".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-HEAD-SRTKBN     PIC X(12)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�оݴ���".
+           03  FILLER              PIC X(08)   VALUE   "対象期間".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-HEAD-KKNYMS     PIC X(08)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ",".
@@ -302,31 +302,31 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-HEAD-NYUGAI     PIC X(04)   VALUE   SPACE.
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
+           03  FILLER              PIC X(06)   VALUE   "作成日".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  CSV-HEAD-SKYYMD     PIC X(10)   VALUE   SPACE.
       *
        01  CSV-HEAD-02.
-           03  FILLER              PIC X(12)   VALUE   "Ĵ���⣱����".
+           03  FILLER              PIC X(12)   VALUE   "調整金１／２".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ֹ�".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���Ի�̾".
+           03  FILLER              PIC X(08)   VALUE   "患者氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��ɼ�ֹ�".
+           03  FILLER              PIC X(08)   VALUE   "伝票番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "���Ų�".
+           03  FILLER              PIC X(06)   VALUE   "診療科".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���Ų�̾".
+           03  FILLER              PIC X(08)   VALUE   "診療科名".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "����ǯ����".
+           03  FILLER              PIC X(10)   VALUE   "診療年月日".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ĵ����ʡܡ�".
+           03  FILLER              PIC X(12)   VALUE   "調整金（＋）".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "Ĵ����ʡݡ�".
+           03  FILLER              PIC X(12)   VALUE   "調整金（−）".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "Ĵ�����".
+           03  FILLER              PIC X(08)   VALUE   "調整金計".
       *----(04.08.01)--ADD-END-----
       *
        01  HEAD-AREA.
@@ -368,66 +368,66 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���Ųʾ���
+      *    診療科情報
            COPY    "CPSK1005.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ�
+      *    患者番号
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����ģ����極��
+      *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    ���ףãӣ����極��
+      *    統計ＣＳＶ制御サブ
            COPY    "CPORCSTOUKEICSV.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -436,7 +436,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -450,7 +450,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -468,7 +468,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -515,15 +515,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            MOVE    SPACE               TO  WRK-TITLE
       *
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
-               MOVE    "Ĵ�������ɽ������"
+               MOVE    "調整金一覧表−入院"
                                        TO  WRK-TITLE
            ELSE
                MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
-               MOVE    "Ĵ�������ɽ�ݳ���"
+               MOVE    "調整金一覧表−外来"
                                        TO  WRK-TITLE
            END-IF
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
@@ -553,45 +553,45 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
       *
            MOVE    ZERO                TO  FLG-END
       *
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
            PERFORM 1001-PARA-CHK-SEC
            IF    ( FLG-END         NOT =   ZERO )
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ���Ųʥ���Խ�����
+      *    診療科ワーク編集処理
            PERFORM 1001-SRYKALST-HEN-SEC
       *
-      *    �إå����Խ�����
+      *    ヘッダー編集処理
            PERFORM 1001-HEADER-HEN-SEC
       *
-      *    Ĵ������󥽡��ȥե������Խ�����
+      *    調整金情報ソートファイル編集処理
            PERFORM 1001-BG012SRT-HEN-SEC
       *
            .
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
       *****************************************************************
        1001-PARA-CHK-SEC               SECTION.
       *
-      *    ���ֻ����ʬ�����å�
+      *    期間指定区分チェック
            PERFORM 1001-KKNKBN-CHK-SEC
            IF    ( FLG-END         NOT =   ZERO )
                GO  TO  1001-PARA-CHK-EXT
            END-IF
       *
-      *    ���ֻ����ʬ�ᣱ�ΤȤ�
+      *    期間指定区分＝１のとき
            IF    ( WRK-PARA-KKNKBN     =   "1" )
       *
-      *        ���ֳ���ǯ������å�
+      *        期間開始年月チェック
                PERFORM 1001-KKNSTYM-CHK-SEC
                IF    ( FLG-END         NOT =   ZERO )
                    GO  TO  1001-PARA-CHK-EXT
                END-IF
       *
-      *        ���ֽ�λǯ������å�
+      *        期間終了年月チェック
                IF    ( WRK-PARA-KKNEDYM    NOT =   SPACE )
                    PERFORM 1001-KKNEDYM-CHK-SEC
                    IF    ( FLG-END         NOT =   ZERO )
@@ -601,7 +601,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
            END-IF
       *
       *----(04.08.01)--ADD-START---
-      *    �ãӣֽ��ϥե�����̾����
+      *    ＣＳＶ出力ファイル名設定
            MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
       *
            MOVE    SPACE           TO  WRK-TO-DATA-NYUGAI
@@ -631,19 +631,19 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
        1001-PARA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ֻ����ʬ�����å�
+      *    期間指定区分チェック
       *****************************************************************
        1001-KKNKBN-CHK-SEC             SECTION.
       *
-      *    ���ֻ����ʬ�ᣰ�����Ǥ��뤳��
+      *    期間指定区分＝０，１であること
            IF    ( WRK-PARA-KKNKBN     =   "0" OR  "1" )
                CONTINUE
            ELSE
                MOVE    SPACE           TO  WRK-RECEERR
-               STRING  "���ֻ����ʬ������Ǥ���"
+               STRING  "期間指定区分が誤りです［"
                                                    DELIMITED   BY  SIZE
                        WRK-PARA-KKNKBN             DELIMITED   BY  SIZE
-                       "��"                        DELIMITED   BY  SIZE
+                       "］"                        DELIMITED   BY  SIZE
                INTO    WRK-RECEERR
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
@@ -654,21 +654,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
        1001-KKNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ֳ���ǯ������å�
+      *    期間開始年月チェック
       *****************************************************************
        1001-KKNSTYM-CHK-SEC            SECTION.
       *
-      *    ����ǯ����ꤵ��Ƥ��뤳��
+      *    開始年月が設定されていること
            IF    ( WRK-PARA-KKNSTYM    NOT =   SPACE )
                CONTINUE
            ELSE
-               MOVE    "����ǯ�̤����Ǥ�"
+               MOVE    "開始年月が未設定です"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  1001-KKNSTYM-CHK-EXT
            END-IF
       *
-      *    ����ǯ�"000000"�����դȤ��������Ǥ��뤳��
+      *    開始年月が"000000"か日付として妥当であること
            IF    ( WRK-PARA-KKNSTYM    =   "000000" )
                CONTINUE
            ELSE
@@ -679,10 +679,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
                    CONTINUE
                ELSE
                    MOVE    SPACE           TO  WRK-RECEERR
-                   STRING  "����ǯ�����Ǥ���"
+                   STRING  "開始年月が誤りです［"
                                                DELIMITED   BY  SIZE
                        WRK-PARA-KKNSTYM        DELIMITED   BY  SIZE
-                       "��"                    DELIMITED   BY  SIZE
+                       "］"                    DELIMITED   BY  SIZE
                    INTO    WRK-RECEERR
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
@@ -694,11 +694,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
        1001-KKNSTYM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ֽ�λǯ������å�
+      *    期間終了年月チェック
       *****************************************************************
        1001-KKNEDYM-CHK-SEC            SECTION.
       *
-      *    ��λǯ�"999999"�����դȤ��������Ǥ��뤳��
+      *    終了年月が"999999"か日付として妥当であること
            IF    ( WRK-PARA-KKNEDYM    =   "999999" )
                CONTINUE
            ELSE
@@ -709,10 +709,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
                    CONTINUE
                ELSE
                    MOVE    SPACE           TO  WRK-RECEERR
-                   STRING  "��λǯ�����Ǥ���"
+                   STRING  "終了年月が誤りです［"
                                                DELIMITED   BY  SIZE
                        WRK-PARA-KKNEDYM        DELIMITED   BY  SIZE
-                       "��"                    DELIMITED   BY  SIZE
+                       "］"                    DELIMITED   BY  SIZE
                    INTO    WRK-RECEERR
                    END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
@@ -720,11 +720,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
                END-IF
            END-IF
       *
-      *    ����ǯ��彪λǯ��Ǥ��뤳��
+      *    開始年月≦終了年月であること
            IF    ( WRK-PARA-KKNSTYM   <=   WRK-PARA-KKNEDYM )
                CONTINUE
            ELSE
-               MOVE    "����ǯ��佪λǯ��ȤʤäƤ��ޤ�"
+               MOVE    "開始年月＞終了年月となっています"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  1001-KKNEDYM-CHK-EXT
@@ -734,7 +734,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG012SRTPARA-HOSPNUM
        1001-KKNEDYM-CHK-EXT.
            EXIT.
       *************************************************************
-      *    ���Ųʥ���Խ�����
+      *    診療科ワーク編集処理
       *************************************************************
        1001-SRYKALST-HEN-SEC           SECTION.
       *
@@ -794,36 +794,36 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
            EXIT.
       *----(04.08.01)--UPD-START---
       *************************************************************
-      *    �إå����Խ�����
+      *    ヘッダー編集処理
       *************************************************************
        1001-HEADER-HEN-SEC             SECTION.
       *
            MOVE    "000000"            TO  WRK-SPRT-SRYYM
       *
-      *    �����ȥ�
+      *    タイトル
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
-               MOVE    "��������"      TO  HEAD-NYUGAI
-               MOVE    "����"          TO  CSV-HEAD-NYUGAI
+               MOVE    "（入院）"      TO  HEAD-NYUGAI
+               MOVE    "入院"          TO  CSV-HEAD-NYUGAI
            ELSE
-               MOVE    "�ʳ����"      TO  HEAD-NYUGAI
-               MOVE    "����"          TO  CSV-HEAD-NYUGAI
+               MOVE    "（外来）"      TO  HEAD-NYUGAI
+               MOVE    "外来"          TO  CSV-HEAD-NYUGAI
            END-IF
       *
-      *    �����ȶ�ʬ
+      *    ソート区分
            EVALUATE    WRK-PARA-SRTKBN
            WHEN    "1"
-               MOVE    "����ǯ������"  TO  HEAD-SRTKBN
+               MOVE    "診療年月日順"  TO  HEAD-SRTKBN
            WHEN    "2"
-               MOVE    "��ɼ�ֹ��"    TO  HEAD-SRTKBN
+               MOVE    "伝票番号順"    TO  HEAD-SRTKBN
            WHEN    "3"
-               MOVE    "���ʻ�̾��"    TO  HEAD-SRTKBN
+               MOVE    "カナ氏名順"    TO  HEAD-SRTKBN
            WHEN    OTHER
-               MOVE    "�����ֹ��"    TO  HEAD-SRTKBN
+               MOVE    "患者番号順"    TO  HEAD-SRTKBN
            END-EVALUATE
       *
            MOVE    HEAD-SRTKBN         TO  CSV-HEAD-SRTKBN
       *
-      *    ������
+      *    作成日
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3         TO  HEAD-SAKYMD
@@ -837,10 +837,10 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
       *
                IF    ( WRK-PARA-KKNSTYM    =   "000000" )
                 AND  ( WRK-PARA-KKNEDYM    =   "999999" )
-                   MOVE    "����ʤ�"              TO  HEAD-KKNYM
+                   MOVE    "指定なし"              TO  HEAD-KKNYM
                                                        CSV-HEAD-KKNYMS
                ELSE
-      *            ����
+      *            期間
                    INITIALIZE  WRK-KKN-HEN
       *
                    IF    ( WRK-PARA-KKNSTYM    NOT =   "000000" )
@@ -857,7 +857,7 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
                    END-IF
       *
                    IF    ( WRK-PARA-KKNEDYM    NOT =   SPACE )
-                       MOVE    "��"                    TO  WRK-KKNMID
+                       MOVE    "〜"                    TO  WRK-KKNMID
                    END-IF
       *
                    IF    ( WRK-PARA-KKNEDYM        =   SPACE
@@ -883,7 +883,7 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
                END-IF
       *
            ELSE
-               MOVE    "����ʤ�"                  TO  HEAD-KKNYM
+               MOVE    "指定なし"                  TO  HEAD-KKNYM
                                                        CSV-HEAD-KKNYMS
            END-IF
       *
@@ -891,13 +891,13 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
        1001-HEADER-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ĵ������󥽡��ȥե������Խ�����
+      *    調整金情報ソートファイル編集処理
       *****************************************************************
        1001-BG012SRT-HEN-SEC           SECTION.
       *
            MOVE    ZERO                TO  CNT-SEQ
       *
-      *    Ĵ������󥽡��ȥե���������
+      *    調整金情報ソートファイル初期化
 grpsys*DD  OPEN    OUTPUT                  BG012SRTCL-FILE
 grpsys*DD  CLOSE   BG012SRTCL-FILE
 grpsys     OPEN    OUTPUT                  BG012SRT-FILE
@@ -930,7 +930,7 @@ grpsys     CLOSE   BG012SRT-FILE
                END-IF
       *
                EVALUATE    WRK-PARA-SRTKBN
-      *        ����ǯ����
+      *        診療年月日
                WHEN    "1"
                    INITIALIZE                  BG012SRT02-REC
                    MOVE    WRK-SRT-SRYKA   TO  BG012SRT02-KEY-SRYKA
@@ -952,7 +952,7 @@ grpsys     CLOSE   BG012SRT-FILE
                        WRITE   BG012SRT-REC
                    END-IF
       *
-      *        ��ɼ�ֹ��
+      *        伝票番号順
                WHEN    "2"
                    INITIALIZE                  BG012SRT03-REC
                    MOVE    WRK-SRT-SRYKA   TO  BG012SRT03-KEY-SRYKA
@@ -972,7 +972,7 @@ grpsys     CLOSE   BG012SRT-FILE
                        WRITE   BG012SRT-REC
                    END-IF
       *
-      *        ���ʻ�̾��
+      *        カナ氏名順
                WHEN    "3"
                    INITIALIZE                  BG012SRT04-REC
                    MOVE    WRK-SRT-SRYKA   TO  BG012SRT04-KEY-SRYKA
@@ -995,7 +995,7 @@ grpsys     CLOSE   BG012SRT-FILE
                        WRITE   BG012SRT-REC
                    END-IF
       *
-      *        �����ֹ��
+      *        患者番号順
                WHEN    OTHER
                    INITIALIZE                  BG012SRT01-REC
                    MOVE    WRK-SRT-SRYKA   TO  BG012SRT01-KEY-SRYKA
@@ -1034,7 +1034,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
        1001-BG012SRT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -1049,7 +1049,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
       *
       *----(04.08.01)--ADD-START---
            IF      FLG-BG012SRT    =   ZERO
-      *        �ãӣֽ��Ͻ���
+      *        ＣＳＶ出力処理
                PERFORM 270-CSV-HEAD-SET-SEC
            END-IF
       *----(04.08.01)--ADD-END-----
@@ -1085,7 +1085,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
            EXIT.
       *
       *****************************************************************
-      *    �إå��Խ�����
+      *    ヘッダ編集処理
       *****************************************************************
        210-HEAD-SEC                    SECTION.
       *
@@ -1107,8 +1107,8 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
            MOVE    CNT-PAGE        TO  WRK-ZZ9
            MOVE    WRK-ZZ9         TO  HCM42-PAGE
       *
-           MOVE    "Ĵ����ʡܡ�"  TO  HCM42-LBLCHOSEIP
-           MOVE    "Ĵ����ʡݡ�"  TO  HCM42-LBLCHOSEIM
+           MOVE    "調整金（＋）"  TO  HCM42-LBLCHOSEIP
+           MOVE    "調整金（−）"  TO  HCM42-LBLCHOSEIM
       *
            IF    ( WRK-PARA-KAKBN  =   "1" )
       *
@@ -1124,7 +1124,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
       *
                        MOVE    SPACE       TO  WRK-KKNYM
                        STRING  HCM42-KKNYM     DELIMITED   BY  SPACE
-                               "��"            DELIMITED   BY  SIZE
+                               "　"            DELIMITED   BY  SIZE
                                WRK-SRYKAMEIL (IDX1)
                                                DELIMITED   BY  SPACE
                        INTO    WRK-KKNYM
@@ -1145,9 +1145,9 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
            END-IF
       *
            IF    ( KEY-CHOSEIKBN           =   "1" )
-               MOVE    "Ĵ���⣱"          TO  HCM42-LBLCHOSEI
+               MOVE    "調整金１"          TO  HCM42-LBLCHOSEI
            ELSE
-               MOVE    "Ĵ���⣲"          TO  HCM42-LBLCHOSEI
+               MOVE    "調整金２"          TO  HCM42-LBLCHOSEI
            END-IF
       *
            .
@@ -1155,7 +1155,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
            EXIT.
       *----(04.08.01)--UPD-START---
       *****************************************************************
-      *    �����Խ�����
+      *    明細編集処理
       *****************************************************************
        220-MEISAI-SEC                  SECTION.
       *
@@ -1229,10 +1229,10 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
       *
            IF    ( KEY-CHOSEIKBN       =   "1" )
                MOVE    1               TO  IDXC
-               MOVE    "Ĵ���⣱"      TO  WRK-CSV-CHOSEIKBN
+               MOVE    "調整金１"      TO  WRK-CSV-CHOSEIKBN
            ELSE
                MOVE    2               TO  IDXC
-               MOVE    "Ĵ���⣲"      TO  WRK-CSV-CHOSEIKBN
+               MOVE    "調整金２"      TO  WRK-CSV-CHOSEIKBN
            END-IF
       *
            IF    ( SYU-RCHOSEI (IDXC)  >=  ZERO )
@@ -1268,7 +1268,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
            COMPUTE TTL-TTL-KNS (IDXC)
                =   TTL-TTL-KNS (IDXC)      +   1
       *
-      *    �ãӣֽ��Ͻ���
+      *    ＣＳＶ出力処理
            PERFORM 270-CSV-BODY-SET-SEC
       *
            PERFORM 900-BG012SRT-READ-SEC
@@ -1278,21 +1278,21 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
            EXIT.
       *----(04.08.01)--UPD-END-----
       *****************************************************************
-      *    ��׹��Խ�����
+      *    合計行編集処理
       *****************************************************************
        230-TOTAL-SEC                   SECTION.
       *
            IF    ( KEY-SRYKA       NOT =  BG012SRT-KEY-SRYKA )
              OR  ( FLG-BG012SRT    NOT =  ZERO )
       *
-                   MOVE    "���"              TO  HCM42-LBLTTLKNS
-                   MOVE    "Ĵ����ʡܡ�"      TO  HCM42-LBLTTLCHOSEIP
-                   MOVE    "Ĵ����ʡݡ�"      TO  HCM42-LBLTTLCHOSEIM
-                   MOVE    "Ĵ�����"          TO  HCM42-LBLTTLCHOSEI
+                   MOVE    "件数"              TO  HCM42-LBLTTLKNS
+                   MOVE    "調整金（＋）"      TO  HCM42-LBLTTLCHOSEIP
+                   MOVE    "調整金（−）"      TO  HCM42-LBLTTLCHOSEIM
+                   MOVE    "調整金計"          TO  HCM42-LBLTTLCHOSEI
       *
                    MOVE    SPACE               TO  TTL-TITLE
                    STRING  KEY-SRYKAMEI    DELIMITED   BY  SPACE
-                           "Ĵ���⣱��"    DELIMITED   BY  SIZE
+                           "調整金１計"    DELIMITED   BY  SIZE
                    INTO    TTL-TITLE
                    END-STRING
       *
@@ -1305,7 +1305,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
       *
                    MOVE    SPACE               TO  TTL-TITLE
                    STRING  KEY-SRYKAMEI    DELIMITED   BY  SPACE
-                           "Ĵ���⣲��"    DELIMITED   BY  SIZE
+                           "調整金２計"    DELIMITED   BY  SIZE
                    INTO    TTL-TITLE
                    END-STRING
       *
@@ -1318,7 +1318,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
       *
                    MOVE    SPACE               TO  TTL-TITLE
                    STRING  KEY-SRYKAMEI    DELIMITED   BY  SPACE
-                           "Ĵ������"    DELIMITED   BY  SIZE
+                           "調整金合計"    DELIMITED   BY  SIZE
                    INTO    TTL-TITLE
                    END-STRING
       *
@@ -1341,7 +1341,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
       *
                    IF    ( FLG-BG012SRT    NOT =   ZERO )
       *
-                       MOVE    "Ĵ���⣱���"  TO  TTL-TITLE
+                       MOVE    "調整金１合計"  TO  TTL-TITLE
                        MOVE    TTL-TTL-KNS (1)     TO  TTL-KNS
                        MOVE    TTL-TTL-CHOSEIP (1) TO  TTL-CHOSEIP
                        MOVE    TTL-TTL-CHOSEIM (1) TO  TTL-CHOSEIM
@@ -1349,7 +1349,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
                        MOVE    4                   TO  IDX-TTL
                        PERFORM 2301-TOTAL-SEC
       *
-                       MOVE    "Ĵ���⣲���"  TO  TTL-TITLE
+                       MOVE    "調整金２合計"  TO  TTL-TITLE
                        MOVE    TTL-TTL-KNS (2)     TO  TTL-KNS
                        MOVE    TTL-TTL-CHOSEIP (2) TO  TTL-CHOSEIP
                        MOVE    TTL-TTL-CHOSEIM (2) TO  TTL-CHOSEIM
@@ -1357,7 +1357,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
                        MOVE    5                   TO  IDX-TTL
                        PERFORM 2301-TOTAL-SEC
       *
-                       MOVE    "Ĵ������"    TO  TTL-TITLE
+                       MOVE    "調整金合計"    TO  TTL-TITLE
                        COMPUTE TTL-KNS
                            =   TTL-TTL-KNS (1)
                            +   TTL-TTL-KNS (2)
@@ -1378,7 +1378,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
        230-TOTAL-EXT.
            EXIT.
       *****************************************************************
-      *    ��׹��Խ�����
+      *    合計行編集処理
       *****************************************************************
        2301-TOTAL-SEC                      SECTION.
       *
@@ -1407,7 +1407,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
        2301-TOTAL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        240-PRINT-SEC                   SECTION.
       *
@@ -1439,7 +1439,7 @@ grpsys                                 SPA-AREA
            IF    ( SPRT-RETURN         =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1449,7 +1449,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *----(04.08.01)--ADD-START---
       *****************************************************************
-      *    �ãӣ֡ʣȣţ��ĥ쥳���ɡ��Խ�����
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
       *****************************************************************
        270-CSV-HEAD-SET-SEC        SECTION.
       *
@@ -1461,7 +1461,7 @@ grpsys                                 SPA-AREA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1477,7 +1477,7 @@ grpsys                                 SPA-AREA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1489,45 +1489,45 @@ grpsys                                 SPA-AREA
        270-CSV-HEAD-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ãӣ֡ʥǡ����쥳���ɡ��Խ�����
+      *    ＣＳＶ（データレコード）編集処理
       *****************************************************************
        270-CSV-BODY-SET-SEC        SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    Ĵ�����ʬ
+      *    調整金区分
            MOVE    WRK-CSV-CHOSEIKBN   TO  WRK-DATA
            MOVE    8               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    WRK-CSV-PTNUM   TO  WRK-DATA
            MOVE    20              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���Ի�̾
+      *    患者氏名
            MOVE    WRK-CSV-NAME    TO  WRK-DATA
            MOVE    100             TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ��ɼ�ֹ�
+      *    伝票番号
            MOVE    WRK-CSV-DENPNUM TO  WRK-DATA
            MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���Ų�
+      *    診療科
            MOVE    WRK-CSV-SRYKA   TO  WRK-DATA
            MOVE    2               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���Ų�̾
+      *    診療科名
            MOVE    WRK-CSV-SRYKAMEI
                                    TO  WRK-DATA
            MOVE    20              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ����ǯ����
+      *    診療年月日
            MOVE    WRK-CSV-STYMD   TO  WRK-DATA
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1536,19 +1536,19 @@ grpsys                                 SPA-AREA
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    Ĵ����ʡܡ�
+      *    調整金（＋）
            MOVE    WRK-CSV-CHOSEIP TO  WRK-DATA
            MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    Ĵ����ʡݡ�
+      *    調整金（−）
            MOVE    WRK-CSV-CHOSEIM TO  WRK-CSV-Z7
            MOVE    WRK-CSV-Z7      TO  WRK-DATA
            MOVE    7               TO  WRK-NAGASA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1560,7 +1560,7 @@ grpsys                                 SPA-AREA
        270-CSV-BODY-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ãӣ֡ʹ�ץ쥳���ɡ��Խ�����
+      *    ＣＳＶ（合計レコード）編集処理
       *****************************************************************
        270-CSV-GOKEI-SET-SEC       SECTION.
       *
@@ -1578,7 +1578,7 @@ grpsys                                 SPA-AREA
            MOVE    6               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-           MOVE    "��"            TO  WRK-DATA
+           MOVE    "件"            TO  WRK-DATA
            MOVE    2               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
@@ -1601,7 +1601,7 @@ grpsys                                 SPA-AREA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1613,7 +1613,7 @@ grpsys                                 SPA-AREA
        270-CSV-GOKEI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ףãӣֽ��Ͻ���
+      *    統計ＣＳＶ出力処理
       *****************************************************************
        500-TOUKEICSV-SEC           SECTION.
       *
@@ -1638,7 +1638,7 @@ grpsys                                 SPA-AREA
            MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
       *
-           MOVE    "Ĵ�������ɽ�ãӣֺ���"
+           MOVE    "調整金一覧表ＣＳＶ作成"
                                    TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
@@ -1647,7 +1647,7 @@ grpsys                                 SPA-AREA
            IF      STOUKEICSV-RETURN   =   ZERO
                CONTINUE
            ELSE
-               MOVE    "���ףãӣ֣ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
                                       TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -1658,7 +1658,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5004-MOJI-HENSYU-SEC        SECTION.
       *
@@ -1693,7 +1693,7 @@ grpsys                                 SPA-AREA
        5004-MOJI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    �۾ｪλ����
+      *    異常終了処理
       *****************************************************************
        500-COBABORT-SEC          SECTION.
       *
@@ -1710,7 +1710,7 @@ grpsys                                 SPA-AREA
       *
       *----(04.08.01)--ADD-END-----
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1724,7 +1724,7 @@ grpsys                                 SPA-AREA
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1746,15 +1746,15 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            PERFORM 800-BG012SRT-DEL-SEC
       *
            IF    ( CNT-PAGE        =   ZERO )
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1762,7 +1762,7 @@ grpsys                                     SPA-AREA
            DISPLAY "*** ORCBG012 IN " CNT-PAGE  " ***"
            DISPLAY "*** ORCBG012 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1782,7 +1782,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -1802,17 +1802,17 @@ grpsys                                 SPA-AREA
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "　"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ĵ������󥽡��ȥե�����������
+      *    調整金情報ソートファイル削除処理
       *****************************************************************
        800-BG012SRT-DEL-SEC            SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
 grpsys*DD  MOVE    ORCBG012SRTPARA TO  IF-FILENAME
 grpsys     MOVE    BG012SRTPARA    TO  IF-FILENAME
@@ -1823,7 +1823,7 @@ grpsys     MOVE    BG012SRTPARA    TO  IF-FILENAME
        800-BG012SRT-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    Ĵ������󥽡��ȥե������ɹ�����
+      *    調整金情報ソートファイル読込処理
       *****************************************************************
        900-BG012SRT-READ-SEC          SECTION.
       *
@@ -1841,7 +1841,7 @@ grpsys     MOVE    BG012SRTPARA    TO  IF-FILENAME
        900-BG012SRT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ���󸡺�����
+      *    収納情報検索処理
       *****************************************************************
        900-SYUNOU-KEY72-SEL-SEC        SECTION.
       *
@@ -1895,7 +1895,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
        900-SYUNOU-KEY72-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ����ƣţԣãȽ���
+      *    収納情報ＦＥＴＣＨ処理
       *****************************************************************
        900-SYUNOU-KEY72-FET-SEC        SECTION.
       *
@@ -1913,7 +1913,7 @@ grpsys     MOVE    "key72"         TO  MCP-PATHNAME
        900-SYUNOU-KEY72-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ���󸡺�����(KEY)
+      *    患者番号情報検索処理(KEY)
       *****************************************************************
        900-PTNUM-KEY-SEL-SEC           SECTION.
       *
@@ -1944,7 +1944,7 @@ grpsys     MOVE    "key"           TO  MCP-PATHNAME
        900-PTNUM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ��󸡺�����(KEY)
+      *    患者情報検索処理(KEY)
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -1975,7 +1975,7 @@ grpsys     MOVE    "key"           TO  MCP-PATHNAME
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC          SECTION.
       *
@@ -1994,7 +1994,7 @@ grpsys*DD                              MCPDATA-REC
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        910-DBFETCH-SEC            SECTION.
       *
@@ -2010,7 +2010,7 @@ grpsys*DD                              MCPDATA-REC
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -2026,7 +2026,7 @@ grpsys*DD                              MCPDATA-REC
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -2056,7 +2056,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡����ǽ���
+      *    ＤＢ　切断処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

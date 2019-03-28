@@ -9,130 +9,130 @@ xml_system01_dailyv2res {
 	Api_Result		varchar(2);
 	Api_Result_Message	varchar(100);
        	Reskey			varchar(100);
-#--´ğ½àÆü
+#--åŸºæº–æ—¥
 	Base_Date		varchar(10);
-#--´µ¼ÔÅĞÏ¿´Ø·¸
+#--æ‚£è€…ç™»éŒ²é–¢ä¿‚
 	Patient_Information	{
-#--     Æó½ÅÅĞÏ¿µ¿¤¤¥Á¥§¥Ã¥¯¶èÊ¬
+#--     äºŒé‡ç™»éŒ²ç–‘ã„ãƒã‚§ãƒƒã‚¯åŒºåˆ†
 		Duplication_Class	varchar(1);
 		Duplication_Class_Name	varchar(40);
-#--     Í¹ÊØÈÖ¹æ¼«Æ°µ­ºÜ¶èÊ¬
+#--     éƒµä¾¿ç•ªå·è‡ªå‹•è¨˜è¼‰åŒºåˆ†
 		ZipCode_Auto_Class		varchar(1);
 		ZipCode_Auto_Class_Name		varchar(40);
-#--     ÅÔÆ»ÉÜ¸©Ì¾µ­ºÜ¶èÊ¬
+#--     éƒ½é“åºœçœŒåè¨˜è¼‰åŒºåˆ†
 		P_WholeName_Auto_Class		varchar(1);
 		P_WholeName_Auto_Class_Name	varchar(40);
 	};
-#--¿ÇÎÅ¹Ô°ÙÅĞÏ¿´Ø·¸
+#--è¨ºç™‚è¡Œç‚ºç™»éŒ²é–¢ä¿‚
 	Medical_Information	{
 	    Medical_Set01_Information	{
-#--     ½èÊı¶èÊ¬
+#--     å‡¦æ–¹åŒºåˆ†
 		Outside_Class			varchar(1);
 		Outside_Class_Name		varchar(40);
-#--     ¾ÃÈñÀÇÃ¼¿ôÀßÄê¶èÊ¬
+#--     æ¶ˆè²»ç¨ç«¯æ•°è¨­å®šåŒºåˆ†
 		Tax_Rounding_Class		varchar(1);
 		Tax_Rounding_Class_Name		varchar(40);
-#--     ¼«Èñ¥³¡¼¥ÉÃ¼¿ôÀßÄê¶èÊ¬
+#--     è‡ªè²»ã‚³ãƒ¼ãƒ‰ç«¯æ•°è¨­å®šåŒºåˆ†
 		Oe_Rounding_Class		varchar(1);
 		Oe_Rounding_Class_Name		varchar(40);
-#--     Èé²¼¶ÚÆùÃí¼ÍÎÁÊÑ´¹ÁªÂò
+#--     çš®ä¸‹ç­‹è‚‰æ³¨å°„æ–™å¤‰æ›é¸æŠ
 		Medical_Change_Class		varchar(1);
 		Medical_Change_Class_Name	varchar(40);
-#--     ÅêÌô¿ÇÎÅ¶èÊ¬ÊÑ´¹ÁªÂò
+#--     æŠ•è–¬è¨ºç™‚åŒºåˆ†å¤‰æ›é¸æŠ
 		Class_Change_Class		varchar(1);
 		Class_Change_Class_Name		varchar(40);
-#--     ¥»¥Ã¥ÈÅ¸³«¶èÊ¬
+#--     ã‚»ãƒƒãƒˆå±•é–‹åŒºåˆ†
 		Set_Mode_Class		varchar(1);
 		Set_Mode_Class_Name	varchar(40);
 		};
 	    Medical_Set02_Information	{
-#--     ¿Ç»¡ÎÁ¼«Æ°È¯À¸
+#--     è¨ºå¯Ÿæ–™è‡ªå‹•ç™ºç”Ÿ
 		Medical_Auto_Class		varchar(1);
 		Medical_Auto_Class_Name		varchar(40);
-#--     °é»ù±ÉÍÜ»ØÆ³ÎÁ¼«Æ°»»Äê
+#--     è‚²å…æ „é¤ŠæŒ‡å°æ–™è‡ªå‹•ç®—å®š
 		Child_Med_Auto_Class		varchar(1);
 		Child_Med_Auto_Class_Name	varchar(40);
-#--     °é»ù±ÉÍÜ»ØÆ³ÎÁ¼«Æ°»»Äê²Ê
+#--     è‚²å…æ „é¤ŠæŒ‡å°æ–™è‡ªå‹•ç®—å®šç§‘
 		Child_Med_Department_Code	varchar(2);
 		Child_Med_Department_Code_Name	varchar(40);
-#--     ÉÂÌ¾¼À´µ¶èÊ¬¤«¤é¤Î¼«Æ°È¯À¸
+#--     ç—…åç–¾æ‚£åŒºåˆ†ã‹ã‚‰ã®è‡ªå‹•ç™ºç”Ÿ
 		Disease_Med_Auto_Class		varchar(1);
 		Disease_Med_Auto_Class_Name	varchar(40);
-#--     ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡Ë
+#--     ç™‚é¤Šæ‹…å½“æ‰‹å½“ï¼ˆåŒ—æµ·é“ï¼‰
 		MeTeratment_Auto_Class		varchar(1);
 		MeTeratment_Auto_Class_Name	varchar(40);
-#--     ³°Íè´ÉÍı²Ã»»¥Á¥§¥Ã¥¯
+#--     å¤–æ¥ç®¡ç†åŠ ç®—ãƒã‚§ãƒƒã‚¯
 		Outpatient_Med_Chk_Class	varchar(1);
 		Outpatient_Med_Chk_Class_Name	varchar(40);
-#--     »ş´Ö³°²Ã»»¡Ê¾®»ù²ÊÆÃÎã¡Ë
+#--     æ™‚é–“å¤–åŠ ç®—ï¼ˆå°å…ç§‘ç‰¹ä¾‹ï¼‰
 		Child_Time_Class		varchar(1);
 		Child_Time_Class_Name		varchar(40);
-#--     ºÇ½ªÍè±¡Æü¤«¤é¤Î´ü´Ö
+#--     æœ€çµ‚æ¥é™¢æ—¥ã‹ã‚‰ã®æœŸé–“
 		LastVisit_Term			varchar(2);
-#--     Á°²óÊİ¸±ÁÈ¹ç¤»Áê°ã¥Á¥§¥Ã¥¯
+#--     å‰å›ä¿é™ºçµ„åˆã›ç›¸é•ãƒã‚§ãƒƒã‚¯
 		Combination_Number_Chk_Class		varchar(1);
 		Combination_Number_Chk_Class_Name	varchar(40);
 		};
 	    Medical_Set03_Information	{
-#--     ÌôºŞÅêÍ¿ÎÌ¥Á¥§¥Ã¥¯
+#--     è–¬å‰¤æŠ•ä¸é‡ãƒã‚§ãƒƒã‚¯
 		Dosage_Chk_Class		varchar(1);
 		Dosage_Chk_Class_Name		varchar(40);
-#--     ÅêÌô£³£°ÆüÄ¶¥Á¥§¥Ã¥¯
+#--     æŠ•è–¬ï¼“ï¼æ—¥è¶…ãƒã‚§ãƒƒã‚¯
 		Dosage_30Over_Chk_Class		varchar(1);
 		Dosage_30Over_Chk_Class_Name	varchar(40);
-#--     ÌôºŞ¾ğÊóÄó¶¡ÎÁ¥Á¥§¥Ã¥¯
+#--     è–¬å‰¤æƒ…å ±æä¾›æ–™ãƒã‚§ãƒƒã‚¯
 		DrugInf_Chk_Class		varchar(1);
 		DrugInf_Chk_Class_Name		varchar(40);
-#--     ¼êÄ¢²Ã»»³ÎÇ§¥Á¥§¥Ã¥¯
+#--     æ‰‹å¸³åŠ ç®—ç¢ºèªãƒã‚§ãƒƒã‚¯
 		Medication_Notebook_Chk_Class		varchar(1);
 		Medication_Notebook_Chk_Class_Name	varchar(40);
-#--     »ş´Ö³°¶ÛµŞ±¡Æâ¥Á¥§¥Ã¥¯
+#--     æ™‚é–“å¤–ç·Šæ€¥é™¢å†…ãƒã‚§ãƒƒã‚¯
 		Time_Chk_Class			varchar(1);
 		Time_Chk_Class_Name		varchar(40);
 #--1038
-#--     Àº¿ÀÎÅË¡£²£°Ì¤Ëş²Ã»»¶èÊ¬
+#--     ç²¾ç¥ç™‚æ³•ï¼’ï¼æœªæº€åŠ ç®—åŒºåˆ†
 		Psy20_Addition_Auto_Class	varchar(1);
 		Psy20_Addition_Auto_Class_Name	varchar(40);
-#--     ¿´¿ÈÎÅË¡£²£°Ì¤Ëş²Ã»»¶èÊ¬
+#--     å¿ƒèº«ç™‚æ³•ï¼’ï¼æœªæº€åŠ ç®—åŒºåˆ†
 		Mind20_Addition_Auto_Class	varchar(1);
 		Mind20_Addition_Auto_Class_Name	varchar(40);
-#--     »ÄÎÌÇÑ´ş¶èÊ¬
+#--     æ®‹é‡å»ƒæ£„åŒºåˆ†
 		Rem_Addition_Auto_Class		varchar(1);
 		Rem_Addition_Auto_Class_Name	varchar(40);
 #--1007
-#--     Ä´ºŞµ»½Ñ´ğËÜÎÁ¶èÊ¬
+#--     èª¿å‰¤æŠ€è¡“åŸºæœ¬æ–™åŒºåˆ†
 		Dispensing_Auto_Class		varchar(1);
 		Dispensing_Auto_Class_Name	varchar(40);
-#--     ÌôºŞ¾ğÊóÄó¶¡ÎÁ¡Ê°ìÈÌ¡Ë
+#--     è–¬å‰¤æƒ…å ±æä¾›æ–™ï¼ˆä¸€èˆ¬ï¼‰
 		DrugInf_Auto_Class		varchar(1);
 		DrugInf_Auto_Class_Name		varchar(40);
-#--     ÌôºŞ¾ğÊóÄó¶¡ÎÁ¡ÊÏ·¿Í¡Ë
+#--     è–¬å‰¤æƒ…å ±æä¾›æ–™ï¼ˆè€äººï¼‰
 		Om_DrugInf_Auto_Class		varchar(1);
 		Om_DrugInf_Auto_Class_Name	varchar(40);
-#--     ÆÃÄêÌôºŞ¼£ÎÅ´ÉÍıÎÁÍ­Ìµ
+#--     ç‰¹å®šè–¬å‰¤æ²»ç™‚ç®¡ç†æ–™æœ‰ç„¡
 		Specific_Drug_Auto_Class	varchar(1);
 		Specific_Drug_Auto_Class_Name	varchar(40);
-#--     ÄûÀµ»ş¤Î¼«Æ°È¯À¸¡Ê³°Íè¡Ë
+#--     è¨‚æ­£æ™‚ã®è‡ªå‹•ç™ºç”Ÿï¼ˆå¤–æ¥ï¼‰
 		Outpatient_Modify_Auto_Class		varchar(1);
 		Outpatient_Modify_Auto_Class_Name	varchar(40);
-#--     ÄûÀµ»ş¤Î¼«Æ°È¯À¸¡ÊÆÃÄê¼À´µ½èÊı´ÉÍı¡Ë
+#--     è¨‚æ­£æ™‚ã®è‡ªå‹•ç™ºç”Ÿï¼ˆç‰¹å®šç–¾æ‚£å‡¦æ–¹ç®¡ç†ï¼‰
 		Modify_Disease_Med_Auto_Class		varchar(1);
 		Modify_Disease_Med_Auto_Class_Name	varchar(40);
-#--     ¸¡ÂÎ¸¡ºº²Ã»»¼«Æ°È¯À¸
+#--     æ¤œä½“æ¤œæŸ»åŠ ç®—è‡ªå‹•ç™ºç”Ÿ
 		Laboratory_text_Med_Auto_Class		varchar(1);
 		Laboratory_text_Med_Auto_Class_Name	varchar(40);
-#--     ²èÁü¿ÇÃÇ´ÉÍı²Ã»»£±¡Ê¼Ì¿¿¿ÇÃÇ¡Ë¼«Æ°È¯À¸
+#--     ç”»åƒè¨ºæ–­ç®¡ç†åŠ ç®—ï¼‘ï¼ˆå†™çœŸè¨ºæ–­ï¼‰è‡ªå‹•ç™ºç”Ÿ
 		Image_Addition_Auto_Class	varchar(1);
 		Image_Addition_Auto_Class_Name	varchar(40);
 		};
 	    Medical_Set04_Information	{
-#--     Æş¶â¤Î¼è°·¤¤¶èÊ¬
+#--     å…¥é‡‘ã®å–æ‰±ã„åŒºåˆ†
 		Ic_Request_Code		varchar(1);
 		Ic_Request_Code_Name	varchar(40);
-#--     Æş¶â¡¦ÊÖ¶â³ÛÀßÄê¶èÊ¬
+#--     å…¥é‡‘ãƒ»è¿”é‡‘é¡è¨­å®šåŒºåˆ†
 		Ic_Re_Code		varchar(1);
 		Ic_Re_Code_Name		varchar(40);
-#--     ÄûÀµ¤ÎÀÁµá½ñ¶â³Û
+#--     è¨‚æ­£ã®è«‹æ±‚æ›¸é‡‘é¡
 		Modify_Invoice_Receipt_Code	varchar(1);
 		Modify_Invoice_Receipt_Code_Name	varchar(40);
 		};

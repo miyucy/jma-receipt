@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,32 +18,32 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCVTHKNCOMBI.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ݸ��ȹ礻��������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  01/04/11    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : 保険組合せ作成処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/04/11    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-��ƣ     01/12/12  �ģ¥����륤�󥿡��ե�����
-      *                                     ���ѹ�  
-      *  01.00.02    NACL-¿��Ǽ  02/09/19  �ѥ�᥿�Ƥ�ģ¥ѥ�᥿���ѹ�
-      *                                     �ȣ��������������б�
-      *  01.00.03    NACL-¿��Ǽ  02/11/29  ����������б�
-      *  01.00.04    NACL-¿��Ǽ  03/05/12  �ݸ����ֳ����б��ʻ����
-      *  01.00.05    NACL-¿��Ǽ  03/05/16  �ݸ����ֳ����б�
-      *  01.00.06    NACL-¿��Ǽ  05/09/01  ��������ԥ���С����б�
-      *  01.00.07    NACL-����    05/09/01  ���顼��å����������ߥå�
-      *  01.00.08    NACL-����    05/09/28  ��¤�ѹ�
-      *  01.00.09    NACL-¿��Ǽ  06/01/12  �����ʬȽ�ꡢ��å���������
-      *  01.00.10    NACL-¿��Ǽ  06/06/30  ���ֹ������ɲá��̳�ƻ�ѡ�
-      *  02.00.01    NACL-¿��Ǽ  06/07/27  MONFUNC �б�
-      *  03.05.00    NACL-¿��Ǽ  07/05/16  ���롼�׿����б�
-      *  04.01.00    NACL-¿��Ǽ  07/11/12  �ݸ��ֹ�ޥ��������ѹ����
-      *  04.02.00    NACL-¿��Ǽ  08/04/28  ���������б�
-      *                                     �����ѹ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-伊藤     01/12/12  ＤＢコールインターフェイス
+      *                                     の変更  
+      *  01.00.02    NACL-多々納  02/09/19  パラメタＦをＤＢパラメタへ変更
+      *                                     Ｈ１４．１０改正対応
+      *  01.00.03    NACL-多々納  02/11/29  前期高齢者対応
+      *  01.00.04    NACL-多々納  03/05/12  保険期間外の対応（暫定）
+      *  01.00.05    NACL-多々納  03/05/16  保険期間外の対応
+      *  01.00.06    NACL-多々納  05/09/01  前期高齢者コンバート対応
+      *  01.00.07    NACL-森脇    05/09/01  エラーメッセージ、コミット
+      *  01.00.08    NACL-森脇    05/09/28  構造変更
+      *  01.00.09    NACL-多々納  06/01/12  補助区分判定、メッセージ修正
+      *  01.00.10    NACL-多々納  06/06/30  県番号設定追加（北海道用）
+      *  02.00.01    NACL-多々納  06/07/27  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/12  保険番号マスタ期間変更削除
+      *  04.02.00    NACL-多々納  08/04/28  後期高齢者対応
+      *                                     期間変更削除
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -51,17 +51,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  PARM-FILE       ASSIGN
                                    ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARM.
-      *    ���Ծ���ե�����
+      *    患者情報ファイル
            SELECT  PTINF-FILE      ASSIGN
                                    ASS-PTINF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PTINF.
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -69,7 +69,7 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  PARM-FILE.
        01  PARM-REC.
            03  PARM-RECKBN             PIC X(01).
@@ -77,13 +77,13 @@
            03  FILLER                  PIC X(01).
            03  PARM-DATA               PIC X(100).
       *
-      *    ���Ծ���ե�����
+      *    患者情報ファイル
        FD  PTINF-FILE.
        01  PTINFW-REC.
            COPY    "CPPTINF.INC"       REPLACING
                                        //PTINF-// BY //PTINFW-//.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC.
            03  ERR-REC1                PIC X(100).
@@ -112,23 +112,23 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-PTINF               PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARM                PIC X(02).
            03  STS-PTINF               PIC X(02).
            03  STS-PARA                PIC X(02).
            03  STS-LST                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARM                PIC 9(01).
       *
@@ -148,7 +148,7 @@
            03  FLG-KEN-OK              PIC 9(01).
            03  FLG-KEN-ARI             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARM                PIC 9(06).
            03  CNT-ERR                 PIC 9(06).
@@ -158,20 +158,20 @@
            03  CNT-PTKOHINF            PIC 9(06).
            03  CNT-HKNCOMBI            PIC 9(06).
       *
-      *    �ѥ�᡼����¸
+      *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-09-4               PIC X(06).
            03  PARA-11-4               PIC X(06).
            03  PARA-HN-HOSPNUM         PIC X(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
            03  IDH                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -216,21 +216,21 @@
                05  WRK-KEN-PAYKBN      PIC X(02).
                05  WRK-KEN-ERFLG2      PIC X(01).
       *
-      *    ���ȹ礻�ѥ�᥿�ǡ����ѥ쥤������
+      *    新組合せパラメタデータ用レイアウト
        01  NC01PARA-REC.
            03  PARA-NC01-REC           PIC X(500).
            03  PARA-NC01-FLG           PIC 9(01).
       *
-      *    �����ΰ�
+      *    スパ領域
        01  SPA-AREA2.
            03  SPA-HKNID               PIC 9(10).
            03  SPA-KOHID               PIC 9(10).
       *
-      *    Ģɼ�����ΰ�
+      *    帳票出力領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCVTHKNCOMBI.CBL��".
+                                       "【PGID:ORCVTHKNCOMBI.CBL】".
                05  MES-TITLE1-YY       PIC X(04).
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02).
@@ -249,21 +249,21 @@
                05  MES-TITLE2-L1.
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
-                   " [1]�ݸ��ֹ��������  [2]�ݸ������������� ".
+                   " [1]保険番号取得失敗  [2]保険情報不正公費 ".
                    07  FILLER          PIC X(44) VALUE
-                   " [3]������������ݸ�  [4]�����ʬ������".
+                   " [3]公費情報不正保険  [4]補助区分不整合".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(42) VALUE
-                   " [5]������������С�  [6]�����ݸ��������� ".
+                   " [5]処理件数オーバー  [6]患者保険更新失敗 ".
                    07  FILLER          PIC X(44) VALUE
-                   " [7]���Ը��񹹿�����  [8]�ݸ��ȹ礻���ϼ���".
+                   " [7]患者公費更新失敗  [8]保険組合せ出力失敗".
                05  MES-TITLE2-L3.
                    07  FILLER          PIC X(10) VALUE "       MSG".
                    07  FILLER          PIC X(42) VALUE
-                   " [A]�ݸ������ѹ��ɲ�  [B]�ݸ����ϴ����ѹ� ".
+                   " [A]保険期間変更追加  [B]保険開始期間変更 ".
                    07  FILLER          PIC X(41) VALUE
-                   " [C]��������ѹ��ɲ�  [D]���񳫻ϴ����ѹ�".
+                   " [C]公費期間変更追加  [D]公費開始期間変更".
                05  MES-TITLE2-L4.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -271,67 +271,67 @@
                    "-------------------------------------------------".
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ƥ�����ʰ��ŵ��ؾ�����ܾ����
+      *    システム管理（医療機関情報基本情報）
            COPY    "CPSK1001.INC".
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
-      *    ���Ը������
+      *    患者公費情報せ
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HZN-HKNNUM-AREA.
            02  HZN-HKNNUM-REC          OCCURS   2.
            COPY    "CPHKNNUM.INC"      REPLACING
                                        //HKN-// BY //HZN-HKN-//.
-      *    �ݸ��ֹ�ơ��֥�
+      *    保険番号テーブル
        01  TBL-HKNNUM-AREA.
            02  TBL-HKNNUM-REC          OCCURS  300.
            COPY    "CPHKNNUM.INC"      REPLACING
                                        //HKN-// BY //TBL-HKN-//.
        01  IDX-HKN-MAX                 PIC 9(04).
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  HZN-PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC"    REPLACING
                                        //PTHKN-// BY //HZN-PTHKN-//.
-      *    ���Ը������
+      *    患者公費情報せ
        01  HZN-PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC"    REPLACING
                                        //PTKOH-// BY //HZN-PTKOH-//.
       *
-      *    �ѥ�᥿
+      *    パラメタ
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
-      *    �ѥ�᥿
+      *    パラメタ
        01  WRK-PARA-REC.
            COPY    "CPPARA.INC"        REPLACING
                                        //PARA-// BY //WRK-PARA-//.
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -344,7 +344,7 @@
                USING
            COMMAND-PARAM.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -360,7 +360,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       * 
@@ -371,18 +371,18 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    ASS-PARA
            END-UNSTRING
       *
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
            PERFORM 101-PARM-GET-SEC
            IF  FLG-PARM            =   2
                MOVE    1           TO  FLG-PTINF
                GO  TO  100-INIT-EXT
            END-IF
-      *    ���ŵ����ֹ�
+      *    医療機関番号
            IF      PARA-HN-HOSPNUM    NUMERIC
                MOVE    PARA-HN-HOSPNUM     TO  SPA-HOSPNUM
            ELSE
@@ -399,19 +399,19 @@
            MOVE    SPA-SYSYMD(1:4) TO  MES-TITLE1-YY
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
-      *    ü���ɣĸ���
+      *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    �ǡ����١��������ץ�
+      *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
            PERFORM 110-CP1001-KENSAKU-SEC
            IF  FLG-PTINF           =   1
                GO  TO 100-INIT-EXT
            END-IF
       *
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
            PERFORM 120-LST-INIT-SEC
            IF      FLG-PTINF       =   1
                GO  TO  100-INIT-EXT
@@ -420,13 +420,13 @@
            MOVE    PARA-09-4       TO  WRK-COMMIT
            MOVE    PARA-11-4       TO  WRK-ERR
       *
-      *    �ݸ��ֹ�ơ��֥�����
+      *    保険番号テーブル設定
            PERFORM 1009-HKNNUM-TBL-SEC
            IF      FLG-PTINF       =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ���Ծ��󡡽�ե��������
+      *    患者情報　順ファイル処理
            PERFORM 900-PTINF-SEQUENCE-SEC
       *
            OPEN    INPUT           PTINF-FILE
@@ -436,7 +436,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ơ��֥�����
+      *    保険番号テーブル設定
       *****************************************************************
        1009-HKNNUM-TBL-SEC            SECTION.
       *
@@ -480,7 +480,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
       *****************************************************************
        101-PARM-GET-SEC            SECTION.
       *
@@ -506,7 +506,7 @@
       *
            CLOSE   PARM-FILE
       *
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
            IF    ( PARA-09-4           IS  NUMERIC )   AND
                  ( PARA-11-4           IS  NUMERIC )
                CONTINUE
@@ -520,7 +520,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼����������ʣ���
+      *    パラメータ情報取得（１）
       *****************************************************************
        101-PARM-GET1-SEC           SECTION.
       *
@@ -540,7 +540,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        110-CP1001-KENSAKU-SEC      SECTION.
       *
@@ -569,7 +569,7 @@
                MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
-      *        ���ֹ�
+      *        県番号
                MOVE    SYS-1001-PREFNUM    TO  SPA-PREFNUM
            END-IF
       *
@@ -582,7 +582,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
       *****************************************************************
        120-LST-INIT-SEC            SECTION.
       *
@@ -612,7 +612,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ��󡡽�ե��������
+      *    患者情報　順ファイル処理
       *****************************************************************
        900-PTINF-SEQUENCE-SEC      SECTION.
       *
@@ -657,19 +657,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            IF  CNT-PTINF (4:3)         =   ZERO
                DISPLAY "***(ORCVTHKNCOMBI)*** CNT-PTINF[" CNT-PTINF "]"
            END-IF
-      *    ���ꤷ������ˤʤä��饳�ߥåȽ�������
+      *    指定した件数になったらコミット処理する
            IF  CNT-COMMIT              =   WRK-COMMIT
                PERFORM 900-DBCOMMIT-SEC 
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
-      *    ���顼�����ꤷ������ˤʤä������ȴ����
+      *    エラーが指定した件数になったら処理抜ける
            IF  ( WRK-ERR           NOT =   ZERO )  AND
                ( CNT-ERR               =   WRK-ERR )
                MOVE    1               TO  FLG-PTINF
@@ -678,7 +678,7 @@
            IF   ( PTINF-PTID    NOT =   ALL "0"   AND
                   PTINF-PTID    NOT =   SPACE )
       *         MOVE        PTNUM-PTID  TO  SPA-PTNUM
-      *        ��������
+      *        作成処理
                PERFORM 200-SAKUSEI-SYORI-SEC
            END-IF
       *
@@ -689,7 +689,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    作成処理
       *****************************************************************
        200-SAKUSEI-SYORI-SEC       SECTION.
       *
@@ -700,16 +700,16 @@
                MOVE    PTNUM-PTNUM     TO  SPA-PTNUM
            END-IF
       *
-      *    ������Ͽ�Ѥߤδ��Ԥ��оݳ�
+      *    既に登録済みの患者は対象外
            IF      PTNUM-AUTOCOMBINUM  >   ZERO
                GO      TO   200-SAKUSEI-SYORI-EXT
            END-IF
       *
            MOVE    ZERO            TO  IDX-AREA
            MOVE    ZERO            TO  SPA-AREA2
-      *    ��������ã��
-      *    ��ǯ�����������������
-      *    �����ʤ����ǯ�����������ʳ��ʤ����ǯ����������
+      *    ７０歳到達日
+      *    生年月日から基準日を求める
+      *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
            MOVE    PTINF-BIRTHDAY  TO  WRK-BASEYMD
            IF      WRK-BDD         NOT =   01
                COMPUTE WRK-BMM         =   WRK-BMM     +   1
@@ -719,31 +719,31 @@
                END-IF
                MOVE    01                  TO  WRK-BDD
            END-IF
-      *    �����Ф�ޤ�����
+      *    ７０歳を迎える日
            MOVE    WRK-BASEYMD     TO  WRK-BYMD-70
            COMPUTE WRK-B70-YY      =   WRK-B70-YY  +   70
       *
-      *    �ե����륪���ץ����
+      *    ファイルオープン処理
            PERFORM 210-PARA-OPEN-SEC
       *
-      *    �����ݸ����󡡸�������
+      *    患者保険情報　検索処理
            PERFORM 220-PTHKNINF-KENSAKU-SEC
       *
-      *    ���Ը�����󡡸�������
+      *    患者公費情報　検索処理
            PERFORM 230-PTKOHINF-KENSAKU-SEC
       *
-      *    �ȹ礻�Խ�����
+      *    組合せ編集処理
            CALL    "ORCGP02W2" USING   SPA-AREA
            IF  SPA-ERRCD           NOT =   SPACE
-      *        ���顼�ꥹ�Ƚ��Ͻ���
+      *        エラーリスト出力処理
                PERFORM 2220-ERRLST-OUT-SEC
                GO  TO  200-SAKUSEI-SYORI-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻����Ͽ����
+      *    保険組合せ　登録処理
            PERFORM 240-HKNCOMBI-INSERT-SEC
       *
-      *    �����ֹ��Ѵ��ޥ�������������
+      *    患者番号変換マスタ　更新処理
            IF  IDZ                     >   ZERO
                PERFORM 250-PTNUM-UPDATE-SEC
            END-IF
@@ -753,11 +753,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륪���ץ����
+      *    ファイルオープン処理
       *****************************************************************
        210-PARA-OPEN-SEC           SECTION.
       *
-      *    �ѥ�᥿���
+      *    パラメタ削除
            INITIALIZE                  PARA-REC
            MOVE    "P02"           TO  PARA-GYOUMUID
            MOVE    SPA-TERMID      TO  PARA-TERMID
@@ -776,7 +776,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ����󡡸�������
+      *    患者保険情報　検索処理
       *****************************************************************
        220-PTHKNINF-KENSAKU-SEC    SECTION.
       *
@@ -806,11 +806,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    PTHKN-TEKEDYMD  TO  WRK-KEN-TEKEDYMD
                    MOVE    1               TO  WRK-KEN-HKNKOH
                    MOVE    ZERO            TO  WRK-KEN-PAYKBN
-      *            �ݸ���ǧ����
+      *            保険確認処理
                    PERFORM 2210-HKNKOH-KAKUNIN-SEC
                    IF     (WRK-KEN-ERFLG       =   SPACE )  AND
                           (WRK-KEN-ERFLG2      =   SPACE )
-      *                �����ʬ����Խ�����
+      *                補助区分を再編集する
                        PERFORM 2201-HOJOKBN-SET-SEC
                    END-IF
                    IF     (WRK-KEN-ERFLG       =   SPACE )  AND
@@ -823,7 +823,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    PTHKNINF-REC        TO  PARA-DATA-REC
                        PERFORM 400-PARA-INSERT-SEC
                    ELSE
-      *                ���顼�ꥹ�Ƚ��Ͻ���
+      *                エラーリスト出力処理
                        PERFORM 2220-ERRLST-OUT-SEC
                    END-IF
                END-IF
@@ -841,17 +841,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������Ԥλ��������ʬ����Խ��������
+      *    前期高齢者の時、補助区分を再編集する処理
       *****************************************************************
        2201-HOJOKBN-SET-SEC        SECTION.
       *
            MOVE    ZERO            TO  FLG-HENKOU
-      *    ����С��Ȼ�����������Ԥλ��������ʬ����Խ�����
+      *    コンバート時に前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                   (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
                   (PTHKN-TEKEDYMD      >=  WRK-BYMD-70 )
                IF     (WRK-BYMD-70         >   PTHKN-TEKSTYMD )
-      *            Ŭ�ѳ����������������ǯ�����
+      *            適用開始日が前期高齢者年齢以前
                    PERFORM 22012-HOJOKBN-CHK2-SEC
                ELSE
                    PERFORM 22011-HOJOKBN-CHK-SEC
@@ -861,7 +861,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      FLG-HENKOU          =   1
-      *        �ݸ����󹹿�
+      *        保険情報更新
                MOVE    PTHKNINF-REC    TO  MCPDATA-REC
                MOVE    "DBUPDATE"      TO  MCP-FUNC
                MOVE    "tbl_pthkninf"  TO  MCP-TABLE
@@ -880,20 +880,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������Ԥλ��������ʬ����Խ��������
+      *    前期高齢者の時、補助区分を再編集する処理
       *****************************************************************
        22011-HOJOKBN-CHK-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-HENKOU
-      *    ϫ�ҡ����񡦼���
+      *    労災・自費・治験
       **** IF      WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9"
            IF      WRK-HKNKOHSBTKBN    =   "4"  OR  "9"
                GO  TO  22011-HOJOKBN-CHK-EXT
            END-IF
-      *    �����ʬ�����ƥ����å�
+      *    補助区分の内容チェック
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
-      *            ����
+      *            船員
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
                        WHEN    "2"
@@ -903,7 +903,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-EVALUATE
                WHEN    "060"
                WHEN    "068"
-      *            ����
+      *            国保
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "0"
                        WHEN    SPACE
@@ -913,7 +913,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "032"
                WHEN    "033"
                WHEN    "034"
-      *            ����
+      *            共済
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "0"
                        WHEN    "2"
@@ -922,7 +922,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-EVALUATE
                WHEN    "039"
                WHEN    "040"
-      *            ��������
+      *            後期高齢者
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
                        WHEN    "3"
@@ -930,14 +930,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    OTHER
                            MOVE    "5"             TO  WRK-KEN-ERFLG
                    END-EVALUATE
-      *        ����
+      *        自費
                WHEN    "980"   THRU   "989"
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    SPACE
                            MOVE    "5"             TO  WRK-KEN-ERFLG
                    END-EVALUATE
                WHEN    OTHER
-      *            ����¾
+      *            その他
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    SPACE
                            MOVE    "5"             TO  WRK-KEN-ERFLG
@@ -946,7 +946,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       **** EVALUATE    PTHKN-HKNNUM
       *        WHEN    "002"
-      *            ����
+      *            船員
       *            EVALUATE    PTHKN-HOJOKBN
       *                WHEN    "1"
       *                    MOVE    "A"         TO  PTHKN-HOJOKBN
@@ -963,7 +963,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *                    MOVE    1           TO  FLG-HENKOU
       *            END-EVALUATE
       *        WHEN    "060"
-      *            ����
+      *            国保
       *            EVALUATE    PTHKN-HOJOKBN
       *                WHEN    "1"
       *                WHEN    "2"
@@ -975,7 +975,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *                    MOVE    1           TO  FLG-HENKOU
       *            END-EVALUATE
       *        WHEN    OTHER
-      *            ����¾
+      *            その他
       *            EVALUATE    PTHKN-HOJOKBN
       *                WHEN    "9"
       *                WHEN    "8"
@@ -991,21 +991,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������԰ʳ��λ��������ʬ�Υ����å�����
+      *    前期高齢者以外の時、補助区分のチェック処理
       *****************************************************************
         22012-HOJOKBN-CHK2-SEC     SECTION.
       *
-      *    Ϸ��ǯ��ϫ�ҡ����񡦼���
+      *    老人年齢、労災・自費・治験
       ***  IF     (PTINF-BIRTHDAY      <=  "19320930" ) OR
       ****        (WRK-HKNKOHSBTKBN    =   "4"  OR  "8"  OR  "9")
-      *    ϫ�ҡ�����
+      *    労災・治験
            IF     (WRK-HKNKOHSBTKBN    =   "4"  OR  "9")
                GO  TO  22012-HOJOKBN-CHK2-EXT
            END-IF
       *
            EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
-      *            ����
+      *            船員
                    IF     (PTINF-BIRTHDAY      <=  "19320930" )
                        IF     (PTHKN-TEKEDYMD      >=  "20080401" )
                            EVALUATE    PTHKN-HOJOKBN
@@ -1029,7 +1029,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                WHEN    "060"
                WHEN    "068"
-      *            ����
+      *            国保
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    SPACE
                            MOVE    "5"             TO  WRK-KEN-ERFLG
@@ -1038,7 +1038,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "032"
                WHEN    "033"
                WHEN    "034"
-      *            ����
+      *            共済
                    IF     (PTINF-BIRTHDAY      <=  "19320930" )
                        CONTINUE
                    ELSE
@@ -1052,7 +1052,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                WHEN    "039"
                WHEN    "040"
-      *            ��������
+      *            後期高齢者
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    "1"
                        WHEN    "3"
@@ -1060,14 +1060,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN    OTHER
                            MOVE    "5"             TO  WRK-KEN-ERFLG
                    END-EVALUATE
-      *        ����
+      *        自費
                WHEN    "980"   THRU   "989"
                    EVALUATE    PTHKN-HOJOKBN
                        WHEN    SPACE
                            MOVE    "5"             TO  WRK-KEN-ERFLG
                    END-EVALUATE
                WHEN    OTHER
-      *            ����¾
+      *            その他
                    IF     (PTINF-BIRTHDAY      <=  "19320930" )
                        EVALUATE    PTHKN-HOJOKBN
                            WHEN    SPACE
@@ -1093,7 +1093,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�����󡡸�������
+      *    患者公費情報　検索処理
       *****************************************************************
        230-PTKOHINF-KENSAKU-SEC    SECTION.
       *
@@ -1123,7 +1123,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    PTKOH-TEKEDYMD  TO  WRK-KEN-TEKEDYMD
                    MOVE    PTKOH-PAYKBN    TO  WRK-KEN-PAYKBN
                    MOVE    2               TO  WRK-KEN-HKNKOH
-      *            �ݸ���ǧ����
+      *            保険確認処理
                    PERFORM 2210-HKNKOH-KAKUNIN-SEC
                    IF     (WRK-KEN-ERFLG       =   SPACE )  AND
                           (WRK-KEN-ERFLG2      =   SPACE )
@@ -1135,7 +1135,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    PTKOHINF-REC    TO  PARA-DATA-REC
                        PERFORM 400-PARA-INSERT-SEC
                    ELSE
-      *                ���顼�ꥹ�Ƚ��Ͻ���
+      *                エラーリスト出力処理
                        PERFORM 2220-ERRLST-OUT-SEC
                    END-IF
                END-IF
@@ -1153,7 +1153,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ������ǧ����
+      *    保険公費確認処理
       *****************************************************************
        2210-HKNKOH-KAKUNIN-SEC     SECTION.
       *
@@ -1165,7 +1165,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      WRK-KEN-PAYKBN      =   SPACE
                MOVE    ZERO            TO  WRK-KEN-PAYKBN
            END-IF
-      *    Ϸ�͸���ǻ�ʧ��ʬ�����ꤵ��Ƥ��ʤ����������ƥ�������
+      *    老人公費で支払区分が設定されていない時、システム管理より
            IF     (WRK-KEN-PAYKBN      =    ZERO )  AND
                   (WRK-KEN-HKNNUM      =    "027")
                MOVE    SPA-HOSPSBT         TO  WRK-KEN-PAYKBN (1:1) 
@@ -1189,14 +1189,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    TO  HKNNUM-REC
                        MOVE    1                   TO  FLG-HKNNUM
                        IF      TBL-HKN-HKNKOHSBTKBN(IDH)   =   "3"
-      *                Ϸ���ݸ�
+      *                老人保険
                            MOVE    1               TO  FLG-RJN
                        ELSE
                            MOVE    TBL-HKN-HKNKOHSBTKBN(IDH)
                                                    TO  WRK-HKNKOHSBTKBN
                        END-IF
                    ELSE
-      *            ��λ�����оݤλ����оݤȤ���
+      *            終了日が対象の時、対象とする
                        IF      ( WRK-KEN-TEKEDYMD  <=  TBL-HKN-TEKEDYMD
                                                                 (IDH) )
                            MOVE    TBL-HKNNUM-REC(IDH)
@@ -1208,7 +1208,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-PERFORM
-      *    Ϸ�͸���ǻ�ʧ��ʬ��00�δ�����Ϥ��Τޤ�
+      *    老人公費で支払区分＝00の期間内はそのまま
            IF     (WRK-KEN-HKNNUM      =   "027" )  AND
                   (FLG-KEN-OK          =   ZERO  )  AND
                   (FLG-KEN-ARI         =   1     )
@@ -1229,14 +1229,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      FLG-KEN-OK      =   1
-      *        �оݤ���
+      *        対象あり
                MOVE    SPACE           TO  WRK-KEN-ERFLG
            ELSE
                IF      FLG-KEN-ARI     =   1
-      *            ���ֳ�����
+      *            期間外あり
                    MOVE    "1"             TO  WRK-KEN-ERFLG
                ELSE
-      *            �о�̵��
+      *            対象無し
                    MOVE    "2"             TO  WRK-KEN-ERFLG
                END-IF
            END-IF
@@ -1249,7 +1249,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    IF      WRK-KEN-PAYKBN      =   SPACE
       *        MOVE    ZERO            TO  WRK-KEN-PAYKBN
       *    END-IF
-      *    Ϸ�͸���ǻ�ʧ��ʬ�����ꤵ��Ƥ��ʤ����������ƥ�������
+      *    老人公費で支払区分が設定されていない時、システム管理より
       *    IF     (WRK-KEN-PAYKBN      =    ZERO )  AND
       *           (WRK-KEN-HKNNUM      =    "027")
       *        MOVE    SPA-HOSPSBT         TO  HKN-PAYKBN (1:1) 
@@ -1293,7 +1293,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            MOVE    HKN-HKNKOHSBTKBN    TO  WRK-HKNKOHSBTKBN
       *        END-IF
       *      ELSE
-      *        ��λ�����оݤλ����оݤȤ���
+      *        終了日が対象の時、対象とする
       *        IF      ( WRK-KEN-TEKEDYMD      <=  HKN-TEKEDYMD )
       *            MOVE    HKNNUM-REC          TO  HZN-HKNNUM-REC (1)
       *        ELSE
@@ -1309,7 +1309,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    MOVE    "key7"              TO  MCP-PATHNAME
       *    PERFORM 990-DBCLOSE-SEC
       *
-      *    �оݻ�ʧ��ʬ��Ϸ�ͤ�¸�ߤ��ʤ����
+      *    対象支払区分の老人が存在しない場合
       *    IF  (WRK-KEN-ERFLG          =   "1")  AND
       *        (FLG-RJN                =   1  )
       *        MOVE    ZERO            TO  FLG-HKNNUM
@@ -1352,9 +1352,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       **** END-IF
       *
       *!!!!!!!!!!!!
-      *!!  ORCVTPTHKNINF.CBL  ORCVTPTHKNINF.CBL �ǹԤ��Τ�
-      *!!  �о�̵���ϥ��顼�Ȥ���
-      *    �оݤ��ݸ����ʤ��ä�������λ�����о�ʬ�Ȥ���
+      *!!  ORCVTPTHKNINF.CBL  ORCVTPTHKNINF.CBL で行うので
+      *!!  対象無しはエラーとする
+      *    対象の保険がなかった時、終了日の対象分とする
       *    IF     (WRK-KEN-ERFLG       NOT =   SPACE )  AND
       *           (HZN-HKN-TEKSTYMD(1) NOT =   SPACE )
       *!       MOVE    HZN-HKNNUM-REC          TO  HKNNUM-REC
@@ -1362,27 +1362,27 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *        MOVE    SPACE                   TO  WRK-KEN-ERFLG
       *        EVALUATE    WRK-KEN-HKNKOH
       *            WHEN    1
-      *                �ݸ�����
+      *                保険更新
       *                PERFORM 22101-HKNINF-UPD-SEC
       *            WHEN    2
-      *                ���񹹿�
+      *                公費更新
       *                PERFORM 22102-KOHINF-UPD-SEC
       *        END-EVALUATE
       *****END-IF
       *
-      *    �оݤ��ݸ��ֹ�ޥ��������Ĥ��ä����
+      *    対象の保険番号マスタが見つかった場合
            IF     (WRK-KEN-ERFLG       =   SPACE )  AND
                   (WRK-KEN-ERFLG2      =   SPACE )
-      *        �оݤ��ݸ��ֹ椬�ݸ��Τ��
+      *        対象の保険番号が保険のもの
                IF  HKN-HKNKOHSBTKBN       =   "1"  OR  "4"
                                           OR  "8"  OR  "9"
-      *        �������Ը������Υǡ���
+      *        　　患者公費情報のデータ
                    IF  WRK-KEN-HKNKOH     =   2
                        MOVE    "4"        TO  WRK-KEN-ERFLG
                    END-IF
                ELSE
-      *        �оݤ��ݸ��ֹ椬����Τ��
-      *        �������Ծ������Υǡ���
+      *        対象の保険番号が公費のもの
+      *        　　患者情報情報のデータ
                    IF  WRK-KEN-HKNKOH     =   1
                        MOVE    "3"        TO  WRK-KEN-ERFLG
                    END-IF
@@ -1394,11 +1394,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ����󹹿�����
+      *    患者保険情報更新処理
       *****************************************************************
        22101-HKNINF-UPD-SEC        SECTION.
       *
-      *    �оݤ��ݸ��ֹ椬�ݸ��Ǥ��뤳��
+      *    対象の保険番号が保険であること
            IF      HZN-HKN-HKNKOHSBTKBN (1)
                                        =   "1"  OR  "4"
                                        OR  "8"  OR  "9"
@@ -1407,28 +1407,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "3"        TO  WRK-KEN-ERFLG
                GO  TO  22101-HKNINF-UPD-EXT
            END-IF
-      *    �ݸ��ѹ������ä�������λ�����ѹ�����
+      *    保険変更があった時、終了日を変更する
            IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
               AND (HZN-HKN-TEKEDYMD (2)        >=  PTHKN-TEKSTYMD)
                MOVE    PTHKN-TEKEDYMD          TO  WRK-TEKEDYMD
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTHKN-TEKEDYMD
-      *        ���������ݸ�������λ������������ݸ��γ������ˤ���
+      *        開始日が保険より前の時、開始日を保険の開始日にする
                IF      HZN-HKN-TEKSTYMD (2)    >   PTHKN-TEKSTYMD
                    MOVE    HZN-HKN-TEKSTYMD(2) TO  PTHKN-TEKSTYMD
                END-IF
                MOVE    HZN-HKN-HKNKOHSBTKBN (2)
                                            TO  WRK-HKNKOHSBTKBN
                MOVE    "A"                 TO  WRK-KEN-ERFLG2
-      *        �ݸ��򹹿�����
+      *        保険を更新する
                PERFORM 221011-PTHKNINF-UPD-SEC
-      *        �������ݸ����ɲä���
+      *        新しい保険を追加する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTHKN-TEKSTYMD
                MOVE    WRK-TEKEDYMD      TO  PTHKN-TEKEDYMD
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
                                            TO  WRK-HKNKOHSBTKBN
                PERFORM 221012-PTHKNINF-INS-SEC
            ELSE
-      *        �ݸ��γ��������ѹ�����
+      *        保険の開始日を変更する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTHKN-TEKSTYMD
                MOVE    "B"                 TO  WRK-KEN-ERFLG2
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
@@ -1441,11 +1441,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ����󹹿�����
+      *    患者保険情報更新処理
       *****************************************************************
        221011-PTHKNINF-UPD-SEC     SECTION.
       *
-      *    ��������Ԥλ��������ʬ����Խ�����
+      *    前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                   (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
                   (PTHKN-TEKEDYMD      >=  WRK-SYSYMD ) AND
@@ -1468,7 +1468,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  221011-PTHKNINF-UPD-EXT
            END-IF
       *
-      *    �ѥ�᥿�ģ¤��ɲ�
+      *    パラメタＤＢへ追加
            ADD     1               TO  IDX
            MOVE    SPACE           TO  PARA-REC
            INITIALIZE                  PARA-REC
@@ -1482,11 +1482,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ������ɲý���
+      *    患者保険情報追加処理
       *****************************************************************
        221012-PTHKNINF-INS-SEC     SECTION.
       *
-      *    ��������Ԥλ��������ʬ����Խ�����
+      *    前期高齢者の時、補助区分を再編集する
            IF     (PTINF-BIRTHDAY      >   "19320930" ) AND
                   (WRK-BYMD-70         <=  WRK-SYSYMD ) AND
                   (PTHKN-TEKEDYMD      >=  WRK-SYSYMD ) AND
@@ -1494,7 +1494,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               AND (PTHKN-TEKSTYMD      >=  WRK-BYMD-70 )
                PERFORM 22011-HOJOKBN-CHK-SEC
            END-IF
-      *    �ݸ��ɣ�����
+      *    保険ＩＤ設定
            PERFORM 2210013-PTNUM-UPD-SEC
            ADD     1               TO  SPA-HKNID
       *
@@ -1539,7 +1539,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  221012-PTHKNINF-INS-EXT
            END-IF
       *
-      *    �ѥ�᥿�ģ¤��ɲ�
+      *    パラメタＤＢへ追加
            ADD     1               TO  IDX
            MOVE    SPACE               TO  PARA-REC
            INITIALIZE                      PARA-REC
@@ -1553,7 +1553,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ����󹹿�����
+      *    患者保険情報更新処理
       *****************************************************************
        2210013-PTNUM-UPD-SEC       SECTION.
       *
@@ -1563,11 +1563,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *********MOVE        PTNUM-PTID  TO  SPA-PTNUM
                EVALUATE    WRK-KEN-HKNKOH
                    WHEN    1
-      *                �ݸ�����
+      *                保険更新
                        COMPUTE PTNUM-HKNID     =   PTNUM-HKNID
                                                +   1
                    WHEN    2
-      *                ���񹹿�
+      *                公費更新
                        COMPUTE PTNUM-KOHID     =   PTNUM-KOHID
                                                +   1
                END-EVALUATE
@@ -1591,39 +1591,39 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�����󹹿�����
+      *    患者公費情報更新処理
       *****************************************************************
        22102-KOHINF-UPD-SEC        SECTION.
       *
-      *    �оݤ��ݸ��ֹ椬�ݸ��Ǥ��뤳��
+      *    対象の保険番号が保険であること
            IF      HZN-HKN-HKNKOHSBTKBN (1)
                                        =   "1"  OR  "4"
                                        OR  "8"  OR  "9"
                MOVE    "4"             TO  WRK-KEN-ERFLG
                GO  TO  22102-KOHINF-UPD-EXT
            END-IF
-      *    �ݸ��ѹ������ä�������λ�����ѹ�����
+      *    保険変更があった時、終了日を変更する
            IF      HZN-HKN-TEKSTYMD (2)    NOT =   SPACE
               AND (HZN-HKN-TEKEDYMD (2)        >=  PTKOH-TEKSTYMD)
                MOVE    PTKOH-TEKEDYMD          TO  WRK-TEKEDYMD
                MOVE    HZN-HKN-TEKEDYMD (2)    TO  PTKOH-TEKEDYMD
-      *        ���������ݸ�������λ������������ݸ��γ������ˤ���
+      *        開始日が保険より前の時、開始日を保険の開始日にする
                IF      HZN-HKN-TEKSTYMD (2)    >   PTKOH-TEKSTYMD
                    MOVE    HZN-HKN-TEKSTYMD(2) TO  PTKOH-TEKSTYMD
                END-IF
                MOVE    HZN-HKN-HKNKOHSBTKBN (2)
                                            TO  WRK-HKNKOHSBTKBN
                MOVE    "C"                 TO  WRK-KEN-ERFLG2
-      *        �ݸ��򹹿�����
+      *        保険を更新する
                PERFORM 221021-PTKOHINF-UPD-SEC
-      *        �������ݸ����ɲä���
+      *        新しい保険を追加する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTKOH-TEKSTYMD
                MOVE    WRK-TEKEDYMD      TO  PTKOH-TEKEDYMD
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
                                            TO  WRK-HKNKOHSBTKBN
                PERFORM 221022-PTKOHINF-INS-SEC
            ELSE
-      *        �ݸ��γ��������ѹ�����
+      *        保険の開始日を変更する
                MOVE    HZN-HKN-TEKSTYMD (1)    TO  PTKOH-TEKSTYMD
                MOVE    "D"                 TO  WRK-KEN-ERFLG2
                MOVE    HZN-HKN-HKNKOHSBTKBN (1)
@@ -1637,7 +1637,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�����󹹿�����
+      *    患者公費情報更新処理
       *****************************************************************
        221021-PTKOHINF-UPD-SEC     SECTION.
       *
@@ -1655,7 +1655,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  221021-PTKOHINF-UPD-EXT
            END-IF
       *
-      *    �ѥ�᥿�ģ¤��ɲ�
+      *    パラメタＤＢへ追加
            ADD     1               TO  IDY
            MOVE    SPACE           TO  PARA-REC
            INITIALIZE                  PARA-REC
@@ -1669,11 +1669,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������ɲý���
+      *    患者公費情報追加処理
       *****************************************************************
        221022-PTKOHINF-INS-SEC     SECTION.
       *
-      *    �ݸ��ɣ�����
+      *    保険ＩＤ設定
            PERFORM 2210013-PTNUM-UPD-SEC
            ADD     1               TO  SPA-KOHID
       *
@@ -1718,7 +1718,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  221022-PTKOHINF-INS-EXT
            END-IF
       *
-      *    �ѥ�᥿�ģ¤��ɲ�
+      *    パラメタＤＢへ追加
            ADD     1                   TO  IDY
            MOVE    SPACE               TO  PARA-REC
            INITIALIZE                      PARA-REC
@@ -1733,11 +1733,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ե������������
+      *    パラメタファイル作成処理
       *****************************************************************
        400-PARA-INSERT-SEC         SECTION.
       *
-      *    �ѥ�᥿��Ͽ
+      *    パラメタ登録
            MOVE    "P02"           TO  PARA-GYOUMUID
            MOVE    SPA-TERMID      TO  PARA-TERMID
            MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
@@ -1791,7 +1791,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ�Ƚ��Ͻ���
+      *    エラーリスト出力処理
       *****************************************************************
        2220-ERRLST-OUT-SEC         SECTION.
       *
@@ -1799,37 +1799,37 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF  SPA-ERRCD           =   SPACE
                EVALUATE    WRK-KEN-ERFLG
-      *        ���������ݸ��ֹ�ʤ�
+      *        該当する保険番号なし
                WHEN    "1"
                WHEN    "2"
                    MOVE    1           TO  FLG-ERR
-      *        �����ݸ��ޥ����˸������äƤ�����
+      *        患者保険マスタに公費が入っている場合
                WHEN    "3"
                    MOVE    2           TO  FLG-ERR
-      *        ���Ը���ޥ������ݸ������äƤ�����
+      *        患者公費マスタに保険が入っている場合
                WHEN    "4"
                    MOVE    3           TO  FLG-ERR
-      ******** ��������Ԥ������ʬ�����äƤ�����
-      *        �����ʬ���㤦���
+      ******** 前期高齢者の補助区分が入っている場合
+      *        補助区分が違う場合
                WHEN    "5"
                    MOVE    4           TO  FLG-ERR
-      *        �����ݸ��ޥ����������顼
+      *        患者保険マスタ更新エラー
                WHEN    "6"
                    MOVE    6           TO  FLG-ERR
-      *        ���Ը���ޥ����������顼
+      *        患者公費マスタ更新エラー
                WHEN    "7"
                    MOVE    7           TO  FLG-ERR
-      *        �ݸ��ȹ礻���ϥ��顼
+      *        保険組合せ出力エラー
                WHEN    "8"
                    MOVE    8           TO  FLG-ERR
                END-EVALUATE
            ELSE
-      *        ���֥ץ���ORCGP02W2����ǥ��顼ȯ��
+      *        サブプロ（ORCGP02W2）内でエラー発生
                EVALUATE    SPA-ERRCD
-      *        �ݸ�������ơ��֥룱�����索���С�
+      *        保険・公費テーブル１００件オーバー
                WHEN    "0015"
                    MOVE    5           TO  FLG-ERR
-      *        �ݸ������񡡳����ʤ�
+      *        保険・公費　該当なし
                WHEN    "0001"
                WHEN    "0014"
                    MOVE    1           TO  FLG-ERR
@@ -1840,11 +1840,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE           TO  ERR-REC
            MOVE    "000000"        TO  ERR-LINENO
       *
-           MOVE    "�����ֹ�:"         TO  ERR-PTNUMMES
-           MOVE    "���ԣɣ�:"         TO  ERR-PTIDMES
-           MOVE    "�ݸ��ֹ�:"         TO  ERR-HKNNUMMES
-           MOVE    "Ϣ��:"             TO  ERR-HKNIDMES
-           MOVE    "����:"             TO  ERR-TEKSTEDMES
+           MOVE    "患者番号:"         TO  ERR-PTNUMMES
+           MOVE    "患者ＩＤ:"         TO  ERR-PTIDMES
+           MOVE    "保険番号:"         TO  ERR-HKNNUMMES
+           MOVE    "連番:"             TO  ERR-HKNIDMES
+           MOVE    "期間:"             TO  ERR-TEKSTEDMES
       *
            MOVE    SPA-PTNUM           TO  ERR-PTNUM
            MOVE    SPA-PTID            TO  ERR-PTID
@@ -1879,7 +1879,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      FLG-ERR         =   0
-      *        �����ѹ�
+      *        期間変更
                IF      WRK-KEN-ERFLG2  NOT =   SPACE
                    MOVE    "["                 TO  ERR-ERRNO(1:1)
                    MOVE    WRK-KEN-ERFLG2(1:1) TO  ERR-ERRNO(2:1)
@@ -1904,7 +1904,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻����Ͽ����
+      *    保険組合せ　登録処理
       *****************************************************************
        240-HKNCOMBI-INSERT-SEC     SECTION.
       *
@@ -1930,7 +1930,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                UNTIL   FLG-PARA        =  1
       *
                MOVE    PARA-DATA-REC       TO  NC01PARA-REC
-      *        �ȹ礻�ֹ桡�������
+      *        組合せ番号　設定処理
                PERFORM 2410-HKNCOMBINUM-SET-SEC
       *
                MOVE    "tbl_para"      TO  MCP-TABLE
@@ -1946,7 +1946,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ȹ礻�ֹ桡�������
+      *    組合せ番号　設定処理
       *****************************************************************
        2410-HKNCOMBINUM-SET-SEC    SECTION.
       *
@@ -1976,7 +1976,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ�������������
+      *    患者番号変換マスタ　更新処理
       *****************************************************************
        250-PTNUM-UPDATE-SEC        SECTION.
       *
@@ -2014,7 +2014,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -2022,7 +2022,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 900-DBDISCONNECT-SEC
       *
            CLOSE                       PTINF-FILE
-      *    Ģɼ���ϡ���λ����
+      *    帳票出力　終了処理
            CLOSE                       ERR-FILE
       *
            MOVE    ZERO            TO  IF-RESULT
@@ -2041,7 +2041,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����ɤ߹��߽���
+      *    患者情報　読み込み処理
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -2059,7 +2059,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ƣţԣãȽ���
+      *    システム管理マスタＦＥＴＣＨ処理
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
@@ -2075,7 +2075,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ����ƣţԣãȽ���
+      *    患者マスタＦＥＴＣＨ処理
       *****************************************************************
        910-PTINF-NEXT-SEC          SECTION.
       *
@@ -2092,7 +2092,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ƣţԣãȽ���
+      *    患者保険マスタＦＥＴＣＨ処理
       *****************************************************************
        920-PTHKNINF-NEXT-SEC       SECTION.
       *
@@ -2111,7 +2111,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ը���ޥ����ƣţԣãȽ���
+      *    患者公費マスタＦＥＴＣＨ処理
       *****************************************************************
        930-PTKOHINF-NEXT-SEC       SECTION.
       *
@@ -2130,7 +2130,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ�������������
+      *    保険番号マスタ次検索処理
       *****************************************************************
        950-HKNNUM-NEXT-SEC         SECTION.
       *
@@ -2147,7 +2147,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ�������������
+      *    患者番号変換マスタ　更新処理
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -2182,7 +2182,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ե������ɤ߹��߽���
+      *    パラメータファイル読み込み処理
       *****************************************************************
        900-PARM-READ-SEC           SECTION.
       *
@@ -2199,7 +2199,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PARM-READ-EXT.
           EXIT.
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC           SECTION.
       *
@@ -2216,7 +2216,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2229,7 +2229,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2244,7 +2244,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2258,7 +2258,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -2284,7 +2284,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -2306,7 +2306,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,75 +16,75 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ��ʥơ��֥�       (CPSYUKA.INC)
+      *  主科テーブル       (CPSYUKA.INC)
       *****************************************************************
-      *  ��������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.02.01    NACL-ƣ��    06/08/11  �����ֹ���ɲ�
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.01    NACL-藤原    06/08/11  患者番号を追加
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
       *****************************************************************
       *
       *01  SYUKA-REC.
            03  SYUKA-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  SYUKA-HOSPNUM        PIC 9(2).
-      *������ʬ
+      *入外区分
                05  SYUKA-NYUGAIKBN     PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SYUKA-PTID          PIC 9(10).
-      *��׶�ʬ
+      *会計区分
                05  SYUKA-TEN-KBN       PIC X(01).
-      *����ǯ��
+      *診療年月
                05  SYUKA-SRYYM         PIC X(06).
-      *������ʧ����
+      *審査支払機関
                05  SYUKA-TEISYUTUSAKI  PIC X(01).
-      *�ݸ����ֹ�
+      *保険者番号
                05  SYUKA-HKNJANUM      PIC X(08).
-      *�����ʬ
+      *補助区分
                05  SYUKA-HOJOKBN       PIC X(01).
-      *����ɣ�
+      *公費ＩＤ
                05  SYUKA-KOHID         PIC 9(10).
-      *ʬ���ʬ
+      *分割区分
                05  SYUKA-RECEIPT-KBN   PIC X(10).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  SYUKA-RECESYUBETU   PIC X(04).
-      *���Ų�
+      *診療科
                05  SYUKA-SRYKA         PIC X(02).
-      *�ݸ��ֹ�ʼ��ݸ���
+      *保険番号（主保険）
            03  SYUKA-HKNNUM            PIC X(03).
-      *���Ųʡ����ϡ�
+      *診療科（入力）
            03  SYUKA-SRYKA-INPUT       PIC X(02).
-      *���Ųʡʥ����ƥ��
+      *診療科（システム）
            03  SYUKA-SRYKA-AUTO        PIC X(02).
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            03  SYUKA-HKNCOMBI-AREA.
                05  SYUKA-HKNCOMBI      PIC 9(04)   OCCURS  10.
-      *�����������
+      *請求点数合計
            03  SYUKA-TENSU             PIC S9(09).
-      *���ǲ�����(������)
+      *受診回数合計(入院外)
            03  SYUKA-KAISU             PIC 9(03).
-      *�̻��������(����)
+      *通算日数合計(入院)
            03  SYUKA-NISSU             PIC 9(03).
-      *��λ��
+      *終了日
            03  SYUKA-EDDAY             PIC 9(02).
-      *̤����ե饰
+      *未請求フラグ
            03  SYUKA-MISEIKYU-FLG      PIC X(02).
-      *����ե饰
+      *削除フラグ
            03  SYUKA-DLT-FLG           PIC X(01).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYUKA-TERMID            PIC X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYUKA-OPID              PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  SYUKA-CREYMD            PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  SYUKA-UPYMD             PIC X(08).
-      *��������
+      *更新時間
            03  SYUKA-UPHMS             PIC X(06).
-      *�����ѹ���
+      *検索用項目
            03  SYUKA-PTNUM             PIC X(20).

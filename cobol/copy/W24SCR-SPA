@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,21 +15,21 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    ���ŵ��ؾ����������ܲ��̣ӣУ�    (SPA-FREE ������)
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.04.00    NACL-¿��Ǽ  06/10/26  ��������Ϣ�������ư¾ 
-      *  04.03.00    NACL-¿��Ǽ  08/08/28  �ౡ���������������ʬ�ɲ�
+      *    医療機関情報ー入院基本画面ＳＰＡ    (SPA-FREE の内容)
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報移動他 
+      *  04.03.00    NACL-多々納  08/08/28  退院時院外処方せん区分追加
       *
-      *  04.08.01    NACL-ƣ��    16.04.20  �ౡ�����񵭺ܶ�ʬ�������ɲ�
-      *  04.08.02    NACL-ƣ��    17.11.21  ����������ο����������ɲ�
+      *  04.08.01    NACL-藤原    16.04.20  退院証明書記載区分の設定追加
+      *  04.08.02    NACL-藤原    17.11.21  次月作成時の食事の設定追加
       *****************************************************************
       *
        01  SPA-W24FREE.
-      *    �������̶���
+      *    検索画面共通
            03  SPA-W25-KYOUTU            PIC X(30000).
       *
-      *  ���ŵ�������������̣ӣУ�
+      *  医療機関入院情報画面ＳＰＡ
          03  SPA-W24.
            05  SPA-W24-AREA.
              07  SPA-GMN-W24-PAGENO                    PIC 9(02).
@@ -39,21 +39,21 @@
              07  SPA-GMN-W24-MOTOPG                    PIC X(08).
              07  SPA-GMN-W24-MOTOIDX                   PIC 9(05).
              07  SPA-GMN-W24-AREA.
-      *        ���Ϲ����ΰ�
+      *        入力項目領域
                09  SPA-GMN-W24-INPUT-AREA.
-      *          ͭ��������
+      *          有効開始日
                  11  SPA-GMN-W24-STYUKYMD              PIC X(10).
-      *          ͭ����λ��
+      *          有効終了日
                  11  SPA-GMN-W24-EDYUKYMD              PIC X(10).
       *
-      *          ��������
+      *          食事情報
                  11  SPA-GMN-W24-FRAME1.
-      *            ��������������
+      *            入院時食事療養
                    13  SPA-GMN-W24-SKJRYOYO-G.
                      15  SPA-GMN-W24-SKJRYOYO          PIC X(01).
                      15  SPA-GMN-W24-SKJRYOYOFL        PIC X(01).
                      15  SPA-GMN-W24-SKJRYOYOMEI       PIC X(26).
-      *            �������Ź԰�
+      *            食事診療行為
                    13  SPA-GMN-W24-LBLSKJSRY           PIC X(20)
                                                        OCCURS  2.
                    13  SPA-GMN-W24-SKJSRY-G.
@@ -61,223 +61,223 @@
                        17  SPA-GMN-W24-SKJSRY          PIC X(01).
                        17  SPA-GMN-W24-SKJSRYFL        PIC X(01).
                        17  SPA-GMN-W24-SKJSRYMEI       PIC X(26).
-      *            ������ʬ
+      *            食事区分
                    13  SPA-GMN-W24-SKJKBN-G.
                        15  SPA-GMN-W24-SKJKBN          PIC X(01).
                        15  SPA-GMN-W24-SKJKBNFL        PIC X(01).
                        15  SPA-GMN-W24-SKJKBNMEI       PIC X(26).
-      *            ����������ʬ
+      *            選定入院区分
                    13  SPA-GMN-W24-SENTEIKBN-G.
                        15  SPA-GMN-W24-SENTEIKBN       PIC X(01).
                        15  SPA-GMN-W24-SENTEIKBNFL     PIC X(01).
                        15  SPA-GMN-W24-SENTEIKBNMEI    PIC X(26).
       *
-      *          �������۾����Ƕ�ʬ
+      *          室料差額消費税区分
                  11  SPA-GMN-W24-BRMSGK-TAX-G.
                    13  SPA-GMN-W24-BRMSGK-TAX          PIC X(01).
                    13  SPA-GMN-W24-BRMSGK-TAXFL        PIC X(01).
                    13  SPA-GMN-W24-BRMSGK-TAXMEI       PIC X(08).
-      *          ������׼������۶�ʬ
+      *          入院会計室料差額区分
                  11  SPA-GMN-W24-NACCT-BRMSGK-G.
                    13  SPA-GMN-W24-NACCT-BRMSGK        PIC X(01).
                    13  SPA-GMN-W24-NACCT-BRMSGKFL      PIC X(01).
                    13  SPA-GMN-W24-NACCT-BRMSGKMEI     PIC X(12).
-      *          ������׳�����Ͽ��ʬ
+      *          入院会計外泊登録区分
                  11  SPA-GMN-W24-NACCT-GAIHAKU-G.
                    13  SPA-GMN-W24-NACCT-GAIHAKU       PIC X(01).
                    13  SPA-GMN-W24-NACCT-GAIHAKUFL     PIC X(01).
                    13  SPA-GMN-W24-NACCT-GAIHAKUMEI    PIC X(12).
-      *          ɸ�縺�۶�ʬ
+      *          標欠減額区分
                  11  SPA-GMN-W24-HYOUKETU-G.
                    13  SPA-GMN-W24-HYOUKETU            PIC X(01).
                    13  SPA-GMN-W24-HYOUKETUFL          PIC X(01).
                    13  SPA-GMN-W24-HYOUKETUMEI         PIC X(32).
-      *          ���Ķ���ʬ
+      *          定数超過区分
                  11  SPA-GMN-W24-TEISU-G.
                    13  SPA-GMN-W24-TEISU               PIC X(01).
                    13  SPA-GMN-W24-TEISUFL             PIC X(01).
                    13  SPA-GMN-W24-TEISUMEI            PIC X(32).
-      *          ��л���Ķ���ʬ
+      *          夜勤時間超過区分
                  11  SPA-GMN-W24-YKNCHOKA-G.
                    13  SPA-GMN-W24-YKNCHOKA            PIC X(01).
                    13  SPA-GMN-W24-YKNCHOKAFL          PIC X(01).
                    13  SPA-GMN-W24-YKNCHOKAMEI         PIC X(32).
-      *          ���ģ����϶�ʬ
+      *          ＡＤＬ入力区分
                  11  SPA-GMN-W24-ADLINPUT-G.
                    13  SPA-GMN-W24-ADLINPUT            PIC X(01).
                    13  SPA-GMN-W24-ADLINPUTFL          PIC X(01).
                    13  SPA-GMN-W24-ADLINPUTMEI         PIC X(08).
-      *          ���������ɽ����ʬ
+      *          定期請求初期表示区分
                  11  SPA-GMN-W24-TEIKISAGAKUACT-G.
                    13  SPA-GMN-W24-TEIKISAGAKUACT      PIC X(01).
                    13  SPA-GMN-W24-TEIKISAGAKUACTFL    PIC X(01).
                    13  SPA-GMN-W24-TEIKISAGAKUACTMEI   PIC X(18).
-      *          ��������ɽ����ʬ
+      *          療養入院表示区分
                  11  SPA-GMN-W24-RYOYODSP-G.
                    13  SPA-GMN-W24-RYOYODSP            PIC X(01).
                    13  SPA-GMN-W24-RYOYODSPFL          PIC X(01).
                    13  SPA-GMN-W24-RYOYODSPMEI         PIC X(18).
-      *          ͭ�����Ž�����¾�����û���ʬ
+      *          有床診療所一般病床初期加算区分
                  11  SPA-GMN-W24-IPPANKSN-G.
                    13  SPA-GMN-W24-IPPANKSN            PIC X(01).
                    13  SPA-GMN-W24-IPPANKSNFL          PIC X(01).
                    13  SPA-GMN-W24-IPPANKSNMEI         PIC X(18).
-      *          �ߵޡ��������ٱ������¾�����û���ʬ
+      *          救急・在宅等支援療養病床初期加算区分
                  11  SPA-GMN-W24-KYUKYUKSN-G.
                    13  SPA-GMN-W24-KYUKYUKSN           PIC X(01).
                    13  SPA-GMN-W24-KYUKYUKSNFL         PIC X(01).
                    13  SPA-GMN-W24-KYUKYUKSNMEI        PIC X(18).
-      *          ����������ο�����ʬ
+      *          次回作成時の食事区分
                  11  SPA-GMN-W24-SKJ-CREATE-G.
                    13  SPA-GMN-W24-SKJ-CREATE         PIC X(01).
                    13  SPA-GMN-W24-SKJ-CREATEFL       PIC X(01).
                    13  SPA-GMN-W24-SKJ-CREATEMEI      PIC X(18).
-      *          ���ܴ����в����ֶ�ʬ
+      *          栄養管理経過措置区分
                  11  SPA-GMN-W24-EIYOUKSN-G.
                    13  SPA-GMN-W24-EIYOUKSN            PIC X(01).
                    13  SPA-GMN-W24-EIYOUKSNFL          PIC X(01).
                    13  SPA-GMN-W24-EIYOUKSNMEI         PIC X(26).
-      *          �����û�����
+      *          入院加算情報
                  11  SPA-GMN-W24-FRAME3.
                    13  SPA-GMN-W24-NYUKSN-G.
                      15 SPA-GMN-W24-NYUKSN-OCC         OCCURS 30.
                        17 SPA-GMN-W24-CHK-NYUKSN       PIC X(01).
                        17 SPA-GMN-W24-NYUKSNMEI        PIC X(50).
-      *            �ϰ�û�
+      *            地域加算
                    13  SPA-GMN-W24-CHIIKIKSN-G.
                      15 SPA-GMN-W24-CHIIKIKSN          PIC X(01).
                      15 SPA-GMN-W24-CHIIKIKSNFL        PIC X(01).
                      15 SPA-GMN-W24-CHIIKIKSNMEI       PIC X(26).
                    13  SPA-GMN-W24-CHIIKIKSNSRYCD      PIC X(09).
       *
-      *          �������ɽ������
+      *          入院会計表示情報
                  11  SPA-GMN-W24-FRAME4.
                    13  SPA-GMN-W24-SRYCD-OCC           OCCURS 10.
                        15  SPA-GMN-W24-SRYCD           PIC X(09).
                        15  SPA-GMN-W24-SRYACT          PIC X(30).
       *
-      *          ����������
+      *          選定入院料
                  11  SPA-GMN-W24-FRAME5.
-      *            ��ô�׻���ʬ
+      *            負担計算区分
                    13  SPA-GMN-W24-SENTEI-FTNKBN-G.
                      15  SPA-GMN-W24-SENTEI-FTNKBN     PIC X(01).
                      15  SPA-GMN-W24-SENTEI-FTNKBNFL   PIC X(01).
                      15  SPA-GMN-W24-SENTEI-FTNKBNMEI  PIC X(20).
-      *            ����ñ��
+      *            点数単価
                    13  SPA-GMN-W24-SENTEI-TANKA        PIC S9(4).
-      *            ����ñ���ʰ��̡�
+      *            点数単価（一般）
                    13  SPA-GMN-W24-SENTEI-TANKAIP      PIC S9(4).
-      *            ����ñ����Ϸ�͡�
+      *            点数単価（老人）
                    13  SPA-GMN-W24-SENTEI-TANKARJ      PIC S9(4).
-      *            ������
+      *            消費税
                    13  SPA-GMN-W24-SENTEI-TAX-G.
                      15  SPA-GMN-W24-SENTEI-TAX        PIC X(01).
                      15  SPA-GMN-W24-SENTEI-TAXFL      PIC X(01).
                      15  SPA-GMN-W24-SENTEI-TAXMEI     PIC X(18).
-      *            ��٥룱
+      *            ラベル１
                    13  SPA-GMN-W24-LBL-SENTEI-TANKA    PIC X(8).
                    13  SPA-GMN-W24-LBL-SENTEI-EN       PIC X(2).
-      *          ������ɽ��
+      *          入院歴表示
                  11  SPA-GMN-W24-REKI-DISPKBN-G.
                    13  SPA-GMN-W24-REKI-DISPKBN        PIC X(01).
                    13  SPA-GMN-W24-REKI-DISPKBNFL      PIC X(01).
                    13  SPA-GMN-W24-REKI-DISPKBNMEI     PIC X(22).
-      *          �ౡ�Ʒ׻���ʬ
+      *          退院再計算区分
                  11  SPA-GMN-W24-SAIKEISANKBN-G.
                    13  SPA-GMN-W24-SAIKEISANKBN        PIC X(01).
                    13  SPA-GMN-W24-SAIKEISANKBNFL      PIC X(01).
                    13  SPA-GMN-W24-SAIKEISANKBNMEI     PIC X(18).
-      *          ����μ谷����ʬ
+      *          入金の取扱い区分
                  11  SPA-GMN-W24-NYKNKNRKBN-G.
                    13  SPA-GMN-W24-NYKNKNRKBN          PIC X(01).
                    13  SPA-GMN-W24-NYKNKNRKBNFL        PIC X(01).
                    13  SPA-GMN-W24-NYKNKNRKBNMEI       PIC X(38).
-      *          �����ȯ�Զ�ʬ
+      *          請求書発行区分
                  11  SPA-GMN-W24-SKYPRTKBN-G.
                    13  SPA-GMN-W24-SKYPRTKBN           PIC X(01).
                    13  SPA-GMN-W24-SKYPRTKBNFL         PIC X(01).
                    13  SPA-GMN-W24-SKYPRTKBNMEI        PIC X(28).
-      *          �����ȯ����ˡ
+      *          請求書発行方法
                  11  SPA-GMN-W24-SKYSUMKBN-G.
                    13  SPA-GMN-W24-SKYSUMKBN           PIC X(01).
                    13  SPA-GMN-W24-SKYSUMKBNFL         PIC X(01).
                    13  SPA-GMN-W24-SKYSUMKBNMEI        PIC X(28).
-      *          �����̤���۰�����ʬ
+      *          請求書未収額印刷区分
                  11  SPA-GMN-W24-MISYUPRTKBN-G.
                    13  SPA-GMN-W24-MISYUPRTKBN         PIC X(01).
                    13  SPA-GMN-W24-MISYUPRTKBNFL       PIC X(01).
                    13  SPA-GMN-W24-MISYUPRTKBNMEI      PIC X(18).
-      *          ���������ٽ�ȯ�Զ�ʬ
+      *          診療費明細書発行区分
                  11  SPA-GMN-W24-SRYPRTKBN-G.
                    13  SPA-GMN-W24-SRYPRTKBN           PIC X(01).
                    13  SPA-GMN-W24-SRYPRTKBNFL         PIC X(01).
                    13  SPA-GMN-W24-SRYPRTKBNMEI        PIC X(28).
-      *          �ౡ������ȯ�Զ�ʬ
+      *          退院証明書発行区分
                  11  SPA-GMN-W24-TAIPRTKBN-G.
                    13  SPA-GMN-W24-TAIPRTKBN           PIC X(01).
                    13  SPA-GMN-W24-TAIPRTKBNFL         PIC X(01).
                    13  SPA-GMN-W24-TAIPRTKBNMEI        PIC X(18).
-      *          �ౡ�����񵭺ܶ�ʬ
+      *          退院証明書記載区分
                  11  SPA-GMN-W24-TAIKSIKBN-G.
                    13  SPA-GMN-W24-TAIKSIKBN           PIC X(01).
                    13  SPA-GMN-W24-TAIKSIKBNFL         PIC X(01).
                    13  SPA-GMN-W24-TAIKSIKBNMEI        PIC X(28).
       *!!
-      *          �ౡ��������������ȯ�Զ�ʬ
+      *          退院時院外処方せん発行区分
                  11  SPA-GMN-W24-SHOHOUKBN-G.
                    13  SPA-GMN-W24-SHOHOUKBN           PIC X(01).
                    13  SPA-GMN-W24-SHOHOUKBNFL         PIC X(01).
                    13  SPA-GMN-W24-SHOHOUKBNMEI        PIC X(28).
-      *          �������������������¾������ɽ����ʬ
+      *          入院歴作成時、自院歴・他院歴初期表示区分
                  11  SPA-GMN-W24-REKI-JITAKBN-G.
                    13  SPA-GMN-W24-REKI-JITAKBN        PIC X(01).
                    13  SPA-GMN-W24-REKI-JITAKBNFL      PIC X(01).
                    13  SPA-GMN-W24-REKI-JITAKBNMEI     PIC X(38).
       *
-      *          ��������������ౡ�����ɽ����ʬ
+      *          入院歴作成時、退院日初期表示区分
                  11  SPA-GMN-W24-REKI-TAIINKBN-G.
                    13  SPA-GMN-W24-REKI-TAIINKBN    PIC X(01).
                    13  SPA-GMN-W24-REKI-TAIINKBFNL  PIC X(01).
                    13  SPA-GMN-W24-REKI-TAIINKBNMEI PIC X(18).
       *!!
-      *        ����ܹ����ΰ�
+      *        コンボ項目領域
                09  SPA-GMN-W24-CMB-DAT-AREA.
-      *          ��������������
+      *          入院時食事療養
                  11  SPA-GMN-W24-SKJRYOYOLST-G.
                    13  SPA-GMN-W24-SKJRYOYO-MAX        PIC 9(03).
                    13  SPA-GMN-W24-SKJRYOYOLST         OCCURS  5.
                        15  SPA-GMN-W24-SKJRYOYOL       PIC X(01).
                        15  SPA-GMN-W24-SKJRYOYOLFL     PIC X(01).
                        15  SPA-GMN-W24-SKJRYOYOMEIl    PIC X(26).
-      *          �������Ź԰�
+      *          食事診療行為
                  11  SPA-GMN-W24-SKJSRYLST-G.
                    13  SPA-GMN-W24-SKJSRY-MAX          PIC 9(03).
                    13  SPA-GMN-W24-SKJSRYLST           OCCURS  5.
                        15  SPA-GMN-W24-SKJSRYL         PIC X(01).
                        15  SPA-GMN-W24-SKJSRYLFL       PIC X(01).
                        15  SPA-GMN-W24-SKJSRYMEIL      PIC X(26).
-      *          ������ʬ
+      *          食事区分
                  11  SPA-GMN-W24-SKJKBNLST-G.
                    13  SPA-GMN-W24-SKJKBN-MAX          PIC 9(03).
                    13  SPA-GMN-W24-SKJKBNLST           OCCURS  5.
                        15  SPA-GMN-W24-SKJKBNL         PIC X(01).
                        15  SPA-GMN-W24-SKJKBNLFL       PIC X(01).
                        15  SPA-GMN-W24-SKJKBNMEIL      PIC X(26).
-      *          �ϰ�û�
+      *          地域加算
                  11  SPA-GMN-W24-CHIIKIKSNLST-G.
                    13  SPA-GMN-W24-CHIIKIKSN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-CHIIKIKSNLST        OCCURS  7.
                        15  SPA-GMN-W24-CHIIKIKSNL      PIC X(01).
                        15  SPA-GMN-W24-CHIIKIKSNLFL    PIC X(01).
                        15  SPA-GMN-W24-CHIIKIKSNMEIL   PIC X(26).
-      *          ������ɽ��
+      *          入院歴表示
                  11  SPA-GMN-W24-REKI-DISPKBNLST-G.
                    13  SPA-GMN-W24-REKI-DISPKBN-MAX    PIC 9(03).
                    13  SPA-GMN-W24-REKI-DISPKBNLST     OCCURS  5.
                        15  SPA-GMN-W24-REKI-DISPKBNL   PIC X(01).
                        15  SPA-GMN-W24-REKI-DISPKBNLFL PIC X(01).
                        15  SPA-GMN-W24-REKI-DISPKBNMEIL PIC X(22).
-      *          �ౡ�Ʒ׻�
+      *          退院再計算
                  11  SPA-GMN-W24-SAIKEISANKBNLST-G.
                    13  SPA-GMN-W24-SAIKEISANKBN-MAX    PIC 9(03).
                    13  SPA-GMN-W24-SAIKEISANKBNLST     OCCURS  5.
@@ -285,7 +285,7 @@
                        15  SPA-GMN-W24-SAIKEISANKBNLFL PIC X(01).
                        15  SPA-GMN-W24-SAIKEISANKBNMEIL PIC X(18).
       *
-      *          ����μ谷����ʬ
+      *          入金の取扱い区分
                  11  SPA-GMN-W24-NYKNKNRKBNLST-G.
                    13  SPA-GMN-W24-NYKNKNRKBN-MAX      PIC 9(03).
                    13  SPA-GMN-W24-NYKNKNRKBNLST       OCCURS  10.
@@ -293,7 +293,7 @@
                        15  SPA-GMN-W24-NYKNKNRKBNLFL   PIC X(01).
                        15  SPA-GMN-W24-NYKNKNRKBNMEIL  PIC X(38).
       *
-      *          �����ȯ�Զ�ʬ
+      *          請求書発行区分
                  11  SPA-GMN-W24-SKYPRTKBNLST-G.
                    13  SPA-GMN-W24-SKYPRTKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-SKYPRTKBNLST        OCCURS  5.
@@ -301,7 +301,7 @@
                        15  SPA-GMN-W24-SKYPRTKBNLFL    PIC X(01).
                        15  SPA-GMN-W24-SKYPRTKBNMEIL   PIC X(28).
       *
-      *          �����ȯ����ˡ
+      *          請求書発行方法
                  11  SPA-GMN-W24-SKYSUMKBNLST-G.
                    13  SPA-GMN-W24-SKYSUMKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-SKYSUMKBNLST        OCCURS  5.
@@ -309,7 +309,7 @@
                        15  SPA-GMN-W24-SKYSUMKBNLFL    PIC X(01).
                        15  SPA-GMN-W24-SKYSUMKBNMEIL   PIC X(28).
       *
-      *          ���������ٽ�ȯ�Զ�ʬ
+      *          診療費明細書発行区分
                  11  SPA-GMN-W24-SRYPRTKBNLST-G.
                    13  SPA-GMN-W24-SRYPRTKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-SRYPRTKBNLST        OCCURS  5.
@@ -317,7 +317,7 @@
                        15  SPA-GMN-W24-SRYPRTKBNLFL    PIC X(01).
                        15  SPA-GMN-W24-SRYPRTKBNMEIL   PIC X(28).
       *!!
-      *          �ౡ��������������ȯ�Զ�ʬ
+      *          退院時院外処方せん発行区分
                  11  SPA-GMN-W24-SHOHOUKBNLST-G.
                    13  SPA-GMN-W24-SHOHOUKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-SHOHOUKBNLST        OCCURS  5.
@@ -326,7 +326,7 @@
                        15  SPA-GMN-W24-SHOHOUKBNMEIL   PIC X(28).
       *!!
       *
-      *          �ౡ������ȯ�Զ�ʬ
+      *          退院証明書発行区分
                  11  SPA-GMN-W24-TAIPRTKBNLST-G.
                    13  SPA-GMN-W24-TAIPRTKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-TAIPRTKBNLST        OCCURS  5.
@@ -334,14 +334,14 @@
                        15  SPA-GMN-W24-TAIPRTKBNLFL    PIC X(01).
                        15  SPA-GMN-W24-TAIPRTKBNMEIL   PIC X(18).
       *
-      *          �ౡ�����񵭺ܶ�ʬ
+      *          退院証明書記載区分
                  11  SPA-GMN-W24-TAIKSIKBNLST-G.
                    13  SPA-GMN-W24-TAIKSIKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-TAIKSIKBNLST        OCCURS  10.
                        15  SPA-GMN-W24-TAIKSIKBNL      PIC X(01).
                        15  SPA-GMN-W24-TAIKSIKBNLFL    PIC X(01).
                        15  SPA-GMN-W24-TAIKSIKBNMEIL   PIC X(28).
-      *          ����������ʬ
+      *          選定入院区分
                  11  SPA-GMN-W24-SENTEIKBNLST-G.
                    13  SPA-GMN-W24-SENTEIKBN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-SENTEIKBNLST        OCCURS  5.
@@ -349,7 +349,7 @@
                        15  SPA-GMN-W24-SENTEIKBNLFL    PIC X(01).
                        15  SPA-GMN-W24-SENTEIKBNMEIL   PIC X(26).
       *
-      *          ��������������ô��ʬ
+      *          選定入院料−負担区分
                  11  SPA-GMN-W24-SENTEI-FTNKBNLST-G.
                    13  SPA-GMN-W24-SENTEI-FTNKBN-MAX   PIC 9(03).
                    13  SPA-GMN-W24-SENTEI-FTNKBNLST    OCCURS 10.
@@ -358,7 +358,7 @@
                        15  SPA-GMN-W24-SENTEI-FTNKBNMEIL
                                                        PIC X(20).
       *
-      *          �����������ݾ�����
+      *          選定入院料−消費税
                  11  SPA-GMN-W24-SENTEI-TAXLST-G.
                    13  SPA-GMN-W24-SENTEI-TAX-MAX      PIC 9(03).
                    13  SPA-GMN-W24-SENTEI-TAXLST       OCCURS  5.
@@ -366,7 +366,7 @@
                        15  SPA-GMN-W24-SENTEI-TAXLFL   PIC X(01).
                        15  SPA-GMN-W24-SENTEI-TAXMEIL  PIC X(18).
       *
-      *          �����̤���۰�����ʬ
+      *          請求書未収額印刷区分
                  11  SPA-GMN-W24-MISYUPRTKBNLST-G.
                    13  SPA-GMN-W24-MISYUPRTKBN-MAX     PIC 9(03).
                    13  SPA-GMN-W24-MISYUPRTKBNLST      OCCURS  5.
@@ -374,7 +374,7 @@
                        15  SPA-GMN-W24-MISYUPRTKBNLFL  PIC X(01).
                        15  SPA-GMN-W24-MISYUPRTKBNMEIL PIC X(18).
       *
-      *          �������۾����Ƕ�ʬ
+      *          室料差額消費税区分
                  11  SPA-GMN-W24-BRMSGK-TAXLST-G.
                    13  SPA-GMN-W24-BRMSGK-TAX-MAX      PIC 9(03).
                    13  SPA-GMN-W24-BRMSGK-TAXLST       OCCURS  5.
@@ -382,7 +382,7 @@
                        15  SPA-GMN-W24-BRMSGK-TAXLFL   PIC X(01).
                        15  SPA-GMN-W24-BRMSGK-TAXMEIL  PIC X(08).
       *
-      *          ������׼������۶�ʬ
+      *          入院会計室料差額区分
                  11  SPA-GMN-W24-NACCT-BRMSGKLST-G.
                    13  SPA-GMN-W24-NACCT-BRMSGK-MAX    PIC 9(03).
                    13  SPA-GMN-W24-NACCT-BRMSGKLST     OCCURS  5.
@@ -390,7 +390,7 @@
                        15  SPA-GMN-W24-NACCT-BRMSGKLFL PIC X(01).
                        15  SPA-GMN-W24-NACCT-BRMSGKMEIL PIC X(14).
       *
-      *          ������׳����ʬ
+      *          入院会計外泊区分
                  11  SPA-GMN-W24-NACCT-GAIHAKULST-G.
                    13  SPA-GMN-W24-NACCT-GAIHAKU-MAX   PIC 9(03).
                    13  SPA-GMN-W24-NACCT-GAIHAKULST    OCCURS  5.
@@ -399,7 +399,7 @@
                                                        PIC X(01).
                        15  SPA-GMN-W24-NACCT-GAIHAKUMEIL PIC X(12).
       *
-      *          ɸ�縺�۶�ʬ
+      *          標欠減額区分
                  11  SPA-GMN-W24-HYOUKETULST-G.
                    13  SPA-GMN-W24-HYOUKETU-MAX        PIC 9(03).
                    13  SPA-GMN-W24-HYOUKETULST         OCCURS  5.
@@ -407,7 +407,7 @@
                        15  SPA-GMN-W24-HYOUKETULFL     PIC X(01).
                        15  SPA-GMN-W24-HYOUKETUMEIL    PIC X(32).
       *
-      *          ���Ķ���ʬ
+      *          定数超過区分
                  11  SPA-GMN-W24-TEISULST-G.
                    13  SPA-GMN-W24-TEISU-MAX           PIC 9(03).
                    13  SPA-GMN-W24-TEISULST            OCCURS  2.
@@ -415,7 +415,7 @@
                        15  SPA-GMN-W24-TEISULFL        PIC X(01).
                        15  SPA-GMN-W24-TEISUMEIL       PIC X(32).
       *
-      *          ��л���Ķ���ʬ
+      *          夜勤時間超過区分
                  11  SPA-GMN-W24-YKNCHOKALST-G.
                    13  SPA-GMN-W24-YKNCHOKA-MAX           PIC 9(03).
                    13  SPA-GMN-W24-YKNCHOKALST            OCCURS  2.
@@ -423,7 +423,7 @@
                        15  SPA-GMN-W24-YKNCHOKALFL        PIC X(01).
                        15  SPA-GMN-W24-YKNCHOKAMEIL       PIC X(32).
       *
-      *          ���ģ����϶�ʬ
+      *          ＡＤＬ入力区分
                  11  SPA-GMN-W24-ADLINPUTLST-G.
                    13  SPA-GMN-W24-ADLINPUT-MAX        PIC 9(03).
                    13  SPA-GMN-W24-ADLINPUTLST         OCCURS  5.
@@ -431,7 +431,7 @@
                        15  SPA-GMN-W24-ADLINPUTLFL     PIC X(01).
                        15  SPA-GMN-W24-ADLINPUTMEIL    PIC X(08).
       *
-      *          ������ẹ�۽��ɽ����ʬ
+      *          定期請求差額初期表示区分
                  11  SPA-GMN-W24-TEIKISAGAKUACTLST-G.
                    13  SPA-GMN-W24-TEIKISAGAKUACT-MAX      PIC 9(03).
                    13  SPA-GMN-W24-TEIKISAGAKUACTLST       OCCURS  5.
@@ -439,7 +439,7 @@
                        15  SPA-GMN-W24-TEIKISAGAKUACTLFL   PIC X(01).
                        15  SPA-GMN-W24-TEIKISAGAKUACTMEIL  PIC X(18).
       *
-      *          ��������ɽ����ʬ
+      *          療養入院表示区分
                  11  SPA-GMN-W24-RYOYODSPLST-G.
                    13  SPA-GMN-W24-RYOYODSP-MAX        PIC 9(03).
                    13  SPA-GMN-W24-RYOYODSPLST         OCCURS  5.
@@ -447,7 +447,7 @@
                        15  SPA-GMN-W24-RYOYODSPLFL     PIC X(01).
                        15  SPA-GMN-W24-RYOYODSPMEIL    PIC X(18).
       *
-      *          ͭ�����Ž�����¾�����û���ʬ
+      *          有床診療所一般病床初期加算区分
                  11  SPA-GMN-W24-IPPANKSNLST-G.
                    13  SPA-GMN-W24-IPPANKSN-MAX        PIC 9(03).
                    13  SPA-GMN-W24-IPPANKSNLST         OCCURS  5.
@@ -455,7 +455,7 @@
                        15  SPA-GMN-W24-IPPANKSNLFL     PIC X(01).
                        15  SPA-GMN-W24-IPPANKSNMEIL    PIC X(18).
       *
-      *          �ߵޡ��������ٱ������¾�����û���ʬ
+      *          救急・在宅等支援療養病床初期加算区分
                  11  SPA-GMN-W24-KYUKYUKSNLST-G.
                    13  SPA-GMN-W24-KYUKYUKSN-MAX       PIC 9(03).
                    13  SPA-GMN-W24-KYUKYUKSNLST        OCCURS  5.
@@ -463,7 +463,7 @@
                        15  SPA-GMN-W24-KYUKYUKSNLFL    PIC X(01).
                        15  SPA-GMN-W24-KYUKYUKSNMEIL   PIC X(18).
       *
-      *          ����������ο�����ʬ
+      *          次回作成時の食事区分
                  11  SPA-GMN-W24-SKJ-CREATELST-G.
                    13  SPA-GMN-W24-SKJ-CREATE-MAX      PIC 9(03).
                    13  SPA-GMN-W24-SKJ-CREATELST       OCCURS  5.
@@ -471,7 +471,7 @@
                        15  SPA-GMN-W24-SKJ-CREATELFL   PIC X(01).
                        15  SPA-GMN-W24-SKJ-CREATEMEIL  PIC X(18).
       *
-      *          ���ܴ����в����ֶ�ʬ
+      *          栄養管理経過措置区分
                  11  SPA-GMN-W24-EIYOUKSNLST-G.
                    13  SPA-GMN-W24-EIYOUKSN-MAX        PIC 9(03).
                    13  SPA-GMN-W24-EIYOUKSNLST         OCCURS  5.
@@ -479,7 +479,7 @@
                        15  SPA-GMN-W24-EIYOUKSNLFL     PIC X(01).
                        15  SPA-GMN-W24-EIYOUKSNMEIL    PIC X(26).
       *
-      *          �������������������¾������ɽ����ʬ
+      *          入院歴作成時、自院歴・他院歴初期表示区分
                  11  SPA-GMN-W24-REKI-JITAKBNLST-G.
                    13  SPA-GMN-W24-REKI-JITAKBN-MAX        PIC 9(03).
                    13  SPA-GMN-W24-REKI-JITAKBNLST         OCCURS  5.
@@ -487,7 +487,7 @@
                        15  SPA-GMN-W24-REKI-JITAKBNLFL     PIC X(01).
                        15  SPA-GMN-W24-REKI-JITAKBNMEIL    PIC X(38).
       *
-      *          ��������������ౡ�����ɽ����ʬ
+      *          入院歴作成時、退院日初期表示区分
                  11  SPA-GMN-W24-REKI-TAIINKBNLST-G.
                    13  SPA-GMN-W24-REKI-TAIINKBN-MAX      PIC 9(03).
                    13  SPA-GMN-W24-REKI-TAIINKBNLST       OCCURS  5.

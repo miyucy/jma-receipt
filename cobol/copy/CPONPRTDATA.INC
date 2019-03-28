@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,11 +15,11 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *     ¥ª¥ó¥é¥¤¥óÄ¢É¼LINKAGE¶¦ÄÌÎÎ°è      CPONPRTDATA.INC
+      *     ã‚ªãƒ³ãƒ©ã‚¤ãƒ³å¸³ç¥¨LINKAGEå…±é€šé ˜åŸŸ      CPONPRTDATA.INC
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  18/04/XX  50000 ¤ò 500000 ¤Ø
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.08.00    NACL-å¤šã€…ç´  18/04/XX  50000 ã‚’ 500000 ã¸
       ************************************************************
        01  ONPRTDATA.
            03  ONPRTDATA-PGID      PIC X(20).

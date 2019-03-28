@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="EUC-JP" ?>
 <!-- 
-¼õÉÕ¾ðÊó¡¢¥Æ¥ó¥×¥ì¡¼¥ÈXML¥Õ¥¡¥¤¥ë
+å—ä»˜æƒ…å ±ã€ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆXMLãƒ•ã‚¡ã‚¤ãƒ«
 
-¥Ð¡¼¥¸¥ç¥ó2.0·Á¼°
+ãƒãƒ¼ã‚¸ãƒ§ãƒ³2.0å½¢å¼
 -->
 
 <!--
-»ÈÍÑ¤¹¤ëMML¤ÏCommon(ID,³°Éô»²¾È), Name(¿ÍÌ¾), Facility(»ÜÀß), Department(¿ÇÎÅ²Ê), Address(½»½ê), Phone(ÅÅÏÃ), PersonalInfo(¸Ä¿Í¾ðÊó), CreatorInfo(ºîÀ®¼Ô), PatientInfo(´µ¼Ô), HealthInsurance(·ò¹¯ÊÝ¸±), claimModule(Claim)¤Ç¤¹¡£
+ä½¿ç”¨ã™ã‚‹MMLã¯Common(ID,å¤–éƒ¨å‚ç…§), Name(äººå), Facility(æ–½è¨­), Department(è¨ºç™‚ç§‘), Address(ä½æ‰€), Phone(é›»è©±), PersonalInfo(å€‹äººæƒ…å ±), CreatorInfo(ä½œæˆè€…), PatientInfo(æ‚£è€…), HealthInsurance(å¥åº·ä¿é™º), claimModule(Claim)ã§ã™ã€‚
 
-¤³¤Î¥Æ¥ó¥×¥ì¡¼¥ÈXML¥Õ¥¡¥¤¥ë¤Ï¡¢¤Ç¤­¤ë¸Â¤ê¡¢¤¤¤¸¤é¤Ê¤¤¤Ç¤¯¤À¤µ¤¤¡£
-¤³¤Î¥Õ¥¡¥¤¥ë¤Ï¡¢¥Õ¥¡¥¤¥ë¤òÊÌ¤Î¾ì½ê¤Ë¥³¥Ô¡¼¤·¤¿¸å¡¢°ìÉô¤ÎÊ¸»ú¤òÃÖ´¹¤·¤Æ¡¢»ÈÍÑ¤·¤Æ¤¤¤Þ¤¹¡£
-¥³¥á¥ó¥È¡¦¶õÇò¹Ô¡¦¶õ¤Î¥¨¥ì¥á¥ó¥È¤Ï¡¢½ÐÎÏXML¥Õ¥¡¥¤¥ëÀ¸À®»þ¤Ëºï½ü¤·¤Æ¤¤¤Þ¤¹¡£
-¤Þ¤¿¡¢¥¤¥ó¥Ç¥ó¥È¤È¤·¤Æ¥¿¥Ö¤ò»È¤Ã¤Æ¤¤¤Þ¤¹¤¬¡¢¤³¤ì¤â¡¢½ÐÎÏXML¥Õ¥¡¥¤¥ëÀ¸À®»þ¤Ë¡¢È¾³Ñ¶õÇò4Ê¸»ú¤ËÊÑ´¹¤·¤Æ¤¤¤Þ¤¹¡£
+ã“ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆXMLãƒ•ã‚¡ã‚¤ãƒ«ã¯ã€ã§ãã‚‹é™ã‚Šã€ã„ã˜ã‚‰ãªã„ã§ãã ã•ã„ã€‚
+ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¯ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚’åˆ¥ã®å ´æ‰€ã«ã‚³ãƒ”ãƒ¼ã—ãŸå¾Œã€ä¸€éƒ¨ã®æ–‡å­—ã‚’ç½®æ›ã—ã¦ã€ä½¿ç”¨ã—ã¦ã„ã¾ã™ã€‚
+ã‚³ãƒ¡ãƒ³ãƒˆãƒ»ç©ºç™½è¡Œãƒ»ç©ºã®ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã¯ã€å‡ºåŠ›XMLãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆæ™‚ã«å‰Šé™¤ã—ã¦ã„ã¾ã™ã€‚
+ã¾ãŸã€ã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã¨ã—ã¦ã‚¿ãƒ–ã‚’ä½¿ã£ã¦ã„ã¾ã™ãŒã€ã“ã‚Œã‚‚ã€å‡ºåŠ›XMLãƒ•ã‚¡ã‚¤ãƒ«ç”Ÿæˆæ™‚ã«ã€åŠè§’ç©ºç™½4æ–‡å­—ã«å¤‰æ›ã—ã¦ã„ã¾ã™ã€‚
 
 
-Ê¸»ú¤òÊÑ´¹¤¹¤ëºÝ¤Ï¡¢°ìÈÖºÇ½é¤Î¹Ô¤ò¡¢Ê¸»ú¥³¡¼¥É¤Ë¤¢¤ï¤»¤ÆÊÑ´¹¤·¤Æ¤¯¤À¤µ¤¤¡£
-  ¥·¥Õ¥ÈJIS = Shift_JIS
-  EUC¥³¡¼¥É = EUC-JP
+æ–‡å­—ã‚’å¤‰æ›ã™ã‚‹éš›ã¯ã€ä¸€ç•ªæœ€åˆã®è¡Œã‚’ã€æ–‡å­—ã‚³ãƒ¼ãƒ‰ã«ã‚ã‚ã›ã¦å¤‰æ›ã—ã¦ãã ã•ã„ã€‚
+  ã‚·ãƒ•ãƒˆJIS = Shift_JIS
+  EUCã‚³ãƒ¼ãƒ‰ = EUC-JP
   UTF-8     = UTF-8
-  JIS¥³¡¼¥É = JIS
+  JISã‚³ãƒ¼ãƒ‰ = JIS
 
 
-ÊÑ´¹ÉôÊ¬¤Ï¡Ö%(¼±ÊÌÊ¸»ú)%¡×¤È¤·¤Æµ­½Ò¤·¤Æ¤¤¤Þ¤¹¡£¤½¤ÎÉôÊ¬¤ËÂÐ¤·¤ÆÊÑ´¹¤ò¤«¤±¤ë»ÅÁÈ¤ß¤Ë¤Ê¤Ã¤Æ¤¤¤Þ¤¹¡£
-¼±ÊÌÊ¸»ú¤Ï¡¢ÆÈ¼«¤Ë·è¤á¤Æ¤¤¤Þ¤¹¡£
+å¤‰æ›éƒ¨åˆ†ã¯ã€Œ%(è­˜åˆ¥æ–‡å­—)%ã€ã¨ã—ã¦è¨˜è¿°ã—ã¦ã„ã¾ã™ã€‚ãã®éƒ¨åˆ†ã«å¯¾ã—ã¦å¤‰æ›ã‚’ã‹ã‘ã‚‹ä»•çµ„ã¿ã«ãªã£ã¦ã„ã¾ã™ã€‚
+è­˜åˆ¥æ–‡å­—ã¯ã€ç‹¬è‡ªã«æ±ºã‚ã¦ã„ã¾ã™ã€‚
 
-ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
-ÉÕ¤±²Ã¤¨¤¿¤¤¾ì¹ç¤Ï¡¢ID´ØÏ¢¤Î¡ÖmmlCm:Id¡×¥¨¥ì¥á¥ó¥È¤Ë¡ÖmmlCm:checkDigitSchema¡×¡ÖmmlCm:checkDigit¡×¤òÉÕ²Ã¤·¤Æ¤¯¤À¤µ¤¤¡£Æ±»þ¤Ë¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÃÍ¤ò¥»¥Ã¥È¤¹¤ë»ÅÁÈ¤ß¤¬É¬Í×¤Ë¤Ê¤ê¤Þ¤¹¤Î¤Ç¡¢Ãí°Õ¤·¤Æ¤¯¤À¤µ¤¤¡£
+IDé–¢é€£ã¯ã€ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã®å±žæ€§ã¯çœç•¥å¯èƒ½ã§ã‚ã‚‹ãŸã‚ã€ã¯ãšã—ã¦ã„ã¾ã™ã€‚
+ä»˜ã‘åŠ ãˆãŸã„å ´åˆã¯ã€IDé–¢é€£ã®ã€ŒmmlCm:Idã€ã‚¨ãƒ¬ãƒ¡ãƒ³ãƒˆã«ã€ŒmmlCm:checkDigitSchemaã€ã€ŒmmlCm:checkDigitã€ã‚’ä»˜åŠ ã—ã¦ãã ã•ã„ã€‚åŒæ™‚ã«ã€ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã®å€¤ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ä»•çµ„ã¿ãŒå¿…è¦ã«ãªã‚Šã¾ã™ã®ã§ã€æ³¨æ„ã—ã¦ãã ã•ã„ã€‚
 
-¥¢¥¯¥»¥¹¸¢¼ïÊÌ¤Ï¡¢¥µ¥ó¥×¥ë¤Ç¤Ï³«»Ï¡¦½ªÎ»¥¿¥°¤ÎÎ¾Êý¤¬¤¢¤ê¤Þ¤·¤¿¤¬¡¢¶õ¤Î¥¿¥°¤Ïºï½ü¤¹¤ë»ÈÍÑ¤Ë¤Ê¤Ã¤Æ¤¤¤ë¤Î¤Ç¡¢»ÅÍÍ½ñ¤Ë±è¤Ã¤ÆÃ±ÆÈ¥¿¥°¤ËÊÑ¹¹¤·¤Æ¤¤¤Þ¤¹¡£
+ã‚¢ã‚¯ã‚»ã‚¹æ¨©ç¨®åˆ¥ã¯ã€ã‚µãƒ³ãƒ—ãƒ«ã§ã¯é–‹å§‹ãƒ»çµ‚äº†ã‚¿ã‚°ã®ä¸¡æ–¹ãŒã‚ã‚Šã¾ã—ãŸãŒã€ç©ºã®ã‚¿ã‚°ã¯å‰Šé™¤ã™ã‚‹ä½¿ç”¨ã«ãªã£ã¦ã„ã‚‹ã®ã§ã€ä»•æ§˜æ›¸ã«æ²¿ã£ã¦å˜ç‹¬ã‚¿ã‚°ã«å¤‰æ›´ã—ã¦ã„ã¾ã™ã€‚
 
 
  -->
@@ -36,15 +36,15 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
  
 <Mml version="2.3" createDate="%M_RH_CD1%" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mmlCm="http://www.medxml.net/MML/SharedComponent/Common/1.0" xmlns:mmlNm="http://www.medxml.net/MML/SharedComponent/Name/1.0" xmlns:mmlFc="http://www.medxml.net/MML/SharedComponent/Facility/1.0" xmlns:mmlDp="http://www.medxml.net/MML/SharedComponent/Department/1.0" xmlns:mmlAd="http://www.medxml.net/MML/SharedComponent/Address/1.0" xmlns:mmlPh="http://www.medxml.net/MML/SharedComponent/Phone/1.0" xmlns:mmlPsi="http://www.medxml.net/MML/SharedComponent/PersonalizedInfo/1.0" xmlns:mmlCi="http://www.medxml.net/MML/SharedComponent/CreatorInfo/1.0" xmlns:mmlPi="http://www.medxml.net/MML/ContentModule/PatientInfo/1.0" xmlns:mmlBc="http://www.medxml.net/MML/ContentModule/BaseClinic/1.0" xmlns:mmlFcl="http://www.medxml.net/MML/ContentModule/FirstClinic/1.0" xmlns:mmlHi="http://www.medxml.net/MML/ContentModule/HealthInsurance/1.1" xmlns:mmlLs="http://www.medxml.net/MML/ContentModule/Lifestyle/1.0" xmlns:mmlPc="http://www.medxml.net/MML/ContentModule/ProgressCourse/1.0" xmlns:mmlRd="http://www.medxml.net/MML/ContentModule/RegisteredDiagnosis/1.0" xmlns:mmlSg="http://www.medxml.net/MML/ContentModule/Surgery/1.0" xmlns:mmlSm="http://www.medxml.net/MML/ContentModule/Summary/1.0" xmlns:mmlLb="http://www.medxml.net/MML/ContentModule/test/1.0" xmlns:mmlRp="http://www.medxml.net/MML/ContentModule/report/1.0" xmlns:mmlRe="http://www.medxml.net/MML/ContentModule/Referral/1.0" xmlns:mmlSc="http://www.medxml.net/MML/SharedComponent/Security/1.0" xmlns:claim="http://www.medxml.net/claim/claimModule/2.1" xmlns:claimA="http://www.medxml.net/claim/claimAmountModule/2.1">       
 	<MmlHeader>
-		<!-- ºîÀ®¼Ô¾ðÊó -->
+		<!-- ä½œæˆè€…æƒ…å ± -->
 		<!--  -->
 		<mmlCi:CreatorInfo>
 			<mmlPsi:PersonalizedInfo>
-				<!-- ºîÀ®¼Ô ¸Ä¿ÍID (¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤Ï¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹) -->
+				<!-- ä½œæˆè€… å€‹äººID (ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã¯ã€ã¯ãšã—ã¦ã„ã¾ã™) -->
 				<mmlCm:Id mmlCm:type="facility" mmlCm:tableId="MML0024">
 					%M_RX001_A%
 				</mmlCm:Id>
-				<!-- ºîÀ®¼Ô ¸Ä¿ÍÌ¾¾ðÊó -->
+				<!-- ä½œæˆè€… å€‹äººåæƒ…å ± -->
 				<mmlPsi:personName>
 					<mmlNm:Name mmlNm:repCode="I" mmlNm:tableId="MML0025">
 						<mmlNm:fullname>%M_RX001_B11%</mmlNm:fullname>
@@ -55,17 +55,17 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 						<mmlNm:degree>%M_RX001_B16%</mmlNm:degree>
 					</mmlNm:Name>
 				</mmlPsi:personName>
-				<!-- »ÜÀß¾ðÊó -->
+				<!-- æ–½è¨­æƒ…å ± -->
 				<mmlFc:Facility>
 					<mmlFc:name mmlFc:repCode="I" mmlFc:tableId="MML0025">
 						%M_RX001_C11%
 					</mmlFc:name>
-					<!-- insurance»ØÄê¤¬¤¢¤ë¾ì¹ç¡¢¼¡¤ÎID¥³¡¼¥É¤Ï¡¢ÊÝ¸±°åÎÅµ¡´Ø¥³¡¼¥É¤ò¥»¥Ã¥È¤·¤Þ¤¹ -->
+					<!-- insuranceæŒ‡å®šãŒã‚ã‚‹å ´åˆã€æ¬¡ã®IDã‚³ãƒ¼ãƒ‰ã¯ã€ä¿é™ºåŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã—ã¾ã™ -->
 					<mmlCm:Id mmlCm:type="insurance" mmlCm:tableId="MML0027">
 						%M_RX001_C2%
 					</mmlCm:Id>
 				</mmlFc:Facility>
-				<!-- ¿ÇÎÅ²Ê¾ðÊó -->
+				<!-- è¨ºç™‚ç§‘æƒ…å ± -->
 				<mmlDp:Department>
 					<mmlDp:name mmlDp:repCode="I" mmlDp:tableId="MML0025">
 						%M_RX001_D11%
@@ -74,7 +74,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 						%M_RX001_D2%
 					</mmlCm:Id>
 				</mmlDp:Department>
-				<!-- ½»½ê¾ðÊó -->
+				<!-- ä½æ‰€æƒ…å ± -->
 				<mmlPsi:addresses>
 					<mmlAd:Address mmlAd:repCode="I"%M_RX001_E18% mmlAd:tableId="MML0025">
 						<mmlAd:full>
@@ -100,11 +100,11 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 						</mmlAd:countryCode>
 					</mmlAd:Address>
 				</mmlPsi:addresses>
-				<!-- ¥á¡¼¥ë¥¢¥É¥ì¥¹ -->
+				<!-- ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ -->
 				<mmlPsi:emailAddresses>
 					<mmlCm:email>%M_RX001_F1%</mmlCm:email>
 				</mmlPsi:emailAddresses>
-				<!-- ÅÅÏÃÈÖ¹æ -->
+				<!-- é›»è©±ç•ªå· -->
 				<mmlPsi:phones>
 					<mmlPh:Phone%M_RX001_G17%>
 						<mmlPh:area>
@@ -128,12 +128,12 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 					</mmlPh:Phone>
 				</mmlPsi:phones>
 			</mmlPsi:PersonalizedInfo>
-			<!-- À¸À®¼Ô¤Î»ñ³Ê -->
+			<!-- ç”Ÿæˆè€…ã®è³‡æ ¼ -->
 			<mmlCi:creatorLicense mmlCi:tableId="MML0026">
 				%M_RX001_H1%
 			</mmlCi:creatorLicense>
 		</mmlCi:CreatorInfo>
-		<!-- ´µ¼Ô¼çID -->
+		<!-- æ‚£è€…ä¸»ID -->
 		<masterId>
 			<mmlCm:Id%M_RH_PIDSTYLE% mmlCm:tableId="MML0024">
 				%M_RH_PID%
@@ -141,7 +141,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 		</masterId>
 		<!-- table of content -->
 		<toc>
-			<!-- DTD¥ê¥¹¥È -->
+			<!-- DTDãƒªã‚¹ãƒˆ -->
 			<tocItem>http://www.medxml.net/MML/SharedComponent/Common/1.0</tocItem>
 			<tocItem>http://www.medxml.net/MML/SharedComponent/Name/1.0</tocItem>
 			<tocItem>http://www.medxml.net/MML/SharedComponent/Facility/1.0</tocItem>
@@ -154,42 +154,42 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 			<tocItem>http://www.medxml.net/MML/ContentModule/HealthInsurance/1.1</tocItem>
 			<tocItem>http://www.medxml.net/claim/claimModule/2.1</tocItem>
 		</toc>
-		<!-- scopePeriod¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢ºï½ü¤·¤Æ¤¤¤Þ¤¹ -->
-		<!-- ÅÅ»Ò½ðÌ¾¤Ê¤É¤Î°Å¹æ²½¾ðÊó -->
+		<!-- scopePeriodã¯çœç•¥å¯èƒ½ã§ã‚ã‚‹ãŸã‚ã€å‰Šé™¤ã—ã¦ã„ã¾ã™ -->
+		<!-- é›»å­ç½²åãªã©ã®æš—å·åŒ–æƒ…å ± -->
 		<encryptInfo>no encryption</encryptInfo>
 	</MmlHeader>
 	<!-- ============================================================ -->
 	<!-- ============================================================ -->
 	<MmlBody>
 		<!-- ============================================================ -->
-		<!-- ´µ¼Ô¾ðÊó -->
+		<!-- æ‚£è€…æƒ…å ± -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="patientInfo">
-				<!-- ¥¢¥¯¥»¥¹¸¢¼ïÊÌ -->
+				<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨©ç¨®åˆ¥ -->
 				<securityLevel>
-					<!-- ¥¢¥¯¥»¥¹¸¢ -->
+					<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨© -->
 					%M_RI101_ACC1%
 					<!-- %M_RI101_ACC2% -->
 				</securityLevel>
-				<!-- Ê¸½ñ¥¿¥¤¥È¥ë -->
+				<!-- æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ« -->
 				<title>
 					%M_RI101_TITLE%
 				</title>
-				<!-- Ê¸½ñID¾ðÊó -->
+				<!-- æ–‡æ›¸IDæƒ…å ± -->
 				<docId>
 					<uid>%M_RI101_UI%</uid>
 				</docId>
-				<!-- ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü -->
+				<!-- ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥ -->
 				<confirmDate>%M_RI101_KD%</confirmDate>
-				<!-- ºîÀ®¼Ô¾ðÊó -->
+				<!-- ä½œæˆè€…æƒ…å ± -->
 				<!--  -->
 				<mmlCi:CreatorInfo>
 					<mmlPsi:PersonalizedInfo>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍID (¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤Ï¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹) -->
+						<!-- ä½œæˆè€… å€‹äººID (ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã¯ã€ã¯ãšã—ã¦ã„ã¾ã™) -->
 						<mmlCm:Id mmlCm:type="facility" mmlCm:tableId="MML0024">
 							%M_RX101_A%
 						</mmlCm:Id>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍÌ¾¾ðÊó -->
+						<!-- ä½œæˆè€… å€‹äººåæƒ…å ± -->
 						<mmlPsi:personName>
 							<mmlNm:Name mmlNm:repCode="I" mmlNm:tableId="MML0025">
 								<mmlNm:fullname>%M_RX101_B11%</mmlNm:fullname>
@@ -200,17 +200,17 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 								<mmlNm:degree>%M_RX101_B16%</mmlNm:degree>
 							</mmlNm:Name>
 						</mmlPsi:personName>
-						<!-- »ÜÀß¾ðÊó -->
+						<!-- æ–½è¨­æƒ…å ± -->
 						<mmlFc:Facility>
 							<mmlFc:name mmlFc:repCode="I" mmlFc:tableId="MML0025">
 								%M_RX101_C11%
 							</mmlFc:name>
-							<!-- insurance»ØÄê¤¬¤¢¤ë¾ì¹ç¡¢¼¡¤ÎID¥³¡¼¥É¤Ï¡¢ÊÝ¸±°åÎÅµ¡´Ø¥³¡¼¥É¤ò¥»¥Ã¥È¤·¤Þ¤¹ -->
+							<!-- insuranceæŒ‡å®šãŒã‚ã‚‹å ´åˆã€æ¬¡ã®IDã‚³ãƒ¼ãƒ‰ã¯ã€ä¿é™ºåŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã—ã¾ã™ -->
 							<mmlCm:Id mmlCm:type="insurance" mmlCm:tableId="MML0027">
 								%M_RX101_C2%
 							</mmlCm:Id>
 						</mmlFc:Facility>
-						<!-- ¿ÇÎÅ²Ê¾ðÊó -->
+						<!-- è¨ºç™‚ç§‘æƒ…å ± -->
 						<mmlDp:Department>
 							<mmlDp:name mmlDp:repCode="I" mmlDp:tableId="MML0025">
 								%M_RX101_D11%
@@ -219,7 +219,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 								%M_RX101_D2%
 							</mmlCm:Id>
 						</mmlDp:Department>
-						<!-- ½»½ê¾ðÊó -->
+						<!-- ä½æ‰€æƒ…å ± -->
 						<mmlPsi:addresses>
 							<mmlAd:Address mmlAd:repCode="I"%M_RX101_E18% mmlAd:tableId="MML0025">
 								<mmlAd:full>
@@ -245,11 +245,11 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 								</mmlAd:countryCode>
 							</mmlAd:Address>
 						</mmlPsi:addresses>
-						<!-- ¥á¡¼¥ë¥¢¥É¥ì¥¹ -->
+						<!-- ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ -->
 						<mmlPsi:emailAddresses>
 							<mmlCm:email>%M_RX101_F1%</mmlCm:email>
 						</mmlPsi:emailAddresses>
-						<!-- ÅÅÏÃÈÖ¹æ -->
+						<!-- é›»è©±ç•ªå· -->
 						<mmlPsi:phones>
 							<mmlPh:Phone%M_RX101_G17%>
 								<mmlPh:area>
@@ -273,17 +273,17 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 							</mmlPh:Phone>
 						</mmlPsi:phones>
 					</mmlPsi:PersonalizedInfo>
-					<!-- À¸À®¼Ô¤Î»ñ³Ê -->
+					<!-- ç”Ÿæˆè€…ã®è³‡æ ¼ -->
 					<mmlCi:creatorLicense mmlCi:tableId="MML0026">
 						%M_RX101_H1%
 					</mmlCi:creatorLicense>
 				</mmlCi:CreatorInfo>
 				%M_RX101_I1%
 			</docInfo>
-			<!-- µ­ºÜÆâÍÆ -->
+			<!-- è¨˜è¼‰å†…å®¹ -->
 			<content>
 				<mmlPi:PatientModule>
-					<!-- ID¾ðÊó -->
+					<!-- IDæƒ…å ± -->
 					<mmlPi:uniqueInfo>
 						<mmlPi:masterId>
 							<mmlCm:Id%D_A2% mmlCm:tableId="MML0024">
@@ -291,7 +291,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 							</mmlCm:Id>
 						</mmlPi:masterId>
 					</mmlPi:uniqueInfo>
-					<!-- »áÌ¾¾ðÊó -->
+					<!-- æ°åæƒ…å ± -->
 					<mmlPi:personName>
 						<mmlNm:Name%D_B1% mmlNm:tableId="MML0025">
 							<mmlNm:fullname>%D_B2%</mmlNm:fullname>
@@ -300,13 +300,13 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 							<mmlNm:fullname>%D_C2%</mmlNm:fullname>
 						</mmlNm:Name>
 					</mmlPi:personName>
-					<!-- À¸Ç¯·îÆü -->
+					<!-- ç”Ÿå¹´æœˆæ—¥ -->
 					<mmlPi:birthday>%D_D1%</mmlPi:birthday>
-					<!-- À­ÊÌ -->
+					<!-- æ€§åˆ¥ -->
 					<mmlPi:sex>%D_D2%</mmlPi:sex>
-					<!-- ½»½ê -->
+					<!-- ä½æ‰€ -->
 					<mmlPi:addresses>
-						<!-- ½»½ê¾ðÊó(¼«Âð) -->
+						<!-- ä½æ‰€æƒ…å ±(è‡ªå®…) -->
 						<mmlAd:Address mmlAd:repCode="I"%D_EA2% mmlAd:tableId="MML0025">
 							<mmlAd:full>
 								%D_EA1%
@@ -315,7 +315,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 								%D_EA3%
 							</mmlAd:zip>
 						</mmlAd:Address>
-						<!-- ½»½ê¾ðÊó(Ï¢ÍíÀè) -->
+						<!-- ä½æ‰€æƒ…å ±(é€£çµ¡å…ˆ) -->
 						<mmlAd:Address mmlAd:repCode="I"%D_EB2% mmlAd:tableId="MML0025">
 							<mmlAd:full>
 								%D_EB1%
@@ -324,7 +324,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 								%D_EB3%
 							</mmlAd:zip>
 						</mmlAd:Address>
-						<!-- ½»½ê¾ðÊó(¶ÐÌ³Àè) -->
+						<!-- ä½æ‰€æƒ…å ±(å‹¤å‹™å…ˆ) -->
 						<mmlAd:Address mmlAd:repCode="I"%D_EC2% mmlAd:tableId="MML0025">
 							<mmlAd:full>
 								%D_EC1%
@@ -333,7 +333,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 								%D_EC3%
 							</mmlAd:zip>
 						</mmlAd:Address>
-						<!-- ½»½ê¾ðÊó(µ¢¾ÊÀè) -->
+						<!-- ä½æ‰€æƒ…å ±(å¸°çœå…ˆ) -->
 						<mmlAd:Address mmlAd:repCode="I"%D_ED2% mmlAd:tableId="MML0025">
 							<mmlAd:full>
 								%D_ED1%
@@ -343,7 +343,7 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 							</mmlAd:zip>
 						</mmlAd:Address>
 					</mmlPi:addresses>
-					<!-- ÅÅÏÃÈÖ¹æ -->
+					<!-- é›»è©±ç•ªå· -->
 					<mmlPi:phones>
 						<mmlPh:Phone%D_PH1_EQUIP%>
 							<mmlPh:area>
@@ -366,47 +366,47 @@ ID´ØÏ¢¤Ï¡¢¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤ÎÂ°À­¤Ï¾ÊÎ¬²ÄÇ½¤Ç¤¢¤ë¤¿¤á¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹¡£
 							</mmlPh:memo>
 						</mmlPh:Phone>
 					</mmlPi:phones>
-					<!-- ²ñ·×ÈÖ¹æ -->
-					<!-- ¼Ò²ñÈÖ¹æ -->
-					<!-- »àË´¥Õ¥é¥° -->
+					<!-- ä¼šè¨ˆç•ªå· -->
+					<!-- ç¤¾ä¼šç•ªå· -->
+					<!-- æ­»äº¡ãƒ•ãƒ©ã‚° -->
 					<mmlPi:death>%D_F1%</mmlPi:death>
 				</mmlPi:PatientModule>
 			</content>
 		</MmlModuleItem>
 		<!-- ============================================================ -->
-		<!-- ·ò¹¯ÊÝ¸±¾ðÊó -->
+		<!-- å¥åº·ä¿é™ºæƒ…å ± -->
 
-<!-- ·ò¹¯ÊÝ¸±¾ðÊó[01-20] (·«¤êÊÖ¤·¤ÎºÝ¤Ë¡¢@@HIMOD@@¤Ë01¡Á20¤Î¿ô»ú¤¬Æþ¤Ã¤ÆÃÖ´¹¤µ¤ì¤ë) -->
+<!-- å¥åº·ä¿é™ºæƒ…å ±[01-20] (ç¹°ã‚Šè¿”ã—ã®éš›ã«ã€@@HIMOD@@ã«01ã€œ20ã®æ•°å­—ãŒå…¥ã£ã¦ç½®æ›ã•ã‚Œã‚‹) -->
 $Repeat, 20, @@HIMOD@@, 2
 
-		<!-- ·ò¹¯ÊÝ¸±¾ðÊó(@@HIMOD@@) -->
+		<!-- å¥åº·ä¿é™ºæƒ…å ±(@@HIMOD@@) -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="healthInsurance">
-				<!-- ¥¢¥¯¥»¥¹¸¢¼ïÊÌ -->
+				<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨©ç¨®åˆ¥ -->
 				<securityLevel>
-					<!-- ¥¢¥¯¥»¥¹¸¢ -->
+					<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨© -->
 					%M_RI2@@HIMOD@@_ACC1%
 					<!-- %M_RI2@@HIMOD@@_ACC2% -->
 				</securityLevel>
-				<!-- Ê¸½ñ¥¿¥¤¥È¥ë -->
+				<!-- æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ« -->
 				<title>
 					%M_RI2@@HIMOD@@_TITLE%
 				</title>
-				<!-- Ê¸½ñID¾ðÊó -->
+				<!-- æ–‡æ›¸IDæƒ…å ± -->
 				<docId>
 					<uid>%M_RI2@@HIMOD@@_UI%</uid>
 				</docId>
-				<!-- ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü -->
+				<!-- ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥ -->
 				<confirmDate>%M_RI2@@HIMOD@@_KD%</confirmDate>
-				<!-- ºîÀ®¼Ô¾ðÊó -->
+				<!-- ä½œæˆè€…æƒ…å ± -->
 				<!--  -->
 				<mmlCi:CreatorInfo>
 					<mmlPsi:PersonalizedInfo>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍID (¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤Ï¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹) -->
+						<!-- ä½œæˆè€… å€‹äººID (ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã¯ã€ã¯ãšã—ã¦ã„ã¾ã™) -->
 						<mmlCm:Id mmlCm:type="facility" mmlCm:tableId="MML0024">
 							%M_RX2@@HIMOD@@_A%
 						</mmlCm:Id>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍÌ¾¾ðÊó -->
+						<!-- ä½œæˆè€… å€‹äººåæƒ…å ± -->
 						<mmlPsi:personName>
 							<mmlNm:Name mmlNm:repCode="I" mmlNm:tableId="MML0025">
 								<mmlNm:fullname>%M_RX2@@HIMOD@@_B11%</mmlNm:fullname>
@@ -417,17 +417,17 @@ $Repeat, 20, @@HIMOD@@, 2
 								<mmlNm:degree>%M_RX2@@HIMOD@@_B16%</mmlNm:degree>
 							</mmlNm:Name>
 						</mmlPsi:personName>
-						<!-- »ÜÀß¾ðÊó -->
+						<!-- æ–½è¨­æƒ…å ± -->
 						<mmlFc:Facility>
 							<mmlFc:name mmlFc:repCode="I" mmlFc:tableId="MML0025">
 								%M_RX2@@HIMOD@@_C11%
 							</mmlFc:name>
-							<!-- insurance»ØÄê¤¬¤¢¤ë¾ì¹ç¡¢¼¡¤ÎID¥³¡¼¥É¤Ï¡¢ÊÝ¸±°åÎÅµ¡´Ø¥³¡¼¥É¤ò¥»¥Ã¥È¤·¤Þ¤¹ -->
+							<!-- insuranceæŒ‡å®šãŒã‚ã‚‹å ´åˆã€æ¬¡ã®IDã‚³ãƒ¼ãƒ‰ã¯ã€ä¿é™ºåŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã—ã¾ã™ -->
 							<mmlCm:Id mmlCm:type="insurance" mmlCm:tableId="MML0027">
 								%M_RX2@@HIMOD@@_C2%
 							</mmlCm:Id>
 						</mmlFc:Facility>
-						<!-- ¿ÇÎÅ²Ê¾ðÊó -->
+						<!-- è¨ºç™‚ç§‘æƒ…å ± -->
 						<mmlDp:Department>
 							<mmlDp:name mmlDp:repCode="I" mmlDp:tableId="MML0025">
 								%M_RX2@@HIMOD@@_D11%
@@ -436,7 +436,7 @@ $Repeat, 20, @@HIMOD@@, 2
 								%M_RX2@@HIMOD@@_D2%
 							</mmlCm:Id>
 						</mmlDp:Department>
-						<!-- ½»½ê¾ðÊó -->
+						<!-- ä½æ‰€æƒ…å ± -->
 						<mmlPsi:addresses>
 							<mmlAd:Address mmlAd:repCode="I"%M_RX2@@HIMOD@@_E18% mmlAd:tableId="MML0025">
 								<mmlAd:full>
@@ -462,11 +462,11 @@ $Repeat, 20, @@HIMOD@@, 2
 								</mmlAd:countryCode>
 							</mmlAd:Address>
 						</mmlPsi:addresses>
-						<!-- ¥á¡¼¥ë¥¢¥É¥ì¥¹ -->
+						<!-- ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ -->
 						<mmlPsi:emailAddresses>
 							<mmlCm:email>%M_RX2@@HIMOD@@_F1%</mmlCm:email>
 						</mmlPsi:emailAddresses>
-						<!-- ÅÅÏÃÈÖ¹æ -->
+						<!-- é›»è©±ç•ªå· -->
 						<mmlPsi:phones>
 							<mmlPh:Phone%M_RX2@@HIMOD@@_G17%>
 								<mmlPh:area>
@@ -490,64 +490,64 @@ $Repeat, 20, @@HIMOD@@, 2
 							</mmlPh:Phone>
 						</mmlPsi:phones>
 					</mmlPsi:PersonalizedInfo>
-					<!-- À¸À®¼Ô¤Î»ñ³Ê -->
+					<!-- ç”Ÿæˆè€…ã®è³‡æ ¼ -->
 					<mmlCi:creatorLicense mmlCi:tableId="MML0026">
 						%M_RX2@@HIMOD@@_H1%
 					</mmlCi:creatorLicense>
 				</mmlCi:CreatorInfo>
 				%M_RX2@@HIMOD@@_I1%
 			</docInfo>
-			<!-- µ­ºÜÆâÍÆ -->
+			<!-- è¨˜è¼‰å†…å®¹ -->
 			<content>
 				<mmlHi:HealthInsuranceModule mmlHi:countryType="JPN">
-					<!-- ·ò¹¯ÊÝ¸±¼ïÊÌ -->
+					<!-- å¥åº·ä¿é™ºç¨®åˆ¥ -->
 					<mmlHi:insuranceClass%I_@@HIMOD@@_A2%%I_@@HIMOD@@_A3%>
 						%I_@@HIMOD@@_A1%
 					</mmlHi:insuranceClass>
-					<!-- ·ò¹¯ÊÝ¸±ÈÖ¹æ -->
+					<!-- å¥åº·ä¿é™ºç•ªå· -->
 					<mmlHi:insuranceNumber>%I_@@HIMOD@@_B1%</mmlHi:insuranceNumber>
-					<!-- ÈïÊÝ¸±¼Ô¾ðÊó -->
+					<!-- è¢«ä¿é™ºè€…æƒ…å ± -->
 					<mmlHi:clientId>
-						<!-- ÈïÊÝ¸±¼Ôµ­¹æ -->
+						<!-- è¢«ä¿é™ºè€…è¨˜å· -->
 						<mmlHi:group>%I_@@HIMOD@@_C1%</mmlHi:group>
-						<!-- ÈïÊÝ¸±¼Ô¾ðÊó -->
+						<!-- è¢«ä¿é™ºè€…æƒ…å ± -->
 						<mmlHi:number>%I_@@HIMOD@@_C2%</mmlHi:number>
 					</mmlHi:clientId>
-					<!-- ËÜ¿Í²ÈÂ²¶èÊ¬ -->
+					<!-- æœ¬äººå®¶æ—åŒºåˆ† -->
 					<mmlHi:familyClass>%I_@@HIMOD@@_D1%</mmlHi:familyClass>
-					<!-- ÈïÊÝ¸±¼Ô¾ðÊó -->
+					<!-- è¢«ä¿é™ºè€…æƒ…å ± -->
 					<mmlHi:clientInfo>
 					</mmlHi:clientInfo>
-					<!-- ·ÑÂ³¼À´µ¾ðÊó -->
-					<!-- ³«»ÏÆü¡Ê¸òÉÕÇ¯·îÆü¡Ë -->
+					<!-- ç¶™ç¶šç–¾æ‚£æƒ…å ± -->
+					<!-- é–‹å§‹æ—¥ï¼ˆäº¤ä»˜å¹´æœˆæ—¥ï¼‰ -->
 					<mmlHi:startDate>%I_@@HIMOD@@_E1%</mmlHi:startDate>
-					<!-- Í­¸ú´ü¸Â -->
+					<!-- æœ‰åŠ¹æœŸé™ -->
 					<mmlHi:expiredDate>%I_@@HIMOD@@_E2%</mmlHi:expiredDate>
-					<!-- Æþ±¡»þ¤ÎÉéÃ´Î¨ -->
+					<!-- å…¥é™¢æ™‚ã®è² æ‹…çŽ‡ -->
 					<mmlHi:paymentInRatio>%I_@@HIMOD@@_INRATIO%</mmlHi:paymentInRatio>
-					<!-- ³°Íè»þ¤ÎÉéÃ´Î¨ -->
+					<!-- å¤–æ¥æ™‚ã®è² æ‹…çŽ‡ -->
 					<mmlHi:paymentOutRatio>%I_@@HIMOD@@_OUTRATIO%</mmlHi:paymentOutRatio>
-					<!-- ÊÝ¸±¼Ô¾ðÊó -->
-					<!-- ÈïÊÝ¸±¼Ô¤Î½êÂ°¤¹¤ë»ö¶È½ê¾ðÊó -->
-					<!-- ¸øÈñÉéÃ´°åÎÅ¾ðÊó -->
+					<!-- ä¿é™ºè€…æƒ…å ± -->
+					<!-- è¢«ä¿é™ºè€…ã®æ‰€å±žã™ã‚‹äº‹æ¥­æ‰€æƒ…å ± -->
+					<!-- å…¬è²»è² æ‹…åŒ»ç™‚æƒ…å ± -->
 					<mmlHi:publicInsurance>
 
-<!-- ¸øÈñÉéÃ´°åÎÅ¾ðÊó[1-6] (·«¤êÊÖ¤·¤ÎºÝ¤Ë¡¢@@PIITEM@@¤Ë1¡Á6¤Î¿ô»ú¤¬Æþ¤Ã¤ÆÃÖ´¹¤µ¤ì¤ë) -->
+<!-- å…¬è²»è² æ‹…åŒ»ç™‚æƒ…å ±[1-6] (ç¹°ã‚Šè¿”ã—ã®éš›ã«ã€@@PIITEM@@ã«1ã€œ6ã®æ•°å­—ãŒå…¥ã£ã¦ç½®æ›ã•ã‚Œã‚‹) -->
 $Repeat, 6, @@PIITEM@@, 0
 
-						<!-- ¸øÈñÉéÃ´°åÎÅ¾ðÊó(@@PIITEM@@) -->
+						<!-- å…¬è²»è² æ‹…åŒ»ç™‚æƒ…å ±(@@PIITEM@@) -->
 						<mmlHi:publicInsuranceItem mmlHi:priority="%I_@@HIMOD@@_F@@PIITEM@@1%">
 							<mmlHi:providerName>%I_@@HIMOD@@_F@@PIITEM@@2%</mmlHi:providerName>
 							<mmlHi:provider>%I_@@HIMOD@@_F@@PIITEM@@3%</mmlHi:provider>
 							<mmlHi:recipient>%I_@@HIMOD@@_F@@PIITEM@@4%</mmlHi:recipient>
 							<mmlHi:startDate>%I_@@HIMOD@@_F@@PIITEM@@5%</mmlHi:startDate>
 							<mmlHi:expiredDate>%I_@@HIMOD@@_F@@PIITEM@@6%</mmlHi:expiredDate>
-							<!-- ÉéÃ´¶â¤Þ¤¿¤ÏÉéÃ´Î¨ -->
+							<!-- è² æ‹…é‡‘ã¾ãŸã¯è² æ‹…çŽ‡ -->
 							<mmlHi:paymentRatio%I_@@HIMOD@@_F@@PIITEM@@7%>%I_@@HIMOD@@_F@@PIITEM@@8%</mmlHi:paymentRatio>
 						</mmlHi:publicInsuranceItem>
 
 $EndRepeat
-<!-- ¸øÈñÉéÃ´°åÎÅ¾ðÊó End -->
+<!-- å…¬è²»è² æ‹…åŒ»ç™‚æƒ…å ± End -->
 
 					</mmlHi:publicInsurance>
 				</mmlHi:HealthInsuranceModule>
@@ -556,38 +556,38 @@ $EndRepeat
 		<!-- ............................................................ -->
 
 $EndRepeat
-<!-- ·ò¹¯ÊÝ¸±¾ðÊó End -->
+<!-- å¥åº·ä¿é™ºæƒ…å ± End -->
 
 
 		<!-- ============================================================ -->
-		<!-- Claim¾ðÊó -->
+		<!-- Claimæƒ…å ± -->
 		<MmlModuleItem>
 			<docInfo contentModuleType="claim">
-				<!-- ¥¢¥¯¥»¥¹¸¢¼ïÊÌ -->
+				<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨©ç¨®åˆ¥ -->
 				<securityLevel>
-					<!-- ¥¢¥¯¥»¥¹¸¢ -->
+					<!-- ã‚¢ã‚¯ã‚»ã‚¹æ¨© -->
 					%M_RI301_ACC1%
 					<!-- %M_RI301_ACC2% -->
 				</securityLevel>
-				<!-- Ê¸½ñ¥¿¥¤¥È¥ë -->
+				<!-- æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ« -->
 				<title>
 					%M_RI301_TITLE%
 				</title>
-				<!-- Ê¸½ñID¾ðÊó -->
+				<!-- æ–‡æ›¸IDæƒ…å ± -->
 				<docId>
 					<uid>%M_RI301_UI%</uid>
 				</docId>
-				<!-- ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü -->
+				<!-- ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥ -->
 				<confirmDate>%M_RI301_KD%</confirmDate>
-				<!-- ºîÀ®¼Ô¾ðÊó -->
+				<!-- ä½œæˆè€…æƒ…å ± -->
 				<!--  -->
 				<mmlCi:CreatorInfo>
 					<mmlPsi:PersonalizedInfo>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍID (¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥È¤Ï¡¢¤Ï¤º¤·¤Æ¤¤¤Þ¤¹) -->
+						<!-- ä½œæˆè€… å€‹äººID (ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆã¯ã€ã¯ãšã—ã¦ã„ã¾ã™) -->
 						<mmlCm:Id mmlCm:type="facility" mmlCm:tableId="MML0024">
 							%M_RX301_A%
 						</mmlCm:Id>
-						<!-- ºîÀ®¼Ô ¸Ä¿ÍÌ¾¾ðÊó -->
+						<!-- ä½œæˆè€… å€‹äººåæƒ…å ± -->
 						<mmlPsi:personName>
 							<mmlNm:Name mmlNm:repCode="I" mmlNm:tableId="MML0025">
 								<mmlNm:fullname>%M_RX301_B11%</mmlNm:fullname>
@@ -598,17 +598,17 @@ $EndRepeat
 								<mmlNm:degree>%M_RX301_B16%</mmlNm:degree>
 							</mmlNm:Name>
 						</mmlPsi:personName>
-						<!-- »ÜÀß¾ðÊó -->
+						<!-- æ–½è¨­æƒ…å ± -->
 						<mmlFc:Facility>
 							<mmlFc:name mmlFc:repCode="I" mmlFc:tableId="MML0025">
 								%M_RX301_C11%
 							</mmlFc:name>
-							<!-- insurance»ØÄê¤¬¤¢¤ë¾ì¹ç¡¢¼¡¤ÎID¥³¡¼¥É¤Ï¡¢ÊÝ¸±°åÎÅµ¡´Ø¥³¡¼¥É¤ò¥»¥Ã¥È¤·¤Þ¤¹ -->
+							<!-- insuranceæŒ‡å®šãŒã‚ã‚‹å ´åˆã€æ¬¡ã®IDã‚³ãƒ¼ãƒ‰ã¯ã€ä¿é™ºåŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ã‚’ã‚»ãƒƒãƒˆã—ã¾ã™ -->
 							<mmlCm:Id mmlCm:type="insurance" mmlCm:tableId="MML0027">
 								%M_RX301_C2%
 							</mmlCm:Id>
 						</mmlFc:Facility>
-						<!-- ¿ÇÎÅ²Ê¾ðÊó -->
+						<!-- è¨ºç™‚ç§‘æƒ…å ± -->
 						<mmlDp:Department>
 							<mmlDp:name mmlDp:repCode="I" mmlDp:tableId="MML0025">
 								%M_RX301_D11%
@@ -617,7 +617,7 @@ $EndRepeat
 								%M_RX301_D2%
 							</mmlCm:Id>
 						</mmlDp:Department>
-						<!-- ½»½ê¾ðÊó -->
+						<!-- ä½æ‰€æƒ…å ± -->
 						<mmlPsi:addresses>
 							<mmlAd:Address mmlAd:repCode="I"%M_RX301_E18% mmlAd:tableId="MML0025">
 								<mmlAd:full>
@@ -643,11 +643,11 @@ $EndRepeat
 								</mmlAd:countryCode>
 							</mmlAd:Address>
 						</mmlPsi:addresses>
-						<!-- ¥á¡¼¥ë¥¢¥É¥ì¥¹ -->
+						<!-- ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ -->
 						<mmlPsi:emailAddresses>
 							<mmlCm:email>%M_RX301_F1%</mmlCm:email>
 						</mmlPsi:emailAddresses>
-						<!-- ÅÅÏÃÈÖ¹æ -->
+						<!-- é›»è©±ç•ªå· -->
 						<mmlPsi:phones>
 							<mmlPh:Phone%M_RX301_G17%>
 								<mmlPh:area>
@@ -671,69 +671,69 @@ $EndRepeat
 							</mmlPh:Phone>
 						</mmlPsi:phones>
 					</mmlPsi:PersonalizedInfo>
-					<!-- À¸À®¼Ô¤Î»ñ³Ê -->
+					<!-- ç”Ÿæˆè€…ã®è³‡æ ¼ -->
 					<mmlCi:creatorLicense mmlCi:tableId="MML0026">
 						%M_RX301_H1%
 					</mmlCi:creatorLicense>
 				</mmlCi:CreatorInfo>
 				%M_RX301_I1%
 			</docInfo>
-			<!-- µ­ºÜÆâÍÆ -->
+			<!-- è¨˜è¼‰å†…å®¹ -->
 			<content>
 				<claim:ClaimModule>
-					<!-- ÀÁµá¥Ø¥Ã¥À¾ðÊó -->
+					<!-- è«‹æ±‚ãƒ˜ãƒƒãƒ€æƒ…å ± -->
 					<claim:information%C_A1%%C_A2%%C_A3%%C_A4%%C_A5%%C_A6%>
-						<!-- Í½Ìó¾ðÊó -->
+						<!-- äºˆç´„æƒ…å ± -->
 						<claim:appoint>
-							<!-- Í½Ìó -->
+							<!-- äºˆç´„ -->
 							<claim:appName%C_B2%%C_B3%>
 								%C_B1%
 							</claim:appName>
-							<!-- Í½Ìó¥á¥â -->
+							<!-- äºˆç´„ãƒ¡ãƒ¢ -->
 							<claim:memo>
 								%C_B4%
 							</claim:memo>
 						</claim:appoint>
-						<!-- ¿ÇÎÅ¼Â»Ü²Ê -->
+						<!-- è¨ºç™‚å®Ÿæ–½ç§‘ -->
 						<claim:patientDepartment>
 							<mmlDp:Department>
-								<!-- ¿ÇÎÅ²ÊÌ¾¾Î -->
+								<!-- è¨ºç™‚ç§‘åç§° -->
 								<mmlDp:name mmlDp:repCode="%C_C2%" mmlDp:tableId="MML0025">
 									%C_C1%
 								</mmlDp:name>
-								<!-- ¿ÇÎÅ²ÊID -->
+								<!-- è¨ºç™‚ç§‘ID -->
 								<mmlCm:Id mmlCm:type="%C_C4%" mmlCm:tableId="MML0029">
 									%C_C3%
 								</mmlCm:Id>
 							</mmlDp:Department>
 						</claim:patientDepartment>
-						<!-- ¿ÇÎÅ¼Â»ÜÉÂÅï -->
+						<!-- è¨ºç™‚å®Ÿæ–½ç—…æ£Ÿ -->
 						<claim:patientWard>
 							<mmlDp:Department>
-								<!-- ÉÂÅï¿ÇÎÅ²ÊÌ¾¾Î -->
+								<!-- ç—…æ£Ÿè¨ºç™‚ç§‘åç§° -->
 								<mmlDp:name mmlDp:repCode="%C_D2%" mmlDp:tableId="MML0025">
 									%C_D1%
 								</mmlDp:name>
-								<!-- ÉÂÅï¿ÇÎÅ²ÊID -->
+								<!-- ç—…æ£Ÿè¨ºç™‚ç§‘ID -->
 								<mmlCm:Id mmlCm:type="%C_D4%" mmlCm:tableId="MML0029">
 									%C_D3%
 								</mmlCm:Id>
 							</mmlDp:Department>
 						</claim:patientWard>
-						<!-- ·ò¹¯ÊÝ¸±¼ïÊÌ (¼õÉÕ¤Ç¤ÏÆþ¤ì¤ë¤³¤È¤Ï¤Ê¤¤) -->
+						<!-- å¥åº·ä¿é™ºç¨®åˆ¥ (å—ä»˜ã§ã¯å…¥ã‚Œã‚‹ã“ã¨ã¯ãªã„) -->
 					</claim:information>
-					<!-- ¿ÇÎÅ³ç¤ê¥»¥¯¥·¥ç¥ó -->
+					<!-- è¨ºç™‚æ‹¬ã‚Šã‚»ã‚¯ã‚·ãƒ§ãƒ³ -->
 					<claim:bundle%C_E1% claim:classCodeId="Claim007">
-						<!-- ¿ÇÎÅ¹Ô°Ù¶èÊ¬Ì¾ -->
-						<claim:className>¿ÇÎÅÎÁ</claim:className>
-						<!-- ²ó¿ô¤â¤·¤¯¤ÏÆü¿ô -->
+						<!-- è¨ºç™‚è¡Œç‚ºåŒºåˆ†å -->
+						<claim:className>è¨ºç™‚æ–™</claim:className>
+						<!-- å›žæ•°ã‚‚ã—ãã¯æ—¥æ•° -->
 						<claim:bundleNumber>1</claim:bundleNumber>
-						<!-- ¿ÇÎÅ¹àÌÜ¥»¥¯¥·¥ç¥ó -->
+						<!-- è¨ºç™‚é …ç›®ã‚»ã‚¯ã‚·ãƒ§ãƒ³ -->
 						<claim:item claim:subclassCode="0" claim:subclassCodeId="Claim003"%C_E2%%C_E3%>
-							<!-- °å»öÀÁµáÌ¾¾Î -->
+							<!-- åŒ»äº‹è«‹æ±‚åç§° -->
 							<claim:name>%C_E4%</claim:name>
 						</claim:item>
-							<!-- ¼õÉÕ¥á¥â -->
+							<!-- å—ä»˜ãƒ¡ãƒ¢ -->
 						<claim:memo>
 							%C_F1%
 						</claim:memo>

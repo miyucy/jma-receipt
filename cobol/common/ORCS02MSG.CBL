@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCS02MSG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ��ô��׻����֥��顼��å������Խ�
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  13/01/28    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : 負担金計算サブエラーメッセージ編集
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  13/01/28    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -49,7 +49,7 @@
            .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -60,176 +60,176 @@
            WHEN    ZERO
                CONTINUE
            WHEN    13
-               STRING  "�ౡ�׻���ɬ�פʲ�׾��󤬺�������Ƥ��ޤ���"
+               STRING  "退院計算に必要な会計情報が作成されていません"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    14
-               STRING  "�������Ȱۤʤ��ݸ����������û�������ޤ�"
+               STRING  "入院料と異なる保険の入院料加算があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    15
-               STRING  "���������������û������ꤵ��Ƥ��ޤ�"
+               STRING  "外泊日に入院料加算が算定されています"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    16
-               STRING  "�������λ��̵꤬�������������û���"
+               STRING  "入院料の算定が無い日に入院料加算が"
                                            DELIMITED   BY  SIZE
-                       "���ꤵ��Ƥ��ޤ�"
+                       "算定されています"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    17
-               STRING  "��������ͭ�����֤��ڤ�Ƥ��ޤ�"
+               STRING  "入院料の有効期間が切れています"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    18
-               STRING  "�ݸ��ȹ礻��ͭ�����֤��ڤ�Ƥ��ޤ�"
+               STRING  "保険組合せの有効期間が切れています"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    19
-               STRING  "��������μ�������ʬ��������"
+               STRING  "包括点数の治験減点分の点数を"
                                            DELIMITED   BY  SIZE
-                       "��ǧ���Ƥ�������"
+                       "確認してください"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    20
-               STRING  "���������˸��꤬����ޤ���"
+               STRING  "入院点数に誤りがあります。"
                                            DELIMITED   BY  SIZE
-                       "��ư�����򤷤Ƥ�������"
+                       "異動処理をしてください"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    21
-               STRING  "�ߵ������������λ�������"
+               STRING  "救急搬送診療料の算定日に"
                                            DELIMITED   BY  SIZE
-                       "�������ʲû��ˤλ��꤬����ޤ�"
+                       "入院料（加算）の算定があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    22
-               STRING  "¾����ǡʳ���ˤ����Ϥ˸��꤬����ޤ�"
+               STRING  "他医受診（外泊）の入力に誤りがあります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    23
-               STRING  "Ʊ�����������˼��������ꥳ����"
+               STRING  "同日再入院日に実日数算定コード"
                                            DELIMITED   BY  SIZE
-                       "�����Ϥ��Ƥ�������"
+                       "を入力してください"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    24
-               STRING  "Ʊ�����������κ�����ʬ���������û�"
+               STRING  "同日再入院日の再入院分に入院料加算"
                                            DELIMITED   BY  SIZE
-                       "�����ꤵ��Ƥ��ޤ�"
+                       "が算定されています"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    25
-               STRING  "���������������ǧ���Ƥ�������"
+               STRING  "薬剤料減点数を確認してください"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    26
-               STRING  "��������ౡ�����ʳ���ˤ����Ϥ˸��꤬����ޤ�"
+               STRING  "特定時間退院減算（外泊）の入力に誤りがあります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    27
-               STRING  "�����������ౡ�����ʳ���ˤ����Ϥ�"
+               STRING  "特定曜日入退院減算（外泊）の入力に"
                                            DELIMITED   BY  SIZE
-                       "���꤬����ޤ�"
+                       "誤りがあります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    29
-               STRING  "�������������ܡʣ��˻���������̿�"
+               STRING  "入院時食事療養（２）算定時に特別食"
                                            DELIMITED   BY  SIZE
-                       "�û��λ��꤬����ޤ�"
+                       "加算の算定があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    30
-               STRING  "�ݸ��ȹ礻�ο���¿�����ޤ�"
+               STRING  "保険組合せの数が多すぎます"
                                            DELIMITED   BY  SPACE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    31
-               STRING  "�������������ܡʣ��˻������ήư��"
+               STRING  "入院時生活療養（２）算定時に流動食"
                                            DELIMITED   BY  SIZE
-                       "�����Ϥ�����ޤ�"
+                       "の入力があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    33
-               STRING  "��������������������������ܡפ�̤����Ǥ�"
+               STRING  "入院基本設定「入院時食事療養」が未設定です"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    34
-               STRING  "Ŭ�ѤǤ��ʤ�������������Ϥ�����ޤ�"
+               STRING  "適用できない低所得１の入力があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    35
-               STRING  "Ʊ�����˿����ݸ����ꥳ���ɤ����Ϥ�"
-                       "����ʾ夢��ޤ�"  DELIMITED   BY  SIZE
+               STRING  "同一日に食事保険指定コードの入力が"
+                       "２件以上あります"  DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    36
-               STRING  "�����ݸ����ꥳ���ɤ��������˿����λ���"
-                       "������ޤ���"      DELIMITED   BY  SIZE
+               STRING  "食事保険指定コードの入力日に食事の算定"
+                       "がありません"      DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    37
-               STRING  "�ݸ��ȹ礻��¸�ߤ��ޤ���"
+               STRING  "保険組合せが存在しません"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    38
-               STRING  "���������ι�פ���¤�Ķ���ޤ�"
+               STRING  "請求点数の合計が上限を超えます"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    39
-               STRING  "�ݸ�����ۤι�פ���¤�Ķ���ޤ�"
+               STRING  "保険外金額の合計が上限を超えます"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    40
-               STRING  "��ô���׻��ۤ���¤�Ķ���ޤ�"
+               STRING  "負担割合計算額が上限を超えます"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    41
-               STRING  "���������ۤ���¤�Ķ���ޤ�"
+               STRING  "今回請求金額が上限を超えます"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    42
-               STRING  "�������¾��ۿ�����ô�����֤��оݥ����ɤ�"
+               STRING  "【精神病床】食事負担据え置き対象コードの"
                                            DELIMITED   BY  SIZE
-                       "�������Ϥ��ǧ"
+                       "診療入力を確認"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    43
-               STRING  "���������ʬ�׻����Ƚ�����ʬ���ۤʤ�ޤ�"
+               STRING  "当月請求済分計算時と所得区分が異なります"
                                            DELIMITED   BY  SIZE
-                       "���׳�ǧ��"
+                       "（要確認）"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING
            WHEN    101
-               STRING  "����������֤˻���Ǥ��ʤ��������û�"
+               STRING  "包括入院期間に算定できない入院料加算"
                                            DELIMITED   BY  SIZE
-                       "�λ��꤬����ޤ�"
+                       "の算定があります"
                                            DELIMITED   BY  SIZE
                INTO    WRK-MSG (1)
                END-STRING

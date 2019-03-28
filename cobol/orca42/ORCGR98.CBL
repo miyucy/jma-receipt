@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,65 +19,65 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGR98.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �쥻�ץȺ���-�����ݸ�ޤȤ����ϡʣң�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : レセプト作成-生活保護まとめ入力（Ｒ９８）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *                                     ����
-      *��������ǽ�ɲá�
-      *  01.00.01    NACL-ƣ��    02/12/11  ������ʬ�ɲ� 
-      *  01.00.02    NACL-ƣ��    03/01/14  ������פ��ɹ��ɲ�
-      *                                     ������ʬ��ɽ���ɲ� 
-      *  01.00.03   NACL-ƣ��     03/01/20  ����������ֹ��������ʬ���ɲ�
-      *  01.00.04   NACL-ƣ��     03/07/07  ����γ������������Ǥ��оݤ�
-      *                                     �ʤ�褦�˽���
-      *  01.00.05   NACL-ƣ��     04/01/09  ������ֹ�Υ����å���ޥ�������
-      *                                     �ˤ��Ԥʤ�
-      *  01.00.06   NACL-����     04/01/14  ���Ź԰٤����ʬ�Ͻ���
-      *                                     SRYACCT9��30
-      *  01.00.07   NACL-ƣ��     04/07/12  ��ô���ֹ桦�����ֹ���ɽ���ˤ���
-      *                                     ��������ݸ��ȹ礻�μ��ݸ���
-      *                                     �����å����ɲä���
-      *  01.00.08   NACL-ƣ��     04/07/15  ���Ų�ץơ��֥���ɤ߹��ߤ�
-      *                                     ���롼�ײ����ѹ�
-      *                                     SRYACCT30��37
-      *                                     ��פ�Ĥ���������ä�Ԥä�
-      *                                     �ޤޤ�������פ��оݤȤ��ʤ�
-      *  01.00.09   NACL-ƣ��     04/08/20  Ϣ�֤��ɲ�
-      *                                     �쥻�ץȤ˶���Ǽ�����ֹ椬
-      *                                     ���ܤ���봵�Ԥ���ɽ���Ǥ���
-      *                                     �褦�˥ܥ�����ɲ� 
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *                                     修正
+      *　入院機能追加　
+      *  01.00.01    NACL-藤原    02/12/11  入外区分追加 
+      *  01.00.02    NACL-藤原    03/01/14  入院会計の読込追加
+      *                                     入外区分の表示追加 
+      *  01.00.03   NACL-藤原     03/01/20  月代り受給者番号に入外区分を追加
+      *  01.00.04   NACL-藤原     03/07/07  公費の開始日が末日でも対象と
+      *                                     なるように修正
+      *  01.00.05   NACL-藤原     04/01/09  受給者番号のチェックをマスタ設定
+      *                                     により行なう
+      *  01.00.06   NACL-門脇     04/01/14  診療行為の包括分は除く
+      *                                     SRYACCT9→30
+      *  01.00.07   NACL-藤原     04/07/12  負担者番号・患者番号順の表示にする
+      *                                     該当月の保険組合せの主保険の
+      *                                     チェックを追加する
+      *  01.00.08   NACL-藤原     04/07/15  診療会計テーブルの読み込みを
+      *                                     グループ化に変更
+      *                                     SRYACCT30→37
+      *                                     会計を残して入院取消を行った
+      *                                     ままの入院会計は対象としない
+      *  01.00.09   NACL-藤原     04/08/20  連番の追加
+      *                                     レセプトに空白で受給者番号が
+      *                                     記載される患者だけ表示できる
+      *                                     ようにボタンを追加 
       *
-      *  02.07.01    NACL-ƣ��    05/10/31  MONFUNC�б�
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *
-      *  03.04.01    NACL-ƣ��    06/10/31  ������ֹ�ٹ�����å����ɲ�
-      *  03.04.02    NACL-ƣ��    07/02/06  ������μ�����ֹ��ѹ����б�
+      *  03.04.01    NACL-藤原    06/10/31  受給者番号警告チェックを追加
+      *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.02.01    NACL-ƣ��    08/03/25  ʿ������ǯ��������б�
-      *                                     ����αˡ�������ɲ�
-      *  04.02.02    NACL-ƣ��    08/03/31  �����쥻�ץ��б�
-      *  04.02.03    NACL-ƣ��    08/04/14  ���������ô���ֹ��ѹ��б�
-      *                                     ������αˡ�����θ���ñ�ȡ�
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *                                     中国残留法人等の追加
+      *  04.02.02    NACL-藤原    08/03/31  公害レセプト対応
+      *  04.02.03    NACL-藤原    08/04/14  月途中の負担者番号変更対応
+      *                                     （中国残留法人等の公費単独）
       * 
-      *  04.04.01    NACL-ƣ��    09/04/10  �������˺��������������ʤ�  
-      *                                     ������ֹ���ѹ����ʤ��ǡ���
-      *                                     �Ϲ������ʤ�
+      *  04.04.01    NACL-藤原    09/04/10  更新時に作成日を初期化しない  
+      *                                     受給者番号に変更がないデータ
+      *                                     は更新しない
       * 
-      *  04.05.01    NACL-ƣ��    09/08/17  �������ޤȤ����ϲ���ɽ����
-      *                                     �����б�
+      *  04.05.01    NACL-藤原    09/08/17  生保等まとめ入力画面表示順
+      *                                     設定対応
       *
-      *  04.06.01    NACL-ƣ��    12/09/27  �����ݸ���ֽ�ʣ�б�
+      *  04.06.01    NACL-藤原    12/09/27  生活保護期間重複対応
       *
-      *  04.08.01    NACL-ƣ��    18/06/18  ��������OPID ����
+      *  04.08.01    NACL-藤原    18/06/18  更新時のOPID 設定
       *
-      *  05.00.01    NACL-ƣ��    19/02/15  Warning �б�
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -90,16 +90,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �쥻�ץȺ����ؼ����̥ѥ�᥿
+      *    レセプト作成指示共通パラメタ
            COPY    "R01COMMON-SPA".
       *
       *   
            COPY    "ENUM-VALUE".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-R98.
            03  SPA-R98-AREA.
                05  SPA-GMN-MAX                     PIC 9(04).
@@ -133,19 +133,19 @@
                                13  SPA-NAI-JKYSNUM-CHK
                                                    PIC 9(01).
                                13  SPA-NAI-TKOHNUM PIC X(03).
-      *            ɽ���ե饰(1:���Ρ�2:̤����ʬ)
+      *            表示フラグ(1:全体、2:未入力分)
                    07  SPA-NAI-HYOUJIFLG           PIC 9(01).
-      *           ����Ը����ֹ�����å���ʬ
+      *           受給者検証番号チェック区分
                    07  SPA-NAI-JKYSKENSNUMCHKKBN   PIC X(01).
-      *           ����Ը����ֹ�����å���ʬ������αˮ������
+      *           受給者検証番号チェック区分（中国残留邦人等）
                    07  SPA-NAI-025-JKYSKENSNUMCHKKBN
                                                    PIC X(01).
-      *            �������ޤȤ����ϲ���ɽ����
+      *            生保等まとめ入力画面表示順
                    07  SPA-NAI-200501-SEIHO-DSPKBN PIC X(01).
-      *        ���Ϲ���̾
+      *        入力項目名
                05  SPA-MCP-WIDGET                  PIC X(64).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -162,7 +162,7 @@
            03  FLG-ZAISKBKBN       PIC 9(01). 
            03  FLG-TOUROKU         PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -180,7 +180,7 @@
                05  KEY-O-PTID      PIC 9(10).
                05  KEY-O-HKNCOMBI  PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
@@ -224,26 +224,26 @@
       *    
            03  WRK-LINE-MAX        PIC 9(02)   VALUE   25.
            03  WRK-PAGE-MAX        PIC 9(02)   VALUE   40. 
-      *    �����ݸ��ݸ��ֹ� 
+      *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
       *    
-      *    ����αˮ�����ݸ��ֹ� 
+      *    中国残留邦人等保険番号 
            03  WRK-CONS-ZANRYUU-HKNNUM
                                    PIC X(03)   VALUE   "025". 
       *
-      *    ϫ���ݸ��ֹ� 
+      *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM
                                    PIC X(03)   VALUE   "971". 
       *
-      *    �������ݸ��ֹ� 
+      *    自賠責保険番号 
            03  WRK-CONS-JIBAISEKI-HKNNUM
                                    PIC X(03)   VALUE   "973". 
-      *    �����ݸ��ֹ� 
+      *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM
                                    PIC X(03)   VALUE   "975".
       *
-      *    ����ִ����ģ¤Υ�����  
+      *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   1.
@@ -251,77 +251,77 @@
            COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    �����������ֹ�
+      *    月代わり受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �������
+      *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �ݸ�����
+      *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �쥻�ץȰ�������
+      *    レセプト印刷情報
            COPY    "CPSK200501.INC"
                                    REPLACING  //SYS-200501//
                                    BY         //SYS-25//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����å��ǥ��å�
+      *   チェックデジット
            COPY    "CPORCCHKDGT.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *     
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -340,7 +340,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -354,15 +354,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -375,24 +375,24 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "RERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -412,12 +412,12 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    SPA-MOTOPG
-      *    ��ɽ����
+      *    作表処理
                WHEN    "RID1"
                    PERFORM 330-RID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
@@ -430,13 +430,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE              SPA-R98-AREA
       *
-      *    �оݿ���ǯ��
+      *    対象診療年月
            IF      SPA-SYSYMD(7:2)     >   "10"
                MOVE    SPA-SYSYMD(1:6)     TO  SPA-NAI-SRYYM
            ELSE
@@ -451,7 +451,7 @@
                MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-SRYYM
            END-IF
       *
-      *    �쥻�ץȡ������Խ�����
+      *    レセプト・総括編集情報
            MOVE    SPACE               TO  SYS-25-REC
            INITIALIZE                      SYS-25-REC
            MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
@@ -483,11 +483,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ŷ�����ݡ�����αˮ�����δ��Ծ����Խ�����
+      *    該当診療月の生保・中国残留邦人等の患者情報編集処理
       *****************************************************************
        3101-SEH-HENSYU-SEC         SECTION.
       *
-      *    ����Ը����ֹ�����å���ʬ�����ݡ�
+      *    受給者検証番号チェック区分（生保）
            INITIALIZE                  HKNNUM-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
            MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -501,7 +501,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
            MOVE    HKN-JKYSKENSNUMCHKKBN
                                    TO  SPA-NAI-JKYSKENSNUMCHKKBN
       *
-      *    ����Ը����ֹ�����å���ʬ������αˮ������
+      *    受給者検証番号チェック区分（中国残留邦人等）
            INITIALIZE                  HKNNUM-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
            MOVE    WRK-CONS-ZANRYUU-HKNNUM
@@ -523,24 +523,24 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
                                        SPA-GMN-CUR
                                        SPA-GMN-MAX                                
       *
-      *    �оݿ���ǯ��
+      *    対象診療年月
            MOVE    SPA-NAI-SRYYM   TO  WRK-SYMD (1:6)
            MOVE    "01"            TO  WRK-SYMD (7:2)  
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG3 (1:16)
                                    TO  SPA-GMN-SRYYMH (1:16)
-           MOVE    "ʬ"            TO  SPA-GMN-SRYYMH (17:2)
+           MOVE    "分"            TO  SPA-GMN-SRYYMH (17:2)
            MOVE    WRK-HENYMDG1 (1:6)
                                    TO  SPA-GMN-SRYYM
-      *    ������ʬ
+      *    入外区分
            EVALUATE    SPA-R01-NYUGAIKBN
                WHEN    "1"
-                   MOVE    "����"      TO  SPA-GMN-SRYYMH (21:)
+                   MOVE    "入院"      TO  SPA-GMN-SRYYMH (21:)
                WHEN    "2"
-                   MOVE    "������"    TO  SPA-GMN-SRYYMH (21:)
+                   MOVE    "入院外"    TO  SPA-GMN-SRYYMH (21:)
            END-EVALUATE
       *
-      *    ����ǯ������ݡ�����αˮ������ͭ���ʴ���
+      *    診療年月に生保・中国残留邦人等が有効な患者
            INITIALIZE                  PTKOHINF-REC                            
 grpsys     MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
       *****MOVE    WRK-CONS-SEIHO-HKNNUM
@@ -579,13 +579,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                MOVE    1               TO  FLG-PTKOHINF
            END-IF
       *
-      *    ��������ݡ�����αˮ�����оݤο��Ź԰٤����뤫
+      *    今月に生保・中国残留邦人等対象の診療行為があるか
            PERFORM UNTIL       FLG-PTKOHINF    =   1
       *
                MOVE    ZERO                TO  FLG-SEIHO
                                                FLG-ZAISKBKBN
       *
-      *        ���Ų���ɤ߹���
+      *        診療会計読み込み
                INITIALIZE                  SRYACCT-REC
 grpsys         MOVE    SPA-HOSPNUM     TO  ACCT-HOSPNUM
                MOVE    SPA-NAI-SRYYM   TO  ACCT-SRYYM
@@ -607,7 +607,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  ACCT-HOSPNUM
                END-IF
       *
                PERFORM UNTIL       FLG-SRYACCT     =   1
-      *            �ݸ��ȹ礻�ɹ���
+      *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
 grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                    MOVE    PTKOH-PTID          TO  COMB-PTID
@@ -660,12 +660,12 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                        END-PERFORM    
                    END-IF         
                END-PERFORM
-      *        �������륯������
+      *        カーソルクロース
                MOVE    "tbl_sryacct"   TO  MCP-TABLE
                MOVE    "key37"         TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
-      *        ��������ɤ߹��ߡʴ��ܡ�
+      *        入院会計読み込み（基本）
                IF    ( SPA-R01-NYUGAIKBN    =   "1"  )
                AND   ( FLG-SEIHO            =   ZERO )
                    INITIALIZE                  NYUINACCT-REC
@@ -691,7 +691,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
                        IF      NACCT-ZAISKBKBN     =   "1"
                            MOVE    1                   TO  FLG-ZAISKBKBN
                        END-IF
-      *                �ݸ��ȹ礻�ɹ���
+      *                保険組合せ読込み
                        IF    ( NACCT-ZAISKBKBN     =   "5" )
                        AND   ( FLG-ZAISKBKBN       =   1   )
                            PERFORM VARYING IDXX    FROM    1   BY  1
@@ -753,7 +753,7 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                            PERFORM  900-NYUINACCT-READ-SEC
                        END-IF
                    END-PERFORM    
-      *            �������륯������
+      *            カーソルクロース
                    MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
                    MOVE    "key14"             TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
@@ -764,14 +764,14 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                        TO  WRK-MCP-PATHNAME
                PERFORM 910-PTKOHINF-NEXT-SEC
            END-PERFORM                                 
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
            MOVE    WRK-PTKOHINF-MCP-PATHNAME
                                    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *    ������                 
+      *    現在頁                 
            MOVE    1               TO  SPA-GMN-PAGE
-      *    ������
+      *    最大頁
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    1                   TO  SPA-GMN-MAX-PAGE
            ELSE    
@@ -780,10 +780,10 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                                 -   1            )
                                                /   WRK-LINE-MAX
            END-IF                                      
-      *    ���������ݡ�����αˮ�������Ԥ��ʤ��Ȥ�
+      *    該当の生保・中国残留邦人等患者がないとき
            IF      SPA-GMN-MAX     =    ZERO
                MOVE    98              TO  SPA-GMN-CUR
-               MOVE    "�������Ԥʤ�"  TO  SPA-GMN-TNAME (1 1)
+               MOVE    "該当患者なし"  TO  SPA-GMN-TNAME (1 1)
            ELSE         
                MOVE    2               TO  SPA-GMN-CUR
            END-IF    
@@ -793,7 +793,7 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ�������Խ�����
+      *    患者情報画面編集処理
       *****************************************************************
        31011-SEH-GMN-HENSYU-SEC         SECTION.
       *
@@ -885,7 +885,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣãɣģ��ˣϣ˽���
+      *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
        330-RID1-SET-SEC            SECTION.
       *
@@ -917,31 +917,31 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *        ����ʬ 
+      *        前月分 
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-BACK-MONTH-MAE-SEC
-      *        ���� 
+      *        前頁 
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-BACK-PAGE-SEC
-      *        ���� 
+      *        次頁 
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-NEXT-PAGE-SEC
-      *        ����ʬ 
+      *        次月分 
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 480-NEXT-MONTH-MAE-SEC
-      *        ɽ������ 
+      *        表示切替 
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-HYOUJI-CHANGE-SEC
-      *        ��Ͽ
+      *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-TOUROKU-MAE-SEC
            END-EVALUATE
@@ -950,15 +950,15 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
            MOVE    ZERO                TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            .
       *
@@ -966,7 +966,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        400-GMN-INPUT-SEC          SECTION.
       *
@@ -979,22 +979,22 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å�
+      *    基本チェック
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       =   SPACE 
-      *        ��Ϣ�����å�
+      *        関連チェック
       *****    PERFORM 4103-KANREN-CHK-SEC
       *        IF      SPA-ERRCD       NOT =   SPACE 
       *            GO  TO  410-INPUT-CHK-EXT
       *****    END-IF
       *
-      *        ��Ͽ����ɬ�����ϥ����å�
+      *        登録時、必須入力チェック
                IF      FLG-TOUROKU         =   1
       *****        PERFORM 4109-TOUROKU-CHK-SEC
                    IF      SPA-ERRCD           =   SPACE
@@ -1008,7 +1008,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
@@ -1016,9 +1016,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *       
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       25
-      *        �����ֹ�
+      *        患者番号
       *********MOVE    R98-PTNUM (IDX) TO  SPA-GMN-TPTNUM   (IDX1 IDX)
-      *        ������ֹ�         
+      *        受給者番号         
                MOVE    R98-JKYSNUM (IDX) 
                                        TO  SPA-GMN-TJKYSNUM (IDX1 IDX)
            END-PERFORM
@@ -1028,7 +1028,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
@@ -1036,12 +1036,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *     
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       25
-      *        �����ֹ�
+      *        患者番号
       *****    PERFORM 41021-PTNUM-CHK-SEC
       *        IF      SPA-ERRCD       NOT =   SPACE 
       *            GO  TO  4102-KIHON-CHK-EXT
       *****    END-IF
-      *        ������ֹ�         
+      *        受給者番号         
                PERFORM 41023-JKYSNUM-CHK-SEC
                IF      SPA-ERRCD       NOT =   SPACE 
                    GO      TO      4102-KIHON-CHK-EXT
@@ -1053,7 +1053,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�����å�����
+      *    患者番号チェック処理
       *****************************************************************
        41021-PTNUM-CHK-SEC            SECTION.
       *
@@ -1080,7 +1080,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                    MOVE    SPTID-PTNUM     TO  SPA-GMN-TPTNUM (IDX1 IDX)
                    MOVE    SPTID-PTID      TO  SPA-NAI-TPTID  (IDX1 IDX)
       *
-      *            ���ԥޥ�����¸�ߥ����å�
+      *            患者マスター存在チェック
 grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    MOVE    SPA-NAI-TPTID (IDX1 IDX)
                                            TO  PTINF-PTID
@@ -1098,7 +1098,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������ֹ����Ͻ���
+      *    受給者番号入力処理
       *****************************************************************
        41023-JKYSNUM-CHK-SEC                SECTION.
       *
@@ -1108,18 +1108,18 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                IF      SPA-NAI-TPTID (IDX1 IDX)    =   ZERO
                    MOVE    "0009"                  TO  SPA-ERRCD
                ELSE
-      *            Ⱦ�ѡ����ѤΥ����å��ȷ��Ƚ��
+      *            半角・全角のチェックと桁数判定
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"                 TO  KANACHK-SYORI
                    MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
                                                TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"       USING
                                                ORCSKANACHKAREA
-      *            Ⱦ�ѡ����Ѻ��ߥ��顼
+      *            半角・全角混在エラー
                    IF      KANACHK-RC      NOT =   ZERO
                        MOVE    "0007"              TO  SPA-ERRCD
                    ELSE
-      *                ����ʸ�����顼
+      *                入力文字エラー
                        IF      KANACHK-RC2     NOT =   ZERO
                            MOVE    "0008"              TO  SPA-ERRCD
                        END-IF
@@ -1129,7 +1129,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    END-IF
                END-IF    
       *
-      *        ����Ը����ֹ�����å���ʬ�������å�
+      *        受給者検証番号チェック区分よりチェック
                IF    ( SPA-ERRCD       =   SPACE        )
                  EVALUATE    SPA-NAI-TKOHNUM (IDX1 IDX)
                    WHEN    WRK-CONS-SEIHO-HKNNUM
@@ -1190,19 +1190,19 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��Ϣ�����å�����
+      *    関連チェック処理
       *****************************************************************
        4103-KANREN-CHK-SEC             SECTION.
       *
            MOVE    SPA-GMN-PAGE        TO  IDX1
       *
-      *    �����ֹ�ȿ���ǯ��δ�Ϣ�����å�
+      *    患者番号と診療年月の関連チェック
            PERFORM 41031-KANREN-CHK1-SEC
            IF      SPA-ERRCD       NOT =   SPACE 
                GO      TO      4103-KANREN-CHK-EXT
            END-IF
       *
-      *    �����ֹ�ȿ���ǯ��ν�ʣ�����å�
+      *    患者番号と診療年月の重複チェック
            PERFORM 41032-KANREN-CHK1-SEC
            IF      SPA-ERRCD       NOT =   SPACE 
                GO      TO      4103-KANREN-CHK-EXT
@@ -1213,7 +1213,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ȿ���ǯ������å�����
+      *    患者番号と診療年月チェック処理
       *****************************************************************
        41031-KANREN-CHK1-SEC           SECTION.
       * 
@@ -1226,7 +1226,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    GO  TO  41031-KANREN-CHK1-EXT
                END-IF
       *
-      *        ���ݡ�����αˮ���������뤫
+      *        生保・中国残留邦人等があるか
                MOVE    ZERO                TO  FLG-CHK
       *      
 grpsys         MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
@@ -1268,8 +1268,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
                    GO  TO  41031-KANREN-CHK1-EXT
                END-IF
       *
-      *        ������ֹ�̤���ϤΤȤ�
-      *        �����������ֹ�ޥ����˴���¸�ߤ���Ȥ�                          
+      *        受給者番号未入力のとき
+      *        月代わり受給者番号マスタに既に存在するとき                          
                IF      SPA-GMN-TJKYSNUM  (IDX1 IDX)
                                        =   SPACE
 grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
@@ -1298,7 +1298,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ν�ʣ�����å�����
+      *    患者番号の重複チェック処理
       *****************************************************************
        41032-KANREN-CHK1-SEC         SECTION.
       * 
@@ -1331,11 +1331,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    ��Ͽ����ɬ�����ϥ����å�����
+      *    登録前、必須入力チェック処理
       ****************************************************************
        4109-TOUROKU-CHK-SEC      SECTION.
       *
-      *    ��Ͽ����ɬ�����ϥ����å�
+      *    登録時、必須入力チェック
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       25
                IF      SPA-GMN-TPTNUM  (IDX1 IDX)   =   SPACE
@@ -1360,16 +1360,16 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ʬɽ��������
+      *    前月分表示前処理
       *****************************************************************
        450-BACK-MONTH-MAE-SEC            SECTION.
       * 
            IF      SPA-GMN-MAX         >   ZERO
-      *        ���ϸĽ�Υ��å�
+      *        入力個所のセット
                PERFORM 400-GMN-INPUT-SEC
       *
                MOVE    1                   TO  FLG-TOUROKU
-      *        ���ϥ����å�����
+      *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
       *
                IF      SPA-ERRCD           =   SPACE
@@ -1384,7 +1384,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ʬ����
+      *    前月分処理
       *****************************************************************
        450-BACK-MONTH-SEC               SECTION.
       *         
@@ -1408,15 +1408,15 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    前頁処理
       *****************************************************************
        460-BACK-PAGE-SEC               SECTION.
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
            MOVE    1                   TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1429,15 +1429,15 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    次頁処理
       *****************************************************************
        470-NEXT-PAGE-SEC               SECTION.
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
            MOVE    1                   TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1450,16 +1450,16 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ʬɽ��������
+      *    次月分表示前処理
       *****************************************************************
        480-NEXT-MONTH-MAE-SEC            SECTION.
       * 
            IF      SPA-GMN-MAX         >   ZERO
-      *        ���ϸĽ�Υ��å�
+      *        入力個所のセット
                PERFORM 400-GMN-INPUT-SEC
       *
                MOVE    1                   TO  FLG-TOUROKU
-      *        ���ϥ����å�����
+      *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
       *
                IF      SPA-ERRCD           =   SPACE
@@ -1474,11 +1474,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ʬ����
+      *    次月分処理
       *****************************************************************
        480-NEXT-MONTH-SEC               SECTION.
       * 
-      *     �������ǯ��         
+      *     次月診療年月         
            INITIALIZE                     STS-AREA-DAY
            INITIALIZE                     LNK-DAY6-AREA
            MOVE    "61"                   TO  LNK-DAY6-IRAI
@@ -1500,7 +1500,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ɽ�����ؽ���
+      *    表示切替処理
       *****************************************************************
        490-HYOUJI-CHANGE-SEC               SECTION.
       * 
@@ -1517,7 +1517,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -1535,7 +1535,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    更新前処理
       *****************************************************************
        450-TOUROKU-MAE-SEC                SECTION.
       *
@@ -1545,11 +1545,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                GO  TO  450-TOUROKU-MAE-EXT
            END-IF
       *         
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    1                   TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -1560,11 +1560,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    更新処理
       *****************************************************************
        450-TOUROKU-SEC                SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -1578,7 +1578,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                        CONTINUE
                    ELSE
       *
-      *                �ˣϣȣɣĤ������Υǡ���������к��
+      *                ＫＯＨＩＤがゼロのデータがあれば削除
                        INITIALIZE                  MONTHLYNUM-REC 
 grpsys                 MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                        MOVE    SPA-NAI-TPTID (IDX1 IDX)
@@ -1615,15 +1615,15 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                                                TO  WRK-MCP-TABLE
                        MOVE    "key4"          TO  WRK-MCP-PATHNAME
                        PERFORM 910-MONTHLYNUM-READ-SEC
-      *                ������ֹ�̤���ϤΤȤ������������ֹ�ޥ�����
-      *                ¸�ߤ��ʤ��Ȥ��Ϲ������ʤ�                 
+      *                受給者番号未入力のとき月代わり受給者番号マスタに
+      *                存在しないときは更新しない                 
                        IF    ( SPA-GMN-TJKYSNUM (IDX1 IDX) 
                                                =   SPACE )    
                        AND   ( FLG-MONTHLYNUM  =   1     )
                            CONTINUE
                        ELSE                             
                            IF      FLG-MONTHLYNUM  =   ZERO
-      *                        ������ֹ���ѹ����ʤ����Ϲ������ʤ�     
+      *                        受給者番号に変更がない場合は更新しない     
                                IF      SPA-GMN-TJKYSNUM (IDX1 IDX)
                                                =   MONTHLYNUM-JKYSNUM
                                    CONTINUE
@@ -1698,7 +1698,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -1725,7 +1725,7 @@ grpsys                         MOVE    SPA-HOSPNUM
       *
       *
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
       * 
@@ -1757,7 +1757,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1784,7 +1784,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       * 
@@ -1832,10 +1832,10 @@ grpsys                         MOVE    SPA-HOSPNUM
       * 
            EVALUATE    SPA-NAI-HYOUJIFLG
                WHEN    1
-                   MOVE    "��    ��"      TO  R98-B09-LABEL
+                   MOVE    "全    体"      TO  R98-B09-LABEL
                                                R98-HYOUJIKBN-VALUE
                WHEN    2
-                   MOVE    "̤����ʬ"      TO  R98-B09-LABEL
+                   MOVE    "未入力分"      TO  R98-B09-LABEL
                                                R98-HYOUJIKBN-VALUE
            END-EVALUATE
       *
@@ -1846,11 +1846,11 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-      *    �����������Τʤ��������Ϥ������ܤμ���
+      *    カーソル指定のない時、入力した項目の次へ
            IF      SPA-GMN-CUR         =   ZERO
                PERFORM 50011-INPUT-CUR-SEC
       *****    ADD     1               TO  SPA-GMN-CUR
@@ -1927,16 +1927,16 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    TRUE
-      *        �����ֹ�
+      *        患者番号
                WHEN    SPA-MCP-WIDGET (1:5)    =   "PTNUM"
                    MOVE    SPA-MCP-WIDGET (6:2)    TO  WRK-CUR-IDX-X
                    COMPUTE SPA-GMN-CUR =   WRK-CUR-IDX    *   2   -   1        
-      *        ������ֹ�
+      *        受給者番号
                WHEN    SPA-MCP-WIDGET (1:7)    =   "JKYSNUM"
                    MOVE    SPA-MCP-WIDGET (8:2)    TO  WRK-CUR-IDX-X
                    COMPUTE SPA-GMN-CUR =   WRK-CUR-IDX    *   2        
@@ -1947,53 +1947,53 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ����ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "患者番号入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "����ǯ�����ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "診療年月入力エラー"        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "�����δ����ֹ�Ϥ���ޤ���"
+                   MOVE    "該当の患者番号はありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "Ⱦ�Ѥ����Ϥ��Ʋ�����"      TO  SPA-ERRMSG
+                   MOVE    "半角で入力して下さい"      TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "������ֹ渡���ֹ楨�顼�Ǥ�"
+                   MOVE    "受給者番号検証番号エラーです"
                                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE
-                   "�����ݸ����αˮ�������оݤǤϤ���ޤ���"
+                   "生活保護・中国残留邦人等の対象ではありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "������ֹ�����ѡ�Ⱦ�Ѥκ��ߤϤǤ��ޤ���"
+                   MOVE    "受給者番号は全角・半角の混在はできません"
                                                        TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "������ֹ�����ѡ�Ⱦ�Ѥκ��ߤϤǤ��ޤ���"
+                   MOVE    "受給者番号は全角・半角の混在はできません"
                                                        TO  SPA-ERRMSG
                WHEN    "0009"                                        
                    MOVE
-                       "�оݤδ��Ԥ��ʤ��ΤǼ�����ֹ�����ϤǤ��ޤ���"
+                       "対象の患者がないので受給者番号は入力できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "Ʊ�������ֹ椬���Ϥ��Ƥ���ޤ�"
+                   MOVE    "同じ患者番号が入力してあります"
                                                        TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "�����оݤδ��ԤϤ���ޤ���"
+                   MOVE    "更新対象の患者はありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0100"
-                   MOVE    "�����ֹ椬̤���ϤǤ�"      TO  SPA-ERRMSG
+                   MOVE    "患者番号が未入力です"      TO  SPA-ERRMSG
                WHEN    "0102"
-                   MOVE    "������ֹ椬̤���ϤǤ�"    TO  SPA-ERRMSG
+                   MOVE    "受給者番号が未入力です"    TO  SPA-ERRMSG
                WHEN    "0200"
-                   MOVE    "�ٹ𡪼�����ֹ渡���ֹ椬���顼�Ǥ���"
+                   MOVE    "警告！受給者番号検証番号がエラーです。"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "�����������ֹ�ޥ����������Ǥ��ޤ���"
+                   MOVE    "月代わり受給者番号マスタが更新できません"
                                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -2017,7 +2017,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        520-RIDSET-SEC              SECTION.
       *
@@ -2025,12 +2025,12 @@ grpsys                         MOVE    SPA-HOSPNUM
       *
            EVALUATE    SPA-RIDCD
                WHEN    "1001"
-                   MOVE    "�������ޤ�"        TO  WRK-RIDMSG
+                   MOVE    "更新します"        TO  WRK-RIDMSG
                WHEN    "1002"
-                   MOVE    "����ʬ��ɽ�����ޤ�������ʬ�򹹿����ޤ���"
+                   MOVE    "前月分を表示します　当月分を更新しますか"
                                                TO  WRK-RIDMSG
                WHEN    "1003"
-                   MOVE    "����ʬ��ɽ�����ޤ�������ʬ�򹹿����ޤ���"
+                   MOVE    "次月分を表示します　当月分を更新しますか"
                                                TO  WRK-RIDMSG
            END-EVALUATE
       *
@@ -2040,10 +2040,10 @@ grpsys                         MOVE    SPA-HOSPNUM
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            EVALUATE    SPA-RIDCD
                WHEN    "1001"
-                   MOVE    "���"       TO  RID1-B01-LABEL
+                   MOVE    "戻る"       TO  RID1-B01-LABEL
                WHEN    "1002"
                WHEN    "1003"
-                   MOVE    "�Σ�"       TO  RID1-B01-LABEL
+                   MOVE    "ＮＯ"       TO  RID1-B01-LABEL
            END-EVALUATE        
            MOVE    "B12"                TO  MCP-WIDGET
       *
@@ -2062,7 +2062,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ��ʼ祭����
+      *    患者マスター読込（主キー）
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -2097,7 +2097,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ������ңţ���
+      *    診療会計マスタ　ＲＥＡＤ
       *****************************************************************
        900-SRYACCT-NEXT-SEC         SECTION.
       *
@@ -2119,7 +2119,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ɹ�
+      *    保険組合せマスタ読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -2156,7 +2156,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ը������ޥ����ɹ�
+      *    患者公費情報マスタ読込
       *****************************************************************
        910-PTKOHINF-READ-SEC         SECTION.
       *
@@ -2181,7 +2181,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ը������ޥ����ɹ�
+      *    患者公費情報マスタ読込
       *****************************************************************
        910-PTKOHINF-NEXT-SEC         SECTION.
       * 
@@ -2204,7 +2204,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����������ֹ�ޥ����ɹ�
+      *    月代わり受給者番号マスタ読込
       *****************************************************************
        910-MONTHLYNUM-READ-SEC         SECTION.
       *
@@ -2238,7 +2238,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ������ңţ���
+      *    入院会計マスタ　ＲＥＡＤ
       *****************************************************************
        900-NYUINACCT-READ-SEC          SECTION.
       *
@@ -2255,7 +2255,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ʼ祭�����ɹ�����
+      *    保険番号（主キー）読込処理
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
@@ -2279,7 +2279,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɹ�
+      *    保険番号マスター読込
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
@@ -2298,7 +2298,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -2332,7 +2332,7 @@ grpsys                         MOVE    SPA-HOSPNUM
        900-SYSKANRI-INV-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -2343,7 +2343,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -2355,7 +2355,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -2367,7 +2367,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -2380,7 +2380,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �УգԽ���
+      *    ＰＵＴ処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,284 +15,284 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ************************************************************
-      *    �쥻�ץ����ٽ��ϫ�ҡ�     COPY (CPRCF0841.INC)
-      *    (�쥻�ץ��Ż����������ƥ�Υ쥳�����¤��ؤ��ѥ��ԡ����
+      *    レセプト明細書（労災）     COPY (CPRCF0841.INC)
+      *    (レセプト電算処理システムのレコード並び替え用コピー句）
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-����    14/04/07  �����б������ɲ�
-      *  04.08.01    NACL-����    16/03/31  ʿ������ǯ��������б�
-      *  04.08.02    NACL-����    16/08/02  �����߰ʲ����ޤ�����ѥ쥻�ץȵ���
-      *                                     �ʵ�Ͽ���б�
-      *  04.08.03    NACL-����    16/08/23  �������б�
-      *  04.08.04    NACL-����    18/04/17  ʿ������ǯ��������б�
-      *  04.08.05    NACL-����    18/09/27  ���򼰥������б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-門脇    14/04/07  改正対応項目追加
+      *  04.08.01    NACL-門脇    16/03/31  平成２８年４月改正対応
+      *  04.08.02    NACL-門脇    16/08/02  １５円以下薬剤の提出用レセプト記載
+      *                                     （記録）対応
+      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
+      *  04.08.04    NACL-門脇    18/04/17  平成３０年４月改正対応
+      *  04.08.05    NACL-門脇    18/09/27  選択式コメント対応
       ************************************************************
       *01  RECE841-REC.
            03  RECE841-KEY.
                05  RECE841-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                    07  RECE841-HOSPNUM     PIC  9(02).
-      *����ǯ��
+      *診療年月
                    07  RECE841-SRYYM       PIC  9(06).
-      *������ʬ
+      *入外区分
                    07  RECE841-NYUGAIKBN   PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  RECE841-PTID        PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                    07  RECE841-RECEKA      PIC  X(02).
-      *�ݸ��ɣ�        
+      *保険ＩＤ        
                    07  RECE841-HKNID       PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  RECE841-TEKSTYMD    PIC  X(08).
-      *���Ŷ�ʬ
+      *診療区分
                05  RECE841-SRYKBN          PIC  X(02).
-      *������ɽ���ֹ�ݶ�ʬ�ֹ�
+      *コード表用番号−区分番号
                05  RECE841-CDKBN-KBNNUM    PIC  9(03).
-      *���ֹ�
+      *剤番号
                05  RECE841-ZAINUM          PIC  9(08).
       *
            03  RECE841-DATA-AREA.
-      *���ż��̶�ʬ
+      *診療種別区分
                05  RECE841-SRYSYUKBN       PIC  X(03).
-      *�޼��̶�ʬ
+      *剤識別区分
                05  RECE841-ZAISKBKBN       PIC  X(01).
-      *�����ֹ�
+      *患者番号
                05  RECE841-PTNUM           PIC  X(20).
-      *���Ų�
+      *診療科
                05  RECE841-SRYKA           PIC  X(02).
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
                05  RECE841-HKNCOMBI        PIC  9(04).
-      *���ݶ�ʬ
+      *自保区分
                05  RECE841-JIHOKBN         PIC  X(01).
-      *������
+      *剤点数
                05  RECE841-ZAITEN          PIC  9(08).
-      *���ť����ɷ�
+      *診療コード計
                05  RECE841-SRYCDTOTAL      PIC  9(14).
-      *���̷�
+      *数量計
                05  RECE841-SURYOUTOTAL     PIC  9(07)V9(05).
-      *���ť����ɡ����̤��߷�
+      *診療コード＊数量の累計
                05  RECE841-RUIKEITOTAL     PIC  9(13)V9(05).
-      *���ٿ�
+      *明細数
                05  RECE841-MEISAISU        PIC  9(04).
-      *�޲��
+      *剤回数
                05  RECE841-ZAIKAISU        PIC  9(04).
-      *�굻������
+      *手技点数１
                05  RECE841-SYUTEN1         PIC  9(07).
-      *�굻������
+      *手技点数２
                05  RECE841-SYUTEN2         PIC  9(07).
-      *��������
+      *薬剤点数
                05  RECE841-YKZTEN          PIC  9(07).
-      *�������
+      *器材点数
                05  RECE841-KIZAITEN        PIC  9(07).
-      *�ɥ�����������
+      *ドクターコード
                05  RECE841-DRCD            PIC  X(05).
-      *������ե饰
+      *剤請求フラグ
                05  RECE841-ZAIREQFLG       PIC  X(01).
-      *����Ψ
+      *逓減率
                05  RECE841-TEIGENRATE      PIC  X(01).
-      *�����ȥ����ɥե饰
+      *コメントコードフラグ
                05  RECE841-COMCDFLG        PIC  X(01).
-      *�ʥ��˥ե饰
+      *（サ）フラグ
                05  RECE841-SAFLG           PIC  X(01).
-      *�����������ʣ����ϣ��ʥ����ȤΤߡˡ�
+      *投薬剤点０（１又は２（コメントのみ））
                05  RECE841-TOYAKUFLG       PIC  X(01).
-      *���Ŷ�ʬ�֤������ե饰�ʼ����ե���ѡ�
+      *診療区分置き換えフラグ（自賠責リハ用）
                05  RECE841-OKIKAEFLG       PIC  X(01).
-      *�������������������������ٿ�
+      *療養病棟入院料剤点記載明細数
                05  RECE841-RYOTENKISAISU   PIC  9(04).
-      *�����ս������谷
+      *自賠責集計等取扱
                05  RECE841-JIBAISYUKEIKBN  PIC  9(01).
-      *�ط�������¸�ߥե饰
+      *関係コメント存在フラグ
                05  RECE841-SETCOMFLG       PIC  X(01).
-      *���򼰥�����¸�ߥե饰
+      *選択式コメント存在フラグ
                05  RECE841-SENTAKUCOMFLG   PIC  X(01).
-      *�޶�ʬ
+      *剤区分
                05  RECE841-ZAIKBN          PIC  9(03).
-      *�������ǡʣ����ܰʹ߸��������
+      *画像診断（２回目以降減算あり）
                05  RECE841-GAZOGEN         PIC  X(01).
-      *�ƿǲû��������ˤκ�
+      *再診加算（入院）の剤
                05  RECE841-NYUSAIFLG       PIC  X(01).
-      *�����߰ʲ����ޥ쥻�ץȵ��ܥե饰
+      *１５円以下薬剤レセプト記載フラグ
                05  RECE841-YKZKISAIFLG     PIC  X(01).
-      *��������ʬ
+      *持参薬区分
                05  RECE841-JISANYAKKBN     PIC  X(01).
       *
-      *��ϥӥ�
+      *リハビリ
                05  RECE841-RIHABIRI-COMMENT    PIC  X(01).
-      *��ϥӥ�ʿ����ɼ�����
+      *リハビリ（心大血管疾患）
                05  RECE841-SINDAI-COMMENT      PIC  X(01).
-      *��ϥӥ�ʸƵ۴��
+      *リハビリ（呼吸器）
                05  RECE841-KOKYUKI-COMMENT     PIC  X(01).
-      *��ϥӥ��Ǿ��ɼ�������
+      *リハビリ（脳血管疾患等）
                05  RECE841-NOUKE-COMMENT       PIC  X(01).
-      *��ϥӥ�ʱ�ư���
+      *リハビリ（運動器）
                05  RECE841-UNDOKI-COMMENT      PIC  X(01).
-      *��ϥӥ�����´��ԡ�
+      *リハビリ（難病患者）
                05  RECE841-NANBYO-COMMENT      PIC  X(01).
-      *��ϥӥ�ʾ㳲���ʼԡˡ�
+      *リハビリ（障害児（者））
                05  RECE841-SYOGAI-COMMENT      PIC  X(01).
-      *��ϥӥ���ݿ���
+      *リハビリ（摂食）
                05  RECE841-SESSYOKU-COMMENT    PIC  X(01).
-      *��ϥӥ�����Ѿɸ�����
+      *リハビリ（廃用症候群）
                05  RECE841-HAIYO-COMMENT       PIC  X(01).
-      *��ã����
+      *介達牽引
                05  RECE841-KAITATU-COMMENT     PIC  X(01).
       *
-      *��ϥӥ�û��ʿ����ɼ�����
+      *リハビリ加算（心大血管疾患）
                05  RECE841-SINDAI9-COMMENT     PIC  X(01).
-      *��ϥӥ�û��ʸƵ۴��
+      *リハビリ加算（呼吸器）
                05  RECE841-KOKYUKI9-COMMENT    PIC  X(01).
-      *��ϥӥ�û������Ѿɸ�����
+      *リハビリ加算（廃用症候群）
                05  RECE841-HAIYO9-COMMENT      PIC  X(01).
       *
-      *���޴�����Ƴ��
+      *薬剤管理指導料
                05  RECE841-FLG-YAKUKAN-COMMENT PIC  X(01).
-      *�������ܿ�����Ƴ��
+      *入院栄養食事指導料
                05  RECE841-FLG-NYUEIYO-COMMENT PIC  X(01).
-      *�ౡ��ˬ���Ƴ��
+      *退院前訪問指導料
                05  RECE841-FLG-HOUMON-COMMENT  PIC  X(01).
-      *���¼�����ո��������
+      *傷病手当金意見書交付料
                05  RECE841-FLG-SYOBYO-COMMENT  PIC  X(01).
-      *������Ʊ�ս������
+      *療養費同意書交付料
                05  RECE841-FLG-RYOYO-COMMENT   PIC  X(01).
-      *�ౡ��������Ƴ�û�����������޴�����Ƴ��
+      *退院時服薬指導加算を算定時の薬剤管理指導料
                05  RECE841-FLG-TAIIN-COMMENT   PIC  X(01).
-      *ˬ��Ǹ�ؼ���
+      *訪問看護指示料
                05  RECE841-FLG-HOUSIJI-COMMENT PIC  X(01).
-      *��ѡ�͢��Ͻ�����
+      *手術（輸血は除く）
                05  RECE841-FLG-SHUJUTU-COMMENT PIC  X(01).
-      *�ãԡ��ͣң�
+      *ＣＴ・ＭＲＩ
                05  RECE841-FLG-CTMRI-COMMENT   PIC  X(01).
-      *�������ౡ��ˬ���Ƴ��
+      *精神科退院前訪問指導料
                05  RECE841-FLG-HOUSEI-COMMENT  PIC  X(01).
-      *�����ʳ�Υ�¼������û����������û���
+      *精神科隔離病室管理加算（入院料加算）
                05  RECE841-FLG-KAKURI-COMMENT  PIC  X(01).
-      *ϫ�Ҽ��ŷײ�û����������û���
+      *労災治療計画加算（入院料加算）
                05  RECE841-FLG-CHIRYO-COMMENT  PIC  X(01).
-      *������Ʃ���Ѳ��Ƴ������
+      *在宅血液透析頻回指導管理料
                05  RECE841-FLG-HINKAI-COMMENT  PIC  X(01).
-      *����
+      *酸素
                05  RECE841-FLG-SANSO-COMMENT   PIC  X(01).
-      *��ǡ�Ʊ��ʣ�����Ųʡ�
+      *初診（同日複数診療科）
                05  RECE841-FLG-SYODOU-COMMENT  PIC  X(01).
                05  RECE841-SYODOU-SRYKA-AREA.
                    07  RECE841-SYODOU-SRYKA    PIC  X(02)  OCCURS 10.
-      *�������»�Ƚ��
+      *検査等実施判断
                05  RECE841-KNSJISKBN           PIC  9(01).
-      *�������»�Ƚ�ǥ��롼��
+      *検査等実施判断グループ
                05  RECE841-KNSJISGRPKBN        PIC  9(02).
-      *���ǡ����̱���
+      *往診・特別往診
                05  RECE841-FLG-OSIN-COMMENT    PIC  X(01).
-      *�߻ٱ�˴ؤ������
+      *在支援に関する診療
                05  RECE841-FLG-ZAISIEN-COMMENT PIC  X(01).
-      *�쥻�����������û��ե饰
+      *レセ電用入院料加算フラグ
                05  RECE841-NYUKSNFLG           PIC  9(01).
-      *�����ʣ£ΣС��Σԡݣ���£ΣС��ȣ��ΣС�
+      *検査（ＢＮＰ、ＮＴ−ｐｒｏＢＮＰ、ＨＡＮＰ）
                05  RECE841-FLG-KENSA-COMMENT   PIC  X(01).
       *
-      *���ٱ�Ϣ�Ȼ�Ƴ��
+      *介護支援連携指導料
                05  RECE841-FLG-KAISIEN-COMMENT PIC  X(01).
-      *���ı��ܿ�����Ƴ��
+      *集団栄養食事指導料
                05  RECE841-FLG-SYUEIYO-COMMENT PIC  X(01).
-      *�͹���¡��
+      *人工腎臓等
                05  RECE841-FLG-JINZOU-COMMENT  PIC  X(01).
-      *�ɽ걢���ĺ�����
+      *局所陰圧閉鎖処置
                05  RECE841-FLG-KYOKUIN-COMMENT PIC  X(01).
-      *���
+      *麻酔
                05  RECE841-FLG-MASUI-COMMENT   PIC  X(01).
-      *���ܥ��ݡ��ȥ�����û�
+      *栄養サポートチーム加算
                05  RECE841-FLG-EISAPO-COMMENT  PIC  X(01).
-      *�Ƶۥ���������û�
+      *呼吸ケアチーム加算
                05  RECE841-FLG-KOKKEA-COMMENT  PIC  X(01).
-      *�žɼԲû�����������������������
+      *重症者加算（精神療養病棟入院料）
                05  RECE841-FLG-JYUSYO-COMMENT  PIC  X(01).
       *
-      *�������ǥե����
+      *画像診断フイルム
                05  RECE841-FLG-FILM-COMMENT    PIC  X(01).
       *
-      *������ӽ��۰����ؼ���
+      *介護職員等喀痰吸引等指示料
                05  RECE841-FLG-KAISYOKU-COMMENT
                                                PIC  X(01).
-      *�����ʥ��硼�ȡ������������ʥǥ�������
+      *精神科ショート・ケア・精神科デイ・ケア
                05  RECE841-FLG-SEIKEA-COMMENT  PIC  X(01).
-      *�����ʥꥨ���������û�
+      *精神科リエゾンチーム加算
                05  RECE841-FLG-SEIRIE-COMMENT  PIC  X(01).
-      *�������޶�̳�»ܲû�
+      *病棟薬剤業務実施加算
                05  RECE841-FLG-BYOYAK-COMMENT  PIC  X(01).
       *
-      *�����³�۰��Ƶ���ˡ��Ƴ������
+      *在宅持続陽圧呼吸療法指導管理料
                05  RECE841-FLG-YOUATU-COMMENT  PIC  X(01).
       *
-      *��¡�ڡ����᡼������Ƴ�����������ѷ���ư����ư���
-      *��¡�ڡ����᡼������Ƴ�������ʥ�������������ư��ܹԴ��û��ޤ��
+      *心臓ペースメーカー指導管理料（着用型自動除細動器）
+      *心臓ペースメーカー指導管理料（ロ・植込型除細動器移行期加算含む）
                05  RECE841-FLG-SINPESUR-COMMENT  PIC  X(01).
-      *��֥�˥���󥰲û�
+      *遠隔モニタリング加算
                05  RECE841-FLG-SINPESU-COMMENT   PIC  X(01).
       *
-      *���󴵼Ի�Ƴ������������
+      *がん患者指導管理料２・３
                05  RECE841-FLG-GANSIDO-COMMENT   PIC  X(01).
-      *���𴵼Զ�Ʊ������
+      *在宅患者共同診療料
                05  RECE841-FLG-ZAIKYO-COMMENT    PIC  X(01).
-      *�����ˤ��������ɷ�ˡ
+      *磁気による膀胱等刺激法
                05  RECE841-FLG-BOKOHO-COMMENT    PIC  X(01).
-      *Ķ�žɻ��ʼԡ��������Ųû�����Ķ�žɻ��ʼԡ��������Ųû�
+      *超重症児（者）入院診療加算・準超重症児（者）入院診療加算
                05  RECE841-FLG-CYOJKSN-COMMENT   PIC  X(01).
-      *��Ǣ��Ω��Ƴ��
+      *排尿自立指導料
                05  RECE841-FLG-HAIJRT-COMMENT    PIC  X(01).
-      *����Ⱦ�Ƿ����ܷдɱ���ˡ��Ƴ������
+      *在宅半固形栄養経管栄養法指導管理料
                05  RECE841-FLG-ZAIHANKO-COMMENT  PIC  X(01).
-      *�ⵤ�����Ǽ���
+      *高気圧酸素治療
                05  RECE841-FLG-KIATU-COMMENT     PIC  X(01).
-      *������������ץ������û�
+      *疾患別等専門プログラム加算
                05  RECE841-FLG-SCPRO-COMMENT     PIC  X(01).
       *
-      *���ֳ��۵ޱ��⸡���û��������®���θ����û�
+      *時間外緊急院内検査加算・外来迅速検体検査加算
                05  RECE841-FLG-KENKSN-COMMENT    PIC  X(01).
-      *���ֳ��۵ޱ���������ǲû�
+      *時間外緊急院内画像診断加算
                05  RECE841-FLG-KINGAZ-COMMENT    PIC  X(01).
       *
-      *�굻������ơʼ�ѡ��������ǡ����֡�
+      *手技毎の内容（手術・画像診断・処置）
                05  RECE841-ACCTP-SYUGI-TBL-G.
                    07  RECE841-ACCTP-SYUGI-TBL     OCCURS  5.
-      *�굻���ϥ�����
+      *手技開始コード
                        09  RECE841-ACCTP-SRYCD     PIC X(09).
-      *�굻����
+      *手技点数
                        09  RECE841-ACCTP-SYUTEN    PIC 9(07).
-      *��������
+      *薬剤点数
                        09  RECE841-ACCTP-YKZTEN    PIC 9(07).
-      *����¾��������ʥե���ࡦ���ǡ����ǰʳ���
+      *その他器材点数（フィルム・酸素・窒素以外）
                        09  RECE841-ACCTP-KIZAITEN  PIC 9(07).
-      *�ե��������
+      *フィルム点数
                        09  RECE841-ACCTP-FIRTEN    PIC 9(07).
-      *��������
+      *酸素点数
                05  RECE841-ACCTP-SANSOTEN          PIC 9(07).
-      *��������
+      *窒素点数
                05  RECE841-ACCTP-CHISOTEN          PIC 9(07).
       *
-      *������ʬ��������
+      *包括診療分退避点数
                05  RECE841-HOKATU-TENSU-AREA.
-      *������
+      *剤点数
                    07  RECE841-HOKATU-ZAITEN       PIC 9(08).
-      *�굻������
+      *手技点数１
                    07  RECE841-HOKATU-SYUTEN1      PIC 9(07).
-      *�굻������
+      *手技点数２
                    07  RECE841-HOKATU-SYUTEN2      PIC 9(07).
-      *��������
+      *薬剤点数
                    07  RECE841-HOKATU-YKZTEN       PIC 9(07).
-      *�������
+      *器材点数
                    07  RECE841-HOKATU-KIZAITEN     PIC 9(07).
       *
-      *�ޡ�������
+      *剤（点数）
                05  RECE841-ZAI-TENSU               PIC 9(09).
-      *�ޡʶ�ۡ�
+      *剤（金額）
                05  RECE841-ZAI-KINGAKU             PIC 9(09).
       *
-      *��������ơ��֥�
+      *日数回数テーブル
                05  RECE841-DAY-AREA.
-      *        ���Ų���ơ��֥��1:���,2:����,3:����, 4:����ʾ��
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
                    07  RECE841-DAY-TBL             OCCURS  4.
                        09  RECE841-KAISUINF        OCCURS  31.
                            11  RECE841-KAISU       PIC 9(03).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  RECE84-RECESYUBETU          PIC 9(04).

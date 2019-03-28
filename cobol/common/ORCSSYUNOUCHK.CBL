@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -20,15 +20,15 @@
       ****************************************************************
       *    OS           LINUX
       *
-      *    PROGRAM      ORCSSYUNOUCHK  /  ���Ʒ׻������ԥ����å�����
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  16/11/01    NACL������    ��������
+      *    PROGRAM      ORCSSYUNOUCHK  /  一括再計算該当者チェックサブ
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  16/11/01    NACL−門脇    新規作成
       ****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.01    NACL-����    17/12/15  �軰�Թ԰ٸ�ʪ���դ˴ؤ��
-      *                                     ��ô��׻��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-門脇    17/12/15  第三者行為現物給付に関わる
+      *                                     負担金計算対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -41,14 +41,14 @@
       *
        WORKING-STORAGE SECTION.
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
            03  IDX3                        PIC 9(05).
            03  IDX4                        PIC 9(05).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
@@ -66,7 +66,7 @@
            03  FLG-ZAIARI                  PIC 9(01).
            03  FLG-DAISANYUSEN             PIC 9(01).
       *
-      *    ����ΰ�
+      *    ワーク領域
        01  WRK-AREA.
            03  WRK-PTID-TABLE.
              04  WRK-PTID-OCC              OCCURS   10000.
@@ -104,47 +104,47 @@
            03  WRK-IKT-PATHNAME            PIC X(64).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ�ǡ���
+      *    収納データ
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ����
+      *    収納明細
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSK1039.INC".
       *
-      *    �����Ǽ�ǡ���
+      *    ワーク収納データ
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING  //SYU-// BY //WRK-SYU-//.
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ��ô��Ʒ׻��ѥ���
+      *    負担金再計算用サブ
            COPY    "CPORCSSAIKEISAN.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
@@ -159,7 +159,7 @@
                                      SPA-AREA
                                      .
       ******************************************************************
-      *        �����������
+      *        依頼制御処理
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
@@ -175,7 +175,7 @@
            INITIALIZE         WRK-PTID-TABLE2
            INITIALIZE         WRK-PTID-TABLE3
       *
-      *    ��������ǯ��μ�Ǽ�������������
+      *    該当診療年月の収納がある方を抽出
            INITIALIZE                              SYUNOU-REC
            MOVE   LNK-ORCSSYUNOUCHK-HOSPNUM    TO  SYU-HOSPNUM
            MOVE   LNK-ORCSSYUNOUCHK-NYUGAIKBN  TO  SYU-NYUGAIKBN
@@ -219,7 +219,7 @@
            MOVE        "key96"                 TO  MCP-PATHNAME
            PERFORM      910-DB-CLOSE-SEC
       *
-      *    �����ƥ�������������򸡺�
+      *    システム管理１０３９を検索
            INITIALIZE                            SYS-1039-REC
            MOVE   "1039"                     TO  SYS-1039-KANRICD
            MOVE   "*"                        TO  SYS-1039-KBNCD
@@ -246,7 +246,7 @@
            MOVE        "key10"               TO  MCP-PATHNAME
            PERFORM      910-DB-CLOSE-SEC
       *
-      *    ���Ʒ׻������ԥ����å�
+      *    一括再計算該当者チェック
            MOVE     1             TO   FLG-SYORI-KBN
            PERFORM  VARYING  IDX1  FROM  1  BY  1
                      UNTIL  (IDX1            >  10000)
@@ -254,7 +254,7 @@
              PERFORM  100-IKATUSAIKEI-SEC
            END-PERFORM
       *
-      *    �ֵ��ͥ��å�
+      *    返却値セット
            MOVE       ZERO      TO   IDX2
            MOVE       ZERO      TO   IDX3
            MOVE       ZERO      TO   IDX4
@@ -269,7 +269,7 @@
            END-PERFORM
       *
            IF  LNK-ORCSSYUNOUCHK-OPTION1  =  "1"
-      *      ��������ۤ��ѹ����ʤ�������ư�ǰ��Ʒ׻�
+      *      患者請求額の変更がない方：自動で一括再計算
              INITIALIZE                  WRK-PTID-TABLE
              MOVE  WRK-PTID-TABLE2  TO   WRK-PTID-TABLE
              MOVE     ZERO          TO   FLG-SYORI-KBN
@@ -279,7 +279,7 @@
                PERFORM  100-IKATUSAIKEI-SEC
              END-PERFORM
            ELSE
-      *      ��������ۤ��ѹ����ʤ����������ԥ����å����ʬ�μ�Ǽ����
+      *      患者請求額の変更がない方：該当者チェック抽出分の収納更新
              INITIALIZE                  WRK-PTID-TABLE
              MOVE  WRK-PTID-TABLE2  TO   WRK-PTID-TABLE
              PERFORM  VARYING  IDX1  FROM  1  BY  1
@@ -289,7 +289,7 @@
              END-PERFORM
            END-IF
       *
-      *    ��������ۤ��ѹ����������������ԥ����å����ʬ�μ�Ǽ����
+      *    患者請求額の変更がある方：該当者チェック抽出分の収納更新
            INITIALIZE                    WRK-PTID-TABLE
            MOVE    WRK-PTID-TABLE3  TO   WRK-PTID-TABLE
            PERFORM    VARYING  IDX1  FROM  1  BY  1
@@ -300,7 +300,7 @@
       *
       *****
       *
-      *    ��Ǽ���ٹ��������ֶ��������󥭡��ν�����
+      *    収納明細更新（入返金日、日報キーの修復）
            PERFORM      400-SYUMEI-KOUSIN-SEC
       *
            .
@@ -310,7 +310,7 @@
            STOP RUN.
       *
       **************************************************************
-      *    ���Ʒ׻�
+      *    一括再計算
       **************************************************************
        100-IKATUSAIKEI-SEC           SECTION.
       *
@@ -404,7 +404,7 @@
                END-IF
                PERFORM  1001-IKATUSAIKEI2-SEC
              WHEN        2
-      *        �̾����ʬ�η׻�
+      *        通常診療分の計算
                IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
                   MOVE    "tbl_syunou"   TO  WRK-IKT-TABLE
                   MOVE    "key88"        TO  WRK-IKT-PATHNAME
@@ -413,7 +413,7 @@
                   MOVE    "key89"        TO  WRK-IKT-PATHNAME
                END-IF
                PERFORM  1001-IKATUSAIKEI2-SEC
-      *        �軰�Թ԰ٿ���ʬ�η׻�
+      *        第三者行為診療分の計算
                IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
                   MOVE    "tbl_syunou"   TO  WRK-IKT-TABLE
                   MOVE    "key90"        TO  WRK-IKT-PATHNAME
@@ -423,7 +423,7 @@
                END-IF
                PERFORM  1001-IKATUSAIKEI2-SEC
              WHEN        3
-      *        �軰�Թ԰ٿ���ʬ�η׻�
+      *        第三者行為診療分の計算
                IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
                   MOVE    "tbl_syunou"   TO  WRK-IKT-TABLE
                   MOVE    "key90"        TO  WRK-IKT-PATHNAME
@@ -432,7 +432,7 @@
                   MOVE    "key91"        TO  WRK-IKT-PATHNAME
                END-IF
                PERFORM  1001-IKATUSAIKEI2-SEC
-      *        �̾����ʬ�η׻�
+      *        通常診療分の計算
                IF   SYS-1039-IKTSORTKBN  =  "0" OR SPACE
                   MOVE    "tbl_syunou"   TO  WRK-IKT-TABLE
                   MOVE    "key88"        TO  WRK-IKT-PATHNAME
@@ -448,7 +448,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ʒ׻�
+      *    一括再計算
       **************************************************************
        1001-IKATUSAIKEI2-SEC           SECTION.
       *
@@ -565,7 +565,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��Ǽ�ǡ��������å�
+      *    収納データチェック
       **************************************************************
        10011-SYUNOU-DATA-CHECK-SEC           SECTION.
       *
@@ -576,36 +576,36 @@
       *
            IF  (SYU-SECMONEY         =  1 OR 2 OR 3 OR 4)
            OR  (SYU-ACCT-UPDKBN  NOT =  SPACE           )
-      *      �����軰�Թ԰ٸ�ʪ���ա��̾����ʬ��ͥ��׻�������
+      *      １：第三者行為現物給付（通常診療分の優先計算該当）
              IF    SYU-SECMONEY  =  4
                MOVE     1     TO    WRK-GAITOKBN(IDX1)
              END-IF
-      *      ����������̤����ʪ����
+      *      ２：７０歳未満現物給付
              IF    SYU-SECMONEY  =  1 OR 3
                IF  WRK-GAITOKBN(IDX1)  NOT =  1
                  MOVE   2     TO    WRK-GAITOKBN(IDX1)
                END-IF
              END-IF
-      *      ��������Ը�ʪ����
+      *      ３：高齢者現物給付
              IF    SYU-SECMONEY  =  2
                IF  WRK-GAITOKBN(IDX1)  NOT =  1 AND 2
                  MOVE   3     TO    WRK-GAITOKBN(IDX1)
                END-IF
              END-IF
-      *      ������Ǽ����̤����
+      *      ４：収納更新未処理
              IF    SYU-ACCT-UPDKBN  NOT =  SPACE
                IF  WRK-GAITOKBN(IDX1)  NOT =  1 AND 2 AND 3
                  MOVE   4     TO    WRK-GAITOKBN(IDX1)
                END-IF
              END-IF
            ELSE
-      *      ���������ԥ����å����ʬ
+      *      ５：該当者チェック抽出分
              IF    WRK-GAITOKBN(IDX1)  NOT =  1 AND 2 AND 3 AND 4
                  MOVE   5     TO    WRK-GAITOKBN(IDX1)
              END-IF
            END-IF
       *
-      *    �����軰�Թ԰ٸ�ʪ���ա��軰�Թ԰�ʬ��ͥ��׻�������
+      *    ７：第三者行為現物給付（第三者行為分の優先計算該当）
            IF      FLG-DAISANYUSEN  =  1
                  MOVE   7     TO    WRK-GAITOKBN(IDX1)
            END-IF
@@ -614,11 +614,11 @@
            OR  ((FLG-GENBUTU           =  3                 ) AND
                 (SYU-KOH1HKNNUM        =  "970"             ) AND
                 (SYU-ACCT-UPDKBN   NOT =  SPACE             ))
-      *      ��������ۤ��ѹ���������
+      *      患者請求額の変更がある方
              MOVE       1     TO    WRK-SKYMONEY-FLG(IDX1)
              MOVE       1     TO    WRK-TAISYOKBN-A(IDX1)
            ELSE
-      *      ��������ۤ��ѹ����ʤ����ʥǡ��������ͤ��ѹ��Ȥʤ��Ǽ�����
+      *      患者請求額の変更がない方（データ項目値が変更となる収納あり）
              IF (SYU-TOTAL-HKNTEN      NOT = WRK-SYU-TOTAL-HKNTEN      )
              OR (SYU-RSISHOSHIN-MONEY  NOT = WRK-SYU-RSISHOSHIN-MONEY  )
              OR (SYU-RSISAISHIN-MONEY  NOT = WRK-SYU-RSISAISHIN-MONEY  )
@@ -670,7 +670,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰پ��󸡺�
+      *    診療行為情報検索
       **************************************************************
        1002-SRYACT-KENSAKU-SEC           SECTION.
       *
@@ -768,7 +768,7 @@
            EXIT.
       *
       **************************************************************
-      *    �ֵ��ͥ��åȣ�
+      *    返却値セット１
       **************************************************************
        200-HENKYAKU-SET-SEC           SECTION.
       *
@@ -823,7 +823,7 @@
            EXIT.
       *
       **************************************************************
-      *    �ֵ��ͥ��åȣ�
+      *    返却値セット２
       **************************************************************
        201-HENKYAKU-SET2-SEC           SECTION.
       *
@@ -838,7 +838,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��Ǽ�ǡ�������
+      *    収納データ更新
       **************************************************************
        300-SYUNOU-KOUSIN-SEC           SECTION.
       *
@@ -890,7 +890,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��Ǽ���ٹ���
+      *    収納明細更新
       **************************************************************
        400-SYUMEI-KOUSIN-SEC           SECTION.
       *
@@ -940,7 +940,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -962,7 +962,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ǡ����ɹ�
+      *    収納データ読込
       *****************************************************************
        900-SYUNOU-READ-SEC          SECTION.
       *
@@ -984,7 +984,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�����ɹ�
+      *    収納明細読込
       *****************************************************************
        900-SYUMEI-READ-SEC          SECTION.
       *
@@ -1006,7 +1006,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスタ−読込
       *****************************************************************
        900-SRYACT-READ-SEC          SECTION.
       *
@@ -1028,7 +1028,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスタ−読込
       *****************************************************************
        900-SRYACCT-READ-SEC          SECTION.
       *
@@ -1050,7 +1050,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�ɹ�
+      *    保険組み合わせ読込
       *****************************************************************
        900-HKNCOMBI-READ-SEC          SECTION.
       *
@@ -1072,7 +1072,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

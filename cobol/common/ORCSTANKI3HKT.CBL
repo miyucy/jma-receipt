@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSTANKI3HKT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : û���ںߣ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  15/08/28    NACL�ݾ�Ʀ��  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : 短期滞在３包括
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  15/08/28    NACL−小豆沢  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  17/04/XX  ���θ��������û�����б�
-      *  04.08.00    NACL-¿��Ǽ  17/06/XX  �����ʣ���Ƚ��������б�
-      *  05.00.00    NACL-��Ʀ��  18/10/10  û���ںߣ��λ�����Ƚ�꽤��
-      *              NACL-��Ʀ��  18/10/11  û���ںߣ������Ƚ���ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  17/04/XX  検体検査管理加算包括対応
+      *  04.08.00    NACL-多々納  17/06/XX  生化（２）判断料包括対応
+      *  05.00.00    NACL-小豆沢  18/10/10  短期滞在３の算定日判定修正
+      *              NACL-小豆沢  18/10/11  短期滞在３の包括判定追加
       *****************************************************************
       *
       *
@@ -45,112 +45,112 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-TANKI3                  PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
       *
-      *    ���󥹥������
+      *    コンスタント値
        01  CONSTANT-AREA.
       *
            03   CONS-TANKI3HKT-AREA.
-      *      Ǣ��ʵ��������Ƚ����
+      *      尿・糞便等検査判断料
              05   CONS-HKT1                PIC X(09) VALUE "160061710".
-      *      ��ճ�Ū����Ƚ����
+      *      血液学的検査判断料
              05   CONS-HKT2                PIC X(09) VALUE "160061810".
-      *      ������Ū�����ʣ���Ƚ����
+      *      生化学的検査（１）判断料
              05   CONS-HKT3                PIC X(09) VALUE "160061910".
-      *      ������Ū�����ʣ���Ƚ����
+      *      生化学的検査（２）判断料
              05   CONS-HKT4                PIC X(09) VALUE "160062010".
-      *      �ȱֳ�Ū����Ƚ����
+      *      免疫学的検査判断料
              05   CONS-HKT5                PIC X(09) VALUE "160062110".
-      *      ����ʪ��Ū����Ƚ����
+      *      微生物学的検査判断料
              05   CONS-HKT6                PIC X(09) VALUE "160062210".
-      *      ����ԥ塼�����ؿ���
+      *      コンピュータ断層診断
              05   CONS-HKT7                PIC X(09) VALUE "170015410".
-      *      �������Ǵ����û����ʼ̿����ǡ�
+      *      画像診断管理加算１（写真診断）
              05   CONS-HKT8                PIC X(09) VALUE "170025210".
-      *      �������Ǵ����û����ʴ���Ū���å��������ǡ�
+      *      画像診断管理加算１（基本的エックス線診断）
              05   CONS-HKT9                PIC X(09) VALUE "170025310".
-      *      �������Ǵ����û����ʳ˰�ؿ��ǡ�
+      *      画像診断管理加算１（核医学診断）
              05   CONS-HKT10               PIC X(09) VALUE "170025410".
-      *      �������Ǵ����û����ʥ���ԥ塼�����ؿ��ǡ�
+      *      画像診断管理加算１（コンピュータ断層診断）
              05   CONS-HKT11               PIC X(09) VALUE "170025510".
-      *      �������Ǵ����û����ʳ˰�ؿ��ǡ�
+      *      画像診断管理加算２（核医学診断）
              05   CONS-HKT12               PIC X(09) VALUE "170025610".
-      *      �������Ǵ����û����ʥ���ԥ塼�����ؿ��ǡ�
+      *      画像診断管理加算２（コンピュータ断層診断）
              05   CONS-HKT13               PIC X(09) VALUE "170025710".
-      *      �������Ǵ����û����ʳ˰�ؿ��ǡ�
+      *      画像診断管理加算３（核医学診断）
              05   CONS-HKT14               PIC X(09) VALUE "170035710".
-      *      �������Ǵ����û����ʥ���ԥ塼�����ؿ��ǡ�
+      *      画像診断管理加算３（コンピュータ断層診断）
              05   CONS-HKT15               PIC X(09) VALUE "170035810".
       *
            03  CONS-TANKI3HKT-AREA-R  REDEFINES  CONS-TANKI3HKT-AREA.
              05   CONS-TANKI3HKT-TBL      OCCURS  15.
                 07   CONS-TANKI3HKT-SRYCD  PIC X(09).
       *
-      *    ���θ��������û�
+      *    検体検査管理加算
            03   CONS-TANKI3KSN-AREA.
-      *      ���θ��������û���
+      *      検体検査管理加算１
              05   CONS-KSN1                PIC X(09) VALUE "160170170".
-      *      ���θ��������û���
+      *      検体検査管理加算２
              05   CONS-KSN2                PIC X(09) VALUE "160182770".
-      *      ���θ��������û���
+      *      検体検査管理加算３
              05   CONS-KSN3                PIC X(09) VALUE "160161610".
-      *      ���θ��������û���
+      *      検体検査管理加算４
              05   CONS-KSN4                PIC X(09) VALUE "160185770".
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
-      *    û���ں߼������������Ƚ����
+      *    短期滞在手術等基本料３判定用
            03  WRK-TANKI3-DAY              PIC X(01)   OCCURS  31.
-      *    �����������
+      *    算定日再定義
            03  WRK-SANTEI-YMD.
                05  WRK-SANTEI-YY           PIC 9(04).
                05  WRK-SANTEI-MM           PIC 9(02).
                05  WRK-SANTEI-DD           PIC 9(02).
-      *    ������������
+      *    月末日取得用
            03  WRK-GETSUMATSU-YMD.
                05  WRK-GETSUMATSU-YY       PIC 9(04).
                05  WRK-GETSUMATSU-MM       PIC 9(02).
                05  WRK-GETSUMATSU-DD       PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ������̤��������������
+      *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "CPORCSTANKI3HKT.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -159,7 +159,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -169,13 +169,13 @@
            INITIALIZE                  LNK-TANKI3HKT-HENKYAKU-AREA
            MOVE    ZERO            TO  LNK-TANKI3HKT-RC
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-TANKI3HKT-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    �����
+      *    主処理
            IF      LNK-TANKI3HKT-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -187,11 +187,11 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
       *    INITIALIZE                         PTINF-REC
       *    MOVE    LNK-TANKI3HKT-HOSPNUM  TO  PTINF-HOSPNUM
       *    MOVE    LNK-TANKI3HKT-PTID     TO  PTINF-PTID
@@ -201,7 +201,7 @@
       *        GO  TO  100-PRM-CHK-EXT
       *    END-IF
       *
-      *    ����ǯ���������å�
+      *    算定年月日チェック
            IF      LNK-TANKI3HKT-SANTEIYMD  =   SPACE
                MOVE    2                  TO  LNK-TANKI3HKT-RC
                GO  TO  100-PRM-CHK-EXT
@@ -212,35 +212,35 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
            EVALUATE    LNK-TANKI3HKT-SRYCD
-      *        ����Ƚ��������оݥ����å�
+      *        検査判断料包括対象チェック
                WHEN    CONS-TANKI3HKT-SRYCD(1)
                WHEN    CONS-TANKI3HKT-SRYCD(2)
                WHEN    CONS-TANKI3HKT-SRYCD(3)
                WHEN    CONS-TANKI3HKT-SRYCD(4)
                WHEN    CONS-TANKI3HKT-SRYCD(5)
                WHEN    CONS-TANKI3HKT-SRYCD(6)
-      *        ����ԥ塼�����ؿ��ǥ����å�
+      *        コンピュータ断層診断チェック
                WHEN    CONS-TANKI3HKT-SRYCD(7)
-      *      �������Ǵ����û���
+      *      画像診断管理加算１
                WHEN    CONS-TANKI3HKT-SRYCD(8)
                WHEN    CONS-TANKI3HKT-SRYCD(9)
                WHEN    CONS-TANKI3HKT-SRYCD(10)
                WHEN    CONS-TANKI3HKT-SRYCD(11)
-      *      �������Ǵ����û���
+      *      画像診断管理加算２
                WHEN    CONS-TANKI3HKT-SRYCD(12)
                WHEN    CONS-TANKI3HKT-SRYCD(13)
-      *      �������Ǵ����û���
+      *      画像診断管理加算３
                WHEN    CONS-TANKI3HKT-SRYCD(14)
                WHEN    CONS-TANKI3HKT-SRYCD(15)
                    MOVE    SPACE               TO  LNK-TANKI3HKT-KBN2
                    PERFORM 2001-MAIN-CHK-SEC
       *
-      *        ����Ƚ�������ˤ������о�
+      *        検査判断料包括による包括対象
                WHEN    CONS-KSN1
                WHEN    CONS-KSN2
                WHEN    CONS-KSN3
@@ -258,13 +258,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Ƚ��������оݥ����å�
+      *    検査判断料包括対象チェック
       *****************************************************************
        2001-MAIN-CHK-SEC            SECTION.
       *
              MOVE    LNK-TANKI3HKT-SANTEIYMD  TO  WRK-SANTEI-YMD
       *
-      *      �����������
+      *      月末日を取得
              INITIALIZE                         STS-AREA-DAY
              INITIALIZE                         LNK-DAY7-AREA
              MOVE    "71"                   TO  LNK-DAY7-IRAI
@@ -276,7 +276,7 @@
                  MOVE    LNK-DAY7-KOYOMI    TO  WRK-GETSUMATSU-YMD
              END-IF
       *
-      *      û���ں߼�Ѵ����������������ˤĤ��Ƽ���
+      *      短期滞在手術基本料３の入院日について取得
              INITIALIZE                         ORCSNYUINDAY-AREA
              MOVE    LNK-TANKI3HKT-HOSPNUM  TO  LNK-NYUINDAY-HOSPNUM
              MOVE    LNK-TANKI3HKT-PTID     TO  LNK-NYUINDAY-PTID
@@ -319,7 +319,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -352,7 +352,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -363,7 +363,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -375,7 +375,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -388,7 +388,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC                 SECTION.
       *

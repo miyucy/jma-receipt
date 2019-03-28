@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Áê¸ßºîÍÑ¥Þ¥¹¥¿            COPY (CPINTERACT.INC)       *
+      *    ç›¸äº’ä½œç”¨ãƒžã‚¹ã‚¿            COPY (CPINTERACT.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  INTERACT-REC.
            03  INTERACT-KEY.
-      *ÌôºÞ¥³¡¼¥É
+      *è–¬å‰¤ã‚³ãƒ¼ãƒ‰
                05  INTERACT-DRUGCD             PIC  X(09).
-      *ÌôºÞ¥³¡¼¥É£²
+      *è–¬å‰¤ã‚³ãƒ¼ãƒ‰ï¼’
                05  INTERACT-DRUGCD2            PIC  X(09).
-      *¾É¾õ¥³¡¼¥É
+      *ç—‡çŠ¶ã‚³ãƒ¼ãƒ‰
                05  INTERACT-SYOJYOUCD          PIC  X(07).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  INTERACT-TERMID              PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  INTERACT-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  INTERACT-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  INTERACT-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  INTERACT-UPHMS               PIC  X(06).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,65 +16,65 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻����������׼����ѥ�᥿������COPY (CPORCSNYURECEDEN.INC)
-      *                                ���ѥץ������ (ORCSNYURECEDEN)
-      *    �������
-      *      ���ŵ��أɣ�
-      *      ���ԣɣ�
-      *      ����ǯ��
-      *      �ݸ���ʬ
+      *    レセ電用入院会計取得パラメタ　　　COPY (CPORCSNYURECEDEN.INC)
+      *                                使用プログラム (ORCSNYURECEDEN)
+      *    設定項目
+      *      医療機関ＩＤ
+      *      患者ＩＤ
+      *      算定年月
+      *      保険区分
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSNYURECEDEN-AREA.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  LNK-NYURECEDEN-HOSPNUM                PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
            03  LNK-NYURECEDEN-PTID                   PIC  9(10).
-      *����ǯ��
+      *算定年月
            03  LNK-NYURECEDEN-SANTEIYM               PIC  X(06).
-      *�ݸ���ʬ�ʣ������ݡ��������ݡ���������Ϣ���
+      *保険区分（１：社保　２：国保　３：広域連合）
            03  LNK-NYURECEDEN-HKNKBN                 PIC  X(01).
-      *�о��ݸ��ȹ礻�ֹ�
+      *対象保険組合せ番号
            03  LNK-NYURECEDEN-SET-HKNCOMBI           PIC  9(04)
                                                           OCCURS 10.
-      *�ֵѹ���
+      *返却項目
            03  LNK-NYURECEDEN-HENKYAKU-AREA.
-      *�����ֵѥơ��֥��ź��������������ź��������������������������
-      *                  ź�������������ܡʿ������ܡ�
-      *                  ź�������������ܡʴĶ����ܡˡ�
+      *入院返却テーブル（添字１：入院料　添字２：特定入院料　３：食事
+      *                  添字４：生活療養（食事療養）
+      *                  添字５：生活療養（環境療養））
              04  LNK-NYURECEDEN-HENKYAKU-TABLE       OCCURS  5.
-      *�������ֵѥơ��֥�
+      *入院料返却テーブル
                05  LNK-NYURECEDEN-HENKYAKU-TBL       OCCURS  31.
-      *�ݸ��ȹ礻
+      *保険組合せ
                    07  LNK-NYURECEDEN-HKNCOMBI       PIC  9(04).
-      *���ٿ�
+      *明細数
                    07  LNK-NYURECEDEN-MEISAISU       PIC  9(03).
-      *���̾���
+      *日別情報
                    07  LNK-NYURECEDEN-DAY-TBL.
                        09  LNK-NYURECEDEN-DAY        PIC  9(01)
                                                           OCCURS 31.
-      *�쥻�ŵ�Ͽ���ꥢ
+      *レセ電記録エリア
                    07  LNK-NYURECEDEN-NYUIN          OCCURS 300.
-      *�쥳���ɼ���
+      *レコード識別
                        09  LNK-NYURECEDEN-RECSKB     PIC  X(02).
-      *���ż���
+      *診療識別
                        09  LNK-NYURECEDEN-SRYSKB     PIC  X(02).
-      *���Ź԰٥�����
+      *診療行為コード
                        09  LNK-NYURECEDEN-SRYCD      PIC  X(09).
-      *����
+      *数量
                        09  LNK-NYURECEDEN-SURYO      PIC  9(01).
-      *����
+      *点数
                        09  LNK-NYURECEDEN-TEN        PIC  9(07).
-      *���
+      *回数
                        09  LNK-NYURECEDEN-KAISU      PIC  9(02).
-      *�����ȵ�Ͽ�ǡ���
+      *コメント記録データ
                        09  LNK-NYURECEDEN-COMMENT    PIC  X(76).
       *
-      *���������ɡʣ�������ǯ��顼���������Ը������顼�������ݸ���ʬ���顼
-      *            ����������פʤ����������ݸ��ȹ礻�������顼��
+      *復帰コード（１：算定年月エラー　２：患者検索エラー　３：保険区分エラー
+      *            ４：入院会計なし　　５：保険組合せ取得エラー）
            03  LNK-NYURECEDEN-RC                     PIC S9(9) BINARY.
       *

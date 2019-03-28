@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,65 +16,65 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������(ϫ�Ҿ���)   COPY (CPSKYRSI.INC)              *
+      *    請求管理(労災情報)   COPY (CPSKYRSI.INC)              *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *  04.07.02    NACL-ƣ��    13/09/20  �軰�Թ԰��б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *  04.07.02    NACL-藤原    13/09/20  第三者行為対応
       *
-      *  04.08.01    NACL-ƣ��    17/04/10  ����ñ�̤Ǥ�������������
-      *                                     ��ϫ�ҽ�����Ϸ��ݽ����б�
-      *                                     �ݸ���ʬ�����ѹ��ܤ��ɲ�
+      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
+      *                                     保険区分検索用項目の追加
       ************************************************************
        01  SKYRSI-REC.
-      *�ˣţ�
+      *ＫＥＹ
            03  SKYRSI-KEY.
-      *���ŵ����ֹ�
+      *医療機関番号
                05  SKYRSI-HOSPNUM          PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  SKYRSI-SRYYM            PIC 9(06).
-      *������ʬ
+      *入外区分
                05  SKYRSI-NYUGAIKBN        PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SKYRSI-PTID             PIC 9(10).
-      *�쥻�ץȲʡʶ���λ������򥻥åȡ�
+      *レセプト科（空白の時ゼロをセット）
                05  SKYRSI-RECEKA           PIC X(02).
-      *������ʧ����
+      *審査支払機関
                05  SKYRSI-TEISYUTUSAKI     PIC 9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  SKYRSI-RECESYUBETU      PIC X(04).
-      *�ݸ����ֹ�
+      *保険者番号
                05  SKYRSI-HKNJANUM         PIC X(08).
-      *�����ʬ�������ݸ��ΤȤ��Τߡ�
+      *補助区分（船員保険のときのみ）
                05  SKYRSI-HOJOKBN-KEY      PIC X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                05  SKYRSI-KOHID-KEY        PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  SKYRSI-TEKSTYMD         PIC X(08).
-      *ʬ���ʬ
+      *分割区分
                05  SKYRSI-RECEIPT-KBN      PIC X(10).
-      *ϫ�Ҿ���
+      *労災情報
            03  SKYRSI-RSIINF.
-      *�ݸ���ʬ�ʣ���û�����������¡��������ե���������������̳�ҳ���
+      *保険区分（１：短期、２：傷病、３：アフターケア、４：公務災害）
                05  SKYRSI-HKNKBN           PIC X(01).
-      *�ͼ���ʬ�ʣ������ͼ������������ͼ���
+      *様式区分（４：新様式、５：従来様式）
                05  SKYRSI-RECEKBN          PIC X(01).
-      *ϫ�ҽ������ʬ�ե饰�ʣ����������ʬ��
+      *労災初回請求分フラグ（１：初回請求分）
                05  SKYRSI-SYOKAIFLG        PIC X(01).
-      *ϫƯ�����Ľ𥳡���
+      *労働基準監督署コード
                05  SKYRSI-SYOCD            PIC X(05).
-      *���Ը����ֹ�
+      *患者交付番号
                05  SKYRSI-KOFUNUM          PIC X(14).
-      *�ҳ���ʬ�ʣ�����̳�������̶С�
+      *災害区分（１：業務、２：通勤）
                05  SKYRSI-SAIGAIKBN        PIC X(01).
-      *ϫ�ҥ�����
+      *労災コメント
                05  SKYRSI-COMMENT          PIC X(200).
-      *������ʧ���ظ����ѹ���
+      *審査支払機関検索用項目
            03  SKYRSI-XXTEISYUTUSAKI       PIC 9(01).
-      *�ݸ��ֹ渡���ѹ���
+      *保険番号検索用項目
            03  SKYRSI-XXHKNNUM             PIC X(03).
-      *�ݸ���ʬ�����ѹ���
+      *保険区分検索用項目
            03  SKYRSI-XXHKNKBN-RSI         PIC X(01).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,70 +16,70 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ��̾�ޥ�����       (CPBYOMEI.INC)  
+      *  病名マスター       (CPBYOMEI.INC)  
       *****************************************************************
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01/00/01    MCC-ƣ��     01.11.09  �������쥤�����Ȥ��ѹ�     
-      *  02/00/01    NACL-��ƣ    02.07.29  �������쥤�����Ȥ��ѹ�     
-      *  04/06/01    NACL-��ƣ    10.10.19  �������쥤�����Ȥ��ѹ�     
-      *  05/00/00    NACL-��ƣ    17.01.06  ICD10(2013)�ɲ�     
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01/00/01    MCC-藤原     01.11.09  新しいレイアウトに変更     
+      *  02/00/01    NACL-伊藤    02.07.29  新しいレイアウトに変更     
+      *  04/06/01    NACL-伊藤    10.10.19  新しいレイアウトに変更     
+      *  05/00/00    NACL-伊藤    17.01.06  ICD10(2013)追加     
       *****************************************************************
       *01  BYOMEI-REC.
       *
            03  BYO-KEY.
-      *��̾������
+      *病名コード
                05  BYO-BYOMEICD        PIC X(07).
-      *��̾
+      *病名
            03  BYO-BYOMEI              PIC X(200).
-      *��̾ʸ����
+      *病名文字数
            03  BYO-BYOMEIMOJI          PIC 9(03).
-      *��ά��̾
+      *省略病名
            03  BYO-TANBYOMEI           PIC X(200).
-      *��ά��̾ʸ����
+      *省略病名文字数
            03  BYO-TANBYOMEIMOJI       PIC 9(03).      
-      *��̾����
+      *病名カナ
            03  BYO-BYOMEIKANA          PIC X(200).
-      *�ܹ��襳����
+      *移行先コード
            03  BYO-IKOSAKICD           PIC X(07).
-      *�������������
+      *特定疾患コード
            03  BYO-TOKSKNCD            PIC 9(02).
-      *���³��襳����
+      *難病外来コード
            03  BYO-NANBYOCD            PIC 9(02).
-      *�����ե饰
+      *疑いフラグ
            03  BYO-UTAGAIFLG           PIC X(01).
-      *ñ�Ȼ��Ѷػ߶�ʬ
+      *単独使用禁止区分
            03  BYO-TANDOKUKBN          PIC 9(02).
-      *�ݸ����ᳰ��ʬ
+      *保険請求外区分
            03  BYO-HKNSKYKBN           PIC 9(01).
-      *��̾������ʬ
+      *病名管理区分
            03  BYO-HYOJUNCD            PIC X(08).
-      *�����ʬ
+      *採択区分
            03  BYO-SAITAKUKBN          PIC X(01).
-      *��̾���ѥ�����
+      *病名交換用コード
            03  BYO-BYOMEICHGCD         PIC X(04).
-      *�ɣãģ�������
+      *ＩＣＤ１０ー１
            03  BYO-ICD10-1             PIC X(05).
-      *�ɣãģ�������
+      *ＩＣＤ１０ー２
            03  BYO-ICD10-2             PIC X(05).
-      *�ɣãģ��������ʣ���������
+      *ＩＣＤ１０ー１（２０１３）
            03  BYO-ICD10-1-2           PIC X(05).
-      *�ɣãģ��������ʣ���������
+      *ＩＣＤ１０ー２（２０１３）
            03  BYO-ICD10-2-2           PIC X(05).
-      *����ǯ����
+      *収載年月日
            03  BYO-SYUSAIYMD           PIC X(08).
-      *�ѹ�ǯ����
+      *変更年月日
            03  BYO-CHGYMD              PIC X(08).
-      *�ѻ�ǯ����
+      *廃止年月日
            03  BYO-HAISIYMD            PIC X(08).
-      *ü���ɣ�
+      *端末ＩＤ
            03  BYO-TERMID              PIC X(32).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  BYO-OPID                PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  BYO-CREYMD              PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  BYO-UPYMD               PIC X(08).
-      *��������
+      *更新時間
            03  BYO-UPHMS               PIC X(06).

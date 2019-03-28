@@ -1,9 +1,9 @@
 --                            --  
---   ´µ¼Ô¾È²ñ¥Ó¥å¡¼           --
+--   æ‚£è€…ç…§ä¼šãƒ“ãƒ¥ãƒ¼           --
 --                            --
 --   2005/02/28
---   £±´µ¼Ô¤ÎÆş±¡ÍúÎò         --
---   ¤òÁ´¤ÆÃê½Ğ¤¹¤ë¤è¤¦¤Ë½¤Àµ --
+--   ï¼‘æ‚£è€…ã®å…¥é™¢å±¥æ­´         --
+--   ã‚’å…¨ã¦æŠ½å‡ºã™ã‚‹ã‚ˆã†ã«ä¿®æ­£ --
 
 drop view view_i001;
 create view view_i001 as SELECT a.hospid, a.ptid, b.rrknum, b.rrkedanum, c.ptnum, a.kananame, a.name, a.sex, a.birthday, a.home_post, a.home_adrs, a.home_banti, b.btunum, b.brmnum, b.nyuinka, b.nyuinymd, b.taiinymd, a.tstptnumkbn FROM tbl_ptnyuinrrk b,tbl_ptnyuinrrk d,tbl_ptinf a, tbl_ptnum c

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ����                COPY (CPADRS.INC)        *
+      *    住所                COPY (CPADRS.INC)        *
       *****************************************************************
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *01  ADRS-REC.
            03  ADRS-KEY.
                05  ADRS-HOSPNUM        PIC 9(2).
-      *�����������Υ�����
+      *地方公共団体コード
                05  ADRS-LPUBCD         PIC X(05).
-      *͹���ֹ�
+      *郵便番号
                05  ADRS-POST           PIC X(07).
-      *����
+      *枝番
                05  ADRS-EDANUM         PIC 9(02).
-      *��ƻ�ܸ�̾����
+      *都道府県名カナ
            03  ADRS-PREFKANA           PIC X(40).
-      *��Į¼̾����
+      *市町村名カナ
            03  ADRS-CITYKANA           PIC X(200).
-      *Į��̾����(200->400)4.6.0
+      *町域名カナ(200->400)4.6.0
            03  ADRS-TOWNKANA           PIC X(400).
-      *��ƻ�ܸ�̾
+      *都道府県名
            03  ADRS-PREFNAME           PIC X(20).
-      *��Į¼̾
+      *市町村名
            03  ADRS-CITYNAME           PIC X(100).
-      *Į��̾(100->200)4.6.0
+      *町域名(100->200)4.6.0
            03  ADRS-TOWNNAME           PIC X(200).
-      *�Խ��彻�ꥫ��(440->640)4.6.0
+      *編集後住所カナ(440->640)4.6.0
            03  ADRS-EDITADRS-KANA      PIC X(640).
-      *�Խ��彻��(220->320)4.6.0
+      *編集後住所(220->320)4.6.0
            03  ADRS-EDITADRS-NAME      PIC X(320).
-      *Į��ʬ��ե饰
+      *町域分割フラグ
            03  ADRS-TOWNDIVFLG         PIC X(01).
-      *ʣ��Į��ե饰
+      *複数町域フラグ
            03  ADRS-MANYTOWNFLG        PIC X(01).
-      *��­���̤�̾��4.6.0
+      *補足（通り名）4.6.0
            03  ADRS-TOWNNAME2          PIC X(1200).
       *

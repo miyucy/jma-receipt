@@ -1,7 +1,7 @@
 #$ type="hierarchy" version="2.0" encoding="EUC-JP"
-# XML¥Ç¥³¡¼¥ÉÍÑ¡¡³¬ÁØ¥Ç¡¼¥¿¥Õ¥¡¥¤¥ë
-# ¤Ş¤¿¤Ï¡¢¥³¥ó¥Ğ¡¼¥È¸å¤ÎXML¥Ç¥³¡¼¥ÉÍÑ¡¡³¬ÁØ¡İ¥Ñ¥é¥á¡¼¥¿·ë¤Ó¤Ä¤±¡Ê¥ê¥ó¥¯¡Ë¥Õ¥¡¥¤¥ë
-# ¤Ş¤¿¤Ï¡¢¥³¥ó¥Ğ¡¼¥È¸å¤ÎXML¥Ç¥³¡¼¥ÉÍÑ¡¡def¥Õ¥¡¥¤¥ë
+# XMLãƒ‡ã‚³ãƒ¼ãƒ‰ç”¨ã€€éšå±¤ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«
+# ã¾ãŸã¯ã€ã‚³ãƒ³ãƒãƒ¼ãƒˆå¾Œã®XMLãƒ‡ã‚³ãƒ¼ãƒ‰ç”¨ã€€éšå±¤âˆ’ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿çµã³ã¤ã‘ï¼ˆãƒªãƒ³ã‚¯ï¼‰ãƒ•ã‚¡ã‚¤ãƒ«
+# ã¾ãŸã¯ã€ã‚³ãƒ³ãƒãƒ¼ãƒˆå¾Œã®XMLãƒ‡ã‚³ãƒ¼ãƒ‰ç”¨ã€€defãƒ•ã‚¡ã‚¤ãƒ«
 #
 #
 
@@ -9,7 +9,7 @@
 
 # ===========================================================================
 
-# MML¥¿¥°¤ÎÂ°À­
+# MMLã‚¿ã‚°ã®å±æ€§
 
 # Mml[1]@xmlns:mmlPh
 # Mml[1]@xmlns:mmlCm
@@ -24,71 +24,71 @@
 # Mml[1]@xmlns:mmlAd
 # Mml[1]@xmlns:claim
 # Mml[1]@xmlns:mmlRd
-# ºîÀ®Æü¡¦ºîÀ®Æü»ş
+# ä½œæˆæ—¥ãƒ»ä½œæˆæ—¥æ™‚
 # Mml[1]@createDate
 
 
 
 # ===========================================================================
-# MML¥Ø¥Ã¥À¾ğÊó
+# MMLãƒ˜ãƒƒãƒ€æƒ…å ±
 
 
 # ---------------------------------------------
 
-# ´µ¼Ô¼çID¾ğÊó
+# æ‚£è€…ä¸»IDæƒ…å ±
 
-# ´µ¼Ô¼çID
+# æ‚£è€…ä¸»ID
 /Mml[1]/MmlHeader[1]/masterId[1]/mmlCm:Id[1] = 20
-# ID¤Î¼ïÎà¥³¡¼¥É
+# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 /Mml[1]/MmlHeader[1]/masterId[1]/mmlCm:Id[1]@mmlCm:type = 8
-# ID¤Î¼ïÎà¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾
+# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 # /Mml[1]/MmlHeader[1]/masterId[1]/mmlCm:Id[1]@mmlCm:tableId
-# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 # /Mml[1]/MmlHeader[1]/masterId[1]/mmlCm:Id[1]@mmlCm:checkDigit
-# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 # /Mml[1]/MmlHeader[1]/masterId[1]/mmlCm:Id[1]@mmlCm:checkDigitSchema
 
 
 # ---------------------------------------------
 
-# À¸À®¼Ô¾ğÊó
+# ç”Ÿæˆè€…æƒ…å ±
 
 $BaseStart, /Mml[1]/MmlHeader[1]/mmlCi:CreatorInfo[1]
 	$BaseStart, mmlPsi:PersonalizedInfo[1]
-		# À¸À®¼Ô ¸Ä¿ÍID
+		# ç”Ÿæˆè€… å€‹äººID
 
-		# ºîÀ®¼Ô ¸Ä¿ÍID
+		# ä½œæˆè€… å€‹äººID
 		mmlCm:Id[1] = 20
 		# mmlCm:Id[1]@mmlCm:type
 		# mmlCm:Id[1]@mmlCm:tableId
 		# mmlCm:Id[1]@mmlCm:checkDigit
 		# mmlCm:Id[1]@mmlCm:checkDigitSchema
 
-		# À¸À®¼Ô »áÌ¾¾ğÊó
+		# ç”Ÿæˆè€… æ°åæƒ…å ±
 
 		# mmlPsi:personName[1]/mmlNm:Name[1]@mmlNm:repCode
 		# mmlPsi:personName[1]/mmlNm:Name[1]@mmlNm:tableId
-		# ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à
+		# ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ 
 		mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:fullname[1] = 100
-		# ºîÀ®¼Ô ¸Ä¿ÍÀ«
+		# ä½œæˆè€… å€‹äººå§“
 		mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:family[1] = 50
-		# ºîÀ®¼Ô ¸Ä¿ÍÌ¾
+		# ä½œæˆè€… å€‹äººå
 		mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:given[1] = 50
-		# ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+		# ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
 		mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:middle[1] = 50
-		# ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+		# ä½œæˆè€… è‚©æ›¸ããªã©
 		mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:prefix[1] = 50
-		# ºîÀ®¼Ô ³Ø°Ì
+		# ä½œæˆè€… å­¦ä½
 		mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:degree[1] = 50
 
 
-		# À¸À®¼Ô »ÜÀß¾ğÊó
+		# ç”Ÿæˆè€… æ–½è¨­æƒ…å ±
 
-		# »ÜÀß¾ğÊóÌ¾
+		# æ–½è¨­æƒ…å ±å
 		mmlFc:Facility[1]/mmlFc:name[1] = 50
 		# mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:repCode
 		# mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:tableId
-		# »ÜÀßID
+		# æ–½è¨­ID
 		mmlFc:Facility[1]/mmlCm:Id[1] = 20
 		# mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:type
 		# mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:tableId
@@ -96,13 +96,13 @@ $BaseStart, /Mml[1]/MmlHeader[1]/mmlCi:CreatorInfo[1]
 		# mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:checkDigitSchema
 
 
-		# À¸À®¼Ô ¿ÇÎÅ²Ê¾ğÊó
+		# ç”Ÿæˆè€… è¨ºç™‚ç§‘æƒ…å ±
 
-		# ¿ÇÎÅ²ÊÌ¾¾Î
+		# è¨ºç™‚ç§‘åç§°
 		mmlDp:Department[1]/mmlDp:name[1] = 50
 		# mmlDp:Department[1]/mmlDp:name[1]@mmlDp:repCode
 		# mmlDp:Department[1]/mmlDp:name[1]@mmlDp:tableId
-		# ¿ÇÎÅ²ÊID
+		# è¨ºç™‚ç§‘ID
 		mmlDp:Department[1]/mmlCm:Id[1] = 20
 		# mmlDp:Department[1]/mmlCm:Id[1]@mmlCm:type
 		# mmlDp:Department[1]/mmlCm:Id[1]@mmlCm:tableId
@@ -110,64 +110,64 @@ $BaseStart, /Mml[1]/MmlHeader[1]/mmlCi:CreatorInfo[1]
 		# mmlDp:Department[1]/mmlCm:Id[1]@mmlCm:checkDigitSchema
 
 
-		# À¸À®¼Ô ½»½ê
+		# ç”Ÿæˆè€… ä½æ‰€
 
-		# ½»½ê
+		# ä½æ‰€
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:full[1] = 400
 		# mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:tableId
-		# ½»½ê¤Î¼ïÎà [¾ÊÎ¬²ÄÇ½¡¦Â°À­] [business]
+		# ä½æ‰€ã®ç¨®é¡ [çœç•¥å¯èƒ½ãƒ»å±æ€§] [business]
 		mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:addressClass = 10
 		# mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:repCode
-		# ÅÔÆ»ÉÜ¸©
+		# éƒ½é“åºœçœŒ
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:prefecture[1] = 20
-		# »Ô¡¢¶è¡¢·´
+		# å¸‚ã€åŒºã€éƒ¡
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:city[1] = 20
-		# Ä®¡¢Â¼
+		# ç”ºã€æ‘
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:town[1] = 20
-		# ÈÖÃÏ¡¢ÃúÌÜÅù
+		# ç•ªåœ°ã€ä¸ç›®ç­‰
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:homeNumber[1] = 200
-		# Í¹ÊØÈÖ¹æ
+		# éƒµä¾¿ç•ªå·
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:zip[1] = 8
-		# ¹ñ¥³¡¼¥É
+		# å›½ã‚³ãƒ¼ãƒ‰
 		mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:countryCode[1] = 10
 
 
-		# À¸À®¼Ô ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+		# ç”Ÿæˆè€… é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 
-		# ¥á¡¼¥ë¥¢¥É¥ì¥¹
+		# ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 		mmlPsi:emailAddresses[1]/mmlCm:email[1] = 100
 
 
-		# À¸À®¼Ô Ï¢ÍíÀèÅÅÏÃÈÖ¹æ
+		# ç”Ÿæˆè€… é€£çµ¡å…ˆé›»è©±ç•ªå·
 
-		# »Ô³°¶ÉÈÖ
+		# å¸‚å¤–å±€ç•ª
 		mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:area[1] = 10
-		# ¶ÉÈÖ
+		# å±€ç•ª
 		mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:city[1] = 10
-		# ²ÃÆşÈÖ¹æ
+		# åŠ å…¥ç•ªå·
 		mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:number[1] = 10
-		# ÆâÀşÈÖ¹æ
+		# å†…ç·šç•ªå·
 		mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:extension[1] = 10
-		# ¹ñÈÖ¹æ
+		# å›½ç•ªå·
 		mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:country[1] = 10
-		# »ÈÍÑ»ş´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+		# ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
 		mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:memo[1] = 100
-		# ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É [¾ÊÎ¬²ÄÇ½¡¦Â°À­] [PH]
+		# è£…ç½®ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰ [çœç•¥å¯èƒ½ãƒ»å±æ€§] [PH]
 		mmlPsi:phones[1]/mmlPh:Phone[1]@mmlPh:telEquipType = 10
 	$BaseEnd
 
 
-	# À¸À®¼Ô¤Î»ñ³Ê¾ğÊó
+	# ç”Ÿæˆè€…ã®è³‡æ ¼æƒ…å ±
 
 	# mmlCi:creatorLicense[1]@mmlCi:tableId
-	# À¸À®¼Ô¤Ë»ñ³Ê
+	# ç”Ÿæˆè€…ã«è³‡æ ¼
 	mmlCi:creatorLicense[1] = 20
 $BaseEnd
 
 
 # ---------------------------------------------
 
-# MML¤Ç»È¤ï¤ì¤Æ¤¤¤ë¤¹¤Ù¤Æ¤ÎDTD¤Î¥ê¥¹¥È¥¢¥Ã¥×
+# MMLã§ä½¿ã‚ã‚Œã¦ã„ã‚‹ã™ã¹ã¦ã®DTDã®ãƒªã‚¹ãƒˆã‚¢ãƒƒãƒ—
 
 # /Mml[1]/MmlHeader[1]/toc[1]/tocItem[1]
 # /Mml[1]/MmlHeader[1]/toc[1]/tocItem[2]
@@ -186,71 +186,71 @@ $BaseEnd
 # ---------------------------------------------
 
 
-# MMLËÜÊ¸Á´ÂÎ¤ÎÂĞ¾İ´ü´Ö[Ã±ÆÈ¥¿¥°]
+# MMLæœ¬æ–‡å…¨ä½“ã®å¯¾è±¡æœŸé–“[å˜ç‹¬ã‚¿ã‚°]
 
-# ³«»ÏÆü
+# é–‹å§‹æ—¥
 # /Mml[1]/MmlHeader[1]/scopePeriod[1]@start
-# ½ªÎ»Æü
+# çµ‚äº†æ—¥
 # /Mml[1]/MmlHeader[1]/scopePeriod[1]@end
-# ´ü´Ö³°¾ğÊó¤ÎÍ­Ìµ
+# æœŸé–“å¤–æƒ…å ±ã®æœ‰ç„¡
 # /Mml[1]/MmlHeader[1]/scopePeriod[1]@has0otherInfo
-# ¾ğÊóÃê½Ğ¤ÎÍ­Ìµ
+# æƒ…å ±æŠ½å‡ºã®æœ‰ç„¡
 # /Mml[1]/MmlHeader[1]/scopePeriod[1]@isExtract
-# Ãê½Ğ¤Î¥İ¥ê¥·¡¼
+# æŠ½å‡ºã®ãƒãƒªã‚·ãƒ¼
 # /Mml[1]/MmlHeader[1]/scopePeriod[1]@extractPolicy
 
 
-# ÅÅ»Ò½ğÌ¾¤Ê¤É¤Î°Å¹æ²½¾ğÊó
+# é›»å­ç½²åãªã©ã®æš—å·åŒ–æƒ…å ±
 # /Mml[1]/MmlHeader[1]/encryptInfo[1]
 
 
 
 # ===========================================================================
-# ´µ¼Ô¾ğÊó¥â¥¸¥å¡¼¥ë
+# æ‚£è€…æƒ…å ±ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
 
-# lt_pat1 ÇÛÎóÂĞ¾İ»ØÄê Start
+# lt_pat1 é…åˆ—å¯¾è±¡æŒ‡å®š Start
 $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = patientInfo, 1, /Mml[1]/MmlBody[1]/MmlModuleItem[X]
 
 
 # ---------------------------------------------
 
-# ¥Ø¥Ã¥À¾ğÊó
+# ãƒ˜ãƒƒãƒ€æƒ…å ±
 
-# ¥â¥¸¥å¡¼¥ë¤Î¼ïÎà
+# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ç¨®é¡
 # /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType
 
 $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 
-	# ¥¢¥¯¥»¥¹¸¢
+	# ã‚¢ã‚¯ã‚»ã‚¹æ¨©
 
-	# ¥¢¥¯¥»¥¹¼Ô
+	# ã‚¢ã‚¯ã‚»ã‚¹è€…
 	# securityLevel[1]/accessRight[1]@accessRole
-	# ºï½ü¸¢¤ÎÍ­Ìµ
+	# å‰Šé™¤æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[1]@delete
-	# »²¾È¸¢¤ÎÍ­Ìµ
+	# å‚ç…§æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[1]@read
 
-	# ¥¢¥¯¥»¥¹¼Ô
+	# ã‚¢ã‚¯ã‚»ã‚¹è€…
 	# securityLevel[1]/accessRight[2]@accessRole
-	# ºï½ü¸¢¤ÎÍ­Ìµ
+	# å‰Šé™¤æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[2]@delete
-	# »²¾È¸¢¤ÎÍ­Ìµ
+	# å‚ç…§æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[2]@read
 
-	# Ê¸½ñ¥¿¥¤¥È¥ë
+	# æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ«
 	# title[1]
-	# Ê¸½ñ¾ÜºÙ¼ïÊÌ
+	# æ–‡æ›¸è©³ç´°ç¨®åˆ¥
 	# title[1]@generationPurpose
 
-	# Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+	# æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
 	docId[1]/uid[1] = 36
-	# ´ØÏ¢¿ÆÊ¸½ñ¤ÎID
+	# é–¢é€£è¦ªæ–‡æ›¸ã®ID
 	# docId[1]/parentId[1]
-	# ´ØÏ¢¤Î¼ïÊÌ
+	# é–¢é€£ã®ç¨®åˆ¥
 	# docId[1]/parentId[1]@relation
 
-	# ¥«¥ë¥ÆÅÅ»ÒÊİÂ¸¤Î³ÎÄêÆü
+	# ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
 	confirmDate[1] = 10
 
 
@@ -258,10 +258,10 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 
 	$BaseStart, mmlCi:CreatorInfo[1]
 
-	# À¸À®¼Ô¾ğÊó
+	# ç”Ÿæˆè€…æƒ…å ±
 		$BaseStart, mmlPsi:PersonalizedInfo[1]
 
-			# À¸À®¼Ô ¸Ä¿ÍID
+			# ç”Ÿæˆè€… å€‹äººID
 
 			# mmlCm:Id[1]@mmlCm:checkDigitSchema
 			# mmlCm:Id[1]@mmlCm:tableId
@@ -270,7 +270,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			# mmlCm:Id[1]
 
 
-			# À¸À®¼Ô »áÌ¾¾ğÊó
+			# ç”Ÿæˆè€… æ°åæƒ…å ±
 
 			$BaseStart, mmlPsi:personName[1]
 				# mmlNm:Name[1]@mmlNm:repCode
@@ -283,7 +283,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 				# mmlNm:Name[1]/mmlNm:degree[1]
 			$BaseEnd
 
-			# À¸À®¼Ô »ÜÀß¾ğÊó
+			# ç”Ÿæˆè€… æ–½è¨­æƒ…å ±
 
 			$BaseStart, mmlFc:Facility[1]
 				# mmlFc:name[1]@mmlFc:tableId
@@ -297,7 +297,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			$BaseEnd
 
 
-			# À¸À®¼Ô ¿ÇÎÅ²Ê¾ğÊó
+			# ç”Ÿæˆè€… è¨ºç™‚ç§‘æƒ…å ±
 
 			$BaseStart, mmlDp:Department[1]
 				# mmlDp:name[1]@mmlDp:tableId
@@ -311,7 +311,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			$BaseEnd
 
 
-			# À¸À®¼Ô ½»½ê
+			# ç”Ÿæˆè€… ä½æ‰€
 
 			$BaseStart, mmlPsi:addresses[1]
 				# mmlAd:Address[1]@mmlAd:tableId
@@ -327,12 +327,12 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			$BaseEnd
 
 
-			# À¸À®¼Ô ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+			# ç”Ÿæˆè€… é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 
 			# mmlPsi:emailAddresses[1]/mmlCm:email[1]
 
 
-			# À¸À®¼Ô Ï¢ÍíÀèÅÅÏÃÈÖ¹æ
+			# ç”Ÿæˆè€… é€£çµ¡å…ˆé›»è©±ç•ªå·
 
 			$BaseStart, mmlPsi:phones[1]
 				# mmlPh:Phone[1]@mmlPh:telEquipType
@@ -346,7 +346,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 		$BaseEnd
 
 
-		# À¸À®¼Ô¤Î»ñ³Ê
+		# ç”Ÿæˆè€…ã®è³‡æ ¼
 
 		# mmlCi:creatorLicense[1]@mmlCi:tableId
 		# mmlCi:creatorLicense[1]
@@ -359,39 +359,39 @@ $BaseEnd
 
 
 $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlPi:PatientModule[1]
-	# ´µ¼Ô¼çID
+	# æ‚£è€…ä¸»ID
 
 	$BaseStart, mmlPi:uniqueInfo[1]/mmlPi:masterId[1]
-		# ´µ¼Ô¼çID
+		# æ‚£è€…ä¸»ID
 		mmlCm:Id[1] = 20
-		# ID¤Î¼ïÎà¥³¡¼¥É
+		# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 		mmlCm:Id[1]@mmlCm:type = 8
 		# MML0024
 		mmlCm:Id[1]@mmlCm:tableId = 7
-		# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+		# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 		mmlCm:Id[1]@mmlCm:checkDigit = 2
-		# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+		# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 		mmlCm:Id[1]@mmlCm:checkDigitSchema = 3
 	$BaseEnd
 
 
 
-	# ¤½¤ÎÂ¾¤ÎID
+	# ãã®ä»–ã®ID
 
-	# ¤½¤ÎÂ¾¤ÎID¤Î¼ïÎà
+	# ãã®ä»–ã®IDã®ç¨®é¡
 	mmlPi:uniqueInfo[1]/mmlPi:otherId[1]@mmlPi:type = 20
 
 
 	$BaseStart, mmlPi:uniqueInfo[1]/mmlPi:otherId[1]
-		# ¤½¤ÎÂ¾¤ÎID
+		# ãã®ä»–ã®ID
 		mmlCm:Id[1] = 20
-		# ID¤Î¼ïÎà¥³¡¼¥É
+		# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 		mmlCm:Id[1]@mmlCm:type = 8
-		# ID¤Î¼ïÎà¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾
+		# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 		mmlCm:Id[1]@mmlCm:tableId = 7
-		# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+		# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 		mmlCm:Id[1]@mmlCm:checkDigit = 2
-		# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+		# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 		mmlCm:Id[1]@mmlCm:checkDigitSchema = 3
 	$BaseEnd
 
@@ -399,24 +399,24 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlPi:PatientModule[1
 
 	# -------------------------------------------------------
 
-	# »áÌ¾¾ğÊó
+	# æ°åæƒ…å ±
 
 	$BaseStart, mmlPi:personName[1]
-		# É½µ­Ë¡
+		# è¡¨è¨˜æ³•
 		mmlNm:Name[1]@mmlNm:repCode = 1
-		# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾[MML0025¤Ç¸ÇÄê]
+		# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å[MML0025ã§å›ºå®š]
 		mmlNm:Name[1]@mmlNm:tableId = 7
-		# À«
+		# å§“
 		mmlNm:Name[1]/mmlNm:family[1] = 50
-		# Ì¾
+		# å
 		mmlNm:Name[1]/mmlNm:given[1] = 50
-		# ¥ß¥É¥ë¥Í¡¼¥à
+		# ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
 		mmlNm:Name[1]/mmlNm:middle[1] = 50
-		# ¥Õ¥ë¥Í¡¼¥à
+		# ãƒ•ãƒ«ãƒãƒ¼ãƒ 
 		mmlNm:Name[1]/mmlNm:fullname[1] = 100
-		# ¸ª½ñ¤­¤Ê¤É
+		# è‚©æ›¸ããªã©
 		mmlNm:Name[1]/mmlNm:prefix[1] = 50
-		# ³Ø°Ì
+		# å­¦ä½
 		mmlNm:Name[1]/mmlNm:degree[1] = 50
 	$BaseEnd
 
@@ -425,53 +425,53 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlPi:PatientModule[1
 	# -------------------------------------------------------
 
 
-	# À¸Ç¯·îÆü
+	# ç”Ÿå¹´æœˆæ—¥
 	mmlPi:birthday[1] = 10
-	# À­ÊÌ
+	# æ€§åˆ¥
 	mmlPi:sex[1] = 7
-	# ¹ñÀÒ¥³¡¼¥É
+	# å›½ç±ã‚³ãƒ¼ãƒ‰
 	mmlPi:nationality[1] = 10
-	# Âè£²¹ñÀÒ¥³¡¼¥É [Â°À­]
+	# ç¬¬ï¼’å›½ç±ã‚³ãƒ¼ãƒ‰ [å±æ€§]
 	mmlPi:nationality[1]@mmlPi:subtype = 10
-	# º§°ù¾õÂÖ
+	# å©šå§»çŠ¶æ…‹
 	mmlPi:marital[1] = 10
 
 
 	# -------------------------------------------------------
 
-	# ½»½ê¾ğÊó
+	# ä½æ‰€æƒ…å ±
 
 
 	# -----------------------------------
 
 	$BaseStart, mmlPi:addresses[1]
 
-		# ½»½ê¾ğÊó
+		# ä½æ‰€æƒ…å ±
 
 
-		# ½»½ê¾ğÊó¤ÎÎÎ°è¤ò4¤ÄÄêµÁ¤¹¤ë
+		# ä½æ‰€æƒ…å ±ã®é ˜åŸŸã‚’4ã¤å®šç¾©ã™ã‚‹
 		$Repeat, 4, @@PM_ADR@@, 0
 
-			# ½»½ê¾ğÊó [@@PM_ADR@@]
-			# É½µ­Ë¡
+			# ä½æ‰€æƒ…å ± [@@PM_ADR@@]
+			# è¡¨è¨˜æ³•
 			mmlAd:Address[@@PM_ADR@@]@mmlAd:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 			mmlAd:Address[@@PM_ADR@@]@mmlAd:tableId = 7
-			# ½»½ê¤Î¼ïÎà¥³¡¼¥É
+			# ä½æ‰€ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlAd:Address[@@PM_ADR@@]@mmlAd:addressClass = 10
-			# ÅÔÆ»ÉÜ¸©
+			# éƒ½é“åºœçœŒ
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:prefecture[1] = 20
-			# »Ô¡¢¶è¡¢·´
+			# å¸‚ã€åŒºã€éƒ¡
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:city[1] = 20
-			# Ä®¡¢Â¼
+			# ç”ºã€æ‘
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:town[1] = 20
-			# ÈÖÃÏ¡¢ÃúÌÜ¡¢¤½¤ÎÂ¾
+			# ç•ªåœ°ã€ä¸ç›®ã€ãã®ä»–
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:homeNumber[1] = 200
-			# °ìÏ¢½»½ê
+			# ä¸€é€£ä½æ‰€
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:full[1] = 400
-			# Í¹ÊØÈÖ¹æ
+			# éƒµä¾¿ç•ªå·
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:zip[1] = 8
-			# ¹ñ¥³¡¼¥É
+			# å›½ã‚³ãƒ¼ãƒ‰
 			mmlAd:Address[@@PM_ADR@@]/mmlAd:countryCode[1] = 10
 		$EndRepeat
 	$BaseEnd
@@ -480,28 +480,28 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlPi:PatientModule[1
 
 	# -------------------------------------------------------
 
-	# ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+	# é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 	mmlPi:emailAddresses[1]/mmlCm:email[1] = 100
 
 
 	# -------------------------------------------------------
 
-	# ÅÅÏÃÈÖ¹æ¾ğÊó
+	# é›»è©±ç•ªå·æƒ…å ±
 
 	$BaseStart, mmlPi:phones[1]
-		# ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+		# è£…ç½®ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 		mmlPh:Phone[1]@mmlPh:telEquipType = 10
-		# »Ô³°¶ÉÈÖ
+		# å¸‚å¤–å±€ç•ª
 		mmlPh:Phone[1]/mmlPh:area[1] = 10
-		# ¶ÉÈÖ
+		# å±€ç•ª
 		mmlPh:Phone[1]/mmlPh:city[1] = 10
-		# ²ÃÆşÈÖ¹æ
+		# åŠ å…¥ç•ªå·
 		mmlPh:Phone[1]/mmlPh:number[1] = 10
-		# ÆâÀşÈÖ¹æ
+		# å†…ç·šç•ªå·
 		mmlPh:Phone[1]/mmlPh:extension[1] = 10
-		# ¹ñÈÖ¹æ
+		# å›½ç•ªå·
 		mmlPh:Phone[1]/mmlPh:country[1] = 10
-		# »ÈÍÑ»ş´ÖÂÓ¤Ê¤É¤Î¥á¥â
+		# ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã®ãƒ¡ãƒ¢
 		mmlPh:Phone[1]/mmlPh:memo[1] = 100
 	$BaseEnd
 
@@ -509,13 +509,13 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlPi:PatientModule[1
 	# -------------------------------------------------------
 
 
-	# ²ñ·×ÈÖ¹æ
+	# ä¼šè¨ˆç•ªå·
 	mmlPi:accountNumber[1] = 50
-	# ¼Ò²ñÈÖ¹æ
+	# ç¤¾ä¼šç•ªå·
 	mmlPi:socialldentification[1] = 50
-	# »àË´¥Õ¥é¥°
+	# æ­»äº¡ãƒ•ãƒ©ã‚°
 	mmlPi:death[1] = 5
-	# »àË´Æü¡¿Æü»ş
+	# æ­»äº¡æ—¥ï¼æ—¥æ™‚
 	mmlPi:death[1]@mmlPi:date = 16
 $BaseEnd
 
@@ -524,72 +524,72 @@ $BaseEnd
 # =======================================================
 
 
-# lt_pat1 ÇÛÎóÂĞ¾İ»ØÄê End
+# lt_pat1 é…åˆ—å¯¾è±¡æŒ‡å®š End
 $LineTargetEnd
 
 
 
 # ===========================================================================
-# ·ò¹¯Êİ¸±¾ğÊó¥â¥¸¥å¡¼¥ë¤ò£²¤ÄÍÑ°Õ¤¹¤ë
+# å¥åº·ä¿é™ºæƒ…å ±ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ï¼’ã¤ç”¨æ„ã™ã‚‹
 $Repeat, 2, @@HI_MOD@@, 0
-# ·ò¹¯Êİ¸±¾ğÊó¥â¥¸¥å¡¼¥ë [@@HI_MOD@@]
+# å¥åº·ä¿é™ºæƒ…å ±ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« [@@HI_MOD@@]
 
 
-# ÇÛÎóÂĞ¾İ»ØÄê Start
+# é…åˆ—å¯¾è±¡æŒ‡å®š Start
 $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = healthInsurance, @@HI_MOD@@, /Mml[1]/MmlBody[1]/MmlModuleItem[X]
 
 
 	# ---------------------------------------------
 
-	# ¥Ø¥Ã¥À¾ğÊó
+	# ãƒ˜ãƒƒãƒ€æƒ…å ±
 
-	# ¥â¥¸¥å¡¼¥ë¤Î¼ïÎà
+	# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ç¨®é¡
 	# /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType
 
 
 	$BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 
 
-		# ¥¢¥¯¥»¥¹¸¢
+		# ã‚¢ã‚¯ã‚»ã‚¹æ¨©
 
-		# ¥¢¥¯¥»¥¹¼Ô
+		# ã‚¢ã‚¯ã‚»ã‚¹è€…
 		# securityLevel[1]/accessRight[1]@accessRole
-		# ºï½ü¸¢¤ÎÍ­Ìµ
+		# å‰Šé™¤æ¨©ã®æœ‰ç„¡
 		# securityLevel[1]/accessRight[1]@delete
-		# »²¾È¸¢¤ÎÍ­Ìµ
+		# å‚ç…§æ¨©ã®æœ‰ç„¡
 		# securityLevel[1]/accessRight[1]@read
 
-		# ¥¢¥¯¥»¥¹¼Ô
+		# ã‚¢ã‚¯ã‚»ã‚¹è€…
 		# securityLevel[1]/accessRight[2]@accessRole
-		# ºï½ü¸¢¤ÎÍ­Ìµ
+		# å‰Šé™¤æ¨©ã®æœ‰ç„¡
 		# securityLevel[1]/accessRight[2]@delete
-		# »²¾È¸¢¤ÎÍ­Ìµ
+		# å‚ç…§æ¨©ã®æœ‰ç„¡
 		# securityLevel[1]/accessRight[2]@read
 
-		# Ê¸½ñ¥¿¥¤¥È¥ë
+		# æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ«
 		# title[1]
-		# Ê¸½ñ¾ÜºÙ¼ïÊÌ
+		# æ–‡æ›¸è©³ç´°ç¨®åˆ¥
 		# title[1]@generationPurpose
 
-		# Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+		# æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
 		docId[1]/uid[1] = 36
-		# ´ØÏ¢¿ÆÊ¸½ñ¤ÎID
+		# é–¢é€£è¦ªæ–‡æ›¸ã®ID
 		# docId[1]/parentId[1]
-		# ´ØÏ¢¤Î¼ïÊÌ
+		# é–¢é€£ã®ç¨®åˆ¥
 		# docId[1]/parentId[1]@relation
 
-		# ¥«¥ë¥ÆÅÅ»ÒÊİÂ¸¤Î³ÎÄêÆü
+		# ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
 		confirmDate[1] = 10
 
 
 	# ---------------------------------------------
 
-		# À¸À®¼Ô¾ğÊó
+		# ç”Ÿæˆè€…æƒ…å ±
 
 		$BaseStart, mmlCi:CreatorInfo[1]
 
 			$BaseStart, mmlPsi:PersonalizedInfo[1]
-				# À¸À®¼Ô ¸Ä¿ÍID
+				# ç”Ÿæˆè€… å€‹äººID
 
 				# mmlCm:Id[1]@mmlCm:checkDigitSchema
 				# mmlCm:Id[1]@mmlCm:tableId
@@ -598,7 +598,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlCm:Id[1]
 
 
-				# À¸À®¼Ô »áÌ¾¾ğÊó
+				# ç”Ÿæˆè€… æ°åæƒ…å ±
 
 				# mmlPsi:personName[1]/mmlNm:Name[1]@mmlNm:repCode
 				# mmlPsi:personName[1]/mmlNm:Name[1]@mmlNm:tableId
@@ -610,7 +610,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:degree[1]
 
 
-				# À¸À®¼Ô »ÜÀß¾ğÊó
+				# ç”Ÿæˆè€… æ–½è¨­æƒ…å ±
 
 				# mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:tableId
 				# mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:repCode
@@ -622,7 +622,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlFc:Facility[1]/mmlCm:Id[1]
 
 
-				# À¸À®¼Ô ¿ÇÎÅ²Ê¾ğÊó
+				# ç”Ÿæˆè€… è¨ºç™‚ç§‘æƒ…å ±
 
 				# mmlDp:Department[1]/mmlDp:name[1]@mmlDp:tableId
 				# mmlDp:Department[1]/mmlDp:name[1]@mmlDp:repCode
@@ -634,7 +634,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlDp:Department[1]/mmlCm:Id[1]
 
 
-				# À¸À®¼Ô ½»½ê
+				# ç”Ÿæˆè€… ä½æ‰€
 
 				# mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:tableId
 				# mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:addressClass
@@ -648,12 +648,12 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:countryCode[1]
 
 
-				# À¸À®¼Ô ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+				# ç”Ÿæˆè€… é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 
 				# mmlPsi:emailAddresses[1]/mmlCm:email[1]
 
 
-				# À¸À®¼Ô Ï¢ÍíÀèÅÅÏÃÈÖ¹æ
+				# ç”Ÿæˆè€… é€£çµ¡å…ˆé›»è©±ç•ªå·
 
 				# mmlPsi:phones[1]/mmlPh:Phone[1]@mmlPh:telEquipType
 				# mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:area[1]
@@ -665,7 +665,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 			$BaseEnd
 
 
-			# À¸À®¼Ô¤Î»ñ³Ê
+			# ç”Ÿæˆè€…ã®è³‡æ ¼
 
 			# mmlCi:creatorLicense[1]@mmlCi:tableId
 			# mmlCi:creatorLicense[1]
@@ -679,293 +679,293 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 	# =======================================================
 
 
-	# ¹ñ¥¿¥¤¥×
+	# å›½ã‚¿ã‚¤ãƒ—
 	/Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlHi:HealthInsuranceModule[1]@mmlHi:countryType = 10
 
 
-	# ·ò¹¯Êİ¸±¾ğÊóËÜÂÎ¤ò¥Ù¡¼¥¹¤Ë¤¹¤ë
+	# å¥åº·ä¿é™ºæƒ…å ±æœ¬ä½“ã‚’ãƒ™ãƒ¼ã‚¹ã«ã™ã‚‹
 	$BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlHi:HealthInsuranceModule[1]
 
-		# ·ò¹¯Êİ¸±¼ïÊÌ
+		# å¥åº·ä¿é™ºç¨®åˆ¥
 		mmlHi:insuranceClass[1] = 20
-		# Êİ¸±¼ïÊÌ¥³¡¼¥É [Â°À­, 2·å]
+		# ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ [å±æ€§, 2æ¡]
 		mmlHi:insuranceClass[1]@mmlHi:ClassCode = 2
-		# Êİ¸±¼ïÊÌ¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾[MML0031]
+		# ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å[MML0031]
 		mmlHi:insuranceClass[1]@mmlHi:tableId = 7
 
 
-		# ·ò¹¯Êİ¸±ÈÖ¹æ
+		# å¥åº·ä¿é™ºç•ªå·
 		mmlHi:insuranceNumber[1] = 8
 
-		# ÈïÊİ¸±¼Ôµ­¹æ
+		# è¢«ä¿é™ºè€…è¨˜å·
 		mmlHi:clientId[1]/mmlHi:group[1] = 80
-		# ÈïÊİ¸±¼ÔÈÖ¹æ
+		# è¢«ä¿é™ºè€…ç•ªå·
 		mmlHi:clientId[1]/mmlHi:number[1] = 80
 
-		# ËÜ¿Í²ÈÂ²¶èÊ¬
+		# æœ¬äººå®¶æ—åŒºåˆ†
 		mmlHi:familyClass[1] = 5
 
 
 
 		# -------------------------------------------------------
 
-		# ÈïÊİ¸±¼Ô¾ğÊó
+		# è¢«ä¿é™ºè€…æƒ…å ±
 		$BaseStart, mmlHi:clientInfo[1]
 
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlHi:PersonName[1]/mmlNm:Name[1]@mmlNm:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾[MML0025¤Ç¸ÇÄê]
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å[MML0025ã§å›ºå®š]
 			mmlHi:PersonName[1]/mmlNm:Name[1]@mmlNm:tableId = 7
-			# À«
+			# å§“
 			mmlHi:PersonName[1]/mmlNm:Name[1]/mmlNm:family[1] = 50
-			# Ì¾
+			# å
 			mmlHi:PersonName[1]/mmlNm:Name[1]/mmlNm:given[1] = 50
-			# ¥ß¥É¥ë¥Í¡¼¥à
+			# ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
 			mmlHi:PersonName[1]/mmlNm:Name[1]/mmlNm:middle[1] = 50
-			# ¥Õ¥ë¥Í¡¼¥à
+			# ãƒ•ãƒ«ãƒãƒ¼ãƒ 
 			mmlHi:PersonName[1]/mmlNm:Name[1]/mmlNm:fullname[1] = 100
-			# ¸ª½ñ¤­¤Ê¤É
+			# è‚©æ›¸ããªã©
 			mmlHi:PersonName[1]/mmlNm:Name[1]/mmlNm:prefix[1] = 50
-			# ³Ø°Ì
+			# å­¦ä½
 			mmlHi:PersonName[1]/mmlNm:Name[1]/mmlNm:degree[1] = 50
 
 
 			# -------------------------------------------------------
 
-			# ÈïÊİ¸±¼Ô½»½ê
+			# è¢«ä¿é™ºè€…ä½æ‰€
 
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:tableId = 7
-			# ½»½ê¤Î¼ïÎà¥³¡¼¥É
+			# ä½æ‰€ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:addressClass = 10
-			# ÅÔÆ»ÉÜ¸©
+			# éƒ½é“åºœçœŒ
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:prefecture[1] = 20
-			# »Ô¡¢¶è¡¢·´
+			# å¸‚ã€åŒºã€éƒ¡
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:city[1] = 20
-			# Ä®¡¢Â¼
+			# ç”ºã€æ‘
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:town[1] = 20
-			# ÈÖÃÏ¡¢ÃúÌÜ¡¢¤½¤ÎÂ¾
+			# ç•ªåœ°ã€ä¸ç›®ã€ãã®ä»–
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:homeNumber[1] = 200
-			# °ìÏ¢½»½ê
+			# ä¸€é€£ä½æ‰€
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:full[1] = 400
-			# Í¹ÊØÈÖ¹æ
+			# éƒµä¾¿ç•ªå·
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:zip[1] = 8
-			# ¹ñ¥³¡¼¥É
+			# å›½ã‚³ãƒ¼ãƒ‰
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:countryCode[1] = 10
 
 
 			# -------------------------------------------------------
 
-			# ÈïÊİ¸±¼ÔÅÅÏÃÈÖ¹æ
+			# è¢«ä¿é™ºè€…é›»è©±ç•ªå·
 
-			# ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+			# è£…ç½®ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:phones[1]/mmlPh:Phone[1]@mmlPh:telEquipType = 10
-			# »Ô³°¶ÉÈÖ
+			# å¸‚å¤–å±€ç•ª
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:area[1] = 10
-			# ¶ÉÈÖ
+			# å±€ç•ª
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:city[1] = 10
-			# ²ÃÆşÈÖ¹æ
+			# åŠ å…¥ç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:number[1] = 10
-			# ÆâÀşÈÖ¹æ
+			# å†…ç·šç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:extension[1] = 10
-			# ¹ñÈÖ¹æ
+			# å›½ç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:country[1] = 10
-			# »ÈÍÑ»ş´ÖÂÓ¤Ê¤É¤Î¥á¥â
+			# ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã®ãƒ¡ãƒ¢
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:memo[1] = 100
 		$BaseEnd
 
 
 		# -------------------------------------------------------
 
-		# ·ÑÂ³Å¬±ş¼À´µÌ¾ [É¬¿Ü¡¦·«¤êÊÖ¤·]
+		# ç¶™ç¶šé©å¿œç–¾æ‚£å [å¿…é ˆãƒ»ç¹°ã‚Šè¿”ã—]
 		mmlHi:continuedDiseases[1]/mmlHi:diseases[1] = 50
-		# ³«»ÏÆü¡Ê¸òÉÕÇ¯·îÆü¡Ë
+		# é–‹å§‹æ—¥ï¼ˆäº¤ä»˜å¹´æœˆæ—¥ï¼‰
 		mmlHi:startDate[1] = 10
-		# Í­¸ú´ü¸Â
+		# æœ‰åŠ¹æœŸé™
 		mmlHi:expiredDate[1] = 10
-		# Æş±¡»ş¤ÎÉéÃ´Î¨
+		# å…¥é™¢æ™‚ã®è² æ‹…ç‡
 		mmlHi:paymentInRatio[1] = 10
-		# ³°Íè»ş¤ÎÉéÃ´Î¨
+		# å¤–æ¥æ™‚ã®è² æ‹…ç‡
 		mmlHi:paymentOutRatio[1] = 10
 
 
 		# -------------------------------------------------------
 
-		# Êİ¸±¼Ô¾ğÊó
+		# ä¿é™ºè€…æƒ…å ±
 		$BaseStart, mmlHi:insuredInfo[1]
-			# Êİ¸±¼Ô»ÜÀß¾ğÊó
+			# ä¿é™ºè€…æ–½è¨­æƒ…å ±
 
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:tableId = 7
-			# »ÜÀßÌ¾¾Î
+			# æ–½è¨­åç§°
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlFc:name[1] = 50
 
-			# »ÜÀßID
+			# æ–½è¨­ID
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1] = 20
-			# ID¤Î¼ïÎà¥³¡¼¥É
+			# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:type = 10
 			# MML0027
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:tableId = 7
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:checkDigit = 2
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:checkDigitSchema = 3
 
 
 			# -------------------------------------------------------
 
-			# Êİ¸±¼Ô½»½ê
+			# ä¿é™ºè€…ä½æ‰€
 
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:tableId = 7
-			# ½»½ê¤Î¼ïÎà¥³¡¼¥É
+			# ä½æ‰€ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:addressClass = 10
-			# ÅÔÆ»ÉÜ¸©
+			# éƒ½é“åºœçœŒ
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:prefecture[1] = 20
-			# »Ô¡¢¶è¡¢·´
+			# å¸‚ã€åŒºã€éƒ¡
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:city[1] = 20
-			# Ä®¡¢Â¼
+			# ç”ºã€æ‘
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:town[1] = 20
-			# ÈÖÃÏ¡¢ÃúÌÜ¡¢¤½¤ÎÂ¾
+			# ç•ªåœ°ã€ä¸ç›®ã€ãã®ä»–
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:homeNumber[1] = 200
-			# °ìÏ¢½»½ê
+			# ä¸€é€£ä½æ‰€
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:full[1] = 400
-			# Í¹ÊØÈÖ¹æ
+			# éƒµä¾¿ç•ªå·
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:zip[1] = 8
-			# ¹ñ¥³¡¼¥É
+			# å›½ã‚³ãƒ¼ãƒ‰
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:countryCode[1] = 10
 
 
 			# -------------------------------------------------------
 
-			# Êİ¸±¼ÔÅÅÏÃÈÖ¹æ
+			# ä¿é™ºè€…é›»è©±ç•ªå·
 
-			# ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+			# è£…ç½®ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:phones[1]/mmlPh:Phone[1]@mmlPh:telEquipType = 10
-			# »Ô³°¶ÉÈÖ
+			# å¸‚å¤–å±€ç•ª
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:area[1] = 10
-			# ¶ÉÈÖ
+			# å±€ç•ª
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:city[1] = 10
-			# ²ÃÆşÈÖ¹æ
+			# åŠ å…¥ç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:number[1] = 10
-			# ÆâÀşÈÖ¹æ
+			# å†…ç·šç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:extension[1] = 10
-			# ¹ñÈÖ¹æ
+			# å›½ç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:country[1] = 10
-			# »ÈÍÑ»ş´ÖÂÓ¤Ê¤É¤Î¥á¥â
+			# ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã®ãƒ¡ãƒ¢
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:memo[1] = 100
 		$BaseEnd
 
 
 		# -------------------------------------------------------
 
-		# ÈïÊİ¸±¼Ô¤Î½êÂ°¤¹¤ë»ö¶È½ê¾ğÊó
+		# è¢«ä¿é™ºè€…ã®æ‰€å±ã™ã‚‹äº‹æ¥­æ‰€æƒ…å ±
 		$BaseStart, mmlHi:workInfo[1]
-			# »ö¶È½ê»ÜÀß¾ğÊó
+			# äº‹æ¥­æ‰€æ–½è¨­æƒ…å ±
 
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:tableId = 7
-			# »ÜÀßÌ¾¾Î
+			# æ–½è¨­åç§°
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlFc:name[1] = 50
 
-			# »ÜÀßID
+			# æ–½è¨­ID
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1] = 20
-			# ID¤Î¼ïÎà¥³¡¼¥É
+			# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:type = 10
 			# MML0027
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:tableId = 7
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:checkDigit = 2
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 			mmlHi:facility[1]/mmlFc:Facility[1]/mmlCm:Id[1]@mmlCm:checkDigitSchema = 3
 
 
 			# -------------------------------------------------------
 
-			# »ö¶È½ê½»½ê
+			# äº‹æ¥­æ‰€ä½æ‰€
 
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:repCode = 1
-			# É½µ­Ë¡¤Î¥Æ¡¼¥Ö¥ëÌ¾
+			# è¡¨è¨˜æ³•ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:tableId = 7
-			# ½»½ê¤Î¼ïÎà¥³¡¼¥É
+			# ä½æ‰€ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:addresses[1]/mmlAd:Address[1]@mmlAd:addressClass = 10
-			# ÅÔÆ»ÉÜ¸©
+			# éƒ½é“åºœçœŒ
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:prefecture[1] = 20
-			# »Ô¡¢¶è¡¢·´
+			# å¸‚ã€åŒºã€éƒ¡
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:city[1] = 20
-			# Ä®¡¢Â¼
+			# ç”ºã€æ‘
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:town[1] = 20
-			# ÈÖÃÏ¡¢ÃúÌÜ¡¢¤½¤ÎÂ¾
+			# ç•ªåœ°ã€ä¸ç›®ã€ãã®ä»–
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:homeNumber[1] = 200
-			# °ìÏ¢½»½ê
+			# ä¸€é€£ä½æ‰€
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:full[1] = 400
-			# Í¹ÊØÈÖ¹æ
+			# éƒµä¾¿ç•ªå·
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:zip[1] = 8
-			# ¹ñ¥³¡¼¥É
+			# å›½ã‚³ãƒ¼ãƒ‰
 			mmlHi:addresses[1]/mmlAd:Address[1]/mmlAd:countryCode[1] = 10
 
 
 			# -------------------------------------------------------
 
-			# »ö¶È½êÅÅÏÃÈÖ¹æ
+			# äº‹æ¥­æ‰€é›»è©±ç•ªå·
 
-			# ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+			# è£…ç½®ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlHi:phones[1]/mmlPh:Phone[1]@mmlPh:telEquipType = 10
-			# »Ô³°¶ÉÈÖ
+			# å¸‚å¤–å±€ç•ª
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:area[1] = 10
-			# ¶ÉÈÖ
+			# å±€ç•ª
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:city[1] = 10
-			# ²ÃÆşÈÖ¹æ
+			# åŠ å…¥ç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:number[1] = 10
-			# ÆâÀşÈÖ¹æ
+			# å†…ç·šç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:extension[1] = 10
-			# ¹ñÈÖ¹æ
+			# å›½ç•ªå·
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:country[1] = 10
-			# »ÈÍÑ»ş´ÖÂÓ¤Ê¤É¤Î¥á¥â
+			# ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã®ãƒ¡ãƒ¢
 			mmlHi:phones[1]/mmlPh:Phone[1]/mmlPh:memo[1] = 100
 		$BaseEnd
 
 
 		# -------------------------------------------------------
 
-		# ¸øÈñÉéÃ´°åÎÅ¾ğÊó
+		# å…¬è²»è² æ‹…åŒ»ç™‚æƒ…å ±
 
 
 		# -----------------------------------
 
 		$BaseStart, mmlHi:publicInsurance[1]
 
-			# ¸øÈñÉéÃ´¤ÎÎÎ°è¤ò£³¤ÄÍÑ°Õ
+			# å…¬è²»è² æ‹…ã®é ˜åŸŸã‚’ï¼“ã¤ç”¨æ„
 			$Repeat, 6, @@HI_KOUHI@@, 0
 				# -----------------------------------
 
-				# ¸øÈñÉéÃ´ [@@HI_KOUHI@@]
+				# å…¬è²»è² æ‹… [@@HI_KOUHI@@]
 
-				# Ê£¿ô¸øÈñ¤ÎÍ¥Àè½ç°Ì
+				# è¤‡æ•°å…¬è²»ã®å„ªå…ˆé †ä½
 				mmlHi:publicInsuranceItem[@@HI_KOUHI@@]@mmlHi:priority = 1
 				$BaseStart, mmlHi:publicInsuranceItem[@@HI_KOUHI@@]
-					# ¸øÈñÉéÃ´Ì¾¾Î
+					# å…¬è²»è² æ‹…åç§°
 					mmlHi:providerName[1] = 20
-					# ÉéÃ´¼ÔÈÖ¹æ
+					# è² æ‹…è€…ç•ªå·
 					mmlHi:provider[1] = 8
-					# ¼õµë¼ÔÈÖ¹æ
+					# å—çµ¦è€…ç•ªå·
 					mmlHi:recipient[1] = 20
-					# ³«»ÏÆü
+					# é–‹å§‹æ—¥
 					mmlHi:startDate[1] = 10
-					# Í­¸ú´ü¸Â
+					# æœ‰åŠ¹æœŸé™
 					mmlHi:expiredDate[1] = 10
-					# ÉéÃ´Î¨¤Ş¤¿¤ÏÉéÃ´¶â [Â°À­¡¦É¬¿Ü]
+					# è² æ‹…ç‡ã¾ãŸã¯è² æ‹…é‡‘ [å±æ€§ãƒ»å¿…é ˆ]
 					mmlHi:paymentRatio[1]@mmlHi:ratioType = 5
-					# ÉéÃ´Î¨¤Ş¤¿¤ÏÉéÃ´¶â
+					# è² æ‹…ç‡ã¾ãŸã¯è² æ‹…é‡‘
 					mmlHi:paymentRatio[1] = 10
 				$BaseEnd
 
@@ -977,7 +977,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 	# =======================================================
 
 
-# ÇÛÎóÂĞ¾İ»ØÄê End
+# é…åˆ—å¯¾è±¡æŒ‡å®š End
 $LineTargetEnd
 
 
@@ -986,51 +986,51 @@ $EndRepeat
 
 
 # ===========================================================================
-# ¿ÇÃÇÍúÎò¥â¥¸¥å¡¼¥ë¤ò£µ£°ÍÑ°Õ¤¹¤ë
+# è¨ºæ–­å±¥æ­´ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ï¼•ï¼ç”¨æ„ã™ã‚‹
 $Repeat, 50, @@HI_MOD@@, 0
-# ¿ÇÃÇÍúÎò¥â¥¸¥å¡¼¥ë [@@HI_MOD@@]
+# è¨ºæ–­å±¥æ­´ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« [@@HI_MOD@@]
 
 
-# ÇÛÎóÂĞ¾İ»ØÄê Start
+# é…åˆ—å¯¾è±¡æŒ‡å®š Start
 $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = registeredDiagnosis, @@HI_MOD@@, /Mml[1]/MmlBody[1]/MmlModuleItem[X]
 
 
 	# ---------------------------------------------
 
-	# ¥Ø¥Ã¥À¾ğÊó
+	# ãƒ˜ãƒƒãƒ€æƒ…å ±
 
 	# /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType
 
 
 	$BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 
-		# ¥¢¥¯¥»¥¹¸¢¼ïÊÌ
-		# ¥¢¥¯¥»¥¹¼Ô1
+		# ã‚¢ã‚¯ã‚»ã‚¹æ¨©ç¨®åˆ¥
+		# ã‚¢ã‚¯ã‚»ã‚¹è€…1
 		# securityLevel[1]/accessRight[1]@accessRole
-		# »²¾È¸¢¤ÎÍ­Ìµ1
+		# å‚ç…§æ¨©ã®æœ‰ç„¡1
 		# securityLevel[1]/accessRight[1]@read
-		# ºï½ü¸¢¤ÎÍ­Ìµ1
+		# å‰Šé™¤æ¨©ã®æœ‰ç„¡1
 		# securityLevel[1]/accessRight[1]@delete
-		# ¥¢¥¯¥»¥¹¼Ô2
+		# ã‚¢ã‚¯ã‚»ã‚¹è€…2
 		# securityLevel[1]/accessRight[2]@accessRole
-		# »²¾È¸¢¤ÎÍ­Ìµ2
+		# å‚ç…§æ¨©ã®æœ‰ç„¡2
 		# securityLevel[1]/accessRight[2]@read
-		# ºï½ü¸¢¤ÎÍ­Ìµ2
+		# å‰Šé™¤æ¨©ã®æœ‰ç„¡2
 		# securityLevel[1]/accessRight[2]@delete
 
-		# Ê¸½ñ¾ÜºÙ¼ïÊÌ
+		# æ–‡æ›¸è©³ç´°ç¨®åˆ¥
 		# title[1]@generationPurpose
-		# Ê¸½ñ¥¿¥¤¥È¥ë
+		# æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ«
 		# title[1]
 
-		# Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+		# æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
 		docId[1]/uid[1] = 36
-		# ´ØÏ¢Ê¸½ñ¤ÎID
+		# é–¢é€£æ–‡æ›¸ã®ID
 		# docId[1]/parentId[1]
-		# ´ØÏ¢Ê¸½ñ¤ÎID¤Î¼ïÊÌ
+		# é–¢é€£æ–‡æ›¸ã®IDã®ç¨®åˆ¥
 		# docId[1]/parentId[1]@relation
 
-		# ¥«¥ë¥ÆÅÅ»ÒÊİÂ¸¤Î³ÎÄêÆü
+		# ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
 		confirmDate[1] = 10
 
 
@@ -1038,10 +1038,10 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 
 		$BaseStart, mmlCi:CreatorInfo[1]
 
-			# À¸À®¼Ô¾ğÊó
+			# ç”Ÿæˆè€…æƒ…å ±
 			$BaseStart, mmlPsi:PersonalizedInfo[1]
 
-				# À¸À®¼Ô ¸Ä¿ÍID
+				# ç”Ÿæˆè€… å€‹äººID
 
 				# mmlCm:Id[1]@mmlCm:checkDigitSchema
 				# mmlCm:Id[1]@mmlCm:tableId
@@ -1050,7 +1050,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlCm:Id[1]
 
 
-				# À¸À®¼Ô »áÌ¾¾ğÊó
+				# ç”Ÿæˆè€… æ°åæƒ…å ±
 
 				# mmlPsi:personName[1]/mmlNm:Name[1]@mmlNm:repCode
 				# mmlPsi:personName[1]/mmlNm:Name[1]@mmlNm:tableId
@@ -1062,7 +1062,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlPsi:personName[1]/mmlNm:Name[1]/mmlNm:degree[1]
 
 
-				# À¸À®¼Ô »ÜÀß¾ğÊó
+				# ç”Ÿæˆè€… æ–½è¨­æƒ…å ±
 
 				# mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:tableId
 				# mmlFc:Facility[1]/mmlFc:name[1]@mmlFc:repCode
@@ -1074,7 +1074,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlFc:Facility[1]/mmlCm:Id[1]
 
 
-				# À¸À®¼Ô ¿ÇÎÅ²Ê¾ğÊó
+				# ç”Ÿæˆè€… è¨ºç™‚ç§‘æƒ…å ±
 
 				# mmlDp:Department[1]/mmlDp:name[1]@mmlDp:tableId
 				# mmlDp:Department[1]/mmlDp:name[1]@mmlDp:repCode
@@ -1086,7 +1086,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlDp:Department[1]/mmlCm:Id[1]
 
 
-				# À¸À®¼Ô ½»½ê
+				# ç”Ÿæˆè€… ä½æ‰€
 
 				# mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:tableId
 				# mmlPsi:addresses[1]/mmlAd:Address[1]@mmlAd:addressClass
@@ -1100,12 +1100,12 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 				# mmlPsi:addresses[1]/mmlAd:Address[1]/mmlAd:countryCode[1]
 
 
-				# À¸À®¼Ô ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+				# ç”Ÿæˆè€… é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 
 				# mmlPsi:emailAddresses[1]/mmlCm:email[1]
 
 
-				# À¸À®¼Ô Ï¢ÍíÀèÅÅÏÃÈÖ¹æ
+				# ç”Ÿæˆè€… é€£çµ¡å…ˆé›»è©±ç•ªå·
 
 				# mmlPsi:phones[1]/mmlPh:Phone[1]@mmlPh:telEquipType
 				# mmlPsi:phones[1]/mmlPh:Phone[1]/mmlPh:area[1]
@@ -1117,7 +1117,7 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 			$BaseEnd
 
 
-			# À¸À®¼Ô¤Î»ñ³Ê
+			# ç”Ÿæˆè€…ã®è³‡æ ¼
 
 			# mmlCi:creatorLicense[1]@mmlCi:tableId
 			# mmlCi:creatorLicense[1]
@@ -1133,26 +1133,26 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 
 	$BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/mmlRd:RegisteredDiagnosisModule[1]
 
-		# ¼À´µ¥³¡¼¥É
+		# ç–¾æ‚£ã‚³ãƒ¼ãƒ‰
 		mmlRd:diagnosis[1]@mmlRd:code = 50
-		# ¼À´µ¥³¡¼¥ÉÂÎ·ÏÌ¾
+		# ç–¾æ‚£ã‚³ãƒ¼ãƒ‰ä½“ç³»å
 		mmlRd:diagnosis[1]@mmlRd:system = 15
-		# ¼À´µÌ¾
+		# ç–¾æ‚£å
 		mmlRd:diagnosis[1] = 80
 
 
 		# -----------------------------------
 
-		# ¼À´µÍ×ÁÇ¤ò6¤ÄÍÑ°Õ¤¹¤ë
+		# ç–¾æ‚£è¦ç´ ã‚’6ã¤ç”¨æ„ã™ã‚‹
 		$Repeat, 6, @@DIG_CONT@@, 0
-			# ¼ÀÉÂÍ×ÁÇ [@@DIG_CONT@@]
+			# ç–¾ç—…è¦ç´  [@@DIG_CONT@@]
 
 			$BaseStart, mmlRd:diagnosisContents[1]/mmlRd:dxItem[@@DIG_CONT@@]
-				# ¼À´µ¥³¡¼¥É
+				# ç–¾æ‚£ã‚³ãƒ¼ãƒ‰
 				mmlRd:name[1]@mmlRd:code = 10
-				# ¼À´µ¥³¡¼¥ÉÂÎ·ÏÌ¾
+				# ç–¾æ‚£ã‚³ãƒ¼ãƒ‰ä½“ç³»å
 				mmlRd:name[1]@mmlRd:system = 15
-				# ¼À´µÍ×ÁÇÌ¾
+				# ç–¾æ‚£è¦ç´ å
 				mmlRd:name[1] = 20
 			$BaseEnd
 
@@ -1162,13 +1162,13 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 		# -----------------------------------
 		$BaseStart, mmlRd:categories[1]
 
-			# Ê¬Îà¤ò4¤ÄÍÑ°Õ¤¹¤ë
+			# åˆ†é¡ã‚’4ã¤ç”¨æ„ã™ã‚‹
 			$Repeat, 4, @@CATEGORI@@, 0
-				# Ê¬Îà [@@CATEGORI@@]
+				# åˆ†é¡ [@@CATEGORI@@]
 
-				# Ê¬Îà¤Î¼ïÎà¥³¡¼¥É
+				# åˆ†é¡ã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 				mmlRd:category[@@CATEGORI@@]@mmlRd:tableId = 7
-				# Ê¬ÎàÌ¾
+				# åˆ†é¡å
 				mmlRd:category[@@CATEGORI@@] = 30
 			$EndRepeat
 
@@ -1177,17 +1177,17 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 
 		# -----------------------------------
 
-		# ¼À´µ³«»ÏÆü
+		# ç–¾æ‚£é–‹å§‹æ—¥
 		mmlRd:startDate[1] = 10
-		# ¼À´µ½ªÎ»Æü
+		# ç–¾æ‚£çµ‚äº†æ—¥
 		mmlRd:endDate[1] = 10
-		# Å¾µ¢
+		# è»¢å¸°
 		mmlRd:outcome[1] = 20
-		# ¼À´µ¤Î½é¿ÇÆü
+		# ç–¾æ‚£ã®åˆè¨ºæ—¥
 		mmlRd:firstEncounterDate[1] = 10
-		# ¼À´µ¤Ë´Ø¤¹¤ëÊİ¸±¤Î·ò¹¯Êİ¸±¥â¥¸¥å¡¼¥ë¤ÎUID[Ã±ÆÈ¥¿¥°]
+		# ç–¾æ‚£ã«é–¢ã™ã‚‹ä¿é™ºã®å¥åº·ä¿é™ºãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®UID[å˜ç‹¬ã‚¿ã‚°]
 		mmlRd:relatedHealthInsurance[1]@mmlRd:uid = 36
-		# Æş³°¶èÊ¬
+		# å…¥å¤–åŒºåˆ†
 		mmlRd:InOutPatient[1] = 20
 
 	$BaseEnd
@@ -1196,70 +1196,70 @@ $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleTy
 	# =======================================================
 
 
-# ÇÛÎóÂĞ¾İ»ØÄê End
+# é…åˆ—å¯¾è±¡æŒ‡å®š End
 $LineTargetEnd
 
 
 
 $EndRepeat
 # ===========================================================================
-# Í½ÌóÀÁµá[Claim]¥â¥¸¥å¡¼¥ë
+# äºˆç´„è«‹æ±‚[Claim]ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
 
-# lt_claim1 ÇÛÎóÂĞ¾İ»ØÄê Start
+# lt_claim1 é…åˆ—å¯¾è±¡æŒ‡å®š Start
 $LineTargetStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType = claim, 1, /Mml[1]/MmlBody[1]/MmlModuleItem[X]
 
 
 # ---------------------------------------------
 
-# ¥Ø¥Ã¥À¾ğÊó
+# ãƒ˜ãƒƒãƒ€æƒ…å ±
 
-# ¥â¥¸¥å¡¼¥ë¤Î¼ïÎà
+# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ç¨®é¡
 # /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]@contentModuleType
 
 
 $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 
-	# ¥¢¥¯¥»¥¹¸¢
+	# ã‚¢ã‚¯ã‚»ã‚¹æ¨©
 
-	# ¥¢¥¯¥»¥¹¼Ô
+	# ã‚¢ã‚¯ã‚»ã‚¹è€…
 	# securityLevel[1]/accessRight[1]@accessRole
-	# ºï½ü¸¢¤ÎÍ­Ìµ
+	# å‰Šé™¤æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[1]@delete
-	# »²¾È¸¢¤ÎÍ­Ìµ
+	# å‚ç…§æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[1]@read
 
-	# ¥¢¥¯¥»¥¹¼Ô
+	# ã‚¢ã‚¯ã‚»ã‚¹è€…
 	# securityLevel[1]/accessRight[2]@accessRole
-	# ºï½ü¸¢¤ÎÍ­Ìµ
+	# å‰Šé™¤æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[2]@delete
-	# »²¾È¸¢¤ÎÍ­Ìµ
+	# å‚ç…§æ¨©ã®æœ‰ç„¡
 	# securityLevel[1]/accessRight[2]@read
 
-	# Ê¸½ñ¥¿¥¤¥È¥ë
+	# æ–‡æ›¸ã‚¿ã‚¤ãƒˆãƒ«
 	# title[1]
-	# Ê¸½ñ¾ÜºÙ¼ïÊÌ
+	# æ–‡æ›¸è©³ç´°ç¨®åˆ¥
 	# title[1]@generationPurpose
 
-	# Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+	# æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
 	docId[1]/uid[1] = 36
-	# ´ØÏ¢¿ÆÊ¸½ñ¤ÎID
+	# é–¢é€£è¦ªæ–‡æ›¸ã®ID
 	# docId[1]/parentId[1]
-	# ´ØÏ¢¤Î¼ïÊÌ
+	# é–¢é€£ã®ç¨®åˆ¥
 	# docId[1]/parentId[1]@relation
 
-	# ¥«¥ë¥ÆÅÅ»ÒÊİÂ¸¤Î³ÎÄêÆü
+	# ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
 	confirmDate[1] = 10
 
 	# ---------------------------------------------
 
-	# À¸À®¼Ô¾ğÊó
+	# ç”Ÿæˆè€…æƒ…å ±
 	# $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]/mmlCi:CreatorInfo[1]
 	$BaseStart, mmlCi:CreatorInfo[1]
 
 		$BaseStart, mmlPsi:PersonalizedInfo[1]
 
-			# À¸À®¼Ô ¸Ä¿ÍID
+			# ç”Ÿæˆè€… å€‹äººID
 
 			# mmlCm:Id[1]@mmlCm:checkDigitSchema
 			# mmlCm:Id[1]@mmlCm:tableId
@@ -1268,7 +1268,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			 mmlCm:Id[1] = 10
 
 
-			# À¸À®¼Ô »áÌ¾¾ğÊó
+			# ç”Ÿæˆè€… æ°åæƒ…å ±
 
 			# $BaseStart, mmlPsi:personName[1]
 				# mmlNm:Name[1]@mmlNm:repCode
@@ -1282,7 +1282,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			# $BaseEnd
 
 
-			# À¸À®¼Ô »ÜÀß¾ğÊó
+			# ç”Ÿæˆè€… æ–½è¨­æƒ…å ±
 
 			# $BaseStart, mmlFc:Facility[1]
 				# mmlFc:name[1]@mmlFc:tableId
@@ -1296,7 +1296,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			# $BaseEnd
 
 
-			# À¸À®¼Ô ¿ÇÎÅ²Ê¾ğÊó
+			# ç”Ÿæˆè€… è¨ºç™‚ç§‘æƒ…å ±
 
 			# $BaseStart, mmlDp:Department[1]
 				# mmlDp:name[1]@mmlDp:tableId
@@ -1310,7 +1310,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			# $BaseEnd
 
 
-			# À¸À®¼Ô ½»½ê
+			# ç”Ÿæˆè€… ä½æ‰€
 
 			# $BaseStart, mmlPsi:addresses[1]
 				# mmlAd:Address[1]@mmlAd:tableId
@@ -1326,12 +1326,12 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 			# $BaseEnd
 
 
-			# À¸À®¼Ô ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+			# ç”Ÿæˆè€… é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
 
 			# mmlPsi:emailAddresses[1]/mmlCm:email[1]
 
 
-			# À¸À®¼Ô Ï¢ÍíÀèÅÅÏÃÈÖ¹æ
+			# ç”Ÿæˆè€… é€£çµ¡å…ˆé›»è©±ç•ªå·
 
 			# $BaseStart, mmlPsi:phones[1]
 				# mmlPh:Phone[1]@mmlPh:telEquipType
@@ -1345,7 +1345,7 @@ $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/docInfo[1]
 		$BaseEnd
 
 
-		# À¸À®¼Ô¤Î»ñ³Ê
+		# ç”Ÿæˆè€…ã®è³‡æ ¼
 
 		# mmlCi:creatorLicense[1]@mmlCi:tableId
 		# mmlCi:creatorLicense[1]
@@ -1362,197 +1362,197 @@ $BaseEnd
 
 
 $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]
-	# ÅÀ¿ô¶â³Û¥â¥¸¥å¡¼¥ë¤Î¾õÂÖ
+	# ç‚¹æ•°é‡‘é¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®çŠ¶æ…‹
 	claim:information[1]@claim:status = 7
-	# ¥ª¡¼¥À¡¼È¯¹ÔÆü»ş
+	# ã‚ªãƒ¼ãƒ€ãƒ¼ç™ºè¡Œæ—¥æ™‚
 	claim:information[1]@claim:orderTime = 19
-	# ¼Â»ÜÍ½ÄêÆü»ş
+	# å®Ÿæ–½äºˆå®šæ—¥æ™‚
 	claim:information[1]@claim:appointTime = 19
-	# ¼õÉÕÆü»ş
+	# å—ä»˜æ—¥æ™‚
 	claim:information[1]@claim:registTime = 19
-	# ¼Â»ÜÆü»ş
+	# å®Ÿæ–½æ—¥æ™‚
 	claim:information[1]@claim:performTime = 19
-	# Æş±¡³°Íè¶èÊ¬
+	# å…¥é™¢å¤–æ¥åŒºåˆ†
 	claim:information[1]@claim:admitFlag = 5
-	# »ş´Ö³°¶èÊ¬
+	# æ™‚é–“å¤–åŒºåˆ†
 	claim:information[1]@claim:timeClass = 1
-	# »ÈÍÑÊİ¸±
+	# ä½¿ç”¨ä¿é™º
 	claim:information[1]@claim:insuranceUid = 36
-	# ¶¦ÄÌ°å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+	# å…±é€šåŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
 	claim:information[1]@claim:defaultTableId = 100
 $BaseEnd
 
 
-# Í½Ìó
+# äºˆç´„
 
 $BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]
 	$BaseStart, claim:information[1]
 		$BaseStart, claim:appoint[1]
-			# Í½Ìó
+			# äºˆç´„
 			claim:appName[1] = 20
-			# Í½Ìó¥³¡¼¥É
+			# äºˆç´„ã‚³ãƒ¼ãƒ‰
 			claim:appName[1]@claim:appCode = 14
-			# Í½Ìó¥³¡¼¥É¥Æ¡¼¥Ö¥ë
+			# äºˆç´„ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«
 			claim:appName[1]@claim:appCodeId = 8
-			# Í½Ìó¥á¥â
+			# äºˆç´„ãƒ¡ãƒ¢
 			claim:memo[1] = 100
 		$BaseEnd
 
 
-		# ·ò¹¯Êİ¸±¼ïÊÌ
+		# å¥åº·ä¿é™ºç¨®åˆ¥
 
-		# ·ò¹¯Êİ¸±¼ïÊÌ
+		# å¥åº·ä¿é™ºç¨®åˆ¥
 		mmlHi:insuranceClass[1] = 20
-		# Êİ¸±¼ïÊÌ¥³¡¼¥É
+		# ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰
 		mmlHi:insuranceClass[1]@mmlHi:ClassCode = 2
-		# Êİ¸±¼ïÊÌ¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾
+		# ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å
 		mmlHi:insuranceClass[1]@mmlHi:tableId = 7
 
 
-		# ¿ÇÎÅ¼Â»Ü²Ê
+		# è¨ºç™‚å®Ÿæ–½ç§‘
 
 		$BaseStart, claim:patientDepartment[1]/mmlDp:Department[1]
-			# ¿ÇÎÅ²ÊÌ¾¾Î
+			# è¨ºç™‚ç§‘åç§°
 			mmlDp:name[1] = 12
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlDp:name[1]@mmlDp:repCode = 1
 			# MML0025
 			mmlDp:name[1]@mmlDp:tableId = 7
-			# ¿ÇÎÅ²ÊID
+			# è¨ºç™‚ç§‘ID
 			mmlCm:Id[1] = 2
-			# ID¤Î¼ïÎà¥³¡¼¥É
+			# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlCm:Id[1]@mmlCm:type = 7
 			# MML0029
 			mmlCm:Id[1]@mmlCm:tableId = 7
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 			mmlCm:Id[1]@mmlCm:checkDigit = 2
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 			mmlCm:Id[1]@mmlCm:checkDigitSchema = 3
 		$BaseEnd
 
 
-		# ¿ÇÎÅ¼Â»ÜÉÂÅï
+		# è¨ºç™‚å®Ÿæ–½ç—…æ£Ÿ
 
 		$BaseStart, claim:patientWard[1]/mmlDp:Department[1]
-			# ¿ÇÎÅ¼Â»ÜÉÂÅïÌ¾¾Î
+			# è¨ºç™‚å®Ÿæ–½ç—…æ£Ÿåç§°
 			mmlDp:name[1] = 12
-			# É½µ­Ë¡
+			# è¡¨è¨˜æ³•
 			mmlDp:name[1]@mmlDp:repCode = 1
 			# MML0025
 			mmlDp:name[1]@mmlDp:tableId = 7
 
-			# ¿ÇÎÅ¼Â»ÜÉÂÅïID
+			# è¨ºç™‚å®Ÿæ–½ç—…æ£ŸID
 			mmlCm:Id[1] = 2
-			# ID¤Î¼ïÎà¥³¡¼¥É
+			# IDã®ç¨®é¡ã‚³ãƒ¼ãƒ‰
 			mmlCm:Id[1]@mmlCm:type = 7
 			# MML0029
 			mmlCm:Id[1]@mmlCm:tableId = 7
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÃÍ
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆå€¤
 			mmlCm:Id[1]@mmlCm:checkDigit = 2
-			# ¥Á¥§¥Ã¥¯¥Ç¥£¥¸¥Ã¥ÈÊı¼°
+			# ãƒã‚§ãƒƒã‚¯ãƒ‡ã‚£ã‚¸ãƒƒãƒˆæ–¹å¼
 			mmlCm:Id[1]@mmlCm:checkDigitSchema = 3
 		$BaseEnd
 	$BaseEnd
 $BaseEnd
 
 
-# ¿ÇÎÅ³ç¤ê¥»¥¯¥·¥ç¥ó¤ò20³ÎÊİ
+# è¨ºç™‚æ‹¬ã‚Šã‚»ã‚¯ã‚·ãƒ§ãƒ³ã‚’20ç¢ºä¿
 $Repeat, 20, @@CLM_BUNDLE@@, 0
 # =======================================================
 
-	# ¿ÇÎÅ³ç¤ê¥»¥¯¥·¥ç¥ó [@@CLM_BUNDLE@@]
+	# è¨ºç™‚æ‹¬ã‚Šã‚»ã‚¯ã‚·ãƒ§ãƒ³ [@@CLM_BUNDLE@@]
 
 
 	$BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]
-		# bundle¥¿¥°¤ÎÂ°À­
-		# ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
+		# bundleã‚¿ã‚°ã®å±æ€§
+		# è¨ºç™‚è¡Œç‚ºåŒºåˆ†ã‚³ãƒ¼ãƒ‰
 		claim:bundle[@@CLM_BUNDLE@@]@claim:classCode = 3
-		# ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É¥Æ¡¼¥Ö¥ë
+		# è¨ºç™‚è¡Œç‚ºåŒºåˆ†ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«
 		claim:bundle[@@CLM_BUNDLE@@]@claim:classCodeId = 8
 	$BaseEnd
 
 
 	$BaseStart, /Mml[1]/MmlBody[1]/MmlModuleItem[X]/content[1]/claim:ClaimModule[1]/claim:bundle[@@CLM_BUNDLE@@]
 
-		# ¿ÇÎÅ¹Ô°Ù¶èÊ¬Ì¾¾Î
+		# è¨ºç™‚è¡Œç‚ºåŒºåˆ†åç§°
 		claim:className[1] = 40
 
-		#ÍÑË¡
+		#ç”¨æ³•
 
-		# ÍÑË¡
+		# ç”¨æ³•
 		claim:administration[1] = 50
-		# ÍÑË¡¥³¡¼¥É
+		# ç”¨æ³•ã‚³ãƒ¼ãƒ‰
 		claim:administration[1]@claim:adminCode = 9
-		# ÍÑË¡¥³¡¼¥É¥Æ¡¼¥Ö¥ë
+		# ç”¨æ³•ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«
 		claim:administration[1]@claim:adminCodeId = 8
-		# ÍÑË¡¥³¥á¥ó¥È
+		# ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆ
 		claim:admMemo[1] = 100
 
-		# ²ó¿ô¤â¤·¤¯¤ÏÆü¿ô
+		# å›æ•°ã‚‚ã—ãã¯æ—¥æ•°
 		claim:bundleNumber[1] = 50
 
 
 		# -------------------------------------------------------
-		# ¿ÇÎÅ¹àÌÜ¥»¥¯¥·¥ç¥ó¤ÎÎÎ°è¤ò20³ÎÊİ
+		# è¨ºç™‚é …ç›®ã‚»ã‚¯ã‚·ãƒ§ãƒ³ã®é ˜åŸŸã‚’20ç¢ºä¿
 		$Repeat, 20, @@CLM_ITEM@@, 0
 
-			# ¿ÇÎÅ¹àÌÜ¥»¥¯¥·¥ç¥ó [@@CLM_ITEM@@]
+			# è¨ºç™‚é …ç›®ã‚»ã‚¯ã‚·ãƒ§ãƒ³ [@@CLM_ITEM@@]
 
-			# item¥¿¥°¤ÎÂ°À­
-			# ¿ÇÎÅ¼ïÊÌ¶èÊ¬¥³¡¼¥É
+			# itemã‚¿ã‚°ã®å±æ€§
+			# è¨ºç™‚ç¨®åˆ¥åŒºåˆ†ã‚³ãƒ¼ãƒ‰
 			claim:item[@@CLM_ITEM@@]@claim:subclassCode = 1
-			# ¿ÇÎÅ¼ïÊÌ¶èÊ¬¥³¡¼¥É
+			# è¨ºç™‚ç¨®åˆ¥åŒºåˆ†ã‚³ãƒ¼ãƒ‰
 			claim:item[@@CLM_ITEM@@]@claim:subclassCodeId = 8
-			# °å»öÀÁµá¥³¡¼¥É
+			# åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰
 			claim:item[@@CLM_ITEM@@]@claim:code = 10
-			# °å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+			# åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
 			claim:item[@@CLM_ITEM@@]@claim:tableId = 20
-			# Âè£²°å»öÀÁµá¥³¡¼¥É
+			# ç¬¬ï¼’åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰
 			claim:item[@@CLM_ITEM@@]@claim:aliasCode = 10
-			# Âè£²°å»öÀÁµá¥³¡¼¥É
+			# ç¬¬ï¼’åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰
 			claim:item[@@CLM_ITEM@@]@claim:aliasTableId = 20
 
 
 
 			$BaseStart, claim:item[@@CLM_ITEM@@]
 
-				# °å»öÀÁµáÌ¾¾Î
+				# åŒ»äº‹è«‹æ±‚åç§°
 				claim:name[1] = 80
 
-				# ¿ôÎÌ
+				# æ•°é‡
 				claim:number[1] = 40
-				# ¿ôÎÌ¥³¡¼¥É
+				# æ•°é‡ã‚³ãƒ¼ãƒ‰
 				claim:number[1]@claim:numberCode = 2
-				# ¿ôÎÌ¥³¡¼¥É¥Æ¡¼¥Ö¥ë
+				# æ•°é‡ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«
 				claim:number[1]@claim:numberCodeId = 8
-				# Ã±°Ì
+				# å˜ä½
 				claim:number[1]@claim:unit = 20
 
 
-				# ½êÍ×»ş´Ö
+				# æ‰€è¦æ™‚é–“
 				claim:duration[1] = 19
-				# Éô°Ì
+				# éƒ¨ä½
 				claim:location[1] = 50
 
 
 				# -----------------------------------
 
 
-				# ¥Õ¥£¥ë¥à¥»¥¯¥·¥ç¥ó (6ÎÎ°è³ÎÊİ)
+				# ãƒ•ã‚£ãƒ«ãƒ ã‚»ã‚¯ã‚·ãƒ§ãƒ³ (6é ˜åŸŸç¢ºä¿)
 				$Repeat, 6, @@CLM_FLM@@, 0
 					$BaseStart, claim:film[@@CLM_FLM@@]
 
-						# ¥Õ¥£¥ë¥à[@@CLM_FLM@@]
+						# ãƒ•ã‚£ãƒ«ãƒ [@@CLM_FLM@@]
 
-						# ¥Õ¥£¥ë¥à¥µ¥¤¥º
+						# ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚º
 						claim:filmSize[1] = 50
-						# ¥Õ¥£¥ë¥à¥µ¥¤¥º¥³¡¼¥É
+						# ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚ºã‚³ãƒ¼ãƒ‰
 						claim:filmSize[1]@claim:sizeCode = 2
-						# ¥Õ¥£¥ë¥à¥µ¥¤¥º¥³¡¼¥É¥Æ¡¼¥Ö¥ë
+						# ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚ºã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«
 						claim:filmSize[1]@claim:sizeCodeId = 8
-						# ¥Õ¥£¥ë¥àÊ¬³ä
+						# ãƒ•ã‚£ãƒ«ãƒ åˆ†å‰²
 						claim:filmSize[1]@claim:filmDivision = 2
-						# ¥Õ¥£¥ë¥àËç¿ô
+						# ãƒ•ã‚£ãƒ«ãƒ æšæ•°
 						claim:filmNumber[1] = 6
 
 						# ---------------
@@ -1562,14 +1562,14 @@ $Repeat, 20, @@CLM_BUNDLE@@, 0
 
 				# -----------------------------------
 
-				# ´ØÏ¢¼êµ»
+				# é–¢é€£æ‰‹æŠ€
 				claim:event[1] = 50
-				# ³«»ÏÆü
+				# é–‹å§‹æ—¥
 				claim:event[1]@claim:eventStart = 10
-				# ½ªÎ»Æü
+				# çµ‚äº†æ—¥
 				claim:event[1]@claim:eventEnd = 10
 
-				# ¿ÇÎÅ¹àÌÜ¥á¥â
+				# è¨ºç™‚é …ç›®ãƒ¡ãƒ¢
 				claim:memo[1] = 100
 			$BaseEnd
 
@@ -1580,7 +1580,7 @@ $Repeat, 20, @@CLM_BUNDLE@@, 0
 
 		# -------------------------------------------------------
 
-		# ¿ÇÎÅ³ç¤ê¥á¥â
+		# è¨ºç™‚æ‹¬ã‚Šãƒ¡ãƒ¢
 		claim:memo[1] = 100
 	$BaseEnd
 
@@ -1589,7 +1589,7 @@ $EndRepeat
 # =======================================================
 
 
-# lt_claim1 ÇÛÎóÂĞ¾İ»ØÄê End
+# lt_claim1 é…åˆ—å¯¾è±¡æŒ‡å®š End
 $LineTargetEnd
 
 

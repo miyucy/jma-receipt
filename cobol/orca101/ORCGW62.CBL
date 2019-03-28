@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGW62.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : Ģɼ�ƥ��Ȱ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/04/01    NACL�ݿ���    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : 帳票テスト印刷画面
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/04/01    NACL−森脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      *  Maj/Min/Rev ������        ����      ����
-      *  00.00.01    NACL-����     06.08.02  ϫ�ҡ�����Υץ���ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
-      *  04.08.01    NACL-����     16/09/06  GINBEE�б�
-      *  05.00.00    NACL-����     17/11/29  ���饤����Ȱ����б�
+      *  プログラム修正履歴
+      *  Maj/Min/Rev 修正者        日付      内容
+      *  00.00.01    NACL-森脇     06.08.02  労災、自賠のプリンタ追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  04.08.01    NACL-森脇     16/09/06  GINBEE対応
+      *  05.00.00    NACL-太田     17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -44,21 +44,21 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "W11SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -70,12 +70,12 @@
                05  WRK-SYSDD       PIC 9(02).
            03  SYS-TIME            PIC X(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-WIDGET          PIC X(64).
            03  WRK-WIDMSG          PIC X(70).
@@ -87,61 +87,61 @@
        01  WRK-CONS-AREA.
            03  WRK-CONS-FILENAME   PIC X(20)   VALUE
                                    "data/test.pdf".
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����  
+      *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "101".
-      *    ���������ģ¤Υ�����  
+      *    印刷管理ＤＢのキー値  
            03  WRK-CONS-PREVIEW-TBL-KEY
                                    PIC X(08)   VALUE   "TSTPRINT".
            03  WRK-CONS-PREVIEW-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
-      *    ����ִ����ģ¤Υ�����  
+      *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "TSTPRINT".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    ����ץ�󥿾���
+      *    外来プリンタ情報
            COPY  "CPSK1031.INC".
-      *    �����ץ�󥿾���
+      *    入院プリンタ情報
            COPY  "CPSK1034.INC".
-      *    ���硢�쥻�ץ�󥿾���
+      *    総括、レセプリンタ情報
            COPY  "CPSK2005.INC".
-      *    ����ִ�������
+      *    ジョブ管理情報
           COPY    "CPSK3003.INC".
       *
       *01  PRVKANRI-REC.
            COPY    "CPPRVKANRI.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSPRTLNK.INC".
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
            COPY    "CPSHELLTBL.INC".
       *
-      *    �ե�����¸�ߥ����å�
+      *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
       *    COPY    "ORCA-DBPATH".
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -160,7 +160,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -178,15 +178,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -200,20 +200,20 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "WERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -230,11 +230,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
@@ -245,20 +245,20 @@
        300-SCREEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  SPA-W62-AREA
       *
-      *    �ե�������ַ���
+      *    ファイル位置決定
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    WRK-CONS-FILENAME
                                    TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
       *
-      *    �ե�����¸�ߥ����å�
+      *    ファイル存在チェック
            INITIALIZE                  ORCSFILECHKAREA
            MOVE    MKPASS-OT-01    TO  FILECHK-NAME
            CALL    "ORCSFILECHK"       USING
@@ -276,7 +276,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO            TO  SPA-W62-PRTNUM-MAX
       *
-      *    ����ץ�󥿥��å�
+      *    外来プリンタセット
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
@@ -314,7 +314,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            PERFORM 900-SYSKANRI-CLOSE-SEC
       *
-      *    ���硢�쥻�ץ�󥿥��å�
+      *    総括、レセプリンタセット
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    "2005"              TO  SYS-KANRICD
@@ -376,7 +376,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  310-SPASET-EXT
            END-IF
       *
-      *    �����ץ�󥿥��å�
+      *    入院プリンタセット
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                      SYSKANRI-REC
            MOVE    "1034"              TO  SYS-KANRICD
@@ -421,7 +421,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
      *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -443,7 +443,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -451,14 +451,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  W62
       *
       *----(04.08.01)--ADD-START---
-      *    �ե�������ַ���
+      *    ファイル位置決定
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    WRK-CONS-FILENAME
                                    TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"        USING
                                        ORCSMKPASSAREA
       *
-      *    �ե�����¸�ߥ����å�
+      *    ファイル存在チェック
            INITIALIZE                  ORCSFILECHKAREA
            MOVE    MKPASS-OT-01    TO  FILECHK-NAME
            CALL    "ORCSFILECHK"       USING
@@ -491,7 +491,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -511,7 +511,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    カーソル編集処理
       *****************************************************************
        50011-CUR-SET-SEC           SECTION.
       *
@@ -527,15 +527,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"   ALSO    "B01"
                    PERFORM 210-BACK
-      *        ����
+      *        印刷
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 220-KAKUNIN-SEC
            END-EVALUATE
@@ -544,11 +544,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-      *    �ץ�󥿥��å�
+      *    プリンタセット
            PERFORM 2001-PRTNUM-SYORI-SEC
       *
            .
@@ -556,7 +556,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ץ��̾���Ͻ���
+      *    プリンタ名入力処理
       *****************************************************************
        2001-PRTNUM-SYORI-SEC       SECTION.
       *
@@ -593,7 +593,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -612,7 +612,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ������
+      *    確認　処理
       *****************************************************************
        220-KAKUNIN-SEC             SECTION.
       *
@@ -628,11 +628,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    印刷　処理
       *****************************************************************
        230-PRINT-SEC               SECTION.
       *
-      *    �ʣϣ£ɣġʣ��������˺������
+      *    ＪＯＢＩＤ（３００４）削除処理
            MOVE    SPACE           TO  SYS-3003-REC
            INITIALIZE                  SYS-3003-REC
            MOVE    "3003"          TO  SYS-3003-KANRICD
@@ -660,7 +660,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    ����ִ����������
+      *    ジョブ管理削除処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -756,7 +756,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
            PERFORM 45012-JOBID-UPD-SEC
       *
            .
@@ -764,7 +764,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -772,14 +772,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�ץ��̾�����Ϥ��Ʋ�������"
+                   MOVE    "プリンタ名を入力して下さい。"
                                            TO  SPA-ERRMSG
                WHEN    "1004"
-                   MOVE    "����ִ����ģ¤�����Ǥ��ޤ���Ǥ���"
+                   MOVE    "ジョブ管理ＤＢが削除できませんでした"
                                            TO  SPA-ERRMSG
                WHEN    "1005"
                    MOVE
-                   "�����ƥ�����ģ¡ʣ��������ˤ�����Ǥ��ޤ���Ǥ���"
+                   "システム管理ＤＢ（３００３）が削除できませんでした"
                                            TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -802,7 +802,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
       *****************************************************************
        45011-JOBKANRI-HENSYU-SEC   SECTION.
       *
@@ -838,7 +838,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *****************************************************************
        45012-JOBID-UPD-SEC         SECTION.
       *
@@ -889,7 +889,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-SELECT-SEC     SECTION.
       *
@@ -911,7 +911,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
       *
@@ -932,7 +932,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ���������������
+      *    システム管理マスタクローズ処理
       *****************************************************************
        900-SYSKANRI-CLOSE-SEC      SECTION.
       *
@@ -948,7 +948,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC        SECTION.
       *
@@ -986,7 +986,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

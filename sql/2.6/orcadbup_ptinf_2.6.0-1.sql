@@ -1,13 +1,13 @@
 --                                    --
---  ´µ¼Ô¾ğÊó¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹            --
+--  æ‚£è€…æƒ…å ±ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´            --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     Æş¶âÊıË¡ NYUKIN-HOHO           --
+-- é …ç›®ã®è¿½åŠ                          --
+--     å…¥é‡‘æ–¹æ³• NYUKIN-HOHO           --
 --                                    --
 -- Update Date : 2005/09/14           --
 --                                    --
 
--- TBL_PTINFWK ºîÀ®                   --
+-- TBL_PTINFWK ä½œæˆ                   --
 
 CREATE TABLE "tbl_ptinfwk" (
 	"hospid" character(24) NOT NULL,
@@ -71,16 +71,16 @@ CREATE TABLE "tbl_ptinfwk" (
 	Constraint "tbl_ptinfwk_primary_key" Primary Key ("hospid", "ptid")
 );
 
--- TBL_PTINF ¢ª TBL_PTINFWK --
+-- TBL_PTINF â†’ TBL_PTINFWK --
 
 insert into tbl_ptinfwk
 select * from tbl_ptinf;
 
--- TBL_PTINF ºï½ü --
+-- TBL_PTINF å‰Šé™¤ --
 
 drop table tbl_ptinf;
 
--- TBL_PTINF ºîÀ® --
+-- TBL_PTINF ä½œæˆ --
 
 CREATE TABLE "tbl_ptinf" (
 	"hospid" character(24) NOT NULL,
@@ -149,7 +149,7 @@ CREATE INDEX idx_ptinf_kananame ON tbl_ptinf USING btree (kananame);
 
 CREATE INDEX idx_ptinf_name ON tbl_ptinf USING btree (name);
 
--- TBL_PTINFWK ¢ª TBL_PTINF --
+-- TBL_PTINFWK â†’ TBL_PTINF --
 
 insert into tbl_ptinf
 (
@@ -275,6 +275,6 @@ upymd,
 uphms
  from tbl_ptinfwk;
 
--- TBL_PTINFWK ºï½ü --
+-- TBL_PTINFWK å‰Šé™¤ --
 
 drop table tbl_ptinfwk;

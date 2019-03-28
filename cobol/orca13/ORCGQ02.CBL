@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,49 +18,49 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGQ02.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ¥µº‘æ»≤Ò
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∏°∫˜≤ËÃÃ° £—£∞£≤°À
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  02/03/19    MCC°›¬¿≈ƒ°°   ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÊÇ£ËÄÖÁÖß‰ºö
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Ê§úÁ¥¢ÁîªÈù¢ÔºàÔº±ÔºêÔºíÔºâ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  02/03/19    MCC‚àíÂ§™Áî∞„ÄÄ   Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      * 01.00.01     MCC-øπœ∆     02/06/04+-¥µº‘»÷πÊ§Œƒ…≤√
-      *              MCC-¬¿≈ƒ     02/06/06+-∫«Ω™ºıø«∆¸§Œ∏°∫˜æÚ∑Ô§Ú
-      *                                   | »œ∞œªÿƒÍº∞§À —ππ
-      *                                   +-¡Ì∑ÔøÙºË∆¿§Úπ‘§¶»ΩƒÍ ˝À° —ππ
-      *                                   +-≥Œ«ß≤ËÃÃ¡´∞‹ª˛§Œ ‘Ω∏§Ú —ππ
-      * 01.00.02     MCC-¬¿≈ƒ     02/06/26+-•∏•Á•÷¥…Õ˝£ƒ£¬ƒ…≤√
-      *                                   +-≤ËÃÃ£—£…£ƒ£±§Ú
-      *                                   | £—£±£∞£∞§ÀÃææŒ —ππ
-      *                                   +-ø∑§ø§À£—£…£ƒ£±§Úƒ…≤√
-      *                                   +-∫ÔΩ¸∏Â§Œ ›∏±æ Û§‚√ÍΩ–¬–æ›
-      *                                   | §»§∑§∆§§§ø…‘∂ÒπÁ§ÚΩ§¿µ
-      *                                   +-•Í•π•»§À«ØŒƒ…≤√
-      *                                   +¥µº‘§Œ…¬Ãæ§Ú•≥°º•…§´§È§«§ §Ø
-      *                                   |ÃææŒ§´§Èπ‘§¶§Ë§¶Ω§¿µ
-      *                                   +ø«Œ≈π‘∞Ÿ§Úø«Œ≈«Ø∑Ó§ÚπÕŒ∏§∑
-      *                                   |§∆∏°∫˜§Úπ‘§¶§Ë§¶Ω§¿µ
-      *                                   + ›∏±º‘»÷πÊƒ…≤√
-      *                                   + ›∏±§ŒºÔŒ‡ƒ…≤√
-      *                                   + ›∏±° ∏¯»Ò°À∆˛Œœª˛°¢
-      *                                   |∆±ª˛§Àø«Œ≈«Ø∑Ó∆¸§¨∆˛Œœ§µ§Ï§∆
-      *                                   |§§§øæÏπÁ§œ•”•Â°º§Ú∏°∫˜§π§Î
-      *                                   |§Ë§¶Ω§¿µ
-      *                                   +ºıø«Õ˙ŒÚ§œ¥À‹æ Û§Œ§ﬂ
-      *                                   |æÚ∑Ô∆˛Œœ§µ§Ï§øæÏπÁ§À∏¬§Í
-      *                                   |∏°∫˜§Úπ‘§¶
-      *                                   +•∆•π•»¥µº‘∂Ë ¨§ÚæÚ∑Ô§Àƒ…≤√
-      * 01.00.03     MCC-¬¿≈ƒ     02/09/12+•—•π§Ú•µ•÷•◊•Ì§´§ÈºË∆¿
-      * 01.00.04     NACL-¬¿≈ƒ    03/05/26+œ∑øÕ∞Ï≥‰°¢£≤≥‰§Úƒ…≤√
-      * 01.00.05     NACL-¬¿≈ƒ    03/06/10+∞Ï≥Á∆˛Œœ¬–±˛
-      * 01.00.06     NACL-¬¿≈ƒ    03/09/11+•≥•È•‡•Í•π•»§ÀÕπ ÿ»÷πÊ§Úƒ…≤√
-      * 01.00.07     NACL-¬¿≈ƒ    04/02/09+•≥•È•‡•Í•π•» ‘Ω∏Ω§¿µ
-      * 01.00.08     NACL-¬¿≈ƒ    04/08/05+ ›∏±§Úƒ…≤√
-      * 03.05.00     NACL-¬¿≈ƒ    07.05.23 •∞•Î°º•◊ø«Œ≈¬–±˛
-      * 04.01.01     NACL-∆£∏∂    07/10/01  •Ø•È•§•¢•Û•» ›¬∏¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      * 01.00.01     MCC-Ê£ÆËÑá     02/06/04+-ÊÇ£ËÄÖÁï™Âè∑„ÅÆËøΩÂä†
+      *              MCC-Â§™Áî∞     02/06/06+-ÊúÄÁµÇÂèóË®∫Êó•„ÅÆÊ§úÁ¥¢Êù°‰ª∂„Çí
+      *                                   | ÁØÑÂõ≤ÊåáÂÆöÂºè„Å´Â§âÊõ¥
+      *                                   +-Á∑è‰ª∂Êï∞ÂèñÂæó„ÇíË°å„ÅÜÂà§ÂÆöÊñπÊ≥ïÂ§âÊõ¥
+      *                                   +-Á¢∫Ë™çÁîªÈù¢ÈÅ∑ÁßªÊôÇ„ÅÆÁ∑®ÈõÜ„ÇíÂ§âÊõ¥
+      * 01.00.02     MCC-Â§™Áî∞     02/06/26+-„Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢ËøΩÂä†
+      *                                   +-ÁîªÈù¢Ôº±Ôº©Ôº§Ôºë„Çí
+      *                                   | Ôº±ÔºëÔºêÔºê„Å´ÂêçÁß∞Â§âÊõ¥
+      *                                   +-Êñ∞„Åü„Å´Ôº±Ôº©Ôº§Ôºë„ÇíËøΩÂä†
+      *                                   +-ÂâäÈô§Âæå„ÅÆ‰øùÈô∫ÊÉÖÂ†±„ÇÇÊäΩÂá∫ÂØæË±°
+      *                                   | „Å®„Åó„Å¶„ÅÑ„Åü‰∏çÂÖ∑Âêà„Çí‰øÆÊ≠£
+      *                                   +-„É™„Çπ„Éà„Å´Âπ¥ÈΩ¢ËøΩÂä†
+      *                                   +ÊÇ£ËÄÖ„ÅÆÁóÖÂêç„Çí„Ç≥„Éº„Éâ„Åã„Çâ„Åß„Å™„Åè
+      *                                   |ÂêçÁß∞„Åã„ÇâË°å„ÅÜ„Çà„ÅÜ‰øÆÊ≠£
+      *                                   +Ë®∫ÁôÇË°åÁÇ∫„ÇíË®∫ÁôÇÂπ¥Êúà„ÇíËÄÉÊÖÆ„Åó
+      *                                   |„Å¶Ê§úÁ¥¢„ÇíË°å„ÅÜ„Çà„ÅÜ‰øÆÊ≠£
+      *                                   +‰øùÈô∫ËÄÖÁï™Âè∑ËøΩÂä†
+      *                                   +‰øùÈô∫„ÅÆÁ®ÆÈ°ûËøΩÂä†
+      *                                   +‰øùÈô∫ÔºàÂÖ¨Ë≤ªÔºâÂÖ•ÂäõÊôÇ„ÄÅ
+      *                                   |ÂêåÊôÇ„Å´Ë®∫ÁôÇÂπ¥ÊúàÊó•„ÅåÂÖ•Âäõ„Åï„Çå„Å¶
+      *                                   |„ÅÑ„ÅüÂ†¥Âêà„ÅØ„Éì„É•„Éº„ÇíÊ§úÁ¥¢„Åô„Çã
+      *                                   |„Çà„ÅÜ‰øÆÊ≠£
+      *                                   +ÂèóË®∫Â±•Ê≠¥„ÅØÂü∫Êú¨ÊÉÖÂ†±„ÅÆ„Åø
+      *                                   |Êù°‰ª∂ÂÖ•Âäõ„Åï„Çå„ÅüÂ†¥Âêà„Å´Èôê„Çä
+      *                                   |Ê§úÁ¥¢„ÇíË°å„ÅÜ
+      *                                   +„ÉÜ„Çπ„ÉàÊÇ£ËÄÖÂå∫ÂàÜ„ÇíÊù°‰ª∂„Å´ËøΩÂä†
+      * 01.00.03     MCC-Â§™Áî∞     02/09/12+„Éë„Çπ„Çí„Çµ„Éñ„Éó„É≠„Åã„ÇâÂèñÂæó
+      * 01.00.04     NACL-Â§™Áî∞    03/05/26+ËÄÅ‰∫∫‰∏ÄÂâ≤„ÄÅÔºíÂâ≤„ÇíËøΩÂä†
+      * 01.00.05     NACL-Â§™Áî∞    03/06/10+‰∏ÄÊã¨ÂÖ•ÂäõÂØæÂøú
+      * 01.00.06     NACL-Â§™Áî∞    03/09/11+„Ç≥„É©„É†„É™„Çπ„Éà„Å´ÈÉµ‰æøÁï™Âè∑„ÇíËøΩÂä†
+      * 01.00.07     NACL-Â§™Áî∞    04/02/09+„Ç≥„É©„É†„É™„Çπ„ÉàÁ∑®ÈõÜ‰øÆÊ≠£
+      * 01.00.08     NACL-Â§™Áî∞    04/08/05+‰øùÈô∫„ÇíËøΩÂä†
+      * 03.05.00     NACL-Â§™Áî∞    07.05.23 „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
+      * 04.01.01     NACL-Ëó§Âéü    07/10/01  „ÇØ„É©„Ç§„Ç¢„É≥„Éà‰øùÂ≠òÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -68,39 +68,39 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    •—•È•·°º•ø•’•°•§•Î
+      *    „Éë„É©„É°„Éº„Çø„Éï„Ç°„Ç§„É´
            SELECT  BQ01-FILE   ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *    •—•È•·°º•ø•’•°•§•Î
+      *    „Éë„É©„É°„Éº„Çø„Éï„Ç°„Ç§„É´
        FD  BQ01-FILE.
            COPY    "CPBQ01.INC".
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
-      *    ≤ËÃÃÕ—£”£–£¡
+      *    ÁîªÈù¢Áî®Ôº≥Ôº∞Ôº°
            COPY    "Q01SCR-SPA".
       *
-      *    •≥•Û•π•ø•Û•»√Õ
+      *    „Ç≥„É≥„Çπ„Çø„É≥„ÉàÂÄ§
            COPY    "ENUM-VALUE".
       *
-      *    •—•È•·°º•ø•’•°•§•ÎÃæ
+      *    „Éë„É©„É°„Éº„Çø„Éï„Ç°„Ç§„É´Âêç
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //PRFNAME//.
       *
            COPY    "CPASGNPARA.INC".
       *
-      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´ ÂêçÁß∞È†òÂüü
            COPY    "CPERRFL.INC".
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-EOF                             PIC 9(01).
@@ -114,7 +114,7 @@
            03  FLG-GMN-INIT                        PIC 9(01).
            03  FLG-PTPUBLIC                        PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
@@ -127,12 +127,12 @@
            03  IDX-GMN                             PIC 9(05).
            03  IDX-JOBID                           PIC 9(05).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-TTL-PTINF                       PIC 9(05).
            03  CNT-JYOKEN                          PIC 9(05).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-SYMD                            PIC 9(08).
            03  WRK-HENYMDG1                        PIC X(09).
@@ -231,14 +231,14 @@
                05  WRK-WIDGET8                     PIC 9(01).
                05  WRK-WIDGET-R8-DAMMY2            PIC X(11).
       *
-      *    ∏«ƒÍ√ÕŒŒ∞Ë
+      *    Âõ∫ÂÆöÂÄ§È†òÂüü
        01  CONST-AREA.
            03  CONST-JYOKENMEI-AREA.
-               05  FILLER          PIC X(10)   VALUE   "¥À‹æ Û".
-               05  FILLER          PIC X(10)   VALUE   " ›∏±".
-               05  FILLER          PIC X(10)   VALUE   "∏¯»Ò".
-               05  FILLER          PIC X(10)   VALUE   "…¬Ãæ".
-               05  FILLER          PIC X(10)   VALUE   "ø«Œ≈π‘∞Ÿ".
+               05  FILLER          PIC X(10)   VALUE   "Âü∫Êú¨ÊÉÖÂ†±".
+               05  FILLER          PIC X(10)   VALUE   "‰øùÈô∫".
+               05  FILLER          PIC X(10)   VALUE   "ÂÖ¨Ë≤ª".
+               05  FILLER          PIC X(10)   VALUE   "ÁóÖÂêç".
+               05  FILLER          PIC X(10)   VALUE   "Ë®∫ÁôÇË°åÁÇ∫".
            03  CONST-JYOKENMEI-R   REDEFINES   CONST-JYOKENMEI-AREA.
                05  CONST-JYOKENMEI PIC X(10)   OCCURS  5.
            03  CONST-SHELNAME      PIC X(100)
@@ -262,86 +262,86 @@
            03  CONST-LINE-MAX      PIC 9(05)   VALUE 200.
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ø«Œ≈π‘∞Ÿæ»≤Ò•∆°º•÷•Î
+      *    Ë®∫ÁôÇË°åÁÇ∫ÁÖß‰ºö„ÉÜ„Éº„Éñ„É´
        01  SRYSRH-REC.
            COPY    "CPSRYSRH.INC".
       *
-      *    ¥µº‘æ Ûæ»≤Ò•∆°º•÷•Î
+      *    ÊÇ£ËÄÖÊÉÖÂ†±ÁÖß‰ºö„ÉÜ„Éº„Éñ„É´
        01  PTSRH-REC.
            COPY    "CPPTSRH.INC".
       *
-      *    ¥µº‘æ Û•∆°º•÷•Î
+      *    ÊÇ£ËÄÖÊÉÖÂ†±„ÉÜ„Éº„Éñ„É´
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ºıø«Õ˙ŒÚæ»≤Ò•∆°º•÷•Î
+      *    ÂèóË®∫Â±•Ê≠¥ÁÖß‰ºö„ÉÜ„Éº„Éñ„É´
        01  RRKSRH-REC.
            COPY    "CPRRKSRH.INC".
       *
-      *    •∑•ß•Î•∆°º•÷•Î
+      *    „Ç∑„Çß„É´„ÉÜ„Éº„Éñ„É´
            COPY    "CPSHELLTBL.INC".
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ¥µº‘√œ∞Ëœ¢∑»
+      *    ÊÇ£ËÄÖÂú∞ÂüüÈÄ£Êê∫
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *    uidºË∆¿
+      *    uidÂèñÂæó
        01  UIDIO-AREA.
            03  C-RET                   PIC X(2).
            03  C-UID                   PIC X(36).
        01  ST                          PIC 9(2).
       *
-      *    ≤ËÃÃ∆¸…’ —¥π•µ•÷
+      *    ÁîªÈù¢Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSGDAY.INC".
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *
-      *    ¥µº‘»÷πÊ —¥π•µ•÷
+      *    ÊÇ£ËÄÖÁï™Âè∑Â§âÊèõ„Çµ„Éñ
            COPY    "CPORCSPTID.INC".
       *
-      *    æ»≤ÒÕ—•µ•÷
+      *    ÁÖß‰ºöÁî®„Çµ„Éñ
            COPY    "CPQSUB01.INC".
            COPY    "CPQSUB02.INC".
       *
-      *    ¥µº‘∞ÏÕ˜∞ı∫˛•—•È•·•ø
+      *    ÊÇ£ËÄÖ‰∏ÄË¶ßÂç∞Âà∑„Éë„É©„É°„Çø
            COPY    "CPORCHC28.INC".
       *
-      *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
+      *    ÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØ„Éë„É©„É°„Çø
            COPY    "CPORCSKANACHK.INC".
       *
-      *   •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *   „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    •’•£•¢•Î•«•§•Ï•Ø•»•Í∞Ã√÷ªÿƒÍ•µ•÷
+      *    „Éï„Ç£„Ç¢„É´„Éá„Ç§„É¨„ÇØ„Éà„É™‰ΩçÁΩÆÊåáÂÆö„Çµ„Éñ
            COPY  "CPMKPASS.INC".
       *
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ∫«Ω™ºıø«∆¸ºË∆¿
+      *    ÊúÄÁµÇÂèóË®∫Êó•ÂèñÂæó
            COPY    "CPORCSLASTYMD.INC".
       *
-      *    •Ø•È•§•¢•Û•» ›¬∏£ƒ£¬¿©∏Ê•µ•÷
+      *    „ÇØ„É©„Ç§„Ç¢„É≥„Éà‰øùÂ≠òÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSFILESV.INC".
       *
-      *    ∞Ïª˛•’•°•§•ÎÃæ ‘Ω∏
+      *    ‰∏ÄÊôÇ„Éï„Ç°„Ç§„É´ÂêçÁ∑®ÈõÜ
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    •–•√•¡•∏•Á•÷¿©∏Ê
+      *    „Éê„ÉÉ„ÉÅ„Ç∏„Éß„ÉñÂà∂Âæ°
            COPY    "CPORCSMONBATCH.INC".
       *     
            COPY    "ORCA-DBMETA".
@@ -349,7 +349,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    œ¢ÕÌŒŒ∞Ë
+      *    ÈÄ£Áµ°È†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -367,7 +367,7 @@
                                                  SCRAREA.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -385,15 +385,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ≤ËÃÃ¡´∞‹
+      *    ÁîªÈù¢ÈÅ∑Áßª
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ∆˛Œœ
+      *    ÂÖ•Âäõ
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ≤ËÃÃ¡´∞‹§¨§ §§ª˛°¢≤ËÃÃ…Ωº®§ÿ
+      *    ÁîªÈù¢ÈÅ∑Áßª„Åå„Å™„ÅÑÊôÇ„ÄÅÁîªÈù¢Ë°®Á§∫„Å∏
            IF  ( FLG-END           =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -405,7 +405,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -414,25 +414,25 @@
                                        CNT-AREA
                                        WRK-AREA
       *
-      *    •®•È°º≤ËÃÃ§Ë§Í
+      *    „Ç®„É©„ÉºÁîªÈù¢„Çà„Çä
            IF  ( SPA-MOTOPG            =   "QERR" )
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ΩÈ¥¸≤ËÃÃ•ª•√•»
+      *        ÂàùÊúüÁîªÈù¢„Çª„ÉÉ„Éà
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END         =   1 )
                    GO  TO  100-INIT-EXT
                END-IF
-      **** ª√ƒÍ ****
+      **** Êö´ÂÆö ****
       *
                IF  ( SPA-ERRCD                 =   "1039" )
-                   MOVE    "∏°∫˜æÚ∑Ô§¨¬ø§π§Æ§ﬁ§π°£"
+                   MOVE    "Ê§úÁ¥¢Êù°‰ª∂„ÅåÂ§ö„Åô„Åé„Åæ„Åô„ÄÇ"
                                    TO  SPA-GMN-Q02-TNAME (16)
                    MOVE    16      TO  SPA-GMN-Q02-KEKKA-MAX
                END-IF
       **************
-      *        ≤ËÃÃ ‘Ω∏
+      *        ÁîªÈù¢Á∑®ÈõÜ
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -449,13 +449,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ΩÈ¥¸≤ËÃÃΩËÕ˝
+      *    ÂàùÊúüÁîªÈù¢Âá¶ÁêÜ
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            MOVE    1               TO  SPA-GMN-Q02-CUR
       *
-      *    ¬æ§Œ£Ã£ƒ§Ë§Í
+      *    ‰ªñ„ÅÆÔº¨Ôº§„Çà„Çä
            IF  ( LINKAREA      NOT =   SPACE )
       *
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
@@ -486,41 +486,41 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
-      *    ΩËÕ˝≥Œ«ß≤ËÃÃ
+      *    Âá¶ÁêÜÁ¢∫Ë™çÁîªÈù¢
            WHEN    "Q97"
                PERFORM 3001-Q97SPASET-SEC
                GO  TO      300-SCREEN-EXT
-      *    Ω–Œœªÿº®≤ËÃÃ
+      *    Âá∫ÂäõÊåáÁ§∫ÁîªÈù¢
            WHEN    "Q100"
                PERFORM 3001-Q100SPASET-SEC
                GO  TO      300-SCREEN-EXT
-      *    Ã¿∫ŸΩÒœ¢∑»≥Œ«ß≤ËÃÃ
+      *    ÊòéÁ¥∞Êõ∏ÈÄ£Êê∫Á¢∫Ë™çÁîªÈù¢
            WHEN    "Q03"
                PERFORM 3001-Q03SPASET-SEC
                GO  TO      300-SCREEN-EXT
-      *    ≥Œ«ß•·•√•ª°º•∏≤ËÃÃ
+      *    Á¢∫Ë™ç„É°„ÉÉ„Çª„Éº„Ç∏ÁîªÈù¢
            WHEN    "QID1"
                PERFORM 3001-QID1SPASET-SEC
                GO  TO      300-SCREEN-EXT
-      *    æ Û∫ÔΩ¸≤ËÃÃ
+      *    ÊÉÖÂ†±ÂâäÈô§ÁîªÈù¢
            WHEN    "XB01"
                MOVE    LNK-COMMON          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
                GO  TO      300-SCREEN-EXT
-      *    ÕΩÃÛ≈–œø
+      *    ‰∫àÁ¥ÑÁôªÈå≤
            WHEN    "Y01"
-      *    ºı…’∞ÏÕ˜
+      *    Âèó‰ªò‰∏ÄË¶ß
            WHEN    "U01"
                MOVE    LNK-COMMON          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
                GO  TO      300-SCREEN-EXT
-      *    ¥µº‘≈–œø
+      *    ÊÇ£ËÄÖÁôªÈå≤
            WHEN    "P02"
            WHEN    "C02"
            WHEN    "K02"
            WHEN    "K02N"
       *
-      *        ¬‡»Ú§∑§∆§™§§§ø£”£–£¡§Œ∆‚Õ∆§Ú∏µ§ÀÃ·§π
+      *        ÈÄÄÈÅø„Åó„Å¶„Åä„ÅÑ„ÅüÔº≥Ôº∞Ôº°„ÅÆÂÜÖÂÆπ„ÇíÂÖÉ„Å´Êàª„Åô
                INITIALIZE                  QSUB01-LNK
                MOVE    "I"             TO  QSUB01-KBN
                CALL "ORCGQSUB01"           USING
@@ -541,7 +541,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £—£∞£≤£¡°¢£—£∞£≤£¬¡´∞‹ΩËÕ˝
+      *    Ôº±ÔºêÔºíÔº°„ÄÅÔº±ÔºêÔºíÔº¢ÈÅ∑ÁßªÂá¶ÁêÜ
       *****************************************************************
        3001-OTHER-Q02-SENI-SEC          SECTION.
       *
@@ -550,7 +550,7 @@
            MOVE    SPA-Q01-SAKIPG  TO  MCP-WINDOW
       *
            MOVE    SPA-Q01-SAKIPG  TO  SPA-SAKIPG
-      *    MOTPG§œ•ª•√•»§∑§ §§° ∏µ§Œ§Úªƒ§π°À
+      *    MOTPG„ÅØ„Çª„ÉÉ„Éà„Åó„Å™„ÅÑÔºàÂÖÉ„ÅÆ„ÇíÊÆã„ÅôÔºâ
       *
            PERFORM 900-PUT-WINDOW
       *
@@ -560,7 +560,7 @@
        3001-OTHER-Q02-SENI-EXT.
            EXIT.
       *****************************************************************
-      *    ΩËÕ˝…Ωº®≤ËÃÃÃ·§ÍΩËÕ˝
+      *    Âá¶ÁêÜË°®Á§∫ÁîªÈù¢Êàª„ÇäÂá¶ÁêÜ
       *****************************************************************
        3001-Q97SPASET-SEC             SECTION.
       *
@@ -585,7 +585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £—£…£ƒ£±Ã·§Í•π•— ‘Ω∏ΩËÕ˝
+      *    Ôº±Ôº©Ôº§ÔºëÊàª„Çä„Çπ„ÉëÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3001-QID1SPASET-SEC             SECTION.
       *
@@ -610,7 +610,7 @@
        3001-QID1SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    £—£±£∞£∞Ã·§Í•π•— ‘Ω∏ΩËÕ˝
+      *    Ôº±ÔºëÔºêÔºêÊàª„Çä„Çπ„ÉëÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3001-Q100SPASET-SEC             SECTION.
       *
@@ -653,7 +653,7 @@
            MOVE    SPA-Q02-Q100-STKNS  TO  BQ01-STKNS
            MOVE    SPA-Q02-Q100-EDKNS  TO  BQ01-EDKNS
       *
-      *    «ØŒ
+      *    Âπ¥ÈΩ¢
            IF  (   SPA-Q01-AGE-CALC-KBN    =   ZERO )
                MOVE    SPA-SYSYMD      TO  BQ01-KJYNYMD
            ELSE
@@ -697,7 +697,7 @@
                                            TO  WRK-FILENM
            END-IF             
       *
-      *    •’•°•§•Î ›¬∏æ Û∫ÔΩ¸
+      *    „Éï„Ç°„Ç§„É´‰øùÂ≠òÊÉÖÂ†±ÂâäÈô§
            INITIALIZE                  ORCSFILESVAREA
            MOVE    "D"             TO  SFILESV-MODE
            MOVE    CONST-JOB-SHELLID
@@ -708,11 +708,11 @@
                                        ORCSFILESVAREA
                                        SPA-AREA  
       *
-      *    •∏•Á•÷≥´ªœ•ª•√•»ΩËÕ˝
+      *    „Ç∏„Éß„ÉñÈñãÂßã„Çª„ÉÉ„ÉàÂá¶ÁêÜ
            MOVE    CONST-JOBID     TO  WRK-JOBID
            PERFORM 900-JOBKANRI-HENSYU-SEC
       *
-      *    ∞ı∫˛Õ—•π•Ø•Í•◊•»ΩËÕ˝
+      *    Âç∞Âà∑Áî®„Çπ„ÇØ„É™„Éó„ÉàÂá¶ÁêÜ
       *
            MOVE    SPACE           TO  SHELLTBL
            INITIALIZE                  SHELLTBL
@@ -755,7 +755,7 @@
            INTO     SHELLTBL-ARG15
            END-STRING
       *
-      *    ∏°∫˜∑Î≤Ã•—•ø°º•Û
+      *    Ê§úÁ¥¢ÁµêÊûú„Éë„Çø„Éº„É≥
            MOVE    "0"             TO  SHELLTBL-ARG16
       *
            INITIALIZE                  ORCA-BLOB
@@ -785,7 +785,7 @@
        3001-Q100SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    £—£∞£≥Ã·§Í•π•— ‘Ω∏ΩËÕ˝
+      *    Ôº±ÔºêÔºìÊàª„Çä„Çπ„ÉëÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3001-Q03SPASET-SEC             SECTION.
       *
@@ -842,11 +842,11 @@
       *
            CLOSE   BQ01-FILE
       *
-      *    •∏•Á•÷≥´ªœ•ª•√•»ΩËÕ˝
+      *    „Ç∏„Éß„ÉñÈñãÂßã„Çª„ÉÉ„ÉàÂá¶ÁêÜ
            MOVE    CONST-JOBID2    TO  WRK-JOBID
            PERFORM 900-JOBKANRI-HENSYU-SEC
       *
-      *    ∞ı∫˛Õ—•π•Ø•Í•◊•»ΩËÕ˝
+      *    Âç∞Âà∑Áî®„Çπ„ÇØ„É™„Éó„ÉàÂá¶ÁêÜ
       *
            MOVE    SPACE           TO  SHELLTBL
            INITIALIZE                  SHELLTBL
@@ -863,7 +863,7 @@
            MOVE    ERRFLPARA-BASENAME
                                    TO  SHELLTBL-ARG7
            MOVE    CONST-JOBID2    TO  SHELLTBL-ARG8
-      *    ID§œ∏°∫˜∑Î≤Ã∞ı∫˛§À ª§ª§Î
+      *    ID„ÅØÊ§úÁ¥¢ÁµêÊûúÂç∞Âà∑„Å´‰Ωµ„Åõ„Çã
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG9
            IF    ( SPA-Q02-Q03-LNKKBN  =   "1" )
@@ -896,7 +896,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •π•—ΩÈ¥¸ ‘Ω∏ΩËÕ˝
+      *    „Çπ„ÉëÂàùÊúüÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -909,7 +909,7 @@
       *
            MOVE    SPA-Q01-HYODAI  TO  SPA-GMN-Q02-HYODAI
       *
-      *    ≤ËÃÃæÚ∑Ô ‘Ω∏ΩËÕ˝
+      *    ÁîªÈù¢Êù°‰ª∂Á∑®ÈõÜÂá¶ÁêÜ
            PERFORM 3101-JYOKEN-EDIT-SEC
       *
            PERFORM 800-MCNDATE-SEC
@@ -917,7 +917,7 @@
            MOVE    SMCNDATE-YMD    TO  SPA-GMN-Q02-SELYMD
            MOVE    SMCNDATE-HMS    TO  SPA-GMN-Q02-SELHMS
       *
-      *    £”£—£Ã ∏ ‘Ω∏ΩËÕ˝
+      *    Ôº≥Ôº±Ôº¨ÊñáÁ∑®ÈõÜÂá¶ÁêÜ
            INITIALIZE              QSUB02-LNK
            MOVE    SMCNDATE-YMD    TO  QSUB02-YMD
            MOVE    SMCNDATE-HMS    TO  QSUB02-HMS
@@ -930,7 +930,7 @@
            PERFORM 900-STR-LEN-GET-SEC
            IF  ( WRK-STR-LEN       >    15000 )
       *
-      *        £”£—£Ã≤Ú¿œ∏¬≥¶√Õ•™°º•–°º
+      *        Ôº≥Ôº±Ôº¨Ëß£ÊûêÈôêÁïåÂÄ§„Ç™„Éº„Éê„Éº
                MOVE    "1039"      TO  SPA-ERRCD
                MOVE    1           TO  SPA-GMN-Q02-MODE
            ELSE
@@ -993,7 +993,7 @@
                MOVE    SPA-OPID        TO  SHELLTBL-ARG6
                MOVE    SPACE           TO  SHELLTBL-ARG7
       *
-      **       ARG8§œ API§«ª»Õ—
+      **       ARG8„ÅØ API„Åß‰ΩøÁî®
       *
                INITIALIZE                  ORCA-BLOB
                MOVE    ASGNPARA        TO  ORCA-BLOB-FILE
@@ -1010,7 +1010,7 @@
                                                    SPA-AREA
            END-IF
       *
-      *    •´°º•Ω•Î•≠°º¿©∏Êπ‡Ã‹
+      *    „Ç´„Éº„ÇΩ„É´„Ç≠„ÉºÂà∂Âæ°È†ÖÁõÆ
            MOVE   1                TO  SPA-GMN-Q02-CUR
       *
            .
@@ -1018,11 +1018,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *    ÁîªÈù¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3101-Q02-GMN-EDIT-SEC            SECTION.
       *
-      *    ¡Ì∑ÔøÙ ‘Ω∏
+      *    Á∑è‰ª∂Êï∞Á∑®ÈõÜ
            IF  ( SPA-GMN-Q02-TOTAL-GET-FLG =   ZERO )
                MOVE    1              TO   SPA-GMN-Q02-TOTAL-GET-FLG
                PERFORM 3101-TOTAL-KNS-EDIT-SEC
@@ -1031,7 +1031,7 @@
            IF    ( SPA-GMN-Q02-SKIP-KNS     =   ZERO )
             AND  ( SPA-GMN-Q02-KEKKA-MAX    =   ZERO )
       *
-      *        ≥∫≈ˆ§ §∑•®•È°º
+      *        Ë©≤ÂΩì„Å™„Åó„Ç®„É©„Éº
                MOVE    "0001"      TO  SPA-ERRCD
       *
            END-IF
@@ -1044,7 +1044,7 @@
            INITIALIZE                  SPA-GMN-Q02-KEKKATBL
                                        SPA-NAI-Q02-KEKKATBL
       *
-      *    £”£—£Ã ∏ ‘Ω∏ΩËÕ˝
+      *    Ôº≥Ôº±Ôº¨ÊñáÁ∑®ÈõÜÂá¶ÁêÜ
            INITIALIZE              QSUB02-LNK
            MOVE    1               TO  QSUB02-LIMITCONTROL
            COMPUTE QSUB02-OFFSET
@@ -1058,7 +1058,7 @@
       *
            MOVE    QSUB02-SQL-ORDER    TO  WRK-SQL-ORDER
       *
-      *    ¥µº‘•ﬁ•π•ø∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖ„Éû„Çπ„ÇøÊ§úÁ¥¢Âá¶ÁêÜ
            PERFORM 900-PTSRH-ODR-SEL-SEC
       *
            PERFORM VARYING IDX-GMN FROM    1   BY  1
@@ -1069,33 +1069,33 @@
       *
                PERFORM 900-PTNUM-PUBLIC-KEY-SEL-SEC
       *
-      *        »÷πÊ
+      *        Áï™Âè∑
                COMPUTE WRK-NUM     =   SPA-GMN-Q02-SKIP-KNS
                                    +   IDX-GMN
                MOVE    WRK-NUM     TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9   TO  SPA-GMN-Q02-TNO
                                                            (IDX-GMN)
       *
-      *        ¥µº‘»÷πÊ
+      *        ÊÇ£ËÄÖÁï™Âè∑
                MOVE    PTSRH-PTNUM
                                    TO  SPA-GMN-Q02-TPTNUM
                                                            (IDX-GMN)
       *
-      *        ª·Ãæ
+      *        Ê∞èÂêç
                MOVE    PTINF-NAME
                                    TO  SPA-GMN-Q02-TNAME
                                                            (IDX-GMN)
-      *        ¿≠ Ã
+      *        ÊÄßÂà•
                EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "√À"    TO  SPA-GMN-Q02-TSEX
+                   MOVE    "Áî∑"    TO  SPA-GMN-Q02-TSEX
                                                            (IDX-GMN)
                WHEN    "2"
-                   MOVE    "Ω˜"    TO  SPA-GMN-Q02-TSEX
+                   MOVE    "Â•≥"    TO  SPA-GMN-Q02-TSEX
                                                            (IDX-GMN)
                END-EVALUATE
       *
-      *        √¬¿∏∆¸
+      *        Ë™ïÁîüÊó•
                INITIALIZE              ORCSGDAYAREA
       *
                MOVE    PTINF-BIRTHDAY
@@ -1110,7 +1110,7 @@
                                TO  SPA-GMN-Q02-TBIRTH (IDX-GMN)
                END-IF
       *
-      *        «ØŒ
+      *        Âπ¥ÈΩ¢
                IF  (   SPA-Q01-AGE-CALC-KBN    =   ZERO )
                    MOVE    SPA-SYSYMD      TO  WRK-KJYNYMD
                ELSE
@@ -1135,16 +1135,16 @@
       *
                IF    ( WRK-AGE-YY          =   ZERO )
                    MOVE    WRK-AGE-MM      TO  WRK-AGE-Z
-                   MOVE    "•ˆ∑Ó"          TO  WRK-AGE-MEI
+                   MOVE    "„É∂Êúà"          TO  WRK-AGE-MEI
                ELSE
                    MOVE    WRK-AGE-YY      TO  WRK-AGE-Z
-                   MOVE    "∫–"            TO  WRK-AGE-MEI
+                   MOVE    "Ê≠≥"            TO  WRK-AGE-MEI
                END-IF
       *
                MOVE    WRK-AGE-G           TO  SPA-GMN-Q02-TAGE
                                                                (IDX-GMN)
       *
-      *        ¡∞≤ÛÕË±°∆¸ ‘Ω∏
+      *        ÂâçÂõûÊù•Èô¢Êó•Á∑®ÈõÜ
                INITIALIZE                  ORCSLASTYMDAREA
                MOVE    PTINF-PTID      TO  ORCSLASTYMD-PTID
                CALL    "ORCSLASTYMD"       USING
@@ -1154,11 +1154,11 @@
                                            TO  SPA-GMN-Q02-THKN
                                                                (IDX-GMN)
       *
-      *        ≈≈œ√»÷πÊ
+      *        ÈõªË©±Áï™Âè∑
                MOVE    PTINF-HOME-TEL1
                                            TO  SPA-GMN-Q02-TTEL
                                                                (IDX-GMN)
-      *        ∫«Ω™ºıø«∆¸
+      *        ÊúÄÁµÇÂèóË®∫Êó•
                IF    ( ORCSLASTYMD-BRMNUM  NOT =   SPACE )
                    MOVE    "1"     TO  SPA-NAI-Q02-TNYUINKBN (IDX-GMN)
                    MOVE    ORCSLASTYMD-BRMNUM
@@ -1168,7 +1168,7 @@
                                    TO  SPA-GMN-Q02-TLASTYMD  (IDX-GMN)
                END-IF
       *
-      *        Õπ ÿ»÷πÊ
+      *        ÈÉµ‰æøÁï™Âè∑
                IF    ( PTINF-HOME-POST   NOT =   SPACE )
                    MOVE    PTINF-HOME-POST (1:3)
                                            TO  SPA-GMN-Q02-TPOST
@@ -1181,11 +1181,11 @@
                    
                END-IF
       *
-      *        ø«Œ≈∆‚Õ∆° ΩªΩÍ§Ú…Ωº®°À
+      *        Ë®∫ÁôÇÂÜÖÂÆπÔºà‰ΩèÊâÄ„ÇíË°®Á§∫Ôºâ
                MOVE    PTINF-HOME-ADRS
                                        TO  WRK-STR
       *
-      *        ΩªΩÍ§Œπ‡Ã‹ƒπ§Úµ·§·§Î
+      *        ‰ΩèÊâÄ„ÅÆÈ†ÖÁõÆÈï∑„ÇíÊ±Ç„ÇÅ„Çã
                MOVE    1               TO  WRK-STR-LEN
                MOVE    SPACE           TO  WRK-STR
                STRING  PTINF-HOME-ADRS   DELIMITED   BY  SIZE
@@ -1194,12 +1194,12 @@
                END-STRING
                COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
       *
-      *        ΩªΩÍ§Œº¬∫›§Œ ∏ª˙ŒÛƒπ§Úµ·§·§Î
+      *        ‰ΩèÊâÄ„ÅÆÂÆüÈöõ„ÅÆÊñáÂ≠óÂàóÈï∑„ÇíÊ±Ç„ÇÅ„Çã
                MOVE    PTINF-HOME-ADRS TO  WRK-STR
                PERFORM 900-STR-LEN-GET-SEC
                MOVE    WRK-STR-LEN           TO  WRK-PTINF-ADR-LEN
       *
-      *        »÷√œ§Œπ‡Ã‹ƒπ§Úµ·§·§Î
+      *        Áï™Âú∞„ÅÆÈ†ÖÁõÆÈï∑„ÇíÊ±Ç„ÇÅ„Çã
                MOVE    1               TO  WRK-STR-LEN
                MOVE    SPACE           TO  WRK-STR
                STRING  PTINF-HOME-BANTI  DELIMITED   BY  SIZE
@@ -1208,7 +1208,7 @@
                END-STRING
                COMPUTE WRK-STR-LEN =   WRK-STR-LEN -   1
       *
-      *        »÷√œ§Œº¬∫›§Œ ∏ª˙ŒÛƒπ§Úµ·§·§Î
+      *        Áï™Âú∞„ÅÆÂÆüÈöõ„ÅÆÊñáÂ≠óÂàóÈï∑„ÇíÊ±Ç„ÇÅ„Çã
                MOVE    PTINF-HOME-BANTI  TO  WRK-STR
                PERFORM 900-STR-LEN-GET-SEC
                MOVE    WRK-STR-LEN         TO  WRK-PTINF-BANTI-LEN
@@ -1218,7 +1218,7 @@
                    STRING  PTINF-HOME-ADRS 
                                    (1: WRK-PTINF-ADR-LEN)
                                            DELIMITED   BY  SIZE
-                           "°°"            DELIMITED   BY  SIZE
+                           "„ÄÄ"            DELIMITED   BY  SIZE
                    INTO    SPA-GMN-Q02-TSRYACT (IDX-GMN)
                    WITH    POINTER WRK-STR-PNT
                    END-STRING
@@ -1233,13 +1233,13 @@
                    END-STRING
                END-IF
       *
-      *        √œ∞Ëœ¢∑»£…£ƒ
+      *        Âú∞ÂüüÈÄ£Êê∫Ôº©Ôº§
                MOVE    PTPUBLIC-PATIENT-ID1
                                    TO  SPA-GMN-Q02-TPATIENT-ID1(IDX-GMN)
       *
                MOVE    IDX-GMN     TO  SPA-GMN-Q02-KEKKA-MAX
       *
-      *        ¥µº‘£…£ƒ
+      *        ÊÇ£ËÄÖÔº©Ôº§
                MOVE    PTINF-PTID
                                    TO  SPA-NAI-Q02-TPTID (IDX-GMN)
       *
@@ -1252,13 +1252,13 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            MOVE   FLG-PTSRH           TO  SPA-GMN-Q02-FLG-PTINF
-      *    ¡∞ «•‹•ø•Û≥Ë¿≠ ‘Ω∏
+      *    ÂâçÈ†Å„Éú„Çø„É≥Ê¥ªÊÄßÁ∑®ÈõÜ
            IF  ( SPA-GMN-Q02-SKIP-KNS      >   0 )
                MOVE    WIDGET-NORMAL       TO  SPA-GMN-Q02-B06-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  SPA-GMN-Q02-B06-STATE
            END-IF
-      *    º° «•‹•ø•Û≥Ë¿≠ ‘Ω∏
+      *    Ê¨°È†Å„Éú„Çø„É≥Ê¥ªÊÄßÁ∑®ÈõÜ
            IF  ( SPA-GMN-Q02-FLG-PTINF     =   0 )
                MOVE    WIDGET-NORMAL       TO  SPA-GMN-Q02-B07-STATE
            ELSE
@@ -1269,7 +1269,7 @@
        3101-Q02-GMN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    «ØŒ∑◊ªªΩËÕ˝
+      *    Âπ¥ÈΩ¢Ë®àÁÆóÂá¶ÁêÜ
       *****************************************************************
        3101-AGE-CALC-SEC               SECTION.
       *
@@ -1293,7 +1293,7 @@
        3101-AGE-CALC-EXT.
            EXIT.
       *****************************************************************
-      *    æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *    Êù°‰ª∂Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3101-JYOKEN-EDIT-SEC            SECTION.
       *
@@ -1341,7 +1341,7 @@
                        WITH    POINTER     WRK-JYOKEN-PNT
                        END-STRING
                    ELSE
-                       STRING  "°¢"                DELIMITED   BY  SIZE
+                       STRING  "„ÄÅ"                DELIMITED   BY  SIZE
                                CONST-JYOKENMEI (IDX1)
                                                    DELIMITED   BY  SPACE
                        INTO    SPA-GMN-Q02-JYOKEN1
@@ -1365,7 +1365,7 @@
                    END-STRING
                END-IF
       *
-                   STRING  "°°°¡"      DELIMITED BY SIZE
+                   STRING  "„ÄÄ„Äú"      DELIMITED BY SIZE
                    INTO    SPA-GMN-Q02-JYOKEN1
                    WITH    POINTER IDXP
                    END-STRING
@@ -1373,7 +1373,7 @@
                IF    ( SPA-Q01-EDSRYYMD    NOT =   SPACE )
                    MOVE    SPA-Q01-EDSRYYMD    TO  WRK-SYMD
                    PERFORM 800-SEIWA-HEN-SEC
-                   STRING  "°°"            DELIMITED BY SIZE
+                   STRING  "„ÄÄ"            DELIMITED BY SIZE
                            WRK-HENYMDG3    DELIMITED BY SIZE
                    INTO    SPA-GMN-Q02-JYOKEN1
                    WITH    POINTER IDXP
@@ -1387,11 +1387,11 @@
        3101-JYOKEN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¡Ì∑ÔøÙ ‘Ω∏ΩËÕ˝
+      *    Á∑è‰ª∂Êï∞Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3101-TOTAL-KNS-EDIT-SEC             SECTION.
       *
-      *    ∏°∫˜∑Î≤Ã∑ÔøÙ§ÚºË∆¿
+      *    Ê§úÁ¥¢ÁµêÊûú‰ª∂Êï∞„ÇíÂèñÂæó
            INITIALIZE                      PTSRH-REC
            MOVE    SPA-HOSPNUM         TO  PTSRH-HOSPNUM
            MOVE    SPA-TERMID          TO  PTSRH-TERMID
@@ -1417,7 +1417,7 @@
                                            SPA-GMN-Q02-TOTAL-NUM
            MOVE    PTSRH-TOTALTEN      TO  SPA-GMN-Q02-NINZU
       *
-      *    ∫∏µÕ§« ‘Ω∏§Úπ‘§¶
+      *    Â∑¶Ë©∞„ÅßÁ∑®ÈõÜ„ÇíË°å„ÅÜ
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL ( IDX1    >   11 )
                 OR   ( WRK-TOTAL (IDX1 : 1)    NOT =   SPACE )
@@ -1428,7 +1428,7 @@
       *
            IF  ( IDX1         <=   11 )
                MOVE    SPACE   TO  SPA-GMN-Q02-TOTAL
-               STRING  "¡Ì∑ÔøÙ°ß"          DELIMITED   BY    SIZE
+               STRING  "Á∑è‰ª∂Êï∞Ôºö"          DELIMITED   BY    SIZE
                        WRK-TOTAL (IDX1 : ) DELIMITED   BY    SIZE
                INTO    SPA-GMN-Q02-TOTAL
                END-STRING
@@ -1439,20 +1439,20 @@
        3101-TOTAL-KNS-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ≤ËÃÃ¡´∞‹ΩËÕ˝
+      *    ÁîªÈù¢ÈÅ∑ÁßªÂá¶ÁêÜ
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
            MOVE        MCP-WIDGET      TO      WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    Ã·§Î
+      *    Êàª„Çã
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    •Ø•Í•¢
+      *    „ÇØ„É™„Ç¢
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 480-CLEAR-SEC
-      *    ¬æ∂»Ã≥§ÿ
+      *    ‰ªñÊ•≠Âãô„Å∏
                WHEN    "CLICKED"       ALSO    "B05"
                    MOVE    "P02"       TO      WRK-WINDOW
                    PERFORM 480-GYOUMU-SENI-SEC
@@ -1462,29 +1462,29 @@
                WHEN    "CLICKED"       ALSO    "B06S"
                    MOVE    "C02"       TO      WRK-WINDOW
                    PERFORM 480-GYOUMU-SENI-SEC
-      *    ¡∞ «
+      *    ÂâçÈ†Å
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 210-MAE-PAGE-SEC
-      *    º° «
+      *    Ê¨°È†Å
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 210-TUGI-PAGE-SEC
-      *    ¬æ∂»Ã≥œ¢∑»
+      *    ‰ªñÊ•≠ÂãôÈÄ£Êê∫
                WHEN    "CLICKED"       ALSO    "B09"
                WHEN    "CLICKED"       ALSO    "B09S"
                    PERFORM 480-Q03-SENI-SEC
-      *    æ Û∫ÔΩ¸
+      *    ÊÉÖÂ†±ÂâäÈô§
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 480-JYOUHOU-DEL-SEC
-      *    £√£”£÷≥Œ«ß
+      *    Ôº£Ôº≥Ôº∂Á¢∫Ë™ç
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 480-CSV-KAKUNIN-SEC
-      *    ∞ı∫˛≥Œ«ß
+      *    Âç∞Âà∑Á¢∫Ë™ç
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 480-PRINT-KAKUNIN-SEC
-      *    ΩËÕ˝≥Œ«ß≤ËÃÃ
+      *    Âá¶ÁêÜÁ¢∫Ë™çÁîªÈù¢
                WHEN    "CLICKED"       ALSO    "B12S"
                    PERFORM 490-KAKUNIN-SEC
-      *    ∏°∫˜√Ê≥Œ«ß
+      *    Ê§úÁ¥¢‰∏≠Á¢∫Ë™ç
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B04"
                    IF    ( SPA-GMN-Q02-MODE    =   ZERO )
@@ -1497,21 +1497,21 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ≤Òœ√°°ΩËÕ˝
+      *    ‰ºöË©±„ÄÄÂá¶ÁêÜ
       *****************************************************************
        200-ENTRY                             SECTION.
       *
            MOVE        MCP-WIDGET      TO      WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    π‘¡™¬Ú
+      *    Ë°åÈÅ∏Êäû
            WHEN    ANY             ALSO    "KEKKALST"
                PERFORM 4102-KEKKALSTSEL-SEC
            WHEN    OTHER
       *
-      *        ∆˛Œœ∏ƒΩÍ§Œ•ª•√•»
+      *        ÂÖ•ÂäõÂÄãÊâÄ„ÅÆ„Çª„ÉÉ„Éà
                PERFORM 400-GMN-INPUT-SEC
-      *        ∆˛Œœ•¡•ß•√•ØΩËÕ˝
+      *        ÂÖ•Âäõ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
                PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
@@ -1521,7 +1521,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∆˛Œœ∏ƒΩÍ§Œ•ª•√•»ΩËÕ˝
+      *    ÂÖ•ÂäõÂÄãÊâÄ„ÅÆ„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
@@ -1532,32 +1532,32 @@
        400-GMN-INPUT-EXT.
            EXIT.
       *****************************************************************
-      *    ∆˛Œœ•¡•ß•√•ØΩËÕ˝
+      *    ÂÖ•Âäõ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        410-INPUT-CHK-SEC           SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    …Ω¬Í•¡•ß•√•Ø
+      *    Ë°®È°å„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM 4100-HYODAI-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    æÚ∑ÔæÂ√ •¡•ß•√•Ø
+      *    Êù°‰ª∂‰∏äÊÆµ„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM 4101-JYOKEN1-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    æÚ∑Ô≤º√ •¡•ß•√•Ø
+      *    Êù°‰ª∂‰∏ãÊÆµ„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM 4102-JYOKEN2-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ¡™¬Ú»÷πÊ•¡•ß•√•Ø
+      *    ÈÅ∏ÊäûÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM 4102-SELUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
@@ -1568,28 +1568,28 @@
        410-INPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ≤ËÃÃ£”£–£¡ ‘Ω∏ΩËÕ˝
+      *    ÁîªÈù¢Ôº≥Ôº∞Ôº°Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        4101-GMN-SPA-SET-SEC        SECTION.
       *
-      *    …Ω¬Í
+      *    Ë°®È°å
            MOVE    Q02-HYODAI      TO  SPA-GMN-Q02-HYODAI
-      *    æÚ∑Ô£±
+      *    Êù°‰ª∂Ôºë
            MOVE    Q02-JYOKEN1     TO  SPA-GMN-Q02-JYOKEN1
-      *    æÚ∑Ô£≤
+      *    Êù°‰ª∂Ôºí
            MOVE    Q02-JYOKEN2     TO  SPA-GMN-Q02-JYOKEN2
-      *    ¡™¬Ú»÷πÊ
+      *    ÈÅ∏ÊäûÁï™Âè∑
            MOVE    Q02-SELNUM      TO  SPA-GMN-Q02-SELNUM
       *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    …Ω¬Í•¡•ß•√•Ø
+      *    Ë°®È°å„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        4100-HYODAI-CHK-SEC         SECTION.
       *
-      *    ¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    ÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    SPA-GMN-Q02-HYODAI
                                        TO  WRK-MAE-INPUT
       *
@@ -1604,11 +1604,11 @@
        4100-HYODAI-CHK-EXIT.
            EXIT.
       *****************************************************************
-      *    æÚ∑ÔæÂ√ •¡•ß•√•Ø
+      *    Êù°‰ª∂‰∏äÊÆµ„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        4101-JYOKEN1-CHK-SEC        SECTION.
       *
-      *    ¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    ÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    SPA-GMN-Q02-JYOKEN1
                                        TO  WRK-MAE-INPUT
       *
@@ -1623,11 +1623,11 @@
        4101-JYOKEN1-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    æÚ∑Ô≤º√ •¡•ß•√•Ø
+      *    Êù°‰ª∂‰∏ãÊÆµ„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        4102-JYOKEN2-CHK-SEC        SECTION.
       *
-      *    ¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    ÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    SPA-GMN-Q02-JYOKEN2
                                        TO  WRK-MAE-INPUT
       *
@@ -1642,16 +1642,16 @@
        4102-JYOKEN2-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¡™¬Ú»÷πÊ•¡•ß•√•Ø
+      *    ÈÅ∏ÊäûÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        4102-SELUM-CHK-SEC          SECTION.
       *
-      *    Ã§∆˛Œœª˛§œ•¡•ß•√•Ø§Úπ‘§Ô§ §§
+      *    Êú™ÂÖ•ÂäõÊôÇ„ÅØ„ÉÅ„Çß„ÉÉ„ÇØ„ÇíË°å„Çè„Å™„ÅÑ
            IF  ( SPA-GMN-Q02-SELNUM    =   ZERO )
                GO  TO  4102-SELUM-CHK-EXT
            END-IF
       *
-      *    ¡™¬Ú»÷πÊ»œ∞œ•¡•ß•√•Ø
+      *    ÈÅ∏ÊäûÁï™Âè∑ÁØÑÂõ≤„ÉÅ„Çß„ÉÉ„ÇØ
            COMPUTE WRK-KEKKALST-NO-ST  =   SPA-GMN-Q02-SKIP-KNS
                                        +   1
       *
@@ -1674,11 +1674,11 @@
        4102-SELUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    π‘¡™¬ÚΩËÕ˝
+      *    Ë°åÈÅ∏ÊäûÂá¶ÁêÜ
       *****************************************************************
        4102-KEKKALSTSEL-SEC        SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -1697,17 +1697,17 @@
            EXIT.
       *
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-BACK                        SECTION.
       *
-      *    •∏•Á•÷¥…Õ˝•¡•ß•√•ØΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
                MOVE    "6666"          TO  SPA-QIDCD
-               STRING  "ΩËÕ˝√Ê§«§π°⁄"  DELIMITED  BY  SIZE
+               STRING  "Âá¶ÁêÜ‰∏≠„Åß„Åô„Äê"  DELIMITED  BY  SIZE
                        JOB-SHELLMSG    DELIMITED  BY  SPACE
-                       "°€"            DELIMITED  BY  SIZE
+                       "„Äë"            DELIMITED  BY  SIZE
                INTO  WRK-SHORIERR
                END-STRING
                GO  TO  210-BACK-EXT
@@ -1721,7 +1721,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
@@ -1741,11 +1741,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¡∞ «°°ΩËÕ˝
+      *    ÂâçÈ†Å„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-MAE-PAGE-SEC                SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            IF  ( SPA-GMN-Q02-SKIP-KNS      >   0 )
@@ -1759,11 +1759,11 @@
        210-MAE-PAGE-EXT.
            EXIT.
       *****************************************************************
-      *    º° «°°ΩËÕ˝
+      *    Ê¨°È†Å„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-TUGI-PAGE-SEC               SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            IF  ( SPA-GMN-Q02-FLG-PTINF     =   0 )
@@ -1777,11 +1777,11 @@
        210-TUGI-PAGE-EXT.
            EXIT.
       *****************************************************************
-      *    æ Û∫ÔΩ¸§ÿ
+      *    ÊÉÖÂ†±ÂâäÈô§„Å∏
       *****************************************************************
        480-JYOUHOU-DEL-SEC             SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    SPACE               TO  LINKAREA
@@ -1789,7 +1789,7 @@
            MOVE    SPA-Q01FREE         TO  LNK-SCRSPA
       *
            INITIALIZE                  SPA-KYOTUKEY
-      *    ≤ËÃÃ∞‹π‘Õ—§Œ•—•È•·•ø —ππ
+      *    ÁîªÈù¢ÁßªË°åÁî®„ÅÆ„Éë„É©„É°„ÇøÂ§âÊõ¥
            MOVE    "Q02"               TO  SPA-MOTOPG
            MOVE    "XB01"              TO  SPA-SAKIPG
       *
@@ -1809,17 +1809,17 @@
        480-JYOUHOU-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÕΩÃÛ≈–œø§ÿ
+      *    ‰∫àÁ¥ÑÁôªÈå≤„Å∏
       *****************************************************************
        480-YOYAKU-SEC              SECTION.
       *
-      *    Ã·§Íª˛°¢≤ËÃÃ§Ú∏µ§ÿÃ·§π
+      *    Êàª„ÇäÊôÇ„ÄÅÁîªÈù¢„ÇíÂÖÉ„Å∏Êàª„Åô
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-Q01FREE         TO  LNK-SCRSPA
       *
            INITIALIZE                  SPA-KYOTUKEY
-      *    ≤ËÃÃ∞‹π‘Õ—§Œ•—•È•·•ø —ππ
+      *    ÁîªÈù¢ÁßªË°åÁî®„ÅÆ„Éë„É©„É°„ÇøÂ§âÊõ¥
            MOVE    "Q02"               TO  SPA-MOTOPG
            MOVE    "Y01"               TO  SPA-SAKIPG
            MOVE    "Q02"               TO  SPA-MOTOPG3
@@ -1836,7 +1836,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •Ø•Í•¢ΩËÕ˝
+      *    „ÇØ„É™„Ç¢Âá¶ÁêÜ
       *****************************************************************
        480-CLEAR-SEC               SECTION.
       *
@@ -1852,20 +1852,20 @@
        480-CLEAR-EXT.
            EXIT.
       *****************************************************************
-      *    ¬æ∂»Ã≥§ÿ
+      *    ‰ªñÊ•≠Âãô„Å∏
       *****************************************************************
        480-GYOUMU-SENI-SEC             SECTION.
       *
            MOVE    SPA-SYSYMD      TO  SPA-SRYYMD
            MOVE    SPA-SYSYMDWH    TO  SPA-SRYYMDW
       *
-      *    ∆˛Œœª˛•¡•ß•√•ØΩËÕ˝
+      *    ÂÖ•ÂäõÊôÇ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
            PERFORM 410-INPUT-CHK-SEC
            IF  ( SPA-ERRCD         NOT =   SPACE )
                GO  TO  480-GYOUMU-SENI-EXT
            END-IF
       *
-      *    ≤ËÃÃ¡´∞‹ª˛§Œ•¡•ß•√•ØΩËÕ˝
+      *    ÁîªÈù¢ÈÅ∑ÁßªÊôÇ„ÅÆ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
            PERFORM 4801-GAMEN-SENIJI-CHK-SEC
            IF  ( SPA-ERRCD         NOT =   SPACE )
                GO  TO  480-GYOUMU-SENI-EXT
@@ -1878,7 +1878,7 @@
                GO  TO  480-GYOUMU-SENI-EXT
            END-IF
       *
-      *    £”£–£¡§Œ∆‚Õ∆§Ú¬‡»Ú
+      *    Ôº≥Ôº∞Ôº°„ÅÆÂÜÖÂÆπ„ÇíÈÄÄÈÅø
            INITIALIZE                  QSUB01-LNK
            MOVE    "O"                 TO  QSUB01-KBN
            MOVE    SPA-Q01FREE         TO  QSUB01-SPA-AREA
@@ -1899,7 +1899,7 @@
                END-IF
            END-IF
       *
-      *    ºı…’§»¥µº‘∏°∫˜∞ ≥∞§Œ∏µ§Ú•ª•√•»
+      *    Âèó‰ªò„Å®ÊÇ£ËÄÖÊ§úÁ¥¢‰ª•Â§ñ„ÅÆÂÖÉ„Çí„Çª„ÉÉ„Éà
            MOVE    "Q02"               TO  SPA-MOTOPG
            MOVE    WRK-WINDOW          TO  SPA-SAKIPG
            IF    ( WRK-WINDOW          =   "K02" OR "K02N" )
@@ -1923,15 +1923,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ºı…’∞ÏÕ˜§ÿ
+      *    Âèó‰ªò‰∏ÄË¶ß„Å∏
       *****************************************************************
        490-UKEICHI-SEC             SECTION.
       *
-      *    Ã·§Íª˛°¢≤ËÃÃ§Ú∏µ§ÿÃ·§π
+      *    Êàª„ÇäÊôÇ„ÄÅÁîªÈù¢„ÇíÂÖÉ„Å∏Êàª„Åô
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-Q01FREE         TO  LNK-SCRSPA
-      *    ≤ËÃÃ∞‹π‘Õ—§Œ•—•È•·•ø —ππ
+      *    ÁîªÈù¢ÁßªË°åÁî®„ÅÆ„Éë„É©„É°„ÇøÂ§âÊõ¥
            MOVE    "Q02"               TO  SPA-MOTOPG
            MOVE    "U01"               TO  SPA-SAKIPG
       *
@@ -1950,7 +1950,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ã¿∫ŸΩÒœ¢∑»≥Œ«ß≤ËÃÃ
+      *    ÊòéÁ¥∞Êõ∏ÈÄ£Êê∫Á¢∫Ë™çÁîªÈù¢
       *****************************************************************
        480-Q03-SENI-SEC                SECTION.
       *
@@ -1959,14 +1959,14 @@
                GO  TO  480-Q03-SENI-EXT
            END-IF
       *
-      *    •∏•Á•÷¥…Õ˝•¡•ß•√•ØΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
                MOVE    "7777"          TO  SPA-ERRCD
                MOVE    SPACE           TO  WRK-SHORIERR
-               STRING  "ΩËÕ˝√Ê§«§π°⁄"  DELIMITED  BY  SIZE
+               STRING  "Âá¶ÁêÜ‰∏≠„Åß„Åô„Äê"  DELIMITED  BY  SIZE
                        JOB-SHELLMSG    DELIMITED  BY  SPACE
-                       "°€"            DELIMITED  BY  SIZE
+                       "„Äë"            DELIMITED  BY  SIZE
                INTO  WRK-SHORIERR
                END-STRING
                GO  TO  480-Q03-SENI-EXT
@@ -1980,7 +1980,7 @@
        480-Q03-SENI-EXT.
            EXIT.
       *****************************************************************
-      *    Ã¿∫ŸΩÒœ¢∑»≥Œ«ß≤ËÃÃ
+      *    ÊòéÁ¥∞Êõ∏ÈÄ£Êê∫Á¢∫Ë™çÁîªÈù¢
       *****************************************************************
        4801-Q03-SENI-SEC               SECTION.
       *
@@ -2040,21 +2040,21 @@
        4801-Q03-SENI-EXT.
            EXIT.
       *****************************************************************
-      *    ∞ı∫˛≥Œ«ß
+      *    Âç∞Âà∑Á¢∫Ë™ç
       *****************************************************************
        480-CSV-KAKUNIN-SEC             SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    •∏•Á•÷¥…Õ˝•¡•ß•√•ØΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
                MOVE    "7777"          TO  SPA-ERRCD
                MOVE    SPACE           TO  WRK-SHORIERR
-               STRING  "ΩËÕ˝√Ê§«§π°⁄"  DELIMITED  BY  SIZE
+               STRING  "Âá¶ÁêÜ‰∏≠„Åß„Åô„Äê"  DELIMITED  BY  SIZE
                        JOB-SHELLMSG    DELIMITED  BY  SPACE
-                       "°€"            DELIMITED  BY  SIZE
+                       "„Äë"            DELIMITED  BY  SIZE
                INTO  WRK-SHORIERR
                END-STRING
                GO  TO  480-CSV-KAKUNIN-EXT
@@ -2069,27 +2069,27 @@
            EXIT.
       *
       *****************************************************************
-      *    ∞ı∫˛≥Œ«ß
+      *    Âç∞Âà∑Á¢∫Ë™ç
       *****************************************************************
        480-PRINT-KAKUNIN-SEC           SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    •∏•Á•÷¥…Õ˝•¡•ß•√•ØΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
            PERFORM 900-JOBKANRI-CHK-SEC
            IF    ( FLG-JOBEND   =   ZERO )
                MOVE    "7777"          TO  SPA-ERRCD
                MOVE    SPACE           TO  WRK-SHORIERR
-               STRING  "ΩËÕ˝√Ê§«§π°⁄"  DELIMITED  BY  SIZE
+               STRING  "Âá¶ÁêÜ‰∏≠„Åß„Åô„Äê"  DELIMITED  BY  SIZE
                        JOB-SHELLMSG    DELIMITED  BY  SPACE
-                       "°€"            DELIMITED  BY  SIZE
+                       "„Äë"            DELIMITED  BY  SIZE
                INTO  WRK-SHORIERR
                END-STRING
                GO  TO  480-PRINT-KAKUNIN-EXT
            END-IF
       *
-      *    …Ω¬Í¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    Ë°®È°åÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    SPA-GMN-Q02-HYODAI  TO  WRK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
@@ -2100,7 +2100,7 @@
            END-IF
       *
       *
-      *    æÚ∑Ô£±¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    Êù°‰ª∂ÔºëÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    SPA-GMN-Q02-JYOKEN1 TO  WRK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
@@ -2111,7 +2111,7 @@
            END-IF
       *
       *
-      *    æÚ∑Ô£≤¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    Êù°‰ª∂ÔºíÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    SPA-GMN-Q02-JYOKEN2 TO  WRK-MAE-INPUT
       *
            PERFORM     800-ENRTRY-CHK-SEC
@@ -2131,11 +2131,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ΩËÕ˝≥Œ«ß≤ËÃÃ
+      *    Âá¶ÁêÜÁ¢∫Ë™çÁîªÈù¢
       *****************************************************************
        490-KAKUNIN-SEC                 SECTION.
       *
-      *    ≤ËÃÃ§Ú£”£–£¡§À•ª•√•»
+      *    ÁîªÈù¢„ÇíÔº≥Ôº∞Ôº°„Å´„Çª„ÉÉ„Éà
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            INITIALIZE                  SPA-Q97-AREA
@@ -2174,7 +2174,7 @@
            EXIT.
       *
       *****************************************************************
-      *    æı¬÷≥Œ«ß≤ËÃÃ
+      *    Áä∂ÊÖãÁ¢∫Ë™çÁîªÈù¢
       *****************************************************************
        490-JOUTAI-SEC                  SECTION.
       *
@@ -2191,7 +2191,7 @@
        490-JOUTAI-EXT.
            EXIT.
       *****************************************************************
-      *    Ω–Œœªÿº®≤ËÃÃ∏∆Ω–ΩËÕ˝
+      *    Âá∫ÂäõÊåáÁ§∫ÁîªÈù¢ÂëºÂá∫Âá¶ÁêÜ
       *****************************************************************
        480-OUT-SIJI-CALL-SEC           SECTION.
       *
@@ -2245,18 +2245,18 @@
        480-OUT-SIJI-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    ≤ËÃÃ¡´∞‹ª˛§Œ•¡•ß•√•ØΩËÕ˝
+      *    ÁîªÈù¢ÈÅ∑ÁßªÊôÇ„ÅÆ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        4801-GAMEN-SENIJI-CHK-SEC   SECTION.
       *
-      *    ¡™¬Ú»÷πÊ•¡•ß•√•Ø
-      *    £±°•Ã§∆˛Œœ•¡•ß•√•Ø
+      *    ÈÅ∏ÊäûÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØ
+      *    ÔºëÔºéÊú™ÂÖ•Âäõ„ÉÅ„Çß„ÉÉ„ÇØ
            IF  ( SPA-GMN-Q02-SELNUM    =   ZERO )
                MOVE    "1001"      TO  SPA-ERRCD
                GO  TO  4801-GAMEN-SENIJI-CHK-EXT
            END-IF
       *
-      *    £≤°•»œ∞œ•¡•ß•√•Ø
+      *    ÔºíÔºéÁØÑÂõ≤„ÉÅ„Çß„ÉÉ„ÇØ
            COMPUTE WRK-KEKKALST-NO-ST  =   SPA-GMN-Q02-SKIP-KNS
                                        +   1
       *
@@ -2275,7 +2275,7 @@
        4801-GAMEN-SENIJI-CHK-EXT.
            EXIT.
      *****************************************************************
-      *    º´≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *    Ëá™ÁîªÈù¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -2302,7 +2302,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *    ÁîªÈù¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
@@ -2323,7 +2323,7 @@
                                                Q02-B12S-STATE
                                                Q02-B09-STATE
                                                Q02-B09S-STATE
-      *    ∏°∫˜∑Î≤Ã∑ÔøÙ§¨•º•Ì∑Ô§«§ §§æÏπÁ§œ•‹•ø•Û§Ú≥Ë¿≠§À§π§Î
+      *    Ê§úÁ¥¢ÁµêÊûú‰ª∂Êï∞„Åå„Çº„É≠‰ª∂„Åß„Å™„ÅÑÂ†¥Âêà„ÅØ„Éú„Çø„É≥„ÇíÊ¥ªÊÄß„Å´„Åô„Çã
            IF  ( SPA-GMN-Q02-TOTAL-NUM     >   ZERO )
                MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
                                                Q02-B05S-STATE
@@ -2350,9 +2350,9 @@
            END-IF
       *
            IF  ( SPA-GMN-Q02-MODE          =   ZERO )
-               MOVE    "∏°∫˜§∑§∆§§§ﬁ§π°£"
+               MOVE    "Ê§úÁ¥¢„Åó„Å¶„ÅÑ„Åæ„Åô„ÄÇ"
                                    TO  SPA-GMN-Q02-TNAME (15)
-               MOVE    "§∑§–§È§Ø§™¬‘§¡§Ø§¿§µ§§°£"
+               MOVE    "„Åó„Å∞„Çâ„Åè„ÅäÂæÖ„Å°„Åè„Å†„Åï„ÅÑ„ÄÇ"
                                    TO  SPA-GMN-Q02-TNAME (16)
                MOVE    16          TO  SPA-GMN-Q02-KEKKA-MAX
                IF    ( SPA-GMN-Q02-DURATION
@@ -2364,7 +2364,7 @@
                END-IF
            ELSE
                IF  ( SPA-GMN-Q02-TOTAL-NUM     =   ZERO )
-                   MOVE    "≥∫≈ˆ¥µº‘§œ¬∏∫ﬂ§∑§ﬁ§ª§Û§«§∑§ø°£"
+                   MOVE    "Ë©≤ÂΩìÊÇ£ËÄÖ„ÅØÂ≠òÂú®„Åó„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                    TO  SPA-GMN-Q02-TNAME (16)
                    MOVE    16      TO  SPA-GMN-Q02-KEKKA-MAX
                END-IF
@@ -2400,54 +2400,54 @@
                MOVE    WIDGET-INSENSITIVE  TO  Q02-B06S-STATE
            END-IF
       *
-      *    …Ω¬Í
+      *    Ë°®È°å
            MOVE    SPA-GMN-Q02-HYODAI      TO  Q02-HYODAI
-      *    æÚ∑ÔæÂ√ 
+      *    Êù°‰ª∂‰∏äÊÆµ
            MOVE    SPA-GMN-Q02-JYOKEN1     TO  Q02-JYOKEN1
-      *    æÚ∑Ô≤º√ 
+      *    Êù°‰ª∂‰∏ãÊÆµ
            MOVE    SPA-GMN-Q02-JYOKEN2     TO  Q02-JYOKEN2
-      *    ∏°∫˜∑ÔøÙ
+      *    Ê§úÁ¥¢‰ª∂Êï∞
            MOVE    SPA-GMN-Q02-KEKKA-MAX
                                    TO  Q02-KEKKALST-COUNT
-      *    ∏°∫˜∑Î≤Ã
+      *    Ê§úÁ¥¢ÁµêÊûú
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >       SPA-GMN-Q02-KEKKA-MAX)
-      *        œ¢»÷
+      *        ÈÄ£Áï™
                MOVE    SPA-GMN-Q02-TNO   (IDX1)
                                    TO  Q02-KEKKALST-NO (IDX1)
       *
-      *        ¥µº‘»÷πÊ
+      *        ÊÇ£ËÄÖÁï™Âè∑
                MOVE    SPA-GMN-Q02-TPTNUM   (IDX1)
                                    TO  Q02-KEKKALST-PTNUM (IDX1)
       *
-      *        ª·Ãæ
+      *        Ê∞èÂêç
                MOVE    SPA-GMN-Q02-TNAME (IDX1)
                                    TO  Q02-KEKKALST-NAME (IDX1)
-      *        ¿≠ Ã
+      *        ÊÄßÂà•
                MOVE    SPA-GMN-Q02-TSEX (IDX1)
                                    TO  Q02-KEKKALST-SEX (IDX1)
-      *        √¬¿∏∆¸
+      *        Ë™ïÁîüÊó•
                MOVE    SPA-GMN-Q02-TBIRTH (IDX1)
                                    TO  Q02-KEKKALST-BIRTH (IDX1)
-      *        «ØŒ
+      *        Âπ¥ÈΩ¢
                MOVE    SPA-GMN-Q02-TAGE (IDX1)
                                    TO  Q02-KEKKALST-AGE (IDX1)
-      *         ›∏±¡»πÁ§ª
+      *        ‰øùÈô∫ÁµÑÂêà„Åõ
                MOVE    SPA-GMN-Q02-THKN (IDX1)
                                    TO  Q02-KEKKALST-HKN (IDX1)
-      *        ∫«Ω™ºıø«∆¸
+      *        ÊúÄÁµÇÂèóË®∫Êó•
                MOVE    SPA-GMN-Q02-TLASTYMD (IDX1)
                                    TO  Q02-KEKKALST-LASTYMD (IDX1)
-      *        ≈≈œ√»÷πÊ
+      *        ÈõªË©±Áï™Âè∑
                MOVE    SPA-GMN-Q02-TTEL (IDX1)
                                    TO  Q02-KEKKALST-TEL (IDX1)
-      *        Õπ ÿ»÷πÊ
+      *        ÈÉµ‰æøÁï™Âè∑
                MOVE    SPA-GMN-Q02-TPOST (IDX1)
                                    TO  Q02-KEKKALST-POST (IDX1)
-      *        ø«Œ≈∆‚Õ∆
+      *        Ë®∫ÁôÇÂÜÖÂÆπ
                MOVE    SPA-GMN-Q02-TSRYACT (IDX1)
                                    TO  Q02-KEKKALST-SRYACTNAIYO (IDX1)
-      *        √œ∞Ëœ¢∑»£…£ƒ
+      *        Âú∞ÂüüÈÄ£Êê∫Ôº©Ôº§
                MOVE    SPA-GMN-Q02-TPATIENT-ID1 (IDX1)
                                    TO  Q02-KEKKALST-PATIENT-ID1 (IDX1)
       *
@@ -2461,15 +2461,15 @@
       *
            IF  ( SPA-GMN-Q02-MODE          =   ZERO )
                MOVE    "red"       TO  Q02-TOTAL-STYLE
-               MOVE    "°ˆ°ˆ°ˆ∏°∫˜√Ê°ˆ°ˆ°ˆ"
+               MOVE    "ÔºäÔºäÔºäÊ§úÁ¥¢‰∏≠ÔºäÔºäÔºä"
                                            TO  Q02-TOTAL
            ELSE
-      *        ¡Ì∑ÔøÙ
+      *        Á∑è‰ª∂Êï∞
                MOVE    "black"             TO  Q02-TOTAL-STYLE
                MOVE    SPA-GMN-Q02-TOTAL   TO  Q02-TOTAL
            END-IF
       *
-      *    ¡™¬Ú»÷πÊ
+      *    ÈÅ∏ÊäûÁï™Âè∑
            MOVE    SPA-GMN-Q02-SELNUM  TO  Q02-SELNUM
       *
            PERFORM 5001-MAPCUR-SEC
@@ -2479,7 +2479,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ•´°º•Ω•Î•ª•√•»ΩËÕ˝
+      *    ÁîªÈù¢„Ç´„Éº„ÇΩ„É´„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -2490,19 +2490,19 @@
       *
            EVALUATE    SPA-GMN-Q02-CUR
       *
-      *    …Ω¬Í
+      *    Ë°®È°å
            WHEN   001
                MOVE  "HYODAI"      TO  MCP-WIDGET
       *
-      *    æÚ∑ÔæÂ√ 
+      *    Êù°‰ª∂‰∏äÊÆµ
            WHEN   002
                MOVE  "JYOKEN1"     TO  MCP-WIDGET
       *
-      *    æÚ∑Ô≤º√ 
+      *    Êù°‰ª∂‰∏ãÊÆµ
            WHEN   003
                MOVE  "JYOKEN2"     TO  MCP-WIDGET
       *
-      *    ¡™¬Ú»÷πÊ
+      *    ÈÅ∏ÊäûÁï™Âè∑
            WHEN   004
                MOVE  "SELNUM"      TO  MCP-WIDGET
            END-EVALUATE
@@ -2512,30 +2512,30 @@
            EXIT.
       *
       *****************************************************************
-      *    ∆˛Œœ∏ƒΩÍ§Œ•ª•√•»ΩËÕ˝
+      *    ÂÖ•ÂäõÂÄãÊâÄ„ÅÆ„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
       *
-      *    …Ω¬Í
+      *    Ë°®È°å
            WHEN    "HYODAI"
                MOVE    001         TO  SPA-GMN-Q02-CUR
       *
-      *    æÚ∑ÔæÂ√ 
+      *    Êù°‰ª∂‰∏äÊÆµ
            WHEN    "JYOKEN1"
                MOVE    002         TO  SPA-GMN-Q02-CUR
       *
-      *    æÚ∑Ô≤º√ 
+      *    Êù°‰ª∂‰∏ãÊÆµ
            WHEN    "JYOKEN2"
                MOVE    003         TO  SPA-GMN-Q02-CUR
       *
-      *    ¡™¬Ú»÷πÊ
+      *    ÈÅ∏ÊäûÁï™Âè∑
            WHEN    "SELNUM"
                MOVE    004         TO  SPA-GMN-Q02-CUR
            END-EVALUATE
       *
-      *    º°•´°º•Ω•Î∞Ã√÷§Ú¿ﬂƒÍ
+      *    Ê¨°„Ç´„Éº„ÇΩ„É´‰ΩçÁΩÆ„ÇíË®≠ÂÆö
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "SELNUM"
                MOVE    001         TO  SPA-GMN-Q02-CUR
@@ -2548,7 +2548,7 @@
        5011-INPUT-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    •®•È°º•·•√•ª°º•∏…Ωº®Õ˝
+      *    „Ç®„É©„Éº„É°„ÉÉ„Çª„Éº„Ç∏Ë°®Á§∫ÁêÜ
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -2556,16 +2556,16 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "æÚ∑Ô§À≥∫≈ˆ§π§Î¥µº‘§œ¬∏∫ﬂ§∑§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Êù°‰ª∂„Å´Ë©≤ÂΩì„Åô„ÇãÊÇ£ËÄÖ„ÅØÂ≠òÂú®„Åó„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "»œ∞œ≥∞§Œ»÷πÊ§¨∆˛Œœ§µ§Ï§∆§§§ﬁ§π"
+               MOVE    "ÁØÑÂõ≤Â§ñ„ÅÆÁï™Âè∑„ÅåÂÖ•Âäõ„Åï„Çå„Å¶„ÅÑ„Åæ„Åô"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "¡¥≥— ∏ª˙§«§Œ§ﬂ∆˛Œœ§∑§∆§Ø§¿§µ§§"
+               MOVE    "ÂÖ®ËßíÊñáÂ≠ó„Åß„ÅÆ„ÅøÂÖ•Âäõ„Åó„Å¶„Åè„Å†„Åï„ÅÑ"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
-               MOVE    "¡™¬Ú»÷πÊ§¨Ã§∆˛Œœ§«§π"
+               MOVE    "ÈÅ∏ÊäûÁï™Âè∑„ÅåÊú™ÂÖ•Âäõ„Åß„Åô"
                                        TO  SPA-ERRMSG
            WHEN    "7777"
                MOVE    WRK-SHORIERR    TO  SPA-ERRMSG
@@ -2591,7 +2591,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≥Œ«ß•·•√•ª°º•∏…Ωº®ΩËÕ˝
+      *    Á¢∫Ë™ç„É°„ÉÉ„Çª„Éº„Ç∏Ë°®Á§∫Âá¶ÁêÜ
       *****************************************************************
        520-QIDSET-SEC              SECTION.
       *
@@ -2622,7 +2622,7 @@
        520-QIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    ¡¥≥—»æ≥—∫Æ∫ﬂ•¡•ß•√•Ø
+      *    ÂÖ®ËßíÂçäËßíÊ∑∑Âú®„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        800-ENRTRY-CHK-SEC              SECTION.
       *
@@ -2644,7 +2644,7 @@
                GO  TO  800-ENRTRY-CHK-EXT
            END-IF
       *
-      *    ¡¥≥—§«§ §§æÏπÁ§œ•®•È°º§»§π§Î°£
+      *    ÂÖ®Ëßí„Åß„Å™„ÅÑÂ†¥Âêà„ÅØ„Ç®„É©„Éº„Å®„Åô„Çã„ÄÇ
            IF      ( KANACHK-SYUBETU   NOT =   2 )
                MOVE    1           TO  FLG-ENTRYCHK
            END-IF
@@ -2653,7 +2653,7 @@
        800-ENRTRY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -2664,7 +2664,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ¿æŒÒ∆¸À‹∏Ï —¥πΩËÕ˝
+      *    Ë•øÊö¶Êó•Êú¨Ë™ûÂ§âÊèõÂá¶ÁêÜ
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -2676,12 +2676,12 @@
                                                LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG3
-           INSPECT WRK-HENYMDG3   REPLACING  ALL "  "  BY  "°°"
+           INSPECT WRK-HENYMDG3   REPLACING  ALL "  "  BY  "„ÄÄ"
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    SPA∆˛Ω–ŒœΩËÕ˝
+      *    SPAÂÖ•Âá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        800-ORCGQSUB01-SEC              SECTION.
       *
@@ -2706,7 +2706,7 @@
        800-ORCGQSUB01-EXT.
            EXIT.
       *****************************************************************
-      *     ∏ª˙ŒÛƒπºË∆¿ΩËÕ˝
+      *    ÊñáÂ≠óÂàóÈï∑ÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        900-STR-LEN-GET-SEC                 SECTION.
       *
@@ -2723,7 +2723,7 @@
        900-STR-LEN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤Ò∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        900-PTSRH-ODR-SEL-SEC           SECTION.
       *
@@ -2753,7 +2753,7 @@
        900-PTSRH-ODR-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤ÒFETCHΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöFETCHÂá¶ÁêÜ
       *****************************************************************
        900-PTSRH-ODR-FET-SEC           SECTION.
       *
@@ -2774,7 +2774,7 @@
        900-PTSRH-ODR-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤Ò∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        900-PTSRH-KEY2-SEL-SEC          SECTION.
       *
@@ -2806,7 +2806,7 @@
        900-PTSRH-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤Òƒ…≤√ΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöËøΩÂä†Âá¶ÁêÜ
       *****************************************************************
        900-PTSRH-INS2-SEC              SECTION.
       *
@@ -2829,7 +2829,7 @@
        900-PTSRH-INS2-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ Û∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÊÉÖÂ†±Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -2857,7 +2857,7 @@
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘√œ∞Ëœ¢∑»∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÂú∞ÂüüÈÄ£Êê∫Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        900-PTNUM-PUBLIC-KEY-SEL-SEC           SECTION.
       *
@@ -2885,7 +2885,7 @@
        900-PTNUM-PUBLIC-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤Ò∫ÔΩ¸ΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        900-PTSRH-DEL1-SEC              SECTION.
       *
@@ -2902,7 +2902,7 @@
        900-PTSRH-DEL1-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤Ò∫ÔΩ¸ΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        900-PTSRH-DEL3-SEC              SECTION.
       *
@@ -2918,7 +2918,7 @@
        900-PTSRH-DEL3-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∏°∫˜ΩËÕ˝
+      *    Ôº§Ôº¢Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -2935,7 +2935,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∏°∫˜ΩËÕ˝
+      *    Ôº§Ôº¢Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        911-DBSELECT-SEC               SECTION.
       *
@@ -2949,7 +2949,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -2963,7 +2963,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬ƒ…≤√ΩËÕ˝
+      *    Ôº§Ôº¢ËøΩÂä†Âá¶ÁêÜ
       *****************************************************************
        910-DBINSERT-SEC                 SECTION.
       *
@@ -2977,7 +2977,7 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∫ÔΩ¸ΩËÕ˝
+      *    Ôº§Ôº¢ÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -2991,7 +2991,7 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        910-DBCLOSECURSOR-SEC                SECTION.
       *
@@ -3005,7 +3005,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    BLOBIMPORTΩËÕ˝
+      *    BLOBIMPORTÂá¶ÁêÜ
       *****************************************************************
        910-BLOBIMPORT-SEC              SECTION.
       *
@@ -3027,7 +3027,7 @@
        910-BLOBIMPORT-EXT.
            EXIT.
       *****************************************************************
-      *    •∏•Á•÷≥´ªœ•ª•√•»ΩËÕ˝
+      *    „Ç∏„Éß„ÉñÈñãÂßã„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        900-JOBKANRI-HENSYU-SEC         SECTION.
       *
@@ -3069,7 +3069,7 @@
        900-JOBKANRI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    •∏•Á•÷¥…Õ˝•¡•ß•√•ØΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        900-JOBKANRI-CHK-SEC            SECTION.
       *
@@ -3079,7 +3079,7 @@
                    UNTIL ( IDX-JOBID       >   CONST-JOBID2 )
                     OR   ( FLG-JOBEND      =   ZERO )
       *
-      *        •∏•Á•÷¥…Õ˝•¡•ß•√•ØΩËÕ˝
+      *        „Ç∏„Éß„ÉñÁÆ°ÁêÜ„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    IDX-JOBID       TO  JOB-JOBID
@@ -3102,7 +3102,7 @@
        900-JOBKANRI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    £–£’£‘°°ΩËÕ˝
+      *    Ôº∞ÔºµÔº¥„ÄÄÂá¶ÁêÜ
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

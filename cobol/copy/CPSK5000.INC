@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,110 +16,110 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5000.INC)   *
-      *         ¡Ê£µ£°£°£°¡Ë                            *
-      *         °åÎÅµ¡´Ø¾ðÊó¡ÝÆþ±¡´ðËÜ¾ðÊó              *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5000.INC)   *
+      *         ï¼ˆï¼•ï¼ï¼ï¼ï¼‰                            *
+      *         åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’å…¥é™¢åŸºæœ¬æƒ…å ±              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.03.00    NACL-Â¿¡¹Ç¼  08/08/28  Âà±¡»þ±¡³°½èÊý¤»¤ó¶èÊ¬ÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.03.00    NACL-å¤šã€…ç´  08/08/28  é€€é™¢æ™‚é™¢å¤–å‡¦æ–¹ã›ã‚“åŒºåˆ†è¿½åŠ 
       *
-      *  04.08.01    NACL-Æ£¸¶    17/11/21  ¼¡²óºîÀ®»þ¤Î¿©»ö¶èÊ¬ÄÉ²Ã
+      *  04.08.01    NACL-è—¤åŽŸ    17/11/21  æ¬¡å›žä½œæˆæ™‚ã®é£Ÿäº‹åŒºåˆ†è¿½åŠ 
       ************************************************************
        01  SYS-5000-REC.
            03  SYS-5000-KEY.
                05  SYS-5000-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5000-KANRICD        PIC X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-5000-KBNCD          PIC X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5000-STYUKYMD       PIC X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5000-EDYUKYMD       PIC X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5000-TBL.
-      *Æþ±¡»þ¿©»öÎÅÍÜ
+      *å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Š
                05  SYS-5000-SHOKUJIRYOYOCD
                                            PIC X(09).
-      *¿©»ö¾ðÊó
+      *é£Ÿäº‹æƒ…å ±
                05  SYS-5000-SHOKU-INF      OCCURS  5.
                    07  SYS-5000-SHOKUCD    PIC  X(09).
                    07  SYS-5000-SHOKUKBN   PIC  X(01).
       *
-      *°åÎÅµ¡´Ø¸º»»¾ðÊó
+      *åŒ»ç™‚æ©Ÿé–¢æ¸›ç®—æƒ…å ±
                05  SYS-5000-GEN-INF        OCCURS   5.
                    07  SYS-5000-GENCD      PIC  X(09).
                    07  SYS-5000-GENKBN     PIC  X(01).
-      *Æþ±¡ÎÁ²Ã»»¾ðÊó
+      *å…¥é™¢æ–™åŠ ç®—æƒ…å ±
                05  SYS-5000-KSN-INF        OCCURS  20.
                    07  SYS-5000-KSNCD      PIC  X(09).
                    07  SYS-5000-KSNKBN     PIC  X(01).
-      *ÃÏ°è²Ã»»¾ðÊó
+      *åœ°åŸŸåŠ ç®—æƒ…å ±
                05  SYS-5000-CHIIKIKSN      PIC  X(09).
-      *Æþ±¡²ñ·×¥Æ¡¼¥Ö¥ëÉ½¼¨¾ðÊó
+      *å…¥é™¢ä¼šè¨ˆãƒ†ãƒ¼ãƒ–ãƒ«è¡¨ç¤ºæƒ…å ±
                05  SYS-5000-GENSAN-INF     OCCURS  10.
                    07  SYS-5000-DSPCD      PIC  X(09).
-      *Í­¾²¿ÇÎÅ½ê°ìÈÌÉÂ¾²½é´ü²Ã»»¶èÊ¬
+      *æœ‰åºŠè¨ºç™‚æ‰€ä¸€èˆ¬ç—…åºŠåˆæœŸåŠ ç®—åŒºåˆ†
                05  SYS-5000-IPPANKSNKBN    PIC  X(01).
-      *±ÉÍÜ´ÉÍý·Ð²áÁ¼ÃÖ¶èÊ¬
+      *æ „é¤Šç®¡ç†çµŒéŽæŽªç½®åŒºåˆ†
                05  SYS-5000-EIYOUKSNKBN    PIC  X(01).
-      *µßµÞ¡¦ºßÂðÅù»Ù±çÎÅÍÜÉÂ¾²½é´ü²Ã»»¶èÊ¬
+      *æ•‘æ€¥ãƒ»åœ¨å®…ç­‰æ”¯æ´ç™‚é¤Šç—…åºŠåˆæœŸåŠ ç®—åŒºåˆ†
                05  SYS-5000-KYUKYUKSNKBN   PIC  X(01).
-      *¼¡·îºîÀ®»þ¤Î¿©»ö¶èÊ¬
+      *æ¬¡æœˆä½œæˆæ™‚ã®é£Ÿäº‹åŒºåˆ†
                05  SYS-5000-SKJ-CREATEKBN  PIC  X(01).
-      *Í½È÷¡Ê£±¡Ë
+      *äºˆå‚™ï¼ˆï¼‘ï¼‰
       ******   05                          PIC  X(60).
       ******   05                          PIC  X(56).
       ******   05  SYS-5000-YOBI           PIC  X(55).
       ******   05  SYS-5000-YOBI           PIC  X(54).
       ******   05  SYS-5000-YOBI           PIC  X(53).
                05  SYS-5000-YOBI           PIC  X(52).
-      *Æþ±¡»þ¤Î¿©»ö
+      *å…¥é™¢æ™‚ã®é£Ÿäº‹
                05  SYS-5000-SKJKBN         PIC  X(01).
-      *Æþ±¡»þ¤ÎÁªÄêÆþ±¡
+      *å…¥é™¢æ™‚ã®é¸å®šå…¥é™¢
                05  SYS-5000-SENTEIKBN
                                            PIC  X(01).
-      *ÀÁµá½ñÈ¯¹ÔÊýË¡
+      *è«‹æ±‚æ›¸ç™ºè¡Œæ–¹æ³•
                05  SYS-5000-SKYSUMKBN
                                            PIC  X(01).
-      *Âà±¡»þ±¡³°½èÊý¤»¤óÈ¯¹Ô
+      *é€€é™¢æ™‚é™¢å¤–å‡¦æ–¹ã›ã‚“ç™ºè¡Œ
                05  SYS-5000-SHOHOUKBN
                                            PIC  X(01).
-      *Æþ±¡ÎòÉ½¼¨¶èÊ¬
+      *å…¥é™¢æ­´è¡¨ç¤ºåŒºåˆ†
                05  SYS-5000-REKI-DISPKBN
                                            PIC  X(01).
-      *ÀÁµá½ñÈ¯¹Ô¶èÊ¬
+      *è«‹æ±‚æ›¸ç™ºè¡ŒåŒºåˆ†
                05  SYS-5000-SKYPRTKBN
                                            PIC  X(01).
-      *Âà±¡¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬
+      *é€€é™¢è¨¼æ˜Žæ›¸ç™ºè¡ŒåŒºåˆ†
                05  SYS-5000-TAIPRTKBN
                                            PIC  X(01).
-      *¿ÇÎÅÈñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬
+      *è¨ºç™‚è²»æ˜Žç´°æ›¸ç™ºè¡ŒåŒºåˆ†
                05  SYS-5000-SRYPRTKBN
                                            PIC  X(01).
-      *Âà±¡¾ÚÌÀ½ñµ­ºÜ¶èÊ¬
+      *é€€é™¢è¨¼æ˜Žæ›¸è¨˜è¼‰åŒºåˆ†
                05  SYS-5000-TAIKSIKBN
                                            PIC  X(01).
-      *ºÆ·×»»¶èÊ¬
+      *å†è¨ˆç®—åŒºåˆ†
                05  SYS-5000-SAIKEISANKBN   PIC  X(01).
-      *ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
+      *è«‹æ±‚æ›¸æœªåŽé¡å°åˆ·åŒºåˆ†
                05  SYS-5000-SKYMISYUPRTKBN
                                            PIC  X(01).
-      *ÁªÄêÆþ±¡ÉéÃ´¶èÊ¬
+      *é¸å®šå…¥é™¢è² æ‹…åŒºåˆ†
                05  SYS-5000-SENTEI-FTNKBN
                                            PIC  X(01).
-      *ÁªÄêÆþ±¡¾ÃÈñÀÇ¶èÊ¬
+      *é¸å®šå…¥é™¢æ¶ˆè²»ç¨ŽåŒºåˆ†
                05  SYS-5000-SENTEI-TAXKBN
                                            PIC  X(01).
-      *ÁªÄêÆþ±¡ÅÀ¿ôÃ±²Á
+      *é¸å®šå…¥é™¢ç‚¹æ•°å˜ä¾¡
                05  SYS-5000-SENTEI-TANKA-X PIC  X(02).
                05  SYS-5000-SENTEI-TANKA-R REDEFINES
                    SYS-5000-SENTEI-TANKA-X.
                    07  SYS-5000-SENTEI-TANKA
                                            PIC  9(02).
-      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â¡Ê¶¦ÄÌ¡Ë
+      *é¸å®šå…¥é™¢ç‰¹åˆ¥æ–™é‡‘ï¼ˆå…±é€šï¼‰
                05  SYS-5000-SENTEI-KINGAKU-X
                                            PIC  X(04).
                05  SYS-5000-SENTEI-KINGAKU-R
@@ -127,13 +127,13 @@
                    SYS-5000-SENTEI-KINGAKU-X.
                    07  SYS-5000-SENTEI-KINGAKU
                                            PIC  9(04).
-      *¼¼ÎÁº¹³Û¾ÃÈñÀÇ¶èÊ¬
+      *å®¤æ–™å·®é¡æ¶ˆè²»ç¨ŽåŒºåˆ†
                05  SYS-5000-BRMSGK-TAXKBN
                                            PIC  X(01).
-      *Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
+      *å…¥é™¢ä¼šè¨ˆå®¤æ–™å·®é¡åŒºåˆ†
                05  SYS-5000-NACCT-BRMSGKKBN
                                            PIC  X(01).
-      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â¡Ê°ìÈÌ¡Ë
+      *é¸å®šå…¥é™¢ç‰¹åˆ¥æ–™é‡‘ï¼ˆä¸€èˆ¬ï¼‰
                05  SYS-5000-SENTEI-IPN-KINGAKU-X
                                            PIC  X(04).
                05  SYS-5000-SENTEI-IPN-KINGAKU-R
@@ -141,7 +141,7 @@
                    SYS-5000-SENTEI-IPN-KINGAKU-X.
                    07  SYS-5000-SENTEI-IPN-KINGAKU
                                            PIC  9(04).
-      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â¡ÊÏ·¿Í¡Ë
+      *é¸å®šå…¥é™¢ç‰¹åˆ¥æ–™é‡‘ï¼ˆè€äººï¼‰
                05  SYS-5000-SENTEI-RJN-KINGAKU-X
                                            PIC  X(04).
                05  SYS-5000-SENTEI-RJN-KINGAKU-R
@@ -149,33 +149,33 @@
                    SYS-5000-SENTEI-RJN-KINGAKU-X.
                    07  SYS-5000-SENTEI-RJN-KINGAKU
                                            PIC  9(04).
-      *Æþ±¡²ñ·×³°Çñ¶èÊ¬
+      *å…¥é™¢ä¼šè¨ˆå¤–æ³ŠåŒºåˆ†
                05  SYS-5000-NACCT-GAIHAKUKBN
                                            PIC  X(01).
-      *É¸·ç¸º³Û¶èÊ¬
+      *æ¨™æ¬ æ¸›é¡åŒºåˆ†
                05  SYS-5000-HYOUKETUKBN    PIC  X(01).
-      *Äê¿ôÄ¶²á¶èÊ¬
+      *å®šæ•°è¶…éŽåŒºåˆ†
                05  SYS-5000-TEISUKBN       PIC  X(01).
-      *£Á£Ä£ÌÆþÎÏ¶èÊ¬
+      *ï¼¡ï¼¤ï¼¬å…¥åŠ›åŒºåˆ†
                05  SYS-5000-ADLINPUTKBN    PIC  X(01).
-      *Äê´üÀÁµáº¹³Û½é´üÉ½¼¨¶èÊ¬
+      *å®šæœŸè«‹æ±‚å·®é¡åˆæœŸè¡¨ç¤ºåŒºåˆ†
                05  SYS-5000-TEIKISAGAKUACTKBN
                                            PIC  X(01).
-      *Æþ¶â¤Î¼è°·¤¤
+      *å…¥é‡‘ã®å–æ‰±ã„
                05  SYS-5000-NYKNKNRKBN     PIC  X(01).
-      *ÎÅÍÜÉÂÅï¡ÊÉÂ¾²¡Ë²ñ·×É½¼¨¶èÊ¬
+      *ç™‚é¤Šç—…æ£Ÿï¼ˆç—…åºŠï¼‰ä¼šè¨ˆè¡¨ç¤ºåŒºåˆ†
                05  SYS-5000-RYOYODSPKBN    PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5000-TERMID             PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5000-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5000-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5000-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5000-UPHMS              PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5000-UPD-KEY.
                05  SYS-5000-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5000-UPD-KANRICD     PIC X(04).

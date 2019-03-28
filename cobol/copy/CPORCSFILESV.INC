@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,60 +16,60 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó£Ä£ÂÀ©¸æ¥µ¥Ö¥Ñ¥é¥á¥¿     CPORCSFILESV.INC *
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿     CPORCSFILESV.INC *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSFILESVAREA.
-      *    ½èÍý¶èÊ¬                              
+      *    å‡¦ç†åŒºåˆ†                              
            03  SFILESV-MODE            PIC X(01).
-      *    Éüµ¢¥³¡¼¥É     
+      *    å¾©å¸°ã‚³ãƒ¼ãƒ‰     
            03  SFILESV-RETURN          PIC S9(03).
-      *    £Ë£Å£Ù
+      *    ï¼«ï¼¥ï¼¹
            03  SFILESV-TBL-KEY         PIC X(08).
       *
            03  SFILESV-OCC             OCCURS  100.
-      *        ¥·¥§¥ë£É£Ä
+      *        ã‚·ã‚§ãƒ«ï¼©ï¼¤
                05  SFILESV-SHELLID     PIC X(20).
-      *        ½èÍýÆâÏ¢ÈÖ
+      *        å‡¦ç†å†…é€£ç•ª
                05  SFILESV-SHORI-RENNUM
                                        PIC 9(03).
-      *        Ï¢ÈÖ
+      *        é€£ç•ª
                05  SFILESV-RENNUM      PIC 9(03).
-      *        ¿ÇÎÅÇ¯·î
+      *        è¨ºç™‚å¹´æœˆ
                05  SFILESV-SRYYM       PIC X(06).
-      *        ÀÁµáÇ¯·îÆü
+      *        è«‹æ±‚å¹´æœˆæ—¥
                05  SFILESV-SKYYMD      PIC X(08).
-      *        ¥¿¥¤¥È¥ë
+      *        ã‚¿ã‚¤ãƒˆãƒ«
                05  SFILESV-TITLE       PIC X(100).
-      *        ¿³ºº»ÙÊ§µ¡´Ø
+      *        å¯©æŸ»æ”¯æ‰•æ©Ÿé–¢
                05  SFILESV-TEISYUTUSAKI
                                        PIC X(01).
-      *        Æþ³°¶èÊ¬
+      *        å…¥å¤–åŒºåˆ†
                05  SFILESV-NYUGAIKBN   PIC X(01).
-      *        ·ï¿ô
+      *        ä»¶æ•°
                05  SFILESV-CNT-ALL     PIC 9(07).
-      *        ¸µ³ÊÇ¼¾ì½ê
+      *        å…ƒæ ¼ç´å ´æ‰€
                05  SFILESV-FOR-FOLDER  PIC X(200).
-      *        ¸µ¥Õ¥¡¥¤¥ëÌ¾
+      *        å…ƒãƒ•ã‚¡ã‚¤ãƒ«å
                05  SFILESV-FOR-DATA    PIC X(200).
-      *        ÀèÊÝÂ¸¾ì½ê
+      *        å…ˆä¿å­˜å ´æ‰€
                05  SFILESV-TO-FOLDER   PIC X(200).
-      *        Àè¥Õ¥¡¥¤¥ëÌ¾
+      *        å…ˆãƒ•ã‚¡ã‚¤ãƒ«å
                05  SFILESV-TO-DATA     PIC X(200).
-      *        ¥³¡¼¥É¶èÊ¬
+      *        ã‚³ãƒ¼ãƒ‰åŒºåˆ†
                05  SFILESV-CODE-TYPE   PIC X(01).
-      *        £Ã£Ó£ÖÍÑ£Ä£ÂÍ­Ìµ¶èÊ¬
+      *        ï¼£ï¼³ï¼¶ç”¨ï¼¤ï¼¢æœ‰ç„¡åŒºåˆ†
                05  SFILESV-DATA-TYPE   PIC X(01).
-      *        ¥¨¥é¡¼¥³¡¼¥É
+      *        ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
                05  SFILESV-ERR-CODE    PIC X(01).
-      *        ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
+      *        ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                05  SFILESV-ERR-MSG     PIC X(200).
-      *        ½èÍýÆü
+      *        å‡¦ç†æ—¥
                05  SFILESV-SYOYMD      PIC X(08).
-      *        ºîÀ®Æü
+      *        ä½œæˆæ—¥
                05  SFILESV-CREYMD      PIC X(08).
-      *        ºîÀ®»þ´Ö
+      *        ä½œæˆæ™‚é–“
                05  SFILESV-CREHMS      PIC X(06).

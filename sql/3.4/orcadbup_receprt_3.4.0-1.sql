@@ -1,7 +1,7 @@
 --                                    --
--- ¥ì¥»¥×¥ÈÌÀºÙ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹         --
+-- ãƒ¬ã‚»ãƒ—ãƒˆæ˜ç´°ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´         --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
+-- é …ç›®ã®è¿½åŠ                          --
 --               (SYUBETU_SRT1)       --
 --               (GRP_NO1)            --
 --               (HONKZKKBN)          --
@@ -16,7 +16,7 @@
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_receprt
    add column KOUGAKU     char(1);
 alter table tbl_receprt
@@ -36,7 +36,7 @@ alter table tbl_receprt
 alter table tbl_receprt
    add column SYUBETU_SRT2 integer;
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_receprt
    alter SYUBETU_SRT1 set default 0;
 alter table tbl_receprt

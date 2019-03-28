@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É´µ¼ÔÉÂÌ¾¾ðÊó             (xml2)
+      *    ï¼¡ï¼°ï¼©æ‚£è€…ç—…åæƒ…å ±             (xml2)
       *                                   COPY (CPDISEASEV3REQ.INC)
       ******************************************************************
        01  XML-DISEASEREQ.
@@ -37,7 +37,7 @@
                                            PIC X(2).
       *
                05  DISEASEQ-INFORMATION        OCCURS  50.
-      *            ÊÝ¸±¶èÊ¬¡Ê£±¡§°åÊÝ°Ê³°¡Ë
+      *            ä¿é™ºåŒºåˆ†ï¼ˆï¼‘ï¼šåŒ»ä¿ä»¥å¤–ï¼‰
                    07   DISEASEQ-INSURANCE-CLASS
                                                PIC X(1).
                    07  DISEASEQ-SPICOD1        PIC X(50).
@@ -45,41 +45,41 @@
                    07  DISEASEQ-SNDSPITBL         OCCURS  6.
                        09   DISEASEQ-SPICOD2   PIC X(7).
                        09   DISEASEQ-SPINAME2  PIC X(20).
-      *            ÊäÂ­¥³¥á¥ó¥È¥³¡¼¥É
+      *            è£œè¶³ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰
                    07   DISEASEQ-HOSOKUCD-G.
                        09   DISEASEQ-HOSOKUCD  PIC X(10)
                                                    OCCURS  3.
-      *            ÊäÂ­¥³¥á¥ó¥È
+      *            è£œè¶³ã‚³ãƒ¡ãƒ³ãƒˆ
                    07   DISEASEQ-HOSOKU-COMMENT
                                                PIC X(40).
-      *            Æþ³°¶èÊ¬
+      *            å…¥å¤–åŒºåˆ†
                    07   DISEASEQ-NYUGAIKBN     PIC X(1).
-      *            ¼çÉÂ
+      *            ä¸»ç—…
                    07   DISEASEQ-SYUBYOFLG     PIC X(2).
-      *            µ¿¤¤¥Õ¥é¥°
+      *            ç–‘ã„ãƒ•ãƒ©ã‚°
                    07   DISEASEQ-UTAGAIFLG     PIC X(1).
-      *            ¼À´µ³«»ÏÆü
+      *            ç–¾æ‚£é–‹å§‹æ—¥
                    07   DISEASEQ-STARTDATE     PIC X(10).
-      *            ¼À´µ½ªÎ»Æü
+      *            ç–¾æ‚£çµ‚äº†æ—¥
                    07   DISEASEQ-ENDDATE       PIC X(10).
-      *            Å¾µ¢
+      *            è»¢å¸°
                    07   DISEASEQ-TENKIKBN      PIC X(2).
-      *            ¥«¥ë¥ÆÉÂÌ¾
+      *            ã‚«ãƒ«ãƒ†ç—…å
                    07   DISEASEQ-KARTE-NAME    PIC X(80).
-      *            ¼À´µ¶èÊ¬
+      *            ç–¾æ‚£åŒºåˆ†
                    07   DISEASEQ-MANSEIKBN     PIC X(4).
-      *            ÊÝ¸±Å¬ÍÑ
+      *            ä¿é™ºé©ç”¨
                    07   DISEASEQ-HKNCOMBI      PIC X(4).
-      *            ¥ì¥»¥×¥ÈÉ½¼¨
+      *            ãƒ¬ã‚»ãƒ—ãƒˆè¡¨ç¤º
                    07   DISEASEQ-REZEFLG       PIC X(4).
-      *            É½¼¨´ü´Ö
+      *            è¡¨ç¤ºæœŸé–“
                    07   DISEASEQ-REZEMM        PIC X(4).
-      *            ÊÝ¸±ÉÂÌ¾
+      *            ä¿é™ºç—…å
                    07   DISEASEQ-HKNBYOMEIFLG  PIC X(4).
-      *            Âà±¡¾ÚÌÀ½ñ
+      *            é€€é™¢è¨¼æ˜Žæ›¸
                    07   DISEASEQ-DISCHARGEFLG  PIC X(4).
-      *            ¸¶¼À´µ¶èÊ¬
+      *            åŽŸç–¾æ‚£åŒºåˆ†
                    07   DISEASEQ-CLASS1        PIC X(4).
-      *            ¹çÊ»¾É¶èÊ¬
+      *            åˆä½µç—‡åŒºåˆ†
                    07   DISEASEQ-CLASS2        PIC X(4).
       *

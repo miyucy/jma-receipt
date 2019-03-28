@@ -1,6 +1,6 @@
       ******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,20 +16,20 @@
       * 113-8621, Japan.
       ******************************************************************
       ******************************************************************
-      *  Æ±µÁ¸ì¥Þ¥¹¥¿       (CPSYNONYM.INC)  
+      *  åŒç¾©èªžãƒžã‚¹ã‚¿       (CPSYNONYM.INC)  
       ******************************************************************
       ******************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ******************************************************************
       *01  SYNONYM-REC.
-      *    ÉÂÌ¾
+      *    ç—…å
            03  SYNONYM-BYOMEI              PIC X(200).
-      *    ÉÂÌ¾¥³¡¼¥É
+      *    ç—…åã‚³ãƒ¼ãƒ‰
            03  SYNONYM-BYOMEICD            PIC X(07).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  SYNONYM-CREYMD              PIC X(08).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  SYNONYM-UPYMD               PIC X(08).
-      *    ¹¹¿·»þ´Ö
+      *    æ›´æ–°æ™‚é–“
            03  SYNONYM-UPHMS               PIC X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ǡ��������å���֥ե�����     COPY (CPDTCHK004.INC)  *
+      *    データチェック中間ファイル     COPY (CPDTCHK004.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  DTCHK004-REC.
       *
@@ -58,85 +58,85 @@
                    07  DTCHK004-R4-ERRCD-SEQ   PIC 9(05).
                    07  DTCHK004-R4-DUMMY       PIC X(08).
       *
-      *�����ֹ�
+      *患者番号
            03  DTCHK004-PTNUM         PIC X(20).
       *
-      *���ԣɣ�
+      *患者ＩＤ
            03  DTCHK004-PTID          PIC 9(10).
-      *��̾
+      *氏名
            03  DTCHK004-NAME          PIC X(100).
-      *���ʻ�̾
+      *カナ氏名
            03  DTCHK004-KANANAME      PIC X(100).
       *
-      *ʣ���ݸ���ʬ
+      *複数保険区分
            03  DTCHK004-MULHKNKBN     PIC  X(01).
       *
-      *�ݸ���ʬ
+      *保険区分
            03  DTCHK004-HKNKBN        PIC  X(01).
       *
-      *¾�ݸ����顼��ʬ
+      *他保険エラー区分
            03  DTCHK004-HKNOTHERS     PIC  X(01).
       *
-      *��ǯ����
+      *生年月日
            03  DTCHK004-BIRTHDAY      PIC  X(08).
       *
-      *����
+      *性別
            03  DTCHK004-SEX           PIC  X(01).
       *
-      *���顼������
+      *エラーコード
            03  DTCHK004-ERRCD         PIC  X(06).
       *
-      *Ʊ�쥨�顼��������Ϣ��
+      *同一エラーコード内連番
            03  DTCHK004-ERRCD-SEQ     PIC 9(05).
       *
-      *�����å���ʬ
+      *チェック区分
            03  DTCHK004-CHKKBN        PIC X(01).
       *
-      *���ť�����
+      *診療コード
            03  DTCHK004-SRYCD         PIC X(09).
       *
-      *���Ų�
+      *診療科
            03  DTCHK004-SRYKA         PIC X(02).
       *
-      *��̾
+      *病名
            03  DTCHK004-BYOMEI        PIC X(160).
       *
-      *Ŭ�ѥ�����
+      *適用コード
            03  DTCHK004-TEKCD         PIC X(09).
       *
-      *Ŭ����̾
+      *適応病名
            03  DTCHK004-TEKBYOMEI     PIC X(160).
       *
-      *����ʬ
+      *条件区分
            03  DTCHK004-TEKCOMPKBN    PIC X(1).
       *
-      *ñ�̥�����
+      *単位コード
            03  DTCHK004-TANICD        PIC 9(3).
       *
-      *ñ��̾��
+      *単位名称
            03  DTCHK004-TANINAME      PIC X(12).
       *
-      *����ֹ�
+      *初回番号
            03  DTCHK004-SHONUM        PIC 9(3).
       *
-      *���ų�����
+      *診療開始日
            03  DTCHK004-SRYSTYMD      PIC X(8).
       *
-      *���Ž�λ��
+      *診療終了日
            03  DTCHK004-SRYEDYMD      PIC X(8).
       *
-      *��²��
+      *上限回数
            03  DTCHK004-LIMIT         PIC 9(5).
       *
-      *���
+      *月数
            03  DTCHK004-TSUKISU       PIC 9(2).
       *
-      *����
+      *日付
            03  DTCHK004-DAY-G.
                05  DTCHK004-DAY       PIC 9(01)
                                       OCCURS   31.
-      *�����å��ǽ���
+      *チェック最終日
            03  DTCHK004-LASTYMD       PIC X(08).
       *
-      *���顼��å�����
+      *エラーメッセージ
            03  DTCHK004-ERRMSG        PIC X(500).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,34 +16,34 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Բ��ǧ��Ծ���         COPY  (CPPTCARE-NINTEI.INC)  *
+      *    患者介護認定者情報         COPY  (CPPTCARE-NINTEI.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTCARE-NINTEI-REC.
-      *����
+      *キー
            03  PTCRNIN-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTCRNIN-HOSPNUM         PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTCRNIN-PTID            PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  PTCRNIN-TEKSTYMD        PIC  X(08).
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
            03  PTCRNIN-TEKEDYMD            PIC  X(08).
-      *�ײ����ֶ�ʬ
+      *要介護状態区分
            03  PTCRNIN-CAREJOTAICD         PIC  X(02).
-      *ǧ������
+      *認定日付
            03  PTCRNIN-NINTEIYMD           PIC  X(08).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTCRNIN-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTCRNIN-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTCRNIN-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTCRNIN-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  PTCRNIN-UPHMS               PIC  X(06).

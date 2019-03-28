@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ��ݸ��Ծ���         COPY (CPINSPROV2RES.INC)
+      *    ＡＰＩレスポンス保険者情報         COPY (CPINSPROV2RES.INC)
       ******************************************************************
         01  XML-INSPROGETRES.
             02  INSPRORES-CONTEXT            PIC S9(9)   BINARY.
@@ -24,54 +24,54 @@
             02  INSPRORES-MODE               PIC S9(9)   BINARY.
             02  INSPRORES-RECORDNAME         PIC X(128).
             02  INSPRORES-APPOINTRES.
-      *       �»���
+      *       実施日
               03  INSPRORES-INFORMATION-DATE    PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  INSPRORES-INFORMATION-TIME    PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  INSPRORES-API-RESULT          PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  INSPRORES-API-RESULT-MSG      PIC X(100).
       *
               03  INSPRORES-RESKEY              PIC X(100).
-      *       �ݸ����ֹ����
+      *       保険者番号一覧
               03  INSPRORES-INSURANCE-INFOMATION.
                   05  INSPRORES-INSURANCE-OCC   OCCURS   2500.
-      *               �ݸ����ֹ�
+      *               保険者番号
                       07  INSPRORES-INSPRO-NUMBER    PIC X(08).
-      *               �ݸ���̾
+      *               保険者名
                       07  INSPRORES-INSPRO-NAME      PIC X(200).
-      *               �ݸ���̾ά�Σ�
+      *               保険者名略称１
                       07  INSPRORES-INSPRO-NAME1     PIC X(100).
-      *               �ݸ���̾ά�Σ�
+      *               保険者名略称２
                       07  INSPRORES-INSPRO-NAME2     PIC X(40).
-      *               �ݸ���̾ά�Σ�
+      *               保険者名略称３
                       07  INSPRORES-INSPRO-NAME3     PIC X(40).
-      *               �ݸ��ֹ�
+      *               保険番号
                       07  INSPRORES-INS-NUMBER       PIC X(03).
-      *               �ݸ��ֹ�̾��
+      *               保険番号名称
                       07  INSPRORES-INS-NUMBER-NAME  PIC X(20).
-      *               ͹���ֹ�
+      *               郵便番号
                       07  INSPRORES-INSE-ZIP-CODE      PIC X(7).
-      *               ����
+      *               住所
                       07  INSPRORES-INS-ADDRESSES1    PIC X(200).
-      *               �����ֹ�
+      *               番地番号
                       07  INSPRORES-INS-ADDRESSES2    PIC X(200).
-      *               �����ֹ�
+      *               電話番号
                       07  INSPRORES-INS-HPONE         PIC X(15).
-      *               ����
+      *               記号
                       07  INSPRORES-INS-SYMBOL        PIC X(80).
-      *               ���ճ����ܿ͡������
+      *               給付割合（本人・外来）
                       07  INSPRORES-HON-GAIKYURATE    PIC X(03).
-      *               ���ճ����ܿ͡�������
+      *               給付割合（本人・入院）
                       07  INSPRORES-HON-NYUKYURATE    PIC X(03).
-      *               ���ճ��ʲ�²�������
+      *               給付割合（家族・外来）
                       07  INSPRORES-KZK-GAIKYURATE    PIC X(03).
-      *               ���ճ��ʲ�²��������
+      *               給付割合（家族・入院）
                       07  INSPRORES-KZK-NYUKYURATE    PIC X(03).
-      *               ��ư��ʬ
+      *               異動区分
                       07  INSPRORES-CHANGE-MEMO       PIC X(10).
-      *               ��ưǯ����
+      *               異動年月日
                       07  INSPRORES-CHANGE-DATE       PIC X(10).
       *
       *

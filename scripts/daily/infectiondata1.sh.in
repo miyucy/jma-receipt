@@ -10,13 +10,13 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ´¶À÷¾É¥Ç¡¼¥¿ºîÀ®
+#    æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿ä½œæˆ
 #        $1  TERMID
 #        $2  HOSPNUM
 #        $3  HOSPID
 #        $4  JOBID
 #        $5  SHELLID
-#        $6  BEDFLG (0:ÉÂ¾²¤Ê¤·¡¢1:ÉÂ¾²¤¢¤ê)
+#        $6  BEDFLG (0:ç—…åºŠãªã—ã€1:ç—…åºŠã‚ã‚Š)
 #-------------------------------------------#
 TERMID=${1}
 HOSPNUM=${2}
@@ -74,7 +74,7 @@ make_infection_file () {
   SRYYMD=$1
   rm -f $ERRFILE
 
-  #³°ÍèÊ¬½èÍý
+  #å¤–æ¥åˆ†å‡¦ç†
   INFECGFILE=$DASDIR/${HOSPNUM}/infection/infectiong.csv
   rm -f $INFECGFILE
   PARA0="${TERMID},${HOSPNUM},${SRYYMD},2,${JOBID},${SHELLID}"
@@ -85,7 +85,7 @@ make_infection_file () {
     return
   fi
 
-  #Æþ±¡Ê¬½èÍý
+  #å…¥é™¢åˆ†å‡¦ç†
   INFECNFILE=$DASDIR/${HOSPNUM}/infection/infectionn.csv
   rm -f $INFECNFILE
   if [ $BEDFLG -eq '1' ]; then
@@ -100,8 +100,8 @@ make_infection_file () {
     touch $INFECNFILE
   fi
 
-  #¥¢¥Ã¥×¥í¡¼¥É¥Õ¥¡¥¤¥ëºîÀ®
-  #³°Íè¤ÈÆþ±¡¹çÂÎ
+  #ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆ
+  #å¤–æ¥ã¨å…¥é™¢åˆä½“
   if [ -s $INFECGFILE ]; then
     if [ -s $INFECNFILE ]; then
       cp $INFECGFILE $INFECFILE
@@ -142,19 +142,19 @@ fi
 #fi
 rm -f ${LOG_FILE}
 
-#½èÍýÆü¤òµá¤á¤ë
+#å‡¦ç†æ—¥ã‚’æ±‚ã‚ã‚‹
 syoribi
 echo "SYORIBI [ $SYORIBI ]"
 
 for sryymd in $SYORIBI; do
-  #´¶À÷¾É¥Ç¡¼¥¿ºîÀ®
+  #æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿ä½œæˆ
   echo "execute $sryymd"
   make_infection_file $sryymd
 done
 
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM}
 
-echo "´¶À÷¾É¥Ç¡¼¥¿Á÷¿®½èÍý µ¯Æ°"
+echo "æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿é€ä¿¡å‡¦ç† èµ·å‹•"
 $DASUPLOAD ${HOSPNUM} ${HOSPID} 1 &
 
 rm -f $INFECREC

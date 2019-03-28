@@ -1,8 +1,8 @@
 --                                    --
--- ��Ǽ��ץơ��֥���ѹ�             --
+-- 収納合計テーブルの変更             --
 --                                    --
--- ���ܤ��ɲ�                         --
---   ���񣶤��飱��  JIHI_6           --
+-- 項目の追加                         --
+--   自費６から１０  JIHI_6           --
 --                   JIHI_6_TAX       --
 --                   JIHI_7           --
 --                   JIHI_7_TAX       --
@@ -12,12 +12,12 @@
 --                   JIHI_9_TAX       --
 --                   JIHI_10          --
 --                   JIHI_10_TAX      --
---   ���ȶ��        DISCOUNT_MONEY   --
+--   減免金額        DISCOUNT_MONEY   --
 --                                    --
 -- Create Date : 2005/07/14           --
 --                                    --
 --
--- TBL_SYUTOTALWK ����                  --
+-- TBL_SYUTOTALWK 作成                  --
 
 CREATE TABLE "tbl_syutotalwk" (
 	"hospid" character(24) NOT NULL,
@@ -180,17 +180,17 @@ CREATE TABLE "tbl_syutotalwk" (
 );
 
 
--- TBL_SYUTOTAL �� TBL_SYUTOTALWK   --
+-- TBL_SYUTOTAL → TBL_SYUTOTALWK   --
 
 insert into TBL_SYUTOTALWK
 select * from TBL_SYUTOTAL;
 
--- TBL_SYUTOTAL ���               --
+-- TBL_SYUTOTAL 削除               --
 
 drop table TBL_SYUTOTAL;
 
 --
--- TBL_SYUTOTAL ����                  --
+-- TBL_SYUTOTAL 作成                  --
 
 CREATE TABLE "tbl_syutotal" (
 	"hospid" character(24) NOT NULL,
@@ -363,7 +363,7 @@ CREATE TABLE "tbl_syutotal" (
 	Constraint "tbl_syutotal_primary_key" Primary Key ("hospid", "nyugaikbn", "ptid", "denpnum")
 );
 
--- TBL_SYUTOTALWK �� TBL_SYUTOTAL   --
+-- TBL_SYUTOTALWK → TBL_SYUTOTAL   --
 
 insert into TBL_SYUTOTAL
 (hospid,
@@ -694,6 +694,6 @@ uphms
  from TBL_SYUTOTALWK;
 
 
--- TBL_SYUTOTALWK ���             --
+-- TBL_SYUTOTALWK 削除             --
 
 drop table TBL_SYUTOTALWK;  

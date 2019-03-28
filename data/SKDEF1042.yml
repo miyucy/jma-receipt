@@ -1,71 +1,71 @@
 kanri_cd    : "1042"
-name        : "ÉÂÌ¾¡¦¥³¥á¥ó¥Èµ¡Ç½¾ğÊó"
+name        : "ç—…åãƒ»ã‚³ãƒ¡ãƒ³ãƒˆæ©Ÿèƒ½æƒ…å ±"
 class_cd    : "*"
 item_max    : 11
 item_list   :
 - item_no   : 1
   item      : "MSG1-DSPKBN"
-  item_jp   : "¼çÉÂÌ¾³ÎÇ§¥á¥Ã¥»¡¼¥¸¤ÎÉ½¼¨"
+  item_jp   : "ä¸»ç—…åç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®è¡¨ç¤º"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "MSG2-DSPKBN"
-  item_jp   : "°Ü¹ÔÉÂÌ¾¡¦¿ä¾©ÉÂÌ¾·Ù¹ğ¥á¥Ã¥»¡¼¥¸¤ÎÉ½¼¨"
+  item_jp   : "ç§»è¡Œç—…åãƒ»æ¨å¥¨ç—…åè­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®è¡¨ç¤º"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "MSG3-DSPKBN"
-  item_jp   : "ÇÑ»ßÇ¯·îÆü·Ù¹ğ¥á¥Ã¥»¡¼¥¸¤ÎÉ½¼¨"
+  item_jp   : "å»ƒæ­¢å¹´æœˆæ—¥è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®è¡¨ç¤º"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "MSG4-DSPKBN"
-  item_jp   : "Â¾¿ÇÎÅ²Ê¤ÎÆ±°ìÉÂÌ¾·Ù¹ğ¥á¥Ã¥»¡¼¥¸¤ÎÉ½¼¨"
+  item_jp   : "ä»–è¨ºç™‚ç§‘ã®åŒä¸€ç—…åè­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®è¡¨ç¤º"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "SRYKA-DSPKBN"
-  item_jp   : "½é´üÉ½¼¨¤¹¤ë¿ÇÎÅ²Ê"
+  item_jp   : "åˆæœŸè¡¨ç¤ºã™ã‚‹è¨ºç™‚ç§‘"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "SYOKBN-DSPKBN"
-  item_jp   : "½é´üÉ½¼¨¤¹¤ëÉÂÌ¾¤ÎÂĞ¾İ´ü´Ö"
+  item_jp   : "åˆæœŸè¡¨ç¤ºã™ã‚‹ç—…åã®å¯¾è±¡æœŸé–“"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "UTAGAIFLG-KBN"
-  item_jp   : "µ¿¤¤¥Õ¥é¥°¤Î¼«Æ°¾Ãµî"
+  item_jp   : "ç–‘ã„ãƒ•ãƒ©ã‚°ã®è‡ªå‹•æ¶ˆå»"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "YOBI1"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 8
   length    : 9
 - item_no   : 9
   item      : "SJKBN-SET"
-  item_jp   : "¾Üµ­¶èÊ¬½é´üÉ½¼¨"
+  item_jp   : "è©³è¨˜åŒºåˆ†åˆæœŸè¡¨ç¤º"
   type      : "X"
   start     : 17
   length    : 2
 - item_no   : 10
   item      : "MSG5-DSPKBN"
-  item_jp   : "»àË´¶èÊ¬¹¹¿·³ÎÇ§¥á¥Ã¥»¡¼¥¸¤ÎÉ½¼¨"
+  item_jp   : "æ­»äº¡åŒºåˆ†æ›´æ–°ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®è¡¨ç¤º"
   type      : "X"
   start     : 19
   length    : 1
 - item_no   : 11
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 20
   length    : 481

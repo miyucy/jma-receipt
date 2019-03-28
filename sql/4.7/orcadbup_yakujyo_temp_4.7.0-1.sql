@@ -4,12 +4,12 @@ BEGIN;
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ÌôºŞ¾ğÊó¥Æ¥ó¥İ¥é¥ê             --
+-- è–¬å‰¤æƒ…å ±ãƒ†ãƒ³ãƒãƒ©ãƒª             --
 --                                --
 -- Table Name  : TBL_YAKUJYO_TEMP --
 -- Update      : 2011/11/21       --
 
--- NAME ÄÉ²Ã                      --
+-- NAME è¿½åŠ                       --
 
 DROP TABLE IF EXISTS tbl_yakujyo_temp;
 

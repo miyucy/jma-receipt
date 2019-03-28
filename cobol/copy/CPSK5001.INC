@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,162 +16,162 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5001.INC)   *
-      *         ¡Ê£µ£°£°£±¡Ë                            *
-      *         ÉÂÅï¥Þ¥¹¥¿                              *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5001.INC)   *
+      *         ï¼ˆï¼•ï¼ï¼ï¼‘ï¼‰                            *
+      *         ç—…æ£Ÿãƒžã‚¹ã‚¿                              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-5001-REC.
            03  SYS-5001-KEY.
                05  SYS-5001-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5001-KANRICD            PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-5001-KBNCD              PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5001-STYUKYMD           PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5001-EDYUKYMD           PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5001-TBL.
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
                05  SYS-5001-BTU-NUM            PIC  X(02).
-      *ÉÂÅïÌ¾¾Î
+      *ç—…æ£Ÿåç§°
                05  SYS-5001-BTU-NAME           PIC  X(20).
-      *ÉÂÅïÃ»½ÌÌ¾¾Î
+      *ç—…æ£ŸçŸ­ç¸®åç§°
                05  SYS-5001-BTU-TANNAME        PIC  X(10).
-      *ÆÃÄêÆþ±¡ÎÁ
+      *ç‰¹å®šå…¥é™¢æ–™
                05  SYS-5001-BTU-TOKTEI-NYUIN
                                                PIC  X(02).
-      *ÉÂÅï²Ê
+      *ç—…æ£Ÿç§‘
                05  SYS-5001-BTU-KA             PIC  X(02).
-      *ÉÂÅï¼ïÊÌ
+      *ç—…æ£Ÿç¨®åˆ¥
                05  SYS-5001-BTU-SBT
                                                PIC  X(02).
-      *¼ýÍÆ¿Í¿ô
+      *åŽå®¹äººæ•°
                05  SYS-5001-BTU-NINZU          PIC  9(03).
-      *Ê¿¶Ñºß±¡Æü¿ô¶èÊ¬
+      *å¹³å‡åœ¨é™¢æ—¥æ•°åŒºåˆ†
                05  SYS-5001-BTU-HEIKINZAIKBN
                                                PIC  X(02).
-      *´Ç¸îÇÛÃÖ¶èÊ¬
+      *çœ‹è­·é…ç½®åŒºåˆ†
                05  SYS-5001-BTU-KNGHAICHIKBN
                                                PIC  X(02).
-      *´Ç¸î»ÕÈæÎ¨¶èÊ¬
+      *çœ‹è­·å¸«æ¯”çŽ‡åŒºåˆ†
                05  SYS-5001-BTU-KNGHIRITUKBN
                                                PIC  X(02).
-      *´Ç¸îÊä½õÈæÎ¨¶èÊ¬
+      *çœ‹è­·è£œåŠ©æ¯”çŽ‡åŒºåˆ†
                05  SYS-5001-BTU-KNGHJOHAI
                                                PIC  X(02).
-      *´Ç¸îÊä½õ²Ã»»¶èÊ¬
+      *çœ‹è­·è£œåŠ©åŠ ç®—åŒºåˆ†
                05  SYS-5001-BTU-KNGHJOKSN
                                                PIC  X(02).
-      *Ìë´Ö¶ÐÌ³Åù´Ç¸î²Ã»»¶èÊ¬
+      *å¤œé–“å‹¤å‹™ç­‰çœ‹è­·åŠ ç®—åŒºåˆ†
                05  SYS-5001-BTU-YAKANKNGKSN
                                                PIC  X(02).
-      *¿©Æ²²Ã»»¶èÊ¬
+      *é£Ÿå ‚åŠ ç®—åŒºåˆ†
                05  SYS-5001-BTU-SYOKUDOKBN
                                                PIC  X(01).
-      *´Ç¸î»Õ¿Í¿ô¶èÊ¬
+      *çœ‹è­·å¸«äººæ•°åŒºåˆ†
                05  SYS-5001-BTU-KNGSISUKBN
                                                PIC  X(01).
-      *ÊÝ°é»Î¿Í¿ô¶èÊ¬
+      *ä¿è‚²å£«äººæ•°åŒºåˆ†
                05  SYS-5001-BTU-HIKSISUKBN
                                                PIC  X(01).
-      *Æþ±¡´ðËÜÎÁÅÀ¿ô¥³¡¼¥É
+      *å…¥é™¢åŸºæœ¬æ–™ç‚¹æ•°ã‚³ãƒ¼ãƒ‰
                05  SYS-5001-BTU-KHNSRYCD
                                                PIC  X(09).
-      *½é´ü²Ã»»ÅÀ¿ô¥³¡¼¥É
+      *åˆæœŸåŠ ç®—ç‚¹æ•°ã‚³ãƒ¼ãƒ‰
                05  SYS-5001-BTU-KSNSRYCD
                                                PIC  X(09).
-      *Ä¹´ü¸º»»ÅÀ¿ô¥³¡¼¥É
+      *é•·æœŸæ¸›ç®—ç‚¹æ•°ã‚³ãƒ¼ãƒ‰
                05  SYS-5001-BTU-GENSRYCD
                                                PIC  X(09).
-      *ÉÂÅï½ªÎ»¶èÊ¬
+      *ç—…æ£Ÿçµ‚äº†åŒºåˆ†
                05  SYS-5001-BTU-EDKBN
                                                PIC  X(01).
-      *²Ã»»ÎÎ°è
+      *åŠ ç®—é ˜åŸŸ
                05  SYS-5001-KSNAREA.
-      *ÆñÉÂ´µ¼ÔÅùÆÃÊÌÆþ±¡¿ÇÎÅ²Ã»»
+      *é›£ç—…æ‚£è€…ç­‰ç‰¹åˆ¥å…¥é™¢è¨ºç™‚åŠ ç®—
                  07  SYS-5001-NANBYO.
                    09  SYS-5001-NANBYO-CD      PIC X(09).
                    09  SYS-5001-NANBYO-KBN     PIC X(01).
-      *ÆÃ¼ì¼À´µÆþ±¡»ÜÀß´ÉÍý²Ã»»
+      *ç‰¹æ®Šç–¾æ‚£å…¥é™¢æ–½è¨­ç®¡ç†åŠ ç®—
                  07  SYS-5001-TOKUSYU.
                    09  SYS-5001-TOKUSYU-CD     PIC X(09).
                    09  SYS-5001-TOKUSYU-KBN    PIC X(01).
-      *ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-      *¡ÊÉÂ¼¼´ÉÍý¾ðÊó¤Ë°ÜÆ° H15.02.27)
+      *ç™‚é¤Šç—…æ£Ÿç™‚é¤Šç’°å¢ƒåŠ ç®—
+      *ï¼ˆç—…å®¤ç®¡ç†æƒ…å ±ã«ç§»å‹• H15.02.27)
                  07  SYS-5001-YORYO              OCCURS  3.
                    09  SYS-5001-YORYO-CD       PIC X(09).
                    09  SYS-5001-YORYO-KBN      PIC X(01).
-      *»ùÆ¸¡¦»×½Õ´üÀº¿À²ÊÆþ±¡°åÎÅ´ÉÍý²Ã»»
+      *å…ç«¥ãƒ»æ€æ˜¥æœŸç²¾ç¥žç§‘å…¥é™¢åŒ»ç™‚ç®¡ç†åŠ ç®—
                  07  SYS-5001-JIDO.
                    09  SYS-5001-JIDO-CD        PIC X(09).
                    09  SYS-5001-JIDO-KBN       PIC X(01).
-      *Àº¿À²Ê±þµÞÆþ±¡»ÜÀß´ÉÍý²Ã»»
+      *ç²¾ç¥žç§‘å¿œæ€¥å…¥é™¢æ–½è¨­ç®¡ç†åŠ ç®—
                  07  SYS-5001-SEISIN.
                    09  SYS-5001-SEISIN-CD      PIC X(09).
                    09  SYS-5001-SEISIN-KBN     PIC X(01).
-      *´Ç¸îÇÛÃÖ²Ã»»
+      *çœ‹è­·é…ç½®åŠ ç®—
                  07  SYS-5001-KANGO              OCCURS  5.
                    09  SYS-5001-KANGO-CD       PIC X(09).
                    09  SYS-5001-KANGO-KBN      PIC X(01).
-      *´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+      *çœ‹è­·é…ç½®é©åˆåŠ ç®—
                  07  SYS-5001-KNGTEK.
                    09  SYS-5001-KNGTEK-CD      PIC X(09).
                    09  SYS-5001-KNGTEK-KBN     PIC X(01).
-      *Ê£¿ô°å»ÕµÚ¤Ó´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
+      *è¤‡æ•°åŒ»å¸«åŠã³çœ‹è­·é…ç½®é©åˆåŠ ç®—
                  07  SYS-5001-DRTEK.
                    09  SYS-5001-DRTEK-CD       PIC X(09).
                    09  SYS-5001-DRTEK-KBN      PIC X(01).
-      *Æþ±¡ÎÁ²Ã»»ºÆÄêµÁ
-      *Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Ï»»Äê¤¹¤ë²Ã»»¥³¡¼¥É¤¬ÇÛÎó¤Î£±ÈÖÌÜ¤è¤ê
-      *½ç¼¡ÀßÄê¤µ¤ì¤ë¡£
+      *å…¥é™¢æ–™åŠ ç®—å†å®šç¾©
+      *å¹³æˆï¼’ï¼å¹´ï¼”æœˆä»¥é™ã¯ç®—å®šã™ã‚‹åŠ ç®—ã‚³ãƒ¼ãƒ‰ãŒé…åˆ—ã®ï¼‘ç•ªç›®ã‚ˆã‚Š
+      *é †æ¬¡è¨­å®šã•ã‚Œã‚‹ã€‚
                05  SYS-5001-KSNTBLR  REDEFINES SYS-5001-KSNAREA.
                  07  SYS-5001-KSN              OCCURS  14.
                    09  SYS-5001-KSNCD          PIC X(09).
                    09  SYS-5001-KSNKBN         PIC X(01).
-      *Æþ±¡ÎÁ²Ã»»¡Ê¥æ¡¼¥¶ÀßÄêÎÎ°è¡Ë
+      *å…¥é™¢æ–™åŠ ç®—ï¼ˆãƒ¦ãƒ¼ã‚¶è¨­å®šé ˜åŸŸï¼‰
                05  SYS-5001-KSN2.
                  09  SYS-5001-KSNCD2           PIC X(09) OCCURS 10.
-      *Í½È÷ ** Í½È÷¤Î¸å¤Ë¤â¹àÌÜ¤¬¤¢¤ë¤Î¤ÇÃí°Õ¤¹¤ë¤³¤È **
+      *äºˆå‚™ ** äºˆå‚™ã®å¾Œã«ã‚‚é …ç›®ãŒã‚ã‚‹ã®ã§æ³¨æ„ã™ã‚‹ã“ã¨ **
                05  SYS-5001-YOBI               PIC X(130).
-      *´Ç¸î¿¦°÷ÈæÎ¨²áÁ¼ÃÖ¶èÊ¬¡ÊÊ¿À®£³£°Ç¯²þÀµ¡¡ÎÅÍÜÉÂÅïÆþ±¡ÎÁ£²¤Î·Ð²áÁ¼ÃÖ¡Ë
+      *çœ‹è­·è·å“¡æ¯”çŽ‡éŽæŽªç½®åŒºåˆ†ï¼ˆå¹³æˆï¼“ï¼å¹´æ”¹æ­£ã€€ç™‚é¤Šç—…æ£Ÿå…¥é™¢æ–™ï¼’ã®çµŒéŽæŽªç½®ï¼‰
                05  SYS-5001-SYOKUINKBN2    PIC  X(01).
-      *½Å¾É´µ¼Ô³ä¹çÆÃÊÌÆþ±¡´ðËÜÎÁ¶èÊ¬¡ÊÊ¿À®£³£°Ç¯²þÀµ¡¡·ë³ËÉÂÅï¡Ë
+      *é‡ç—‡æ‚£è€…å‰²åˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™åŒºåˆ†ï¼ˆå¹³æˆï¼“ï¼å¹´æ”¹æ­£ã€€çµæ ¸ç—…æ£Ÿï¼‰
                05  SYS-5001-JUUSHOUKNGKBN  PIC  X(01).
-      *ÉÂÅï¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¡ÊÆÃÄêÆþ±¡ÎÁ¡Ë
+      *ç—…æ£Ÿè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ï¼ˆç‰¹å®šå…¥é™¢æ–™ï¼‰
                05  SYS-5001-TSRYCD         PIC  X(09).
-      *ÉÂÅï¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *ç—…æ£Ÿè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  SYS-5001-SRYCD          PIC  X(09).
-      *´Ç¸î¿¦°÷¿ôÅù·Ð²áÁ¼ÃÖ¶èÊ¬
+      *çœ‹è­·è·å“¡æ•°ç­‰çµŒéŽæŽªç½®åŒºåˆ†
                05  SYS-5001-SYOKUINKBN     PIC  X(01).
-      *Ìë¶Ð»þ´ÖÆÃÊÌÆþ±¡´ðËÜÎÁ¶èÊ¬
+      *å¤œå‹¤æ™‚é–“ç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™åŒºåˆ†
                05  SYS-5001-YKNTOKUKBN     PIC  X(01).
-      *·îÊ¿¶ÑÌë¶Ð»þ´ÖÄ¶²á¸º»»
+      *æœˆå¹³å‡å¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—
                05  SYS-5001-YKNCHOKAKBN    PIC  X(01).
-      *¿ÇÎÅ½ê°ìÈÌ¡¦ÎÅÍÜÉÂ¾²Áê¸ß»»Äê¶èÊ¬
-      *      ÉÂÅï¼ïÊÌ¡á08¡ÊÍ­¾²°ìÈÌ¡Ë
-      *      ¶õÇò¡§Áê¸ß»»Äê¤·¤Ê¤¤
-      *        £°¡§Áê¸ß»»Äê¤·¤Ê¤¤
-      *        £±¡§Áê¸ß»»Äê¤¹¤ë
-      *      ÉÂÅï¼ïÊÌ¡á09¡ÊÍ­¾²ÎÅÍÜ¡Ë
-      *      ¶õÇò¡§Áê¸ß»»Äê¤·¤Ê¤¤
-      *        £°¡§Áê¸ß»»Äê¤·¤Ê¤¤
-      *        £±¡§Áê¸ß»»Äê¤¹¤ë¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ë
-      *        £²¡§Áê¸ß»»Äê¤¹¤ë¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ë
-      *        £³¡§Áê¸ß»»Äê¤¹¤ë¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ë
+      *è¨ºç™‚æ‰€ä¸€èˆ¬ãƒ»ç™‚é¤Šç—…åºŠç›¸äº’ç®—å®šåŒºåˆ†
+      *      ç—…æ£Ÿç¨®åˆ¥ï¼08ï¼ˆæœ‰åºŠä¸€èˆ¬ï¼‰
+      *      ç©ºç™½ï¼šç›¸äº’ç®—å®šã—ãªã„
+      *        ï¼ï¼šç›¸äº’ç®—å®šã—ãªã„
+      *        ï¼‘ï¼šç›¸äº’ç®—å®šã™ã‚‹
+      *      ç—…æ£Ÿç¨®åˆ¥ï¼09ï¼ˆæœ‰åºŠç™‚é¤Šï¼‰
+      *      ç©ºç™½ï¼šç›¸äº’ç®—å®šã—ãªã„
+      *        ï¼ï¼šç›¸äº’ç®—å®šã—ãªã„
+      *        ï¼‘ï¼šç›¸äº’ç®—å®šã™ã‚‹ï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼‰
+      *        ï¼’ï¼šç›¸äº’ç®—å®šã™ã‚‹ï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼‰
+      *        ï¼“ï¼šç›¸äº’ç®—å®šã™ã‚‹ï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼‰
                05  SYS-5001-CRYOYOKBN          PIC X(01).
-      *°ìÈÌÉÂÅï£¹£°ÆüÄ¶»»Äê *      ¶õÇò¡§ÆÃÄêÆþ±¡´ðËÜÎÁ¤ò»»Äê
-      *        £°¡§ÆÃÄêÆþ±¡´ðËÜÎÁ¤ò»»Äê
-      *        £±¡§ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¤ÎÎã¤Ë¤è¤ê»»Äê
+      *ä¸€èˆ¬ç—…æ£Ÿï¼™ï¼æ—¥è¶…ç®—å®š *      ç©ºç™½ï¼šç‰¹å®šå…¥é™¢åŸºæœ¬æ–™ã‚’ç®—å®š
+      *        ï¼ï¼šç‰¹å®šå…¥é™¢åŸºæœ¬æ–™ã‚’ç®—å®š
+      *        ï¼‘ï¼šç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ã®ä¾‹ã«ã‚ˆã‚Šç®—å®š
                05  SYS-5001-HRYOYOKBN          PIC X(01).
                05  SYS-5001-KHNSRYCD           PIC X(09).
                05  SYS-5001-KHNKBNCD           PIC X(03).
-      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â¡Ê°ìÈÌ¡Ë
+      *é¸å®šå…¥é™¢ç‰¹åˆ¥æ–™é‡‘ï¼ˆä¸€èˆ¬ï¼‰
                05  SYS-5001-SENTEI-IPN-KINGAKU-X
                                                PIC  X(04).
                05  SYS-5001-SENTEI-IPN-KINGAKU-R
@@ -179,7 +179,7 @@
                    SYS-5001-SENTEI-IPN-KINGAKU-X.
                    07  SYS-5001-SENTEI-IPN-KINGAKU
                                                PIC  9(04).
-      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â¡ÊÏ·¿Í¡Ë
+      *é¸å®šå…¥é™¢ç‰¹åˆ¥æ–™é‡‘ï¼ˆè€äººï¼‰
                05  SYS-5001-SENTEI-RJN-KINGAKU-X
                                                PIC  X(04).
                05  SYS-5001-SENTEI-RJN-KINGAKU-R
@@ -187,35 +187,35 @@
                    SYS-5001-SENTEI-RJN-KINGAKU-X.
                    07  SYS-5001-SENTEI-RJN-KINGAKU
                                                PIC  9(04).
-      *ÁªÄêÆþ±¡ÀßÄê¶èÊ¬
+      *é¸å®šå…¥é™¢è¨­å®šåŒºåˆ†
                05  SYS-5001-BTU-ISISUKBN       PIC  X(01).
-      *ÁªÄêÆþ±¡ÀßÄê¶èÊ¬
+      *é¸å®šå…¥é™¢è¨­å®šåŒºåˆ†
                05  SYS-5001-SENTEI-FTNKBN      PIC  X(01).
-      *ÁªÄêÆþ±¡¾ÃÈñÀÇ¶èÊ¬
+      *é¸å®šå…¥é™¢æ¶ˆè²»ç¨ŽåŒºåˆ†
                05  SYS-5001-SENTEI-TAXKBN      PIC  X(01).
-      *ÁªÄêÆþ±¡ÅÀ¿ôÃ±²Á
+      *é¸å®šå…¥é™¢ç‚¹æ•°å˜ä¾¡
                05  SYS-5001-SENTEI-TANKA-X     PIC  X(02).
                05  SYS-5001-SENTEI-TANKA-R     REDEFINES
                    SYS-5001-SENTEI-TANKA-X.
                    07  SYS-5001-SENTEI-TANKA   PIC  9(02).
-      *ÁªÄêÆþ±¡ÆÃÊÌÎÁ¶â¡Ê¶¦ÄÌ¡Ë
+      *é¸å®šå…¥é™¢ç‰¹åˆ¥æ–™é‡‘ï¼ˆå…±é€šï¼‰
                05  SYS-5001-SENTEI-KINGAKU-X   PIC  X(04).
                05  SYS-5001-SENTEI-KINGAKU-R   REDEFINES
                    SYS-5001-SENTEI-KINGAKU-X.
                    07  SYS-5001-SENTEI-KINGAKU PIC  9(04).
-      *¥ì¥»¥×¥ÈÉ½¼¨¶èÊ¬
+      *ãƒ¬ã‚»ãƒ—ãƒˆè¡¨ç¤ºåŒºåˆ†
                05  SYS-5001-RECEDSPKBN         PIC  X(02).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5001-TERMID                 PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5001-OPID                   PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5001-CREYMD                 PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5001-UPYMD                  PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5001-UPHMS                  PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5001-UPD-KEY.
                05  SYS-5001-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5001-UPD-KANRICD     PIC X(04).

@@ -1,17 +1,17 @@
 --                                    --
---  »»ÄêÍúÎò¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹            --
+--  ç®—å®šå±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´            --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     Åö·î»»ÄêÅÀ¿ôÂĞ¾İ¥Õ¥é¥°         --
+-- é …ç›®ã®è¿½åŠ                          --
+--     å½“æœˆç®—å®šç‚¹æ•°å¯¾è±¡ãƒ•ãƒ©ã‚°         --
 --                    MSANTEIFLG      --
---     Åö·î»»ÄêÅÀ¿ô   MSANTEITEN      --
---     Åö·î»»ÄêÅÀ¿ô¶èÊ¬               --
+--     å½“æœˆç®—å®šç‚¹æ•°   MSANTEITEN      --
+--     å½“æœˆç®—å®šç‚¹æ•°åŒºåˆ†               --
 --                    MSANTEITENKBN   --
 --                                    --
 -- Update Date : 2005/02/28           --
 --                                    --
 
--- TBL_SANTEIWK ºîÀ®                  --
+-- TBL_SANTEIWK ä½œæˆ                  --
 
 CREATE TABLE "tbl_santeiwk" (
 	"hospid" character(24) NOT NULL,
@@ -63,16 +63,16 @@ CREATE TABLE "tbl_santeiwk" (
 	Constraint "tbl_santeiwk_primary_key" Primary Key ("hospid", "ptid", "sryym", "srycd", "nyugaikbn", "sryka", "hkncombinum")
 );
 
--- TBL_SANTEI ¢ª TBL_SANTEIWK      --
+-- TBL_SANTEI â†’ TBL_SANTEIWK      --
 
 insert into tbl_santeiwk
 select * from tbl_santei;
 
--- TBL_SANTEI ºï½ü                  --
+-- TBL_SANTEI å‰Šé™¤                  --
 
 drop table tbl_santei;
 
--- TBL_SANTEI ºîÀ®                  --
+-- TBL_SANTEI ä½œæˆ                  --
 
 CREATE TABLE "tbl_santei" (
 	"hospid" character(24) NOT NULL,
@@ -127,7 +127,7 @@ CREATE TABLE "tbl_santei" (
 	Constraint "tbl_santei_primary_key" Primary Key ("hospid", "ptid", "sryym", "srycd", "nyugaikbn", "sryka", "hkncombinum")
 );
 
--- TBL_SANTEIWK ¢ª TBL_SANTEI   --
+-- TBL_SANTEIWK â†’ TBL_SANTEI   --
 
 insert into tbl_santei
 (hospid,
@@ -231,7 +231,7 @@ upymd,
 uphms
  from tbl_santeiwk;
 
--- TBL_SANTEIWK ºï½ü             --
+-- TBL_SANTEIWK å‰Šé™¤             --
 
 drop table tbl_santeiwk;
 

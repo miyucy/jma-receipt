@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,32 +16,32 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô¶Ø´÷ÌôºÞ¥Þ¥¹¥¿            COPY (CPPTKINKI.INC)     *
+      *    æ‚£è€…ç¦å¿Œè–¬å‰¤ãƒžã‚¹ã‚¿            COPY (CPPTKINKI.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTKINKI-REC.
            03  PTKINKI-KEY.
-      *°åÎÅµ¡´Ø¥³¡¼¥É
+      *åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
                05  PTKINKI-HOSPNUM           PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTKINKI-PTID              PIC  9(10).
-      *ÌôºÞ¥³¡¼¥É
+      *è–¬å‰¤ã‚³ãƒ¼ãƒ‰
                05  PTKINKI-SRYCD             PIC  X(09).
-      *¶Ø´÷³«»ÏÆü
+      *ç¦å¿Œé–‹å§‹æ—¥
            03  PTKINKI-KINKSTYMD             PIC  X(08).
-      *ÅêÍ¿Æü
+      *æŠ•ä¸Žæ—¥
            03  PTKINKI-TOUYOYMD              PIC  X(08).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTKINKI-TERMID                PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTKINKI-OPID                  PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTKINKI-CREYMD                PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTKINKI-UPYMD                 PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTKINKI-UPHMS                 PIC  X(06).
       *

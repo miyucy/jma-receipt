@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBUMCP.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ·î¼¡Ä¢É¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥Þ¥¹¥¿¥Á¥§¥Ã¥¯
-      *  ´ÉÍý¼Ô            : ¿¹ÏÆ
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  19/03/06    NACL-¿¹ÏÆ     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æœˆæ¬¡å¸³ç¥¨
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ãƒžã‚¹ã‚¿ãƒã‚§ãƒƒã‚¯
+      *  ç®¡ç†è€…            : æ£®è„‡
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  19/03/06    NACL-æ£®è„‡     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,14 +34,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  BUMCPERR-FILE   ASSIGN  BUMCP-ERRFNAME
                                    FILE    STATUS  IS  STS-BUMCPERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  BUMCPERR-FILE.
        01  BUMCPERR-REC            PIC X(200).
       *
@@ -59,7 +59,7 @@
        01  WRK-AREA.
            03  WRK-ERRMSG              PIC X(200).
       *
-      *    ¥Ñ¥é¥á¥¿ÎÎ°è
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
        01  BUMCP-AREA.
            COPY    "CPORCSPRTLNK.INC".
            COPY    "CPBUMCPPARA.INC".
@@ -67,30 +67,30 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -104,7 +104,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -119,7 +119,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -165,19 +165,19 @@
       *
            EVALUATE    BUMCP-MSTKBN
                WHEN    "1"
-                   MOVE    "ÅÀ¿ô¥æ¡¼¥¶¡¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯¥ê¥¹¥È"
+                   MOVE    "ç‚¹æ•°ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒžã‚¹ã‚¿ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ"
                                            TO  BUMCP-SHELLMSG
                WHEN    "2"
-                   MOVE    "¥Á¥§¥Ã¥¯¥æ¡¼¥¶¡¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯¥ê¥¹¥È"
+                   MOVE    "ãƒã‚§ãƒƒã‚¯ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒžã‚¹ã‚¿ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ"
                                            TO  BUMCP-SHELLMSG
                WHEN    "3"
-                   MOVE    "°ìÈÌÏ·¿ÍÃÖ´¹¥æ¡¼¥¶¡¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯¥ê¥¹¥È"
+                   MOVE    "ä¸€èˆ¬è€äººç½®æ›ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒžã‚¹ã‚¿ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ"
                                            TO  BUMCP-SHELLMSG
                WHEN    "4"
-                   MOVE    "ÊÝ¸±¼Ô¥æ¡¼¥¶¡¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯¥ê¥¹¥È"
+                   MOVE    "ä¿é™ºè€…ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒžã‚¹ã‚¿ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ"
                                            TO  BUMCP-SHELLMSG
                WHEN    "5"
-                   MOVE    "½»½ê¥æ¡¼¥¶¡¼¥Þ¥¹¥¿¥Á¥§¥Ã¥¯¥ê¥¹¥È"
+                   MOVE    "ä½æ‰€ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒžã‚¹ã‚¿ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ"
                                            TO  BUMCP-SHELLMSG
            END-EVALUATE
       *
@@ -190,11 +190,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿
            IF    ( BUMCP-RC     =   ZERO )
                IF    ( BUMCP-MSTKBN        =     "1" )
                    PERFORM 800-MCNDATE-SEC
@@ -207,7 +207,7 @@
                END-IF
            END-IF
       *
-      *    ¥Á¥§¥¯¥Þ¥¹¥¿
+      *    ãƒã‚§ã‚¯ãƒžã‚¹ã‚¿
            IF    ( BUMCP-RC     =   ZERO )
                IF    ( BUMCP-MSTKBN        =     "2" )
                    PERFORM 800-MCNDATE-SEC
@@ -220,7 +220,7 @@
                END-IF
            END-IF
       *
-      *    °ìÈÌ¡¦Ï·¿Í¥³¡¼¥É¥Þ¥¹¥¿
+      *    ä¸€èˆ¬ãƒ»è€äººã‚³ãƒ¼ãƒ‰ãƒžã‚¹ã‚¿
            IF    ( BUMCP-RC     =   ZERO )
                IF    ( BUMCP-MSTKBN        =     "3" )
                    PERFORM 800-MCNDATE-SEC
@@ -233,7 +233,7 @@
                END-IF
            END-IF
       *
-      *    ÊÝ¸±¼Ô¥Þ¥¹¥¿
+      *    ä¿é™ºè€…ãƒžã‚¹ã‚¿
            IF    ( BUMCP-RC     =   ZERO )
                IF    ( BUMCP-MSTKBN        =     "4" )
                    PERFORM 800-MCNDATE-SEC
@@ -246,7 +246,7 @@
                END-IF
            END-IF
       *
-      *    ½»½ê¥Þ¥¹¥¿
+      *    ä½æ‰€ãƒžã‚¹ã‚¿
            IF    ( BUMCP-RC     =   ZERO )
                IF    ( BUMCP-MSTKBN        =     "5" )
                    PERFORM 800-MCNDATE-SEC
@@ -264,14 +264,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    çµ‚äº†ã€€ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF    ( BUMCP-PAGE          =   ZERO )
-               MOVE    "½èÍýÂÐ¾Ý¤Î¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "å‡¦ç†å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
                                    TO  WRK-ERRMSG
- ¡¡              PERFORM 500-ERR-HENSYU-SEC
+ ã€€              PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            IF    ( FLG-ERR             =   ZERO )
@@ -291,7 +291,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -305,7 +305,7 @@
                WRITE   BUMCPERR-REC
                CLOSE   BUMCPERR-FILE
       *
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-ERRMSG      TO  JOB-YOBI
@@ -319,7 +319,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -330,7 +330,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍý¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ã‚µãƒ–
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -350,7 +350,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -374,7 +374,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGZ100.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ޥ�������
-      *  ����ݡ��ͥ��̾  : ���ϻؼ����̡ʣڣ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  08/06/02    NACL�ݿ���    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 点数マスタ設定
+      *  コンポーネント名  : 出力指示画面（Ｚ１００）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  08/06/02    NACL−森脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
-      *  04.08.01    NACL-����     14/09/03  GINBEE�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-森脇     14/09/03  GINBEE対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,47 +41,47 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ޥ��������Ѷ��̥ѥ�᥿
+      *    点数マスタ設定用共通パラメタ
            COPY    "Z01COMMON-SPA".
-      *    �����̣ӣУ����ꥢ
+      *    第一画面ＳＰＡエリア
            COPY    "Z01SCR-SPA".
       *
-      *    ���󥹥������
+      *    コンスタント値
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                                 PIC 9(03).
            03  IDX2                                PIC 9(03).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-NUM                             PIC 9(09).
            03  WRK-MCP-WIDGET                      PIC X(64).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���饤�������¸���ݾ����������
+      *    クライアント保存可否情報取得サブ
            COPY    "CPORCSCLIENTSV.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -100,7 +100,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -117,15 +117,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF  ( FLG-END           =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -138,7 +138,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -146,14 +146,14 @@
                                        IDX-AREA
                                        WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF  ( SPA-MOTOPG            =   "ZERR" )
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -170,7 +170,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -179,7 +179,7 @@
       *
            MOVE    9                   TO  SPA-Z100-CUR
       *
-      *    ���饤�������¸���ݾ����������
+      *    クライアント保存可否情報取得サブ
            INITIALIZE                      ORCSCLIENTSVAREA
            CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
                                                SPA-AREA
@@ -187,16 +187,16 @@
                                        TO  SPA-Z100-CLIENT-SAVE
            IF      SPA-Z100-CLIENT-SAVE    =   "1"
                MOVE    "1"                 TO  SPA-Z100-FILEL   (1)
-               MOVE    "���饤�������¸"  TO  SPA-Z100-FILEMEIL(1)
+               MOVE    "クライアント保存"  TO  SPA-Z100-FILEMEIL(1)
                MOVE    1                   TO  SPA-Z100-FILE-MAX
                MOVE    WIDGET-NORMAL       TO  SPA-Z100-FILE-STATE
       *
                MOVE    "1"             TO  SPA-Z100-CDKBNL   (1)
-               MOVE    "�ţգ�"        TO  SPA-Z100-CDKBNMEIL(1)
+               MOVE    "ＥＵＣ"        TO  SPA-Z100-CDKBNMEIL(1)
                MOVE    "2"             TO  SPA-Z100-CDKBNL   (2)
-               MOVE    "�ӡݣ���"    TO  SPA-Z100-CDKBNMEIL(2)
+               MOVE    "Ｓ−ｊｉｓ"    TO  SPA-Z100-CDKBNMEIL(2)
                MOVE    "3"             TO  SPA-Z100-CDKBNL   (3)
-               MOVE    "�գԣơݣ�"    TO  SPA-Z100-CDKBNMEIL(3)
+               MOVE    "ＵＴＦ−８"    TO  SPA-Z100-CDKBNMEIL(3)
                MOVE    3               TO  SPA-Z100-CDKBN-MAX
                MOVE    WIDGET-NORMAL   TO  SPA-Z100-CDKBN-STATE
            ELSE
@@ -205,14 +205,14 @@
            END-IF
       *
            MOVE    "3001"                  TO  SPA-Z100-CD
-           MOVE    "�ãӣֽ��Ϥ򳫻Ϥ��ޤ�"
+           MOVE    "ＣＳＶ出力を開始します"
                                            TO  SPA-Z100-MSG
       *----(04.08.01)--UPD-START---
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       8
                MOVE    SPACE       TO  SPA-Z100-FILENAME(IDX)
                IF      SPA-CSV-CHK(IDX)   =   "T"
-      *            GINBEE�ΤȤ�
+      *            GINBEEのとき
                    IF      SPA-MW      =   SPA-GINBEE
                        STRING  "OUTPUT"           DELIMITED SIZE
                                IDX                DELIMITED SIZE
@@ -235,7 +235,7 @@
            END-PERFORM
       *----(04.08.01)--UPD-END-----
       *----(04.08.01)--ADD-START---
-      *    GINBEE�ΤȤ�
+      *    GINBEEのとき
            IF      SPA-MW      =   SPA-GINBEE
                MOVE    SPA-Z100-FILELST(1)     TO  SPA-Z100-FILE-G
                MOVE    SPA-Z100-CDKBNLST(1)    TO  SPA-Z100-CDKBN-G
@@ -246,17 +246,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *     ���
+      *     戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *     ����
+      *     確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KAKUTEI
            END-EVALUATE
@@ -266,16 +266,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            .
@@ -283,7 +283,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
@@ -295,26 +295,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC           SECTION.
       *
-      *    ���̤�ӣУ��˥��å�
+      *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
            PERFORM 4100-FILENAME-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ����������å�
+      *    出力先チェック
            PERFORM 4100-FILE-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ʸ�������ɥ����å�
+      *    文字コードチェック
            PERFORM 4100-CDKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
@@ -325,20 +325,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC        SECTION.
       *
-      *    �ե�����̾
+      *    ファイル名
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       8
                MOVE    Z100-FILENAME(IDX)  TO  SPA-Z100-FILENAME(IDX)
            END-PERFORM
       *
-      *    ������
+      *    出力先
            MOVE    Z100-FILE       TO  SPA-Z100-FILE-G
       *
-      *    ʸ��������
+      *    文字コード
            MOVE    Z100-CDKBN      TO  SPA-Z100-CDKBN-G
       *
            .
@@ -347,7 +347,7 @@
       *
       *----(04.08.01)--UPD-START---
       *****************************************************************
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
       *****************************************************************
        4100-FILENAME-CHK-SEC           SECTION.
       *
@@ -372,7 +372,7 @@
                            ELSE
                                IF      SPA-Z100-FILENAME(IDX)(IDX2:1)
                                                            =   "/"
-      *                            GINBEE�ΤȤ�
+      *                            GINBEEのとき
                                    IF      SPA-MW      =   SPA-GINBEE
                                        MOVE    "1005"  TO  SPA-ERRCD
                                        MOVE    IDX     TO  SPA-Z100-CUR
@@ -384,7 +384,7 @@
                        END-PERFORM
                    END-IF
                    IF      SPA-ERRCD       =   SPACE
-      *                GINBEE�ΤȤ�
+      *                GINBEEのとき
                        IF      SPA-MW      =   SPA-GINBEE
                            MOVE    SPACE   TO  SPA-CSV-DIRNAME(IDX)
                            MOVE    SPA-Z100-FILENAME(IDX)
@@ -428,14 +428,14 @@
            EXIT.
       *----(04.08.01)--UPD-END-----
       *****************************************************************
-      *    ����������å�����
+      *    出力先チェック処理
       *****************************************************************
        4100-FILE-CHK-SEC           SECTION.
       *
            IF      SPA-Z100-CLIENT-SAVE    =   "1"
                IF      SPA-Z100-FILE       =   SPACE
       *----(04.08.01)--UPD-START---
-      *            GINBEE�ΤȤ�
+      *            GINBEEのとき
                    IF      SPA-MW      =   SPA-GINBEE
                        MOVE    SPA-Z100-FILELST(1)
                                                TO  SPA-Z100-FILE-G
@@ -466,7 +466,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʸ�������ɥ����å�����
+      *    文字コードチェック処理
       *****************************************************************
        4100-CDKBN-CHK-SEC          SECTION.
       *
@@ -499,7 +499,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -520,24 +520,24 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꡡ����
+      *    確定　処理
       *****************************************************************
        490-KAKUTEI                 SECTION.
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  490-KAKUTEI-EXT
            END-IF
       *
-      *    ���
+      *    戻る
            IF      SPA-Z100-FILE   =   SPACE
                MOVE    "0"             TO  SPA-CSV-FILE
            ELSE
                MOVE    SPA-Z100-FILE   TO  SPA-CSV-FILE
            END-IF
       *
-      *     ʸ�������ɶ�ʬ
+      *     文字コード区分
            IF      SPA-Z100-CDKBN  =   SPACE
                MOVE    "0"             TO  SPA-CSV-CDKBN
            ELSE
@@ -561,7 +561,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -584,18 +584,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
            INITIALIZE              Z100
-      *    ��å�����������
+      *    メッセージコード
            MOVE    SPA-Z100-CD     TO  Z100-ID1CODE
       *
-      *    ��å�����
+      *    メッセージ
            MOVE    SPA-Z100-MSG    TO  Z100-ID1MSG
       *
-      *    �ե�����̾
+      *    ファイル名
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       8
                MOVE    SPA-Z100-FILENAME(IDX)
@@ -604,7 +604,7 @@
                                            TO  Z100-FILENAME-STATE(IDX)
            END-PERFORM
       *
-      *    ������
+      *    出力先
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-Z100-FILE-MAX
                MOVE    SPA-Z100-FILELST(IDX)
@@ -614,7 +614,7 @@
            MOVE    SPA-Z100-FILE-G         TO  Z100-FILE
            MOVE    SPA-Z100-FILE-STATE     TO  Z100-FILE-STATE
       *
-      *    ʸ��������
+      *    文字コード
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-Z100-CDKBN-MAX
                MOVE    SPA-Z100-CDKBNLST(IDX)
@@ -631,7 +631,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -670,7 +670,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
@@ -704,7 +704,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -712,20 +712,20 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "1001"
-               MOVE    "���ϥե�����̾�����Ϥ���Ƥ��ޤ���"
+               MOVE    "出力ファイル名が入力されていません"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
-               MOVE    "���ϥե�����̾����ʣ���Ƥ��ޤ�"
+               MOVE    "出力ファイル名が重複しています"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
-               STRING   "���ϥե�����̾��" DELIMITED  BY  SIZE
-                        "�ɡ��ɡ��ɡ�ɤ����Ϥ��Ƥ���ޤ�"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "”：”、”¥”が入力してあります"
                                            DELIMITED  BY  SIZE
                                            INTO  SPA-ERRMSG
                END-STRING
       *----(04.08.01)--ADD-START---
            WHEN    "1005"
-               MOVE    "���ϥե�����̾�ˡ������ϤǤ��ޤ���"
+               MOVE    "出力ファイル名に／は入力できません"
                                        TO  SPA-ERRMSG
       *----(04.08.01)--ADD-END-----
            END-EVALUATE
@@ -750,7 +750,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    Æþ±¡±¡³°½èÊý¤»¤óÊÔ½¸¥Ñ¥é   COPY (CPORCSNYUINSHO.INC)
+      *    å…¥é™¢é™¢å¤–å‡¦æ–¹ã›ã‚“ç·¨é›†ãƒ‘ãƒ©   COPY (CPORCSNYUINSHO.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCSNYUINSHOAREA.
-      *    ½èÍý¶èÊ¬¡Ê£±¡§¿ÇÎÅ²ÊÊÔ½¸¡¢£²¡§½èÊý¤»¤ó°õºþ¡¢£³¡§¿ÇÎÅ²Ê¤Î¤ß)
+      *    å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šè¨ºç™‚ç§‘ç·¨é›†ã€ï¼’ï¼šå‡¦æ–¹ã›ã‚“å°åˆ·ã€ï¼“ï¼šè¨ºç™‚ç§‘ã®ã¿)
            03  ORCSNYUINSHO-KBN        PIC X(01).
-      *    Æþ±¡Æü¡ÊÉ¬¿Ü¡Ë
+      *    å…¥é™¢æ—¥ï¼ˆå¿…é ˆï¼‰
            03  ORCSNYUINSHO-NYUINYMD   PIC X(08).
-      *    Âà±¡Æü¡ÊÉ¬¿Ü¡Ë
+      *    é€€é™¢æ—¥ï¼ˆå¿…é ˆï¼‰
            03  ORCSNYUINSHO-TAIINYMD   PIC X(08).
-      *    Æþ¡¦½ÐÎÏ¡Ê½èÍý¶èÊ¬¡á£± ¤Ï½ÐÎÏ¡¢£² ¤Ï ÆþÎÏ¹àÌÜ¡Ë
+      *    å…¥ãƒ»å‡ºåŠ›ï¼ˆå‡¦ç†åŒºåˆ†ï¼ï¼‘ ã¯å‡ºåŠ›ã€ï¼’ ã¯ å…¥åŠ›é …ç›®ï¼‰
            03  ORCSNYUINSHO-SRYKA-AREA.
                05  ORCSNYUINSHO-SRYKA-G    OCCURS   5.
-      *            ¿ÇÎÅ²Ê
+      *            è¨ºç™‚ç§‘
                    07  ORCSNYUINSHO-SRYKA      PIC X(02).
-      *            ¥É¥¯¥¿¡¼
+      *            ãƒ‰ã‚¯ã‚¿ãƒ¼
                    07  ORCSNYUINSHO-DRCD       PIC X(05).
                05  ORCSNYUINSHO-SRYKA-MAX      PIC 9(02).
-      *    ¼ç¼£°å¡Ê½èÍý¶èÊ¬¡á£² ¤Ç¥É¥¯¥¿¡¼¤¬¤Ê¤¤»þ¤Î¤ßÉ¬¿Ü¡Ë
+      *    ä¸»æ²»åŒ»ï¼ˆå‡¦ç†åŒºåˆ†ï¼ï¼’ ã§ãƒ‰ã‚¯ã‚¿ãƒ¼ãŒãªã„æ™‚ã®ã¿å¿…é ˆï¼‰
            03  ORCSNYUINSHO-SYUDRCD    PIC X(05).
-      *    Æ±ÆüºÆÆþ±¡¶èÊ¬¡Ê£±¡§Æ±ÆüºÆÆþ±¡¡Ë
+      *    åŒæ—¥å†å…¥é™¢åŒºåˆ†ï¼ˆï¼‘ï¼šåŒæ—¥å†å…¥é™¢ï¼‰
            03  ORCSNYUINSHO-DOUJITSUKBN    PIC X(01).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,19 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¥»¥Ã¥ÈÅÐÏ¿°ìÍ÷°õºþ¥Ñ¥é¥á¥¿¡¡   COPY (CPORCHSET.INC)
+      *    ã‚»ãƒƒãƒˆç™»éŒ²ä¸€è¦§å°åˆ·ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€   COPY (CPORCHSET.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCHCSETAREA.
       *
-      *    ³«»Ï¥»¥Ã¥È¥³¡¼¥É
+      *    é–‹å§‹ã‚»ãƒƒãƒˆã‚³ãƒ¼ãƒ‰
            03  HCSET-STR-SETCD          PIC X(06).
-      *    ½ªÎ»¥»¥Ã¥È¥³¡¼¥É
+      *    çµ‚äº†ã‚»ãƒƒãƒˆã‚³ãƒ¼ãƒ‰
            03  HCSET-END-SETCD          PIC X(06).
-      *    ·Ð²áÁ¼ÃÖÆü
+      *    çµŒéŽæŽªç½®æ—¥
            03  HCSET-KEIKAYMD           PIC X(08).
       *

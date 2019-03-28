@@ -10,11 +10,11 @@ xml_medicalav3req4 {
 		Patient_ID		varchar(20);
     		Perform_Date		varchar(10);
 		Patient_Mode		varchar(06);
-#---     ¿ÇÎÅ²Ê
+#---     è¨ºç™‚ç§‘
 	        Department_Code			varchar(2);
-#---     Êİ¸±ÁÈ¹ç¤»
+#---     ä¿é™ºçµ„åˆã›
 		Insurance_Combination_Number	varchar(4);
-#---     Ï¢ÈÖ
+#---     é€£ç•ª
 		Sequential_Number		varchar(1);
 #--
 		Select_Answer		varchar(02);

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,42 +15,42 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC-����     02/06/04  Q02:�����ֹ���ɲ�
-      * 01.00.01     MCC-����     02/06/06  Q01:���̤η���ѹ�
-      *                                     Q01:�����ȥ���ܥ��ꥢ��
-      *                                         �쥤�������ѹ�
-      *                                     Q01:�ǽ����������
-      *                                     Q01:���Ϻǽ��������ɲ�
-      *                                     Q01:��λ�ǽ��������ɲ�
-      *                                     Q01:�����ֹ棱�������
-      *                                     Q01:���ϴ����ֹ��ɲ�
-      *                                     Q01:��λ�����ֹ��ɲ�
-      *                                     Q01:��̾�ɲ�
-      *                                     Q01:���Ź԰�̾�ɲ�
-      *                                     Q02:��������������ե饰�ɲ�
-      *                                     QID1:��ǧ�����������ѹ�
-      *                                     QID1:Q100��̾���ѹ�
-      *                                     QID1:��������
-      * 01.00.02     MCC-����     02/06/26  Q100:����QID1����̾���ѹ�
-      *                                     QID1:��������
-      *                                     Q02:�ꥹ�Ȥ�ǯ���ɲ�
-      *                                     Q02:��̾�θ�����､��
-      *                                     Q01:�ݸ����ֹ��ɲ�
-      *                                     Q01:�ݸ��μ����ɲ�
-      *                                     Q01:����μ���򥳥�ܤ��ѹ�
-      *                                     Q01:�ƥ��ȴ��Ԥ򸡺��оݤ���
-      *                                         ������褦�ˤ���
-      * 01.00.02     NACL-����    02/10/17  woody�б�
-      * 01.00.03     NACL-����    03/05/26  �ݸ���ʧ��ʬ�ɲ�
-      * 01.00.04     NACL-����    03/05/27  �ΰ�����θ�ľ��
-      * 04.01.01     NACL-ƣ��    07/10/01  ���饤�������¸�б�
-      *                                     Q100:�ե�����������ɲ�
-      *                                          ʸ�������ɶ�ʬ�ɲ�  
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-森脇     02/06/04  Q02:患者番号の追加
+      * 01.00.01     MCC-太田     02/06/06  Q01:性別の桁数変更
+      *                                     Q01:ソートコンボエリアの
+      *                                         レイアウト変更
+      *                                     Q01:最終受診日削除
+      *                                     Q01:開始最終受診日追加
+      *                                     Q01:終了最終受診日追加
+      *                                     Q01:患者番号１〜５削除
+      *                                     Q01:開始患者番号追加
+      *                                     Q01:終了患者番号追加
+      *                                     Q01:病名追加
+      *                                     Q01:診療行為名追加
+      *                                     Q02:総件数取得処理フラグ追加
+      *                                     QID1:確認ダイアログ変更
+      *                                     QID1:Q100へ名称変更
+      *                                     QID1:新規作成
+      * 01.00.02     MCC-太田     02/06/26  Q100:画面QID1から名称変更
+      *                                     QID1:新規作成
+      *                                     Q02:リストに年齢追加
+      *                                     Q02:病名の検索条件修正
+      *                                     Q01:保険者番号追加
+      *                                     Q01:保険の種類追加
+      *                                     Q01:公費の種類をコンボに変更
+      *                                     Q01:テスト患者を検索対象から
+      *                                         外せるようにする
+      * 01.00.02     NACL-太田    02/10/17  woody対応
+      * 01.00.03     NACL-太田    03/05/26  保険支払区分追加
+      * 01.00.04     NACL-太田    03/05/27  領域定義の見直し
+      * 04.01.01     NACL-藤原    07/10/01  クライアント保存対応
+      *                                     Q100:ファイル出力先追加
+      *                                          文字コード区分追加  
       *****************************************************************
        01   SPA-Q01FREE.
-      *    �ѣ�����
+      *    Ｑ０１用
            03  SPA-Q01.
                05  SPA-Q01-AREA.
                    07  SPA-GMN-Q01-CTLSEQ              PIC 9(02).
@@ -59,7 +59,7 @@
                    07  SPA-GMN-Q01-CUR                 PIC 9(05).
       *
                    07  SPA-GMN-Q01-AREA.
-      *                �������
+      *                検索条件
                        09  SPA-GMN-Q01-SELPATTERN-G.
                            11  SPA-GMN-Q01-SELPATTERN  PIC X(03).
                            11  SPA-GMN-Q01-SELPATTERNFL
@@ -67,42 +67,42 @@
                            11  SPA-GMN-Q01-SELPATTERNMEI
                                                        PIC X(100).
       *
-      *                ����ǯ����������
+      *                診療年月日開始日
                        09  SPA-GMN-Q01-STSRYYMD        PIC X(10).
-      *                ����ǯ������λ��
+      *                診療年月日終了日
                        09  SPA-GMN-Q01-EDSRYYMD        PIC X(10).
-      *                ����or����
+      *                前月or前日
                        09  SPA-GMN-Q01-MMORDD              PIC 9(01).
-      *                ���ܾ���
+      *                基本情報
                        09  SPA-GMN-Q01-KIHON-AREA.
-      *                    ��ǯ����������
+      *                    生年月日開始日
                            11  SPA-GMN-Q01-STBIRTHDAY  PIC X(10).
-      *                    ��ǯ������λ��
+      *                    生年月日終了日
                            11  SPA-GMN-Q01-EDBIRTHDAY  PIC X(10).
-      *                    ǯ�𳫻���
+      *                    年齢開始日
                            11  SPA-GMN-Q01-STAGE       PIC X(03).
-      *                    ǯ��λ��
+      *                    年齢終了日
                            11  SPA-GMN-Q01-EDAGE       PIC X(03).
-      *                    �����������
+      *                    基準日開始日
                            11  SPA-GMN-Q01-KJYNYMD     PIC X(10).
-      *                    ������
+      *                    誕生月
                            11  SPA-GMN-Q01-BIRTHMON    PIC X(02).
-      *                    ���Ϻǽ�������
+      *                    開始最終受診日
                            11  SPA-GMN-Q01-STLASTYMD   PIC X(10).
-      *                    ��λ�ǽ�������
+      *                    終了最終受診日
                            11  SPA-GMN-Q01-EDLASTYMD   PIC X(10).
-      *                    ����
+      *                    性別
                            11  SPA-GMN-Q01-SEX-G.
                                13  SPA-GMN-Q01-SEX     PIC X(01).
                                13  SPA-GMN-Q01-SEXFL   PIC X(01).
                                13  SPA-GMN-Q01-SEXMEI  PIC X(08).
-      *                    �����ֹ��ϰϻ��곫��
+      *                    患者番号範囲指定開始
                            11  SPA-GMN-Q01-STPTNUM
                                                        PIC X(20).
-      *                    �����ֹ��ϰϻ��꽪λ
+      *                    患者番号範囲指定終了
                            11  SPA-GMN-Q01-EDPTNUM
                                                        PIC X(20).
-      *                    ������ʬ
+      *                    入外区分
                            11  SPA-GMN-Q01-NYUGAIKBN-G.
                                13  SPA-GMN-Q01-NYUGAIKBN
                                                        PIC X(01).
@@ -110,49 +110,49 @@
                                                        PIC X(01).
                                13  SPA-GMN-Q01-NYUGAIKBNMEI
                                                        PIC X(10).
-      *                    �ɥ�����
+      *                    ドクター
                            11  SPA-GMN-Q01-DRCD-G.
                                13  SPA-GMN-Q01-DRCD      PIC X(04).
                                13  SPA-GMN-Q01-DRCDFL    PIC X(01).
                                13  SPA-GMN-Q01-DRCDMEI   PIC X(24).
-      *                    ���Ų�
+      *                    診療科
                            11  SPA-GMN-Q01-SRYKA-G.
                                13  SPA-GMN-Q01-SRYKA   PIC X(02).
                                13  SPA-GMN-Q01-SRYKAFL PIC X(01).
                                13  SPA-GMN-Q01-SRYKAMEI
                                                        PIC X(20).
-      *                    ��˴��ʬ
+      *                    死亡区分
                            11  SPA-GMN-Q01-DEATH-G.
                                13  SPA-GMN-Q01-DEATH   PIC X(01).
                                13  SPA-GMN-Q01-DEATHFL PIC X(01).
                                13  SPA-GMN-Q01-DEATHMEI
                                                        PIC X(08).
-      *                    �ϰ�Ϣ�Ⱦ�����
+      *                    地域連携情報提供
                            11  SPA-GMN-Q01-AGREEMENT-G.
                                13  SPA-GMN-Q01-AGREEMENT   PIC X(01).
                                13  SPA-GMN-Q01-AGREEMENTFL PIC X(01).
                                13  SPA-GMN-Q01-AGREEMENTMEI
                                                        PIC X(20).
-      *                    �ƥ��ȴ���
+      *                    テスト患者
                            11  SPA-GMN-Q01-TSTPT-G.
                                13  SPA-GMN-Q01-TSTPT   PIC X(01).
                                13  SPA-GMN-Q01-TSTPTFL PIC X(01).
                                13  SPA-GMN-Q01-TSTPTMEI
                                                        PIC X(30).
-      *                    ͹���ֹ�
+      *                    郵便番号
                            11  SPA-GMN-Q01-POSTTBL.
                                13  SPA-GMN-Q01-POST    PIC X(07)
                                                        OCCURS  5.
-      *                    ����
+      *                    住所
                            11  SPA-GMN-Q01-JYUSHOTBL.
                                13  SPA-GMN-Q01-JYUSHO
                                                        PIC X(50)
                                                        OCCURS  5.
-      *                    ������̾
+      *                    漢字氏名
                            11  SPA-GMN-Q01-NAMETBL.
                                13  SPA-GMN-Q01-NAME    PIC X(50)
                                                        OCCURS  5.
-      *                    ����
+      *                    状態
                            11  SPA-GMN-Q01-CONDITION1TBL.
                                13  SPA-GMN-Q01-CONDITION1-G
                                                        OCCURS 3.
@@ -180,7 +180,7 @@
                                                        PIC X(01).
                                    15  SPA-GMN-Q01-CONDITION3MEI
                                                        PIC X(20).
-      *                    ����
+      *                    減免
                            11  SPA-GMN-Q01-GENMENTBL.
                                13  SPA-GMN-Q01-GENMEN-G
                                                        OCCURS 3.
@@ -190,7 +190,7 @@
                                                        PIC X(01).
                                    15  SPA-GMN-Q01-GENMENMEI
                                                        PIC X(20).
-      *                    ������
+      *                    コメント
                            11  SPA-GMN-Q01-SELCOMMENT-G.
                                13  SPA-GMN-Q01-SELCOMMENT
                                                        PIC X(01).
@@ -201,52 +201,52 @@
                            11  SPA-GMN-Q01-COMMENTTBL.
                                13  SPA-GMN-Q01-COMMENT PIC X(50)
                                                        OCCURS  3.
-      *                    ������
+      *                    電話先
                            11  SPA-GMN-Q01-TEL-TO-G.
                                13  SPA-GMN-Q01-TEL-TO  PIC X(01).
                                13  SPA-GMN-Q01-TEL-TOFL PIC X(01).
                                13  SPA-GMN-Q01-TEL-TOMEI
                                                        PIC X(18).
-      *                    �����ֹ�
+      *                    電話番号
                            11  SPA-GMN-Q01-TELTBL.
                                13  SPA-GMN-Q01-TEL     PIC X(15)
                                                        OCCURS  3.
-      *                    �����
+      *                    低所得
                            11  SPA-GMN-Q01-TSY-G.
                                13  SPA-GMN-Q01-TSY     PIC X(01).
                                13  SPA-GMN-Q01-TSYFL   PIC X(01).
                                13  SPA-GMN-Q01-TSYMEI  PIC X(28).
-      *                    ��������Ϸ�
+      *                    低所得開始月
                            11  SPA-GMN-Q01-STTSYYM     PIC X(10).
-      *                    ��������Ϸ��
+      *                    低所得開始月識別
                            11  SPA-GMN-Q01-STTSYSKBT-G.
                                13  SPA-GMN-Q01-STTSYSKBT     PIC X(01).
                                13  SPA-GMN-Q01-STTSYSKBTFL   PIC X(01).
                                13  SPA-GMN-Q01-STTSYSKBTMEI  PIC X(08).
-      *                    �������λ��
+      *                    低所得終了月
                            11  SPA-GMN-Q01-EDTSYYM     PIC X(10).
-      *                    �õ�����
+      *                    特記事項
                            11  SPA-GMN-Q01-TOKKICD           PIC X(02).
                            11  SPA-GMN-Q01-TOKKINAME         PIC X(12).
                            11  SPA-GMN-Q01-TOKKIINFO-G.
                                13  SPA-GMN-Q01-TOKKIINFO     PIC X(02).
                                13  SPA-GMN-Q01-TOKKIINFOFL   PIC X(01).
                                13  SPA-GMN-Q01-TOKKIINFOMEI  PIC X(30).
-      *                    �ҳ�����
+      *                    災害該当
                            11  SPA-GMN-Q01-SAIGAIKBN-G.
                                13  SPA-GMN-Q01-SAIGAIKBN     PIC X(01).
                                13  SPA-GMN-Q01-SAIGAIKBNFL   PIC X(01).
                                13  SPA-GMN-Q01-SAIGAIKBNMEI  PIC X(20).
-      *                    ����
+      *                    点数
                            11  SPA-GMN-Q01-TOTALTEN          PIC 9(07).
-      *                    �����ѥ쥻�ץ�
+      *                    点検用レセプト
                            11  SPA-GMN-Q01-TENKENRECE-G.
                                13  SPA-GMN-Q01-TENKENRECE    PIC X(01).
                                13  SPA-GMN-Q01-TENKENRECEFL  PIC X(01).
                                13  SPA-GMN-Q01-TENKENRECEMEI PIC X(20).
-      *                �ݸ�������
+      *                保険　公費
                        09  SPA-GMN-Q01-HOKEN-AREA.
-      *                    �ݸ�ͭ������
+      *                    保険有効期間
                            11  SPA-GMN-Q01-HKNEDYM     PIC X(07).
                            11  SPA-GMN-Q01-HONKZKKBN-G.
                                13  SPA-GMN-Q01-HONKZKKBN
@@ -262,12 +262,12 @@
                                                        PIC X(1).
                                13  SPA-GMN-Q01-FTNRATEMEI
                                                        PIC X(34).
-      *                    �ݸ����ݸ����ֹ�
+      *                    保険　保険者番号
                            11  SPA-GMN-Q01-HKNJANUMTBL.
                                13  SPA-GMN-Q01-HKNJANUM
                                                        PIC X(08)
                                                        OCCURS 5.
-      *                    �ݸ����ݸ��μ���
+      *                    保険　保険の種類
                            11  SPA-GMN-Q01-CMB-HKNNUMTBL.
                                13  SPA-GMN-Q01-HKNNUM-G
                                                        OCCURS 5.
@@ -277,17 +277,17 @@
                                                        PIC X(01).
                                    15  SPA-GMN-Q01-HKNNUMMEI
                                                        PIC X(26).
-      *                    �ݸ�������
+      *                    保険　記号
                            11  SPA-GMN-Q01-KIGOTBL.
                                13  SPA-GMN-Q01-KIGO    PIC X(40)
                                                        OCCURS  5.
-      *                    �ݸ����ֹ�
+      *                    保険　番号
                            11  SPA-GMN-Q01-NUMTBL.
                                13  SPA-GMN-Q01-NUM     PIC X(40)
                                                        OCCURS  5.
-      *                    ����ͭ������
+      *                    公費有効期間
                            11  SPA-GMN-Q01-KOHEDYM     PIC X(07).
-      *                    ����μ���
+      *                    公費の種類
                            11  SPA-GMN-Q01-CMB-KOHNUMTBL.
                                13  SPA-GMN-Q01-KOHNUM-G
                                                        OCCURS 5.
@@ -297,12 +297,12 @@
                                                        PIC X(01).
                                    15  SPA-GMN-Q01-KOHNUMMEI
                                                        PIC X(16).
-      *                    ������ô���ֹ�
+      *                    公費　負担者番号
                            11  SPA-GMN-Q01-FTNJANUMTBL.
                                13  SPA-GMN-Q01-FTNJANUM
                                                        PIC X(08)
                                                        OCCURS  5.
-      *                    �������AND/OR�ڤ��ؤ��ѥ饸���ܥ���
+      *                    検索条件AND/OR切り替え用ラジオボタン
                            11  SPA-GMN-Q01-JKNHKNJANUM-G.
                                13  SPA-GMN-Q01-JKNHKNJANUM    PIC X(01).
                                13  SPA-GMN-Q01-JKNHKNJANUMFL  PIC X(01).
@@ -319,116 +319,116 @@
                                                        PIC X(01).
                            11  SPA-GMN-Q01-RDHKNKOH-OR PIC X(01).
       *
-      *                ��̾�����Ź԰�
+      *                病名　診療行為
                        09  SPA-GMN-Q01-BYOMEI-AREA.
-      *                    ���ų�����
+      *                    診療開始日
                            11  SPA-GMN-Q01-STBYOYMD        PIC X(10).
                            11  SPA-GMN-Q01-EDBYOYMD        PIC X(10).
-      *                    ž����ʬ
+      *                    転帰区分
                            11  SPA-GMN-Q01-TENKIKBN-G.
                                13  SPA-GMN-Q01-TENKIKBN    PIC X(01).
                                13  SPA-GMN-Q01-TENKIKBNFL  PIC X(01).
                                13  SPA-GMN-Q01-TENKIKBNMEI PIC X(18).
-      *                    ž����
+      *                    転帰日
                            11  SPA-GMN-Q01-STTENKIYMD      PIC X(10).
                            11  SPA-GMN-Q01-EDTENKIYMD      PIC X(10).
-      *                    ������̾
+      *                    疑い病名
                            11  SPA-GMN-Q01-UTAGAIKBN-G.
                                13  SPA-GMN-Q01-UTAGAIKBN   PIC X(01).
                                13  SPA-GMN-Q01-UTAGAIKBNFL PIC X(01).
                                13  SPA-GMN-Q01-UTAGAIKBNMEI
                                                            PIC X(18).
-      *                    ������̾
+      *                    急性病名
                            11  SPA-GMN-Q01-KYUSEIKBN-G.
                                13  SPA-GMN-Q01-KYUSEIKBN   PIC X(01).
                                13  SPA-GMN-Q01-KYUSEIKBNFL PIC X(01).
                                13  SPA-GMN-Q01-KYUSEIKBNMEI
                                                            PIC X(18).
-      *                    ����̾��ʬ
+      *                    主病名区分
                            11  SPA-GMN-Q01-SYUBYOKBN-G.
                                13  SPA-GMN-Q01-SYUBYOKBN     PIC X(01).
                                13  SPA-GMN-Q01-SYUBYOKBNFL   PIC X(01).
                                13  SPA-GMN-Q01-SYUBYOKBNMEI  PIC X(18).
-      *                    ��̾ʬ���ʬ̾��
+      *                    病名分類区分名称
                            11  SPA-GMN-Q01-UBYOMEI-G.
                                13  SPA-GMN-Q01-UBYOMEI     PIC X(03).
                                13  SPA-GMN-Q01-UBYOMEIFL   PIC X(01).
                                13  SPA-GMN-Q01-UBYOMEIMEI  PIC X(20).
-      *                    ��̾ʬ���ʬ����
+      *                    病名分類区分状態
                            11  SPA-GMN-Q01-UBYOMEI-STATE
                                                        PIC S9(9).
-      *                    ��̾�饸���ܥ���ʼ�����
+      *                    病名ラジオボタン（自院）
                            11  SPA-GMN-Q01-RDBYOMEI-U  PIC X.
-      *                    ��̾�饸���ܥ�����֡ʼ�����
+      *                    病名ラジオボタン状態（自院）
                            11  SPA-GMN-Q01-RDBYOMEI-U-STATE
                                                        PIC S9(9).
-      *                    ��̾�饸���ܥ�������Ρ�
+      *                    病名ラジオボタン（全体）
                            11  SPA-GMN-Q01-RDBYOMEI-A  PIC X.
-      *                    ��̾�饸���ܥ�����֡����Ρ�
+      *                    病名ラジオボタン状態（全体）
                            11  SPA-GMN-Q01-RDBYOMEI-A-STATE
                                                        PIC S9(9).
-      *                    ��̾����
+      *                    病名検索
                            11  SPA-GMN-Q01-BYOMEISEL   PIC X(80).
-      *                    ��̾������
+      *                    病名コード
                            11  SPA-GMN-Q01-BYOMEICDTBL.
                                13  SPA-GMN-Q01-BYOMEICD
                                                        PIC X(20)
                                                        OCCURS  5.
-      *                    ��̾
+      *                    病名
                            11  SPA-GMN-Q01-BYOMEINMTBL.
                                13  SPA-GMN-Q01-BYOMEI
                                                        PIC X(80)
                                                        OCCURS  5.
-      *                    ��̾��Ӿ��
+      *                    病名比較条件
                            11  SPA-GMN-Q01-BYOCOMPTBL.
                                13  SPA-GMN-Q01-BYOCOMP-G
                                                        OCCURS 5.
                                    15  SPA-GMN-Q01-BYOCOMP    PIC X(1).
                                    15  SPA-GMN-Q01-BYOCOMPFL  PIC X(1).
                                    15  SPA-GMN-Q01-BYOCOMPMEI PIC X(20).
-      *                    ��̾�ơ��֥�
+      *                    病名テーブル
                            11  SPA-GMN-Q01-BYOTBL.
                                13  SPA-GMN-Q01-BYOMEI-MAX  PIC 9(05).
                                13  SPA-GMN-Q01-BYOMEI-SEL  PIC 9(01).
                                13  SPA-GMN-Q01-BYOTBL-G
                                                        OCCURS  200.
-      *                            ��̾������
+      *                            病名コード
                                    15  SPA-GMN-Q01-TBYOMEICD
                                                        PIC X(20).
-      *                            ��̾
+      *                            病名
                                    15  SPA-GMN-Q01-TBYOMEI
                                                        PIC X(80).
-      *                    ��̾�����ե饰
+      *                    病名検索フラグ
                            11  SPA-GMN-Q01-BYOTBL-FLG  PIC 9(1).
                        09  SPA-GMN-Q01-SRYACT-AREA.
-      *                    �԰�̾����
+      *                    行為名検索
                            11  SPA-GMN-Q01-SRYACTSEL   PIC X(80).
-      *                    ���Ź԰٥�����
+      *                    診療行為コード
                            11  SPA-GMN-Q01-SRYCDTBL.
                                13  SPA-GMN-Q01-SRYCD
                                                        PIC X(20)
                                                        OCCURS  5. 
-      *                    ���Ŷ�ʬ
+      *                    診療区分
                            11  SPA-GMN-Q01-SRYKBN-G.
                                13  SPA-GMN-Q01-SRYKBN      PIC X(02).
                                13  SPA-GMN-Q01-SRYKBNFL    PIC X(01).
                                13  SPA-GMN-Q01-SRYKBNMEI   PIC X(20).
-      *                    ���ż��̶�ʬ
+      *                    診療種別区分
                            11  SPA-GMN-Q01-SRYSYUKBN-G.
                                13  SPA-GMN-Q01-SRYSYUKBN      PIC X(02).
                                13  SPA-GMN-Q01-SRYSYUKBNFL    PIC X(01).
                                13  SPA-GMN-Q01-SRYSYUKBNMEI   PIC X(20).
-      *                    ����ʬ
+      *                    包括区分
                            11  SPA-GMN-Q01-HOKATSUKBN-G.
                                13  SPA-GMN-Q01-HOKATSUKBN     PIC X(01).
                                13  SPA-GMN-Q01-HOKATSUKBNFL   PIC X(01).
                                13  SPA-GMN-Q01-HOKATSUKBNMEI  PIC X(20).
-      *                    ���Ź԰�
+      *                    診療行為
                            11  SPA-GMN-Q01-SRYACTNMTBL.
                                13  SPA-GMN-Q01-SRYACT
                                                        PIC X(80)
                                                        OCCURS  5. 
-      *                    ���Ź԰ٿ���
+      *                    診療行為数値
                            11  SPA-GMN-Q01-SRYVALITEM-G.
                                13  SPA-GMN-Q01-SRYVALITEM
                                                        PIC X(01).
@@ -448,29 +448,29 @@
                                                        PIC X(01).
                                        17  SPA-GMN-Q01-SRYVALCOMPMEI
                                                        PIC X(20).
-      *                    �쥻�ץȥ�����
+      *                    レセプトコメント
                            11  SPA-GMN-Q01-RECECOMTBL.
                                13  SPA-GMN-Q01-RECECOM PIC X(50)
                                                        OCCURS  3.
-      *                    ���Ź԰�̾�ơ��֥�
+      *                    診療行為名テーブル
                            11  SPA-GMN-Q01-SRYACTTBL.
                                13  SPA-GMN-Q01-SRYACT-MAX  PIC 9(05).
                                13  SPA-GMN-Q01-SRYACT-SEL  PIC 9(01).
                                13  SPA-GMN-Q01-SRYACT-G
                                                        OCCURS  200.
-      *                            ͭ�����֡������
+      *                            有効期間（西暦）
                                    15  SPA-GMN-Q01-TSRYCD-YUKOSTYMD
                                                        PIC X(08).
                                    15  SPA-GMN-Q01-TSRYCD-YUKOEDYMD
                                                        PIC X(08).
-      *                            �԰٥�����
+      *                            行為コード
                                    15  SPA-GMN-Q01-TSRYCD
                                                        PIC X(09).
-      *                            �԰�̾
+      *                            行為名
                                    15  SPA-GMN-Q01-TSRYACT
                                                        PIC X(80).
       *
-      *                    �������AND/OR�ڤ��ؤ��ѥ饸���ܥ���
+      *                    検索条件AND/OR切り替え用ラジオボタン
                            11  SPA-GMN-Q01-JKNBYOMEI-G.
                                13  SPA-GMN-Q01-JKNBYOMEI     PIC X(01).
                                13  SPA-GMN-Q01-JKNBYOMEIFL   PIC X(01).
@@ -479,7 +479,7 @@
                                13  SPA-GMN-Q01-JKNSRYACT     PIC X(01).
                                13  SPA-GMN-Q01-JKNSRYACTFL   PIC X(01).
                                13  SPA-GMN-Q01-JKNSRYACTMEI  PIC X(08).
-      *                ���
+      *                介護
                        09  SPA-GMN-Q01-KAIGO-AREA.
                            11  SPA-GMN-Q01-KHSKBT-G.
                                13  SPA-GMN-Q01-KHSKBT        PIC X(01).
@@ -498,7 +498,7 @@
                                13  SPA-GMN-Q01-KNJOTAI       PIC X(02).
                                13  SPA-GMN-Q01-KNJOTAIFL     PIC X(01).
                                13  SPA-GMN-Q01-KNJOTAIMEI    PIC X(16).
-      *                �¤ӽ�
+      *                並び順
                        09  SPA-GMN-Q01-NARABI-AREA.
                            11  SPA-GMN-Q01-KMKTBL.
                                13  SPA-GMN-Q01-KMK-G   OCCURS  3.
@@ -530,24 +530,24 @@
                            11  SPA-GMN-Q01-SRDIO-G     OCCURS  3.
                                13  SPA-GMN-Q01-SRDIO1  PIC X(01).
                                13  SPA-GMN-Q01-SRDIO2  PIC X(01).
-      *                ���֥ڡ����ֹ�
+      *                タブページ番号
                        09  SPA-GMN-Q01-PAGENO          PIC 9(01).
       *
-      *            ���������ΰ�
+      *            画面内部領域
                    07  SPA-NAI-Q01-AREA.
-      *                �������
+      *                検索条件
                        09  SPA-NAI-Q01-SELPATTERN-G.
       *                    UID
                            11  SPA-NAI-Q01-SELPATTERN-UID
                                                        PIC X(36).
-      *                    ɽ���ʬ
+      *                    表題区分
                            11  SPA-NAI-Q01-SELPATTERN-TTLKBN
                                                        PIC X(01).
-      *                ����ǯ����������
+      *                診療年月日開始日
                        09  SPA-NAI-Q01-STSRYYMD        PIC X(08).
-      *                ����ǯ������λ��
+      *                診療年月日終了日
                        09  SPA-NAI-Q01-EDSRYYMD        PIC X(08).
-      *                ���ܾ���
+      *                基本情報
                        09  SPA-NAI-Q01-KIHON-AREA.
                            11  SPA-NAI-Q01-STBIRTHDAY  PIC X(08).
                            11  SPA-NAI-Q01-EDBIRTHDAY  PIC X(08).
@@ -560,11 +560,11 @@
                            11  SPA-NAI-Q01-STTSYYM     PIC X(08).
                            11  SPA-NAI-Q01-EDTSYYM     PIC X(08).
                            11  SPA-NAI-Q01-TOKKICD-BF  PIC X(02).
-      *                �ݸ�������
+      *                保険　公費
                        09  SPA-NAI-Q01-HOKEN-AREA.
                            11  SPA-NAI-Q01-HKNEDYM     PIC X(06).
                            11  SPA-NAI-Q01-KOHEDYM     PIC X(06).
-      *                ��̾�����Ź԰�
+      *                病名　診療行為
                        09  SPA-NAI-Q01-BYOMEI-AREA.
                            11  SPA-NAI-Q01-STBYOYMD    PIC X(08).
                            11  SPA-NAI-Q01-EDBYOYMD    PIC X(08).
@@ -587,16 +587,16 @@
                                                        PIC X(09).
                            11  SPA-NAI-Q01-SRYVAL-OCC  OCCURS  5.
                                13  SPA-NAI-Q01-SRYVAL  PIC 9(05)V9(05).
-      *                ���
+      *                介護
                        09  SPA-NAI-Q01-KAIGO-AREA.
                            11  SPA-NAI-Q01-STKHYM          PIC X(08).
                            11  SPA-NAI-Q01-EDKHYM          PIC X(08).
                            11  SPA-NAI-Q01-STKNYM          PIC X(08).
                            11  SPA-NAI-Q01-EDKNYM          PIC X(08).
-      *                �¤ӽ�
+      *                並び順
                        09  SPA-NAI-Q01-NARABI-AREA.
                            11  SPA-NAI-Q01-NARABI-DMY  PIC X(01).
-      *            ����ܥܥå��������ΰ�
+      *            コンボボックス情報領域
                    07  SPA-GMN-Q01-COMMBO-AREA.
                        09  SPA-GMN-Q01-SELPATTERNLST-G.
                            11  SPA-GMN-Q01-SELPATTERNLST-MAX
@@ -905,7 +905,7 @@
                                13  SPA-GMN-Q01-JKNKOHNUML     PIC X(01).
                                13  SPA-GMN-Q01-JKNKOHNUMFLL   PIC X(01).
                                13  SPA-GMN-Q01-JKNKOHNUMMEIL  PIC X(08).
-      *                ���
+      *                介護
                        09  SPA-GMN-Q01-KHSKBTLST-G.
                            11  SPA-GMN-Q01-KHSKBTLST-MAX      PIC 9(05).
                            11  SPA-GMN-Q01-KHSKBTLST          OCCURS 5.
@@ -936,13 +936,13 @@
                                13  SPA-GMN-Q01-JKNSRYACTL     PIC X(01).
                                13  SPA-GMN-Q01-JKNSRYACTFLL   PIC X(01).
                                13  SPA-GMN-Q01-JKNSRYACTMEIL  PIC X(08).
-      *    �ѣ������ѣ��������ѣ�������
+      *    Ｑ０２、Ｑ０２Ａ、Ｑ０２Ｂ用
            03  SPA-Q02.
                05  SPA-Q02-AREA.
                    07  SPA-GMN-Q02-CTLSEQ              PIC 9(02).
                    07  SPA-GMN-Q02-PAGE                PIC 9(02).
                    07  SPA-GMN-Q02-MAX                 PIC 9(02).
-      *            MODE 0:������ 1:������λ
+      *            MODE 0:検索中 1:検索終了
                    07  SPA-GMN-Q02-MODE                PIC 9(01).
                    07  SPA-GMN-Q02-SELYMD              PIC X(08).
                    07  SPA-GMN-Q02-SELHMS              PIC X(06).
@@ -951,138 +951,138 @@
       *
                    07  SPA-GMN-Q02-AREA.
       *
-      *                ���ǥܥ��󥹥ơ�����
+      *                前頁ボタンステータス
                        09  SPA-GMN-Q02-B06-STATE       PIC S9(9).
-      *                ���ǥܥ��󥹥ơ�����
+      *                次頁ボタンステータス
                        09  SPA-GMN-Q02-B07-STATE       PIC S9(9).
-      *                ɽ��
+      *                表題
                        09  SPA-GMN-Q02-HYODAI          PIC X(100).
-      *                ������
+      *                条件上段
                        09  SPA-GMN-Q02-JYOKEN1         PIC X(100).
-      *                ��ﲼ��
+      *                条件下段
                        09  SPA-GMN-Q02-JYOKEN2         PIC X(100).
-      *                �������
+      *                検索結果
                        09  SPA-GMN-Q02-KEKKATBL.
                            11  SPA-GMN-Q02-KEKKAOCC    OCCURS 200.
-      *                        Ϣ��
+      *                        連番
                                13  SPA-GMN-Q02-TNO
                                                        PIC X(5).
-      *                        Ϣ��
+      *                        連番
                                13  SPA-GMN-Q02-TRENNUM
                                                        PIC 9(5).
-      *                        �����ֹ�
+      *                        患者番号
                                13  SPA-GMN-Q02-TPTNUM
                                                        PIC X(20).
-      *                        ��̾
+      *                        氏名
                                13  SPA-GMN-Q02-TNAME
                                                        PIC X(50).
-      *                        ����
+      *                        性別
                                13  SPA-GMN-Q02-TSEX
                                                        PIC X(2).
-      *                        ������
+      *                        誕生日
                                13  SPA-GMN-Q02-TBIRTH
                                                        PIC X(10).
-      *                        ǯ��
+      *                        年齢
                                13  SPA-GMN-Q02-TAGE
                                                        PIC X(08).
       *
-      *                        �ݸ��ȹ礻
+      *                        保険組合せ
                                13  SPA-GMN-Q02-THKN
                                                        PIC X(20).
       *
-      *                        ����μ��ࣱ
+      *                        公費の種類１
                                13  SPA-GMN-Q02-TKOH1
                                                        PIC X(20).
       *
-      *                        ����μ��ࣲ
+      *                        公費の種類２
                                13  SPA-GMN-Q02-TKOH2
                                                        PIC X(20).
       *
-      *                        ͹���ֹ�
+      *                        郵便番号
                                13  SPA-GMN-Q02-TPOST
                                                        PIC X(8).
       *
-      *                        ��������
+      *                        診療内容
                                13  SPA-GMN-Q02-TSRYACT
                                                        PIC X(200).
       *
-      *                        �����ֹ�
+      *                        電話番号
                                13  SPA-GMN-Q02-TTEL
                                                        PIC X(15).
       *
-      *                        �ǽ�������
+      *                        最終受診日
                                13  SPA-GMN-Q02-TLASTYMD
                                                        PIC X(10).
-      *                        ������ʬ
+      *                        入外区分
                                13  SPA-GMN-Q02-TNYUGAI
                                                        PIC X(01).
-      *                        ����
+      *                        点数
                                13  SPA-GMN-Q02-TTOTALTEN
                                                        PIC 9(10).
-      *                        ���ť�����
+      *                        診療コード
                                13  SPA-GMN-Q02-TSRYCD
                                                        PIC X(09).
-      *                        ���Ź԰�̾��
+      *                        診療行為名称
                                13  SPA-GMN-Q02-TSRYNAME
                                                        PIC X(80).
-      *                        ����
+      *                        数量
                                13  SPA-GMN-Q02-TSRYSURYO
                                                        PIC 9(05)V9(05).
-      *                        �����Խ��ե饰
+      *                        数量編集フラグ
                                13  SPA-GMN-Q02-TSURYO-EDIT
                                                        PIC 9(1).
-      *                        ���
+      *                        回数
                                13  SPA-GMN-Q02-TZAIKAISU
                                                        PIC 9(07).
-      *                        ���
+      *                        合計
                                13  SPA-GMN-Q02-TSURYOTOTAL
                                                        PIC 9(07)V9(05).
-      *                        ����ǯ��
+      *                        診療年月
                                13  SPA-GMN-Q02-TSRYYM
                                                        PIC X(10).
-      *                        ����
+      *                        備考
                                13  SPA-GMN-Q02-TMEMO
                                                        PIC X(200).
-      *                        �ϰ�Ϣ�ȣɣ�
+      *                        地域連携ＩＤ
                                13  SPA-GMN-Q02-TPATIENT-ID1
                                                        PIC X(20).
       *
                            11  SPA-GMN-Q02-KEKKA-MAX   PIC 9(05).
                            11  SPA-GMN-Q02-KEKKA-SEL   PIC 9(05).
       *
-      *                �����
+      *                総件数
                        09  SPA-GMN-Q02-TOTAL           PIC X(22).
                        09  SPA-GMN-Q02-TOTAL-NUM       PIC 9(09).
-      *                ��������������ե饰
+      *                総件数取得処理フラグ
                        09  SPA-GMN-Q02-TOTAL-GET-FLG   PIC 9(1).
-      *                �¿Ϳ�
+      *                実人数
                        09  SPA-GMN-Q02-NINZU           PIC 9(09).
-      *                ���
+      *                件数
                        09  SPA-GMN-Q02-KENSU           PIC 9(09).
       *
-      *                �����ֹ�
+      *                選択番号
                        09  SPA-GMN-Q02-SELNUM          PIC 9(05).
       *
-      *                ��������ɤ����Ф����
+      *                検索結果読み飛ばし件数
                        09  SPA-GMN-Q02-SKIP-KNS        PIC 9(08).
       *
-      *                ���ԥޥ����ɹ��ե饰������
+      *                患者マスタ読込フラグ退避用
                        09  SPA-GMN-Q02-FLG-PTINF       PIC 9(01).
       *
-      *                ���̤�ɽ������ʤ����Ԥξ���
+      *                画面に表示されない患者の情報
                        09  SPA-NAI-Q02-KEKKATBL.
                            11  SPA-NAI-Q02-KEKKATBL-OCC   OCCURS  200.
       *
-      *                        ���ԣɣ�
+      *                        患者ＩＤ
                                13  SPA-NAI-Q02-TPTID
                                                        PIC 9(10).
       *
-      *                        �������ʬ
+      *                        入院中区分
                                13  SPA-NAI-Q02-TNYUINKBN
                                                        PIC X(1).
       *
       *
-      *    �ѣ���
+      *    Ｑ０３
            03  SPA-Q03.
                05  SPA-Q03-GMN-AREA.
                    07  SPA-GMN-Q03-CUR                 PIC 9(05).
@@ -1110,7 +1110,7 @@
                05  SPA-Q03-NAI-AREA.
                    07  SPA-NAI-Q03-SRYYM               PIC X(08).
       *
-      *    �ѣ���
+      *    Ｑ０４
            03  SPA-Q04.
                05  SPA-Q04-AREA.
                    07  SPA-GMN-Q04-CUR                 PIC 9(03).
@@ -1120,7 +1120,7 @@
                        09  SPA-GMN-Q04-RENNUM          PIC 9(03).
                        09  SPA-GMN-Q04-TITLEKBN        PIC X(01).
       *
-      *    �ѣ�����
+      *    Ｑ０５用
            03  SPA-Q05-AREA.
                05  SPA-GMN-Q05-CUR                     PIC 9(03).
       *
@@ -1136,7 +1136,7 @@
                        09  SPA-GMN-Q05-TNAME           PIC X(100).
                        09  SPA-GMN-Q05-TTITLEKBN       PIC X(1).
       *
-      *    �ѣ�����
+      *    Ｑ９６用
            03  SPA-Q96-AREA.
                05  SPA-Q96-MOTOPG                    PIC X(08).
                05  SPA-Q96-GMN-AREA.
@@ -1171,7 +1171,7 @@
                            11  SPA-Q96-GMN-KISOTEN    PIC 9(07)V99.
       *
                            11  SPA-Q96-NAI-NO         PIC 9(03).
-      *            ��������
+      *            自院採用
                    07  SPA-Q96-JIIN-G.
                        09  SPA-Q96-JIIN               PIC X(01).
                        09  SPA-Q96-JIINF              PIC X(01).
@@ -1185,7 +1185,7 @@
                        09  SPA-Q96-USERMEI            PIC X(18).
                    07  SPA-Q96-USER-COB               OCCURS  10.
                        09  SPA-Q96-USERLST            PIC X(20).
-      *    �ѣ�����
+      *    Ｑ９８用
            03  SPA-Q98.
                05  SPA-Q98-AREA.
                    07  SPA-GMN-Q98-CTLSEQ              PIC 9(02).
@@ -1200,13 +1200,13 @@
                            11  SPA-GMN-Q98-ADRS-OCC    OCCURS  60.
                                13  SPA-GMN-Q98-TADRS   PIC X(20).
                        09  SPA-GMN-Q98-SELNUM          PIC 9(3).
-      *                ��������ɤ����Ф����
+      *                検索結果読み飛ばし件数
                        09  SPA-GMN-Q98-SKIP-KNS        PIC 9(08).
       *
-      *                �����ƥ�����ޥ����ɹ��ե饰������
+      *                システム管理マスタ読込フラグ退避用
                        09  SPA-GMN-Q98-FLG-SYSKANRI    PIC 9(01).
       *
-      *                ���̤�ɽ������ʤ������ƥ�����ޥ����ξ���
+      *                画面に表示されないシステム管理マスタの情報
                        09  SPA-GMN-Q98-SYSKANRI-AREA.
                            11  SPA-GMN-Q98-SYSKANRI-OCC
                                                        OCCURS  60
@@ -1215,7 +1215,7 @@
                                13  SPA-GMN-Q98-TLPUBCD PIC X(05).
                                13  SPA-GMN-Q98-TPOST   PIC X(07).
                                13  SPA-GMN-Q98-TRENNUM PIC 9(02).
-      *    �ѣ�����
+      *    Ｑ９９用
            03  SPA-Q99.
                05  SPA-Q99-AREA.
                    07  SPA-GMN-Q99-CTLSEQ              PIC 9(02).
@@ -1232,27 +1232,27 @@
                                13  SPA-GMN-Q99-ADRS    PIC X(50).
                        09  SPA-GMN-Q99-SELNUM          PIC 9(04).
       *
-      *    �ѣ�����
+      *    Ｑ１００
            03  SPA-Q100.
                05  SPA-Q100-AREA.
                    07  SPA-GMN-Q100-CUR                 PIC 9(05).
       *
-      *            ��å�����������
+      *            メッセージコード
                    07  SPA-GMN-Q100-CD                 PIC X(04).
-      *            ��å�����
+      *            メッセージ
                    07  SPA-GMN-Q100-MSG                PIC X(80).
-      *            �ե�����̾��٥�
+      *            ファイル名ラベル
                    07  SPA-GMN-Q100-LBLFILENAME        PIC X(14).
-      *            �ե�����̾
+      *            ファイル名
                    07  SPA-GMN-Q100-FILENAME           PIC X(100).
                    07  SPA-GMN-Q100-FILENAME-STATE     PIC S9(9).
-      *            ����ʥڡ������˥�٥�
+      *            件数（ページ数）ラベル
                    07  SPA-GMN-Q100-LBLNUMSEL          PIC X(10).
-      *            ���Ϸ���ʥڡ�������
+      *            開始件数（ページ数）
                    07  SPA-GMN-Q100-STNUM              PIC  9(09).
-      *            ��λ����ʥڡ�������
+      *            終了件数（ページ数）
                    07  SPA-GMN-Q100-EDNUM              PIC  9(09).
-      *            �ե����������
+      *            ファイル出力先
                    07  SPA-GMN-Q100-FILELST            OCCURS  6.
                        09  SPA-GMN-Q100-FILEL          PIC X(01).
                        09  SPA-GMN-Q100-F1L            PIC X(01).
@@ -1264,7 +1264,7 @@
                        09  SPA-GMN-Q100-F1             PIC X(01).
                        09  SPA-GMN-Q100-FILEMEI        PIC X(20).
                    07  SPA-GMN-Q100-FILE-STATE         PIC S9(9).
-      *            ʸ��������
+      *            文字コード
                    07  SPA-GMN-Q100-CDKBNLST           OCCURS  6.
                        09  SPA-GMN-Q100-CDKBNL         PIC X(01).
                        09  SPA-GMN-Q100-F1L            PIC X(01).
@@ -1277,7 +1277,7 @@
                        09  SPA-GMN-Q100-CDKBNMEI       PIC X(20).
                    07  SPA-GMN-Q100-CDKBN-STATE        PIC S9(9).
       *
-      *    �ѣ���
+      *    Ｑ９７
            03  SPA-Q97-AREA.
                05  SPA-SFILESV-AREA.
                    07 SPA-SFILESV-OCC                  OCCURS  100.
@@ -1298,7 +1298,7 @@
                05  SPA-Q01-CLIENT-SAVE                 PIC X(1).
                05  SPA-Q01-UID                         PIC X(36).
       *
-      *        Q01����Q02���ܾ���
+      *        Q01←→Q02遷移情報
                05  SPA-Q01-Q02-SENI-AREA.
                    07  SPA-Q01-OUTKBN                  PIC X(1).
                    07  SPA-Q01-SAKIPG                  PIC X(10).
@@ -1328,7 +1328,7 @@
                    07  SPA-Q01-STSRYYMD                PIC X(08).
                    07  SPA-Q01-EDSRYYMD                PIC X(08).
       *
-      *            ���ܾ���
+      *            基本情報
                    07  SPA-Q01-KIHON-AREA.
                        09  SPA-Q01-STBIRTHDAY          PIC X(08).
                        09  SPA-Q01-EDBIRTHDAY          PIC X(08).
@@ -1384,7 +1384,7 @@
                        09  SPA-Q01-STTOTALTEN          PIC 9(07).
                        09  SPA-Q01-EDTOTALTEN          PIC 9(07).
                        09  SPA-Q01-TENKENRECE          PIC X(01).
-      *            �ݸ�������
+      *            保険　公費
                    07  SPA-Q01-HOKEN-AREA.
                        09  SPA-Q01-HKNEDYM             PIC X(06).
                        09  SPA-Q01-HONKZKKBN           PIC X(01).
@@ -1419,7 +1419,7 @@
                            11  SPA-Q01-FTNJANUM        PIC X(08)
                                                        OCCURS  5.
       *
-      *            ��̾�����Ź԰�
+      *            病名　診療行為
                    07  SPA-Q01-BYOMEI-AREA.
       *
                        09  SPA-Q01-STBYOYMD            PIC X(08).
@@ -1458,7 +1458,7 @@
                        09  SPA-Q01-RECECOM-G.
                            11  SPA-Q01-RECECOM         OCCURS  3
                                                        PIC X(50).
-      *            ���
+      *            介護
                    07  SPA-Q01-KAIGO-AREA.
                        09  SPA-Q01-KHSKBT              PIC X(01).
                        09  SPA-Q01-KNSKBT              PIC X(01).
@@ -1471,7 +1471,7 @@
                            11  SPA-Q01-EDKNYM          PIC X(08).
                            11  SPA-Q01-KNJOTAI         PIC X(02).
       *
-      *            �¤ӽ�
+      *            並び順
                    07  SPA-Q01-NARABI-AREA.
                        09  SPA-Q01-SORTITEM-TBL        OCCURS  3.
                            11  SPA-Q01-SORTITEM-G.
@@ -1479,14 +1479,14 @@
                        09  SPA-Q01-SORTKBN-TBL         OCCURS  3.
                            11  SPA-Q01-SORTKBN-G.
                                13  SPA-Q01-SORTKBN     PIC 9(01).
-      *            NOT������泌�ꥢ
+      *            NOT検索条件エリア
                    07  SPA-Q01-NOT-AREA.
                        09  SPA-Q01-XSELECT             PIC X(01).
                        09  SPA-Q01-XSRYCD-G.
                            11  SPA-Q01-XSRYCD          PIC X(09)
                                                        OCCURS  5.
       *
-      *        Q01����Q04���ܾ���
+      *        Q01←→Q04遷移情報
                05  SPA-Q01-Q04-SENI-AREA.
                    07  SPA-Q01-Q04-UPDKBN              PIC  X(03).
                    07  SPA-Q01-Q04-RENNUM-MAX          PIC  9(03).
@@ -1495,17 +1495,17 @@
                    07  SPA-Q01-Q04-NAME                PIC  X(100).
                    07  SPA-Q01-Q04-TITLEKBN            PIC  X(01).
       *
-      *        Q02����Q03���ܾ���
+      *        Q02←→Q03遷移情報
                05  SPA-Q02-Q03-SENI-AREA.
-      *            ����ǯ��
+      *            診療年月
                    07  SPA-Q02-Q03-SRYYM               PIC  X(08).
-      *            ������ʬ
+      *            入外区分
                    07  SPA-Q02-Q03-NYUGAIKBN           PIC  X(01).
-      *            Ϣ�ȶ�ʬ
+      *            連携区分
                    07  SPA-Q02-Q03-LNKKBN              PIC  X(1).
-      *            ��롿�ϣ˥ե饰(O)
+      *            戻る／ＯＫフラグ(O)
                    07  SPA-Q02-Q03-RTOK-FLG            PIC  9(01).
-      *        Q01����Q96���ܾ���
+      *        Q01←→Q96遷移情報
                05  SPA-Q01-Q96-SENI-AREA.
                    07  SPA-Q01-Q96-MOTOIDX             PIC 9(05).
                    07  SPA-Q01-Q96-CDSYUBETU           PIC X(01).
@@ -1521,56 +1521,56 @@
       *
                    07  SPA-Q01-Q96-RC                  PIC 9(04).
       *
-      *        Q01����Q98���ܾ���
+      *        Q01←→Q98遷移情報
                05  SPA-Q01-Q98-SENI-AREA.
-      *            ���ꥨ��ȥ꡼����ǥå���
+      *            住所エントリーインデックス
                    07  SPA-Q01-Q98-JYUSHO-IDX          PIC 9(03).
-      *            ͹���ֹ�
+      *            郵便番号
                    07  SPA-Q01-Q98-POST                PIC X(07).
-      *            ����
+      *            住所
                    07  SPA-Q01-Q98-JYUSHO              PIC X(50).
       *
-      *        Q01����Q99���ܾ���
+      *        Q01←→Q99遷移情報
                05  SPA-Q01-Q99-SENI-AREA.
-      *            ���ꥨ��ȥ꡼����ǥå���
+      *            住所エントリーインデックス
                    07  SPA-Q01-Q99-JYUSHO-IDX          PIC 9(03).
-      *            ͹���ֹ�
+      *            郵便番号
                    07  SPA-Q01-Q99-POST                PIC X(07).
-      *            ����
+      *            住所
                    07  SPA-Q01-Q99-JYUSHO              PIC X(50).
-      *        Q02����Q100���ܾ���
+      *        Q02←→Q100遷移情報
                05  SPA-Q02-Q100-SENI-AREA.
                    07  SPA-Q02-Q100-PROC-FLG           PIC  9(01).
-      *            �ե�����̾(O)
+      *            ファイル名(O)
                    07  SPA-Q02-Q100-FILENAME           PIC  X(100).
-      *            ���Ϸ���ʥڡ�������(I)
+      *            開始件数（ページ数）(I)
                    07  SPA-Q02-Q100-STNUM              PIC  9(09).
-      *            ��λ����ʥڡ�������(I)
+      *            終了件数（ページ数）(I)
                    07  SPA-Q02-Q100-EDNUM              PIC  9(09).
-      *            ���ǹԿ�
+      *            １頁行数
                    07  SPA-Q02-Q100-LINE               PIC  9(09).
-      *            ���Ϸ��(O)
+      *            開始件数(O)
                    07  SPA-Q02-Q100-STKNS              PIC  9(09).
-      *            ��λ���(O)
+      *            終了件数(O)
                    07  SPA-Q02-Q100-EDKNS              PIC  9(09).
-      *            ���ϥڡ�����(O)...�����������Τ�����
+      *            開始ページ数(O)...印刷処理時のみ設定
                    07  SPA-Q02-Q100-STPAGE             PIC  9(09).
-      *            ��λ�ڡ�����(O)...�����������Τ�����
+      *            終了ページ数(O)...印刷処理時のみ設定
                    07  SPA-Q02-Q100-EDPAGE             PIC  9(09).
-      *            �ե����������
+      *            ファイル出力先
                    07  SPA-Q02-Q100-FILE               PIC  X(01).
-      *            ʸ��������
+      *            文字コード
                    07  SPA-Q02-Q100-CDKBN              PIC  X(01).
-      *            ��롿�ϣ˥ե饰(O)
+      *            戻る／ＯＫフラグ(O)
                    07  SPA-Q02-Q100-RTOK-FLG           PIC  9(01).
-      *        QID1���ܾ���
+      *        QID1遷移情報
                05  SPA-Q00-QID-AREA.
-      *            �ٹ���̤��
+      *            警告画面より
                    07  SPA-QID1-FLG                    PIC  X(02).
-      *            �ٹ��å�����
+      *            警告メッセージ
                    07  SPA-QIDCD                       PIC  X(04).
       *
-      *        Q97���ܾ���
+      *        Q97遷移情報
                05  SPA-Q00-Q97-AREA.
                    07  SPA-Q97-SELHMS                  PIC X(08).
                    07  SPA-Q97-FILESV-CHK-FLG          PIC 9(01).

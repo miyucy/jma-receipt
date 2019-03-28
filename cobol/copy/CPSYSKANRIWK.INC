@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý    COPY   (CPSYSKANRIWK.INC) *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†    COPY   (CPSYSKANRIWK.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SYSWK-SYSKANRI-REC.
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
            03  SYSWK-SYORIKBN           PIC  X(01).
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  SYSWK-KEY.
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYSWK-KANRICD        PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYSWK-KBNCD          PIC  X(08).
-      *³«»ÏÍ­¸úÇ¯·îÆü
+      *é–‹å§‹æœ‰åŠ¹å¹´æœˆæ—¥
                05  SYSWK-STYUKYMD       PIC  X(08).
-      *½ªÎ»Í­¸úÇ¯·îÆü
+      *çµ‚äº†æœ‰åŠ¹å¹´æœˆæ—¥
                05  SYSWK-EDYUKYMD       PIC  X(08).
-      *½ªÎ»Í­¸úÇ¯·îÆü£²
+      *çµ‚äº†æœ‰åŠ¹å¹´æœˆæ—¥ï¼’
            03  SYSWK-EDYUKYMD2          PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYSWK-KANRITBL           PIC  X(500).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYSWK-TERMID             PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYSWK-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYSWK-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYSWK-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYSWK-UPHMS              PIC  X(06).

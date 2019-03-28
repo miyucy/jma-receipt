@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ���Ź԰������������þ�������å��ѥ�᥿
+      *    診療行為点数投薬附加情報チェックパラメタ
       *                                          COPY (CPORCSC98.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCSC98AREA.
-      *    �У�̾
+      *    ＰＧ名
            03  LNK-SC98-PG             PIC X(06).
-      *    ������ʬ�ʣ�������Ϳ�̡���������å���
+      *    処理区分（１：月投与量・回数チェック）
            03  LNK-SC98-KBN            PIC X(01).
       *
            03  LNK-SC98-INAREA.
-      *        ǯ�� 
+      *        年齢 
                05  LNK-SC98-NENREI.
                    07  LNK-SC98-NENREI-YY     PIC 9(03).
                    07  LNK-SC98-NENREI-MM     PIC 9(02).
                    07  LNK-SC98-NENREI-DD     PIC 9(02).
       *H28.11
-      *    ������Ϳ�̥����å���ʬ
+      *    薬剤投与量チェック区分
            03  LNK-SC98-TOUYOCHK-FLG           PIC X(01).
       *
-      *    ����Ϳ���̡�����ơ��֥�
+      *    月投与数量・回数テーブル
            03  LNK-SC98-YAKUZAI-AREA.
                05  LNK-SC98-YAKUZAI-TBL             OCCURS   100.
                    07  LNK-SC98-YAKUZAI-CHKFLG      PIC 9(01).
@@ -51,6 +51,6 @@
                    07  LNK-SC98-YAKUTEI-KAISU       PIC S9(03).
       *
            03  LNK-SC98-OUTAREA.
-      *        ���顼����
+      *        エラー内容
                05  LNK-SC98-ERRMSG         PIC X(100).
       *

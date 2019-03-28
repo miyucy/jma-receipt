@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÄÌ»»Æü¿ô¥Á¥§¥Ã¥¯¥µ¥Ö      COPY (CPORCSTUSANCHK.INC)   *
+      *    é€šç®—æ—¥æ•°ãƒã‚§ãƒƒã‚¯ã‚µãƒ–      COPY (CPORCSTUSANCHK.INC)   *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSTUSANCHKAREA.
-      *  °åÎÅµ¡´Ø¥³¡¼¥É
+      *  åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
            03  STUSANCHK-HOSPNUM           PIC 9(2).
-      *  ´µ¼Ô£É£Ä
+      *  æ‚£è€…ï¼©ï¼¤
            03  STUSANCHK-PTID              PIC  9(10).
-      *    Æþ±¡Æü
+      *    å…¥é™¢æ—¥
            03  STUSANCHK-NYUINYMD          PIC X(08).
-      *    ´ð½àÆü
+      *    åŸºæº–æ—¥
            03  STUSANCHK-KJNYMD            PIC X(08).
-      *    ÍúÎòÈÖ¹æ
+      *    å±¥æ­´ç•ªå·
            03  STUSANCHK-RRKNUM            PIC 9(03).
-      *  ½ÐÎÏÎÎ°è
+      *  å‡ºåŠ›é ˜åŸŸ
            03  STUSANCHK-OUT-AREA.
-      *        ¼«±¡Æþ±¡ÄÌ»»Æü¿ô
+      *        è‡ªé™¢å…¥é™¢é€šç®—æ—¥æ•°
                05  STUSANCHK-TSUSAN        PIC 9(08).
-      *        £¹£±Æü°Ê¾åÅþÃ£Æü¾õÂÖ
-      *          0...Æþ±¡ÅÐÏ¿¤ÇºîÀ®¤·¤¿Îò¤ÎÃæ¤ÇÅþÃ£
-      *          1...¼«±¡Îò¤ÎÃæ¤ÇÅþÃ£
-      *          9...¼èÆÀÉÔ²Ä
+      *        ï¼™ï¼‘æ—¥ä»¥ä¸Šåˆ°é”æ—¥çŠ¶æ…‹
+      *          0...å…¥é™¢ç™»éŒ²ã§ä½œæˆã—ãŸæ­´ã®ä¸­ã§åˆ°é”
+      *          1...è‡ªé™¢æ­´ã®ä¸­ã§åˆ°é”
+      *          9...å–å¾—ä¸å¯
                05  STUSANCHK-DAY-91-STS    PIC 9(1).
-      *        £¹£±Æü°Ê¾åÅþÃ£Æü
+      *        ï¼™ï¼‘æ—¥ä»¥ä¸Šåˆ°é”æ—¥
                05  STUSANCHK-DAY-91        PIC X(08).
-      *        £±£¸£°Æü°Ê¾åÅþÃ£Æü¾õÂÖ
-      *          0...Æþ±¡ÅÐÏ¿¤ÇºîÀ®¤·¤¿Îò¤ÎÃæ¤ÇÅþÃ£
-      *          1...Â¾±¡Îò¤ÎÃæ¤ÇÅþÃ£
-      *          2...¼«±¡Îò¤ÎÃæ¤ÇÅþÃ£
-      *          9...¼èÆÀÉÔ²Ä
+      *        ï¼‘ï¼˜ï¼æ—¥ä»¥ä¸Šåˆ°é”æ—¥çŠ¶æ…‹
+      *          0...å…¥é™¢ç™»éŒ²ã§ä½œæˆã—ãŸæ­´ã®ä¸­ã§åˆ°é”
+      *          1...ä»–é™¢æ­´ã®ä¸­ã§åˆ°é”
+      *          2...è‡ªé™¢æ­´ã®ä¸­ã§åˆ°é”
+      *          9...å–å¾—ä¸å¯
                05  STUSANCHK-DAY-180-STS   PIC 9(1).
-      *        £±£¸£°Æü°Ê¾åÅþÃ£Æü
+      *        ï¼‘ï¼˜ï¼æ—¥ä»¥ä¸Šåˆ°é”æ—¥
                05  STUSANCHK-DAY-180       PIC X(08).
-      *  ¥ê¥¿¡¼¥ó¥³¡¼¥É
+      *  ãƒªã‚¿ãƒ¼ãƒ³ã‚³ãƒ¼ãƒ‰
            03  STUSANCHK-RC                PIC 9(02).

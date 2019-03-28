@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGKHELP.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : �إ�ײ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/01/24    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : ヘルプ画面
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/01/24    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/11/17  MONFUNC �б�
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,16 +41,16 @@
       *
       *
        WORKING-STORAGE             SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ��׾Ȳ��̥ѥ�᥿
+      *    会計照会共通パラメタ
            COPY    "K01COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "KHELPSCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -59,7 +59,7 @@
       *
            03  FLG-HELP            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -73,7 +73,7 @@
            03  IDX-K               PIC 9(04).
            03  IDX-K2              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-WIDGET              PIC X(64).
            03  WRK-ORC-DBPATH          PIC X(64).
@@ -96,7 +96,7 @@
       *
            03  WRK-INPUT-MENU          PIC X(30).
       *
-      *    �����ꥹ�Ȱ���
+      *    コラムリスト位置
            03  WRK-KHELP-ROW           PIC S9(09).
       *
            03  WRK-MCP-PATH.
@@ -107,46 +107,46 @@
       *
        01  WRK-TBLMAX                  PIC 9(04)   VALUE    100.
       *
-      *    ��̳̾
+      *    業務名
            COPY    "CPLOCKCONST.INC".
       *
-      *    ���̿���
+      *    画面色等
            COPY    "ENUM-VALUE".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �إ�ץޥ�����
+      *    ヘルプマスタ−
        01  HELP-REC.
            COPY    "CPHELP.INC".
       *
-      *    �إ�ץޥ����ݥ��
+      *    ヘルプマスタ−ワーク
        01  WRK-HELP-REC.
            COPY    "CPHELP.INC"        REPLACING
                                        //HELP-// BY //WRK-HELP-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
       **** COPY    "ORCA-DBPATH".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -193,7 +193,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -203,7 +203,7 @@
       *
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      *    �إ�ס�ȯ�Իؼ�����
+      *    ヘルプ・発行指示共通
            MOVE    SPA-ETCKYOUTU-AREA  TO  SPA-KHELP
       *
            MOVE    SPACE               TO  SPA-ERRCD
@@ -212,15 +212,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -234,20 +234,20 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "KERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -265,13 +265,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            INITIALIZE                  SPA-HELP-AREA
       *
-      *    ��̳�̣�
+      *    業務ＬＤ
            MOVE    "ORCA21"            TO  SPA-KHELP-LDNAME
       *
            PERFORM                     310-SPA-SET-SEC
@@ -283,18 +283,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
            MOVE    1                   TO  SPA-KHELP-SYORIFLG
-      *    ����ʬ��ͥ��Ȥ���
+      *    自院分を優先とする
            MOVE    "1"                 TO  SPA-KHELP-HELPKBN
            MOVE    ZERO                TO  SPA-KHELP-MENUNUM1
            MOVE    ZERO                TO  SPA-KHELP-MENUNUM2
            MOVE    1                   TO  SPA-KHELP-PAGE
            PERFORM 320-MENU-HENSYU-SEC
-      *    ����ʬ��̵������ɸ��
+      *    自院分が無い時、標準
            IF      SPA-KHELP-TBLMAX    =   ZERO
                MOVE    "0"                 TO  SPA-KHELP-HELPKBN
                PERFORM 320-MENU-HENSYU-SEC
@@ -305,7 +305,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ܼ��Խ�����
+      *    目次編集処理
       *****************************************************************
        320-MENU-HENSYU-SEC                  SECTION.
       *
@@ -403,7 +403,7 @@
            END-IF
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ����Ƚ��
+      *    次頁判定
            IF     (IDX                 >=  WRK-TBLMAX )  AND
                   (FLG-HELP            =   ZERO)
                MOVE    1               TO  SPA-KHELP-NEXT
@@ -418,11 +418,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-      *    �����ꥹ�Ȱ�����¸
+      *    コラムリスト位置保存
            IF      FLG-GMN-INIT        =   1
                MOVE    ZERO                TO  WRK-KHELP-ROW
            ELSE
@@ -441,7 +441,7 @@
                END-IF
            END-IF
       *
-      *    �����ꥹ�Ȥΰ��ֻ���
+      *    コラムリストの位置指定
            MOVE    ZERO                TO  KHELP-ROW
            MOVE    ZERO                TO  KHELP-ROWATTR
            IF      WRK-KHELP-ROW       NOT =   ZERO
@@ -453,7 +453,7 @@
       *
            MOVE    WRK-HELP-AREA       TO  KHELP-HELP
       *
-      *    �ܼ�
+      *    目次
            IF      FLG-GMN-INIT        =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   SPA-KHELP-TBLMAX
@@ -480,10 +480,10 @@
            END-PERFORM
       *
            IF      SPA-KHELP-HELPKBN   =   "0"
-               MOVE    "��ɸ���"          TO  KHELP-HEAD-VALUE
+               MOVE    "【標準】"          TO  KHELP-HEAD-VALUE
                MOVE    "blue"              TO  KHELP-HEAD-STYLE
            ELSE
-               MOVE    "�ڼ�����"          TO  KHELP-HEAD-VALUE
+               MOVE    "【自院】"          TO  KHELP-HEAD-VALUE
                MOVE    "black"             TO  KHELP-HEAD-STYLE
            END-IF
       *
@@ -493,7 +493,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -517,30 +517,30 @@
        5001-MAPCUR-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *        ����
+      *        検索
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 404-KENSAKU-SEC
-      *        ����
+      *        検索
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 405-KIRIKAE-SEC
-      *        ����
+      *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                     PERFORM 406-PAGE-BACK-SEC
-      *        ����
+      *        次頁
                WHEN    "CLICKED"       ALSO    "B07"
                     PERFORM 407-PAGE-NEXT-SEC
-      *        ɸ��
+      *        標準
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 409-HYOUJUN-SEC
-      *        ����
+      *        自院
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 410-JIIN-SEC
            END-EVALUATE
@@ -549,16 +549,16 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            MOVE    ZERO                TO  SPA-KHELP-CUR
-      *    ���Ϲ��ܤη���
+      *    入力項目の決定
            MOVE    MCP-WIDGET          TO  WRK-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ��������
+      *        キー入力
                WHEN    "ACTIVATE"      ALSO    "INPUT"
                    PERFORM 401-INPUT-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
@@ -572,11 +572,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ܼ��������
+      *    目次選択処理
       *****************************************************************
        403-MENULIST-CHK-SEC          SECTION.
       *
-      *    ������
+      *    行選択
            MOVE    ZERO                TO  WRK-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-KHELP-TBLMAX
@@ -597,7 +597,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ����
+      *    選択番号処理
       *****************************************************************
        402-SELNUM-CHK-SEC               SECTION.
       *
@@ -626,12 +626,12 @@
                                            TO  SPA-KHELP-HELPKBN
                IF     (SPA-KHELP-MENUNUM2  =   ZERO  )  AND
                       (SPA-KHELP-TEDANUM (IDX-TBL) =   1    )
-      *            ���У�
+      *            見出１
                    MOVE    2                   TO  SPA-KHELP-SYORIFLG
                    MOVE    1                   TO  SPA-KHELP-PAGE
                    PERFORM 320-MENU-HENSYU-SEC
                    MOVE    ZERO                TO  SPA-KHELP-SELNUM
-      *            �����ܤ���ɽ���Ȥ���
+      *            １件目を初期表示とする
                    IF      SPA-KHELP-TBLMAX    >   ZERO
                        MOVE    SPA-KHELP-TRENNUM (1)
                                                TO  SPA-KHELP-SELNUM
@@ -643,7 +643,7 @@
                                                TO  SPA-KHELP-HELPKBN
                    END-IF
                END-IF
-      *        ���У�
+      *        見出２
                PERFORM 4021-MENUNUM2-SYORI-SEC
                MOVE    1                   TO  SPA-KHELP-CUR
            END-IF
@@ -652,13 +652,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ͻ���
+      *    キー入力処理
       *****************************************************************
        4021-MENUNUM2-SYORI-SEC               SECTION.
       *
            MOVE    SPACE               TO  WRK-HELP-AREA
            MOVE    ZERO                TO  IDX-H
-      *    �������ɤ�����Ƚ��
+      *    新規かどうかの判定
            MOVE    SPACE               TO  HELP-REC
            INITIALIZE                  HELP-REC
            MOVE    SPA-KHELP-HELPKBN   TO  HELP-HELPKBN
@@ -693,7 +693,7 @@
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ���ԥ����ɤǥơ��֥��Խ�
+      *    改行コードでテーブル編集
            MOVE    SPACE               TO  WRK-HELP-AREA2
            MOVE    ZERO                TO  IDX-H2
            PERFORM VARYING     IDX-H   FROM   1   BY  1
@@ -719,7 +719,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ͻ���
+      *    キー入力処理
       *****************************************************************
        401-INPUT-CHK-SEC               SECTION.
       *
@@ -760,12 +760,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �ܼ�̾�Τ�����Խ�����
+      *    目次名称からの編集処理
       *****************************************************************
        4011-HELP-KENSAKU-SEC               SECTION.
       *
            MOVE    3                   TO  SPA-KHELP-SYORIFLG
-      *    ��ʬ���ȤȤ���
+      *    部分参照とする
            MOVE    ZERO                TO  IDX-K
            PERFORM VARYING     IDX     FROM    30  BY  -1
                    UNTIL       IDX     <       1
@@ -857,7 +857,7 @@
                    END-IF
                    IF     (HELP-MENUNUM2       =   ZERO )  AND
                           (HELP-EDANUM         >   ZERO )
-      *                �ܼ����λ����ܼ�����̵ͭȽ��
+      *                目次１の時、目次２の有無判定
                        PERFORM 40111-MENUNUM2-CHK-SEC
                    END-IF
                END-IF
@@ -868,7 +868,7 @@
            MOVE    "tbl_help"          TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ����Ƚ��
+      *    次頁判定
            IF     (IDX                 >=  300 )  AND
                   (FLG-HELP            =   ZERO)
                MOVE    1               TO  SPA-KHELP-NEXT
@@ -891,7 +891,7 @@
                                                TO  SPA-KHELP-MENUNUM2
                    MOVE    SPA-KHELP-THELPKBN  (1)
                                                TO  SPA-KHELP-HELPKBN
-      *            ���У�
+      *            見出２
                    PERFORM 4021-MENUNUM2-SYORI-SEC
                END-IF
            END-IF
@@ -902,7 +902,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ܼ���Ƚ�����
+      *    目次２判定処理
       *****************************************************************
        40111-MENUNUM2-CHK-SEC            SECTION.
       *
@@ -943,7 +943,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -968,7 +968,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    検索処理
       *****************************************************************
        404-KENSAKU-SEC               SECTION.
       *
@@ -978,7 +978,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ܼ����ؤ�����
+      *    目次切替え処理
       *****************************************************************
        405-KIRIKAE-SEC       SECTION.
       *
@@ -1009,7 +1009,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    前頁処理
       *****************************************************************
        406-PAGE-BACK-SEC       SECTION.
       *
@@ -1031,7 +1031,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    次頁処理
       *****************************************************************
        407-PAGE-NEXT-SEC       SECTION.
       *
@@ -1053,7 +1053,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ɸ�����
+      *    標準処理
       *****************************************************************
        409-HYOUJUN-SEC               SECTION.
       *
@@ -1072,7 +1072,7 @@
        409-HYOUJUN-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    自院処理
       *****************************************************************
        410-JIIN-SEC               SECTION.
       *
@@ -1093,7 +1093,7 @@
       *
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1115,26 +1115,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ椬����ޤ���"
+                   MOVE    "選択番号がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�ܼ�̾�Τ����Ѥ����Ϥ��Ʋ�������"
+                   MOVE    "目次名称は全角で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "�оݤ��ܼ�������ޤ���"
+                   MOVE    "対象の目次がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "���ǤϤ���ޤ���"
+                   MOVE    "前頁はありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "���ǤϤ���ޤ���"
+                   MOVE    "次頁はありません。"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -1156,7 +1156,7 @@
        510-ERRSET-EXT.
            EXIT.
       *****************************************************************
-      *    �إ�ץޥ������ɹ�
+      *    ヘルプマスター読込
       *****************************************************************
        900-HELP-READ-SEC         SECTION.
       *
@@ -1178,7 +1178,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-HELP-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1194,7 +1194,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -1208,7 +1208,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

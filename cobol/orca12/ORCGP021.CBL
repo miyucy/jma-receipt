@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGP021.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ����Ϣ����ʣУ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 患者連絡先（Ｐ０２１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-¿��Ǽ   01/06/13  ��Ͽ�塢���Ź԰����ܤ��ɲ�
-      *  01.00.02    MCC-¿��Ǽ   02/05/02  ���ѥ����å������ɲ�
-      *  02.00.00    MCC-¿��Ǽ   02/07/04  ���󥿥ե������ѹ�
-      *  02.00.01    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
-      *  04.04.00    NACL-¿��Ǽ  08/12/03  ���꤫��͹���ֹ������ɲ�
-      *  04.05.00    NACL-¿��Ǽ  09/11/20  ͹���ֹ漫ư���ܶ�ʬ�ɲ�
-      *  04.07.00    NACL-¿��Ǽ  11/09/06  Ⱦ�������Ѵ���
-      *  04.07.00    NACL-¿��Ǽ  12/01/19  Ⱦ�����ѥ����å��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-多々納   01/06/13  登録後、診療行為遷移を追加
+      *  01.00.02    MCC-多々納   02/05/02  全角チェックサブ追加
+      *  02.00.00    MCC-多々納   02/07/04  インタフェース変更
+      *  02.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
+      *  04.05.00    NACL-多々納  09/11/20  郵便番号自動記載区分追加
+      *  04.07.00    NACL-多々納  11/09/06  半角全角変換へ
+      *  04.07.00    NACL-多々納  12/01/19  半角全角チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -49,18 +49,18 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������Ͽ�����ΰ�
+      *    患者登録スパ領域
            COPY    "P02COMMON-SPA".
-      *    ���Բ��̥����ΰ�
+      *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA            PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -72,11 +72,11 @@
            03  FLG-KIS-POST        PIC 9(01).
            03  FLG-POST            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-POST            PIC X(07).
            03  WRK-ADRS            PIC X(100).
@@ -87,7 +87,7 @@
            03  WRK-MAX             PIC 9(04).
       *
            03  WRK-MAE-POST        PIC X(07).
-      *    ���Ϲ���̾
+      *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
        01  WRK-HENSYU-AREA.
@@ -105,31 +105,31 @@
                05  WRK-TMM         PIC 99.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ս���
+      *    周辺住所
            COPY    "CPSK1015.INC".
       *
-      *    ����ޥ���
+      *    住所マスタ
        01  ADRS-REC.
            COPY    "CPADRS.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ��ΰ�
+      *   数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -175,7 +175,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -193,10 +193,10 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"         ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
@@ -213,7 +213,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -221,7 +221,7 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ��������Խ�
+      *    初期画面編集
            PERFORM 300-SCREEN-SEC
       *
            .
@@ -229,25 +229,25 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
       *
            EVALUATE    SPA-MOTOPG
-      *        ���긡����꽻���Խ�
+      *        住所検索より住所編集
                WHEN    "P99"
                    PERFORM 330-ADRS-SET-SEC
       *
-      *        ���긡�����
+      *        住所検索より
                WHEN    "P98" 
                    PERFORM 330-ADRS-SET-SEC
-      *        ���긡�����
+      *        住所検索より
                WHEN    "P982" 
                    PERFORM 330-ADRS-POST2-SEC
       *
-      *        ��������Խ�
+      *        初期画面編集
                WHEN    OTHER
                    PERFORM 310-SPASET-SEC
                    MOVE    1           TO  SPA-GMN21-CUR
@@ -258,12 +258,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ս������Խ�����
+      *    周辺住所より編集処理
       *****************************************************************
        330-ADRS-SET-SEC            SECTION.
       *
            EVALUATE    SPA-GMN21-INKBN
-      *        Ϣ����
+      *        連絡先
                WHEN    1
                    MOVE    JPAR-POST       TO  SPA-GMN21-RENRAKU-POST
                    IF      JPAR-POST       =   SPACE
@@ -275,7 +275,7 @@
                                            TO  SPA-MAE-RENRAKU-ADRS
                        MOVE    9           TO  SPA-GMN21-CUR
                    END-IF
-      *        ��̳�衡�����Խ�
+      *        勤務先　住所編集
                WHEN    "2"
                    MOVE    JPAR-POST       TO  SPA-GMN21-OFFICE-POST
                    IF      JPAR-POST       =   SPACE
@@ -287,7 +287,7 @@
                                            TO  SPA-MAE-OFFICE-ADRS
                        MOVE    15          TO  SPA-GMN21-CUR
                    END-IF
-      *        �����衡�����Խ�
+      *        帰省先　住所編集
                WHEN    "3"
                    MOVE    JPAR-POST       TO  SPA-GMN21-KISEI-POST
                    IF      JPAR-POST       =   SPACE
@@ -305,12 +305,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    住所編集処理
       *****************************************************************
        330-ADRS-POST2-SEC            SECTION.
       *
            EVALUATE    SPA-GMN21-INKBN
-      *        Ϣ����
+      *        連絡先
                WHEN    1
                    IF     (SPA-GMN982-POST         =   SPACE )
                    AND    (SPA-GMN982-TOWNNAME     =   SPACE )
@@ -332,7 +332,7 @@
                    END-IF
                    MOVE    SPA-GMN21-RENRAKU-ADRS
                                            TO  SPA-MAE-RENRAKU-ADRS
-      *        ��̳�衡�����Խ�
+      *        勤務先　住所編集
                WHEN    "2"
                    IF     (SPA-GMN982-POST         =   SPACE )
                    AND    (SPA-GMN982-TOWNNAME     =   SPACE )
@@ -354,7 +354,7 @@
                    END-IF
                    MOVE    SPA-GMN21-OFFICE-ADRS
                                            TO  SPA-MAE-OFFICE-ADRS
-      *        �����衡�����Խ�
+      *        帰省先　住所編集
                WHEN    "3"
                    IF     (SPA-GMN982-POST         =   SPACE )
                    AND    (SPA-GMN982-TOWNNAME     =   SPACE )
@@ -383,7 +383,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -392,7 +392,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -403,11 +403,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-      *    �����������Τʤ��������Ϥ������ܤμ�����
+      *    カーソル指定のない時、入力した項目の次ぎへ
            IF      SPA-GMN21-CUR       =   ZERO
                PERFORM 50011-INPUT-CUR-SEC
                ADD     1               TO  SPA-GMN21-CUR
@@ -465,7 +465,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC          SECTION.
       *
@@ -520,16 +520,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ��Ͽ
+      *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
       *
-      *     �ʳ��ϥ��顼
+      *     以外はエラー
                WHEN    "CLICKED"       ALSO     ANY
                    MOVE    "0110"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-GMN21-CUR
@@ -540,11 +540,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ����
+      *    登録処理
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
           .
@@ -552,15 +552,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN21-CUR
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            .
@@ -569,31 +569,31 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å����̲��̽���
+      *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
            .
        410-INPUT-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
       *
            MOVE    P02-P021-FAX        TO  SPA-GMN21-FAX
-      *    ����
+      *    携帯
            MOVE    P02-P021-KEITAI     TO  SPA-GMN21-KEITAI-TEL
-      *    �᡼��
+      *    メール
            MOVE    P02-P021-EMAIL      TO  SPA-GMN21-EMAIL
-      *    �Ż�
+      *    仕事
            MOVE    P02-P021-JOB        TO  SPA-GMN21-JOB
-      *    Ϣ����
+      *    連絡先
            MOVE    P02-P021-RENNAME    TO  SPA-GMN21-RENRAKU-NAME
            MOVE    P02-P021-RENZOKUGARA
                                        TO  SPA-GMN21-RENRAKU-ZOKUGARA
@@ -607,7 +607,7 @@
            MOVE    P02-P021-RENBANTI   TO  SPA-GMN21-RENRAKU-BANTI
            MOVE    P02-P021-RENTEL1    TO  SPA-GMN21-RENRAKU-TEL1
            MOVE    P02-P021-RENTEL2    TO  SPA-GMN21-RENRAKU-TEL2
-      *    ��̳��
+      *    勤務先
            MOVE    P02-P021-OFFNAME    TO  SPA-GMN21-OFFICE-NAME
            IF      P02-P021-OFFPOST    =   SPA-GMN21-OFFICE-POST
                MOVE    ZERO                TO  FLG-OFF-POST
@@ -618,7 +618,7 @@
            MOVE    P02-P021-OFFADRS    TO  SPA-GMN21-OFFICE-ADRS
            MOVE    P02-P021-OFFBANTI   TO  SPA-GMN21-OFFICE-BANTI
            MOVE    P02-P021-OFFTEL     TO  SPA-GMN21-OFFICE-TEL
-      *    ������
+      *    帰省先
            MOVE    P02-P021-KISNAME    TO  SPA-GMN21-KISEI-NAME
            IF      P02-P021-KISPOST    =   SPA-GMN21-KISEI-POST
                MOVE    ZERO                TO  FLG-KIS-POST
@@ -635,7 +635,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å����̲��̽���
+      *    基本チェックと別画面処理
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
@@ -644,101 +644,101 @@
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-FAX-CHK-SEC
            END-IF
-      *    �����ֹ�
+      *    携帯番号
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KEITAI-TEL-CHK-SEC
            END-IF
-      *    �Ż�
+      *    仕事
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-JOB-CHK-SEC
            END-IF
       *
-      *    Ϣ�����̾��
+      *    連絡先−名前
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENRAKUNAME-CHK-SEC
            END-IF
-      *    Ϣ�����³��
+      *    連絡先−続柄
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENZOKUGARA-CHK-SEC
            END-IF
       *
-      *    ͹���ֹ�
+      *    郵便番号
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENPOST-CHK-SEC
            END-IF
       *
-      *    Ϣ����ݽ���
+      *    連絡先−住所
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENRAKUADRS-CHK-SEC
            END-IF
-      *    Ϣ���������
+      *    連絡先−番地
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENBANTI-CHK-SEC
            END-IF
-      *    Ϣ���������
+      *    連絡先−電話
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-RENTEL-CHK-SEC
            END-IF
       *
-      *    ��̳���̾��
+      *    勤務先−名前
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-OFFNAME-CHK-SEC
            END-IF
       *
-      *    ͹���ֹ�
+      *    郵便番号
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-OFFPOST-CHK-SEC
            END-IF
       *
-      *    ��̳��ݽ���
+      *    勤務先−住所
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-OFFADRS-CHK-SEC
            END-IF
-      *    ��̳�������
+      *    勤務先−番地
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-OFFBANTI-CHK-SEC
            END-IF
-      *    ��̳�������
+      *    勤務先−電話
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-OFFTEL-CHK-SEC
            END-IF
       *
-      *    �������̾��
+      *    帰省先−名前
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KISNAME-CHK-SEC
            END-IF
       *
-      *    ͹���ֹ�
+      *    郵便番号
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KISPOST-CHK-SEC
            END-IF
       *
-      *    ������ݽ���
+      *    帰省先−住所
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KISADRS-CHK-SEC
            END-IF
-      *    �����������
+      *    帰省先−番地
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KISBANTI-CHK-SEC
            END-IF
-      *    �����������
+      *    帰省先−電話
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-FLG-END         =   ZERO  )
                PERFORM 4101-KISTEL-CHK-SEC
@@ -749,7 +749,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ƣ��إ����å�����
+      *    ＦＡＸチェック処理
       *****************************************************************
        4101-FAX-CHK-SEC          SECTION.
       *
@@ -767,7 +767,7 @@
        4101-FAX-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ�����å�����
+      *    携帯番号チェック処理
       *****************************************************************
        4101-KEITAI-TEL-CHK-SEC          SECTION.
       *
@@ -787,11 +787,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ϣ�����̾�������å�����
+      *    連絡先−名前チェック処理
       *****************************************************************
        4101-RENRAKUNAME-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-NAME   TO  WRK-MAE-INPUT
            MOVE    50                       TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -808,11 +808,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �Ż������å�����
+      *    仕事チェック処理
       *****************************************************************
        4101-JOB-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-JOB       TO  WRK-MAE-INPUT
            MOVE    20                  TO  WRK-MAX
            PERFORM 890-HALF-ZENS-SEC
@@ -823,11 +823,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ϣ�����̾�������å�����
+      *    連絡先−名前チェック処理
       *****************************************************************
        4101-RENZOKUGARA-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-ZOKUGARA   TO  WRK-MAE-INPUT
            MOVE    30                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -844,7 +844,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ϣ�����͹���ֹ�����å�����
+      *    連絡先−郵便番号チェック処理
       *****************************************************************
        4101-RENPOST-CHK-SEC          SECTION.
       *
@@ -857,7 +857,7 @@
            MOVE    FLG-REN-POST        TO  FLG-POST
       *
            PERFORM 430-POST-SYORI-SEC
-      *    ���顼
+      *    エラー
            IF      FLG-ERR             =   1
                MOVE    "2103"          TO  SPA-ERRCD
                MOVE    7               TO  SPA-GMN21-CUR
@@ -868,7 +868,7 @@
                MOVE    7               TO  SPA-GMN21-CUR
                GO      TO      4101-RENPOST-CHK-EXT
            END-IF
-      *    �оݤ���
+      *    対象あり
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-RENRAKU-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-RENRAKU-ADRS
@@ -879,21 +879,21 @@
        4101-RENPOST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ϣ����ݽ�������å�����
+      *    連絡先−住所チェック処理
       *****************************************************************
        4101-RENRAKUADRS-CHK-SEC          SECTION.
       *
            IF      SPA-GMN21-RENRAKU-ADRS   =   SPACE
                MOVE    SPA-GMN21-RENRAKU-ADRS   TO  SPA-MAE-RENRAKU-ADRS
            ELSE
-      *        Ⱦ�Ѷ�������Ѷ����
+      *        半角空白を全角空白へ
                MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
                MOVE    100                 TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
                IF      FLG-ERR             =   ZERO
                    MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-RENRAKU-ADRS
-      *            ͹���ֹ漫ư����
+      *            郵便番号自動設定
                    IF     (SPA-GMN21-RENRAKU-ADRS
                                            NOT =   SPA-MAE-RENRAKU-ADRS)
                       AND (WRK-MCP-WIDGET      =   "P021_RENADRS"  )
@@ -916,11 +916,11 @@
        4101-RENRAKUADRS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ϣ����ݽ�������å�����
+      *    連絡先−住所チェック処理
       *****************************************************************
        4101-RENBANTI-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-RENRAKU-BANTI TO  WRK-MAE-INPUT
            MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -936,7 +936,7 @@
        4101-RENBANTI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ϣ��������å����å�����
+      *    連絡先−電話チェック処理
       *****************************************************************
        4101-RENTEL-CHK-SEC          SECTION.
       *
@@ -967,11 +967,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̳���̾�������å�����
+      *    勤務先−名前チェック処理
       *****************************************************************
        4101-OFFNAME-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-NAME   TO  WRK-MAE-INPUT
            MOVE    50                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -988,7 +988,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̳���͹���ֹ�����å�����
+      *    勤務先−郵便番号チェック処理
       *****************************************************************
        4101-OFFPOST-CHK-SEC          SECTION.
       *
@@ -1001,7 +1001,7 @@
            MOVE    FLG-OFF-POST        TO  FLG-POST
       *
            PERFORM 430-POST-SYORI-SEC
-      *    ���顼
+      *    エラー
            IF      FLG-ERR             =   1
                MOVE    "2106"          TO  SPA-ERRCD
                MOVE    13              TO  SPA-GMN21-CUR
@@ -1012,7 +1012,7 @@
                MOVE    13              TO  SPA-GMN21-CUR
                GO      TO      4101-OFFPOST-CHK-EXT
            END-IF
-      *    �оݤ���
+      *    対象あり
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-OFFICE-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-OFFICE-ADRS
@@ -1023,21 +1023,21 @@
        4101-OFFPOST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��̳��ݽ�������å�����
+      *    勤務先−住所チェック処理
       *****************************************************************
        4101-OFFADRS-CHK-SEC          SECTION.
       *
            IF      SPA-GMN21-OFFICE-ADRS   =   SPACE
                MOVE    SPA-GMN21-OFFICE-ADRS   TO  SPA-MAE-OFFICE-ADRS
            ELSE
-      *        Ⱦ�Ѷ�������Ѷ����
+      *        半角空白を全角空白へ
                MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
                MOVE    100                     TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
                IF      FLG-ERR             =   ZERO
                    MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-OFFICE-ADRS
-      *            ͹���ֹ漫ư����
+      *            郵便番号自動設定
                    IF     (SPA-GMN21-OFFICE-ADRS
                                            NOT =   SPA-MAE-OFFICE-ADRS)
                       AND (WRK-MCP-WIDGET      =   "P021_OFFADRS"  )
@@ -1061,11 +1061,11 @@
        4101-OFFADRS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��̳��ݽ�������å�����
+      *    勤務先−住所チェック処理
       *****************************************************************
        4101-OFFBANTI-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-OFFICE-BANTI  TO  WRK-MAE-INPUT
            MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -1081,7 +1081,7 @@
        4101-OFFBANTI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��̳������å����å�����
+      *    勤務先−電話チェック処理
       *****************************************************************
        4101-OFFTEL-CHK-SEC          SECTION.
       *
@@ -1101,11 +1101,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������̾�������å�����
+      *    帰省先−名前チェック処理
       *****************************************************************
        4101-KISNAME-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-NAME    TO  WRK-MAE-INPUT
            MOVE    50                  TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -1122,7 +1122,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������͹���ֹ�����å�����
+      *    帰省先−郵便番号チェック処理
       *****************************************************************
        4101-KISPOST-CHK-SEC          SECTION.
       *
@@ -1135,7 +1135,7 @@
            MOVE    FLG-KIS-POST        TO  FLG-POST
       *
            PERFORM 430-POST-SYORI-SEC
-      *    ���顼
+      *    エラー
            IF      FLG-ERR             =   1
                MOVE    "2109"          TO  SPA-ERRCD
                MOVE    18              TO  SPA-GMN21-CUR
@@ -1146,7 +1146,7 @@
                MOVE    18              TO  SPA-GMN21-CUR
                GO      TO      4101-KISPOST-CHK-EXT
            END-IF
-      *    �оݤ���
+      *    対象あり
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-KISEI-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-KISEI-ADRS
@@ -1157,21 +1157,21 @@
        4101-KISPOST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ݽ�������å�����
+      *    帰省先−住所チェック処理
       *****************************************************************
        4101-KISADRS-CHK-SEC          SECTION.
       *
            IF      SPA-GMN21-KISEI-ADRS    =   SPACE
                MOVE    SPA-GMN21-KISEI-ADRS    TO  SPA-MAE-KISEI-ADRS
            ELSE
-      *        Ⱦ�Ѷ�������Ѷ����
+      *        半角空白を全角空白へ
                MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
                MOVE    100                     TO  WRK-MAX
                PERFORM 890-HALF-ZEN-SEC
                MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
                IF      FLG-ERR             =   ZERO
                    MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-KISEI-ADRS
-      *            ͹���ֹ漫ư����
+      *            郵便番号自動設定
                    IF     (SPA-GMN21-KISEI-ADRS
                                            NOT =   SPA-MAE-KISEI-ADRS)
                       AND (WRK-MCP-WIDGET      =   "P021_KISADRS"  )
@@ -1195,11 +1195,11 @@
        4101-KISADRS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ݽ�������å�����
+      *    帰省先−住所チェック処理
       *****************************************************************
        4101-KISBANTI-CHK-SEC          SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    SPA-GMN21-KISEI-BANTI   TO  WRK-MAE-INPUT
            MOVE    100                 TO  WRK-MAX
            PERFORM 890-HALF-ZEN-SEC
@@ -1215,7 +1215,7 @@
        4101-KISBANTI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����������å����å�����
+      *    帰省先−電話チェック処理
       *****************************************************************
        4101-KISTEL-CHK-SEC          SECTION.
       *
@@ -1235,11 +1235,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ͹���ֹ�����å�����
+      *    郵便番号チェック処理
       *****************************************************************
        430-POST-SYORI-SEC          SECTION.
       *
-      *    Ⱦ�ѤǤ��뤳��
+      *    半角であること
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    WRK-MAE-POST        TO  KANACHK-MAE-INPUT
@@ -1264,12 +1264,12 @@
                GO      TO      430-POST-SYORI-EXT
            END-IF
       *
-      *    ���Ϥ����ä����Τߡ��Ԥ�
+      *    入力があった時のみ、行う
            IF      FLG-POST            =   ZERO
                GO      TO      430-POST-SYORI-EXT
            END-IF
       *
-      *    ͹���ֹ��ꡢ���������ɽ������
+      *    郵便番号より、住所一覧を表示する
            INITIALIZE                  SPA-P982-AREA
            MOVE    WRK-MAE-POST        TO  SPA-GMN982-POST
            MOVE    "P02"               TO  SPA-GMN982-MOTOPG
@@ -1290,24 +1290,24 @@
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
-      *    �оݤʤ�
+      *    対象なし
            IF      SPA-GMN982-MAX      =   ZERO
                MOVE     1                  TO  FLG-ERR
                GO      TO      430-POST-SYORI-EXT
            END-IF
-      *    ����λ����о�
+      *    １件の時、対象
            IF      SPA-GMN982-MAX      =   1
                MOVE    SPA-GMN982-POST     TO  WRK-POST
                MOVE    SPA-GMN982-TOWNNAME TO  WRK-ADRS
                GO      TO      430-POST-SYORI-EXT
            END-IF
       *
-      *    ����������̤�
+      *    住所一覧画面へ
            MOVE    "SELNUM"            TO  MCP-WIDGET
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
       *
-      *    ������
+      *    一覧へ
            MOVE    "P982"              TO  SPA-SAKIPG
            MOVE    "P02"               TO  SPA-MOTOPG
       *
@@ -1322,17 +1322,17 @@
        430-POST-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���ս�������å�����
+      *    周辺住所チェック処理
       *****************************************************************
        41011-SYUHEN-JYUSYO-SEC         SECTION.
       *
-      *    �����ƥ���������ս���򸡺�
+      *    システム管理より周辺住所を検索
            INITIALIZE                  SYS-1015-REC
            MOVE    "1015"              TO  SYS-1015-KANRICD
            MOVE    WRK-MAE-POST (2:3)  TO  SYS-1015-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1015-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1015-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1015-HOSPNUM
            MOVE    SYS-1015-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1351,13 +1351,13 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1015-REC
            ELSE
-      *        ���ս��������
+      *        周辺住所一覧へ
                PERFORM 440-JYUSYO-SEC
                GO      TO      41011-SYUHEN-JYUSYO-EXT
            END-IF
       *
            MOVE    ZERO                TO  FLG-OK
-      *    ����ǡ����ɤ߽Ф�
+      *    住所データ読み出し
            INITIALIZE                      ADRS-REC
       **** MOVE    SYS-1015-LPUBCD     TO  ADRS-LPUBCD
            MOVE    SYS-1015-POST       TO  ADRS-POST
@@ -1383,7 +1383,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
-      *        ���ս��������
+      *        周辺住所一覧へ
                PERFORM 440-JYUSYO-SEC
            END-IF
            .
@@ -1391,7 +1391,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���꤫��͹���ֹ��Խ�����
+      *    住所から郵便番号編集処理
       *****************************************************************
        41012-ADRS-POST-SEC         SECTION.
       *
@@ -1406,7 +1406,7 @@
                WHEN     "1"
                    PERFORM 410121-ADRS-POSTHEN-SEC
                WHEN     "2"
-      *            ͹���ֹ������Τ�
+      *            郵便番号空白時のみ
                    IF      WRK-POST            =   SPACE
                        PERFORM 410121-ADRS-POSTHEN-SEC
                    ELSE
@@ -1423,11 +1423,11 @@
        41012-ADRS-POST-EXT.
            EXIT.
       *****************************************************************
-      *    ���꤫��͹���ֹ��Խ�����
+      *    住所から郵便番号編集処理
       *****************************************************************
        410121-ADRS-POSTHEN-SEC         SECTION.
       *
-      *    ͹���ֹ��ꡢ���������ɽ������
+      *    郵便番号より、住所一覧を表示する
            INITIALIZE                  SPA-P982-AREA
            MOVE    2                   TO  SPA-GMN982-KBN
            MOVE    WRK-ADRS            TO  SPA-GMN982-TOWNNAME
@@ -1450,7 +1450,7 @@
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
       *
-      *    ����λ����о�
+      *    １件の時、対象
            IF      SPA-GMN982-MAX      =   1
                IF      SPA-GMN982-POST     NOT =   WRK-POST
                    PERFORM 330-ADRS-POST2-SEC
@@ -1477,16 +1477,16 @@
        410121-ADRS-POSTHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ����������ܽ���
+      *    住所一覧遷移処理
       *****************************************************************
        41012-P982-SYORI-SEC         SECTION.
       *
-      *    ����������̤�
+      *    住所一覧画面へ
            MOVE    "SELNUM"            TO  MCP-WIDGET
       *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
       *
-      *    ������
+      *    一覧へ
            MOVE    "P982"              TO  SPA-SAKIPG
            MOVE    "P02"               TO  SPA-MOTOPG
       *
@@ -1500,7 +1500,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ⱦ�Ѥ����Ѥ��Ѵ�����
+      *    半角を全角へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
@@ -1523,7 +1523,7 @@
        890-HALF-ZEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ⱦ�Ѷ�������Ѷ�����Ѵ�����
+      *    半角空白を全角空白へ変換処理
       *****************************************************************
        890-HALF-ZENS-SEC         SECTION.
       *
@@ -1547,7 +1547,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѥ����å�����
+      *    全角チェック処理
       *****************************************************************
        891-HALF-CHK-SEC         SECTION.
       *
@@ -1560,7 +1560,7 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   1     )
-      *        Ⱦ��
+      *        半角
                MOVE    ZERO                TO  FLG-ERR
            ELSE
                MOVE    1                   TO  FLG-ERR
@@ -1571,7 +1571,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���긡����
+      *    住所検索へ
       *****************************************************************
        440-JYUSYO-SEC             SECTION.
       *
@@ -1597,7 +1597,7 @@
            MOVE    "P02"               TO  SPA-GMN98-MOTOPG
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
       *
-      *    ������
+      *    一覧へ
            MOVE    "P98"               TO  SPA-SAKIPG
            MOVE    "P02"               TO  SPA-MOTOPG
       *
@@ -1615,7 +1615,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSTEM-READ-SEC         SECTION.
       *
@@ -1632,7 +1632,7 @@
        900-SYSTEM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1645,7 +1645,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1660,7 +1660,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -1674,7 +1674,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ***************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       ***************************************************************
        900-PUT-WINDOW              SECTION.
       *

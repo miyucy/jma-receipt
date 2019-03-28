@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSCGENNAME.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�
-      *  ����ݡ��ͥ��̾  : ����ΰ���̾�Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/02/XX    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為
+      *  コンポーネント名  : 剤毎の一般名編集サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/02/XX    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  17/03/XX  ��ȯ���ѹ��ġʽ�������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  17/03/XX  後発品変更可（処方毎）対応
       *****************************************************************
       *
       *
@@ -43,7 +43,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
@@ -51,10 +51,10 @@
            03  FLG-TENSUPLUS       PIC 9(01).
            03  FLG-GENERICNAME     PIC 9(01).
       *
-      *    ��ȯ�������ѹ��Բ�
+      *    後発医薬品変更不可
            03  FLG-KOUHATU-FUKA        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -63,11 +63,11 @@
            03  IDXA                PIC 9(04).
            03  IDXB                PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-SRYYMD.
@@ -97,48 +97,48 @@
            03  WRK-YAKKAKJNCD-OLD      PIC X(12).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
       *    COPY    "CPSYSKANRI.INC".
-      *    ����䵣ǣ�ɽ��
+      *    処方箋ＧＥ表示
       *    COPY    "CPSK1030.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
-      *    ����̾�ơ��֥�
+      *    一般名テーブル
        01  GENERICNAME-REC.
            COPY    "CPGENERICNAME.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
       * 01  SRYACCT-REC.
       *    COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰٥ޥ������
+      *    診療行為マスタワーク
        01  TBL-SRYACT-AREA.
            02  TBL-SRYACT-REC         OCCURS   10.
            COPY    "CPSRYACT.INC"     REPLACING
                                       //SRY-// BY //TBL-SRY-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
       *    COPY    "CPORCSKANACHK.INC".
       *
            COPY    "MCPDATA.INC".
@@ -146,14 +146,14 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ������������̾�Խ��ѥ�᥿
+      *    院外処方一般名編集パラメタ
            COPY    "CPORCSCGENNAME.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -162,7 +162,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -175,7 +175,7 @@
            PERFORM 100-INIT-SEC
       *
            IF      ORCSCGENN-INNAIKBN  =   "1"
-      *        �����Τ�
+      *        院外のみ
                PERFORM 200-MAIN-SEC
            END-IF
       *
@@ -203,12 +203,12 @@
            .
       *
       *****************************************************************
-      *    �����������
+      *    初期　　処理
       *****************************************************************
        100-INIT-SEC                      SECTION.
       *
            MOVE    "1"                 TO  ORCSCGENN-INNAIKBN 
-      *    ���⡦����Ƚ��
+      *    院内・院外判定
            IF      ORCSCGENN-SYORIKBN  =   "1"
                IF      (ORCSCGENN-SRYKBN   =   "21"
                                            OR  "22"
@@ -220,7 +220,7 @@
                                                OR  "231"
                                                OR  "294" )
                    OR  (ORCSCGENN-ZAITEN       >   ZERO  ))
-      *            ����
+      *            院内
                    MOVE    "0"                 TO  ORCSCGENN-INNAIKBN 
                END-IF
            END-IF
@@ -236,7 +236,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��������
+      *    診療日付
            IF      ORCSCGENN-SRYYMD    =   SPACE
                MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
            ELSE
@@ -246,7 +246,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -262,11 +262,11 @@
                        IF      ORCSCGENN-SRYCD (IDXB)(1:1) =   "6"
                            MOVE    ORCSCGENN-TBLMAX    TO  IDXB
                        ELSE
-      *                    ͽ�󥳡��ɥ����å�����
+      *                    予約コードチェック処理
                            PERFORM 20011-INP-HENSYU-SEC
                        END-IF
                    END-PERFORM
-      *            ̾���Խ�����
+      *            名称編集処理
                    PERFORM 2002-GENRICNAME-CHEK-SEC
                END-IF
            END-PERFORM
@@ -275,26 +275,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ�󥳡��ɥ����å�����
+      *    予約コードチェック処理
       *****************************************************************
        20011-INP-HENSYU-SEC      SECTION.
       *
            EVALUATE    ORCSCGENN-SRYCD (IDXB)
                WHEN    "099209903"
-      *            ��ȯ�����ʤ��ѹ��Բ�
+      *            後発医薬品へ変更不可
                    MOVE    1                   TO  FLG-FUKACHK
                    MOVE    1                   TO  FLG-IPNMEI
                WHEN    "099209905"
-      *            ���̵����ѹ��Բ�
+      *            含量規格変更不可
                    MOVE    1                   TO  FLG-FUKACHK2
                WHEN    "099209906"
-      *            �޷��ѹ��Բ�
+      *            剤型変更不可
                    MOVE    1                   TO  FLG-FUKACHK2
                WHEN    "099209907"
-      *            ����̾����
+      *            銘柄名記載
                    MOVE    1                   TO  FLG-IPNMEI
                WHEN    "099209908"
-      *            ����̾����
+      *            一般名記載
                    MOVE    2                   TO  FLG-IPNMEI
            END-EVALUATE
       *
@@ -303,27 +303,27 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������̾�Խ�����
+      *    院外処方せん一般名編集処理
       *****************************************************************
        2002-GENRICNAME-CHEK-SEC       SECTION.
       *
-      *    ����̾�ѹ��Բġʺޡ�����ͭ
+      *    一般名変更不可（剤）入力有
            IF     (FLG-IPNMEI              =   ZERO )
              AND  (ORCSCGENN-KOUHATU-IN    =   "1"  )
-      *        ����̾����
+      *        銘柄名記載
                MOVE    1                   TO  FLG-IPNMEI
            END-IF
       *
       *!!!!!!!!!!!!!!!
-      *    ����̾�ѹ��ġʺޡ�����ͭ
+      *    一般名変更可（剤）入力有
            IF     (FLG-IPNMEI              =   ZERO )
              AND  (ORCSCGENN-KOUHATU-IN    =   "2"  )
-      *        ����̾����
+      *        一般名記載
                MOVE    3                   TO  FLG-IPNMEI
            END-IF
       *
            IF      ORCSCGENN-SYORIKBN2     =   "1"
-      *       �����ޥ��������ʤ�
+      *       点数マスタ検索なし
                MOVE    ORCSCGENN-TNS-KOUHATUKBN (IDX)
                                            TO  WRK-KOUHATUKBN
                MOVE    ORCSCGENN-IPN-KISAIKBN (IDX)
@@ -332,10 +332,10 @@
                MOVE    ORCSGETGE-YAKKAKJNCD (IDX)
                                            TO  WRK-YAKKAKJNCD
            ELSE
-      *        �����ޥ�������
+      *        点数マスタ検索
                MOVE    ORCSCGENN-SRYCD (IDX)   TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
-      *        �������þ��󸡺�
+      *        点数附加情報検索
                IF     (FLG-TENSU           =   ZERO)
                    PERFORM 9101-TENSUPLUS-READ-SEC
                    MOVE    TNS-KOUHATUKBN      TO  WRK-KOUHATUKBN
@@ -344,14 +344,14 @@
                END-IF
            END-IF
       *
-      *    �ޥ����ΰ���̾���ܶ�ʬ�ʤ��Ǹ�ȯ�ʤλ��������ƥ����Ƚ��
+      *    マスタの一般名記載区分なしで後発品の時、システム管理判定
            IF     (WRK-IPN-KISAIKBN        =   0       )
              AND  (WRK-KOUHATUKBN          =   1
                                            OR  2
                                            OR  3
                                            OR  4
                                            OR  7       )
-      *        �ѹ��Ĥλ���ϡ�����̾
+      *        変更可の指定は、一般名
                IF       (ORCSCGENN-1030-KOUHATUKA    =   "1" )
       *!!!!!
                     OR  (FLG-IPNMEI            =   3 )
@@ -362,32 +362,32 @@
       *
            IF      WRK-IPN-KISAIKBN    =   1
                                        OR  3
-      *        ����̾���ܤ����ʤ���
+      *        一般名記載ありをなしへ
                IF     (FLG-IPNMEI          =   1    )
-      *            ����̾���ܡ���ȯ���ѹ��ԲĤ����Ϥ���
+      *            銘柄名記載・後発品変更不可の入力あり
                    MOVE    ZERO            TO  WRK-IPN-KISAIKBN
                END-IF
            ELSE
-      *        ����̾���ܤʤ��򤢤��
+      *        一般名記載なしをありへ
                IF      FLG-IPNMEI          =   2
-      *            ����̾���ܤ����Ϥ���
+      *            一般名記載の入力あり
                    MOVE    1               TO  WRK-IPN-KISAIKBN
                END-IF
            END-IF
       *
-      *    �ޥ��������ʤ�
+      *    マスタ検索なし
            IF     (ORCSCGENN-SYORIKBN2 =   "1" )
                IF     (WRK-IPN-KISAIKBN    =   1    )
                  AND  (ORCSCGENN-HEN-NAME(IDX)  =   SPACE )
-      *            ����̾̾���Խ�����
+      *            一般名名称編集処理
                    PERFORM 20011-GENRICNAME-HEN-SEC
                ELSE
-      *            ̾�ζ�ʬ���Խ�
+      *            名称区分の編集
                    MOVE    WRK-IPN-KISAIKBN    TO  ORCSCGENN-NAME-KBN
                                                                (IDX)
                END-IF
            ELSE
-      *        ����̾̾���Խ�����
+      *        一般名名称編集処理
                PERFORM 20011-GENRICNAME-HEN-SEC
            END-IF
            .
@@ -395,14 +395,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ����̾̾���Խ�����
+      *    一般名名称編集処理
       *****************************************************************
        20011-GENRICNAME-HEN-SEC         SECTION.
       *
-      *    ����̾���ܤ���
+      *    一般名記載あり
            IF      WRK-IPN-KISAIKBN    =   1
                PERFORM 9102-GENERICNAME-READ-SEC
-      *        ����̾�ơ��֥�ʤ��ϵ��ܤʤ�
+      *        一般名テーブルなしは記載なし
                IF      FLG-GENERICNAME     =   1
                    MOVE    ZERO            TO  WRK-IPN-KISAIKBN
                END-IF
@@ -410,19 +410,19 @@
       *
            IF     (WRK-IPN-KISAIKBN    =   2
                                        OR  3   )
-      *        ����̾��
+      *        処方名称
                MOVE    ORCSCGENN-SRYCD (IDX)   TO  TNS-SRYCD
                MOVE    WRK-SRYYMD          TO  TNS-YUKOSTYMD
                MOVE    WRK-SRYYMD          TO  TNS-YUKOEDYMD
-      *        ����̾�θ���
+      *        処方名称検索
                PERFORM 9101-TENSUPLUS-READ-SEC
            END-IF
       *
            EVALUATE    WRK-IPN-KISAIKBN
-      *        ����̾����
+      *        一般名記載
                WHEN    1
                    MOVE    SPACE               TO  WRK-GENERICNAME
-                   STRING  "���̢�"                DELIMITED  BY  SIZE
+                   STRING  "≪般≫"                DELIMITED  BY  SIZE
                            GENERIC-GENERICNAME     DELIMITED  BY  SPACE
                                                INTO    WRK-GENERICNAME
                    END-STRING
@@ -430,14 +430,14 @@
                    MOVE    GENERIC-TANINAME    TO  WRK-GEN-TANINAME
                    MOVE    TNS-YAKKAKJNCD      TO  WRK-YAKKAKJNCD
                    MOVE    "1"                 TO  WRK-NAME-KBN
-      *        ����̾�ε���
+      *        処方名称記載
                WHEN    2
                    MOVE    TNSP-SHONAME        TO  WRK-GENERICNAME
                    MOVE    "2"                 TO  WRK-NAME-KBN
-      *        ����̾�Τ����̾�ΤȤ���
+      *        処方名称を一般名称とする
                WHEN    3
                    MOVE    SPACE               TO  WRK-GENERICNAME
-                   STRING  "���̢�"                DELIMITED  BY  SIZE
+                   STRING  "≪般≫"                DELIMITED  BY  SIZE
                            TNSP-SHONAME            DELIMITED  BY  SPACE
                                                INTO    WRK-GENERICNAME
                    END-STRING
@@ -447,7 +447,7 @@
                    MOVE    "3"                 TO  WRK-NAME-KBN
            END-EVALUATE
       *
-      *    ��������̾��
+      *    処方せん名称
            MOVE    WRK-GENERICNAME     TO  ORCSCGENN-HEN-NAME (IDX)
            MOVE    WRK-NAME-KBN        TO  ORCSCGENN-NAME-KBN (IDX)
            MOVE    WRK-GEN-TANINAME    TO  ORCSCGENN-HEN-TANINAME(IDX)
@@ -456,7 +456,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -492,7 +492,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ղþ��󸡺�����
+      *    点数マスタ付加情報検索処理
       *****************************************************************
        9101-TENSUPLUS-READ-SEC          SECTION.
       *
@@ -529,7 +529,7 @@
        9101-TENSUPLUS-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����̾�ơ��֥븡������
+      *    一般名テーブル検索処理
       *****************************************************************
        9102-GENERICNAME-READ-SEC          SECTION.
       *
@@ -565,7 +565,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        900-SRYACT-READ-SEC         SECTION.
       *
@@ -583,7 +583,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -596,7 +596,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -610,7 +610,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -624,7 +624,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *

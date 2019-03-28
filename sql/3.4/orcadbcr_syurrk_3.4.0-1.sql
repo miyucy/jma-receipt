@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- ¼ıÇ¼ÍúÎò¥Æ¡¼¥Ö¥ë
+-- åç´å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«
 -- 
 -- Create Date : 2006/01/19         --
 --
@@ -145,5 +145,5 @@ CREATE TABLE "tbl_syurrk" (
 	Constraint "tbl_syurrk_primary_key" Primary Key ("hospid", "ptid", "nyugaikbn", "denpnum","syurrknum","syuedanum")
 );
 
-COMMENT ON TABLE "tbl_syurrk" IS '¼ıÇ¼ÍúÎò';
+COMMENT ON TABLE "tbl_syurrk" IS 'åç´å±¥æ­´';
 

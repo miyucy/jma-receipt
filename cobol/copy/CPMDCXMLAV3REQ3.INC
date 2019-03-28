@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,13 +16,13 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����ȿ��Ź԰���Ͽ���� (���β�)
+      *    ＡＰＩリクエスト診療行為登録情報 (一体化)
       *                                       COPY (CPMDCXMLAV3REQ3.INC)
-      *         �������Ź԰�����
+      *         入院診療行為内容
       ******************************************************************
        01  XML-MEDICALAV3REQ3.
            03  MDCREQ-CONTEXT          PIC S9(9)   BINARY.
@@ -30,36 +30,36 @@
            03  MDCREQ-MODE             PIC S9(9)   BINARY.
            03  MDCREQ-RECORDNAME       PIC X(128).
            03  MDCREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               05  MDCREQ-REQUEST-NUMBER    PIC X(2).
-      *       UID���Żҥ���ơ�
+      *       UID（電子カルテ）
               05  MDCREQ-KARTE-UID         PIC X(36).
-      *       �����ֹ�
+      *       患者番号
               05  MDCREQ-PATIENTID         PIC X(20).
-      *       ��������
+      *       診療日付
               05  MDCREQ-PERFORM-DATE      PIC X(10).
-      *       ���Ż���
+      *       診療時間
               05  MDCREQ-PERFORM-TIME      PIC X(8).
-      *       UID�ʥ��륫��
+      *       UID（オルカ）
               05  MDCREQ-ORCA-UID          PIC X(36).
-      *       ������ʬ
+      *       処理区分
               05  MDCREQ-PATIENT-MODE      PIC X(06).
       *
-      *       ��ưȯ���޺����ʬ�ʣ�����������
+      *       自動発生剤削除区分（１：削除あり）
               05  MDCREQ-MDC-MODE          PIC X(01).
-      *       ��ưȯ���޺��Ϣ��
+      *       自動発生剤削除連番
               05  MDCREQ-DEL-NUMBER-G.
                   07  MDCREQ-DEL-NUMBER        PIC X(02)
                                                OCCURS   30.
       *
-      *   Ģɼ�����ؼ���ʬ
+      *   帳票印刷指示区分
               05  MDCREQ-PRINT-AREA.
-      *           ��������������
+      *           院内処方せん印刷
                   07  MDCREQ-PRINT-SYOHOU      PIC X(01).
-      *           ���ͽ����������
+      *           注射処方せん印刷
                   07  MDCREQ-PRINT-CHUUSHA     PIC X(01).
-      *           �ؼ��������
+      *           指示せん印刷
                   07  MDCREQ-PRINT-SIJISEN     PIC X(01).
-      *           ȯ�԰��
+      *           発行医師
                   07  MDCREQ-PRINT-DRCD        PIC X(05).
       *

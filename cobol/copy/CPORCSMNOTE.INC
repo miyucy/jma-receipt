@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,59 +16,59 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      * ������Ģ�ǡ������極�֥ѥ�᥿     CPORCSMNOTE.INC    *
+      * お薬手帳データ制御サブパラメタ     CPORCSMNOTE.INC    *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSMNOTEAREA.
-      *    ������ʬ                              
+      *    処理区分                              
            03  SMNOTE-MODE         PIC X(03).
-      *    ����������     
+      *    復帰コード     
            03  SMNOTE-RETURN       PIC S9(03).
-      *    Ϣ��
+      *    連番
            03  SMNOTE-RENNUM       PIC 9(04).
-      *    �ˣţ�
+      *    ＫＥＹ
            03  SMNOTE-TBL-KEY      PIC X(08).
-      *    ���롼��
+      *    グループ
            03  SMNOTE-TBL-GROUP    PIC X(14).
-      *    ����ǯ��
+      *    診療年月
            03  SMNOTE-SRYYM        PIC X(06).
-      *    ����ǯ����
+      *    請求年月日
            03  SMNOTE-SRYYMD       PIC X(08).
-      *    ������ɣ�
+      *    シェルＩＤ
            03  SMNOTE-SHELLID      PIC X(20).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  SMNOTE-PTID         PIC 9(10).
-      *    ������Ϣ��
+      *    処理内連番
            03  SMNOTE-SHORI-RENNUM PIC 9(04).
-      *    �����ѥե饰	
+      *    印刷済フラグ	
            03  SMNOTE-PUTFLG       PIC X(01).
-      *    ������ʬ
+      *    入外区分
            03  SMNOTE-NYUGAIKBN    PIC X(01).
-      *    ���Ǽ���
+      *    先格納場所
            03  SMNOTE-TO-FOLDER    PIC X(200).
-      *    ��ե�����̾
+      *    先ファイル名
            03  SMNOTE-TO-DATA      PIC X(200).
-      *    �����ɶ�ʬ�ʶ��򡢣����ӡݣ��� �����ţգá�
+      *    コード区分（空白、１：Ｓ−ｊｉｓ ２：ＥＵＣ）
            03  SMNOTE-CODE-TYPE    PIC X(01).
-      *    Ģɼ�����ȥ�
+      *    帳票タイトル
            03  SMNOTE-TITLE        PIC X(100).
-      *    �գգɣ�
+      *    ＵＵＩＤ
            03  SMNOTE-TBL-UUID     PIC X(36).
-      *    ��̳������
+      *    業務コード
            03  SMNOTE-GYOUMU-CD    PIC 9(03).
-      *    ���Ͼ�ꥳ����
-      *    01:���Ź԰١������ǧ��
-      *    02:���Ź԰١����ӽ�λ��
-      *    03:���Ź԰١����������
+      *    出力場所コード
+      *    01:診療行為（請求確認）
+      *    02:診療行為（中途終了）
+      *    03:診療行為（前回処方）
            03  SMNOTE-LOCATION-CD  PIC X(02).
-      *    ��¸��CSV�ե�����̾(PATH��)
+      *    保存用CSVファイル名(PATH付)
            03  SMNOTE-CSVFILE      PIC X(255).
-      *    �ɥ�����������
+      *    ドクターコード
            03  SMNOTE-DRCD         PIC X(05).
-      *    Ģɼ�ǡ���
+      *    帳票データ
            03  SMNOTE-CSVDATA      PIC X(20000).
-      *    �ǡ����С������
+      *    データバージョン
            03  SMNOTE-DATA-VERSION PIC X(1).

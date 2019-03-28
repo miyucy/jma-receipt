@@ -1,11 +1,11 @@
 --                                              --
--- •”•Â°º∫∆∫Ó¿Æ                                 --
--- view_q001   æ»≤Ò£±                           --
--- view_q003   æ»≤Ò£≥                           --
--- view_q002   æ»≤Ò£≤                           --
--- view_i001   ∆˛±°¥µº‘æ»≤Ò                     --
--- view_bd001  º˝«º£±                           --
--- view_bd002  º˝«º£≤                           --
+-- „Éì„É•„ÉºÂÜç‰ΩúÊàê                                 --
+-- view_q001   ÁÖß‰ºöÔºë                           --
+-- view_q003   ÁÖß‰ºöÔºì                           --
+-- view_q002   ÁÖß‰ºöÔºí                           --
+-- view_i001   ÂÖ•Èô¢ÊÇ£ËÄÖÁÖß‰ºö                     --
+-- view_bd001  ÂèéÁ¥çÔºë                           --
+-- view_bd002  ÂèéÁ¥çÔºí                           --
 --                                              --
 -- Create Date : 2009/01/15                     --
 --                                              --
@@ -86,7 +86,7 @@ CREATE VIEW view_q001 AS
        AND view_q004.sryymd <= tbl_ptkohinf.tekedymd;
 
 COMMENT 
-        ON VIEW view_q001 IS '¥µº‘æ»≤Ò•”•Â°º1';
+        ON VIEW view_q001 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº1';
 
 
 CREATE VIEW view_q003 AS
@@ -116,12 +116,12 @@ CREATE VIEW view_q003 AS
       FROM tbl_nsrysrh;
 
 COMMENT 
-        ON VIEW view_q003 IS '¥µº‘æ»≤Ò•”•Â°º3';
+        ON VIEW view_q003 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº3';
 
 CREATE VIEW view_bd001 AS
     SELECT a.hospnum, a.ptid, b.ptnum, c.name, c.sex, c.birthday, a.sryka, a.denpprtymd, a.skymoney, a.nyukin_total FROM tbl_syunou_main a, tbl_ptnum b, tbl_ptinf c WHERE ((((((((a.hospnum = b.hospnum) AND (a.ptid = b.ptid)) AND (a.hospnum = c.hospnum)) AND (a.ptid = c.ptid)) AND (a.denpjtikbn <> '3')) AND (a.denpjtikbn <> '7')) AND (a.createkbn <> '3')) AND (c.tstptnumkbn <> '1'));
 
-COMMENT ON VIEW view_bd001 IS 'º˝«º•”•Â°º';
+COMMENT ON VIEW view_bd001 IS 'ÂèéÁ¥ç„Éì„É•„Éº';
 
 CREATE VIEW view_bd002 AS
     SELECT c.ptnum,
@@ -547,7 +547,7 @@ CREATE VIEW view_bd002 AS
        AND (d.tstptnumkbn <> '1'::bpchar));
 
 COMMENT 
-        ON VIEW view_bd002 IS 'º˝«º•”•Â°º2';
+        ON VIEW view_bd002 IS 'ÂèéÁ¥ç„Éì„É•„Éº2';
 
 
 CREATE view view_q002 as
@@ -560,7 +560,7 @@ UNION ALL
   WHERE a.hospnum = b.hospnum AND a.ptid = b.ptid AND a.zainum = b.zainum;
 
 COMMENT 
-        ON VIEW view_q002 IS '¥µº‘æ»≤Ò•”•Â°º2';
+        ON VIEW view_q002 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº2';
 
 CREATE VIEW view_i001 AS
     SELECT a.hospnum,
@@ -615,4 +615,4 @@ CREATE VIEW view_i001 AS
        AND (b.ptid = e.ptid))
        AND (b.rrknum = e.rrknum));
 
-COMMENT ON VIEW view_i001 IS '∆˛±°¥µº‘æ»≤Ò•”•Â°º';
+COMMENT ON VIEW view_i001 IS 'ÂÖ•Èô¢ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº';

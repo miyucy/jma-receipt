@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,23 +18,23 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSSANTEI.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : �������� ��������
-      *  �ֵѥ��顼������  : 00:���10:�ѥ�᡼���������оݥǡ����ʤ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  01.00.01    MCC-¿��Ǽ   02.05.17  ϫ�����ݸ���������ɲ�
-      *  01.00.02    NACL-¿��Ǽ  02.12.05  �������˼����������ν����������
-      *  01.00.03    NACL-¿��Ǽ  05.03.05  ��ʬ����ٻ�������ɲ�
-      *  01.00.04    NACL-¿��Ǽ  05/11/18  MONFUNC �б� ¾
-      *  03.03.00    NACL-¿��Ǽ  06/10/20  �����������ɲ�
-      *  03.04.00    NACL-¿��Ǽ  06/12/01  �����շ��ݽ���ɲ�
-      *  03.04.01    NACL-¿��Ǽ  07/03/XX  ��ϥӥ�������ɲá�H19.4������
-      *  03.05.00    NACL-¿��Ǽ  07/05/08  ���롼�׿����б�
-      *  04.05.00    NACL-¿��Ǽ  10/03/15  ʿ������ǯ��������б�
-      *  04.07.00    NACL-¿��Ǽ  11/08/XX  ���������ղåơ��֥����б�
-      *  04.07.00    NACL-¿��Ǽ  13/02/XX  ϫ�ҥ쥻�ť������б�(H25.7)
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 算定履歴 更新処理
+      *  返却エラーコード  : 00:正常　10:パラメータ不正・対象データなし
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01.00.01    MCC-多々納   02.05.17  労災用保険種別毎の追加
+      *  01.00.02    NACL-多々納  02.12.05  慢性疼痛疾患管理料の初回算定日修正
+      *  01.00.03    NACL-多々納  05.03.05  内分泌負荷試験点数の追加
+      *  01.00.04    NACL-多々納  05/11/18  MONFUNC 対応 他
+      *  03.03.00    NACL-多々納  06/10/20  矯正固定等追加
+      *  03.04.00    NACL-多々納  06/12/01  自賠責健保準拠追加
+      *  03.04.01    NACL-多々納  07/03/XX  リハビリ管理料追加（H19.4改正）
+      *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
+      *  04.05.00    NACL-多々納  10/03/15  平成２２年４月改正対応
+      *  04.07.00    NACL-多々納  11/08/XX  算定履歴付加テーブル削除対応
+      *  04.07.00    NACL-多々納  13/02/XX  労災レセ電コード対応(H25.7)
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -49,7 +49,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-TENSU           PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
@@ -68,7 +68,7 @@
            03  FLG-RKAN-OK         PIC 9(01).
            03  FLG-FUKA-CHK        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -78,12 +78,12 @@
            03  IDD                 PIC 9(02).
            03  IDX-RSI             PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD               PIC X(09).
            03  WRK-MAE-SRYCD           PIC X(09).
            03  WRK-SRYYMD              PIC X(08).
-      *    �������
+      *    初回算定日
            03  WRK-FSANTEIYMD          PIC X(08).
            03  WRK-MAE-FSANTEIYMD      PIC X(08).
            03  WRK-KON-FSANTEIYMD      PIC X(08).
@@ -91,9 +91,9 @@
            03  WRK-FSANTEIYMD-OLD      PIC X(08).
            03  WRK-FSANTEIYMD2         PIC X(08).
            03  WRK-SRYYM               PIC X(06).
-      *    �����å���ȯ����
+      *    チェック用発生日
            03  WRK-HASSYOYMD3          PIC X(08).
-      *    �����������
+      *    初診料算定日
            03  WRK-SYOYMD              PIC X(08).
            03  WRK-SYOSINYMD           PIC X(008).
            03  WRK-SYOSINYMD-1         PIC X(008).
@@ -121,9 +121,9 @@
       *
            03  WRK-KEI-TENSU           PIC 9(08).
       *
-      *    Ʊ�������������ɥơ��֥�
+      *    同一初回算定日コードテーブル
        01  TBL-AREA.
-      *    �������޴����û����ơ��֥�
+      *    特定薬剤管理加算料テーブル
            03  FILLER              PIC X(12)   VALUE   "01 113000410".
            03  FILLER              PIC X(12)   VALUE   "01 180000110".
            03  FILLER              PIC X(12)   VALUE   "01 180000210".
@@ -136,61 +136,61 @@
       *
        01  TBL-MAX                 PIC 9(04)   VALUE   4.
       *
-      *    �������˼���
+      *    慢性疼痛疾患
        01  WRK-MANSE-AREA.
            03  WRK-MANSEI          PIC X(09)   VALUE   "113006510".
       *
-      *    �ݸ��̻�������ơ��֥�
+      *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
-      *    ��ϥӥ�Ʊ�컻�ꥳ���ɥơ��֥�
+      *    リハビリ同一算定コードテーブル
            COPY   "CMRIHACDTBL.INC".
       *H25.7
-      *    ϫ�ҥ������ִ����ơ��֥� 
+      *    労災コード置換えテーブル 
            COPY   "CMRSICNGTBL.INC".
       *
-      *    ��������
+      *    算定履歴
        01  WRK-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //WRK-SANTEI-//.
-      *    ��������
+      *    算定履歴
        01  HZN-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //HZN-SANTEI-//.
-      *    ��������
+      *    算定履歴
        01  KEN-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //KEN-SANTEI-//.
-      *    ��������
+      *    算定履歴
        01  KEN2-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //KEN2-SANTEI-//.
-      *    ��������
+      *    算定履歴
        01  HZN2-SANTEI-REC.
            COPY    "CPSANTEI.INC"   REPLACING
                                     //SANTEI-// BY //HZN2-SANTEI-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ΰ�
+      *    共通領域
            COPY    "MCPAREA".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
            COPY    "CPTENSU.INC".
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ���������ղ�
+      *    算定履歴付加
        01  SANTEIPLUS-REC.
            COPY    "CPSANTEIPLUS.INC".
       *
-      *    ���Ų�����
+      *    診療科履歴
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
@@ -198,16 +198,16 @@
       **** COPY    "CPORCMCP.INC".
       **** COPY    "ORCA-DBPATH".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSSANTEI.INC".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
       *
@@ -216,14 +216,14 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -247,7 +247,7 @@
                   (SSANTEI-RSI-JUNKYO  =   SPACE )
                MOVE    SPA-RSI-JUNKYO  TO  SSANTEI-RSI-JUNKYO
            END-IF
-      *    ����ѹ�
+      *    回数変更
            IF      SSANTEI-KAISU       =   ZERO
                MOVE    1               TO  SSANTEI-KAISU
            END-IF
@@ -271,10 +271,10 @@
            END-IF
       *
            EVALUATE    SSANTEI-SYORI
-      *        �������ѹ�
+      *        新規、変更
                WHEN    "1"
                    PERFORM 200-SINKI-SYORI-SEC
-      *        �ѹ������
+      *        変更、削除
                WHEN    "3"
                    PERFORM 300-DELETE-SYORI-SEC
            END-EVALUATE
@@ -285,11 +285,11 @@
            .
       *
       *****************************************************************
-      *    ��������������
+      *    初回算定日決定処理
       *****************************************************************
        100-SYOKAI-SEC                SECTION.
       *
-      *    ���ǯ�����ϡ��������޼��Ŵ����û��ΤߤȤ���
+      *    初回年月日は、特定薬剤治療管理加算のみとする
            MOVE    SPACE               TO  WRK-KBN
            SET     TBL-IDX             TO  1
            SEARCH      TBL-OCC     VARYING   TBL-IDX
@@ -308,11 +308,11 @@
            MOVE    SPACE               TO  WRK-FSANTEIYMD
            MOVE    SPACE               TO  HZN-SANTEI-REC
       *
-      *    �оݥ����ɤν����
+      *    対象コードの初回回数
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    SPACE               TO  WRK-SRYYMD
            MOVE    SPACE               TO  WRK-FSANTEIYMD-OLD
-      *    �������򸡺��ʿ������߽��
+      *    算定履歴検索（診療日降順）
            MOVE    "key3"              TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
@@ -333,7 +333,7 @@
                END-IF
            END-IF
       *
-      *    Ʊ�컻�ꥳ���ɤ�����������٤Ƥǥ����å�
+      *    同一算定コードがある時、すべてでチェック
            SET     TBL-IDX             TO  1
            SEARCH      TBL-OCC     VARYING   TBL-IDX
                    AT  END
@@ -350,7 +350,7 @@
                IF     (TBL-KBN (TBL-IDX)   =   WRK-KBN )  AND
                       (TBL-SRYCD (TBL-IDX) NOT =   WRK-MAE-SRYCD )
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
-      *            �������򸡺�
+      *            算定履歴検索
                    MOVE    "key3"          TO  WRK-DBPATH
                    PERFORM 1001-SANTEI-KEN-SEC
                    PERFORM UNTIL   (FLG-SANTEI     =   1 )  OR
@@ -374,7 +374,7 @@
                END-IF
            END-PERFORM
       *
-      *    ¸�ߤ��ʤ���������ǯ��
+      *    存在しない時、診療年月
            IF      WRK-FSANTEIYMD      =   SPACE
                 MOVE    SSANTEI-SRYYMD     TO  WRK-FSANTEIYMD
            END-IF
@@ -386,11 +386,11 @@
                MOVE    WRK-FSANTEIYMD      TO  WRK-KON-FSANTEIYMD
                MOVE    1                   TO  FLG-SYOKAI
            END-IF
-      *    �������˼����������λ��������������������������Ϥ��
+      *    慢性疼痛疾患管理料の時、初診料算定日から初回算定日を始める
            IF     (WRK-MAE-SRYCD       =   WRK-MANSEI ) 
                PERFORM 1009-MANSE-CHK-SEC
            END-IF
-      *    ��ϥӥ��ش������λ����������ˤ�Ʊ�ͤν����Ȥ���
+      *    リハビリ医学管理料の時、慢性疼痛と同様の処理とする
            SET     TBL-SAN             TO  1
            SEARCH  TBL-SANTEI-OCC      VARYING   TBL-SAN
                AT  END
@@ -408,13 +408,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������ѹ�����
+      *    初回算定日の日変更処理
       *****************************************************************
        10010-MAE-SANTEI-HEN-SEC        SECTION.
       *
            MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
            MOVE    SPACE               TO  WRK-YMD3
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
@@ -445,7 +445,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      WRK-YMD3            =   SPACE
-      *        ¾������̵����
+      *        他の履歴が無い時
                MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
                MOVE    SANTEI-MSANTEID     TO  WRK-FSANTEIYMD (7:2)
            ELSE
@@ -453,7 +453,7 @@
            END-IF
       *
            MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "SANTEI-KEY4"       TO  WRK-DBPATH
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
@@ -492,7 +492,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������å�����
+      *    算定履歴チェック処理
       *****************************************************************
        1001-SANTEI-KEN-SEC                SECTION.
       *
@@ -503,7 +503,7 @@
             AND   (TNS-SRYKBN      NOT =   "80"   ))
                CONTINUE
            ELSE
-      *        �ãԡ��ͣңɤλ�����Υ����ɤ��ִ�����
+      *        ＣＴ、ＭＲＩの時算定のコードを置換える
                PERFORM 10010-SANTEI-SRYCD-SEC
                IF      WRK-SRYCD       NOT =   TNS-SRYCD
                    MOVE    WRK-SRYCD           TO  SSANTEI-SRYCD
@@ -518,10 +518,10 @@
       ************ MOVE    SPA-SRYKA           TO  SSANTEI-SRYKA
            END-EVALUATE
       *
-      *    �ݸ���Υ����ɤ�Ƚ��
+      *    保険毎のコードの判定
            PERFORM 1000-SANTEI-CHK-SEC
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SSANTEI-PTID        TO  SANTEI-PTID
@@ -544,7 +544,7 @@
                    MOVE    SSANTEI-NYUGAIKBN   TO  SANTEI-NYUGAIKBN
                    MOVE    SSANTEI-SRYKA       TO  SANTEI-SRYKA
            END-EVALUATE
-      *    ���ݰʳ����ݸ��̤λ����ݸ��򥻥å�
+      *    健保以外で保険別の時、保険をセット
            IF     (FLG-HKNSAN          =   1   )  AND
                   (SSANTEI-HKNKBN  NOT =   ZERO)
                MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
@@ -571,24 +571,24 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѥο��ť����ɤ��ѹ�����
+      *    算定用の診療コードへ変更処理
       *****************************************************************
        10010-SANTEI-SRYCD-SEC              SECTION.
       *
-      *    ���������ʬȽ��
+      *    包括逓減区分判定
            EVALUATE    TNS-HOUKATUTEIGENKBN
-      *        Ƭ��
+      *        頭部
                WHEN    201
                    MOVE    "099700101"         TO  WRK-SRYCD
-      *        ����
+      *        躯幹
                WHEN    202
                    MOVE    "099700102"         TO  WRK-SRYCD
-      *        �ͻ�
+      *        四肢
                WHEN    203
                    MOVE    "099700103"         TO  WRK-SRYCD
            END-EVALUATE
       *
-      *    ��ϥӥ�ơ�������H18/4�����
+      *    リハビリテーション（H18/4から）
            SET     TBL-RIH             TO  1
            SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
                    AT  END
@@ -598,8 +598,8 @@
                        MOVE    1               TO  FLG-RIHA-OK
            END-SEARCH
       *
-      *    �ȣ������������б�
-      *    ϫ�Ҹ�ͭ�Υ�ϥӥ�ơ��������
+      *    Ｈ２０．４から対応
+      *    労災固有のリハビリテーション料
            IF      SPA-HKNKBN          =   1
                IF     (WRK-SRYCD(1:3)      =   "101" )
                   AND (TNS-SRYKBN              =   "80"  )
@@ -609,7 +609,7 @@
                    MOVE    1                   TO  FLG-RIHA-OK
                END-IF
            END-IF
-      *    H22.4 ���顡�����Υ�ϥӥ��������ɤ϶�ʬ��Ƚ��
+      *    H22.4 から　新規のリハビリ料コードは区分で判定
            IF     (SSANTEI-SRYYMD          >=  "20100401")
               AND (FLG-RIHA-OK             =   ZERO    )
               AND (TNS-CDKBN-KBN           =   "H"     )
@@ -618,7 +618,7 @@
               AND (TNS-CDKBN-KBNNUM-EDA    =   "00"    )
                MOVE    1               TO  FLG-RIHA-OK
            END-IF
-      *    H28.4 ���Ѿɸ���
+      *    H28.4 廃用症候群
            IF     (SSANTEI-SRYYMD          >=  "20160401")
               AND (FLG-RIHA-OK             =   ZERO    )
               AND (TNS-CDKBN-KBN           =   "H"     )
@@ -635,11 +635,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������˼���������Ƚ�����
+      *    慢性疼痛疾患管理料判定処理
       *****************************************************************
        1009-MANSE-CHK-SEC      SECTION.
       *
-      *    ��������������ʤ��������Ų����򤫤黻��
+      *    初診料算定日がない時、診療科履歴から算定
            IF      SSANTEI-SYOYMD      =   SPACE
                MOVE    SSANTEI-SRYYMD(1:6)     TO  WRK-SRYYM
                PERFORM 10091-SRYKARRK-CHK-SEC
@@ -679,13 +679,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������Ƚ�����
+      *    初診料算定日判定処理
       *****************************************************************
        10091-SRYKARRK-CHK-SEC      SECTION.
       *
            MOVE    SPACE               TO  WRK-SYOSINYMD
-      **** �±�
-      *    Ϸ��
+      **** 病院
+      *    老人
       *    MOVE    "111700110"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
@@ -698,30 +698,30 @@
       *           (WRK-YMD             >   WRK-SYOSINYMD)
       *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
       *    END-IF
-      *    ���Ž�
-      *    Ϸ��
+      *    診療所
+      *    老人
       *    MOVE    "111700210"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
       *           (WRK-YMD             >   WRK-SYOSINYMD)
       *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
       *    END-IF
-      *    Ϸ�ͳ�
+      *    老人外
       *    MOVE    "111003610"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
       *           (WRK-YMD             >   WRK-SYOSINYMD)
       *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
       *    END-IF
-      *    �����ʿǻ���
-      *    ��������   ���
+      *    小児科診察料
+      *    院外処方   初診
       *    MOVE    "113003510"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
       *           (WRK-YMD             >   WRK-SYOSINYMD)
       *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
       *    END-IF
-      *    �����������   ���
+      *    　　院内処方   初診
       *    MOVE    "113003710"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
@@ -729,7 +729,7 @@
       *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
       *    END-IF
       *
-      *    ���ν����
+      *    仮の初診料
       *    MOVE    "099110001"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
@@ -737,7 +737,7 @@
       *        MOVE    WRK-YMD         TO  WRK-SYOSINYMD
       *    END-IF
       *
-      *    ϫ�ҽ����
+      *    労災初診料
       *    MOVE    "101110010"         TO  WRK-SRYCD
       *    PERFORM 100912-SANTEI-CHK-SEC
       *    IF     (WRK-SYOSINYMD       =   SPACE  )  OR
@@ -746,7 +746,7 @@
       ***  END-IF
       *
            MOVE    SPACE               TO  WRK-YMD
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
@@ -765,7 +765,7 @@
            END-IF
       *
            PERFORM UNTIL       FLG-SANTEI          =   1
-      *        ��λȽ��
+      *        終了判定
                IF      SANTEI-MSANTEICNT   >   ZERO
                    IF      SANTEI-SRYYM    <=  WRK-SRYYM
                        PERFORM VARYING     IDX-Y2  FROM    1  BY  1
@@ -796,21 +796,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ���Υ����ɤ�Ƚ�����
+      *    保険毎のコードの判定処理
       *****************************************************************
        100912-SANTEI-CHK-SEC      SECTION.
       *
-      *    �ݸ���Υ����ɤ�Ƚ��
+      *    保険毎のコードの判定
            PERFORM 1000-SANTEI-CHK-SEC
       *
            MOVE    SPACE               TO  WRK-YMD
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
            MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
            MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
-      *    ���ݰʳ����ݸ��̤λ����ݸ��򥻥å�
+      *    健保以外で保険別の時、保険をセット
            IF     (FLG-HKNSAN          =   1   )  AND
                   (SSANTEI-HKNKBN  NOT =   ZERO)
                MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
@@ -830,7 +830,7 @@
            END-IF
       *
            PERFORM UNTIL       FLG-SANTEI          =   1
-      *        ��λȽ��
+      *        終了判定
                IF      SANTEI-MSANTEICNT   >   ZERO
                    IF      SANTEI-SRYYM    <=  WRK-SRYYM
                        PERFORM VARYING     IDX-Y2  FROM    1  BY  1
@@ -841,7 +841,7 @@
                            END-IF
                        END-PERFORM
                        MOVE    SANTEI-SRYYM        TO  WRK-YMD(1:6)
-      *                ����������λ�����оݳ�
+      *                算定日より後の算定は対象外
                        IF     (SANTEI-SRYYM        =   WRK-SRYYM)
                          AND  (SSANTEI-SRYYMD      <   WRK-YMD  )
                            CONTINUE
@@ -865,7 +865,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ���Υ����ɤ�Ƚ�����
+      *    保険毎のコードの判定処理
       *****************************************************************
        1000-SANTEI-CHK-SEC      SECTION.
       *
@@ -880,7 +880,7 @@
                    MOVE    TBL-RIGAKU-RYO (TBL-SAN)
                                            TO  WRK-RIGAKU-RYO
            END-SEARCH
-      *    �ȣ�����������б�
+      *    Ｈ１８／４月から対応
            IF      WRK-RIGAKU-RYO      =   "H"
                IF      SSANTEI-SRYYMD  >=  "20060401"
                    MOVE    SPACE           TO  WRK-RIGAKU-RYO
@@ -890,20 +890,20 @@
                END-IF
            END-IF
       *H25.7
-      *    ϫ���ݸ��������ѹ�
+      *    労災保険コード変更
            IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
                   (SSANTEI-SRYYMD      >=  "20130701" )
                PERFORM 10009-RSICD-SANTEI-CHK-SEC
            END-IF
       *
-      *    �ȣ���ǯ������ɲäΥ����ɤϸ����Ƚ��
-      *     (COPY ���ɲä���Τϡ��ѥå������б��ǡ�
+      *    Ｈ２２年４月から追加のコードは固定で判定
+      *     (COPY に追加するのは、パッケージ対応で）
            IF      WRK-SRYCD           =   "099800181"
                                        OR  "099800182"
       *H28.4
              OR  (WRK-SRYCD(1:7)       =   "0998002"  )
-      *        ����������ϳ���������λ��
-      *        ���󴵼ԥ�ϳ���������λ��
+      *        早期・初期リハ開始日・終了日
+      *        がん患者リハ開始日・終了日
                MOVE    1                   TO  FLG-HKNSAN
                MOVE    SPACE               TO  WRK-RIGAKU-RYO
            END-IF
@@ -919,45 +919,45 @@
            EXIT.
       *
       *****************************************************************
-      *     �����̥�ϥӥ��ش���������
+      *     疾患別リハビリ医学管理料処理
       *****************************************************************
        10011-RIHAKANRI-SYORI-SEC             SECTION.
       *
            MOVE    SPACE               TO  WRK-STR-SRYCD
            EVALUATE    SSANTEI-SRYCD
-      *        �����ɼ���
+      *        心大血管疾患
                WHEN    "180029910"
                WHEN    "180030010"
                    MOVE    "099800111"         TO  WRK-STR-SRYCD
-      *        Ǿ��ɼ���
+      *        脳血管疾患
                WHEN    "180030110"
                WHEN    "180030210"
                    MOVE    "099800121"         TO  WRK-STR-SRYCD
-      *        ��ư��
+      *        運動器
                WHEN    "180030310"
                WHEN    "180030410"
                    MOVE    "099800131"         TO  WRK-STR-SRYCD
-      *        �Ƶ۴�
+      *        呼吸器
                WHEN    "180030510"
                WHEN    "180030610"
                    MOVE    "099800141"         TO  WRK-STR-SRYCD
            END-EVALUATE
            MOVE    SSANTEI-SRYYMD(1:6) TO  WRK-SRYYM
            MOVE    SPACE               TO  WRK-STR-YMD
-      *    ȯ��������
+      *    発生日検索
            MOVE    WRK-STR-SRYCD       TO  WRK-SRYCD
            PERFORM 100912-SANTEI-CHK-SEC
            MOVE    WRK-YMD             TO  WRK-STR-YMD
            MOVE    WRK-STR-YMD         TO  WRK-RIH-YMD
-      *    �������ˤ�Ʊ�ͤ˽����������ꤹ��
-      *    ��������������ʤ��������Ų����򤫤黻��
+      *    慢性疼痛と同様に初回算定日を決定する
+      *    初診料算定日がない時、診療科履歴から算定
            IF      SSANTEI-SYOYMD      =   SPACE
                MOVE    SSANTEI-SRYYMD(1:6)     TO  WRK-SRYYM
                PERFORM 10091-SRYKARRK-CHK-SEC
            ELSE
                MOVE    SSANTEI-SYOYMD      TO  WRK-SYOSINYMD
            END-IF
-      *    ��ǻ�������ꡢȯ��������λ�
+      *    初診算定日より、発生日が後の時
            IF      WRK-SYOSINYMD       <   WRK-RIH-YMD
                MOVE    WRK-RIH-YMD         TO  WRK-SYOSINYMD
            END-IF
@@ -992,11 +992,11 @@
       *
       *H25.7
       *****************************************************************
-      *    ϫ�ҥ������ݸ���Υ����ɤ�Ƚ�����
+      *    労災コード保険毎のコードの判定処理
       *****************************************************************
        10009-RSICD-SANTEI-CHK-SEC      SECTION.
       *
-      *    ϫ�ҤΥ����ɤ�Ƚ��
+      *    労災のコードの判定
            SET     TBL-RCN             TO  1
            SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
                AT  END
@@ -1023,13 +1023,13 @@
       *!!!!!!!!!!!!!! 
       *
       *****************************************************************
-      *     �������ѹ�����
+      *     新規、変更処理
       *****************************************************************
        200-SINKI-SYORI-SEC             SECTION.
       *
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "key"               TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
       *
@@ -1037,14 +1037,14 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ���ݰʳ����ݸ��̤λ���3�����Ϻ����ʤ�
+      *    健保以外で保険別の時、3月以内は作成なし
       *DDDDIF     (FLG-HKN-SANTEI      =   1   )  AND
       *           (SPA-HKNKBN      NOT =   ZERO)  AND
       *********** (SSANTEI-SRYYMD(1:6) <   SPA-RSI-HASSYOYMD3(1:6))
       *           (SSANTEI-SRYYMD(1:6) <   WRK-HASSYOYMD3(1:6))
       *         GO      TO      200-SINKI-SYORI-EXT
       ***** END-IF
-      *    ���ݰʳ��ǣãԡ��ͣңɤκ����ʤ�
+      *    健保以外でＣＴ・ＭＲＩの作成なし
            IF      SSANTEI-HKNKBN      =   SPACE
                MOVE    SPA-HKNKBN      TO  SSANTEI-HKNKBN
            END-IF
@@ -1059,7 +1059,7 @@
       *
            IF      FLG-SANTEI          =   1
       *
-      *DDDDDDD ���ݰʳ����ݸ��̤λ���3�����Ϻ����ʤ�
+      *DDDDDDD 健保以外で保険別の時、3月以内は作成なし
       *        IF     (FLG-HKN-SANTEI      =   1   )  AND
       *               (SPA-HKNKBN      NOT =   ZERO)  AND
       ****************(SSANTEI-SRYYMD      <    SPA-RSI-HASSYOYMD3)
@@ -1068,13 +1068,13 @@
       *****    END-IF
                MOVE    1                   TO  FLG-SYORI
       *
-      *        �����������
+      *        初回算定日決定
                PERFORM 100-SYOKAI-SEC
       *
                MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
                MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
       *
-      *        �����ɲ��Խ�
+      *        新規追加編集
                INITIALIZE                  SANTEI-REC
                MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    SSANTEI-PTID        TO  SANTEI-PTID
@@ -1094,33 +1094,33 @@
                        MOVE    SSANTEI-NYUGAIKBN   TO  SANTEI-NYUGAIKBN
                        MOVE    SSANTEI-SRYKA       TO  SANTEI-SRYKA
                END-EVALUATE
-      *        ���ݰʳ����ݸ��̤λ����ݸ��򥻥å�
+      *        健保以外で保険別の時、保険をセット
                IF     (FLG-HKNSAN          =   1   )  AND
                       (SSANTEI-HKNKBN  NOT =   ZERO)
                    MOVE    SSANTEI-HKNCOMBINUM TO  SANTEI-HKNCOMBINUM
                ELSE
                    MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
                END-IF
-      *        �������
+      *        初回算定日
                MOVE    WRK-FSANTEIYMD      TO  SANTEI-FSANTEIYMD
                MOVE    WRK-SRYYMD(7:2)     TO  SANTEI-MSANTEID
-      *        ��ʬ����ٻ��
+      *        内分泌負荷試験用
                IF      SSANTEI-MSANTEITEN  >   ZERO
-      *            ����������оݥե饰
+      *            当月算定点数対象フラグ
                    MOVE    1                   TO  SANTEI-MSANTEIFLG
-      *            ���������
+      *            当月算定点数
                    MOVE    SSANTEI-MSANTEITEN  TO  SANTEI-MSANTEITEN
-      *            �����������ʬ
+      *            当月算定点数区分
                    MOVE    SSANTEI-MSANTEITENKBN
                                                TO  SANTEI-MSANTEITENKBN
                END-IF
       *
-      *        ��ʬ����ô���
+      *        内分泌負担試験用
                INITIALIZE                      KEN-SANTEI-REC
            ELSE
-      *        ��ʬ����ô���
+      *        内分泌負担試験用
                MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
-      *        ����
+      *        修正
                IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
                    MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                    PERFORM 10010-MAE-SANTEI-HEN-SEC
@@ -1134,10 +1134,10 @@
                       (SANTEI-MSANTEID     =   ZERO       )
                    MOVE    IDX-Y2          TO  SANTEI-MSANTEID
                END-IF
-      *        ��ʬ����ٻ��
+      *        内分泌負荷試験用
                IF      SSANTEI-MSANTEITEN  >   ZERO
                    MOVE    ZERO                TO  FLG-FUKA-CHK
-      *            �����ܤ���λ������Τޤޡʣ����ܤ�������
+      *            １回目が後の時、そのまま（１回目の訂正）
                    PERFORM VARYING     IDD     FROM    1   BY  1
                            UNTIL       IDD     >   31
                        IF     (SANTEI-DAY (IDD)    >   ZERO )
@@ -1146,12 +1146,12 @@
                            MOVE    31              TO  IDD
                        END-IF
                    END-PERFORM
-      *            ����������оݥե饰
+      *            当月算定点数対象フラグ
                    MOVE    1                   TO  SANTEI-MSANTEIFLG
                    IF     (FLG-FUKA-CHK        =   ZERO )
-      *            ���������
+      *            当月算定点数
                        MOVE    SSANTEI-MSANTEITEN  TO  SANTEI-MSANTEITEN
-      *            �����������ʬ
+      *            当月算定点数区分
                        MOVE    SSANTEI-MSANTEITENKBN
                                                TO  SANTEI-MSANTEITENKBN
                    END-IF
@@ -1163,15 +1163,15 @@
                    IF      SSANTEI-KAISU       =   ZERO
                        MOVE    1               TO  SSANTEI-KAISU
                    END-IF
-      *            ���������
+      *            当月算定歴回数
                    ADD     SSANTEI-KAISU       TO  SANTEI-MSANTEICNT
-      *            ����������
+      *            当日算定日
                    MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
                    ADD     SSANTEI-KAISU       TO  SANTEI-DAY (IDX-Y2)
                WHEN    "J02"
                    MOVE    ZERO                TO  SANTEI-MSANTEID
                    MOVE    ZERO                TO  SANTEI-MSANTEICNT
-      *            ����ʬ��������
+      *            前回分を削除する
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                            UNTIL       IDX-Y2  >   31
                        IF      SANTEI-DAY (IDX-Y2) <   SSANTEI-MAE-DAY
@@ -1184,7 +1184,7 @@
                                                              (IDX-Y2)
                        END-IF
                    END-PERFORM
-      *            ��Ͽ�������˿��������äƤ���
+      *            登録する日に数字が入っている
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                            UNTIL       IDX-Y2  >   31
                        IF      SSANTEI-DAY (IDX-Y2)    >   ZERO
@@ -1202,7 +1202,7 @@
                WHEN    "J04"
                    MOVE    ZERO                TO  SANTEI-MSANTEID
                    MOVE    ZERO                TO  SANTEI-MSANTEICNT
-      *            ��Ͽ�������˿��������äƤ���
+      *            登録する日に数字が入っている
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                            UNTIL       IDX-Y2  >   31
                        IF      SSANTEI-DAY (IDX-Y2)    >   ZERO
@@ -1219,7 +1219,7 @@
                    END-PERFORM
            END-EVALUATE
       *
-      *DDD ���ݰʳ����ݸ��̤λ���3�����Ϻ����ʤ�
+      *DDD 健保以外で保険別の時、3月以内は作成なし
       *    IF     (FLG-HKN-SANTEI      =   1   )  AND
       *           (WRK-RIGAKU-RYO  NOT =   SPACE) AND
       *           (SPA-HKNKBN      NOT =   ZERO)  AND
@@ -1230,7 +1230,7 @@
       *
            IF      FLG-SYORI           =   1
                IF      SANTEI-MSANTEIFLG   =   1
-      *            ��ʬ����ô���
+      *            内分泌負担試験用
                    MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
                    MOVE    1                   TO  FLG-NAIBUN-ADD
                END-IF
@@ -1245,19 +1245,19 @@
                    END-IF
                END-IF
            ELSE
-      *        ��ʬ����ٻ����ե饰
+      *        内分泌負荷試験削除フラグ
                IF      SANTEI-MSANTEIFLG   =   1
                    IF      SANTEI-MSANTEICNT   =   ZERO
                        MOVE    1               TO  FLG-NAIBUN-DEL
                    ELSE
                        MOVE    1               TO  FLG-NAIBUN-ADD
-      *                ��ʬ����ô���
+      *                内分泌負担試験用
                        MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
                    END-IF
                END-IF
-      *        ��������ѹ������å�
+      *        初回算定日変更チェック
                PERFORM 2001-SYOKAI-CHK-SEC
-      *        ����
+      *        修正
                PERFORM 510-SANTEI-UPD-SEC
       *
                IF      FLG-SYOKAI          =   1
@@ -1265,7 +1265,7 @@
                END-IF
            END-IF
       *
-      *    ��ʬ����ٻ��繹��
+      *    内分泌負荷試験包括更新
            IF     (FLG-NAIBUN-ADD      =   1 )  OR
                   (FLG-NAIBUN-DEL      =   1 )
                PERFORM 3001-NAIBUNFUKA-UPD-SEC
@@ -1279,11 +1279,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ݰʳ����ݸ��̤λ�����ơ��֥��ѹ�
+      *    健保以外で保険別の時算定テーブル変更
       *****************************************************************
        2009-SSANTEI-RSI-SEC                SECTION.
       *
-      *    �����������������ѹ�
+      *    月回数と当月初回日の変更
            MOVE    ZERO                TO  SANTEI-MSANTEICNT
            MOVE    ZERO                TO  SANTEI-MSANTEID
       *
@@ -1307,12 +1307,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ѹ������å�
+      *    初回算定日変更チェック
       *****************************************************************
        2001-SYOKAI-CHK-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOKAI
-      *    ������������������
+      *    更新前の当月初回算定日
            IF    ((WRK-MAE-YMD         =   SANTEI-FSANTEIYMD ) AND
                   (WRK-MAE-DD      NOT =   SANTEI-MSANTEID   ))
                MOVE    SANTEI-SRYYM        TO  WRK-KON-FSANTEIYMD(1:6)
@@ -1324,7 +1324,7 @@
                MOVE    SANTEI-REC          TO  WRK-SANTEI-REC
                PERFORM 20011-SANTEI-CHK-SEC
                MOVE    WRK-SANTEI-REC      TO  SANTEI-REC
-      *        ����������������Ȱ㤦�Ȥ�����
+      *        今回初回算定日が前回と違うとき修正
                IF      WRK-KON-FSANTEIYMD  NOT =   SANTEI-FSANTEIYMD
                    MOVE    1               TO  FLG-SYOKAI
                END-IF
@@ -1336,11 +1336,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ѹ�����
+      *    初回算定日変更処理
       *****************************************************************
        20011-SANTEI-CHK-SEC                SECTION.
       *
-      *    Ʊ�컻�ꥳ���ɤ�����������٤Ƥǥ����å�
+      *    同一算定コードがある時、すべてでチェック
            SET     TBL-IDX             TO  1
            SEARCH      TBL-OCC     VARYING   TBL-IDX
                    AT  END
@@ -1352,7 +1352,7 @@
            MOVE    WRK-SRYCD           TO  WRK-MAE-SRYCD
            MOVE    SPACE               TO  WRK-YMD3
       *
-      *    Ʊ���������ǡ������ѹ���������������н�������ˤ���
+      *    同一初回算定日で、今回変更以前の日があれば初回算定日にする
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   TBL-MAX  )  OR
                               (WRK-KBN     =   SPACE    )
@@ -1360,7 +1360,7 @@
                IF      TBL-KBN (TBL-IDX)   =   WRK-KBN
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
                    MOVE    WRK-MAE-FSANTEIYMD      TO  WRK-FSANTEIYMD
-      *            �������򸡺�
+      *            算定履歴検索
                    MOVE    "key4"              TO  WRK-DBPATH
                    PERFORM 1001-SANTEI-KEN-SEC
                    PERFORM UNTIL     FLG-SANTEI    =   1
@@ -1391,13 +1391,13 @@
        20011-SANTEI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        300-DELETE-SYORI-SEC                SECTION.
       *
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
            MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "key"               TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
       *
@@ -1405,7 +1405,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ���ݰʳ����ݸ��̤λ���3�����Ϻ����ʤ�
+      *    健保以外で保険別の時、3月以内は作成なし
       *DDD IF     (FLG-HKN-SANTEI      =   1   )  AND
       *           (SPA-HKNKBN      NOT =   ZERO)  AND
      ***********  (SSANTEI-SRYYMD(1:6) <   SPA-RSI-HASSYOYMD3(1:6))
@@ -1413,7 +1413,7 @@
       *         GO      TO      300-DELETE-SYORI-EXT
       ***** END-IF
       *
-      *    ���ݰʳ��ǣãԡ��ͣңɤκ����ʤ��ʼ����շ��ݽ��ʳ���
+      *    健保以外でＣＴ・ＭＲＩの作成なし（自賠責健保準拠以外）
       *****IF     (SSANTEI-HKNKBN  NOT =   ZERO   )  AND
       **********  (SSANTEI-RSI-HKNKBN  NOT =   "5" )  AND
            IF     (SSANTEI-HKNKBN      =   1      )  AND
@@ -1425,15 +1425,15 @@
             END-IF
       *
       *!!!
-      *    ���������ղþ�����
+      *    算定履歴付加情報削除
            IF      SSANTEI-SYORI2      =   "2"
                IF      FLG-SANTEI      =   1
-      *            �������򤬤ʤ���
+      *            算定履歴がない時
                    MOVE    HZN2-SANTEI-REC     TO  SANTEI-REC
                    MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
                    PERFORM 30010-SANTEIPLUS-DEL-SEC
                ELSE
-      *            �������������λ�
+      *            算定回数がゼロの時
                    MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
                    IF      SANTEI-DAY (IDX-Y2) =   ZERO
                        PERFORM 30010-SANTEIPLUS-DEL-SEC
@@ -1442,21 +1442,21 @@
       *!!!
                GO      TO      300-DELETE-SYORI-EXT
            END-IF
-      *    �оݥǡ�����̵��������λ
+      *    対象データが無い時、終了
            IF      FLG-SANTEI          =   1
                GO      TO      300-DELETE-SYORI-EXT
            END-IF
       *
-      *    ������������������ξ�����ѹ�
+      *    初回算定日の日がゼロの場合一括変更
            IF      SANTEI-FSANTEIYMD(7:2)  =   ZERO
                MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
                PERFORM 10010-MAE-SANTEI-HEN-SEC
                MOVE    HZN-SANTEI-REC      TO  SANTEI-REC
            END-IF
-      *    ��ʬ����ô���
+      *    内分泌負担試験用
            MOVE    SANTEI-REC          TO  KEN-SANTEI-REC
       *
-      *    �ѹ����ν��������¸
+      *    変更前の初回算定日保存
            MOVE    SANTEI-SRYYM        TO  WRK-MAE-YMD(1:6)
            MOVE    SANTEI-MSANTEID     TO  WRK-MAE-DD
       *
@@ -1467,14 +1467,14 @@
                    IF      SSANTEI-KAISU       =   ZERO
                        MOVE    1               TO  SSANTEI-KAISU
                    END-IF
-      *            ���������
+      *            当月算定歴回数
                    IF      SANTEI-MSANTEICNT   <   SSANTEI-KAISU
                        MOVE    ZERO            TO  SANTEI-MSANTEICNT
                    ELSE
                        COMPUTE SANTEI-MSANTEICNT   =   SANTEI-MSANTEICNT
                                                    -   SSANTEI-KAISU
                    END-IF
-      *            ����������
+      *            当日算定日
                    MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
                    IF      SANTEI-DAY (IDX-Y2) <   SSANTEI-KAISU
                        MOVE    ZERO            TO  SANTEI-DAY (IDX-Y2)
@@ -1489,13 +1489,13 @@
                            UNTIL       IDX2    >   31
                        IF      SANTEI-DAY (IDX2)   >   ZERO
                            IF      SANTEI-MSANTEID     =   ZERO
-      *                        ����������
+      *                        当月初回算定日
                                MOVE    IDX2        TO  SANTEI-MSANTEID
                            END-IF
-      *                    ���
+      *                    回数
                            ADD     SANTEI-DAY (IDX2)
                                                    TO  SANTEI-MSANTEICNT
-      *                    ���������˻��꤬�����
+      *                    削除日より後に算定がある時
                            IF      IDX2            >   IDX-Y2
                                MOVE    1           TO  FLG-FUKA-CHK
                            END-IF
@@ -1506,7 +1506,7 @@
                WHEN    "J04"
                    MOVE    ZERO                TO  SANTEI-MSANTEID
                    MOVE    ZERO                TO  SANTEI-MSANTEICNT
-      *            ����������˿��������äƤ���
+      *            削除する日に数字が入っている
                    PERFORM VARYING     IDX-Y2  FROM    1   BY  1
                            UNTIL       IDX-Y2  >   31
                        IF      SSANTEI-DAY (IDX-Y2)    >   ZERO
@@ -1529,7 +1529,7 @@
                    END-PERFORM
            END-EVALUATE
       *
-      *    ���ݰʳ����ݸ��̤λ���3�����Ϻ����ʤ�
+      *    健保以外で保険別の時、3月以内は作成なし
       *DDD IF     (FLG-HKN-SANTEI      =   1   )  AND
       *           (SPA-HKNKBN      NOT =   ZERO)  AND
       ************(SSANTEI-SRYYMD(1:6) =   SPA-RSI-HASSYOYMD3(1:6))
@@ -1537,13 +1537,13 @@
       *        PERFORM 2009-SSANTEI-RSI-SEC
       ***  END-IF
       *
-      *    ��ʬ����ٻ����ե饰
+      *    内分泌負荷試験削除フラグ
            IF      SANTEI-MSANTEIFLG   =   1
                MOVE    1               TO  FLG-NAIBUN-DEL
                IF     (SSANTEI-PG          =   "K03"  )  AND
                       (SANTEI-MSANTEICNT   >   ZERO   )  AND
                       (FLG-FUKA-CHK        =   ZERO   )
-      *            ����ǣ���Ȥʤä���
+      *            削除で１回となった時
                    IF     (KEN-SANTEI-MSANTEICNT   >   1 )
                     AND   (KEN-SANTEI-MSANTEITEN   =   800 )
                        MOVE    1               TO  SANTEI-MSANTEITENKBN
@@ -1552,37 +1552,37 @@
                END-IF
             END-IF
            IF      SANTEI-MSANTEICNT   =   ZERO
-      *        ��������ѹ������å�
+      *        初回算定日変更チェック
                PERFORM 2003-DEL-SYOKAI-SEC
-      *        ���
+      *        削除
                PERFORM 520-SANTEI-DEL-SEC
            ELSE
-      *        ��������ѹ������å�
+      *        初回算定日変更チェック
                PERFORM 2001-SYOKAI-CHK-SEC
-      *        ����
+      *        修正
                PERFORM 510-SANTEI-UPD-SEC
            END-IF
       *
-      *    ���������ղþ����Ƚ��
+      *    算定履歴付加情報の判定
            MOVE    ZERO                TO  SSANTEI-SANTEIPLUS
            MOVE    WRK-SRYYMD(7:2)     TO  IDX-Y2
            IF     (SSANTEI-SRYCD(1:7)  =   "0998001")
             AND   (SANTEI-DAY (IDX-Y2) =   ZERO    )
                PERFORM 30010-SANTEIPLUS-CHK-SEC
            END-IF
-      *    ���������ղþ���κ��
+      *    算定履歴付加情報の削除
            IF     (SSANTEI-SYORI2      =   "1" )
             AND   (SSANTEI-SANTEIPLUS  =   1   )
                PERFORM 30010-SANTEIPLUS-DEL-SEC
                MOVE    ZERO                TO  SSANTEI-SANTEIPLUS
            END-IF
       *
-      *    ���٤Ƥν�������ѹ�
+      *    すべての初回回数の変更
            IF      FLG-SYOKAI          =   1
                PERFORM 400-SANTEI-ALLUPD-SEC
            END-IF
       *
-      *    ��ʬ����ٻ��繹��
+      *    内分泌負荷試験包括更新
            IF      FLG-NAIBUN-DEL      =   1
                MOVE    1               TO  SSANTEI-MSANTEIDEL
                PERFORM 3001-NAIBUNFUKA-UPD-SEC
@@ -1593,19 +1593,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ѹ������å�
+      *    削除初回算定日変更チェック
       *****************************************************************
        2003-DEL-SYOKAI-SEC                SECTION.
       *
            MOVE    ZERO                TO  FLG-SYOKAI
            MOVE    SANTEI-REC          TO  WRK-SANTEI-REC
-      *    ������������������
+      *    更新前の当月初回算定日
            IF     (WRK-MAE-YMD         =   SANTEI-FSANTEIYMD )
                MOVE    SANTEI-FSANTEIYMD   TO  WRK-MAE-FSANTEIYMD
                MOVE    SPACE               TO  WRK-KON-FSANTEIYMD
                PERFORM 20011-SANTEI-CHK-SEC
                MOVE    WRK-SANTEI-REC      TO  SANTEI-REC
-      *        ����������������Ȱ㤦�Ȥ�����
+      *        今回初回算定日が前回と違うとき修正
                IF      WRK-KON-FSANTEIYMD  NOT =   SANTEI-FSANTEIYMD
                    MOVE    1               TO  FLG-SYOKAI
                END-IF
@@ -1621,7 +1621,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������ѹ�
+      *    削除時、初回算定日変更
       *****************************************************************
        30011-DEL-SYOKAI-CHK-SEC        SECTION.
       *
@@ -1638,7 +1638,7 @@
                SET     TBL-IDX             TO  IDX
                IF      TBL-KBN (TBL-IDX)   =   WRK-KBN
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
-      *            ���������������ѹ�����
+      *            算定履歴初回算定日変更処理
                    PERFORM 300111-DEL-SYOKAI-SEC
                END-IF
            END-PERFORM
@@ -1661,10 +1661,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������������Ƚ�����
+      *    全算定履歴初回算定日判定処理
       *****************************************************************
        300111-DEL-SYOKAI-SEC                SECTION.
-      *    �������򸡺�
+      *    算定履歴検索
            IF      WRK-SRYCD           =   WRK-MANSEI
                MOVE    "key4"          TO  WRK-DBPATH
            ELSE
@@ -1697,7 +1697,7 @@
            EXIT.
       *!!!!
       *****************************************************************
-      *    ��ϥӥ곫�����λ��������ղþ���������
+      *    リハビリ開始日の算定履歴付加情報削除処理
       *****************************************************************
        30010-SANTEIPLUS-CHK-SEC         SECTION.
       *
@@ -1725,7 +1725,7 @@
            MOVE    "tbl_santeiplus"    TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���������ղþ��󤢤�
+      *    算定履歴付加情報あり
            IF      FLG-SANTEIPLUS      =   ZERO
                MOVE    1                   TO  SSANTEI-SANTEIPLUS
            END-IF
@@ -1733,11 +1733,11 @@
        30010-SANTEIPLUS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ϥӥ곫�����λ��������ղþ���������
+      *    リハビリ開始日の算定履歴付加情報削除処理
       *****************************************************************
        30010-SANTEIPLUS-DEL-SEC         SECTION.
       *
-      *    �������λ��������ղþ������
+      *    今回削除の算定履歴付加情報を削除
            INITIALIZE                  SANTEIPLUS-REC
            MOVE    SANTEI-HOSPNUM      TO  SANTEIPLUS-HOSPNUM
            MOVE    SANTEI-PTID         TO  SANTEIPLUS-PTID
@@ -1766,13 +1766,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������������ѹ�����
+      *    全算定履歴初回算定日変更処理
       *****************************************************************
        400-SANTEI-ALLUPD-SEC                SECTION.
       *
-      *    ���٤Ƥλ�������ν���������ѹ�����
+      *    すべての算定履歴の初回算定日を変更する
            MOVE    SSANTEI-SRYCD       TO  WRK-SRYCD
-      *    ���������������ѹ�����
+      *    算定履歴初回算定日変更処理
            PERFORM 3002-SANTEI-UPD-SEC
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1781,7 +1781,7 @@
                SET     TBL-IDX             TO  IDX
                IF      TBL-KBN (TBL-IDX)   =   WRK-KBN
                    MOVE    TBL-SRYCD (TBL-IDX)     TO  WRK-SRYCD
-      *            ���������������ѹ�����
+      *            算定履歴初回算定日変更処理
                    PERFORM 3002-SANTEI-UPD-SEC
                END-IF
            END-PERFORM
@@ -1791,12 +1791,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������������ ����
+      *    算定履歴初回算定日検索 処理
       *****************************************************************
        3002-SANTEI-UPD-SEC                SECTION.
       *
            MOVE    WRK-MAE-FSANTEIYMD  TO  WRK-FSANTEIYMD
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "key4"              TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM
@@ -1818,12 +1818,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �������˻�Ƴ��������������ѹ�����
+      *    慢性疼痛指導管理料初回算定日変更処理
       *****************************************************************
        400-SANTEI-MANSEI-SEC         SECTION.
       *
            MOVE    WRK-FSANTEIYMD-OLD  TO  WRK-FSANTEIYMD
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "key4"              TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            PERFORM
@@ -1844,13 +1844,13 @@
        400-SANTEI-MANSEI-EXT.
            EXIT.
       *****************************************************************
-      *    ��ʬ����ٻ��繹������
+      *    内分泌負荷試験包括更新処理
       *****************************************************************
        3001-NAIBUNFUKA-UPD-SEC         SECTION.
       *
            MOVE    "099600801"         TO  WRK-SRYCD
            MOVE    SSANTEI-SRYYMD      TO  WRK-SRYYMD
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    "key"                TO  WRK-DBPATH
            PERFORM 1001-SANTEI-KEN-SEC
            MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -1863,9 +1863,9 @@
                MOVE    ZERO                TO  KEN2-SANTEI-MSANTEICNT
                INITIALIZE                      KEN2-SANTEI-DAY-AREA
                MOVE    ZERO                TO  KEN2-SANTEI-MSANTEITEN
-      *        ����ʬ�ν���
+      *        当月分の集計
                PERFORM 30011-NAIBUFUKA-SUM-SEC
-      *        ����������
+      *        当月初回算定日
                MOVE    KEN2-SANTEI-REC     TO  SANTEI-REC
                PERFORM VARYING     IDX2    FROM   1   BY  1
                        UNTIL       IDX2    >   31
@@ -1873,7 +1873,7 @@
                        IF      SANTEI-MSANTEID     =   ZERO
                            MOVE    IDX2        TO  SANTEI-MSANTEID
                         END-IF
-      *                 ���
+      *                 回数
                         ADD     SANTEI-DAY (IDX2)
                                                    TO  SANTEI-MSANTEICNT
                    END-IF
@@ -1881,13 +1881,13 @@
                IF      (SANTEI-MSANTEITEN      =   ZERO )  AND
                        (SANTEI-MSANTEICNT      =   ZERO )  AND
                        (SANTEI-MSANTEID        =   ZERO )
-      *            ��ٻ��̵���������
+      *            負荷試験が無い時、削除
                    PERFORM 520-SANTEI-DEL-SEC
                ELSE
                    PERFORM 510-SANTEI-UPD-SEC
                END-IF
            ELSE
-      *    ����
+      *    新規
                INITIALIZE                  SANTEI-REC
                MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
                MOVE    KEN-SANTEI-PTID     TO  SANTEI-PTID
@@ -1895,17 +1895,17 @@
                MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
                MOVE    ZERO                TO  SANTEI-NYUGAIKBN
                MOVE    ZERO                TO  SANTEI-SRYKA
-      *        �������
+      *        初回算定日
                MOVE    KEN-SANTEI-FSANTEIYMD   TO  SANTEI-FSANTEIYMD
                MOVE    KEN-SANTEI-MSANTEID     TO  SANTEI-MSANTEID
                MOVE    KEN-SANTEI-MSANTEICNT   TO  SANTEI-MSANTEICNT
-      *        ��ʬ����ٻ��
-      *        ����������оݥե饰
+      *        内分泌負荷試験用
+      *        当月算定点数対象フラグ
                MOVE    1                   TO  SANTEI-MSANTEIFLG
-      *        ���������
+      *        当月算定点数
                MOVE    KEN-SANTEI-MSANTEITEN
                                            TO  SANTEI-MSANTEITEN
-      *        �����������ʬ
+      *        当月算定点数区分
                MOVE    ZERO                TO  SANTEI-MSANTEITENKBN
                MOVE    KEN-SANTEI-DAY-AREA TO  SANTEI-DAY-AREA
       *
@@ -1915,11 +1915,11 @@
        3001-NAIBUNFUKA-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    ��ʬ����ٻ���������
+      *    内分泌負荷試験包括削除処理
       *****************************************************************
        30011-NAIBUFUKA-SUM-SEC         SECTION.
       *
-      *    �������򸡺�
+      *    算定履歴検索
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
@@ -1938,7 +1938,7 @@
       **           COMPUTE KEN2-SANTEI-MSANTEITEN
       *                                    =   KEN2-SANTEI-MSANTEITEN
       ***                                  +   SANTEI-MSANTEITEN
-      *           ����1200���θ����Ȥ���
+      *           月２回は1200点の検査とする
                   IF      (SANTEI-MSANTEICNT   >   1    )
                    AND    (SANTEI-MSANTEITEN   <   1200 )
                        COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
@@ -1970,7 +1970,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɲý���
+      *    追加処理
       *****************************************************************
        500-SANTEI-INS-SEC                SECTION.
       *
@@ -1979,7 +1979,7 @@
            MOVE    SMCNDATE-HMS        TO  SANTEI-UPHMS
       *
            MOVE    SPA-OPID            TO  SANTEI-OPID
-      *    ����
+      *    新規
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -1998,7 +1998,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    更新処理
       *****************************************************************
        510-SANTEI-UPD-SEC                SECTION.
       *
@@ -2024,7 +2024,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        510-SANTEI-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        520-SANTEI-DEL-SEC                SECTION.
       *
@@ -2045,7 +2045,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -2076,7 +2076,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���þ���ξ�²������
+      *    附加情報の上限回数設定
            IF      FLG-TENSU           =   ZERO
                PERFORM 9101-TENSUPLUS-SYORI-SEC
            END-IF
@@ -2085,7 +2085,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ղþ������Խ�����
+      *    点数マスタ付加情報より編集処理
       *****************************************************************
        9101-TENSUPLUS-SYORI-SEC          SECTION.
       *
@@ -2118,7 +2118,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ��²��
+      *    上限回数
            IF      TNSP-SANTEIRRKKBN   =   1
                MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
@@ -2134,7 +2134,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ޥ����ɤ߹���
+      *    算定歴マスタ読み込み
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
@@ -2152,7 +2152,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-SANTEI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���������ղþ���ޥ����ɤ߹���
+      *    算定履歴付加情報マスタ読み込み
       *****************************************************************
        920-SANTEIPLUS-READ-SEC         SECTION.
       *
@@ -2169,7 +2169,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2182,7 +2182,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2197,7 +2197,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

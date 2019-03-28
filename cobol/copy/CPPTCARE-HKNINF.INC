@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,34 +16,34 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Բ���ݸ�����         COPY  (CPPTCARE-HKNINF.INC)  *
+      *    患者介護保険情報         COPY  (CPPTCARE-HKNINF.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTCARE-HKNINF-REC.
-      *����
+      *キー
            03  PTCRHKN-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTCRHKN-HOSPNUM         PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTCRHKN-PTID            PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  PTCRHKN-TEKSTYMD        PIC  X(08).
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
            03  PTCRHKN-TEKEDYMD            PIC  X(08).
-      *�ݸ����ֹ�
+      *保険者番号
            03  PTCRHKN-HKNJANUM            PIC  X(06).
-      *���ݸ���̾
+      *被保険者名
            03  PTCRHKN-HIHKNJANUM          PIC  X(10).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTCRHKN-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTCRHKN-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTCRHKN-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTCRHKN-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  PTCRHKN-UPHMS               PIC  X(06).

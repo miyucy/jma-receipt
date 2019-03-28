@@ -1,6 +1,6 @@
 --                                              --
--- �ӥ塼�ƺ���                                 --
--- view_q002   �Ȳ�                           --
+-- ビュー再作成                                 --
+-- view_q002   照会２                           --
 --                                              --
 -- Create Date : 2009/06/26                     --
 --                                              --
@@ -59,4 +59,4 @@ CREATE VIEW view_q002 AS
        AND (a.zainum = b.zainum));
 
 COMMENT 
-        ON VIEW view_q002 IS '���ԾȲ�ӥ塼2';
+        ON VIEW view_q002 IS '患者照会ビュー2';

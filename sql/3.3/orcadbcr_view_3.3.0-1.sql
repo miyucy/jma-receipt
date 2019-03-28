@@ -1,7 +1,7 @@
 --                                    --
---  �������ԾȲ�ӥ塼���ѹ�          --
---    ������֡�ž������ž�����ɲ�    --
---    ��о���ѹ�                    --
+--  入院患者照会ビューの変更          --
+--    最大枝番、転入日、転出日追加    --
+--    抽出条件変更                    --
 --                                    --
 
 \set ON_ERROR_STOP
@@ -51,5 +51,5 @@ CREATE VIEW "view_i001" as SELECT a.hospid,
        AND b.ptid = e.ptid 
        AND b.rrknum = e.rrknum;
 
-COMMENT ON VIEW "view_i001" IS '�������ԾȲ�ӥ塼';
+COMMENT ON VIEW "view_i001" IS '入院患者照会ビュー';
 

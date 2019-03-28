@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSUSERPG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : �桼���ץ�����൯ư����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/09/01    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : ユーザプログラム起動サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/09/01    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
-      *  04.08.00    NACL-¿��Ǽ  16/06/22  ��ɼ�ֹ��ɲ��б�
-      *  05.00.00    NACL-����    17/08/10  Ginbee�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.08.00    NACL-多々納  16/06/22  伝票番号追加対応
+      *  05.00.00    NACL-太田    17/08/10  Ginbee対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,36 +43,36 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
       *01  WRK-AREA.
       *
-      *    �桼���ץ�������ѥ������scripts/�ʲ��ʤ�ɤ��Ǥ�褤��
+      *    ユーザプログラム用シェル（scripts/以下ならどこでもよい）
        01  WRK-SHELL-USERPG.
            03  FILLER             PIC X(08) VALUE
                                              "scripts/".
            03  WRK-SHELL-SHELL    PIC X(100).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    �桼���ץ�����൯ư
+      *    ユーザプログラム起動
            COPY  "CPSK9700.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "MCPDATA.INC".
@@ -87,11 +87,11 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �桼���ץ�����൯ư���֥ѥ�᥿
+      *    ユーザプログラム起動サブパラメタ
            COPY    "CPORCSUSERPG.INC".
 grpsys*
            COPY    "COMMON-SPA".
@@ -102,14 +102,14 @@ grpsys*
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-      *    �桼���ץ�����൯ư
+      *    ユーザプログラム起動
            PERFORM 100-SHELL-SYORI-SEC
       *
            .
@@ -118,13 +118,13 @@ grpsys*
            .
       *
       *****************************************************************
-      *    �桼���ץ�����൯ư����
+      *    ユーザプログラム起動処理
       *****************************************************************
        100-SHELL-SYORI-SEC             SECTION.
       *
            MOVE    SPACE               TO  SHELLTBL
            MOVE    ORCSUSERPG-SHELL    TO  WRK-SHELL-SHELL
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルデイレクトリ位置指定
            INITIALIZE                      ORCSMKPASSAREA
            MOVE    WRK-SHELL-USERPG    TO  MKPASS-IN-01
            CALL    "ORCSMKPASSSITE"    USING   ORCSMKPASSAREA
@@ -135,7 +135,7 @@ grpsys*
       *
            DISPLAY "@@REPOS-NAME="  SHELLTBL-REPOS-NAME
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
       *
            MOVE    ORCSUSERPG-GMNPG    TO  SHELLTBL-ARG1
            MOVE    ORCSUSERPG-SYORI-FLG
@@ -150,7 +150,7 @@ grpsys*
            MOVE    ORCSUSERPG-SYORINM  TO  SHELLTBL-ARG10
            MOVE    ORCSUSERPG-PRTNM    TO  SHELLTBL-ARG11
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG12
-      *    ��ɼ�ֹ�
+      *    伝票番号
            MOVE    ORCSUSERPG-DENPNUM  TO  SHELLTBL-ARG13
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
@@ -165,7 +165,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        990-SYSKANRI-READ-SEC                SECTION.
       *
@@ -180,7 +180,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -193,7 +193,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -208,7 +208,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

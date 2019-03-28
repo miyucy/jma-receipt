@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ∆˛±°CLAIMπ‡Ã‹ID  COPY (CPNORDERID.INC)                *
+      *    ÂÖ•Èô¢CLAIMÈ†ÖÁõÆID  COPY (CPNORDERID.INC)                *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’     ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò     ÂÜÖÂÆπ
       ************************************************************
        01  NORDERID-AREA.
            03  NORDERID-ORDER-NYUIN        PIC X(02) VALUE "01".
@@ -34,378 +34,378 @@
                    07  NORDERID-NYUINCL1   PIC X(02) VALUE "01".
                    07  NORDERID-NYUINCL2   PIC X(03) VALUE "001".
                    07  NORDERID-NYUINID    PIC X(04) VALUE "0101".
-                   07  NORDERID-NYUINMES1  PIC X(30) VALUE "∆˛±°".
-                   07  NORDERID-NYUINMES2  PIC X(20) VALUE "∆˛±°".
+                   07  NORDERID-NYUINMES1  PIC X(30) VALUE "ÂÖ•Èô¢".
+                   07  NORDERID-NYUINMES2  PIC X(20) VALUE "ÂÖ•Èô¢".
       *
                05  NORDERID-TAIIN-G.
                    07  NORDERID-TAIINCL1   PIC X(02) VALUE "01".
                    07  NORDERID-TAIINCL2   PIC X(03) VALUE "002".
                    07  NORDERID-TAIINID    PIC X(04) VALUE "0102".
-                   07  NORDERID-TAIINMES1  PIC X(30) VALUE "¬‡±°".
-                   07  NORDERID-TAIINMES2  PIC X(20) VALUE "¬‡±°".
+                   07  NORDERID-TAIINMES1  PIC X(30) VALUE "ÈÄÄÈô¢".
+                   07  NORDERID-TAIINMES2  PIC X(20) VALUE "ÈÄÄÈô¢".
       *
                05  NORDERID-IDOBTU-G.
                    07  NORDERID-IDOBTUCL1  PIC X(02) VALUE "01".
                    07  NORDERID-IDOBTUCL2  PIC X(03) VALUE "003".
                    07  NORDERID-IDOBTUID   PIC X(04) VALUE "0103".
-                   07  NORDERID-IDOBTUMES1 PIC X(30) VALUE "≈æ≈Ô".
-                   07  NORDERID-IDOBTUMES2 PIC X(20) VALUE "≈æ≈Ô".
+                   07  NORDERID-IDOBTUMES1 PIC X(30) VALUE "Ëª¢Ê£ü".
+                   07  NORDERID-IDOBTUMES2 PIC X(20) VALUE "Ëª¢Ê£ü".
       *
                05  NORDERID-IDOKA-G.
                    07  NORDERID-IDOKACL1   PIC X(02) VALUE "01".
                    07  NORDERID-IDOKACL2   PIC X(03) VALUE "004".
                    07  NORDERID-IDOKAID    PIC X(04) VALUE "0104".
-                   07  NORDERID-IDOKAMES1  PIC X(30) VALUE "≈æ≤ ".
-                   07  NORDERID-IDOKAMES2  PIC X(20) VALUE "≈æ≤ ".
+                   07  NORDERID-IDOKAMES1  PIC X(30) VALUE "Ëª¢Áßë".
+                   07  NORDERID-IDOKAMES2  PIC X(20) VALUE "Ëª¢Áßë".
       *
                05  NORDERID-IDOBRM-G.
                    07  NORDERID-IDOBRMCL1  PIC X(02) VALUE "01".
                    07  NORDERID-IDOBRMCL2  PIC X(03) VALUE "005".
                    07  NORDERID-IDOBRMID   PIC X(04) VALUE "0105".
-                   07  NORDERID-IDOBRMMES1 PIC X(30) VALUE "≈æºº".
-                   07  NORDERID-IDOBRMMES2 PIC X(20) VALUE "≈æºº".
+                   07  NORDERID-IDOBRMMES1 PIC X(30) VALUE "Ëª¢ÂÆ§".
+                   07  NORDERID-IDOBRMMES2 PIC X(20) VALUE "Ëª¢ÂÆ§".
       *
                05  NORDERID-IDODR-G.
                    07  NORDERID-IDODRCL1   PIC X(02) VALUE "01".
                    07  NORDERID-IDODRCL2   PIC X(03) VALUE "008".
                    07  NORDERID-IDODRID    PIC X(04) VALUE "0106".
-                   07  NORDERID-IDODRMES1  PIC X(30) VALUE "√¥≈ˆ∞Â".
-                   07  NORDERID-IDODRMES2  PIC X(20) VALUE "√¥≈ˆ∞Â".
+                   07  NORDERID-IDODRMES1  PIC X(30) VALUE "ÊãÖÂΩìÂåª".
+                   07  NORDERID-IDODRMES2  PIC X(20) VALUE "ÊãÖÂΩìÂåª".
       *
                05  NORDERID-DELNYUIN-G.
                    07  NORDERID-DELNYUINCL1    PIC X(02) VALUE "11".
                    07  NORDERID-DELNYUINCL2    PIC X(03) VALUE "001".
                    07  NORDERID-DELNYUINID     PIC X(04) VALUE "0107".
                    07  NORDERID-DELNYUINMES1   PIC X(30)
-                                           VALUE "∆˛±°ºËæ√".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂à".
                    07  NORDERID-DELNYUINMES2   PIC X(20)
-                                           VALUE "∆˛±°ºËæ√".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂à".
       *
                05  NORDERID-ALLDELNYUIN-G.
                    07  NORDERID-ALLDELNYUINCL1  PIC X(02) VALUE "12".
                    07  NORDERID-ALLDELNYUINCL2  PIC X(03) VALUE "001".
                    07  NORDERID-ALLDELNYUINID   PIC X(04) VALUE "0108".
                    07  NORDERID-ALLDELNYUINMES1 PIC X(30)
-                                           VALUE "∆˛±°ºËæ√° ≤Ò∑◊¥ﬁ§‡°À".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂àÔºà‰ºöË®àÂê´„ÇÄÔºâ".
                    07  NORDERID-ALLDELNYUINMES2 PIC X(20)
-                                           VALUE "∆˛±°ºËæ√° ≤Ò∑◊¥ﬁ§‡°À".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂àÔºà‰ºöË®àÂê´„ÇÄÔºâ".
       *
                05  NORDERID-NYUIN2-G.
                    07  NORDERID-NYUIN2CL1       PIC X(02) VALUE "XX".
                    07  NORDERID-NYUIN2CL2       PIC X(03) VALUE "XXX".
                    07  NORDERID-NYUIN2ID        PIC X(04) VALUE "0109".
-                   07  NORDERID-NYUIN2MES1      PIC X(30) VALUE "∆˛±°".
-                   07  NORDERID-NYUIN2MES2      PIC X(20) VALUE "∆˛±°".
+                   07  NORDERID-NYUIN2MES1      PIC X(30) VALUE "ÂÖ•Èô¢".
+                   07  NORDERID-NYUIN2MES2      PIC X(20) VALUE "ÂÖ•Èô¢".
       *
                05  NORDERID-TAIIN2-G.
                    07  NORDERID-TAIIN2CL1   PIC X(02) VALUE "XX".
                    07  NORDERID-TAIIN2CL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-TAIIN2ID    PIC X(04) VALUE "0110".
-                   07  NORDERID-TAIIN2MES1  PIC X(30) VALUE "¬‡±°".
-                   07  NORDERID-TAIIN2MES2  PIC X(20) VALUE "¬‡±°".
+                   07  NORDERID-TAIIN2MES1  PIC X(30) VALUE "ÈÄÄÈô¢".
+                   07  NORDERID-TAIIN2MES2  PIC X(20) VALUE "ÈÄÄÈô¢".
       *
                05  NORDERID-HENKO-G.
                    07  NORDERID-HENKOCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-HENKOCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-HENKOID    PIC X(04) VALUE "0111".
-                   07  NORDERID-HENKOMES1  PIC X(30) VALUE " —ππ".
-                   07  NORDERID-HENKOMES2  PIC X(20) VALUE " —ππ".
+                   07  NORDERID-HENKOMES1  PIC X(30) VALUE "Â§âÊõ¥".
+                   07  NORDERID-HENKOMES2  PIC X(20) VALUE "Â§âÊõ¥".
       *
                05  NORDERID-IDOALL-G.
                    07  NORDERID-IDOALLCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-IDOALLCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-IDOALLID    PIC X(04) VALUE "0112".
-                  07 NORDERID-IDOALLMES1 PIC X(30) VALUE "≈æ≤ ≈æ≈Ô≈æºº".
-                  07 NORDERID-IDOALLMES2 PIC X(20) VALUE "≈æ≤ ≈æ≈Ô≈æºº".
+                  07 NORDERID-IDOALLMES1 PIC X(30) VALUE "Ëª¢ÁßëËª¢Ê£üËª¢ÂÆ§".
+                  07 NORDERID-IDOALLMES2 PIC X(20) VALUE "Ëª¢ÁßëËª¢Ê£üËª¢ÂÆ§".
       *
                05  NORDERID-CANNYUIN-G.
                    07  NORDERID-CANNYUINCL1    PIC X(02) VALUE "XX".
                    07  NORDERID-CANNYUINCL2    PIC X(03) VALUE "XXX".
                    07  NORDERID-CANNYUINID     PIC X(04) VALUE "0113".
                    07  NORDERID-CANNYUINMES1   PIC X(30)
-                                           VALUE "∆˛±°ºËæ√".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂à".
                    07  NORDERID-CANNYUINMES2   PIC X(20)
-                                           VALUE "∆˛±°ºËæ√".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂à".
       *
                05  NORDERID-ALLCANNYUIN-G.
                    07  NORDERID-ALLCANNYUINCL1  PIC X(02) VALUE "XX".
                    07  NORDERID-ALLCANNYUINCL2  PIC X(03) VALUE "XXX".
                    07  NORDERID-ALLCANNYUINID   PIC X(04) VALUE "0120".
                    07  NORDERID-ALLCANNYUINMES1 PIC X(30)
-                                           VALUE "∆˛±°ºËæ√° ≤Ò∑◊¥ﬁ§‡°À".
+                                           VALUE "ÂÖ•Èô¢ÂèñÊ∂àÔºà‰ºöË®àÂê´„ÇÄÔºâ".
                    07  NORDERID-ALLCANNYUINMES2 PIC X(20)
-                                           VALUE "∆˛±°°¶≤Ò∑◊ºËæ√".
+                                           VALUE "ÂÖ•Èô¢„Éª‰ºöË®àÂèñÊ∂à".
       *
                05  NORDERID-CANTAIIN-G.
                    07  NORDERID-CANTAIINCL1  PIC X(02) VALUE "XX".
                    07  NORDERID-CANTAIINL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-CANTAIINID   PIC X(04) VALUE "0115".
-                   07  NORDERID-CANTAIINMES1 PIC X(30) VALUE "¬‡±°ºËæ√".
-                   07  NORDERID-CANTAIINMES2 PIC X(20) VALUE "¬‡±°ºËæ√".
+                   07  NORDERID-CANTAIINMES1 PIC X(30) VALUE "ÈÄÄÈô¢ÂèñÊ∂à".
+                   07  NORDERID-CANTAIINMES2 PIC X(20) VALUE "ÈÄÄÈô¢ÂèñÊ∂à".
       *
                05  NORDERID-CANIDO-G.
                    07  NORDERID-CANIDOCL1    PIC X(02) VALUE "XX".
                    07  NORDERID-CANIDOL2     PIC X(03) VALUE "XXX".
                    07  NORDERID-CANIDOID     PIC X(04) VALUE "0116".
-                   07  NORDERID-CANIDOMES1   PIC X(30) VALUE "∞€∆∞ºËæ√".
-                   07  NORDERID-CANIDOMES2   PIC X(20) VALUE "∞€∆∞ºËæ√".
+                   07  NORDERID-CANIDOMES1   PIC X(30) VALUE "Áï∞ÂãïÂèñÊ∂à".
+                   07  NORDERID-CANIDOMES2   PIC X(20) VALUE "Áï∞ÂãïÂèñÊ∂à".
       *
                05  NORDERID-TEISEI-G.
                    07  NORDERID-TEISEICL1    PIC X(02) VALUE "XX".
                    07  NORDERID-TEISEICL2    PIC X(03) VALUE "XXX".
                    07  NORDERID-TEISEIID     PIC X(04) VALUE "0117".
                    07  NORDERID-TEISEIMES1   PIC X(30)
-                                           VALUE "∆˛±°° ƒ˚¿µ°À".
+                                           VALUE "ÂÖ•Èô¢ÔºàË®ÇÊ≠£Ôºâ".
                    07  NORDERID-TEISEIMES2   PIC X(20)
-                                           VALUE "∆˛±°° ƒ˚¿µ°À".
+                                           VALUE "ÂÖ•Èô¢ÔºàË®ÇÊ≠£Ôºâ".
       *
                05  NORDERID-GCANCEL-G.
                    07  NORDERID-GCANCELCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-GCANCELCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-GCANCELID    PIC X(04) VALUE "0200".
-                   07  NORDERID-GCANCELMES1  PIC X(30) VALUE "≥∞«ÒºËæ√".
-                   07  NORDERID-GCANCELMES2  PIC X(20) VALUE "≥∞«ÒºËæ√".
+                   07  NORDERID-GCANCELMES1  PIC X(30) VALUE "Â§ñÊ≥äÂèñÊ∂à".
+                   07  NORDERID-GCANCELMES2  PIC X(20) VALUE "Â§ñÊ≥äÂèñÊ∂à".
       *
                05  NORDERID-GAIHK-G.
                    07  NORDERID-GAIHKCL1   PIC X(02) VALUE "01".
                    07  NORDERID-GAIHKCL2   PIC X(03) VALUE "006".
                    07  NORDERID-GAIHKID    PIC X(04) VALUE "0201".
-                   07  NORDERID-GAIHKMES1  PIC X(30) VALUE "≥∞«Ò".
-                   07  NORDERID-GAIHKMES2  PIC X(20) VALUE "≥∞«Ò".
+                   07  NORDERID-GAIHKMES1  PIC X(30) VALUE "Â§ñÊ≥ä".
+                   07  NORDERID-GAIHKMES2  PIC X(20) VALUE "Â§ñÊ≥ä".
       *
                05  NORDERID-GCURE-G.
                    07  NORDERID-GCURECL1   PIC X(02) VALUE "XX".
                    07  NORDERID-GCURECL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-GCUREID    PIC X(04) VALUE "0202".
                    07  NORDERID-GCUREMES1  PIC X(30) 
-                                           VALUE "º£Œ≈§Œ∞Ÿ§Œ≥∞«Ò".
+                                           VALUE "Ê≤ªÁôÇ„ÅÆÁÇ∫„ÅÆÂ§ñÊ≥ä".
                    07  NORDERID-GCUREMES2  PIC X(20)
-                                           VALUE "º£Œ≈§Œ∞Ÿ§Œ≥∞«Ò".
+                                           VALUE "Ê≤ªÁôÇ„ÅÆÁÇ∫„ÅÆÂ§ñÊ≥ä".
       *
                05  NORDERID-GSENT-G.
                    07  NORDERID-GSENTCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-GSENTCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-GSENTID    PIC X(04) VALUE "0203".
                    07  NORDERID-GSENTMES1  PIC X(30) 
-                                           VALUE "¡™ƒÍ∆˛±°√Ê§Œ≥∞«Ò".
+                                           VALUE "ÈÅ∏ÂÆöÂÖ•Èô¢‰∏≠„ÅÆÂ§ñÊ≥ä".
                    07  NORDERID-GSENTMES2  PIC X(20)
-                                           VALUE "¡™ƒÍ∆˛±°√Ê§Œ≥∞«Ò".
+                                           VALUE "ÈÅ∏ÂÆöÂÖ•Èô¢‰∏≠„ÅÆÂ§ñÊ≥ä".
       *
                05  NORDERID-GBACK-G.
                    07  NORDERID-GBACKCL1   PIC X(02) VALUE "01".
                    07  NORDERID-GBACKCL2   PIC X(03) VALUE "007".
                    07  NORDERID-GBACKID    PIC X(04) VALUE "0205".
-                   07  NORDERID-GBACKMES1  PIC X(30) VALUE "µ¢±°".
-                   07  NORDERID-GBACKMES2  PIC X(20) VALUE "µ¢±°".
+                   07  NORDERID-GBACKMES1  PIC X(30) VALUE "Â∏∞Èô¢".
+                   07  NORDERID-GBACKMES2  PIC X(20) VALUE "Â∏∞Èô¢".
       *
                05  NORDERID-GPTST-G.
                    07  NORDERID-GPTSTCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-GPTSTCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-GPTSTID    PIC X(04) VALUE "0206".
-                   07  NORDERID-GPTSTMES1  PIC X(30) VALUE "≥∞«Ò≈˘".
-                   07  NORDERID-GPTSTMES2  PIC X(20) VALUE "≥∞«Ò≈˘".
+                   07  NORDERID-GPTSTMES1  PIC X(30) VALUE "Â§ñÊ≥äÁ≠â".
+                   07  NORDERID-GPTSTMES2  PIC X(20) VALUE "Â§ñÊ≥äÁ≠â".
       *
                05  NORDERID-TAIJUSHIN40-G.
                    07  NORDERID-TAIJUSHIN40CL1   PIC X(02) VALUE "XX".
                    07  NORDERID-TAIJUSHIN40CL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-TAIJUSHIN40ID    PIC X(04) VALUE "0207".
                    07  NORDERID-TAIJUSHIN40MES1  PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£¥£∞°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºîÔºêÔºÖÊ∏õÁÆó".
                    07  NORDERID-TAIJUSHIN40MES2  PIC X(20)
-                               VALUE "¬æ∞Âºıø«£¥£∞°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºîÔºêÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-TAIJUSHIN10-G.
                    07  NORDERID-TAIJUSHIN10CL1   PIC X(02) VALUE "XX".
                    07  NORDERID-TAIJUSHIN10CL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-TAIJUSHIN10ID    PIC X(04) VALUE "0208".
                    07  NORDERID-TAIJUSHIN10MES1  PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£±£∞°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºëÔºêÔºÖÊ∏õÁÆó".
                    07  NORDERID-TAIJUSHIN10MES2  PIC X(20)
-                               VALUE "¬æ∞Âºıø«£±£∞°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºëÔºêÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-TAIJUSHIN20-G.
                    07  NORDERID-TAIJUSHIN20CL1   PIC X(02) VALUE "XX".
                    07  NORDERID-TAIJUSHIN20CL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-TAIJUSHIN20ID    PIC X(04) VALUE "0209".
                    07  NORDERID-TAIJUSHIN20MES1  PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£≤£∞°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºíÔºêÔºÖÊ∏õÁÆó".
                    07  NORDERID-TAIJUSHIN20MES2  PIC X(20)
-                               VALUE "¬æ∞Âºıø«£≤£∞°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºíÔºêÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-TAIJUSHIN15-G.
                    07  NORDERID-TAIJUSHIN15CL1   PIC X(02) VALUE "XX".
                    07  NORDERID-TAIJUSHIN15CL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-TAIJUSHIN15ID    PIC X(04) VALUE "0210".
                    07  NORDERID-TAIJUSHIN15MES1  PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£±£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºëÔºïÔºÖÊ∏õÁÆó".
                    07  NORDERID-TAIJUSHIN15MES2  PIC X(20)
-                               VALUE "¬æ∞Âºıø«£±£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºëÔºïÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-JIKANGEN-G.
                    07  NORDERID-JIKANGENCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-JIKANGENCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-JIKANGENID    PIC X(04) VALUE "0211".
                    07  NORDERID-JIKANGENMES1  PIC X(30)
-                               VALUE "∆√ƒÍª˛¥÷¬‡±°∏∫ªª".
+                               VALUE "ÁâπÂÆöÊôÇÈñìÈÄÄÈô¢Ê∏õÁÆó".
                    07  NORDERID-JIKANGENMES2  PIC X(20)
-                               VALUE "∆√ƒÍª˛¥÷¬‡±°∏∫ªª".
+                               VALUE "ÁâπÂÆöÊôÇÈñìÈÄÄÈô¢Ê∏õÁÆó".
       *
                05  NORDERID-YOBIGEN-G.
                    07  NORDERID-YOBIGENCL1    PIC X(02) VALUE "XX".
                    07  NORDERID-YOBIGENCL2    PIC X(03) VALUE "XXX".
                    07  NORDERID-YOBIGENID     PIC X(04) VALUE "0212".
                    07  NORDERID-YOBIGENMES1   PIC X(30)
-                               VALUE "∆√ƒÍÕÀ∆¸∆˛¬‡±°∏∫ªª".
+                               VALUE "ÁâπÂÆöÊõúÊó•ÂÖ•ÈÄÄÈô¢Ê∏õÁÆó".
                    07  NORDERID-YOBIGENMES2   PIC X(20)
-                               VALUE "∆√ƒÍÕÀ∆¸∆˛¬‡±°∏∫ªª".
+                               VALUE "ÁâπÂÆöÊõúÊó•ÂÖ•ÈÄÄÈô¢Ê∏õÁÆó".
       *
                05  NORDERID-YOBI2GEN-G.
                    07  NORDERID-YOBI2GENCL1   PIC X(02) VALUE "XX".
                    07  NORDERID-YOBI2GENCL2   PIC X(03) VALUE "XXX".
                    07  NORDERID-YOBI2GENID    PIC X(04) VALUE "0213".
                    07  NORDERID-YOBI2GENMES1  PIC X(30)
-                               VALUE "∆√ƒÍÕÀ∆¸∆˛¬‡±°∏∫°‹¬æºı£±£∞°Û∏∫".
+                               VALUE "ÁâπÂÆöÊõúÊó•ÂÖ•ÈÄÄÈô¢Ê∏õÔºã‰ªñÂèóÔºëÔºêÔºÖÊ∏õ".
                    07  NORDERID-YOBI2GENMES2  PIC X(20)
-                               VALUE "≈⁄∆¸∏∫°‹¬æºı£±£∞°Û∏∫".
+                               VALUE "ÂúüÊó•Ê∏õÔºã‰ªñÂèóÔºëÔºêÔºÖÊ∏õ".
       *
                05  NORDERID-H30TAIJUSHIN35-G.
                    07 NORDERID-H30TAIJUSHIN35CL1 PIC X(02) VALUE "XX".
                    07 NORDERID-H30TAIJUSHIN35CL2 PIC X(03) VALUE "XXX".
                    07 NORDERID-H30TAIJUSHIN35ID  PIC X(04) VALUE "0214".
                    07 NORDERID-H30TAIJUSHIN35MES1  PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£≥£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºìÔºïÔºÖÊ∏õÁÆó".
                    07 NORDERID-H30TAIJUSHIN35MES2  PIC X(20)
-                               VALUE "¬æ∞Âºıø«£≥£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºìÔºïÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-H30TAIJUSHIN15-G.
                    07 NORDERID-H30TAIJUSHIN15CL1 PIC X(02) VALUE "XX".
                    07 NORDERID-H30TAIJUSHIN15CL2 PIC X(03) VALUE "XXX".
                    07 NORDERID-H30TAIJUSHIN15ID  PIC X(04) VALUE "0215".
                    07 NORDERID-H30TAIJUSHIN15MES1  PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£±£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºëÔºïÔºÖÊ∏õÁÆó".
                    07 NORDERID-H30TAIJUSHIN15MES2  PIC X(20)
-                               VALUE "¬æ∞Âºıø«£±£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºëÔºïÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-H30TAIJUSHIN5-G.
                    07 NORDERID-H30TAIJUSHIN5CL1  PIC X(02) VALUE "XX".
                    07 NORDERID-H30TAIJUSHIN5CL2  PIC X(03) VALUE "XXX".
                    07 NORDERID-H30TAIJUSHIN5ID   PIC X(04) VALUE "0216".
                    07 NORDERID-H30TAIJUSHIN5MES1 PIC X(30)
-                               VALUE "¬æ∞ÂŒ≈µ°¥ÿºıø«£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÁôÇÊ©üÈñ¢ÂèóË®∫ÔºïÔºÖÊ∏õÁÆó".
                    07 NORDERID-H30TAIJUSHIN5MES2 PIC X(20)
-                               VALUE "¬æ∞Âºıø«£µ°Û∏∫ªª".
+                               VALUE "‰ªñÂåªÂèóË®∫ÔºïÔºÖÊ∏õÁÆó".
       *
                05  NORDERID-H30YOBIGEN-G.
                    07 NORDERID-H30YOBIGENCL1  PIC X(02) VALUE "XX".
                    07 NORDERID-H30YOBIGENCL2  PIC X(03) VALUE "XXX".
                    07 NORDERID-H30YOBIGENID   PIC X(04) VALUE "0217".
                    07 NORDERID-H30YOBIGENMES1 PIC X(30)
-                               VALUE "∆√ƒÍÕÀ∆¸∆˛¬‡±°∏∫°‹¬æºı£µ°Û∏∫".
+                               VALUE "ÁâπÂÆöÊõúÊó•ÂÖ•ÈÄÄÈô¢Ê∏õÔºã‰ªñÂèóÔºïÔºÖÊ∏õ".
                    07 NORDERID-H30YOBIGENMES2 PIC X(20)
-                               VALUE "≈⁄∆¸∏∫°‹¬æºı£µ°Û∏∫".
+                               VALUE "ÂúüÊó•Ê∏õÔºã‰ªñÂèóÔºïÔºÖÊ∏õ".
       *
                05  NORDERID-FNORL-G.
                    07  NORDERID-FNORLCL1   PIC X(02) VALUE "02".
                    07  NORDERID-FNORLCL2   PIC X(03) VALUE "009".
                    07  NORDERID-FNORLID    PIC X(04) VALUE "0301".
                    07  NORDERID-FNORLMES1  PIC X(30)
-                                           VALUE "∞Ï»Ãø©".
+                                           VALUE "‰∏ÄËà¨È£ü".
                    07  NORDERID-FNORLMES2  PIC X(20)
-                                           VALUE "∞Ï»Ãø©".
+                                           VALUE "‰∏ÄËà¨È£ü".
       *
                05  NORDERID-FSPCL-G.
                    07  NORDERID-FSPCLCL1   PIC X(02) VALUE "02".
                    07  NORDERID-FSPCLCL2   PIC X(03) VALUE "010".
                    07  NORDERID-FSPCLID    PIC X(04) VALUE "0302".
                    07  NORDERID-FSPCLMES1  PIC X(30)
-                                           VALUE "∆√ Ãø©".
-                   07  NORDERID-FSPCLMES2  PIC X(20) VALUE "∆√ Ãø©".
+                                           VALUE "ÁâπÂà•È£ü".
+                   07  NORDERID-FSPCLMES2  PIC X(20) VALUE "ÁâπÂà•È£ü".
       *
                05  NORDERID-FSELE-G.
                    07  NORDERID-FSELECL1   PIC X(02) VALUE "02".
                    07  NORDERID-FSELECL2   PIC X(03) VALUE "011".
                    07  NORDERID-FSELEID    PIC X(04) VALUE "0303".
                    07  NORDERID-FSELEMES1  PIC X(30)
-                                           VALUE "¡™¬Úø©".
-                   07  NORDERID-FSELEMES2  PIC X(20) VALUE "¡™¬Úø©".
+                                           VALUE "ÈÅ∏ÊäûÈ£ü".
+                   07  NORDERID-FSELEMES2  PIC X(20) VALUE "ÈÅ∏ÊäûÈ£ü".
       *
                05  NORDERID-FSPSL-G.
                    07  NORDERID-FSPSLCL1   PIC X(02) VALUE "02".
                    07  NORDERID-FSPSLCL2   PIC X(03) VALUE "013".
                    07  NORDERID-FSPSLID    PIC X(04) VALUE "0304".
                    07  NORDERID-FSPSLMES1  PIC X(30)
-                                       VALUE "∆√ Ãø©°‹¡™¬Úø©".
+                                       VALUE "ÁâπÂà•È£üÔºãÈÅ∏ÊäûÈ£ü".
                    07  NORDERID-FSPSLMES2  PIC X(20)
-                                       VALUE "∆√ Ãø©°‹¡™¬Úø©".
+                                       VALUE "ÁâπÂà•È£üÔºãÈÅ∏ÊäûÈ£ü".
       *
                05  NORDERID-FSTOP-G.
                    07  NORDERID-FSTOPCL1   PIC X(02) VALUE "02".
                    07  NORDERID-FSTOPCL2   PIC X(03) VALUE "012".
                    07  NORDERID-FSTOPID    PIC X(04) VALUE "0305".
-                   07  NORDERID-FSTOPMES1  PIC X(30) VALUE "ø©ªﬂ§·".
-                   07  NORDERID-FSTOPMES2  PIC X(20) VALUE "ø©ªﬂ§·".
+                   07  NORDERID-FSTOPMES1  PIC X(30) VALUE "È£üÊ≠¢„ÇÅ".
+                   07  NORDERID-FSTOPMES2  PIC X(20) VALUE "È£üÊ≠¢„ÇÅ".
       *
                05  NORDERID-FOOD-G.
                    07  NORDERID-FOODCL1    PIC X(02) VALUE "XX".
                    07  NORDERID-FOODCL2    PIC X(03) VALUE "XXX".
                    07  NORDERID-FOODID     PIC X(04) VALUE "0306".
                    07  NORDERID-FOODMES1   PIC X(30)
-                                           VALUE "ø©ªˆ".
+                                           VALUE "È£ü‰∫ã".
                    07  NORDERID-FOODMES2   PIC X(20)
-                                           VALUE "ø©ªˆ".
+                                           VALUE "È£ü‰∫ã".
       *
                05  NORDERID-FLIQUID-G.
                    07  NORDERID-FLIQUIDCL1  PIC X(02) VALUE "02".
                    07  NORDERID-FLIQUIDCL2  PIC X(03) VALUE "021".
                    07  NORDERID-FLIQUIDID   PIC X(04) VALUE "0307".
                    07  NORDERID-FLIQUIDMES1 PIC X(30)
-                                           VALUE "∑–¥…±…Õ‹".
+                                           VALUE "ÁµåÁÆ°Ê†ÑÈ§ä".
                    07  NORDERID-FOODMES2   PIC X(20)
-                                           VALUE "∑–¥…±…Õ‹".
+                                           VALUE "ÁµåÁÆ°Ê†ÑÈ§ä".
       *
                05  NORDERID-PTEVAL-G.
                    07  NORDERID-PTEVALCL1  PIC X(02) VALUE "XX".
                    07  NORDERID-PTEVALCL2  PIC X(03) VALUE "XXX".
                    07  NORDERID-PTEVALID   PIC X(04) VALUE "0401".
                    07  NORDERID-PTEVALMES1 PIC X(30)
-                                           VALUE "∞ÂŒ≈∂Ë ¨°¶£¡£ƒ£Ã≈¿øÙ".
+                                           VALUE "ÂåªÁôÇÂå∫ÂàÜ„ÉªÔº°Ôº§Ôº¨ÁÇπÊï∞".
                    07  NORDERID-PTEVALMES2 PIC X(20)
-                                           VALUE "∞ÂŒ≈∂Ë ¨°¶£¡£ƒ£Ã≈¿øÙ".
+                                           VALUE "ÂåªÁôÇÂå∫ÂàÜ„ÉªÔº°Ôº§Ôº¨ÁÇπÊï∞".
       *
                05  NORDERID-BUNBEN-G.
                    07  NORDERID-BUNBENCL1  PIC X(02) VALUE "XX".
                    07  NORDERID-BUNBENCL2  PIC X(03) VALUE "XXX".
                    07  NORDERID-BUNBENID   PIC X(04) VALUE "0501".
                    07  NORDERID-BUNBENMES1 PIC X(30)
-                                           VALUE "Ω–ª∫∞Èª˘∞Ïª˛∂‚æ Û".
+                                           VALUE "Âá∫Áî£ËÇ≤ÂÖê‰∏ÄÊôÇÈáëÊÉÖÂ†±".
                    07  NORDERID-BUNBENMES2 PIC X(20)
-                                           VALUE "Ω–ª∫∞Èª˘∞Ïª˛∂‚æ Û".
+                                           VALUE "Âá∫Áî£ËÇ≤ÂÖê‰∏ÄÊôÇÈáëÊÉÖÂ†±".
       *
                05  NORDERID-SAGAKU-G.
                    07  NORDERID-SAGAKUCL1  PIC X(02) VALUE "XX".
                    07  NORDERID-SAGAKUCL2  PIC X(03) VALUE "XXX".
                    07  NORDERID-SAGAKUID   PIC X(04) VALUE "0601".
                    07  NORDERID-SAGAKUMES1 PIC X(30)
-                                           VALUE "ººŒ¡∫π≥€".
+                                           VALUE "ÂÆ§ÊñôÂ∑ÆÈ°ç".
                    07  NORDERID-SAGAKUMES2 PIC X(20)
-                                           VALUE "ººŒ¡∫π≥€".
+                                           VALUE "ÂÆ§ÊñôÂ∑ÆÈ°ç".
                05  NORDERID-SAGAKUCANCEL-G.
                    07  NORDERID-SAGAKUCANCELCL1  PIC X(02) VALUE "XX".
                    07  NORDERID-SAGAKUCANCELCL2  PIC X(03) VALUE "XXX".
                    07  NORDERID-SAGAKUCANCELID   PIC X(04) VALUE "0602".
                    07  NORDERID-SAGAKUCANCELMES1 PIC X(30)
-                                           VALUE "ººŒ¡∫π≥€".
+                                           VALUE "ÂÆ§ÊñôÂ∑ÆÈ°ç".
                    07  NORDERID-SAGAKUCANCELMES2 PIC X(20)
-                                           VALUE "ººŒ¡∫π≥€".
+                                           VALUE "ÂÆ§ÊñôÂ∑ÆÈ°ç".
       *
                05  NORDERID-CRENACCT-G.
                    07  NORDERID-CRENACCTCL1    PIC X(02) VALUE "XX".
                    07  NORDERID-CRENACCTCL2    PIC X(03) VALUE "XXX".
                    07  NORDERID-CRENACCTID     PIC X(04) VALUE "9901".
                    07  NORDERID-CRENACCTMES1   PIC X(30)
-                                               VALUE "∆˛±°≤Ò∑◊∫Ó¿Æ".
+                                               VALUE "ÂÖ•Èô¢‰ºöË®à‰ΩúÊàê".
                    07  NORDERID-NACCTMES2 PIC X(20)
-                                               VALUE "∆˛±°≤Ò∑◊∫Ó¿Æ".
+                                               VALUE "ÂÖ•Èô¢‰ºöË®à‰ΩúÊàê".
       *
            03  NORDERID-R  REDEFINES       NORDERID-VAL.
                05  NORDERID-OCC            OCCURS    44.

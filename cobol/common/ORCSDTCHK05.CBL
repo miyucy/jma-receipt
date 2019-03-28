@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSDTCHK05.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÊÝ¸±¡¦¸øÈñ¾ðÊó¼èÆÀ
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  05/02/02    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ä¿é™ºãƒ»å…¬è²»æƒ…å ±å–å¾—
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  05/02/02    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-ÂÀÅÄ    07/06/04  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.00    NACL-å¤ªç”°    07/06/04  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -41,7 +41,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
            03  FLG-HKNNUM                  PIC 9(01).
@@ -50,7 +50,7 @@
            03  FLG-PTRSIINF                PIC 9(01).
            03  FLG-TARGET                  PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
@@ -58,7 +58,7 @@
            03  IDX-HKNNUM                  PIC 9(05).
            03  IDX-HKNINF                  PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-HKNINF-G.
                05  WRK-HKNKOHKBN                   PIC X(01).
@@ -87,7 +87,7 @@
                    07  SRH-PAYKBNL                 PIC X(02).
                    07  SRH-KOHNUMMEIL              PIC X(10).
       *
-      *    ¸ÇÄêÃÍÎÎ°è
+      *    å›ºå®šå€¤é ˜åŸŸ
        01  CONST-AREA.
            03  CONST-SDTCHK05-OT-MAX               PIC 9(05)
                                                    VALUE   50.
@@ -111,44 +111,44 @@
                                                    VALUE   "9".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ÊÝ¸±ÈÖ¹æ
+      *    ä¿é™ºç•ªå·
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    ÊÝ¸±¥Þ¥¹¥¿
+      *    ä¿é™ºãƒžã‚¹ã‚¿
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ´µ¼ÔÏ«ºÒ¥Þ¥¹¥¿
+      *    æ‚£è€…åŠ´ç½ãƒžã‚¹ã‚¿
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ¸øÈñ¥Þ¥¹¥¿
+      *    å…¬è²»ãƒžã‚¹ã‚¿
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¼èÆÀ¥µ¥Ö
+      *    ä¿é™ºçµ„åˆã›å–å¾—ã‚µãƒ–
            COPY    "CPORCSDTCHK02.INC".
            01  LNK-HKNCOMBI-AREA.
              02  LNK-HKNCOMBI-OCC      OCCURS  1000.
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //LNK-COMB-//.
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -163,7 +163,7 @@
        SPA-AREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -180,7 +180,7 @@
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -196,14 +196,14 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¤Î¼ïÎà¡¦¸øÈñ¤Î¼ïÎàÊÔ½¸½èÍý
+      *    ä¿é™ºã®ç¨®é¡žãƒ»å…¬è²»ã®ç¨®é¡žç·¨é›†å‡¦ç†
       *****************************************************************
        1001-HKNKOH-HEN-SEC         SECTION.
       *
            INITIALIZE                  SRH-HKNNUM-DAT
            INITIALIZE                  SRH-KOHNUM-DAT
       *
-      *    ÊÝ¸±ÈÖ¹æ¸¡º÷
+      *    ä¿é™ºç•ªå·æ¤œç´¢
            PERFORM 900-HKNNUM-KEY3-SEL-SEC
       *
            PERFORM UNTIL ( FLG-HKNNUM      =   1 )
@@ -211,19 +211,19 @@
                IF    ( HKN-HKNKOHSBTKBN    =   "1" OR  "4"
                                            OR  "8" OR  "9" )
                    MOVE    SRH-HKNNUM-MAX  TO  IDX5
-      *            ÊÝ¸±
+      *            ä¿é™º
                    IF    ( IDX5            >   ZERO )
                        IF    ( HKN-HKNNUM  NOT =   SRH-HKNNUML (IDX5))
-      *                    ÊÝ¸±¾ðÊóÊÔ½¸
+      *                    ä¿é™ºæƒ…å ±ç·¨é›†
                            PERFORM 10011-HKN-HEN-SEC
                        END-IF
                    ELSE
-      *                ÊÝ¸±¾ðÊóÊÔ½¸
+      *                ä¿é™ºæƒ…å ±ç·¨é›†
                        PERFORM 10011-HKN-HEN-SEC
                    END-IF
       *
                ELSE
-      *            ¸øÈñ
+      *            å…¬è²»
                    MOVE    SRH-KOHNUM-MAX  TO  IDX5
                    IF    ( IDX5            >   ZERO )
                        IF    ( HKN-HKNNUM  =   SRH-KOHNUML (IDX5))
@@ -231,26 +231,26 @@
                              AND ( HKN-PAYKBN  =   "01" OR "02" OR "03")
                                IF ( HKN-PAYKBN
                                            NOT =   SRH-PAYKBNL (IDX5))
-      *                            ¸øÈñ¾ðÊóÊÔ½¸
+      *                            å…¬è²»æƒ…å ±ç·¨é›†
                                    PERFORM 10011-KOH-HEN-SEC
                                END-IF
                            END-IF
                        ELSE
-      *                    ¸øÈñ¾ðÊóÊÔ½¸
+      *                    å…¬è²»æƒ…å ±ç·¨é›†
                            PERFORM 10011-KOH-HEN-SEC
                        END-IF
                    ELSE
-      *                ¸øÈñ¾ðÊóÊÔ½¸
+      *                å…¬è²»æƒ…å ±ç·¨é›†
                        PERFORM 10011-KOH-HEN-SEC
                    END-IF
                END-IF
       *
-      *        ÊÝ¸±ÈÖ¹æÆÉ¤ß¹þ¤ß
+      *        ä¿é™ºç•ªå·èª­ã¿è¾¼ã¿
                PERFORM 900-HKNNUM-KEY3-FET-SEC
       *
            END-PERFORM
       *
-      *    ÊÝ¸±ÈÖ¹æ¥¯¥í¡¼¥º
+      *    ä¿é™ºç•ªå·ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_hknnum"    TO  MCP-TABLE
            MOVE    "key3"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
@@ -259,7 +259,7 @@
        1001-HKNKOH-CMB-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        10011-HKN-HEN-SEC          SECTION.
       *
@@ -279,7 +279,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¸øÈñ¾ðÊóÊÔ½¸½èÍý
+      *    å…¬è²»æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        10011-KOH-HEN-SEC           SECTION.
       *
@@ -295,7 +295,7 @@
       *
            IF    ( HKN-HKNNUM          =   "027" )
             AND  ( HKN-PAYKBN      NOT =   "01" AND "02" AND "03" )
-               MOVE    "Ï·¿ÍÊÝ·ò"      TO  SRH-KOHNUMMEIL (IDX5)
+               MOVE    "è€äººä¿å¥"      TO  SRH-KOHNUMMEIL (IDX5)
            ELSE
                MOVE    HKN-TANSEIDONAME
                                        TO  SRH-KOHNUMMEIL (IDX5)
@@ -313,7 +313,7 @@
        10011-KOH-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -323,11 +323,11 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2101-PTHKN-HEN-SEC              SECTION.
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
            INITIALIZE                  SDTCHK02AREA
                                        LNK-HKNCOMBI-AREA
       *
@@ -345,7 +345,7 @@
        2101-PTHKN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        21011-PTHKNINF-HEN-SEC          SECTION.
       *
@@ -367,7 +367,7 @@
        21011-PTHKNINF-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        210111-PTHKNINF-CHK-SEC         SECTION.
       *
@@ -393,7 +393,7 @@
        210111-PTHKNINF-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÈÖ¹æ¥Á¥§¥Ã¥¯½èÍý
+      *    ä¿é™ºç•ªå·ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        210111-HKNNUM-CHK-SEC           SECTION.
       *
@@ -530,27 +530,27 @@
                        IF    ( WRK-HKNNUM      =   "971" OR  "973" )
                            EVALUATE    WRK-HKNNUM  ALSO  WRK-RSIHKNKBN
                            WHEN    "971"       ALSO    "1"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡Ã»"
+                               MOVE    "åŠ´ç½ä¿é™ºã€€çŸ­"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "2"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡½ý"
+                               MOVE    "åŠ´ç½ä¿é™ºã€€å‚·"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "3"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡¥¢"
+                               MOVE    "åŠ´ç½ä¿é™ºã€€ã‚¢"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    "5"
-                               MOVE    "Ï«ºÒÊÝ¸±¡¡¸ø"
+                               MOVE    "åŠ´ç½ä¿é™ºã€€å…¬"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "971"       ALSO    ANY
-                               MOVE    "Ï«ºÒÊÝ¸±"
+                               MOVE    "åŠ´ç½ä¿é™º"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            WHEN    "973"       ALSO    ANY
-                               MOVE    "¼«ÇåÀÕÊÝ¸±"
+                               MOVE    "è‡ªè³ è²¬ä¿é™º"
                                                TO  SDTCHK05-HKNNUMMEI
                                                            (IDX-HKNINF)
                            END-EVALUATE
@@ -584,7 +584,7 @@
        210111-HKNNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        21011-PTKOHINF-HEN-SEC          SECTION.
       *
@@ -606,7 +606,7 @@
        21011-PTKOHINF-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…å…¬è²»æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        210111-PTKOHINF-CHK-SEC         SECTION.
       *
@@ -630,7 +630,7 @@
        210111-PTKOHINF-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¤Î¼ïÎà¼èÆÀ½èÍý
+      *    ä¿é™ºã®ç¨®é¡žå–å¾—å‡¦ç†
       *****************************************************************
        2111-HKNNUM-GET-SEC             SECTION.
       *
@@ -651,7 +651,7 @@
        2111-HKNNUM-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¸øÈñ¤Î¼ïÎà¼èÆÀ½èÍý
+      *    å…¬è²»ã®ç¨®é¡žå–å¾—å‡¦ç†
       *****************************************************************
        2111-KOHNUM-GET-SEC             SECTION.
       *
@@ -683,7 +683,7 @@
        2111-KOHNUM-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -692,11 +692,11 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTHKNINF-KEY6-SEL-SEC       SECTION.
       *
-      *    ´µ¼ÔÊÝ¸±¥Þ¥¹¥¿¸¡º÷
+      *    æ‚£è€…ä¿é™ºãƒžã‚¹ã‚¿æ¤œç´¢
            MOVE    ZERO                TO  FLG-PTHKNINF
            INITIALIZE                      PTHKNINF-REC
            MOVE    SDTCHK05-HOSPNUM     TO  PTHKN-HOSPNUM
@@ -716,11 +716,11 @@
        900-PTHKNINF-KEY6-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊóFETCH½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±FETCHå‡¦ç†
       *****************************************************************
        900-PTHKNINF-KEY6-FET-SEC       SECTION.
       *
-      *    ´µ¼ÔÊÝ¸±¥Þ¥¹¥¿¸¡º÷
+      *    æ‚£è€…ä¿é™ºãƒžã‚¹ã‚¿æ¤œç´¢
            MOVE    ZERO                TO  FLG-PTHKNINF
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
@@ -736,7 +736,7 @@
        900-PTHKNINF-KEY6-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÈÖ¹æ¾ðÊó¸¡º÷½èÍý
+      *    ä¿é™ºç•ªå·æƒ…å ±æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-HKNNUM-KEY3-SEL-SEC         SECTION.
       *
@@ -761,7 +761,7 @@
        900-HKNNUM-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÈÖ¹æ¾ðÊóFETCH½èÍý
+      *    ä¿é™ºç•ªå·æƒ…å ±FETCHå‡¦ç†
       *****************************************************************
        900-HKNNUM-KEY3-FET-SEC         SECTION.
       *
@@ -780,11 +780,11 @@
        900-HKNNUM-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¸¡º÷½èÍý
+      *    æ‚£è€…å…¬è²»æƒ…å ±æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTKOHINF-KEY2-SEL-SEC       SECTION.
       *
-      *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
+      *    æ‚£è€…å…¬è²»ãƒžã‚¹ã‚¿æ¤œç´¢
            MOVE    ZERO                TO  FLG-PTKOHINF
            INITIALIZE                      PTKOHINF-REC
            MOVE    SDTCHK05-HOSPNUM     TO  PTKOH-HOSPNUM
@@ -804,11 +804,11 @@
        900-PTKOHINF-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊóFETCH½èÍý
+      *    æ‚£è€…å…¬è²»æƒ…å ±FETCHå‡¦ç†
       *****************************************************************
        900-PTKOHINF-KEY2-FET-SEC       SECTION.
       *
-      *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
+      *    æ‚£è€…å…¬è²»ãƒžã‚¹ã‚¿æ¤œç´¢
            MOVE    ZERO                TO  FLG-PTKOHINF
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -824,11 +824,11 @@
        900-PTKOHINF-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÏ«ºÒ¾ðÊó¸¡º÷½èÍý
+      *    æ‚£è€…åŠ´ç½æƒ…å ±æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTRSIINF-KEY-SEL-SEC        SECTION.
       *
-      *    ´µ¼Ô¸øÈñ¥Þ¥¹¥¿¸¡º÷
+      *    æ‚£è€…å…¬è²»ãƒžã‚¹ã‚¿æ¤œç´¢
            MOVE    ZERO                TO  FLG-PTRSIINF
            INITIALIZE                      PTRSIINF-REC
            MOVE    PTHKN-HOSPNUM        TO  PTRSI-HOSPNUM
@@ -853,7 +853,7 @@
        900-PTRSIINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚‚è¡Œã†)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -871,7 +871,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã¯è¡Œã‚ãªã„)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -886,7 +886,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -901,7 +901,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *

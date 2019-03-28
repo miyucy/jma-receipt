@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,82 +16,82 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�ץ����ٽ�������� ��ñ�ѹ��ܥե�����             *
+      *    レセプト明細書（入院） 県単用項目ファイル             *
       *                               COPY (CPRCF067.INC)        *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-ƣ��    04/04/07  ��������ʾ������ɲ�
-      *  01.00.02    NACL-ƣ��    04/08/23  �õ�����ʥ쥻���ѡˤ��ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    04/04/07  コメント欄（上部）追加
+      *  01.00.02    NACL-藤原    04/08/23  特記事項（レセ電用）の追加
       *
-      *  02.06.01    NACL-ƣ��    05/09/12  ������ô��ʥ쥻���ѡ��ɲ�
-      *  03.05.01    NACL-��Ʀ��  07/05/30  ���롼�׿����б�
+      *  02.06.01    NACL-藤原    05/09/12  一部負担金（レセ電用）追加
+      *  03.05.01    NACL-小豆沢  07/05/30  グループ診療対応
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *
-      *  04.07.01    NACL-ƣ��    12/12/17  ʣ����쥻�ץ�ʬ���б�
+      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
       ************************************************************
       *01  RECE67-REC.
            03  RECE67-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  RECE67-HOSPNUM         PIC  9(2).
-      *����ǯ��
+      *診療年月
                05  RECE67-SRYYM           PIC  9(06).
-      *������ʬ
+      *入外区分
                05  RECE67-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RECE67-PTID            PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                05  RECE67-RECEKA          PIC  X(02).
-      *������ʧ����
+      *審査支払機関
                05  RECE67-TEISYUTUSAKI    PIC  9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  RECE67-RECESYUBETU     PIC  9(04).
-      *�ݸ����ֹ�        
+      *保険者番号        
                05  RECE67-HKNJANUM        PIC  X(08).
-      *�����ʬ
+      *補助区分
                05  RECE67-HOJOKBN         PIC  X(01).
-      *����ɣ�
+      *公費ＩＤ
                05  RECE67-KOHID           PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE67-TEKSTYMD        PIC  X(08). 
-      *ʬ���ʬ
+      *分割区分
                05  RECE67-RECEIPT-KBN     PIC  X(10).
-      *���ݸ��ݵ��ճ��
+      *主保険−給付割合
            03  RECE67-KYURATE             PIC  9(03).
-      *���ܤε��վ���
+      *療養の給付情報
            03  RECE67-TOTALTENINF         OCCURS  5.
-      *�������
+      *合計点数
                05  RECE67-TOTALTEN        PIC  9(08).
-      *��ô���
+      *負担金額
                05  RECE67-FTNMONEY        PIC  9(09).
-      *������
+      *実日数
                05  RECE67-JNISSU          PIC  9(02).
-      *�������������
+      *食事療養費情報
            03  RECE67-SHOKUJIINF          OCCURS  5.
-      *��������
+      *食事日数
                05  RECE67-SHOKUJINISSU    PIC  9(02).
-      *����������
+      *食事療養費
                05  RECE67-SHOKUJIRYOYOHI  PIC  9(09).
-      *ɸ����ô��
+      *標準負担額
                05  RECE67-SHOKUJIFTN      PIC  9(09).
-      *�������
+      *公費情報
            03  RECE67-KOHINF              OCCURS  4.
-      *�������ô���ֹ�
+      *公費−負担者番号
                05  RECE67-KOHFTNJANUM     PIC  X(08).
-      *����ݼ�����ֹ�
+      *公費−受給者番号
                05  RECE67-KOHJKYSNUM      PIC  X(20).
-      *�õ��������
+      *特記事項情報
            03  RECE67-TOKKIINF            OCCURS  5.
                05  RECE67-TOKKI           PIC  X(02).
-      *���ܤε��վ���ʥ쥻���ѡ�
+      *療養の給付情報（レセ電用）
            03  RECE67-RECEDEN-TOTALTENINF OCCURS  5.
-      *��ô���
+      *負担金額
                05  RECE67-RECEDEN-FTNMONEY
                                           PIC  9(09).
-      *��������ʾ�����
+      *コメント欄（上部）
            03  RECE67-HEAD4-G.
                05  RECE67-HEAD4           PIC  X(62)   OCCURS  2.
-      *Ģɼ�ǡ���
+      *帳票データ
            03  RECE67-PRTDATA             PIC  X(4500).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,64 +16,64 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÄÌ»»Æü¿ô¼èÆÀ¥µ¥Ö          COPY (CPORCSTUSAN.INC)      *
+      *    é€šç®—æ—¥æ•°å–å¾—ã‚µãƒ–          COPY (CPORCSTUSAN.INC)      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSTUSANAREA.
-      *  °åÎÅµ¡´Ø¥³¡¼¥É
+      *  åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
            03  STUSAN-HOSPNUM              PIC 9(2).
-      *  ´µ¼Ô£É£Ä
+      *  æ‚£è€…ï¼©ï¼¤
            03  STUSAN-PTID                 PIC  9(10).
-      *    ´ð½àÆü
+      *    åŸºæº–æ—¥
            03  STUSAN-KJNYMD               PIC X(08).
-      *    ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¡ÊÀßÄê¤ÏÇ¤°Õ¡Ë
+      *    ç‰¹å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ï¼ˆè¨­å®šã¯ä»»æ„ï¼‰
            03  STUSAN-TOKUTEI-SRYCD        PIC X(09)
                                            OCCURS 10.
-      *    ÍúÎòÈÖ¹æÀßÄê¶èÊ¬¡ÊÀßÄê¤ÏÇ¤°Õ¡Ë
+      *    å±¥æ­´ç•ªå·è¨­å®šåŒºåˆ†ï¼ˆè¨­å®šã¯ä»»æ„ï¼‰
            03  STUSAN-RRKNUMKBN            PIC X(01).
-      *    ÍúÎòÈÖ¹æ¡ÊÍúÎòÈÖ¹æÀßÄê¶èÊ¬¤¬"1"¤Î¾ì¹ç¤ËÀßÄê¡Ë
+      *    å±¥æ­´ç•ªå·ï¼ˆå±¥æ­´ç•ªå·è¨­å®šåŒºåˆ†ãŒ"1"ã®å ´åˆã«è¨­å®šï¼‰
            03  STUSAN-RRKNUM               PIC 9(03).
       *
-      *  ½ÐÎÏÎÎ°è
-      *    ÄÌ»»Æü¿ô
+      *  å‡ºåŠ›é ˜åŸŸ
+      *    é€šç®—æ—¥æ•°
            03  STUSAN-OUT-AREA.
                05  STUSAN-NISSU-VAL.
-      *            Æü¿ô£±¡§º£²óÆþ±¡Æü¤«¤é´ð½àÆü¤Þ¤Ç¤ÎÄÌ»»Æü¿ô
+      *            æ—¥æ•°ï¼‘ï¼šä»Šå›žå…¥é™¢æ—¥ã‹ã‚‰åŸºæº–æ—¥ã¾ã§ã®é€šç®—æ—¥æ•°
                    07  STUSAN-NISSU01      PIC 9(08).
-      *            Æü¿ô£²¡§½é²óÆþ±¡¤«¤é´ð½àÆü¤Þ¤Ç¤ÎÄÌ»»Æü¿ô¡ÊÂ¾±¡Ê¬´Þ¤à¡Ë
+      *            æ—¥æ•°ï¼’ï¼šåˆå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥ã¾ã§ã®é€šç®—æ—¥æ•°ï¼ˆä»–é™¢åˆ†å«ã‚€ï¼‰
                    07  STUSAN-NISSU02      PIC 9(08).
-      *            Æü¿ô£³¡§½é²óÆþ±¡¤«¤é´ð½àÆü¤Þ¤Ç¤ÎÄÌ»»Æü¿ô¡ÊÂ¾±¡Ê¬´Þ¤á¤º¡Ë
+      *            æ—¥æ•°ï¼“ï¼šåˆå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥ã¾ã§ã®é€šç®—æ—¥æ•°ï¼ˆä»–é™¢åˆ†å«ã‚ãšï¼‰
                    07  STUSAN-NISSU03      PIC 9(08).
-      *            Æü¿ô£´¡§½é²óÆþ±¡¤«¤é´ð½àÆü¤Þ¤Ç¤ÎÄÌ»»Æü¿ô
-      *            ¡Ê°ìÈÌÆþ±¡ÎÁ¤ÇÆþ±¡¤·¤Æ¤¤¤¿Æü¿ô¡ÊÂ¾±¡Ê¬´Þ¤à¡Ë¡Ë
+      *            æ—¥æ•°ï¼”ï¼šåˆå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥ã¾ã§ã®é€šç®—æ—¥æ•°
+      *            ï¼ˆä¸€èˆ¬å…¥é™¢æ–™ã§å…¥é™¢ã—ã¦ã„ãŸæ—¥æ•°ï¼ˆä»–é™¢åˆ†å«ã‚€ï¼‰ï¼‰
                    07  STUSAN-NISSU04      PIC 9(08).
-      *            Æü¿ô£µ¡§½é²óÆþ±¡¤«¤é´ð½àÆü¤Þ¤Ç¤ÎÄÌ»»Æü¿ô
-      *            ¡Ê°ìÈÌÆþ±¡ÎÁ¤ÇÆþ±¡¤·¤Æ¤¤¤¿Æü¿ô¡ÊÂ¾±¡Ê¬´Þ¤á¤º¡Ë¡Ë
+      *            æ—¥æ•°ï¼•ï¼šåˆå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥ã¾ã§ã®é€šç®—æ—¥æ•°
+      *            ï¼ˆä¸€èˆ¬å…¥é™¢æ–™ã§å…¥é™¢ã—ã¦ã„ãŸæ—¥æ•°ï¼ˆä»–é™¢åˆ†å«ã‚ãšï¼‰ï¼‰
                    07  STUSAN-NISSU05      PIC 9(08).
-      *            Æü¿ô£¶¡§º£²óÆþ±¡¤«¤é´ð½àÆüÁ°Æü¤Þ¤Ç¤ÎÆÃÄêÆþ±¡ÎÁÄÌ»»Æü¿ô
+      *            æ—¥æ•°ï¼–ï¼šä»Šå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥å‰æ—¥ã¾ã§ã®ç‰¹å®šå…¥é™¢æ–™é€šç®—æ—¥æ•°
                    07  STUSAN-NISSU06      PIC 9(08).
-      *            Æü¿ô£·¡§º£²óÆþ±¡¤«¤é´ð½àÆüÁ°Æü¤Þ¤Ç¤Î°ú¿ô¤Ç»ØÄê¤·¤¿
-      *            ÆÃÄêÆþ±¡ÎÁ¤Ç¤ÎÄÌ»»Æü¿ô
+      *            æ—¥æ•°ï¼—ï¼šä»Šå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥å‰æ—¥ã¾ã§ã®å¼•æ•°ã§æŒ‡å®šã—ãŸ
+      *            ç‰¹å®šå…¥é™¢æ–™ã§ã®é€šç®—æ—¥æ•°
                    07  STUSAN-NISSU07      PIC 9(08).
-      *            Æü¿ô£¸¡§½é²óÆþ±¡¤«¤é´ð½àÆüÁ°Æü¤Þ¤Ç¤ÎÆÃÄêÆþ±¡ÎÁÄÌ»»Æü¿ô
-      *            ¡Ê¼«±¡ÎòÊ¬´Þ¤à¡¦Â¾±¡ÎòÊ¬´Þ¤á¤º¡Ë
+      *            æ—¥æ•°ï¼˜ï¼šåˆå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥å‰æ—¥ã¾ã§ã®ç‰¹å®šå…¥é™¢æ–™é€šç®—æ—¥æ•°
+      *            ï¼ˆè‡ªé™¢æ­´åˆ†å«ã‚€ãƒ»ä»–é™¢æ­´åˆ†å«ã‚ãšï¼‰
                    07  STUSAN-NISSU08      PIC 9(08).
-      *            Æü¿ô£¹¡§½é²óÆþ±¡¤«¤é´ð½àÆüÁ°Æü¤Þ¤Ç¤Î°ú¿ô¤Ç»ØÄê¤·¤¿
-      *            ÆÃÄêÆþ±¡ÎÁ¤Ç¤ÎÄÌ»»Æü¿ô
+      *            æ—¥æ•°ï¼™ï¼šåˆå›žå…¥é™¢ã‹ã‚‰åŸºæº–æ—¥å‰æ—¥ã¾ã§ã®å¼•æ•°ã§æŒ‡å®šã—ãŸ
+      *            ç‰¹å®šå…¥é™¢æ–™ã§ã®é€šç®—æ—¥æ•°
                    07  STUSAN-NISSU09      PIC 9(08).
                05  STUSAN-TUSAN-R  REDEFINES   STUSAN-NISSU-VAL.
                    07  STUSAN-TUSAN-OCC    OCCURS  9.
                        09  STUSAN-NISSU    PIC 9(08).
-      *            ´ð½àÆü¥Á¥§¥Ã¥¯¥Õ¥é¥°¡¡¡Ê0:ÂÐ¾Ý³°¡¿1:ÂÐ¾Ý¡Ë
-      *            ¡Ê´ð½àÆü¤ÎÆþ±¡ÎÁ¤¬ÄÌ»»Æü¿ô¤ÎÂÐ¾Ý¤È¤Ê¤ë¤«¥Á¥§¥Ã¥¯¡Ë
+      *            åŸºæº–æ—¥ãƒã‚§ãƒƒã‚¯ãƒ•ãƒ©ã‚°ã€€ï¼ˆ0:å¯¾è±¡å¤–ï¼1:å¯¾è±¡ï¼‰
+      *            ï¼ˆåŸºæº–æ—¥ã®å…¥é™¢æ–™ãŒé€šç®—æ—¥æ•°ã®å¯¾è±¡ã¨ãªã‚‹ã‹ãƒã‚§ãƒƒã‚¯ï¼‰
                05  STUSAN-KJNYMD-CHK-FLG   PIC 9(01).
-      *        ÆÃÊÌ¤Ê´Ø·¸¤Ë¤¢¤ë°åÎÅµ¡´Ø¤ËÆþ±¡¤·¤Æ¤¤¤¿Æü¿ô
+      *        ç‰¹åˆ¥ãªé–¢ä¿‚ã«ã‚ã‚‹åŒ»ç™‚æ©Ÿé–¢ã«å…¥é™¢ã—ã¦ã„ãŸæ—¥æ•°
                05  STUSAN-TAINREL-NISSU    PIC 9(08).
                05  STUSAN-RRK-VAL.
-      *            ¥Æ¡¼¥Ö¥ë¥ª¡¼¥Ð¡¼¥Õ¥é¥°
+      *            ãƒ†ãƒ¼ãƒ–ãƒ«ã‚ªãƒ¼ãƒãƒ¼ãƒ•ãƒ©ã‚°
                    07  STUSAN-RRK-FLG-OVER         PIC 9(01).
                    07  STUSAN-RRK-CNT              PIC 9(05).
                    07  STUSAN-RRK-OCC              OCCURS  50.
@@ -82,8 +82,8 @@
                        09  STUSAN-RRK-NYUINYMD     PIC X(08).
                        09  STUSAN-RRK-TAIINYMD     PIC X(08).
                        09  STUSAN-RRK-DJKBN        PIC X(01).
-      *                °ìÈÌÆþ±¡ÎÁ¤ÇÆþ±¡¤·¤Æ¤¤¤¿Æü¿ô
-      *                ¡ÊÎòºîÀ®¥Ç¡¼¥¿¤Î¾ì¹ç¤ÏÂÐ¾ÝÆü¿ô¡Ë
+      *                ä¸€èˆ¬å…¥é™¢æ–™ã§å…¥é™¢ã—ã¦ã„ãŸæ—¥æ•°
+      *                ï¼ˆæ­´ä½œæˆãƒ‡ãƒ¼ã‚¿ã®å ´åˆã¯å¯¾è±¡æ—¥æ•°ï¼‰
                        09  STUSAN-RRK-NISSU        PIC 9(08).
-      *  ¥ê¥¿¡¼¥ó¥³¡¼¥É
+      *  ãƒªã‚¿ãƒ¼ãƒ³ã‚³ãƒ¼ãƒ‰
            03  STUSAN-RC               PIC 9(02).

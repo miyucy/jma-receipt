@@ -1,23 +1,23 @@
 kanri_cd    : "9103"
-name        : "½èÊı¤»¤ó¥Ç¡¼¥¿Ï¢·È¾ğÊó"
+name        : "å‡¦æ–¹ã›ã‚“ãƒ‡ãƒ¼ã‚¿é€£æºæƒ…å ±"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "EFOUT"
-  item_jp   : "½èÊı¤»¤óÏ¢·ÈÍÑ¥Ç¡¼¥¿ºîÀ®"
+  item_jp   : "å‡¦æ–¹ã›ã‚“é€£æºç”¨ãƒ‡ãƒ¼ã‚¿ä½œæˆ"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "FILE-DIR"
-  item_jp   : "½èÊı¤»¤óÏ¢·ÈÍÑ¥Ç¥¤¥ì¥¯¥È¥ê"
+  item_jp   : "å‡¦æ–¹ã›ã‚“é€£æºç”¨ãƒ‡ã‚¤ãƒ¬ã‚¯ãƒˆãƒª"
   type      : "X"
   start     : 2
   length    : 200
 - item_no   : 3
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 202
   length    : 298

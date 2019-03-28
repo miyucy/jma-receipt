@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBGS120.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : �ݸ�����������å�����ɽ
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  11/01/13    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 保険別請求チェック明細表
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  11/01/13    NACL-太田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,14 +34,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  BGS100ERR-FILE  ASSIGN  BGS100P-ERRFNAME
                                    FILE    STATUS  IS  STS-BGS100ERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  BGS100ERR-FILE.
        01  BGS100ERR-REC           PIC X(200).
       *
@@ -74,7 +74,7 @@
            03  CONST-DAISAN        PIC 9(02)   VALUE 9.
            03  CONST-KOUGAI        PIC 9(02)   VALUE 10.
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  BGS100P-AREA.
            COPY    "CPORCSPRTLNK.INC".
            COPY    "CPBGS100PARA.INC".
@@ -82,34 +82,34 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
       ****************************************************************
@@ -123,7 +123,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -139,7 +139,7 @@
       *
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -223,31 +223,31 @@
            MOVE    SPACE               TO  WRK-SUBTITLE
            EVALUATE    BGS100P-FORMKBN
            WHEN    "1"
-               MOVE    "�ʼ��ݡ�"      TO  BGS100P-SHELLMSG
+               MOVE    "（社保）"      TO  BGS100P-SHELLMSG
            WHEN    "2"
-               MOVE    "�ʹ��ݡ�"      TO  BGS100P-SHELLMSG
+               MOVE    "（国保）"      TO  BGS100P-SHELLMSG
            WHEN    "3"
-               MOVE    "�ʸ������ԡ�"
+               MOVE    "（後期高齢者）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "5"
-               MOVE    "�������������"
+               MOVE    "（特別療養費）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "7"
-               MOVE    "��ϫ�ҡ�"
+               MOVE    "（労災）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "8"
-               MOVE    "�ʼ����ա�"
+               MOVE    "（自賠責）"
                                        TO  BGS100P-SHELLMSG
            WHEN    "9"
-               MOVE    "�ʸ�����"
+               MOVE    "（公害）"
                                        TO  BGS100P-SHELLMSG
            WHEN    OTHER
-               MOVE    "��ɸ��Ģɼ��"
+               MOVE    "（標準帳票）"
                                        TO  BGS100P-SHELLMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  BGS100P-SHELLMSG
-           STRING  "�ݸ�����������å�����ɽ"
+           STRING  "保険別請求チェック明細表"
                                        DELIMITED BY SIZE
                    WRK-SUBTITLE        DELIMITED BY SPACE
            INTO    BGS100P-SHELLMSG
@@ -279,7 +279,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿������
+      *    パラメタ　処理
       *****************************************************************
        1001-PARA-CHK-SEC               SECTION.
       *
@@ -353,9 +353,9 @@
                CONTINUE
            ELSE
                MOVE    SPACE       TO  WRK-ERRMSG
-               STRING  "�о�ǯ���ʿ������ǯ����ʹ�"
+               STRING  "対象年月は平成２２年４月以降"
                                        DELIMITED BY SIZE
-                       "�Ȥ��Ƥ�������"
+                       "としてください"
                                        DELIMITED BY SIZE
                INTO    WRK-ERRMSG
                END-STRING
@@ -366,13 +366,13 @@
        1001-PARA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ�������
+      *    プログラムオプション処理
       *****************************************************************
        1001-PRGOPTION-SEC              SECTION.
       *
            MOVE    ZERO            TO  BGS100P-SKYGET-PARA
       *
-      *    ���軰�Թ԰١˰����������ô�ۡ�����ɸ����ô�ۤν�����
+      *    （第三者行為）医療費一部負担額・食事標準負担額の集計先
            MOVE    "DAISAN_SAKI"   TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA        =   "0" OR "1" )
@@ -383,7 +383,7 @@
        1001-PRGOPTION-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ����ѥ�᥿��������
+      *    プログラムオプションパラメタ取得処理
       *****************************************************************
        1001-OPTION-CALL-SEC             SECTION.
       *
@@ -401,11 +401,11 @@
        1001-OPTION-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ��ɽ�ѥǡ�������
+      *    作表用データ作成
            IF    ( BGS100P-RC      =   ZERO )
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ST:ORCBGS110"
@@ -416,7 +416,7 @@
                    DISPLAY SMCNDATE-HMS "ED:ORCBGS110"
            END-IF
       *
-      *    ����
+      *    社保
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-SYAHO   =   1 )
                    MOVE    CONST-SYAHO     TO  BGS100P-HOKEN
@@ -424,7 +424,7 @@
                END-IF
            END-IF
       *
-      *    ����
+      *    国保
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-KOKUHO  =   1 )
                    MOVE    CONST-KOKUHO    TO  BGS100P-HOKEN
@@ -432,7 +432,7 @@
                END-IF
            END-IF
       *
-      *    ��������
+      *    後期高齢者
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-KOUKI   =   1 )
                    MOVE    CONST-KOUKI     TO  BGS100P-HOKEN
@@ -440,7 +440,7 @@
                END-IF
            END-IF
       *
-      *    ����������
+      *    特別療養費
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-TOKUYO  =   1 )
                    MOVE    CONST-TOKUYO    TO  BGS100P-HOKEN
@@ -448,7 +448,7 @@
                END-IF
            END-IF
       *
-      *    ϫ��
+      *    労災
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-ROUSAI   =   1 )
                    MOVE    CONST-ROUSAI    TO  BGS100P-HOKEN
@@ -456,7 +456,7 @@
                END-IF
            END-IF
       *
-      *    ������
+      *    自賠責
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-JIBAI   =   1 )
                    MOVE    CONST-JIBAI     TO  BGS100P-HOKEN
@@ -464,7 +464,7 @@
                END-IF
            END-IF
       *
-      *    �軰�Թ԰�
+      *    第三者行為
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-DAISAN  =   1 )
                    MOVE    CONST-DAISAN    TO  BGS100P-HOKEN
@@ -472,7 +472,7 @@
                END-IF
            END-IF
       *
-      *    ����
+      *    公害
            IF    ( BGS100P-RC      =   ZERO )
                IF    ( BGS100P-KOUGAI  =   1 )
                    MOVE    CONST-KOUGAI    TO  BGS100P-HOKEN
@@ -483,9 +483,9 @@
            EVALUATE    BGS100P-RC
            WHEN    2
                MOVE    SPACE   TO  WRK-ERRMSG
-               STRING    "�������񵭺ܤ��оݥ쥻�ץȤ����뤿��"
+               STRING    "０点公費記載の対象レセプトがあるため"
                                            DELIMITED BY SIZE
-                         "�����Ǥ��ޤ���"  DELIMITED BY SIZE
+                         "処理できません"  DELIMITED BY SIZE
                INTO    WRK-ERRMSG
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
@@ -496,7 +496,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ɽ����
+      *    作表処理
       *****************************************************************
        2001-ORCBGS121-SEC                  SECTION.
       *
@@ -512,7 +512,7 @@
        2001-ORCBGS121-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -542,7 +542,7 @@
                                        ORCSFDELAREA
       *
            IF    ( BGS100P-PAGE        =   ZERO )
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -564,7 +564,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -578,7 +578,7 @@
                WRITE   BGS100ERR-REC
                CLOSE   BGS100ERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-ERRMSG      TO  JOB-YOBI
@@ -592,7 +592,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -603,7 +603,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -623,7 +623,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -647,7 +647,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

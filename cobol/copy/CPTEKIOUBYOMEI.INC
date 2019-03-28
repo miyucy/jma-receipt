@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,26 +16,26 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  Å¬±þÉÂÌ¾¥Þ¥¹¥¿       (CPTEKIOUBYOMEI.INC)
+      *  é©å¿œç—…åãƒžã‚¹ã‚¿       (CPTEKIOUBYOMEI.INC)
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  TEKIOUBYOMEI-REC.
       *
            03  TEKBYO-KEY.
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
                05  TEKBYO-CHKKBN          PIC X(01).
-      *¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  TEKBYO-SRYCD           PIC X(09).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  TEKBYO-RENNUM          PIC 9(04).
-      *Å¬±þÉÂÌ¾
+      *é©å¿œç—…å
            03  TEKBYO-BYOMEI              PIC X(400).
-      *ÉÂÌ¾¥³¡¼¥É¿ô
+      *ç—…åã‚³ãƒ¼ãƒ‰æ•°
            03  TEKBYO-BYOMEICDSU          PIC 9(02).
-      *ÉÂÌ¾¥³¡¼¥É
+      *ç—…åã‚³ãƒ¼ãƒ‰
            03  TEKBYO-BYOMEICD-G.
                05  TEKBYO-BYOMEICD-1      PIC X(07).
                05  TEKBYO-BYOMEICD-2      PIC X(07).
@@ -62,28 +62,28 @@
            03  TEKBYO-BYOMEICD-R          REDEFINES   TEKBYO-BYOMEICD-G.
                05  TEKBYO-BYOMEICD        PIC X(07)
                                           OCCURS   21.
-      *ÉÂÌ¾ÊÔ½¸¥Õ¥é¥°
+      *ç—…åç·¨é›†ãƒ•ãƒ©ã‚°
            03  TEKBYO-BYOMEIHENFLG        PIC X(01).
-      *´ðËÜÉÂÌ¾¥³¡¼¥É
+      *åŸºæœ¬ç—…åã‚³ãƒ¼ãƒ‰
            03  TEKBYO-KHNBYOMEICD         PIC X(07).
-      *´ðËÜÉô°Ì¥³¡¼¥É£±
+      *åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ï¼‘
            03  TEKBYO-KHNBUICD-1          PIC X(07).
-      *´ðËÜÉô°Ì¥³¡¼¥É£²
+      *åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ï¼’
            03  TEKBYO-KHNBUICD-2          PIC X(07).
-      *´ðËÜÉô°Ì¥³¡¼¥É£³
+      *åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ï¼“
            03  TEKBYO-KHNBUICD-3          PIC X(07).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  TEKBYO-TERMID              PIC X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  TEKBYO-OPID                PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  TEKBYO-CREYMD              PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  TEKBYO-UPYMD               PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  TEKBYO-UPHMS               PIC X(06).
       *
-      *¸¡º÷ÍÑ¹àÌÜ
+      *æ¤œç´¢ç”¨é …ç›®
            03  TEKBYO-SELNAME             PIC  X(200).
            03  TEKBYO-SELYUKOSTYMD        PIC  X(8).
            03  TEKBYO-SELYUKOEDYMD        PIC  X(8).

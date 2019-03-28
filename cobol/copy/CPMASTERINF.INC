@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,213 +15,213 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    ¥Þ¥¹¥¿¼èÆÀÂÐ¾Ý
+      *    ãƒžã‚¹ã‚¿å–å¾—å¯¾è±¡
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  MASTERINF-AREA.
            03  MASTERINF-VAL.
       *
                05 PIC X(50) VALUE  "tbl_adrs".
-               05 PIC X(50) VALUE  "½»½ê".
+               05 PIC X(50) VALUE  "ä½æ‰€".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_byomei".
-               05 PIC X(50) VALUE  "ÉÂÌ¾".
+               05 PIC X(50) VALUE  "ç—…å".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_chk".
-               05 PIC X(50) VALUE  "¥Á¥§¥Ã¥¯".
+               05 PIC X(50) VALUE  "ãƒã‚§ãƒƒã‚¯".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_chksnd".
-               05 PIC X(50) VALUE  "¥Á¥§¥Ã¥¯£²".
+               05 PIC X(50) VALUE  "ãƒã‚§ãƒƒã‚¯ï¼’".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_etensu_1".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£±".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼‘".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_2_jma".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£²ÄÉ²Ã".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼’è¿½åŠ ".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_2_sample".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£²¸¡ÂÎ".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼’æ¤œä½“".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_2".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£²".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼’".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_3_1".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£³¡Ý£±".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼“âˆ’ï¼‘".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_3_2".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£³¡Ý£²".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼“âˆ’ï¼’".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_3_3".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£³¡Ý£³".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼“âˆ’ï¼“".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_3_4".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£³¡Ý£´".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼“âˆ’ï¼”".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_4".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£´".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼”".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_etensu_5".
-               05 PIC X(50) VALUE  "ÅÅ»ÒÅÀ¿ôÉ½£µ".
+               05 PIC X(50) VALUE  "é›»å­ç‚¹æ•°è¡¨ï¼•".
                05 PIC X(01) VALUE  "0".
       *
                05 PIC X(50) VALUE  "tbl_example".
-               05 PIC X(50) VALUE  "¿÷·Á".
+               05 PIC X(50) VALUE  "é››å½¢".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_generic_class".
-               05 PIC X(50) VALUE  "°åÌôÉÊÊ¬Îà".
+               05 PIC X(50) VALUE  "åŒ»è–¬å“åˆ†é¡ž".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_generic_price".
-               05 PIC X(50) VALUE  "ºÇÄãÌô²Á".
+               05 PIC X(50) VALUE  "æœ€ä½Žè–¬ä¾¡".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_genericname".
-               05 PIC X(50) VALUE  "°ìÈÌÌ¾".
+               05 PIC X(50) VALUE  "ä¸€èˆ¬å".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_hknjainf_care".
-               05 PIC X(50) VALUE  "²ð¸îÊÝ¸±¼Ô¾ðÊó".
+               05 PIC X(50) VALUE  "ä»‹è­·ä¿é™ºè€…æƒ…å ±".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_hknjainf".
-               05 PIC X(50) VALUE  "ÊÝ¸±¼Ô¾ðÊó".
+               05 PIC X(50) VALUE  "ä¿é™ºè€…æƒ…å ±".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_hknnum".
-               05 PIC X(50) VALUE  "ÊÝ¸±ÈÖ¹æ".
+               05 PIC X(50) VALUE  "ä¿é™ºç•ªå·".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_hktsantei".
-               05 PIC X(50) VALUE  "Êñ³ç¥Á¥§¥Ã¥¯".
+               05 PIC X(50) VALUE  "åŒ…æ‹¬ãƒã‚§ãƒƒã‚¯".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_hktsrycd".
-               05 PIC X(50) VALUE  "Êñ³ç¿ÇÎÅ¥³¡¼¥É".
+               05 PIC X(50) VALUE  "åŒ…æ‹¬è¨ºç™‚ã‚³ãƒ¼ãƒ‰".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_infection_judgment".
-               05 PIC X(50) VALUE  "´¶À÷¾ÉÈ½Äê".
+               05 PIC X(50) VALUE  "æ„ŸæŸ“ç—‡åˆ¤å®š".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_interact".
-               05 PIC X(50) VALUE  "Áê¸ßºîÍÑ".
+               05 PIC X(50) VALUE  "ç›¸äº’ä½œç”¨".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_kensasort".
-               05 PIC X(50) VALUE  "¸¡ººÊ¬Îà".
+               05 PIC X(50) VALUE  "æ¤œæŸ»åˆ†é¡ž".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_labor_sio".
-               05 PIC X(50) VALUE  "Ï«Æ¯´ð½à´ÆÆÄ½ð".
+               05 PIC X(50) VALUE  "åŠ´åƒåŸºæº–ç›£ç£ç½²".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_material_h".
-               05 PIC X(50) VALUE  "ÆÃÄê´ïºàÉÊÌÜ".
+               05 PIC X(50) VALUE  "ç‰¹å®šå™¨æå“ç›®".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_material_k".
-               05 PIC X(50) VALUE  "ÆÃºàÉÊÌÜ»»Äê´ØÏ¢¼êµ»".
+               05 PIC X(50) VALUE  "ç‰¹æå“ç›®ç®—å®šé–¢é€£æ‰‹æŠ€".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_material_s".
-               05 PIC X(50) VALUE  "ÆÃºàÉÊÌÜ»»ÄêÅ¬±þ¼À´µ".
+               05 PIC X(50) VALUE  "ç‰¹æå“ç›®ç®—å®šé©å¿œç–¾æ‚£".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_nyuincdchg".
-               05 PIC X(50) VALUE  "Æþ±¡ÎÁ¥³¡¼¥ÉÃÖ´¹".
+               05 PIC X(50) VALUE  "å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ç½®æ›".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_nyuinkhn".
-               05 PIC X(50) VALUE  "Æþ±¡´ðËÜÎÁ".
+               05 PIC X(50) VALUE  "å…¥é™¢åŸºæœ¬æ–™".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_nyuinryakusho".
-               05 PIC X(50) VALUE  "Æþ±¡¥ì¥»¥×¥Èµ­ºÜÎ¬¾Î".
+               05 PIC X(50) VALUE  "å…¥é™¢ãƒ¬ã‚»ãƒ—ãƒˆè¨˜è¼‰ç•¥ç§°".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_nyuksnchk".
-               05 PIC X(50) VALUE  "Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯".
+               05 PIC X(50) VALUE  "å…¥é™¢æ–™åŠ ç®—ãƒã‚§ãƒƒã‚¯".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_prgoption".
-               05 PIC X(50) VALUE  "¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥ó".
+               05 PIC X(50) VALUE  "ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_psychotropic".
-               05 PIC X(50) VALUE  "¸þÀº¿ÀÌôÀ®Ê¬¥³¡¼¥É".
+               05 PIC X(50) VALUE  "å‘ç²¾ç¥žè–¬æˆåˆ†ã‚³ãƒ¼ãƒ‰".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_recekisai".
-               05 PIC X(50) VALUE  "¥ì¥»¥×¥Èµ­ºÜ»ö¹à".
+               05 PIC X(50) VALUE  "ãƒ¬ã‚»ãƒ—ãƒˆè¨˜è¼‰äº‹é …".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_senteicdchg".
-               05 PIC X(50) VALUE  "ÁªÄêÎÅÍÜÈñ¡¦°ìÈÌ¥³¡¼¥É¿¶ÂØ".
+               05 PIC X(50) VALUE  "é¸å®šç™‚é¤Šè²»ãƒ»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_srycdchg".
-               05 PIC X(50) VALUE  "°ìÈÌÏ·¿ÍÃÖ´¹".
+               05 PIC X(50) VALUE  "ä¸€èˆ¬è€äººç½®æ›".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_sskijyo".
-               05 PIC X(50) VALUE  "¾É¾õÁ¼ÃÖµ¡½ø".
+               05 PIC X(50) VALUE  "ç—‡çŠ¶æŽªç½®æ©Ÿåº".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_synonym".
-               05 PIC X(50) VALUE  "Æ±µÁ¸ì".
+               05 PIC X(50) VALUE  "åŒç¾©èªž".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_syskanri".
-               05 PIC X(50) VALUE  "¥·¥¹¥Æ¥à´ÉÍý".
+               05 PIC X(50) VALUE  "ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_tekiou_disease".
-               05 PIC X(50) VALUE  "°åÌôÉÊ½ýÉÂÌ¾£Ä£ÂÅ¬±þ½ýÉÂÌ¾¥ê¥ó¥¯".
+               05 PIC X(50) VALUE  "åŒ»è–¬å“å‚·ç—…åï¼¤ï¼¢é©å¿œå‚·ç—…åãƒªãƒ³ã‚¯".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_tekiou_medicine".
-               05 PIC X(50) VALUE  "°åÌôÉÊ½ýÉÂÌ¾£Ä£Â°åÌôÉÊ".
+               05 PIC X(50) VALUE  "åŒ»è–¬å“å‚·ç—…åï¼¤ï¼¢åŒ»è–¬å“".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_tekioubyomei".
-               05 PIC X(50) VALUE  "Å¬±þÉÂÌ¾".
+               05 PIC X(50) VALUE  "é©å¿œç—…å".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_tensuplus".
-               05 PIC X(50) VALUE  "ÅÀ¿ôÉÕ²Ã".
+               05 PIC X(50) VALUE  "ç‚¹æ•°ä»˜åŠ ".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_tensuplus2".
-               05 PIC X(50) VALUE  "ÅÀ¿ôÉÕ²Ã£²".
+               05 PIC X(50) VALUE  "ç‚¹æ•°ä»˜åŠ ï¼’".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_tensu".
-               05 PIC X(50) VALUE  "ÅÀ¿ô".
+               05 PIC X(50) VALUE  "ç‚¹æ•°".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_toukeimemo".
-               05 PIC X(50) VALUE  "Åý·×³Ð½ñ".
+               05 PIC X(50) VALUE  "çµ±è¨ˆè¦šæ›¸".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_yakujyo".
-               05 PIC X(50) VALUE  "ÌôºÞ¾ðÊó".
+               05 PIC X(50) VALUE  "è–¬å‰¤æƒ…å ±".
                05 PIC X(01) VALUE  "1".
       *
            03  MASTERINF-R  REDEFINES  MASTERINF-VAL.

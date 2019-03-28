@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,62 +16,62 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSNYULIFE.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSNYULIFE)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´Ø£É£Ä
-      *      ´µ¼Ô£É£Ä
-      *      »»ÄêÇ¯·î
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSNYULIFE.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSNYULIFE)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
+      *      æ‚£è€…ï¼©ï¼¤
+      *      ç®—å®šå¹´æœˆ
       *
-      *    ¢¨ÊÖµÑ¹àÌÜ¤Î¿©»ö¤Ë·¸¤ë¶â³Û¤Ï£±¿©Ê¬¤ÎÃÍ¤òÊÖµÑ
+      *    â€»è¿”å´é …ç›®ã®é£Ÿäº‹ã«ä¿‚ã‚‹é‡‘é¡ã¯ï¼‘é£Ÿåˆ†ã®å€¤ã‚’è¿”å´
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSNYULIFE-AREA.
       *
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
            03  LNK-NYULIFE-HOSPNUM                    PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-NYULIFE-PTID                       PIC  9(10).
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-NYULIFE-SANTEIYM                   PIC  X(06).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-NYULIFE-HENKYAKU-AREA.
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÊÖµÑ¥Æ¡¼¥Ö¥ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è¿”å´ãƒ†ãƒ¼ãƒ–ãƒ«
                05  LNK-NYULIFE-HENKYAKU-TABLE         OCCURS  31.
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÂÐ¾Ý¶èÊ¬
-      *  ¡Ê¶õÇò¡§ÂÐ¾Ý³°¡¡£±¡§ÂÐ¾Ý¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»å¯¾è±¡åŒºåˆ†
+      *  ï¼ˆç©ºç™½ï¼šå¯¾è±¡å¤–ã€€ï¼‘ï¼šå¯¾è±¡ï¼‰
                    07  LNK-NYULIFE-KBN                PIC  X(01).
-      *Æþ±¡»þ¿©»öÎÅÍÜÈñ¶èÊ¬
-      *  ¡Ê£±¡§¿©»öÎÅÍÜÈñ£±¡¡£²¡§¿©»öÎÅÍÜÈñ£²¡Ë
+      *å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šè²»åŒºåˆ†
+      *  ï¼ˆï¼‘ï¼šé£Ÿäº‹ç™‚é¤Šè²»ï¼‘ã€€ï¼’ï¼šé£Ÿäº‹ç™‚é¤Šè²»ï¼’ï¼‰
                    07  LNK-NYULIFE-SKJKBN             PIC  X(01).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´·Ú¸º¶èÊ¬£±¡Ê½êÆÀ¤Î¾õ¶·¤è¤ê·Ú¸º¡Ë
-      *  ¡Ê¶õÇò¡§·Ú¸ºÌµ¤·¡¡£±¡§Äã½êÆÀ£²¡¡£²¡§Äã½êÆÀ£²¡Ý£¹£°Æü±Û
-      *    £³¡§Äã½êÆÀ£±¡¡£´¡§Äã½êÆÀ£±¡ÝÏ·ÎðÊ¡»ãÇ¯¶â¼õµë¼Ô¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…è»½æ¸›åŒºåˆ†ï¼‘ï¼ˆæ‰€å¾—ã®çŠ¶æ³ã‚ˆã‚Šè»½æ¸›ï¼‰
+      *  ï¼ˆç©ºç™½ï¼šè»½æ¸›ç„¡ã—ã€€ï¼‘ï¼šä½Žæ‰€å¾—ï¼’ã€€ï¼’ï¼šä½Žæ‰€å¾—ï¼’âˆ’ï¼™ï¼æ—¥è¶Š
+      *    ï¼“ï¼šä½Žæ‰€å¾—ï¼‘ã€€ï¼”ï¼šä½Žæ‰€å¾—ï¼‘âˆ’è€é½¢ç¦ç¥‰å¹´é‡‘å—çµ¦è€…ï¼‰
                    07  LNK-NYULIFE-FTNKBN1            PIC  X(01).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´·Ú¸º¶èÊ¬£²¡ÊÉÂ¾õ¤ÎÄøÅÙÅù¤è¤ê·Ú¸º¡Ë
-      *  ¡Ê¶õÇò¡§·Ú¸ºÌµ¤·¡¡£±¡§·Ú¸ºÍ­¤ê¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…è»½æ¸›åŒºåˆ†ï¼’ï¼ˆç—…çŠ¶ã®ç¨‹åº¦ç­‰ã‚ˆã‚Šè»½æ¸›ï¼‰
+      *  ï¼ˆç©ºç™½ï¼šè»½æ¸›ç„¡ã—ã€€ï¼‘ï¼šè»½æ¸›æœ‰ã‚Šï¼‰
                    07  LNK-NYULIFE-FTNKBN2            PIC  X(01).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý¿©»ö¡Ý¿ÇÎÅ¥³¡¼¥É
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’é£Ÿäº‹âˆ’è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  LNK-NYULIFE-SKJ-SRYCD          PIC  X(09).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý¿©»ö¡Ý¶â³Û
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’é£Ÿäº‹âˆ’é‡‘é¡
                    07  LNK-NYULIFE-SKJ-MONEY          PIC  9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý´Ä¶­ÎÅÍÜ¡Ý¿ÇÎÅ¥³¡¼¥É
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’ç’°å¢ƒç™‚é¤Šâˆ’è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  LNK-NYULIFE-KAN-SRYCD          PIC  X(09).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý´Ä¶­ÎÅÍÜ¡Ý¶â³Û
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’ç’°å¢ƒç™‚é¤Šâˆ’é‡‘é¡
                    07  LNK-NYULIFE-KAN-MONEY          PIC  9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý¿©»öÉéÃ´¡Ý¿ÇÎÅ¥³¡¼¥É
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’é£Ÿäº‹è² æ‹…âˆ’è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  LNK-NYULIFE-SKJFTN-SRYCD       PIC  X(09).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý¿©»öÉéÃ´¡Ý¶â³Û
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’é£Ÿäº‹è² æ‹…âˆ’é‡‘é¡
                    07  LNK-NYULIFE-SKJFTN-MONEY       PIC  9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý´Ä¶­ÎÅÍÜÉéÃ´¡Ý¿ÇÎÅ¥³¡¼¥É
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’ç’°å¢ƒç™‚é¤Šè² æ‹…âˆ’è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  LNK-NYULIFE-KANFTN-SRYCD       PIC  X(09).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡Ý´Ä¶­ÎÅÍÜÉéÃ´¡Ý¶â³Û
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»âˆ’ç’°å¢ƒç™‚é¤Šè² æ‹…âˆ’é‡‘é¡
                    07  LNK-NYULIFE-KANFTN-MONEY       PIC  9(07).
       *
-      *Éüµ¢¥³¡¼¥É¡Ê£±¡§»»ÄêÇ¯·î¥¨¥é¡¼¡¡£²¡§´µ¼Ô¸¡º÷¥¨¥é¡¼
-      *            £³¡§Æþ±¡²ñ·×¤Ê¤·¡¡£´¡§Æþ±¡»þÀ¸³èÎÅÍÜÂÐ¾Ý³°¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šç®—å®šå¹´æœˆã‚¨ãƒ©ãƒ¼ã€€ï¼’ï¼šæ‚£è€…æ¤œç´¢ã‚¨ãƒ©ãƒ¼
+      *            ï¼“ï¼šå…¥é™¢ä¼šè¨ˆãªã—ã€€ï¼”ï¼šå…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šå¯¾è±¡å¤–ï¼‰
            03  LNK-NYULIFE-RC                     PIC S9(9) BINARY.
       *

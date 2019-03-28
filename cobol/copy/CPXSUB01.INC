@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -37,11 +37,11 @@
                            11  XSUB01-O-RECECDMEI  PIC X(100).
                05  XSUB01-O-BYOSTATUSALL           PIC X(01).
                05  XSUB01-O-BYOMEIALL              PIC X(400).
-      *        ¥ê¥¿¡¼¥ó¥³¡¼¥É
-      *        £°¡§Àµ¾ï
-      *        £±¡§Ì¤¥³¡¼¥É²½½ýÉÂÌ¾¥³¡¼¥É¤ÎÄ¾ÀÜÆþÎÏ
-      *        £²¡§¥ì¥»ÅÅ¥³¡¼¥É¤¬£²£±·ï¤òÄ¶²á
-      *        £³¡§³ºÅö¥³¡¼¥É¤Ê¤·¡ÊÉÂÌ¾¥Þ¥¹¥¿¡Ë
-      *        £´¡§³ºÅö¥³¡¼¥É¤Ê¤·¡Ê¼«±¡ÉÂÌ¾¥Þ¥¹¥¿¡Ë
+      *        ãƒªã‚¿ãƒ¼ãƒ³ã‚³ãƒ¼ãƒ‰
+      *        ï¼ï¼šæ­£å¸¸
+      *        ï¼‘ï¼šæœªã‚³ãƒ¼ãƒ‰åŒ–å‚·ç—…åã‚³ãƒ¼ãƒ‰ã®ç›´æŽ¥å…¥åŠ›
+      *        ï¼’ï¼šãƒ¬ã‚»é›»ã‚³ãƒ¼ãƒ‰ãŒï¼’ï¼‘ä»¶ã‚’è¶…éŽ
+      *        ï¼“ï¼šè©²å½“ã‚³ãƒ¼ãƒ‰ãªã—ï¼ˆç—…åãƒžã‚¹ã‚¿ï¼‰
+      *        ï¼”ï¼šè©²å½“ã‚³ãƒ¼ãƒ‰ãªã—ï¼ˆè‡ªé™¢ç—…åãƒžã‚¹ã‚¿ï¼‰
                05  XSUB01-O-RC                     PIC 9(03).
                05  XSUB01-O-ERRIDX                 PIC 9(03).

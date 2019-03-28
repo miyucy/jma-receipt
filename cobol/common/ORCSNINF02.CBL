@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCSNINF02.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Âà±¡ÀÁµá³ÛÊÖµÑ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  14/04/23    NACL¡ÝÂÀÅÄ¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : é€€é™¢è«‹æ±‚é¡è¿”å´
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  14/04/23    NACLâˆ’å¤ªç”°ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -55,7 +55,7 @@
            03  IDXS                    PIC 9(05).
            03  IDXT                    PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
@@ -107,24 +107,24 @@
            COPY  "CPSYUNOU.INC"        REPLACING   //SYU-//
                                        BY          //TTLSYU-//.
       *
-      *    ÀÁµáÅÀ¿ôÌ¾¾Î
+      *    è«‹æ±‚ç‚¹æ•°åç§°
        01  TBL-HKNTEN-MEI-AREA.
-           03  FILLER              PIC X(30)   VALUE   "½é¡¦ºÆ¿ÇÎÁ".
-           03  FILLER              PIC X(30)   VALUE   "°å³Ø´ÉÍýÅù".
-           03  FILLER              PIC X(30)   VALUE   "ºßÂðÎÅÍÜ".
-           03  FILLER              PIC X(30)   VALUE   "ÅêÌô".
-           03  FILLER              PIC X(30)   VALUE   "Ãí¼Í".
-           03  FILLER              PIC X(30)   VALUE   "½èÃÖ".
-           03  FILLER              PIC X(30)   VALUE   "¼ê½Ñ".
-           03  FILLER              PIC X(30)   VALUE   "Ëã¿ì".
-           03  FILLER              PIC X(30)   VALUE   "¸¡ºº".
-           03  FILLER              PIC X(30)   VALUE   "²èÁü¿ÇÃÇ".
-           03  FILLER              PIC X(30)   VALUE   "¥ê¥Ï¥Ó¥ê".
-           03  FILLER              PIC X(30)   VALUE   "Àº¿À²ÊÀìÌç".
-           03  FILLER              PIC X(30)   VALUE   "Êü¼ÍÀþ¼£ÎÅ".
-           03  FILLER              PIC X(30)   VALUE   "ÉÂÍý¿ÇÃÇ".
-           03  FILLER              PIC X(30)   VALUE   "Æþ±¡ÎÁ".
-           03  FILLER              PIC X(30)   VALUE   "ÎÅÍÜÃ´Åö¼êÅö".
+           03  FILLER              PIC X(30)   VALUE   "åˆãƒ»å†è¨ºæ–™".
+           03  FILLER              PIC X(30)   VALUE   "åŒ»å­¦ç®¡ç†ç­‰".
+           03  FILLER              PIC X(30)   VALUE   "åœ¨å®…ç™‚é¤Š".
+           03  FILLER              PIC X(30)   VALUE   "æŠ•è–¬".
+           03  FILLER              PIC X(30)   VALUE   "æ³¨å°„".
+           03  FILLER              PIC X(30)   VALUE   "å‡¦ç½®".
+           03  FILLER              PIC X(30)   VALUE   "æ‰‹è¡“".
+           03  FILLER              PIC X(30)   VALUE   "éº»é…”".
+           03  FILLER              PIC X(30)   VALUE   "æ¤œæŸ»".
+           03  FILLER              PIC X(30)   VALUE   "ç”»åƒè¨ºæ–­".
+           03  FILLER              PIC X(30)   VALUE   "ãƒªãƒãƒ“ãƒª".
+           03  FILLER              PIC X(30)   VALUE   "ç²¾ç¥žç§‘å°‚é–€".
+           03  FILLER              PIC X(30)   VALUE   "æ”¾å°„ç·šæ²»ç™‚".
+           03  FILLER              PIC X(30)   VALUE   "ç—…ç†è¨ºæ–­".
+           03  FILLER              PIC X(30)   VALUE   "å…¥é™¢æ–™".
+           03  FILLER              PIC X(30)   VALUE   "ç™‚é¤Šæ‹…å½“æ‰‹å½“".
        01  TBL-HKNTEN-MEI-RES      REDEFINES   TBL-HKNTEN-MEI-AREA.
            03  TBL-HKNTEN-MEI      PIC X(30)   OCCURS   16.
       *
@@ -136,41 +136,41 @@
                                        BY          //TSPA-//.
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¥»¥Ã¥ÈÎÎ°è
+      *    ä¿é™ºçµ„åˆã›ã‚»ãƒƒãƒˆé ˜åŸŸ
            COPY    "CPORCSAPIHKN.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1005.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ¼ýÇ¼
+      *    åŽç´
        01  SYUNOU-REC.
            COPY  "CPSYUNOU.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎò
+      *    æ‚£è€…å®šæœŸè«‹æ±‚å±¥æ­´
         01 PTTEIKIRRK-REC.
            COPY     "CPPTTEIKIRRK.INC".
       *
@@ -179,7 +179,7 @@
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
       *
@@ -197,7 +197,7 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -206,15 +206,15 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  KEY-AREA
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF    ( WRK-ERRCD          =   SPACE )
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *    ÊÖµÑÎÎ°èÊÔ½¸
+      *    è¿”å´é ˜åŸŸç·¨é›†
            PERFORM 300-END-SEC
       *
            .
@@ -223,7 +223,7 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -235,7 +235,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -248,7 +248,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ýÇ¼ÂàÈòÎÎ°èÊÔ½¸½èÍý
+      *    åŽç´é€€é¿é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        2001-TSYU-EDIT-SEC              SECTION.
       *
@@ -307,7 +307,7 @@
        2001-TSYU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ýÇ¼¹ç·×ÎÎ°èÊÔ½¸½èÍý
+      *    åŽç´åˆè¨ˆé ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        20011-TTLSYU-EDIT-SEC           SECTION.
       *
@@ -331,7 +331,7 @@
                =   TSYU-DENPLASTNUM (IDXT)
                +   1
       *
-      *    ÊÝ¸±ÎÁ
+      *    ä¿é™ºæ–™
            PERFORM VARYING     IDX1   FROM    1   BY  1
                    UNTIL       IDX1   >   17
       *
@@ -348,22 +348,22 @@
                    +   SYU-TGMONEY-TAX (IDX1)
            END-PERFORM
       *
-      *    ÊÝ¸±Å¬ÍÑ¶â³Û
+      *    ä¿é™ºé©ç”¨é‡‘é¡
            COMPUTE TTLSYU-HKNTEKMONEY   (IDXT)
                =   TTLSYU-HKNTEKMONEY   (IDXT)
                +   SYU-HKNTEKMONEY
       *
-      *    Ï·¿Í°ìÉôÉéÃ´¶â
+      *    è€äººä¸€éƒ¨è² æ‹…é‡‘
            COMPUTE TTLSYU-RJN-FTN    (IDXT)
                =   TTLSYU-RJN-FTN    (IDXT)
                +   SYU-RJN-FTN
       *
-      *    ¸øÈñ°ìÉôÉéÃ´¶â
+      *    å…¬è²»ä¸€éƒ¨è² æ‹…é‡‘
            COMPUTE TTLSYU-KOH-FTN    (IDXT)
                =   TTLSYU-KOH-FTN    (IDXT)
                +   SYU-KOH-FTN
       *
-      *    ¼«Èñ
+      *    è‡ªè²»
            PERFORM VARYING IDXJ    FROM    1   BY  1
                    UNTIL ( IDXJ    >   CONST-JIHI-MAX )
       *
@@ -377,132 +377,132 @@
       *
            END-PERFORM
       *
-      *    ¼«Èñ·×
+      *    è‡ªè²»è¨ˆ
            COMPUTE TTLSYU-JIHI-TOTAL   (IDXT)
                =   TTLSYU-JIHI-TOTAL   (IDXT)
                +   SYU-JIHI-TOTAL
       *
-      *    ¼«Èñ·×¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
+      *    è‡ªè²»è¨ˆï¼ˆæ¶ˆè²»ç¨Žã‚ã‚Šï¼‰
            COMPUTE TTLSYU-JIHI-TOTAL-TAX (IDXT)
                =   TTLSYU-JIHI-TOTAL-TAX (IDXT)
                +   SYU-JIHI-TOTAL-TAX
       *
-      *    ¼«Èñ¾ÃÈñÀÇ
+      *    è‡ªè²»æ¶ˆè²»ç¨Ž
            COMPUTE TTLSYU-JIHI-TAX  (IDXT)
                =   TTLSYU-JIHI-TAX  (IDXT)
                +   SYU-JIHI-TAX
       *
-      *    Ï«ºÒ½é¿Ç
+      *    åŠ´ç½åˆè¨º
            COMPUTE TTLSYU-RSISHOSHIN-MONEY (IDXT)
                =   TTLSYU-RSISHOSHIN-MONEY (IDXT)
                +   SYU-RSISHOSHIN-MONEY
       *
-      *    Ï«ºÒºÆ¿Ç
+      *    åŠ´ç½å†è¨º
            COMPUTE TTLSYU-RSISAISHIN-MONEY (IDXT)
                =   TTLSYU-RSISAISHIN-MONEY (IDXT)
                +   SYU-RSISAISHIN-MONEY
       *
-      *    Ï«ºÒ»ØÆ³
+      *    åŠ´ç½æŒ‡å°Ž
            COMPUTE TTLSYU-RSISDO-MONEY  (IDXT)
                =   TTLSYU-RSISDO-MONEY  (IDXT)
                +   SYU-RSISDO-MONEY
       *
-      *    Ï«ºÒ¤½¤ÎÂ¾
+      *    åŠ´ç½ãã®ä»–
            COMPUTE TTLSYU-RSIETC-MONEY (IDXT)
                =   TTLSYU-RSIETC-MONEY (IDXT)
                +   SYU-RSIETC-MONEY
       *
-      *    ¿©»öÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰
            COMPUTE TTLSYU-RYOYOHI-SKJ (IDXT)
                =   TTLSYU-RYOYOHI-SKJ (IDXT)
                +   SYU-RYOYOHI-SKJ
       *
-      *    ¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë
+      *    é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰
            COMPUTE TTLSYU-SKYMONEY-SKJ (IDXT)
                =   TTLSYU-SKYMONEY-SKJ (IDXT)
                +   SYU-SKYMONEY-SKJ
       *
-      *    ¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *    é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            COMPUTE TTLSYU-SKYMONEY-SKJ-TAX (IDXT)
                =   TTLSYU-SKYMONEY-SKJ-TAX (IDXT)
                +   SYU-SKYMONEY-SKJ-TAX
       *
-      *    ¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *    é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            COMPUTE TTLSYU-SKYMONEY-SKJ-KEI (IDXT)
                =   TTLSYU-SKYMONEY-SKJ-KEI (IDXT)
                +   SYU-SKYMONEY-SKJ-KEI
       *
-      *    ¿©»öÎÅÍÜÈñ¡Ê¼«Èñ¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆè‡ªè²»ï¼‰
            COMPUTE TTLSYU-RYOYOHI-SKJ-JIHI (IDXT)
                =   TTLSYU-RYOYOHI-SKJ-JIHI (IDXT)
                +   SYU-RYOYOHI-SKJ-JIHI
       *
-      *    ¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë
+      *    é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰
            COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI (IDXT)
                =   TTLSYU-SKYMONEY-SKJ-JIHI (IDXT)
                +   SYU-SKYMONEY-SKJ-JIHI
       *
-      *    ¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *    é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-TAX  (IDXT)
                =   TTLSYU-SKYMONEY-SKJ-JIHI-TAX  (IDXT)
                +   SYU-SKYMONEY-SKJ-JIHI-TAX
       *
-      *    ¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *    é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            COMPUTE TTLSYU-SKYMONEY-SKJ-JIHI-KEI (IDXT)
                =   TTLSYU-SKYMONEY-SKJ-JIHI-KEI (IDXT)
                +   SYU-SKYMONEY-SKJ-JIHI-KEI
       *
-      *    À¸³èÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë
+      *    ç”Ÿæ´»ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰
            COMPUTE TTLSYU-RYOYOHI-LIFE (IDXT)
                =   TTLSYU-RYOYOHI-LIFE (IDXT)
                +   SYU-RYOYOHI-LIFE
       *
-      *    À¸³èÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë
+      *    ç”Ÿæ´»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰
            COMPUTE TTLSYU-SKYMONEY-LIFE (IDXT)
                =   TTLSYU-SKYMONEY-LIFE (IDXT)
                +   SYU-SKYMONEY-LIFE
       *
-      *    À¸³èÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *    ç”Ÿæ´»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            COMPUTE TTLSYU-SKYMONEY-LIFE-TAX (IDXT)
                =   TTLSYU-SKYMONEY-LIFE-TAX (IDXT)
                +   SYU-SKYMONEY-LIFE-TAX
       *
-      *    À¸³èÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *    ç”Ÿæ´»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            COMPUTE TTLSYU-SKYMONEY-LIFE-KEI (IDXT)
                =   TTLSYU-SKYMONEY-LIFE-KEI (IDXT)
                +   SYU-SKYMONEY-LIFE-KEI
       *
-      *    À¸³èÎÅÍÜÈñ¡Ê¼«Èñ¡Ë
+      *    ç”Ÿæ´»ç™‚é¤Šè²»ï¼ˆè‡ªè²»ï¼‰
            COMPUTE TTLSYU-RYOYOHI-LIFE-JIHI (IDXT)
                =   TTLSYU-RYOYOHI-LIFE-JIHI (IDXT)
                +   SYU-RYOYOHI-LIFE-JIHI
       *
-      *    À¸³èÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë
+      *    ç”Ÿæ´»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰
            COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI (IDXT)
                =   TTLSYU-SKYMONEY-LIFE-JIHI (IDXT)
                +   SYU-SKYMONEY-LIFE-JIHI
       *
-      *    À¸³èÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *    ç”Ÿæ´»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-TAX (IDXT)
                =   TTLSYU-SKYMONEY-LIFE-JIHI-TAX (IDXT)
                +   SYU-SKYMONEY-LIFE-JIHI-TAX
       *
-      *    À¸³èÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *    ç”Ÿæ´»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            COMPUTE TTLSYU-SKYMONEY-LIFE-JIHI-KEI (IDXT)
                =   TTLSYU-SKYMONEY-LIFE-JIHI-KEI (IDXT)
                +   SYU-SKYMONEY-LIFE-JIHI-KEI
       *
-      *    ¼¼ÎÁº¹³Û
+      *    å®¤æ–™å·®é¡
            COMPUTE TTLSYU-RMSAGAKU (IDXT)
                =   TTLSYU-RMSAGAKU (IDXT)
                +   SYU-RMSAGAKU
       *
-      *    ÀÁµá¶â³Û
+      *    è«‹æ±‚é‡‘é¡
            COMPUTE TTLSYU-SKYMONEY (IDXT)
                =   TTLSYU-SKYMONEY (IDXT)
                +   SYU-SKYMONEY
       *
-      *    ¸ºÌÈ¶â³Û
+      *    æ¸›å…é‡‘é¡
            COMPUTE TTLSYU-DISCOUNT-MONEY   (IDXT)
                =   TTLSYU-DISCOUNT-MONEY   (IDXT)
                +   SYU-DISCOUNT-MONEY
@@ -511,7 +511,7 @@
        20011-TTLSYU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ýÇ¼ÊÔ½¸½èÍý
+      *    åŽç´ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-SYUNOU-EDIT-SEC            SECTION.
       *
@@ -547,7 +547,7 @@
        2001-SYUNOU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ýÇ¼ÊÔ½¸½èÍý
+      *    åŽç´ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-SYUNOU-EDIT-SEC           SECTION.
       *
@@ -555,15 +555,15 @@
       *
            MOVE    IDXA            TO  SNINF02-SKYINF-MAX
       *
-           MOVE    "ÀÁµá¾ðÊó¼ïÊÌ"  TO  SNINF02-SKYINF-KBN-LBL  (IDXA)
+           MOVE    "è«‹æ±‚æƒ…å ±ç¨®åˆ¥"  TO  SNINF02-SKYINF-KBN-LBL  (IDXA)
            MOVE    WRK-SKYINF-KBN  TO  SNINF02-SKYINF-KBN-DATA (IDXA)
            EVALUATE    WRK-SKYINF-KBN
            WHEN    "0"
-               MOVE    "ÌÀºÙ"      TO  SNINF02-SKYINF-KBN-NAME (IDXA)
+               MOVE    "æ˜Žç´°"      TO  SNINF02-SKYINF-KBN-NAME (IDXA)
            WHEN    "1"
-               MOVE    "·î¹ç·×"    TO  SNINF02-SKYINF-KBN-NAME (IDXA)
+               MOVE    "æœˆåˆè¨ˆ"    TO  SNINF02-SKYINF-KBN-NAME (IDXA)
            WHEN    "2"
-               MOVE    "Áí¹ç·×"    TO  SNINF02-SKYINF-KBN-NAME (IDXA)
+               MOVE    "ç·åˆè¨ˆ"    TO  SNINF02-SKYINF-KBN-NAME (IDXA)
            END-EVALUATE
       *
            IF    ( WRK-SKYINF-KBN      =   "0" OR "1" )
@@ -658,7 +658,7 @@
        20011-SYUNOU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *    è¨ºç™‚ç§‘ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SRYKA-EDIT-SEC          SECTION.
       *
@@ -678,7 +678,7 @@
        200111-SRYKA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-HKN-EDIT-SEC             SECTION.
       *
@@ -708,44 +708,44 @@
        200111-HKN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001111-HKN-EDIT-SEC           SECTION.
       *
-      *    ÊÝ¸±¤Î¼ïÎà
+      *    ä¿é™ºã®ç¨®é¡ž
            MOVE    ORCSAPIHKN-HKNNUM (IDXC)
                                    TO  SNINF02-HKNNUM   (IDXA)
       *
-      *    ÊÝ¸±¼ÔÈÖ¹æ
+      *    ä¿é™ºè€…ç•ªå·
            MOVE    ORCSAPIHKN-HKNJANUM (IDXC)
                                    TO  SNINF02-HKNJANUM (IDXA)
       *
-      *    ÊÝ¸±¤ÎÌ¾¾Î
+      *    ä¿é™ºã®åç§°
            MOVE    ORCSAPIHKN-HKNNUM-NAME (IDXC)
                                    TO  SNINF02-HKNJANAME(IDXA)
       *
-      *    µ­¹æ
+      *    è¨˜å·
            MOVE    ORCSAPIHKN-KIGO  (IDXC)
                                    TO  SNINF02-HKIGO (IDXA)
       *
-      *    ÈÖ¹æ
+      *    ç•ªå·
            MOVE    ORCSAPIHKN-NUM  (IDXC)
                                    TO  SNINF02-HNUM  (IDXA)
       *
-      *    ¸øÈñ¾ðÊó
+      *    å…¬è²»æƒ…å ±
            PERFORM VARYING IDXK    FROM    1   BY  1
                    UNTIL ( IDXK    >   4 )
       *
-      *        ¸øÈñ¤Î¼ïÎà
+      *        å…¬è²»ã®ç¨®é¡ž
                MOVE    ORCSAPIHKN-KOHNUM (IDXC IDXK)
                                    TO  SNINF02-KOHNUM  (IDXA IDXK)
-      *        ¸øÈñ¤Î¼ïÎàÌ¾¾Î
+      *        å…¬è²»ã®ç¨®é¡žåç§°
                MOVE    ORCSAPIHKN-KOHNUM-NAME (IDXC IDXK)
                                    TO  SNINF02-KOHNAME (IDXA IDXK)
-      *        ÉéÃ´¼ÔÈÖ¹æ
+      *        è² æ‹…è€…ç•ªå·
                MOVE    ORCSAPIHKN-FTNJANUM (IDXC IDXK)
                                    TO  SNINF02-FTNJANUM(IDXA IDXK)
-      *        ¼õµë¼ÔÈÖ¹æ
+      *        å—çµ¦è€…ç•ªå·
                MOVE    ORCSAPIHKN-JKYSNUM (IDXC IDXK)
                                    TO  SNINF02-JKYSNUM (IDXA IDXK)
            END-PERFORM
@@ -754,7 +754,7 @@
        2001111-HKN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -764,7 +764,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -786,7 +786,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-SYMD-SEC                    SECTION.
       *
@@ -802,7 +802,7 @@
        800-SYMD-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-HIZUKE-SEC                      SECTION.
       *
@@ -829,7 +829,7 @@
        800-HIZUKE-EXT.
            EXIT.
       *****************************************************************
-      *    »þ¹ïÊÔ½¸½èÍý
+      *    æ™‚åˆ»ç·¨é›†å‡¦ç†
       *****************************************************************
        800-TIME-SEC                    SECTION.
       *
@@ -845,7 +845,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥«¥ì¥ó¥À¡¼½èÍý
+      *    ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼å‡¦ç†
       *****************************************************************
        800-CALENDAR-SEC          SECTION.
       *
@@ -864,7 +864,7 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    ·îËöÆü¼èÆÀ½èÍý
+      *    æœˆæœ«æ—¥å–å¾—å‡¦ç†
       *****************************************************************
        800-GETUMATU-SEC        SECTION.
       *
@@ -880,7 +880,7 @@
        800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
@@ -906,7 +906,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY42-SEL-SEC     SECTION.
       *
@@ -944,7 +944,7 @@
        900-PTNYUINRRK-KEY42-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -962,7 +962,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -977,7 +977,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

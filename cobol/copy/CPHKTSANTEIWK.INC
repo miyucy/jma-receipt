@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������å��ޥ���            COPY (CPHKTSANTEIWK.INC)
+      *    包括チェックマスタ            COPY (CPHKTSANTEIWK.INC)
       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  HKTSANTEIWK-REC.
            03  HKTSANTEIWK-SYORIKBN            PIC  X(01).
            03  HKTSANTEIWK-KEY.
-      *�������ֹ�
+      *包括管理番号
                05  HKTSANTEIWK-KANRICD         PIC  9(03).
-      *ͭ��������
+      *有効開始日
                05  HKTSANTEIWK-YUKOSTYMD       PIC  X(08).
-      *ͭ����λ��
+      *有効終了日
                05  HKTSANTEIWK-YUKOEDYMD       PIC  X(08).
-      *����оݿ��Ź԰٥�����
+      *包括対象診療行為コード
                05  HKTSANTEIWK-SRYCD           PIC  X(09).
-      *��绻���ʬ
+      *包括算定区分
            03  HKTSANTEIWK-SANTEIKBN           PIC  X(01).
-      *����оݸ�����Ǣ��
+      *包括対象検査（尿）
            03  HKTSANTEIWK-KENTAIKBN           PIC  X(01).
-      *ü���ɣ�
+      *端末ＩＤ
            03  HKTSANTEIWK-TERMID              PIC  X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  HKTSANTEIWK-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  HKTSANTEIWK-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  HKTSANTEIWK-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  HKTSANTEIWK-UPHMS               PIC  X(06).

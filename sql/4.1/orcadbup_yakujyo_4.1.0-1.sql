@@ -3,7 +3,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ÌôºÞ¾ðÊó                       --
+-- è–¬å‰¤æƒ…å ±                       --
 --                                --
 -- Table Name  : TBL_YAKUJYO      --
 -- Update      : 2007/12/10       --

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,82 +16,82 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����å��㳰�ޥ���        COPY (CPCHKREIGAI.INC) *
+      *         チェック例外マスタ        COPY (CPCHKREIGAI.INC) *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  CHKREIGAI-REC.
-      *�����å��ֹ�
+      *チェック番号
            03  CHKREIGAI-KEY.
                05  CHKREIGAI-HOSPNUM       PIC 9(02).
-      *���ԣɣ�
+      *患者ＩＤ
                05  CHKREIGAI-PTID          PIC 9(10).
-      *Ϣ��
+      *連番
                05  CHKREIGAI-RENNUM        PIC 9(08).
-      *��ǧ�����ֹ�
-      *    01:�ݸ����ֹ�
-      *    02:���ݸ��Ե��桦�ֹ�
-      *    03:������ô���ֹ桦������ֹ�
-      *    04:�ݸ�Ŭ��ǯ��
-      *    05:������̾
-      *    06:���ų�����
-      *    07:������̾��������̾
-      *    08:���ޤ���̾
-      *    09:���Ź԰٤���̾
-      *    10:���ޤ�ʻ�Ѷش�
-      *    11:���Ź԰٤�ʻ�ѻ���
-      *    12:������
-      *    13:���Ի�̾
-      *    14:�ݸ��ȹ礻ͭ������
-      *    15:��Ϳ�ش����ޤ���̾
-      *    16:���Ź԰٤ɤ����λ���ϳ��
-      *    17:��̾������
-      *    18:��̾�ȿ��Ź԰�
-      *    19:���ޤη��²��������Ϳ��
-      *    20:���Ź԰ٻ�����
-      *    21:���򼰥�����
-      *    99:����¾
-      *    A1:̤��Ͽ���ޡ����ޤ���̾��
+      *確認項目番号
+      *    01:保険者番号
+      *    02:被保険者記号・番号
+      *    03:公費負担者番号・受給者番号
+      *    04:保険適応年齢
+      *    05:患者病名
+      *    06:診療開始日
+      *    07:疑い病名・急性病名
+      *    08:薬剤と病名
+      *    09:診療行為と病名
+      *    10:薬剤と併用禁忌
+      *    11:診療行為の併用算定
+      *    12:実日数
+      *    13:患者氏名
+      *    14:保険組合せ有効期間
+      *    15:投与禁忌薬剤と病名
+      *    16:診療行為どうしの算定漏れ
+      *    17:病名と薬剤
+      *    18:病名と診療行為
+      *    19:薬剤の月上限回数・月投与量
+      *    20:診療行為算定回数
+      *    21:選択式コメント
+      *    99:その他
+      *    A1:未登録薬剤（薬剤と病名）
            03  CHKREIGAI-CHKNUM            PIC X(02).
-      *������ʬ
+      *入外区分
            03  CHKREIGAI-NYUGAIKBN         PIC X(01).
-      *�����å���ʬ
+      *チェック区分
            03  CHKREIGAI-CHKKBN            PIC X(01).
-      *���ť�����
+      *診療コード
            03  CHKREIGAI-SRYCD             PIC X(09).
-      *��̾
+      *病名
            03  CHKREIGAI-BYOMEI            PIC X(160).
-      *����ʬ
+      *条件区分
            03  CHKREIGAI-COMPKBN           PIC X(1).
-      *Ŭ�ѥ�����
+      *適用コード
            03  CHKREIGAI-TEKCD             PIC X(9).
-      *Ŭ����̾
+      *適応病名
            03  CHKREIGAI-TEKBYOMEI         PIC X(160).
-      *Ŭ����̾����ʬ
+      *適応病名条件区分
            03  CHKREIGAI-TEKCOMPKBN        PIC X(1).
-      *ñ�̥�����
+      *単位コード
            03  CHKREIGAI-TANICD            PIC 9(3).
-      *ñ��̾��
+      *単位名称
            03  CHKREIGAI-TANINAME          PIC X(12).
-      *���顼������
+      *エラーコード
            03  CHKREIGAI-ERRCD             PIC X(06).
-      *���顼��å�����
+      *エラーメッセージ
            03  CHKREIGAI-ERRMSG            PIC X(200).
-      *����ͭ��ǯ����
+      *開始有効年月日
            03  CHKREIGAI-STYUKYMD          PIC X(08).
-      *��λͭ��ǯ����
+      *終了有効年月日
            03  CHKREIGAI-EDYUKYMD          PIC X(08).
-      *ü���ɣ�
+      *端末ＩＤ
            03  CHKREIGAI-TERMID            PIC X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  CHKREIGAI-OPID              PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  CHKREIGAI-CREYMD            PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  CHKREIGAI-UPYMD             PIC X(08).
-      *��������
+      *更新時間
            03  CHKREIGAI-UPHMS             PIC X(06).
            03  CHKREIGAI-SELLIMIT          PIC 9(08).
            03  CHKREIGAI-SELOFFSET         PIC 9(08).

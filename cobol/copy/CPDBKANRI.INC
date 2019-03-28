@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    £Ä£Â´ÉÍý¾ðÊó¡¡    ¡¡ COPY  (CPDBKANRI.INC)  *
+      *    ï¼¤ï¼¢ç®¡ç†æƒ…å ±ã€€    ã€€ COPY  (CPDBKANRI.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  DBKANRI-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  DBKANRI-KEY.
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  DBKANRI-KANRICD         PIC  X(08).
-      *¥Ð¡¼¥¸¥ç¥ó
+      *ãƒãƒ¼ã‚¸ãƒ§ãƒ³
            03  DBKANRI-VERSION             PIC  X(64).
-      *£Ä£Â¹½Â¤¥Ð¡¼¥¸¥ç¥ó£±
+      *ï¼¤ï¼¢æ§‹é€ ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼‘
            03  DBKANRI-DBSVERSION1         PIC  X(64).
-      *£Ä£Â¹½Â¤¥Ð¡¼¥¸¥ç¥ó£²
+      *ï¼¤ï¼¢æ§‹é€ ãƒãƒ¼ã‚¸ãƒ§ãƒ³ï¼’
            03  DBKANRI-DBSVERSION2         PIC  X(64).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  DBKANRI-TERMID              PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  DBKANRI-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  DBKANRI-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  DBKANRI-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  DBKANRI-UPHMS               PIC  X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɴ�����Ͽ����ʸ�����ô�ۡ�(���β���V3)
+      *    ＡＰＩ患者登録情報（公費負担額）(一体化　V3)
       *                                   COPY (CPPATIENTMODV3REQ5.INC)
       ******************************************************************
         01  XML-PATIENTMODREQ.
@@ -29,77 +29,77 @@
             02  PTMODREQ-MODE              PIC S9(9)   BINARY.
             02  PTMODREQ-RECORDNAME        PIC X(128).
             02  PTMODREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               03  PTMODREQ-REQUEST-NUMBER   PIC X(2).
-      *       UID���Żҥ���ơ�
+      *       UID（電子カルテ）
               03  PTMODREQ-KARTE-UID        PIC X(36).
-      *       UID�ʥ��륫��
+      *       UID（オルカ）
               03  PTMODREQ-ORCA-UID         PIC X(36).
-      *       ��³��ʬ
+      *       継続区分
               03  PTMODREQ-CONT-MODE        PIC X(05).
-      *       ���Ծ���
+      *       患者情報
               03  PTMODREQ-PTINF-INFO.
-      *         �����ֹ�
+      *         患者番号
                 05  PTMODREQ-PATIENTID        PIC X(20).
-      *         ���Ի�̾
+      *         患者氏名
                 05  PTMODREQ-NAME             PIC X(100).
-      *         ���ԥ��ʻ�̾
+      *         患者カナ氏名
                 05  PTMODREQ-KANANAME         PIC X(100).
-      *         ��ǯ����
+      *         生年月日
                 05  PTMODREQ-BIRTHDAY         PIC X(10).
-      *         ����
+      *         性別
                 05  PTMODREQ-SEX              PIC X(01).
       *
-      * �ꥯ�����ȡᣰ�����飰��
-      *       �����������
+      * リクエスト＝０２から０５
+      *       公費選択情報
               03  PTMODREQ-KOHFTN-SELECT-G.
-      *          ����ɣ�
+      *          公費ＩＤ
                  05  PTMODREQ-INSURANCE-ID         PIC X(10).
-      *          ����μ���
+      *          公費の種類
                  05  PTMODREQ-INSURANCE-CLASS      PIC X(03).
-      *          ������ֹ�
+      *          受給者番号
                  05  PTMODREQ-RECIPIENT-NUMBER      PIC X(20).
-      *          ͭ��������
+      *          有効開始日
                  05  PTMODREQ-INSURANCE-START-DATE  PIC X(10).
       *
-      * �ꥯ�����ȡᣰ��
-      *       ������ô�۾���
+      * リクエスト＝０３
+      *       公費負担額情報
               03  PTMODREQ-PTKOHFTN-INFO-G.
-      *          ������ʬ��MODIFY,DELETE)
+      *          処理区分（MODIFY,DELETE)
                  05  PTMODREQ-PTKOHFTN-MODE        PIC X(06).
                  05  PTMODREQ-PTKOHFTN-INFO        OCCURS   300.
-      *            �Խ�����ʬ��DELETE,NEW)
+      *            行処理区分（DELETE,NEW)
                    07  PTMODREQ-PTKOHFTN-LMODE         PIC X(06).
-      *            Ϣ�֡ʥ쥹�ݥ����ơ�
+      *            連番（レスポンス内容）
                    07  PTMODREQ-PTKOHFTN-RENNUM        PIC X(03).
-      *            ����ǯ����
+      *            開始年月日
                    07  PTMODREQ-PTKOHFTN-TEKSTYMD      PIC X(10).
-      *            ��λǯ����
+      *            終了年月日
                    07  PTMODREQ-PTKOHFTN-TEKEDYMD      PIC X(10).
-      *            �����³�
+      *            外来上限額
                    07  PTMODREQ-PTKOHFTN-GAIJGNGAK     PIC X(07).
-      *            ������³�
+      *            入院上限額
                    07  PTMODREQ-PTKOHFTN-NYUJGNGAK     PIC X(07).
       *
-      * �ꥯ�����ȡᣰ��������
-      *       ������ô���������
+      * リクエスト＝０４、０５
+      *       公費負担額選択情報
               03  PTMODREQ-FTNETC-SELECT-G.
-      *           Ϣ��
+      *           連番
                   05  PTMODREQ-FTN-SEL-RENNUM        PIC X(03).
-      *           ����ǯ����
+      *           開始年月日
                   05  PTMODREQ-FTN-SEL-TEKSTYMD      PIC X(10).
       *
-      * �ꥯ�����ȡᣰ��
-      *       ¾������ô��
+      * リクエスト＝０５
+      *       他一部負担額
               03  PTMODREQ-FTNETC-INFO-G.
-      *          ������ʬ��MODIFY(NEW),DELETE)
+      *          処理区分（MODIFY(NEW),DELETE)
                  05  PTMODREQ-FTNETC-MODE        PIC X(06).
                  05  PTMODREQ-FTNETC-INFO        OCCURS   100.
-      *              ǯ����
+      *              年月日
                      07  PTMODREQ-FTNETC-SRYYMD      PIC  X(10).
-      *              ������ʬ
+      *              入外区分
                      07  PTMODREQ-FTNETC-NYUGAIKBN   PIC  X(01).
-      *              ��ô���
+      *              負担金額
                      07  PTMODREQ-FTNETC-FTNMONEY    PIC  X(07).
       *
       *

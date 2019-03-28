@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,33 +16,33 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    Æþ±¡ÌôºÞ¾ðÊó¥Ñ¥é¥á¥¿ºîÀ®¥Ñ¥é      COPY (CPORCSCHN30.INC)
-      *                                          (ORCSCHN30 ¤Ç»ÈÍÑ¡Ë
+      *    å…¥é™¢è–¬å‰¤æƒ…å ±ãƒ‘ãƒ©ãƒ¡ã‚¿ä½œæˆãƒ‘ãƒ©      COPY (CPORCSCHN30.INC)
+      *                                          (ORCSCHN30 ã§ä½¿ç”¨ï¼‰
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/23  ¥³¥á¥ó¥ÈÄÉ²Ã
-      *  05.00.00    NACL-Â¿¡¹Ç¼  17/05/16  ÉÂÅïÈÖ¹æÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.05.00    NACL-å¤šã€…ç´  09/07/23  ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ 
+      *  05.00.00    NACL-å¤šã€…ç´  17/05/16  ç—…æ£Ÿç•ªå·è¿½åŠ 
       ************************************************************
       *
        01  ORCSCHN30AREA.
       *
-      *    ½èÍý¶èÊ¬(N:Æþ±¡°õºþ²èÌÌ¡Ë
+      *    å‡¦ç†åŒºåˆ†(N:å…¥é™¢å°åˆ·ç”»é¢ï¼‰
            03  ORCSHCN30-KBN             PIC X(01).
-      *    ¸òÉÕÆü
+      *    äº¤ä»˜æ—¥
            03  ORCSHCN30-SRYYMD          PIC X(08).
-      *    ¥É¥¯¥¿¡¼
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼
            03  ORCSHCN30-DRCD            PIC X(05).
-      *    ÉÂÅï
+      *    ç—…æ£Ÿ
            03  ORCSHCN30-BTUNAME         PIC X(20).
-      *    ÉÂ¼¼
+      *    ç—…å®¤
            03  ORCSHCN30-ROOMNO          PIC X(06).
       *H29.5
-      *    ÉÂÅïÈÖ¹æ
+      *    ç—…æ£Ÿç•ªå·
            03  ORCSHCN30-BTUNUM          PIC X(02).
       *
-      *    ½èÊýÆâÍÆ
+      *    å‡¦æ–¹å†…å®¹
            03  ORCSHCN30-DATA-REC.
                05  ORCSHCN30-ZAI-MAX         PIC 9(03).
                05  ORCSHCN30-REC-TBL     OCCURS   100.
@@ -56,7 +56,7 @@
                        09  ORCSHCN30-SRYKAISU        PIC  9(03).
                        09  ORCSHCN30-ZAIKAISU        PIC  9(03).
                        09  ORCSHCN30-INPUTCOMENT     PIC  X(80).
-      *H28.11          ÍÑË¡¥³¡¼¥É¿ôÎÌ
+      *H28.11          ç”¨æ³•ã‚³ãƒ¼ãƒ‰æ•°é‡
                        09  ORCSHCN30-INPUTCHI-G.
                            11  ORCSHCN30-INPUTCHI    PIC  X(08)
                                                      OCCURS   5.

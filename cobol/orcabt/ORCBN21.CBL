@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBN21.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ޥ�����������
-      *  ����ݡ��ͥ��̾  : ����ޥ�����������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/05/15    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 薬情マスタ一覧印刷
+      *  コンポーネント名  : 薬情マスタ一覧印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/05/15    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-����    06/09/28  ���ʤ��ν���
-      *  03.05.01    NACL-����    07/05/30  ���롼�׿����б�
-      *  04.01.01    NACL-����    08/01/16  ʸ������
-      *  04.08.01    NACL-����    14/07/30  ����ե�����ǥ��쥯�ȥ�����
-      *  04.08.02    NACL-����    14/08/08  �������᡼��������ǽ�ɲ�
-      *  05.00.00    NACL-����    17/02/22  ���������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-森脇    06/09/28  条件なしの処理
+      *  03.05.01    NACL-森脇    07/05/30  グループ診療対応
+      *  04.01.01    NACL-森脇    08/01/16  文字数増
+      *  04.08.01    NACL-森脇    14/07/30  一時ファイルディレクトリ設定
+      *  04.08.02    NACL-森脇    14/08/08  画像イメージ作成機能追加
+      *  05.00.00    NACL-森脇    17/02/22  自費薬剤対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,37 +40,37 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-006900*    ���顼�ե�����
+006900*    エラーファイル
            SELECT  YKJMERR-FILE        ASSIGN  YKJMERR
                                        FILE    STATUS  IS  STS-YKJMERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  YKJMERR-FILE.
        01  YKJMERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
       *
       *----(04.08.01)--ADD-START---
-      *    ���顼�ե����� ̾���ΰ�
+      *    エラーファイル 名称領域
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //YKJMERR//.
       *----(04.08.01)--ADD-END-----
       *
            COPY    "HCM61.INC".
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-YKJMERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK                  PIC 9(01).
            03  FLG-END                 PIC 9(01).
@@ -81,20 +81,20 @@
            03  FLG-KONO                PIC 9(01).
            03  FLG-CYUI                PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE                PIC 9(04).
            03  CNT-NUM                 PIC 9(04).
            03  CNT-LINE                PIC 9(01).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
       *
-      *    ����ǥå����ΰ�
+      *    インデックス領域
        01  IDX-AREA.
            03  IDX-GYO                 PIC 9(03).
            03  IDX-GYO1                PIC 9(03).
@@ -107,7 +107,7 @@
            03  IDX-KONO                PIC 9(04).
            03  IDX-CYUI                PIC 9(04).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -124,7 +124,7 @@
       *     03  YKJMERR                 PIC X(100).
       *----(04.08.01)--UPD-END-----
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-YKJMERR             PIC X(200).
            03  WRK-TABLE               PIC X(20).
@@ -142,7 +142,7 @@
       *
            03  WRK-ZZZ9                PIC ZZZ9.
       *
-      *    ���Ѥ������Խ�
+      *    全角を行毎に編集
        01  WRK-HENSYU-AREA.
            03  WRK-HENSYU-OCC          OCCURS   64.
                05  WRK-HENSYU          PIC X(44).
@@ -150,7 +150,7 @@
            03  GYO-MAX                 PIC 9(04).
            03  KOU-MAX                 PIC 9(04).
       *
-      *    �������Խ�
+      *    ＊を％に編集
        01  WRK-KEY-AREA.
            03  WRK-MAE-KEY             PIC X(30).
            03  WRK-ATO-KEY             PIC X(30).
@@ -175,7 +175,7 @@
       *
        01  FILE-NAME                   PIC X(512).
       *
-      *    ����β���
+      *    空白の画像
        01  KUHAKU-NAME.
            03  FILLER                  PIC X(05)   VALUE   "data/".
            03  FILLER                  PIC X(15)   VALUE
@@ -185,64 +185,64 @@
        01  FILE-IMAGE              PIC X(512).
       *
        01  WRK-CONS-AREA.
-      *    �����ե�����ե����̾
+      *    画像ファイルフォルダ名
            03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
       *
-      *    �������᡼�������ѥ�᥿
+      *    画像イメージ作成パラメタ
            COPY    "CPORCSMIAREA.INC".
       *----(04.08.02)--ADD-END-----
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
       *
-      *    ����ޥ���
+      *    薬情マスタ
            COPY    "CPYAKUJYO.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ե�����¸�ߥ����å�
+      *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *
-      *    �����Ѵ�����
+      *    全角変換サブ
            COPY    "CPORCSKANACHK.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -250,7 +250,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -263,7 +263,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -278,7 +278,7 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -317,14 +317,14 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            MOVE    "ORCBN21"           TO  JOB-PGID
-           MOVE    "���޾���ޥ�������"
+           MOVE    "薬剤情報マスタ一覧"
                                        TO  JOB-SHELLMSG
       *
            CALL    "ORCSJOB"               USING
@@ -332,7 +332,7 @@
                                            JOBKANRI-REC
                                            SPA-AREA
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    KUHAKU-NAME     TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"        USING
@@ -351,7 +351,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -359,7 +359,7 @@
            MOVE    ZERO            TO  CNT-LINE
            MOVE    ZERO            TO  CNT-NUM
       *
-      *    ���޾����ɤ߹���
+      *    薬剤情報読み込み
            PERFORM 900-YAKUJYO-SELECT-SEC
       *
            PERFORM UNTIL   FLG-YAKUJYO     =   1
@@ -367,13 +367,13 @@
                PERFORM UNTIL   FLG-YAKUJYO     =   1
                    PERFORM 210-PRT-HEN-SEC
                    PERFORM 220-PRT-BODY-SEC
-      *            ���޾����ɤ߹���
+      *            薬剤情報読み込み
                    PERFORM 900-YAKUJYO-FETCH-SEC
                END-PERFORM
                PERFORM 230-PRT-PRINT-SEC
            END-PERFORM
       *
-      *    ���޾����ɤ߹���
+      *    薬剤情報読み込み
            PERFORM 900-YAKUJYO-CLOSE-SEC
       *
            MOVE    1               TO  FLG-END
@@ -383,40 +383,40 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ٽ���
+      *    帳票明細処理
       *****************************************************************
        210-PRT-HEN-SEC             SECTION.
       *
            INITIALIZE                  WRK-YKJ-AREA
       *
-      *    ����β���
+      *    空白の画像
            MOVE    FILE-NAME       TO  WRK-YKJ-GAZO
       *
-      *    �ֹ楻�å�
+      *    番号セット
            COMPUTE CNT-NUM     =   CNT-NUM     +   1
            MOVE    CNT-NUM         TO  WRK-ZZZ9
            MOVE    WRK-ZZZ9        TO  WRK-YKJ-NUM
       *
-      *    ���Ź԰٥����ɥ��å�
+      *    診療行為コードセット
            STRING  "("             DELIMITED  BY  SIZE
                    YAKUJYO-SRYCD   DELIMITED  BY  SPACE
                    ")"             DELIMITED  BY  SIZE
                    INTO     WRK-YKJ-SRYCD
            END-STRING
       *
-      *    ��ǽ���̥��å�
+      *    効能効果セット
            PERFORM 211-HENEFFECT-SET-SEC
       *
-      *    ���ջ���
+      *    注意事項
            PERFORM 212-HENCAUTION-SET-SEC
       *
-      *    ����̾���å�
+      *    薬剤名セット
            PERFORM 213-HENYKZNAME-SET-SEC
       *
-      *    �����Խ�
+      *    画像編集
            IF      YAKUJYO-PHOTO   NOT =   SPACE
       *----(04.08.02)--ADD-START---
-      *        �ǡ������饤�᡼���ե��������
+      *        データからイメージファイル作成
                INITIALIZE                  ORCSMIAREA
                MOVE    YAKUJYO-SRYCD   TO  ORCSMI-SRYCD
                MOVE    SGETTEMP-TEMPDIR
@@ -435,7 +435,7 @@
                END-STRING
       *----(04.08.02)--ADD-END-----
       *----(04.08.02)--UPD-START---
-      *        �ե�����¸�ߥ����å�
+      *        ファイル存在チェック
                INITIALIZE                  ORCSFILECHKAREA
                MOVE    FILE-IMAGE      TO  FILECHK-NAME
                CALL    "ORCSFILECHK"       USING
@@ -446,7 +446,7 @@
       *----(04.08.02)--UPD-END-----
            END-IF
       *
-      *    �����Խ�
+      *    形状編集
            PERFORM 214-KEIJYO-SET-SEC
       *
            .
@@ -454,7 +454,7 @@
            EXIT.
       *
       *****************************************************************
-      *   Ģɼ��ǽ���̥ǡ����Խ�����
+      *   帳票効能効果データ編集処理
       *****************************************************************
        211-HENEFFECT-SET-SEC       SECTION.
       *
@@ -462,9 +462,9 @@
       *
            MOVE    YAKUJYO-EFFECT  TO  WRK-NAIYOU
            MOVE    1               TO  IDX-GYO
-      *    ��
+      *    行
            MOVE    61              TO  GYO-MAX
-      *    ʸ����
+      *    文字数
            MOVE    34              TO  KOU-MAX
            PERFORM 216-HENSYU-SYORI-SEC
       *
@@ -481,7 +481,7 @@
            EXIT.
       *
       *****************************************************************
-      *   Ģɼ���ջ���ǡ����Խ�����
+      *   帳票注意事項データ編集処理
       *****************************************************************
        212-HENCAUTION-SET-SEC      SECTION.
       *
@@ -489,9 +489,9 @@
       *
            MOVE    YAKUJYO-CAUTION TO  WRK-NAIYOU
            MOVE    1               TO  IDX-GYO
-      *    ��
+      *    行
            MOVE    64              TO  GYO-MAX
-      *    ʸ����
+      *    文字数
            MOVE    44              TO  KOU-MAX
            PERFORM 216-HENSYU-SYORI-SEC
       *
@@ -506,7 +506,7 @@
            EXIT.
       *
       *****************************************************************
-      *   Ģɼ����̾�ǡ����Խ�����
+      *   帳票薬剤名データ編集処理
       *****************************************************************
        213-HENYKZNAME-SET-SEC      SECTION.
       *
@@ -514,9 +514,9 @@
       *
            MOVE    YAKUJYO-NAME    TO  WRK-NAIYOU
            MOVE    1               TO  IDX-GYO
-      *    ��
+      *    行
            MOVE    3               TO  GYO-MAX
-      *    ʸ����
+      *    文字数
            MOVE    32              TO  KOU-MAX
            PERFORM 216-HENSYU-SYORI-SEC
       *
@@ -531,29 +531,29 @@
            EXIT.
       *
       *****************************************************************
-      *   Ģɼ�����ǡ������åȽ���
+      *   帳票形状データセット処理
       *****************************************************************
        214-KEIJYO-SET-SEC          SECTION.
       *
            INITIALIZE                  WRK-HENSYU-AREA
       *
            MOVE    1               TO  IDX-GYO
-      *    ��
+      *    行
            MOVE    64              TO  GYO-MAX
-      *    ʸ����
+      *    文字数
            MOVE    20              TO  KOU-MAX
       *
-      *    ���Խ�
+      *    色編集
            MOVE    YAKUJYO-COLOR   TO  WRK-NAIYOU
            PERFORM 216-HENSYU-SYORI-SEC
       *
-      *    ���Խ�
+      *    形編集
            MOVE    YAKUJYO-SHAPE   TO  WRK-NAIYOU
            PERFORM 216-HENSYU-SYORI-SEC
       *
-      *    �����Խ�
+      *    記号編集
            IF      YAKUJYO-MARK    NOT =   SPACE
-      *        ��������å�
+      *        記号チェック
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"             TO  KANACHK-SYORI
                MOVE    YAKUJYO-MARK    TO  KANACHK-MAE-INPUT
@@ -561,7 +561,7 @@
                                            ORCSKANACHKAREA
       
                IF      KANACHK-SYUBETU =   1
-      *            ʸ����
+      *            文字数
                   MOVE    21              TO  KOU-MAX
                END-IF
       *
@@ -580,7 +580,7 @@
            EXIT.
       *
       *****************************************************************
-      *   Ģɼ�����Խ�����
+      *   帳票全角編集処理
       *****************************************************************
        216-HENSYU-SYORI-SEC        SECTION.
       *
@@ -590,18 +590,18 @@
            PERFORM UNTIL  (IDX-STR     >   4000 )
                    OR     (IDX-GYO     >   GYO-MAX )
                    OR     (WRK-NAIYOU(IDX-STR:)  =   SPACE)
-      *        ���Ԥʤ��������å�
+      *        改行なら最大字セット
                IF      WRK-NAIYOU(IDX-STR:1)   =   X"0A"
                    MOVE    KOU-MAX         TO  IDX-KET
                    ADD     1               TO  IDX-STR
                ELSE
-      *            ���ѥ��å�
+      *            全角セット
                    IF      WRK-NAIYOU(IDX-STR:1)    >=  X"A1"
                        MOVE    WRK-NAIYOU(IDX-STR:2)
                                    TO  WRK-HENSYU(IDX-GYO)(IDX-KET:2)
                        ADD     2               TO  IDX-STR
                        ADD     2               TO  IDX-KET
-      *            Ⱦ�ѥ��å�
+      *            半角セット
                    ELSE
                        MOVE    WRK-NAIYOU(IDX-STR:1)
                                    TO  WRK-HENSYU(IDX-GYO)(IDX-KET:1)
@@ -609,13 +609,13 @@
                        ADD     1               TO  IDX-KET
                    END-IF
                END-IF
-      *        ������ǲ���
+      *        最大字で改行
                IF         (IDX-KET         >=  KOU-MAX)
                    OR    ((IDX-STR         <=  4000)
                    AND    (WRK-NAIYOU(IDX-STR:) =   SPACE))
                    ADD     1               TO  IDX-GYO
                    MOVE    1               TO  IDX-KET
-      *            ���Ԥʤ鼡��
+      *            改行なら次へ
                    IF      WRK-NAIYOU(IDX-STR:1)   =   X"0A"
                        COMPUTE IDX-STR =   IDX-STR     +   1
                    END-IF
@@ -627,7 +627,7 @@
            EXIT.
       *
      *****************************************************************
-      *   ���Խ�����
+      *   ＊編集処理
       *****************************************************************
        217-ASUTA-SYORI-SEC         SECTION.
       *
@@ -644,7 +644,7 @@
       *
            PERFORM UNTIL ( WRK-STR     >   WRK-MAX )
                    OR    ( WRK-MAE-KEY(WRK-STR:)   =   SPACE )
-               IF      WRK-MAE-KEY(WRK-STR:2)  =   "��"
+               IF      WRK-MAE-KEY(WRK-STR:2)  =   "＊"
                    MOVE    "%"             TO  WRK-ATO-KEY(WRK-STR1:1)
                    ADD     2               TO  WRK-STR
                    ADD     1               TO  WRK-STR1
@@ -675,24 +675,24 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���Ͻ���
+      *    帳票出力処理
       *****************************************************************
        220-PRT-HEAD-SEC            SECTION.
       *
            INITIALIZE                  HCM61
       *
-      *    �ڡ������å�
+      *    ページセット
            COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
            MOVE    CNT-PAGE        TO  WRK-ZZZ9
            MOVE    WRK-ZZZ9        TO  HCM61-PAGE
       *
-      *    ���ե��å�
+      *    日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  HCM61-SYORIBI
       *
-           MOVE    "���޾���ޥ�������"
+           MOVE    "薬剤情報マスタ一覧"
                                    TO  HCM61-TITLE
            MOVE    SPACE           TO  HCM61-KIKAN
       *
@@ -713,7 +713,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���Ͻ���
+      *    帳票出力処理
       *****************************************************************
        220-PRT-BODY-SEC            SECTION.
       *
@@ -745,7 +745,7 @@
            MOVE    273             TO  IDX-KONO
            MOVE    353             TO  IDX-CYUI
       *
-      *    ʸ�����������С����Ƥ����鼡�Ԥ˥��å�
+      *    文字数がオーバーしていたら次行にセット
            PERFORM 220-CHK-BODY-NEXT-SEC
            PERFORM UNTIL ( FLG-KEIJYO  =   1 )
                    AND   ( FLG-KONO    =   1 )
@@ -759,21 +759,21 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�£ϣģټ��ԥ����å�����
+      *    帳票ＢＯＤＹ次行チェック処理
       *****************************************************************
        220-CHK-BODY-NEXT-SEC       SECTION.
       *
-      *    ���޷��������å�
+      *    薬剤形状チェック
            IF    ( IDX-KEIJYO      >=  1280 )  OR
                  ( WRK-YKJ-KEIJYO-G(IDX-KEIJYO:)   =   SPACE )
                MOVE    1           TO  FLG-KEIJYO
            END-IF
-      *    ��ǽ���̥����å�
+      *    効能効果チェック
            IF    ( IDX-KONO        >=  2176 )  OR
                  ( WRK-YKJ-KONOKOKA-G(IDX-KONO:)   =   SPACE )
                MOVE    1           TO  FLG-KONO
            END-IF
-      *    ���ջ�������å�
+      *    注意事項チェック
            IF    ( IDX-CYUI        >=  2816 )  OR
                  ( WRK-YKJ-CYUJKO-G(IDX-CYUI:)     =   SPACE )
                MOVE    1           TO  FLG-CYUI
@@ -784,7 +784,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���Ͻ���
+      *    帳票出力処理
       *****************************************************************
        220-PRT-BODY-NEXT-SEC       SECTION.
       *
@@ -818,7 +818,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        230-PRT-PRINT-SEC           SECTION.
       *
@@ -838,7 +838,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCM61.red"         TO  SPRT-PRTID
-           MOVE    "���޾���ޥ�������"
+           MOVE    "薬剤情報マスタ一覧"
                                        TO  SPRT-TITLE
            MOVE    HCM61               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -851,7 +851,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-YKJMERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -861,7 +861,7 @@
            EXIT.
       *
      *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -874,7 +874,7 @@
                MOVE    WRK-YKJMERR     TO  YKJMERR-REC
                WRITE   YKJMERR-REC
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -897,11 +897,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -920,7 +920,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -932,13 +932,13 @@
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG     REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG     REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    点数マスタ読み込み
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
       *
@@ -984,7 +984,7 @@ grpsys                                     SPA-AREA
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���޾����ɤ߹��߽���
+      *    薬剤情報読み込み処理
       *****************************************************************
        900-YAKUJYO-SELECT-SEC      SECTION.
       *
@@ -1081,7 +1081,7 @@ grpsys                                     SPA-AREA
        900-YAKUJYO-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ���޾����ɤ߹��߽���
+      *    薬剤情報読み込み処理
       *****************************************************************
        900-YAKUJYO-FETCH-SEC       SECTION.
       *
@@ -1097,12 +1097,12 @@ grpsys                                         SPA-AREA
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-YAKUJYO
                    MOVE    MCPDATA-REC     TO  YAKUJYO-REC
-      *            ����̾�򥻥å�
+      *            薬剤名をセット
                    PERFORM 900-TENSU-READ-SEC
                    IF  YAKUJYO-NAME        =   SPACE
                        MOVE    TNS-NAME        TO  YAKUJYO-NAME
                    END-IF
-      *            ���޶�ʬ������å�
+      *            薬剤区分をチェック
                    IF        ( WRK-PARA-JYO        =   "1" )
                        OR    ( WRK-PARA-KBN    NOT =   "4" )
                        MOVE    1               TO  FLG-OK
@@ -1135,7 +1135,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���޾��󥯥���������
+      *    薬剤情報クロース処理
       *****************************************************************
        900-YAKUJYO-CLOSE-SEC       SECTION.
       *
@@ -1151,7 +1151,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1173,7 +1173,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

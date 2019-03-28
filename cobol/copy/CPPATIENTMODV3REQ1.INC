@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɴ�����Ͽ����ʴ��ܾ����(���β���V3)
+      *    ＡＰＩ患者登録情報（基本情報）(一体化　V3)
       *                                   COPY (CPPATIENTMODV3REQ1.INC)
       ******************************************************************
         01  XML-PATIENTMODREQ.
@@ -29,127 +29,127 @@
             02  PTMODREQ-MODE              PIC S9(9)   BINARY.
             02  PTMODREQ-RECORDNAME        PIC X(128).
             02  PTMODREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               03  PTMODREQ-REQUEST-NUMBER   PIC X(2).
-      *       UID���Żҥ���ơ�
+      *       UID（電子カルテ）
               03  PTMODREQ-KARTE-UID        PIC X(36).
-      *       �����ֹ�
+      *       患者番号
               03  PTMODREQ-PATIENTID        PIC X(20).
-      *       ������ʬ
+      *       処理区分
               03  PTMODREQ-PATIENT-MODE     PIC X(06).
-      *       UID�ʥ��륫��
+      *       UID（オルカ）
               03  PTMODREQ-ORCA-UID         PIC X(36).
-      *       ��ǧ��å���������
+      *       確認メッセージ返答
               03  PTMODREQ-SELECT-ANSWER    PIC X(02).
-      *       ��³��ʬ
+      *       継続区分
               03  PTMODREQ-CONT-MODE        PIC X(05).
-      *       ���Ծ���
+      *       患者情報
               03  PTMODREQ-PTINF-INFO.
-      *         ���Ի�̾
+      *         患者氏名
                 05  PTMODREQ-NAME             PIC X(50).
-      *         ���ԥ��ʻ�̾
+      *         患者カナ氏名
                 05  PTMODREQ-KANANAME         PIC X(50).
-      *         ��ǯ����
+      *         生年月日
                 05  PTMODREQ-BIRTHDAY         PIC X(10).
-      *         ����
+      *         性別
                 05  PTMODREQ-SEX              PIC X(01).
-      *         ���Ӽ�̾
+      *         世帯主名
                 05  PTMODREQ-SETAI-NAME       PIC X(50).
-      *         ³��
+      *         続柄
                 05  PTMODREQ-ZOKUGARA         PIC X(30).
-      *         ����
+      *         職業
                 05  PTMODREQ-JOB              PIC X(20).
-      *         �̾�
+      *         通称
                 05  PTMODREQ-NICKNAME         PIC  X(50).
-      *         ���������ֹ�
+      *         携帯電話番号
                 05  PTMODREQ-KEITAI-TEL       PIC  X(015).
-      *         �ƣ����ֹ�
+      *         ＦＡＸ番号
                 05  PTMODREQ-FAX              PIC  X(015).
-      *         �Żҥ᡼�륢�ɥ쥹
+      *         電子メールアドレス
                 05  PTMODREQ-EMAIL            PIC  X(050).
-      *         �������
+      *         自宅情報
                 05  PTMODREQ-ADDRESS-INFO.
-      *           ͹���ֹ�
+      *           郵便番号
                   07  PTMODREQ-HOME-ZIP-CODE     PIC X(7).
-      *           ����
+      *           住所
                   07  PTMODREQ-HOME-ADDRESSES1   PIC X(100).
-      *           �����ֹ�
+      *           番地番号
                   07  PTMODREQ-HOME-ADDRESSES2   PIC X(100).
-      *           �����ֹ�ʼ����
+      *           電話番号（自宅）
                   07  PTMODREQ-HOME-HPONE1       PIC X(15).
-      *           �����ֹ��Ϣ�����
+      *           電話番号（連絡先）
                   07  PTMODREQ-HOME-HPONE2       PIC X(15).
-      *         ��̳�����
+      *         勤務先情報
                 05  PTMODREQ-OFFICE-INFO.
-      *           ��̳��̾
+      *           勤務先名
                   07  PTMODREQ-OFFICE-NAME        PIC X(50).
-      *           ͹���ֹ�
+      *           郵便番号
                   07  PTMODREQ-OFFICE-ZIP-CODE    PIC X(7).
-      *           ����
+      *           住所
                   07  PTMODREQ-OFFICE-ADDRESSES1  PIC X(100).
-      *           �����ֹ�
+      *           番地番号
                   07  PTMODREQ-OFFICE-ADDRESSES2  PIC X(100).
-      *           �����ֹ�
+      *           電話番号
                   07  PTMODREQ-OFFICE-HPONE       PIC X(15).
-      *         Ϣ�������
+      *         連絡先情報
                 05  PTMODREQ-RENRAKU-INFO.
-      *           Ϣ����̾
+      *           連絡先名
                   07  PTMODREQ-RENRAKU-NAME        PIC X(50).
-      *           Ϣ����³��
+      *           連絡先続柄
                   07  PTMODREQ-RENRAKU-ZOKUGARA    PIC X(30).
-      *           ͹���ֹ�
+      *           郵便番号
                   07  PTMODREQ-RENRAKU-ZIP-CODE    PIC X(7).
-      *           ����
+      *           住所
                   07  PTMODREQ-RENRAKU-ADDRESSES1  PIC X(100).
-      *           �����ֹ�
+      *           番地番号
                   07  PTMODREQ-RENRAKU-ADDRESSES2  PIC X(100).
-      *           �����ֹ桡��
+      *           電話番号　昼
                   07  PTMODREQ-RENRAKU-HPONE1      PIC X(15).
-      *           �����ֹ桡��
+      *           電話番号　夜
                   07  PTMODREQ-RENRAKU-HPONE2      PIC X(15).
-      *         ���������
+      *         帰省先情報
                 05  PTMODREQ-KISEI-INFO.
-      *           ������̾
+      *           帰省先名
                   07  PTMODREQ-KISEI-NAME          PIC X(50).
-      *           ͹���ֹ�
+      *           郵便番号
                   07  PTMODREQ-KISEI-ZIP-CODE      PIC X(7).
-      *           ����
+      *           住所
                   07  PTMODREQ-KISEI-ADDRESSES1    PIC X(100).
-      *           �����ֹ�
+      *           番地番号
                   07  PTMODREQ-KISEI-ADDRESSES2    PIC X(100).
-      *           �����ֹ�
+      *           電話番号
                   07  PTMODREQ-KISEI-HPONE         PIC X(15).
-      *         �ش���
+      *         禁忌１
                 05  PTMODREQ-TABOO-1              PIC  X(100).
-      *         �ش���
+      *         禁忌２
                 05  PTMODREQ-TABOO-2              PIC  X(100).
-      *         ����륮����
+      *         アレルギー１
                 05  PTMODREQ-ALLERGY-1            PIC  X(100).
-      *         ����륮����
+      *         アレルギー２
                 05  PTMODREQ-ALLERGY-2            PIC  X(100).
-      *         �����ɣ�
+      *         感染症１
                 05  PTMODREQ-KANSENSYO-1          PIC  X(100).
-      *         �����ɣ�
+      *         感染症２
                 05  PTMODREQ-KANSENSYO-2          PIC  X(100).
-      *         �����ȣ�
+      *         コメント１
                 05  PTMODREQ-COMMENT-1            PIC  X(100).
-      *         �����ȣ�
+      *         コメント２
                 05  PTMODREQ-COMMENT-2            PIC  X(100).
-      *         �ƥ��ȴ��Զ�ʬ
+      *         テスト患者区分
                 05  PTMODREQ-TEST-PATIENT         PIC  X(01).
-      *         ��˴��ʬ
+      *         死亡区分
                 05  PTMODREQ-DEATHKBN             PIC  X(01).
-      *         ���Ȼ�ͳ
+      *         減免事由
                 05  PTMODREQ-DISCOUNTKBN          PIC  X(02).
-      *         ���Ψ
+      *         割引率
                 05  PTMODREQ-DISCOUNT             PIC  X(02).
-      *         ����
+      *         状態
                 05  PTMODREQ-CONDITION-KBN-G.
                     07  PTMODREQ-CONDITION-KBN    PIC  X(02)
                                                   OCCURS   3.
       *
              03  PTMODREQ-MODE-AREA.
-      *          ����������Ͽ��ʬ
+      *          旧姓履歴登録区分
                  05  PTMODREQ-KYUSEI-MODE          PIC  X(05).
       *
       *

@@ -18,5 +18,5 @@ CREATE TABLE "tbl_odritem" (
 	Constraint "tbl_odritem_primary_key" Primary Key ("hospid", "karte_key", "ordernum", "itemnum")
 );
 
-COMMENT ON TABLE "tbl_odritem" IS 'Æþ±¡¥ª¡¼¥À¹àÌÜ';
+COMMENT ON TABLE "tbl_odritem" IS 'å…¥é™¢ã‚ªãƒ¼ãƒ€é …ç›®';
 

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É´µ¼ÔÅÐÏ¿¾ðÊó¡ÊÊÝ¸±¡¦¸øÈñ¤Î¼ïÎà¡¢Êä½õ¶èÊ¬¡Ë(xml2)
+      *    ï¼¡ï¼°ï¼©æ‚£è€…ç™»éŒ²æƒ…å ±ï¼ˆä¿é™ºãƒ»å…¬è²»ã®ç¨®é¡žã€è£œåŠ©åŒºåˆ†ï¼‰(xml2)
       *                                   COPY (CPINSURANCEINF1V2REQ.INC)
       ******************************************************************
         01  XML-INSURANCEINFREQ.
@@ -30,9 +30,9 @@
             02  INSUINFQ-RECORDNAME        PIC X(128).
             02  INSUINFQ-PATIENTREQ.
       *
-      *       ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *       ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
               03  INSUINFQ-REQUEST-NUMBER      PIC X(2).
-      *       ´ð½àÆüÉÕ
+      *       åŸºæº–æ—¥ä»˜
               03  INSUINFQ-BASE-DATE           PIC X(10).
       *
       *

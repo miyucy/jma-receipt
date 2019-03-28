@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,25 +16,25 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         °ìÈÌÌ¾¥Þ¥¹¥¿  COPY (CPGENERICNAME.INC)     *
+      *         ä¸€èˆ¬åãƒžã‚¹ã‚¿  COPY (CPGENERICNAME.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  GENERICNAME-REC.
            03  GENERIC-KEY.
-      *    Ìô²Á´ð½à¥³¡¼¥É
+      *    è–¬ä¾¡åŸºæº–ã‚³ãƒ¼ãƒ‰
                05  GENERIC-YAKKAKJNCD      PIC  X(12).
-      *    °ìÈÌÌ¾Í­¸ú·å
+      *    ä¸€èˆ¬åæœ‰åŠ¹æ¡
            03  GENERIC-YUKOKETA        PIC  9(02).
-      *    °ìÈÌÌ¾
+      *    ä¸€èˆ¬å
            03  GENERIC-GENERICNAME     PIC  X(200).
-      *    Ã±°Ì¥³¡¼¥É
+      *    å˜ä½ã‚³ãƒ¼ãƒ‰
            03  GENERIC-TANICD          PIC  X(03).
-      *    Ã±°ÌÌ¾¾Î
+      *    å˜ä½åç§°
            03  GENERIC-TANINAME        PIC  X(24).
-      *    ¿ôÎÌ´¹»»ÃÍ
+      *    æ•°é‡æ›ç®—å€¤
            03  GENERIC-KANZANCHI       PIC  9(05)V9(05).
       *
            03  GENERIC-TERMID          PIC  X(16).

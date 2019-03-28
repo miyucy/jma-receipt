@@ -1,32 +1,32 @@
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿        COPY (CPCHKWK.INC)                   *
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿        COPY (CPCHKWK.INC)                   *
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  CHKWK-REC.
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
            03  CHKWK-SYORIKBN            PIC  X(01).
       *
            03  CHKWK-KEY.
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
                05  CHKWK-CHKKBN          PIC  X(01).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  CHKWK-SRYCD           PIC  X(09).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  CHKWK-YUKOSTYMD       PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  CHKWK-YUKOEDYMD       PIC  X(08).
-      *¥³¡¼¥É¶èÊ¬
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†
                05  CHKWK-CDKBN           PIC  X(01).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  CHKWK-RENNUM          PIC  9(02).
-      *Í­¸ú½ªÎ»Ç¯·îÆü2
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥2
            03  CHKWK-YUKOEDYMD2          PIC  X(08).
-      *Å¬ÍÑ¥³¡¼¥É¸Ä¿ô
+      *é©ç”¨ã‚³ãƒ¼ãƒ‰å€‹æ•°
            03  CHKWK-TEKCDNUM            PIC  9(03).
-      *¥³¡¼¥É£±¤«¤é£±£°
+      *ã‚³ãƒ¼ãƒ‰ï¼‘ã‹ã‚‰ï¼‘ï¼
            03  CHKWK-CD-G.
                05  CHKWK-CD1             PIC  X(09).
                05  CHKWK-CD2             PIC  X(09).
@@ -42,14 +42,14 @@
            03  CHKWK-CD-R                REDEFINES   CHKWK-CD-G.
                05  CHKWK-CD              PIC  X(09)
                                          OCCURS   10.
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  CHKWK-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  CHKWK-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  CHKWK-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  CHKWK-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö 
+      *æ›´æ–°æ™‚é–“ 
            03  CHKWK-UPHMS               PIC  X(06).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¿ÇÎÅ²ÊËè¤Î¥É¥¯¥¿¡¼ÀßÄê              (CPLIST_DOCTOR.INC) 
+      *  è¨ºç™‚ç§‘æ¯Žã®ãƒ‰ã‚¯ã‚¿ãƒ¼è¨­å®š              (CPLIST_DOCTOR.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  LIST-DOCTOR-REC.
       *
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  LSDOCTOR-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  LSDOCTOR-HOSPNUM     PIC 9(02).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  LSDOCTOR-SRYKA       PIC X(02).
-      *É½¼¨½ç
+      *è¡¨ç¤ºé †
                05  LSDOCTOR-RENNUM      PIC 9(03).
-      *¥É¥¯¥¿¡¼
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼
            03  LSDOCTOR-DRCD            PIC X(05).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  LSDOCTOR-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  LSDOCTOR-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  LSDOCTOR-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  LSDOCTOR-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  LSDOCTOR-UPHMS           PIC  X(06).

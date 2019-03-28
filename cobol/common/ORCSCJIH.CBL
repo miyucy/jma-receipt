@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSCJIH.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ź԰٥����å�������ʼ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/04/12    MCC��¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 診療行為チェック、算定（自費）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/04/12    MCC−多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  02/11/20  �����մ���ɲ�
-      * 01.00.02     NACL-¿��Ǽ  03/04/30  ���������ɲ�
-      * 04.07.00     NACL-¿��Ǽ  14/10/03  �����Ƿ׻�����.961�б�
-      * 04.08.00     NACL-¿��Ǽ  17/06/XX  ���ʥ������б�¾
-      * 04.08.00     NACL-¿��Ǽ  17/09/XX  ���񥳡���ü�������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/11/20  自賠責器材追加
+      * 01.00.02     NACL-多々納  03/04/30  剤別点数追加
+      * 04.07.00     NACL-多々納  14/10/03  消費税計算＠、.961対応
+      * 04.08.00     NACL-多々納  17/06/XX  商品コード対応他
+      * 04.08.00     NACL-多々納  17/09/XX  自費コード端数処理対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -45,7 +45,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
@@ -54,7 +54,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX-Z               PIC 9(04).
@@ -62,14 +62,14 @@
       *
       *
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
       *
            03  WRK-MOJI            PIC X(01). 
       *
            03  WRK-ERRCD           PIC X(04). 
-      *H29.9   �������ʲ������
+      *H29.9   小数点以下５桁へ
       *    03  WRK-KINGAK-9        PIC 9(08)V99.
            03  WRK-KINGAK-9        PIC 9(08)V9(5).
            03  WRK-KINGAK          PIC 9(08).
@@ -83,63 +83,63 @@
       *
            03  WRK-TENSIKIBETU     PIC 9(01).
       *
-      *������Ψ
+      *消費税率
        01  CONS-ZEI1               PIC 9(01)V99   VALUE   0.05.
        01  CONS-ZEI2               PIC 9(01)V99   VALUE   0.08.
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *
-      *    ���Ź԰ٻ����Խ��ѥ�᥿
+      *    診療行為算定編集パラメタ
       *****COPY    "CPORCSC90.INC".
       *
-      *    ���Ź԰ٻ���������å��ѥ�᥿
+      *    診療行為算定歴チェックパラメタ
       **** COPY    "CPORCSC91.INC".
       *
-      *    ���Ź԰������Խ������ܥ����å�
+      *    診療行為点数編集・基本チェック
       **** COPY    "CPORCSC92.INC".
       *
-      *    ���̺��Խ��ѥ�᥿
+      *    画面再編集パラメタ
            COPY    "CPORCSC94.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *H29.9
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -150,14 +150,14 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *H29.9
-      *    ���񥳡���ü����������
+      *    自費コード端数処理設定
            IF      LNK-ORCSC-PG        =   "J04"
                PERFORM 400-JIHI-HASU-SEC
            ELSE
@@ -166,13 +166,13 @@
       *
       *
            EVALUATE    LNK-ORCSC-KBN
-      *        ���̡������å����Խ�����ư����
+      *        剤別　チェック、編集、自動算定
                WHEN    "1"
                    PERFORM 100-SEL-SYORI-SEC
-      *        ���ΤΥ����å�
+      *        全体のチェック
                WHEN    "2"
                    PERFORM 200-ALL-SYORI-SEC
-      *        ��ư����
+      *        自動算定
                WHEN    "3"
                    PERFORM 300-AUTO-SYORI-SEC
                WHEN    OTHER
@@ -183,11 +183,11 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���̤Υ����å����Խ�����ư�������
+      *    剤別のチェック、編集、自動算定処理
       *****************************************************************
        100-SEL-SYORI-SEC                SECTION.
       *
-      *    �����å�����ư����
+      *    チェック、自動算定
            PERFORM 1001-NAI-CHK-SEC
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
@@ -195,7 +195,7 @@
                GO      TO      100-SEL-SYORI-EXT
            END-IF
       *
-      *    �����׻�
+      *    点数計算
            PERFORM 1002-TENSU-KEI-SEC
       *
            .
@@ -203,7 +203,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        1001-NAI-CHK-SEC                  SECTION.
       *
@@ -232,11 +232,11 @@
                    WHEN    "*"
                        CONTINUE
                    WHEN    "S"
-      *                ���åȤ������ԲĤȤ���
+      *                セットは入力不可とする
                        MOVE    "0055"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10011-CHK-SEC
                END-EVALUATE
            END-PERFORM
@@ -248,13 +248,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        10011-CHK-SEC                  SECTION.
       *
            EVALUATE    WRK-MOJI
                WHEN    "0"
-      *            ������ϤΤ��뼫��ϲ���ϣ��Ȥ���
+      *            金額入力のする自費は回数は１とする
       *!           IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
       *!                                                   "096" ) AND
       *!                  (WRK-COM-KISOTEN(IDX-Z)      =   ZERO  )
@@ -264,7 +264,7 @@
       *!                                                  (IDX-Z)
       *!               END-IF
       *!           END-IF
-      *            �ȣ����������������ǹ����ɲ�
+      *            Ｈ１９／４／１から税込み追加
                    IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
                                                            "096" )
                        IF     (WRK-COM-TENSIKIBETU(IDX-Z)  =  4  )  AND
@@ -274,9 +274,9 @@
                                                           (IDX-Z)
                        END-IF
                    END-IF
-      *H31.3   ���ޤ�Ƚ��
+      *H31.3   薬剤の判別
                WHEN    "6"
-      *            �׻��Ǥ����������̤Ǥ��뤳��
+      *            計算できる点数識別であること
                    EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
                        WHEN    1
                        WHEN    2
@@ -290,7 +290,7 @@
                    END-EVALUATE
       *
                WHEN    OTHER
-      *            �׻��Ǥ����������̤Ǥ��뤳��
+      *            計算できる点数識別であること
                    EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
                        WHEN    1
                        WHEN    2
@@ -309,7 +309,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻��Խ�����
+      *    点数計算編集処理
       *****************************************************************
        1002-TENSU-KEI-SEC                  SECTION.
       *
@@ -317,7 +317,7 @@
       *
            INITIALIZE                  WRK-AREA
       *
-      *    ������Ψ�Խ�
+      *    消費税率編集
            MOVE    CONS-ZEI1           TO  WRK-ZEIRITU
            IF      SPA-SRYYMD          >=  "20140401"
                MOVE    CONS-ZEI2           TO  WRK-ZEIRITU
@@ -355,7 +355,7 @@
       *
                EVALUATE    WRK-MOJI
                    WHEN    "0"
-      *                ����׻���
+      *                自費計算へ
                        PERFORM 10021-JIHI-KEI-SEC
                    WHEN    "8"
                    WHEN    "."
@@ -364,7 +364,7 @@
                        CONTINUE
       *
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10021-KEISAN-SEC
                END-EVALUATE
       *
@@ -389,7 +389,7 @@
                    MOVE    "2"                 TO  WRK-COM-KEIFLG(IDX-Z)
                END-IF
       *H30.5
-      *        ��ۤϣ���ޤ�
+      *        金額は７桁まで
                IF      WRK-COM-KEI (IDX-Z) >   9999999
                    MOVE    "1088"          TO  SPA-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
@@ -405,18 +405,18 @@
       *
       *
       *****************************************************************
-      *    ����׻�����
+      *    自費計算処理
       *****************************************************************
        10021-JIHI-KEI-SEC                  SECTION.
       *
       *H29.6
-      *    ���ʥ������оݳ�
+      *    商品コード対象外
            IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "058"
                GO  TO  10021-JIHI-KEI-EXT
            END-IF
       *
       *H26.10
-      *    ��ۡ����Ǿ����Ƿ׻�
+      *    金額＠　で消費税計算
            IF     (WRK-COM-AUTOFLG2 (IDX-Z)    =   "1"   )
                IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "095" OR
                                                        "096" ) AND
@@ -426,9 +426,9 @@
                       (WRK-COM-JIHIMONEY(IDX-Z)    >   ZERO  )
                    PERFORM 100211-JIHI-KEISAN-SEC
                ELSE
-      *            ���κ��
+      *            ＠の削除
                    MOVE    SPACE           TO  WRK-COM-AUTOFLG2 (IDX-Z)
-      *            ɽ��
+      *            表示
                    INITIALIZE                  ORCSC94AREA
                    MOVE    "1"                 TO  LNK-SC94-KBN
                    MOVE    "K02"               TO  LNK-SC94-PG
@@ -444,12 +444,12 @@
            IF      WRK-COM-KISOTEN(IDX-Z)      =   ZERO
                CONTINUE
            ELSE
-      *        �����Ƿ׻�
+      *        消費税計算
                IF      (SPA-SRYYMD     >=  "20070401" )  AND
                        (WRK-COM-SRYKBN(IDX-Z)  =   "96")  AND
                        (WRK-COM-TENSIKIBETU(IDX-Z)  =  0 )
       *
-      *H26.10      ñ���߿��̤��о�
+      *H26.10      単価×数量を対象
                    IF      WRK-COM-SRYSYUKBN(IDX-Z) =   "961"
                        COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN
                                                             (IDX-Z)
@@ -470,18 +470,18 @@
                END-IF
       *
       *H29.9
-      *        ü������
+      *        端数処理
                EVALUATE    SPA-JIHI-HASU-KBN
                WHEN    "1"
-      *        �������ʲ��ͼθ���
+      *        小数点以下四捨五入
                    COMPUTE WRK-KINGAK      =   WRK-KINGAK-9
                                            +   0.5
                WHEN    "3"
-      *        �������ʲ��ڤ�夲
+      *        小数点以下切り上げ
                    COMPUTE WRK-KINGAK      =   WRK-KINGAK-9
                                            +   0.9999
                WHEN    OTHER
-      *        �������ʲ��ڤ�Τ�
+      *        小数点以下切り捨て
                    MOVE    WRK-KINGAK-9    TO  WRK-KINGAK
                END-EVALUATE
            END-IF
@@ -491,7 +491,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ƿ׻�����
+      *    消費税計算処理
       *****************************************************************
        10021-ZEIKEISEN-SEC                  SECTION.
       *
@@ -500,24 +500,24 @@
                                        *   WRK-ZEIRITU
       *
       *****IF      SPA-TAX-HASU-KBN    =   "1"
-      *        �������ʲ��ͼθ���
+      *        小数点以下四捨五入
       *        COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
       *                                +   0.5
       *    ELSE
-      *        �������ʲ��ڤ�Τ�
+      *        小数点以下切り捨て
       *        MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
       *****END-IF
            EVALUATE    SPA-TAX-HASU-KBN
                WHEN    "1"
-      *        �������ʲ��ͼθ���
+      *        小数点以下四捨五入
                    COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
                                            +   0.5
                WHEN    "3"
-      *        �������ʲ��ڤ�夲
+      *        小数点以下切り上げ
                    COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
                                            +   0.99999
                WHEN    OTHER
-      *            �������ʲ��ڤ�Τ�
+      *            小数点以下切り捨て
                    MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
            END-EVALUATE
       *
@@ -529,7 +529,7 @@
       *
       *H26.10
       *****************************************************************
-      *    ���϶�ۤξ����Ƿ׻�����
+      *    入力金額の消費税計算処理
       *****************************************************************
        100211-JIHI-KEISAN-SEC                  SECTION.
       *
@@ -539,15 +539,15 @@
       *
            EVALUATE    SPA-TAX-HASU-KBN
                WHEN    "1"
-      *        �������ʲ��ͼθ���
+      *        小数点以下四捨五入
                    COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
                                            +   0.5
                WHEN    "3"
-      *        �������ʲ��ڤ�夲
+      *        小数点以下切り上げ
                    COMPUTE WRK-ZEIKIN      =   WRK-ZEIKIN-9
                                            +   0.99999
                WHEN    OTHER
-      *            �������ʲ��ڤ�Τ�
+      *            小数点以下切り捨て
                    MOVE    WRK-ZEIKIN-9        TO  WRK-ZEIKIN
            END-EVALUATE
            COMPUTE WRK-TANKA           =   WRK-COM-JIHIMONEY(IDX-Z)
@@ -555,7 +555,7 @@
       *
            IF      WRK-TANKA           >   9999999
       *H30.5
-      *        ��ۤϣ���ޤ�
+      *        金額は７桁まで
                MOVE    "1088"          TO  SPA-ERRCD
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
                GO  TO    100211-JIHI-KEISAN-EXT
@@ -565,7 +565,7 @@
            MOVE    WRK-TANKA           TO  WRK-COM-KEI      (IDX-Z)
            MOVE    WRK-TANKA           TO  WRK-GMN-KEI      (IDX-Z)
            MOVE    SPACE               TO  WRK-COM-AUTOFLG2 (IDX-Z)
-      *    ɽ��
+      *    表示
            INITIALIZE                  ORCSC94AREA
            MOVE    "1"                 TO  LNK-SC94-KBN
            MOVE    "K02"               TO  LNK-SC94-PG
@@ -580,7 +580,7 @@
       *!!
       *
       *****************************************************************
-      *    �����׻�����
+      *    点数計算処理
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
@@ -593,16 +593,16 @@
            END-IF
       *
       *H29.6
-      *    ��ۡ�����Ƚ��
+      *    金額・点数判定
            MOVE    ZERO                TO  WRK-TENSIKIBETU
            IF      WRK-COM-INPUTCD(IDX-Z)(1:1) =   "1"
                EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
-      *        ���
+      *        金額
                WHEN    1
                    MOVE    1           TO  WRK-TENSIKIBETU
-      *        ����
+      *        点数
                WHEN    3
-      *        ��ƻ�ܸ���������
+      *        都道府県購入価格
                WHEN    4
                    MOVE    3           TO  WRK-TENSIKIBETU
                END-EVALUATE
@@ -611,12 +611,12 @@
                                                OR  "6" )
              OR   (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "059")
                EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
-      *        ���
+      *        金額
                WHEN    1
-      *        ��ƻ�ܸ���������
+      *        都道府県購入価格
                WHEN    2
                    MOVE    1           TO  WRK-TENSIKIBETU
-      *        ��ۡ�����)�ʶ�ۤϷ׻��Ѥߡ�
+      *        金額（整数)（金額は計算済み）
                WHEN    4
       *H31.3
                WHEN    5
@@ -626,11 +626,11 @@
       *
       ***  EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
            EVALUATE    WRK-TENSIKIBETU
-      *        ���
+      *        金額
                WHEN    1
-      *            �����Ƿ׻�
+      *            消費税計算
                    IF      (WRK-COM-SRYSYUKBN(IDX-Z)  =   "961")
-      *H26.10          ñ���߿��̡�����
+      *H26.10          単価×数量　に税
                        COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN
                                                             (IDX-Z)
                                                *   WRK-COM-SURYO(IDX-Z)
@@ -658,7 +658,7 @@
                    END-IF
       *
                    END-IF
-      *        ����
+      *        点数
                WHEN    3
                    COMPUTE WRK-KISOTEN     =   WRK-COM-KISOTEN (IDX-Z)
                                            *   10
@@ -676,12 +676,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���񥳡���ü���������
+      *    自費コード端数設定処理
       *****************************************************************
        400-JIHI-HASU-SEC                SECTION.
       *
            INITIALIZE                   SPA-K01KYOUTU
-      *    �����ƥ���������ʰ��ŵ��ؾ����
+      *    システム管理検索（医療機関情報）
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -694,11 +694,11 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1001-REC
-      *        ���񥳡���ü������
+      *        自費コード端数設定
                MOVE    SYS-1001-JIHI-HASU-KBN  TO  SPA-JIHI-HASU-KBN
            END-IF
       *
-      *    ü���ھ夲�����
+      *    端数切上げが初期
            IF      SPA-JIHI-HASU-KBN   =   SPACE
                MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
            END-IF
@@ -711,7 +711,7 @@
       *
       *
       *****************************************************************
-      *    �����Ź԰٥����å�����
+      *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
@@ -721,7 +721,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�������
+      *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC              SECTION.
       *
@@ -730,7 +730,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -764,7 +764,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -777,7 +777,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -792,7 +792,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

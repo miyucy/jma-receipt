@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,48 +16,48 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ��ô��Ʒ׻��ѥѥ�᥿���������� COPY (CPORCSSAIKEISAN.INC)
-      *                                ���ѥץ������  (ORCSSAIKEISAN)
+      *    負担金再計算用パラメタ　　　　　 COPY (CPORCSSAIKEISAN.INC)
+      *                                使用プログラム  (ORCSSAIKEISAN)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  LNK-ORCSSAIKEISAN-REC.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  LNK-ORCSSKS-HOSPNUM         PIC 9(2).
-      *������ʬ
+      *入外区分
            03  LNK-ORCSSKS-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
            03  LNK-ORCSSKS-PTID            PIC  9(10).
-      *�о���ɼ�ֹ�
+      *対象伝票番号
            03  LNK-ORCSSKS-DENPNUM         PIC  9(07).
-      *���Ų�
+      *診療科
            03  LNK-ORCSSKS-SRYKA           PIC  X(02).
-      *���Ʒ׻���
+      *一括再計算順
            03  LNK-ORCSSKS-IKTSORTKBN      PIC  X(01).
-      *���Ʒ׻���ˡ
+      *一括再計算方法
            03  LNK-ORCSSKS-IKTKEISANKBN    PIC  X(01).
-      *ʬ�ڼ����ʬ
+      *分娩自費区分
            03  LNK-ORCSSKS-BUNBENJIHIKBN   PIC  X(01).
-      *���Ʒ׻�����ʪ���շ׻��ե饰
+      *一括再計算；現物給付計算フラグ
            03  LNK-ORCSSKS-IKTGENKEIFLG    PIC  X(01).
-      *���Ʒ׻��»ܥե饰
+      *一括再計算実施フラグ
            03  LNK-ORCSSKS-IKTJISSIFLG     PIC  X(01).
-      *���Ʒ׻������ԥ����å��ե饰
+      *一括再計算該当者チェックフラグ
            03  LNK-ORCSSKS-IKTCHECKFLG     PIC  X(01).
-      *������
+      *処理日
            03  LNK-ORCSSKS-SYSYMD          PIC  X(08).
-      *��������
+      *処理時刻
            03  LNK-ORCSSKS-SYSHMS          PIC  X(06).
       *
-      *�ֵ���
+      *返却値
       *
            03  LNK-ORCSSKS-OUT-AREA.
              04  LNK-ORCSSKS-OUT-OCC          OCCURS  15.
-      *�׻���ɼ�ֹ�
+      *計算伝票番号
                05  LNK-ORCSSKS-DENPNUM-END    PIC  9(07).
-      *��Ǽ�ǡ���
+      *収納データ
                05  LNK-ORCSSKS-SYUNOU-DATA    PIC  X(2500).
       *

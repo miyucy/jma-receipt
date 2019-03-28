@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,78 +16,78 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¼ýÇ¼ÌÀºÙ¥Þ¥¹¥¿    COPY (CPSYUMEI.INC)       *
+      *    åŽç´æ˜Žç´°ãƒžã‚¹ã‚¿    COPY (CPSYUMEI.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SYUMEI-REC.
            03  SMEI-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  SMEI-HOSPNUM          PIC 9(2).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  SMEI-NYUGAIKBN       PIC  X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  SMEI-PTID            PIC  9(10).
-      *ÅÁÉ¼ÈÖ¹æ
+      *ä¼ç¥¨ç•ªå·
                05  SMEI-DENPNUM         PIC  9(07).
-      *ÅÁÉ¼ÈÖ¹æ»ÞÈÖ
+      *ä¼ç¥¨ç•ªå·æžç•ª
                05  SMEI-DENPEDANUM      PIC  9(02).
-      *Æþ¶âÏ¢ÈÖ
+      *å…¥é‡‘é€£ç•ª
            03  SMEI-NYUKINRENNUM        PIC  9(03).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  SMEI-SRYKA               PIC  X(02).
-      *ÌÀºÙ¾õÂÖ¶èÊ¬
+      *æ˜Žç´°çŠ¶æ…‹åŒºåˆ†
            03  SMEI-MEISAIJOUTAIKBN     PIC  X(01).
-      *ÀÁµáÈ¯¹ÔÆü
+      *è«‹æ±‚ç™ºè¡Œæ—¥
            03  SMEI-SKYPRINTYMD         PIC  X(08).
-      *ÀÁµáºÆÈ¯¹ÔÆü
+      *è«‹æ±‚å†ç™ºè¡Œæ—¥
            03  SMEI-SKYREPRINTYMD       PIC  X(08).
-      *ÎÎ¼ý½ñÈ¯¹ÔÆü
+      *é ˜åŽæ›¸ç™ºè¡Œæ—¥
            03  SMEI-RYOSYUPRINTYMD      PIC  X(08).
-      *ÎÎ¼ý½ñºÆÈ¯¹ÔÆü
+      *é ˜åŽæ›¸å†ç™ºè¡Œæ—¥
            03  SMEI-RYOSYUREPRINTYMD    PIC  X(08).
-      *ÀÁµá¶â³Û
+      *è«‹æ±‚é‡‘é¡
            03  SMEI-SKYMONEY            PIC S9(07).
-      *ÆþÊÖ¶â¶èÊ¬
+      *å…¥è¿”é‡‘åŒºåˆ†
            03  SMEI-NYUHEN-KBN          PIC  X(01).
-      *ÆþÊÖ¶â³Û
+      *å…¥è¿”é‡‘é¡
            03  SMEI-NYUHEN-MONEY        PIC S9(07).
-      *ÆþÊÖ¶âÆü
+      *å…¥è¿”é‡‘æ—¥
            03  SMEI-NYUHEN-YMD          PIC  X(08).
-      *Æþ¶âÊýË¡
+      *å…¥é‡‘æ–¹æ³•
            03  SMEI-NYUKIN-HOHO         PIC  X(02).
-      *¾õÂÖ¶èÊ¬
+      *çŠ¶æ…‹åŒºåˆ†
            03  SMEI-JOUTAIKBN           PIC  X(01).
-      *ÆüÊó¥­¡¼
+      *æ—¥å ±ã‚­ãƒ¼
            03  SMEI-DAILYKEY            PIC  X(12).
-      *¼ýÇ¼ÍúÎòÈÖ¹æ
+      *åŽç´å±¥æ­´ç•ªå·
            03  SMEI-SYURRKNUM           PIC 9(2).
-      *¼ýÇ¼ÍúÎò»ÞÈÖ¹æ
+      *åŽç´å±¥æ­´æžç•ªå·
            03  SMEI-SYUEDANUM           PIC 9(2).
-      *¼ýÇ¼ÍúÎò¹¹¿·¶èÊ¬
+      *åŽç´å±¥æ­´æ›´æ–°åŒºåˆ†
            03  SMEI-SYURRKUPDKBN        PIC X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SMEI-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SMEI-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SMEI-CREYMD              PIC  X(08).
-      *ºîÀ®»þ´Ö
+      *ä½œæˆæ™‚é–“
            03  SMEI-CREHMS              PIC  X(06).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SMEI-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SMEI-UPHMS               PIC  X(06).
       *
-      *¿ÇÎÅÇ¯·îÆü¡Ê¸¡º÷ÍÑ¡Ë
+      *è¨ºç™‚å¹´æœˆæ—¥ï¼ˆæ¤œç´¢ç”¨ï¼‰
            03  SMEI-UPNYUHEN-YMD        PIC  X(08).
-      *³«»ÏÆüÊó¥­¡¼
+      *é–‹å§‹æ—¥å ±ã‚­ãƒ¼
            03  SMEI-STDAILYKEY          PIC  X(12).
-      *½ªÎ»ÆüÊó¥­¡¼
+      *çµ‚äº†æ—¥å ±ã‚­ãƒ¼
            03  SMEI-EDDAILYKEY          PIC  X(12).
-      *³«»ÏºîÀ®Ç¯·îÆü
+      *é–‹å§‹ä½œæˆå¹´æœˆæ—¥
            03  SMEI-STCREYMD            PIC  X(8).
-      *½ªÎ»ºîÀ®Ç¯·îÆü
+      *çµ‚äº†ä½œæˆå¹´æœˆæ—¥
            03  SMEI-EDCREYMD            PIC  X(8).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,51 +16,51 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK1050.INC)   *
-      *         ¡Ê£±£°£µ£°¡Ë                            *
-      *         ¿¦°÷¾ðÊó£²                              *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK1050.INC)   *
+      *         ï¼ˆï¼‘ï¼ï¼•ï¼ï¼‰                            *
+      *         è·å“¡æƒ…å ±ï¼’                              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  14/02/10  ÆþÎÏ¥¹¥¯¥í¡¼¥ë¹Ô¿ôÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.07.00     NACL-å¤šã€…ç´  14/02/10  å…¥åŠ›ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è¡Œæ•°è¿½åŠ 
       ************************************************************
        01  SYS-1050-REC.
            03  SYS-1050-KEY.
                05  SYS-1050-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-1050-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-1050-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-1050-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-1050-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-1050-TBL.
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
                05  SYS-1050-ICCARDRW    PIC  X(1).
       *
-      *ÆþÎÏ¥¹¥¯¥í¡¼¥ë¹Ô¿ô¡¡³°Íè
+      *å…¥åŠ›ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è¡Œæ•°ã€€å¤–æ¥
                05  SYS-1050-GLINECNT    PIC  X(02).
-      *ÆþÎÏ¥¹¥¯¥í¡¼¥ë¹Ô¿ô¡¡Æþ±¡
+      *å…¥åŠ›ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«è¡Œæ•°ã€€å…¥é™¢
                05  SYS-1050-NLINECNT    PIC  X(02).
-      *¥×¥ê¥ó¥¿¤Ø¤Î¥Ç¡¼¥¿Á÷¿®Ã±°Ì
+      *ãƒ—ãƒªãƒ³ã‚¿ã¸ã®ãƒ‡ãƒ¼ã‚¿é€ä¿¡å˜ä½
                05  SYS-1050-PRTCONF     PIC  X(01).
-      *Í½È÷
+      *äºˆå‚™
       **** 03  SYS-1050-YOBI            PIC  X(499).
            03  SYS-1050-YOBI            PIC  X(494).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-1050-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-1050-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-1050-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-1050-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-1050-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-1050-UPD-KEY.
                05  SYS-1050-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1050-UPD-KANRICD     PIC X(04).

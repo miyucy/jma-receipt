@@ -1,17 +1,17 @@
 --                                    --
---  ���Ծ���ʥץ�ӥ塼�ѡ˥ơ��֥���ѹ� --
+--  患者情報（プレビュー用）テーブルの変更 --
 --                                    --
--- ���ܤ��ɲ�                         --
---     ������ˡ NYUKIN-HOHO           --
+-- 項目の追加                         --
+--     入金方法 NYUKIN-HOHO           --
 --                                    --
 -- Update Date : 2005/09/14           --
 --                                    --
 
--- TBL_PTINF_PRV ��� --
+-- TBL_PTINF_PRV 削除 --
 
 DROP TABLE tbl_ptinf_prv ;
 
--- TBL_PTINF_PRV ���� --
+-- TBL_PTINF_PRV 作成 --
 
 CREATE TABLE "tbl_ptinf_prv" (
 	"hospid" character(24) NOT NULL,

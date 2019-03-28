@@ -8,11 +8,11 @@ xml_medicalv3req7 {
 		Karte_Uid		varchar(36);
 		Orca_Uid		varchar(36);
 		Delete_Information  {
-#---    	°ì³ç²ò½ü
+#---    	ä¸€æ‹¬è§£é™¤
 			Delete_Class		varchar(3);
-#---    	²ò½ü¥«¥ë¥Æ£Õ£É£Ä
+#---    	è§£é™¤ã‚«ãƒ«ãƒ†ï¼µï¼©ï¼¤
 			Delete_Karte_Uid	varchar(36);
-#---    	²ò½ü¥ª¥ë¥«£Õ£É£Ä
+#---    	è§£é™¤ã‚ªãƒ«ã‚«ï¼µï¼©ï¼¤
 			Delete_Orca_Uid		varchar(64);
 		};
 #--

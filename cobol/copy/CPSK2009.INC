@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,59 +16,59 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK2009.INC)            *
-      *         ¡Ê£²£°£°£¹¡Ë                                     *
-      *         ¼ç²ÊÀßÄê¾ðÊó                                     *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK2009.INC)            *
+      *         ï¼ˆï¼’ï¼ï¼ï¼™ï¼‰                                     *
+      *         ä¸»ç§‘è¨­å®šæƒ…å ±                                     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *
-      *  03.02.01    NACL-Æ£¸¶    06/08/01  ¹ñÊÝ¼ç²ÊÂÐ±þ
+      *  03.02.01    NACL-è—¤åŽŸ    06/08/01  å›½ä¿ä¸»ç§‘å¯¾å¿œ
       *
-      *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµ
-      *                                     ¹­°èÏ¢¹ç¼ç²ÊÂÐ±þ
+      *  04.02.01    NACL-è—¤åŽŸ    08/03/25  å¹³æˆï¼’ï¼å¹´ï¼”æœˆæ”¹æ­£
+      *                                     åºƒåŸŸé€£åˆä¸»ç§‘å¯¾å¿œ
       ************************************************************
        01  SYS-2009-REC.
            03  SYS-2009-KEY.
                05  SYS-2009-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-2009-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-2009-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-2009-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-2009-EDYUKYMD    PIC  X(08).
-      *¼ç²ÊÀßÄê¥Õ¥é¥°
+      *ä¸»ç§‘è¨­å®šãƒ•ãƒ©ã‚°
            03  SYS-2009-SYUKA-KBN       PIC  X(01).
-      *¼ç²ÊÀßÄê¾ðÊó¡ÊÆþ±¡¡Ë
+      *ä¸»ç§‘è¨­å®šæƒ…å ±ï¼ˆå…¥é™¢ï¼‰
            03  SYS-2009-SYUKA-NYUIN     PIC  X(01).
-      *¼ç²ÊÀßÄê¾ðÊó¡ÊÆþ±¡³°¡Ë
+      *ä¸»ç§‘è¨­å®šæƒ…å ±ï¼ˆå…¥é™¢å¤–ï¼‰
            03  SYS-2009-SYUKA-GAIRAI    PIC  X(01).
-      *¼ç²Ê¾ðÊó¼èÆÀ¥Õ¥é¥°
+      *ä¸»ç§‘æƒ…å ±å–å¾—ãƒ•ãƒ©ã‚°
            03  SYS-2009-SYUKA-MODE      PIC  X(01).
-      *Ê£¿ô²ÊÆ±°ìÁªÂò
+      *è¤‡æ•°ç§‘åŒä¸€é¸æŠž
            03  SYS-2009-SYUKA-SELECT    PIC  X(01).
-      *¼ç²Ê¼ÒÊÝÀßÄê¥Õ¥é¥°
+      *ä¸»ç§‘ç¤¾ä¿è¨­å®šãƒ•ãƒ©ã‚°
            03  SYS-2009-SYUKA-SYAHO     PIC  X(01).
-      *¼ç²Ê¹ñÊÝÀßÄê¥Õ¥é¥°
+      *ä¸»ç§‘å›½ä¿è¨­å®šãƒ•ãƒ©ã‚°
            03  SYS-2009-SYUKA-KOKUHO    PIC  X(01).
-      *¼ç²Ê¹­°èÏ¢¹çÀßÄê¥Õ¥é¥°
+      *ä¸»ç§‘åºƒåŸŸé€£åˆè¨­å®šãƒ•ãƒ©ã‚°
            03  SYS-2009-SYUKA-KOUIKI    PIC  X(01).
-      *Í½È÷
+      *äºˆå‚™
            03  SYS-2009-YOBI            PIC  X(492).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-2009-TERMID          PIC  X(16).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-2009-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-2009-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-2009-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-2009-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-2009-UPD-KEY.
                05  SYS-2009-UPD-HOSPNUM     PIC 9(2).
                05  SYS-2009-UPD-KANRICD     PIC X(04).

@@ -22,5 +22,5 @@ CREATE TABLE "tbl_chk005" (
 );
 	create index idx_chk005_rennum on tbl_chk005  ("chkkbn", "rennum") ;
 
-COMMENT ON TABLE "tbl_chk005" IS '•¡•ß•√•Ø5';
+COMMENT ON TABLE "tbl_chk005" IS '„ÉÅ„Çß„ÉÉ„ÇØ5';
 

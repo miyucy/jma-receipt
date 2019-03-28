@@ -1,104 +1,104 @@
 kanri_cd    : "5010"
-name        : "Äê´üÀÁµá¾ğÊó"
+name        : "å®šæœŸè«‹æ±‚æƒ…å ±"
 class_cd    : "*"
 item_max    : 16
 item_list   :
 - item_no   : 1
   item      : "DAY1"
-  item_jp   : "ÀÁµáÆü¡İ£±´ü"
+  item_jp   : "è«‹æ±‚æ—¥âˆ’ï¼‘æœŸ"
   type      : "9"
   start     : 1
   length    : 2
   precision : 0
 - item_no   : 2
   item      : "DAY2"
-  item_jp   : "ÀÁµáÆü¡İ£²´ü"
+  item_jp   : "è«‹æ±‚æ—¥âˆ’ï¼’æœŸ"
   type      : "9"
   start     : 3
   length    : 2
   precision : 0
 - item_no   : 3
   item      : "DAY3"
-  item_jp   : "ÀÁµáÆü¡İ£³´ü"
+  item_jp   : "è«‹æ±‚æ—¥âˆ’ï¼“æœŸ"
   type      : "9"
   start     : 5
   length    : 2
   precision : 0
 - item_no   : 4
   item      : "YOBI1"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 7
   length    : 10
 - item_no   : 5
   item      : "NYUKINKBN"
-  item_jp   : "ÀÁµá»şÆş¶â½èÍı"
+  item_jp   : "è«‹æ±‚æ™‚å…¥é‡‘å‡¦ç†"
   type      : "X"
   start     : 17
   length    : 1
 - item_no   : 6
   item      : "SAISYORIKBN"
-  item_jp   : "ºÆ½èÍı»ş¤Î¼è¤ê°·¤¤"
+  item_jp   : "å†å‡¦ç†æ™‚ã®å–ã‚Šæ‰±ã„"
   type      : "X"
   start     : 18
   length    : 1
 - item_no   : 7
   item      : "NYUKINPRTKBN"
-  item_jp   : "Æş¶â³Û°õ»ú"
+  item_jp   : "å…¥é‡‘é¡å°å­—"
   type      : "X"
   start     : 19
   length    : 1
 - item_no   : 8
   item      : "DELKBN"
-  item_jp   : "°ì³çºï½üµ¡Ç½"
+  item_jp   : "ä¸€æ‹¬å‰Šé™¤æ©Ÿèƒ½"
   type      : "X"
   start     : 20
   length    : 1
 - item_no   : 9
   item      : "SKYSUMKBN"
-  item_jp   : "ÀÁµá½ñÈ¯¹ÔÊıË¡"
+  item_jp   : "è«‹æ±‚æ›¸ç™ºè¡Œæ–¹æ³•"
   type      : "X"
   start     : 21
   length    : 1
 - item_no   : 10
   item      : "CHGWINDOWKBN"
-  item_jp   : "¼«Æ°Á«°Ü¶èÊ¬"
+  item_jp   : "è‡ªå‹•é·ç§»åŒºåˆ†"
   type      : "X"
   start     : 22
   length    : 1
 - item_no   : 11
   item      : "SKYPRTKBN"
-  item_jp   : "ÀÁµá½ñ·óÎÎ¼ı½ñ"
+  item_jp   : "è«‹æ±‚æ›¸å…¼é ˜åæ›¸"
   type      : "X"
   start     : 23
   length    : 1
 - item_no   : 12
   item      : "SRYPRTKBN"
-  item_jp   : "¿ÇÎÅÈñÌÀºÙ½ñ"
+  item_jp   : "è¨ºç™‚è²»æ˜ç´°æ›¸"
   type      : "X"
   start     : 24
   length    : 1
 - item_no   : 13
   item      : "PTINFREFKBN"
-  item_jp   : "´µ¼Ô¾ğÊó¸ÄÊÌÀßÄê»²¾È"
+  item_jp   : "æ‚£è€…æƒ…å ±å€‹åˆ¥è¨­å®šå‚ç…§"
   type      : "X"
   start     : 25
   length    : 1
 - item_no   : 14
   item      : "PRTJYUN"
-  item_jp   : "½ĞÎÏ½ç"
+  item_jp   : "å‡ºåŠ›é †"
   type      : "X"
   start     : 26
   length    : 2
 - item_no   : 15
   item      : "TAIINGRPKBN"
-  item_jp   : "Âà±¡´µ¼ÔÊÌ½¸·×"
+  item_jp   : "é€€é™¢æ‚£è€…åˆ¥é›†è¨ˆ"
   type      : "X"
   start     : 28
   length    : 1
 - item_no   : 16
   item      : "YOBI2"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 29
   length    : 472

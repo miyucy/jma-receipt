@@ -1,6 +1,6 @@
       ******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,28 +15,28 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ******************************************************************
-      *    ������ũ���ץ��֡ʲ�ץ������ѡ�   COPY (CPORCSTENTEK3.INC)
+      *    入院点滴集計サブ（会計カード用）   COPY (CPORCSTENTEK3.INC)
       ******************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ******************************************************************
        01  ORCSTENTEK3AREA.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  LNK-ORCSTEN3-HOSPNUM                  PIC  9(02).
-      *������ʬ
+      *入外区分
            03  LNK-ORCSTEN3-NYUGAIKBN                PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
            03  LNK-ORCSTEN3-PTID                     PIC  9(10).
-      *����ǯ��
+      *診療年月
            03  LNK-ORCSTEN3-SRYYM                    PIC  X(06).
-      *�ݸ��ȹ礻
+      *保険組合せ
            03  LNK-ORCSTEN3-HKNCOMBI                 PIC  9(04).
       *
-      *�ֵѹ���
+      *返却項目
            03  LNK-ORCSTEN3-OUT-AREA.
       *
-      *       ��ũ�ޤȤ�����̡�
+      *       点滴まとめ（日別）
               04  LNK-ORCSTEN3-TABLE.
                 05  LNK-ORCSTEN3-MAX                 PIC  9(05).
                 05  LNK-ORCSTEN3-OCC                 OCCURS   150.
@@ -58,8 +58,8 @@
                   06  LNK-ORCSTEN3-RUIKEITOTAL       PIC  9(13)V9(05).
                   06  LNK-ORCSTEN3-COMCNT            PIC  9(03).
       *
-      *       �ʲ�����
-      *       ��ũ���ͤμ굻���û������̡�
+      *       以下内訳
+      *       点滴注射の手技・加算（日別）
               04  LNK-ORCSTEN3-SYU-TABLE.
                 05  LNK-ORCSTEN3-SYU-OCC             OCCURS   31.
                   06  LNK-ORCSTEN3-SYU-OCC2          OCCURS   30.
@@ -78,7 +78,7 @@
                   06  LNK-ORCSTEN3-SYU-RUIKEITOTAL   PIC  9(13)V9(05).
                   06  LNK-ORCSTEN3-SYU-COMCNT        PIC  9(03).
       *
-      *       �濴��̮���ͤμ굻���û������̡�
+      *       中心静脈注射の手技・加算（日別）
               04  LNK-ORCSTEN3-SYU2-TABLE.
                 05  LNK-ORCSTEN3-SYU2-OCC            OCCURS   31.
                   06  LNK-ORCSTEN3-SYU2-OCC2         OCCURS   30.
@@ -97,7 +97,7 @@
                   06  LNK-ORCSTEN3-SYU2-RUIKEITOTAL  PIC  9(13)V9(05).
                   06  LNK-ORCSTEN3-SYU2-COMCNT       PIC  9(03).
       *
-      *       ���ޤޤȤ�����̡�
+      *       薬剤まとめ（日別）
               04  LNK-ORCSTEN3-YAK-TABLE.
                 05  LNK-ORCSTEN3-YAK-OCC             OCCURS   31.
                   06  LNK-ORCSTEN3-YAK-OCC2          OCCURS  350.
@@ -116,7 +116,7 @@
                   06  LNK-ORCSTEN3-YAK-RUIKEITOTAL   PIC  9(13)V9(05).
                   06  LNK-ORCSTEN3-YAK-COMCNT        PIC  9(03).
       *
-      *       ���ޤȤ�ʺ��̡�
+      *       器材まとめ（剤別）
               04  LNK-ORCSTEN3-KIZ-TABLE.
                 05  LNK-ORCSTEN3-KIZ-OCC             OCCURS   50.
                   06  LNK-ORCSTEN3-KIZ-OCC2          OCCURS   60.
@@ -130,11 +130,11 @@
                     07  LNK-ORCSTEN3-KIZ-DAY         PIC  9(03)
                                                      OCCURS   31.
       *
-      *       �ޤȤ��оݺ��ֹ�
+      *       まとめ対象剤番号
               04  LNK-ORCSTEN3-ZAINUM-TABLE.
                 05  LNK-ORCSTEN3-ZAINUM              PIC  9(08)
                                                      OCCURS  100.
       *
-      *����������
+      *復帰コード
            03  LNK-ORCSTEN3-RC                       PIC  9(02).
       *

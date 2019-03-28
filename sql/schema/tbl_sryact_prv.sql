@@ -56,7 +56,7 @@ CREATE TABLE tbl_sryact_prv (
     kansuryo5 numeric(10,5) DEFAULT 0
 );
 
-COMMENT ON TABLE tbl_sryact_prv IS '���Ź԰�(�ץ�ӥ塼)';
+COMMENT ON TABLE tbl_sryact_prv IS '診療行為(プレビュー)';
 
 ALTER TABLE ONLY tbl_sryact_prv
     ADD CONSTRAINT tbl_sryact_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, zainum, rennum);

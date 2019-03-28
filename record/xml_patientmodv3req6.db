@@ -17,28 +17,28 @@ xml_patientmodv3req6 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         };
-#---    ²ğ¸îÊİ¸±¼Ô¾ğÊó
+#---    ä»‹è­·ä¿é™ºè€…æƒ…å ±
 	Care_Insurance_Information	{
             Insurance_Mode		varchar(6);
 	    Care_Insurance_Info 	{
-#---            Êİ¸±¼ÔÈÖ¹æ
+#---            ä¿é™ºè€…ç•ªå·
                 InsuranceProvider_Number	varchar(06);
-#---            ÈïÊİ¸±¼ÔÈÖ¹æ
+#---            è¢«ä¿é™ºè€…ç•ªå·
                 HealthInsuredPerson_Number	varchar(10);
-#---            ³«»ÏÆü
+#---            é–‹å§‹æ—¥
                 Certificate_StartDate		varchar(10);
                 Certificate_ExpiredDate		varchar(10);
 	        } [10];
         };
-#---    Í×²ğ¸îÇ§Äê¾ğÊó
+#---    è¦ä»‹è­·èªå®šæƒ…å ±
 	Care_Certification_Information	{
             Certification_Mode			varchar(6);
 	    Certification_Info 	{
-#---           Í×²ğ¸î¾õÂÖ¶èÊ¬
+#---           è¦ä»‹è­·çŠ¶æ…‹åŒºåˆ†
                Need_Care_State_Code		varchar(02);
-#---           Ç§ÄêÆüÉÕ
+#---           èªå®šæ—¥ä»˜
                Certification_Date		varchar(10);
-#---           Í­¸ú³«»ÏÆü
+#---           æœ‰åŠ¹é–‹å§‹æ—¥
                Certificate_StartDate		varchar(10);
                Certificate_ExpiredDate		varchar(10);
 	      	} [50];

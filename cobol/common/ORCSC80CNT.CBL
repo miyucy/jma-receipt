@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC80CNT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ��ϥӥ껻������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/10/08    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : リハビリ算定回数検索サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/10/08    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  04/03/23  �ȣ���ǯ��������ɲ�
-      * 01.00.02     NACL-¿��Ǽ  05/11/22  MONFUNC �б� ¾
-      * 03.05.00     NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  04/03/23  Ｈ１６年４月改正追加
+      * 01.00.02     NACL-多々納  05/11/22  MONFUNC 対応 他
+      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,7 +43,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
@@ -56,7 +56,7 @@
       *
            03  FLG-SOUKI-ALL       PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDZ                 PIC 9(04).
@@ -67,7 +67,7 @@
            03  IDD2                PIC 9(02).
       *
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD           PIC X(09).
       *
@@ -75,42 +75,42 @@
            03  WRK-RIGAKU-RYO      PIC X(01).
            03  WRK-RIGAKU-RYO-A    PIC X(01).
            03  WRK-RIGAK-CNT       PIC 9(03).
-      *    �������
+      *    訂正回数
            03  WRK-TEI-CNT                 PIC 9(03).
            03  WRK-MCNT                    PIC 9(03).
       *
-      *    �ݸ��̻�������ơ��֥�
+      *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
       *
-      *    ��ϥӥ�������ϲû��ơ��֥�
+      *    リハビリの早期リハ加算テーブル
            COPY   "CMRIHAKSNTBL.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
       *
@@ -121,20 +121,20 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ��ϥӥ껻�ꥫ����ȥѥ�᥿
+      *    リハビリ算定カウントパラメタ
            COPY    "CPORCSC80CNT.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
       *??  COPY    "K02SCR-SPA".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -145,7 +145,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -153,10 +153,10 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-      *    �����ޤǻ���ѤߤΤ��٤ƤΥ�ϥӥꥫ�����
+      *    当日まで算定済みのすべてのリハビリカウント
            PERFORM 100-RIGAKU-ALLCNT-SEC
       *
-      *    �����ϥӥ�û����Υ������
+      *    早期リハビリ加算等のカウント
            PERFORM 200-SOUKI-ALLCNT-SEC
       *
            .
@@ -165,14 +165,14 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    �����ޤǻ���ѤߤΤ��٤ƤΥ�ϥӥꥫ����Ƚ���
+      *    当日まで算定済みのすべてのリハビリカウント処理
       *****************************************************************
        100-RIGAKU-ALLCNT-SEC           SECTION.
       *
            INITIALIZE                  ORCSC80CNT-RIGAKU-AREA
       *
-      *    ��������ѤߤΤ��٤Ƥ�������ˡ�򥫥���Ȥ���
-      *    �������򸡺�
+      *    当日算定済みのすべての理学療法をカウントする
+      *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
@@ -193,10 +193,10 @@
       *
                MOVE    SANTEI-SRYCD        TO  WRK-SRYCD
                PERFORM 20021-RIGAKU-TBL-SEC
-      *        ��ϥӥ�Ǥ��뤳��
+      *        リハビリであること
                MOVE    ZERO                TO  FLG-SANTEI-ARI
                IF      WRK-RIGAKU-RYO      =   "K"  OR  "S"
-      *            ϫ�Ҥλ����ݸ���
+      *            労災の時、保険毎
                    IF      SPA-HKNKBN      NOT =   ZERO
                       IF      SPA-HKNCOMBINUM  =   SANTEI-HKNCOMBINUM
                            MOVE    1               TO  FLG-SANTEI-ARI
@@ -209,7 +209,7 @@
                END-IF
       *
                IF      FLG-SANTEI-ARI      =   1
-      *            �������
+      *            カウント
                    PERFORM 20011-SANTEI-CNT-SEC
                END-IF
       *
@@ -227,7 +227,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ�ơ��֥�Ƚ�����
+      *    リハビリテーブル判定処理
       *****************************************************************
        20021-RIGAKU-TBL-SEC         SECTION.
       *
@@ -252,11 +252,11 @@
       *
       *
       *****************************************************************
-      *    �������򸡺�����
+      *    算定履歴検索処理
       *****************************************************************
        20011-SANTEI-CNT-SEC              SECTION.
       *
-      *    �����λ�����������̵ͭ��Ƚ��
+      *    訂正の時、当日算定有無の判定
            MOVE    ZERO                TO  WRK-TEI-CNT
            IF      ORCSC80CNT-SYORIFLG     =   1
                PERFORM VARYING     IDZ     FROM    1   BY  1
@@ -270,10 +270,10 @@
                    END-IF
                END-PERFORM
            END-IF
-      *    �����ޤǤΥ������
+      *    当日までのカウント
            MOVE    SPA-SRYYMD(7:2)     TO  IDD
       *
-      *    ����ʬ�Υ��ꥢ
+      *    訂正分のクリア
            IF      ORCSC80CNT-SYORIFLG     =   1
                IF      SANTEI-MSANTEICNT   <   WRK-TEI-CNT
                    MOVE    ZERO            TO  SANTEI-MSANTEICNT
@@ -289,23 +289,23 @@
                END-IF
            END-IF
       *
-      *    �����λ�������
+      *    入院の時、当月
            IF      SPA-NYUGAIKBN       =   "1"
                MOVE    31                  TO  IDD
            END-IF
       *
-      *    �����ޤǤβ��
+      *    当日までの回数
            MOVE    ZERO                TO  WRK-MCNT
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   IDD
                ADD     SANTEI-DAY (IDX2)   TO  WRK-MCNT
            END-PERFORM
       *
-      *    ��ϥӥ�μ�����˽��פ���
-      *    ����������ʬ
+      *    リハビリの種別毎に集計する
+      *    当日・当月分
            EVALUATE    WRK-RIGAKU-RYO
                                        ALSO  WRK-RIGAKU-KBN
-      *        ���̤�����
+      *        個別の理学
                WHEN    "K"             ALSO  "R"
                    ADD     WRK-MCNT            TO  ORCSC80CNT-TCNT-K
                                                                    (01)
@@ -317,7 +317,7 @@
                                                    ORCSC80CNT-DCNT-KN
                                                               (01 IDX2)
                    END-PERFORM
-      *        ���Ĥ�����
+      *        集団の理学
                WHEN    "S"             ALSO  "R"
                    ADD     WRK-MCNT            TO  ORCSC80CNT-TCNT-S
                                                                    (01)
@@ -329,7 +329,7 @@
                                                    ORCSC80CNT-DCNT-SN
                                                               (01 IDX2)
                    END-PERFORM
-      *        ���̤κ��
+      *        個別の作業
                WHEN    "K"             ALSO  "S"
                    ADD     WRK-MCNT            TO  ORCSC80CNT-TCNT-K
                                                                    (02)
@@ -341,7 +341,7 @@
                                                    ORCSC80CNT-DCNT-KN
                                                               (02 IDX2)
                    END-PERFORM
-      *        ���Ĥκ��
+      *        集団の作業
                WHEN    "S"             ALSO  "S"
                    ADD     WRK-MCNT            TO  ORCSC80CNT-TCNT-S
                                                                    (02)
@@ -353,7 +353,7 @@
                                                    ORCSC80CNT-DCNT-SN
                                                               (02 IDX2)
                    END-PERFORM
-      *        ���̤θ���
+      *        個別の言語
                WHEN    "K"             ALSO  "G"
                    ADD     WRK-MCNT            TO  ORCSC80CNT-TCNT-K
                                                                    (03)
@@ -365,7 +365,7 @@
                                                    ORCSC80CNT-DCNT-KN
                                                               (03 IDX2)
                    END-PERFORM
-      *        ���Ĥθ���
+      *        集団の言語
                WHEN    "S"             ALSO  "G"
                    ADD     WRK-MCNT            TO  ORCSC80CNT-TCNT-S
                                                                    (03)
@@ -384,11 +384,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ϥӥ�û����Υ�����Ƚ���
+      *    早期リハビリ加算等のカウント処理
       *****************************************************************
        200-SOUKI-ALLCNT-SEC         SECTION.
       *
-      *    ����ǯ��ο��Ų�ץޥ����ɤ߹���
+      *    診療年月の診療会計マスタ読み込み
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
@@ -412,11 +412,11 @@
       *
                IF     (ACCT-ZAITEN         =   ZERO )  OR
                       (ACCT-ZAIKAISU       =   ZERO )
-      *          ���ޤȤ����Ϥϥ�ϥӥ��оݳ�
+      *          包括まとめ入力はリハビリ対象外
                  OR   (ACCT-HKNCOMBI       =   "9999")
                    CONTINUE
                ELSE
-      *            ���Ź԰٥ޥ������Խ�
+      *            診療行為マスター編集
                    PERFORM 2001-SRYACT-HEN-SEC
                END-IF
       *
@@ -434,11 +434,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������Խ�����
+      *    診療行為マスター編集処理
       *****************************************************************
        2001-SRYACT-HEN-SEC            SECTION.
       *
-      *    ���Ų�ץޥ�����������Ź԰٥ޥ������򸡺�����
+      *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
@@ -466,7 +466,7 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2        >   5   )  OR
                                   (SRY-SRYCD(IDX2)     =   SPACE )
-      *            ��ϥӥ�Ǥ��뤳��
+      *            リハビリであること
                    MOVE    SRY-SRYCD(IDX2)     TO  WRK-SRYCD
                    PERFORM 20021-RIGAKU-TBL-SEC
                    IF      WRK-RIGAKU-RYO  NOT =   SPACE
@@ -475,7 +475,7 @@
       **************   END-IF
                        MOVE    WRK-RIGAKU-RYO      TO  WRK-RIGAKU-RYO-A
                    END-IF
-      *            �û�Ƚ��
+      *            加算判定
                    MOVE    SRY-SRYCD(IDX2)     TO  WRK-SRYCD
                    PERFORM 20023-SOUKI-TBL-SEC
                    IF      FLG-SOUKI           =   1
@@ -491,27 +491,27 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ����ʤ�
+      *    早期なし
            IF     (WRK-RIGAKU-RYO-A    =   SPACE  )  OR
                   (FLG-SOUKI-ALL       =   ZERO   )
                GO      TO      2001-SRYACT-HEN-EXT
            END-IF
       *
-      *    �����ϥӥ�û����û�����
+      *    早期リハビリ加算等加算処理
            PERFORM 2004-SOUKI-HENSYU-SEC
       *
            .
        2001-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϥӥ�û����û�����
+      *    早期リハビリ加算等加算処理
       *****************************************************************
        2004-SOUKI-HENSYU-SEC         SECTION.
       *
-      *    �����ޤǤΥ�����ȤȤ���
+      *    当日までのカウントとする
            MOVE    SPA-SRYYMD(7:2)     TO  IDD
       *
-      *    �����ξ��
+      *    訂正の場合
            IF      ORCSC80CNT-SYORIFLG     =   1
                IF      ACCT-DAY (1 IDD)    >=  WRK-TEI-CNT
                    COMPUTE ACCT-DAY (1 IDD)    =   ACCT-DAY (1 IDD)
@@ -521,12 +521,12 @@
                END-IF
            END-IF
       *
-      *    �����λ�������
+      *    入院の時、当月
            IF      SPA-NYUGAIKBN       =   "1"
                MOVE    31                  TO  IDD
            END-IF
       *
-      *    �������
+      *    早期あり
            PERFORM VARYING     IDD2    FROM    1   BY  1
                    UNTIL       IDD2    >   IDD
                ADD     ACCT-DAY (1 IDD2)  TO  ORCSC80CNT-GCNT  (IDD2)
@@ -537,13 +537,13 @@
        2004-SOUKI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϥӥ�û����ơ��֥븡������
+      *    早期リハビリ加算等テーブル検索処理
       *****************************************************************
        20023-SOUKI-TBL-SEC         SECTION.
       *
-      *�ȣ�����������
+      *Ｈ１６．４以前
            IF      SPA-SRYYMD          <   "20040401"
-      *        �����ϥӥ�û�
+      *        早期リハビリ加算
                SET     TBL-RIDX            TO  1
                SEARCH      TBL-RIHABIRI-OCC    VARYING   TBL-RIDX
                        AT  END
@@ -553,8 +553,8 @@
                            MOVE    1               TO  FLG-SOUKI
                END-SEARCH
            ELSE
-      *�ȣ�����������
-      *        �����ϥӥ�û�
+      *Ｈ１６．４から
+      *        早期リハビリ加算
                SET     TBL-RIDX2           TO  1
                SEARCH      TBL-RIHABIRI2-OCC    VARYING   TBL-RIDX2
                        AT  END
@@ -566,7 +566,7 @@
            END-IF
       *
            IF      FLG-SOUKI           =   1
-      *        �����λ�����������̵ͭ��Ƚ��
+      *        訂正の時、当日算定有無の判定
                MOVE    ZERO                TO  WRK-TEI-CNT
                IF      ORCSC80CNT-SYORIFLG     =   1
                    PERFORM VARYING     IDZ     FROM    1   BY  1
@@ -587,7 +587,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ޥ����ɤ߹���
+      *    算定歴マスタ読み込み
       *****************************************************************
        920-SANTEI-READ-SEC         SECTION.
       *
@@ -606,7 +606,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ����ɤ߹���
+      *    診療会計マスタ読み込み
       *****************************************************************
        940-SRYACCT-READ-SEC         SECTION.
       *
@@ -624,7 +624,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ����ɤ߹���
+      *    診療行為マスタ読み込み
       *****************************************************************
        950-SRYACT-READ-SEC         SECTION.
       *
@@ -643,7 +643,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -656,7 +656,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -669,7 +669,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

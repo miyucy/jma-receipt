@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBZ001S.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �������
-      *  ����ݡ��ͥ��̾  : ���������ֹ��Խ�����
-      *  ������            : 
-      *  03/06/19    NACL-¿��Ǽ    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 随時処理
+      *  コンポーネント名  : 空き患者番号編集サブ
+      *  管理者            : 
+      *  03/06/19    NACL-多々納    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  06/05/15  MONFUNC �б�
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  06/05/15  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,7 +41,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
       *
@@ -50,13 +50,13 @@
       *
            03  FLG-ERR                 PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDX-S                   PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -80,37 +80,37 @@
            03  WRK-KETAN           PIC 9(04).
       *
       *****************************************************************
-      *    ���֥ץ����
+      *    サブプロ定義
       *****************************************************************
       *
-      *   �����å��ǥ��å�
+      *   チェックデジット
            COPY    "CPORCCHKDGT.INC".
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ���������ֹ��Խ�����
+      *    空き患者番号編集サブ
            COPY    "CPORCBZ001S.INC".
-      *    �����ƥ�����ʴ����ֹ湽�������
+      *    システム管理（患者番号構成情報）
            COPY    "CPSK1009.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -119,7 +119,7 @@
            SYS-1009-REC
            .
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -139,7 +139,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -147,7 +147,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
       *
-      *    ��ͳ�����ο�����ɸ�๽���ʳ����оݳ��Ȥ���
+      *    自由構成の数字と標準構成以外は対象外とする
            IF     ((SYS-1009-PTNUMKSIKBN   =   "1" )  AND
                    (SYS-1009-JIYKSIKBN     =   "2" ))   OR
                   ( SYS-1009-PTNUMKSIKBN   =   "2" )
@@ -157,7 +157,7 @@
                GO      TO      100-INIT-EXT
            END-IF
       *
-      *    �����ֹ����׻�
+      *    患者番号桁数計算
            MOVE    ZERO                    TO WRK-KETA
            EVALUATE    SYS-1009-PTNUMKSIKBN
                WHEN    "1"
@@ -165,10 +165,10 @@
                WHEN    "2"
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
                    IF      SYS-1009-HJNKSINENKBN   =   "1"
-      *                ����
+      *                和暦
                        MOVE    3                  TO  WRK-KETA2
                    ELSE
-      *                ����
+      *                西暦
                        MOVE    4                  TO  WRK-KETA2
                    END-IF
                    EVALUATE    SYS-1009-HJNKSIKBN
@@ -192,11 +192,11 @@
       *
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    ���ϴ����ֹ�
+      *    開始患者番号
            IF      ORCBZ001S-MAX-CNT   =   ZERO
                MOVE    SPACE               TO  WRK-ST-PTNUM
            ELSE
@@ -204,7 +204,7 @@
                                            TO  WRK-ST-PTNUM
            END-IF
            MOVE    SPACE               TO  WRK-ED-PTNUM
-      *    ������
+      *    最大件数
            INITIALIZE                  ORCBZ001S-MAX-CNT
            INITIALIZE                  ORCBZ001S-PTNUM-AREA
       *
@@ -223,7 +223,7 @@
            ELSE
                MOVE    1                   TO  FLG-PTNUM
            END-IF
-      *    �оݤ��ʤ����������ƥ������Ϣ�֤�Ƚ�ꤹ��
+      *    対象がない時、システム管理の連番を判定する
            IF      FLG-PTNUM           =   1
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
@@ -237,20 +237,20 @@
                            (IDX            >=  120)  OR
                            (FLG-END        =   1  )
       *
-      *        ���ߤι����ʳ����оݳ��Ȥ���
+      *        現在の構成以外を対象外とする
                IF     (PTNUM-PTNUM(1:WRK-KETA)    =   ZERO  )
                 OR    (PTNUM-PTNUM(WRK-KETA2:)    NOT =   SPACE )
                 OR    (PTNUM-PTNUM(1:WRK-KETA)    NOT NUMERIC)
                 OR    (PTNUM-PTNUM                =   WRK-ST-PTNUM)
                    CONTINUE
                ELSE
-      *        ���Ϥ��齪λ�ޤǤζ����֤��Խ�����
+      *        開始から終了までの空き番を編集する
                    MOVE    PTNUM-PTNUM         TO  WRK-ED-PTNUM
                    PERFORM 2001-PTNUM-HEN-SEC
       *
                    MOVE    PTNUM-PTNUM         TO  WRK-ST-PTNUM
                END-IF
-      *        ���紵���ֹ�ޤǤȤ���
+      *        最大患者番号までとする
                IF      (ORCBZ001S-LST-PTNUM    NOT =   SPACE )  AND
                        (ORCBZ001S-LST-PTNUM    <   WRK-ST-PTNUM)
                    MOVE    1                   TO  FLG-END
@@ -265,7 +265,7 @@
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �оݤ��ʤ����������ƥ������Ϣ�֤�Ƚ�ꤹ��
+      *    対象がない時、システム管理の連番を判定する
            IF     (FLG-PTNUM           =   1  )  AND
                   (FLG-END             =   ZERO) AND
                   (ORCBZ001S-MAX-CNT   =   ZERO)
@@ -273,9 +273,9 @@
                GO      TO     200-MAIN-EXT
            END-IF
       *
-      *    ��λ
+      *    終了
            IF      FLG-PTNUM           =   1
-      *        �����ƥ������Ϣ�ֹ�ʲ��ξ��
+      *        システム管理の連番号以下の場合
                IF      WRK-RENNUM          <   SYS-1009-RENNUM
                    MOVE    ZERO                TO  ORCBZ001S-ENDFLG
                ELSE
@@ -284,7 +284,7 @@
            ELSE
                MOVE    ZERO                TO  ORCBZ001S-ENDFLG
            END-IF
-      *    ��λ
+      *    終了
            IF      FLG-END             =   1
                MOVE    1                   TO  ORCBZ001S-ENDFLG
            END-IF
@@ -294,7 +294,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    空き番号編集処理
       *****************************************************************
        2001-PTNUM-HEN-SEC              SECTION.
       *
@@ -306,9 +306,9 @@
            PERFORM UNTIL      (FLG-ERR     =   1   )  OR
                               (FLG-END     =   1   )  OR
                               (IDX         >=  120 )
-      *        �����ֹ湽���������
+      *        患者番号構成決定処理
                PERFORM 20011-NUM-HENSYU-SEC
-      *        ���紵���ֹ�ޤǤȤ���
+      *        最大患者番号までとする
                IF      (ORCBZ001S-LST-PTNUM    NOT =   SPACE )  AND
                        (ORCBZ001S-LST-PTNUM    <   WRK-ST-PTNUM)
                    MOVE    1                   TO  FLG-END
@@ -318,7 +318,7 @@
                       (WRK-ST-PTNUM        =   WRK-ED-PTNUM)
                    MOVE    1                   TO  FLG-ERR
                ELSE
-      *            �о��ֹ��Խ�
+      *            対象番号編集
                    ADD     1                   TO  IDX
                    MOVE    IDX                 TO  ORCBZ001S-MAX-CNT
                    MOVE    WRK-ST-PTNUM        TO  ORCBZ001S-PTNUM(IDX)
@@ -330,21 +330,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Թ���Ϣ���Խ�����
+      *    患者構成連番編集処理
       *****************************************************************
        20011-NUM-HENSYU-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-END
            MOVE    ZERO                TO  WRK-RENNUM
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *    ��ͳ����
+      *    自由構成
              WHEN    "1"
-      *        ���������פλ���Ϣ��
+      *        数字タイプの時、連番
                IF      SYS-1009-JIYKSIKBN      =   "2"
-      *            ��ͳ�������
+      *            自由構成桁数
                    MOVE    SYS-1009-JIYKSIKETA     TO  WRK-K1
                    MOVE    WRK-ST-PTNUM(1:WRK-K1)  TO  WRK-RENNUM
-      *            �ǽ�Ϣ�֤�꾮��������
+      *            最終連番より小さいこと
                    IF      WRK-RENNUM          >=  SYS-1009-RENNUM
                        MOVE    1               TO  FLG-END
                        GO      TO      20011-NUM-HENSYU-EXT
@@ -366,16 +366,16 @@
                                                        (IDY:10)
                    END-IF
                END-IF
-      *    ɸ�๽��
+      *    標準構成
            WHEN    "2"
                EVALUATE    SYS-1009-HJNKSIKBN
-      *        ǯ + Ϣ�ֹ� + �����ֹ�
+      *        年 + 連番号 + 検証番号
                WHEN    "1"
-      *        ǯ + Ϣ�ֹ�
+      *        年 + 連番号
                WHEN   "2"
-      *            Ʊǯ�Τ�Τ��оݤȤ���
+      *            同年のものを対象とする
                    IF      SYS-1009-HJNKSINENKBN  =   "1"
-      *                ����
+      *                和暦
                        IF     (WRK-ST-PTNUM(1:3)  =   SPA-SYSYMDW(1:3))
                            OR (WRK-ED-PTNUM(1:3)  >=  SPA-SYSYMDW(1:3))
                            CONTINUE
@@ -384,7 +384,7 @@
                            GO      TO      20011-NUM-HENSYU-EXT
                        END-IF
                    ELSE
-      *                ����
+      *                西暦
                        IF     (WRK-ST-PTNUM(1:4)  =   SPA-SYSYMD (1:4))
                            OR (WRK-ED-PTNUM(1:4)  >=  SPA-SYSYMD (1:4))
                            CONTINUE
@@ -394,7 +394,7 @@
                        END-IF
                    END-IF
                    IF      SYS-1009-HJNKSINENKBN  =   "1"
-      *                ����
+      *                和暦
                        IF      WRK-ST-PTNUM(1:3)  NOT =   SPA-SYSYMDW
                                                                    (1:3)
                            MOVE    ZERO               TO  WRK-ST-PTNUM
@@ -403,7 +403,7 @@
                        END-IF
                        MOVE    4                  TO  IDX-S
                    ELSE
-      *                ����
+      *                西暦
                        IF      WRK-ST-PTNUM(1:4)  NOT =   SPA-SYSYMD
                                                                    (1:4)
                            MOVE    ZERO               TO  WRK-ST-PTNUM
@@ -415,7 +415,7 @@
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-K1
                    MOVE    ZERO                        TO  WRK-RENNUM
                    MOVE    WRK-ST-PTNUM(IDX-S:WRK-K1)  TO  WRK-RENNUM
-      *            �ǽ�Ϣ�֤�꾮��������
+      *            最終連番より小さいこと
                    IF      WRK-RENNUM          >=  SYS-1009-RENNUM
                        MOVE    1               TO  FLG-END
                        GO      TO      20011-NUM-HENSYU-EXT
@@ -440,13 +440,13 @@
                                                          (IDY:10)
                    END-IF
       *
-      *        Ϣ�ֹ� + �����ֹ�
+      *        連番号 + 検証番号
                WHEN   "3"
-      *        Ϣ�ֹ�
+      *        連番号
                WHEN   "4"
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-K1
                    MOVE    WRK-ST-PTNUM(1:WRK-K1)  TO  WRK-RENNUM
-      *            �ǽ�Ϣ�֤�꾮��������
+      *            最終連番より小さいこと
                    IF      WRK-RENNUM          >=  SYS-1009-RENNUM
                        MOVE    1               TO  FLG-END
                        GO      TO      20011-NUM-HENSYU-EXT
@@ -469,11 +469,11 @@
                    END-IF
                END-EVALUATE
       *
-      *        �����ֹ�����
+      *        検証番号設定
                EVALUATE    SYS-1009-HJNKSIKBN
-      *        <ǯ + Ϣ�ֹ� + �����ֹ�>
+      *        <年 + 連番号 + 検証番号>
                WHEN    "1"
-      *        <Ϣ�ֹ� + �����ֹ�>
+      *        <連番号 + 検証番号>
                WHEN   "3"
                    MOVE    SPACE               TO  WRK-PTNUM2
                    INITIALIZE                  LNK-CHKDGT-AREA
@@ -498,7 +498,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ������Ϣ�ֽ���
+      *    システム管理の連番処理
       *****************************************************************
        2002-RENNUM-CHK-SEC                     SECTION.
       *
@@ -509,14 +509,14 @@
            END-IF
       *
            MOVE    SPACE               TO  WRK-ED-PTNUM
-      *    ɸ�๽����ǯ�������ˤ����
+      *    標準構成で年が構成にある時
            IF     (SYS-1009-PTNUMKSIKBN    =   "2"         )  AND
                   (SYS-1009-HJNKSIKBN      =   "1"  OR  "2")
                IF      SYS-1009-HJNKSINENKBN  =   "1"
-      *            ����
+      *            和暦
                    MOVE    SPA-SYSYMDW(1:3)   TO  WRK-ED-PTNUM(1:3)
                ELSE
-      *            ����
+      *            西暦
                    MOVE    SPA-SYSYMD (1:4)   TO  WRK-ED-PTNUM(1:4)
                END-IF
            END-IF
@@ -527,9 +527,9 @@
            PERFORM UNTIL      (FLG-ERR     =   1   )  OR
                               (FLG-END     =   1   )  OR
                               (IDX         >=  120 )
-      *        �����ֹ湽���������
+      *        患者番号構成決定処理
                PERFORM 20011-NUM-HENSYU-SEC
-      *        ���紵���ֹ�ޤǤȤ���
+      *        最大患者番号までとする
                IF      (ORCBZ001S-LST-PTNUM    NOT =   SPACE )  AND
                        (ORCBZ001S-LST-PTNUM    <   WRK-ST-PTNUM)
                    MOVE    1                   TO  FLG-END
@@ -538,14 +538,14 @@
                IF      FLG-END             =   1
                    CONTINUE
                ELSE
-      *            �о��ֹ��Խ�
+      *            対象番号編集
                    ADD     1                   TO  IDX
                    MOVE    IDX                 TO  ORCBZ001S-MAX-CNT
                    MOVE    WRK-ST-PTNUM        TO  ORCBZ001S-PTNUM(IDX)
                END-IF
            END-PERFORM
       *
-      *    ��λ
+      *    終了
            IF      FLG-END             =   ZERO
                MOVE    ZERO                TO  ORCBZ001S-ENDFLG
            ELSE
@@ -556,7 +556,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -565,7 +565,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ޥ������ɤ߹���
+      *    患者番号マスター読み込み
       *****************************************************************
        910-PTNUM-READ-SEC         SECTION.
       *
@@ -582,7 +582,7 @@
        910-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -595,7 +595,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -610,7 +610,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

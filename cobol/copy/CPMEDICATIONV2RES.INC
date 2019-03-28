@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥¹¥Ý¥ó¥¹ÅÀ¿ô¥Þ¥¹¥¿ÅÐÏ¿     COPY (CPMEDICATIONV2RES.INC)
+      *    ï¼¡ï¼°ï¼©ã‚¹ãƒãƒ³ã‚¹ç‚¹æ•°ãƒžã‚¹ã‚¿ç™»éŒ²     COPY (CPMEDICATIONV2RES.INC)
       ******************************************************************
         01  XML-MEDICATIONRES.
             02  MEDIRES-CONTEXT            PIC S9(9)   BINARY.
@@ -24,67 +24,67 @@
             02  MEDIRES-MODE               PIC S9(9)   BINARY.
             02  MEDIRES-RECORDNAME         PIC X(128).
             02  MEDIRES-APPOINTRES.
-      *       ¼Â»ÜÆü
+      *       å®Ÿæ–½æ—¥
               03  MEDIRES-INFORMATION-DATE    PIC X(10).
-      *       ¼Â»Ü»þ´Ö
+      *       å®Ÿæ–½æ™‚é–“
               03  MEDIRES-INFORMATION-TIME    PIC X(8).
-      *       ÊÖµÑ¥³¡¼¥É
+      *       è¿”å´ã‚³ãƒ¼ãƒ‰
               03  MEDIRES-API-RESULT          PIC X(2).
-      *       ÊÖµÑ¥á¥Ã¥»¡¼¥¸
+      *       è¿”å´ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
               03  MEDIRES-API-RESULT-MSG      PIC X(100).
       *
               03  MEDIRES-RESKEY              PIC X(100).
       *
-      *       ¥Þ¥¹¥¿¥³¡¼¥É
+      *       ãƒžã‚¹ã‚¿ã‚³ãƒ¼ãƒ‰
               03  MEDIRES-MEDICATION-CODE      PIC X(09).
-      *       ´Á»úÌ¾¾Î
+      *       æ¼¢å­—åç§°
               03  MEDIRES-MEDICATION-NAME      PIC X(100).
-      *       ´Á»úÌ¾¾Î
+      *       æ¼¢å­—åç§°
               03  MEDIRES-MEDICATION-KNAME     PIC X(100).
-      *       ³«»ÏÆü
+      *       é–‹å§‹æ—¥
               03  MEDIRES-START-DATE           PIC X(10).
-      *       ½ªÎ»Æü
+      *       çµ‚äº†æ—¥
               03  MEDIRES-END-DATE             PIC X(10).
-      *       ¶â³Û¡Ê¼«Èñ¡¦´ïºà¡Ë
+      *       é‡‘é¡ï¼ˆè‡ªè²»ãƒ»å™¨æï¼‰
               03  MEDIRES-AMOUNT-MONEY         PIC X(9).
-      *       ¼«Èñ¥³¡¼¥ÉÎÎ°è
+      *       è‡ªè²»ã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIRES-AMOUNT-AREA.
-      *           ¶â³ÛÆâÍÆ¡Ê4:ÀÇ¹þ¤ß¡Ë
+      *           é‡‘é¡å†…å®¹ï¼ˆ4:ç¨Žè¾¼ã¿ï¼‰
                   05  MEDIRES-CONTENT-MONEY        PIC X(1).
-      *           ½¸·×Àè¡Ê³°Íè¡Ë
+      *           é›†è¨ˆå…ˆï¼ˆå¤–æ¥ï¼‰
                   05  MEDIRES-TOTAL-OUT            PIC X(3).
-      *           ½¸·×Àè¡ÊÆþ±¡¡Ë
+      *           é›†è¨ˆå…ˆï¼ˆå…¥é™¢ï¼‰
                   05  MEDIRES-TOTAL-IN             PIC X(3).
-      *           ¼«ÇåÀÕ½¸·×Àè¡Ê³°Íè¡Ë
+      *           è‡ªè³ è²¬é›†è¨ˆå…ˆï¼ˆå¤–æ¥ï¼‰
                   05  MEDIRES-LIABILITY-TOTAL-OUT  PIC X(1).
-      *           ¼«ÇåÀÕ½¸·×Àè¡ÊÆþ±¡¡Ë
+      *           è‡ªè³ è²¬é›†è¨ˆå…ˆï¼ˆå…¥é™¢ï¼‰
                   05  MEDIRES-LIABILITY-TOTAL-IN   PIC X(1).
-      *       Éô°Ì¥³¡¼¥ÉÎÎ°è
+      *       éƒ¨ä½ã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIRES-LOCATION-AREA.
-      *           Éô°Ì¶èÊ¬
+      *           éƒ¨ä½åŒºåˆ†
                   05  MEDIRES-LOCATION-CATEGORY    PIC X(1).
-      *       ¥³¥á¥ó¥È¥³¡¼¥ÉÎÎ°è
+      *       ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIRES-COMMENT-AREA.
-      *           ¥«¥é¥à°ÌÃÖ
+      *           ã‚«ãƒ©ãƒ ä½ç½®
                   05  MEDIRES-COMMENT-OCC      OCCURS   5.
                       07  MEDIRES-COLUMN-POSITION  PIC X(3).
                       07  MEDIRES-DIGIT-NUMBER     PIC X(3).
-      *       ÍÑË¡¥³¡¼¥ÉÎÎ°è
+      *       ç”¨æ³•ã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIRES-MEDICATION-AREA.
-      *           ÉþÍÑ»þÅÀ
+      *           æœç”¨æ™‚ç‚¹
                   05  MEDIRES-MEDICATION-OCC      OCCURS   5.
                       07  MEDIRES-MEDICATION-POINT  PIC X(1).
-      *           ÍÑË¡¥³¥á¥ó¥È¶èÊ¬
+      *           ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆåŒºåˆ†
                   05  MEDIRES-MEDICATION-CATEGORY   PIC X(1).
-      *       ÆÃÄê´ïºà¥³¡¼¥ÉÎÎ°è
+      *       ç‰¹å®šå™¨æã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIRES-EQUIPMENT-AREA.
-      *           Ã±°Ì¥³¡¼¥É
+      *           å˜ä½ã‚³ãƒ¼ãƒ‰
                   05  MEDIRES-UNIT-CODE            PIC X(3).
-      *           ¥Ç¡¼¥¿¶èÊ¬¡Ê3:¥Õ¥£¥ë¥à¡Ë
+      *           ãƒ‡ãƒ¼ã‚¿åŒºåˆ†ï¼ˆ3:ãƒ•ã‚£ãƒ«ãƒ ï¼‰
                   05  MEDIRES-DATA-CATEGORY        PIC X(1).
-      *       ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÎÎ°è
+      *       å™¨æå•†å“åã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIRES-COMMERCIAL-AREA.
-      *           ¾¦ÉÊÌ¾¾Î
+      *           å•†å“åç§°
                   05  MEDIRES-COMMERCIALNAME       PIC X(200).
-      *           ÆÃÄê´ïºà¥³¡¼¥É
+      *           ç‰¹å®šå™¨æã‚³ãƒ¼ãƒ‰
                   05  MEDIRES-EQUIPMENT-CODE       PIC X(9).

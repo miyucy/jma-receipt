@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- ÄêÅÀÀßÄê¥Æ¡¼¥Ö¥ë
+-- å®šç‚¹è¨­å®šãƒ†ãƒ¼ãƒ–ãƒ«
 -- Create Date : 2011/05/13        --
 --
 create table tbl_das_conf (

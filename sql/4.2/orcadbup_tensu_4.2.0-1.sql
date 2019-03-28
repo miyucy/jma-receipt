@@ -1,17 +1,17 @@
 --                                    --
--- ÅÀ¿ô¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹       --
+-- ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´       --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ²èÁü¼ê½Ñ»Ù±ç²Ã»»                 --
---   °åÎÅ´Ñ»¡Ë¡ÂĞ¾İ¶èÊ¬               --
---   Ëã¿ì¼±ÊÌ¶èÊ¬                     --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ç”»åƒæ‰‹è¡“æ”¯æ´åŠ ç®—                 --
+--   åŒ»ç™‚è¦³å¯Ÿæ³•å¯¾è±¡åŒºåˆ†               --
+--   éº»é…”è­˜åˆ¥åŒºåˆ†                     --
 --                                    --
 -- Create Date : 2008/03/07           --
 --                                    --
 \set ON_ERROR_STOP
 
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_tensu
    add column gazoopesup numeric(01);
 alter table tbl_tensu
@@ -19,7 +19,7 @@ alter table tbl_tensu
 alter table tbl_tensu
    add column masuiskbkbn numeric(01);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_tensu
    alter gazoopesup set default 0;
 alter table tbl_tensu

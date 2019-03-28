@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,7 +17,7 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �Хå����å��ѥ������ΰ�    CPCOMMONSHELLUP.INC
+      *    バックアップ用シェル領域    CPCOMMONSHELLUP.INC
       *
       *      $1 TABLE-NAME
       *      $2 FILE-NAME
@@ -26,9 +26,9 @@
       *      $5 KBEN
       * 
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    �Ҥ��ʤ�     02/09/13  �ǥ��쥯�ȥ�򥵥֥ץ���
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    ひさなが     02/09/13  ディレクトリをサブプロへ
       *
       *****************************************************************
        01  SHELL-AREA.

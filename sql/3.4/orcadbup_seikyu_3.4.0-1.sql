@@ -1,10 +1,10 @@
 --                                    --
--- ÀÁµá´ÉÍı¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹             --
+-- è«‹æ±‚ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´             --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   Êİ¸±£É£Ä    (HKNID)              --
---   Ï·¿Í¸øÈñ£É£Ä(RJNHKNID)           --
---   ¸øÈñ£É£Ä    (KOHID1)             --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ä¿é™ºï¼©ï¼¤    (HKNID)              --
+--   è€äººå…¬è²»ï¼©ï¼¤(RJNHKNID)           --
+--   å…¬è²»ï¼©ï¼¤    (KOHID1)             --
 --               (KOHID2)             --
 --               (KOHID3)             --
 --               (KOHID4)             --
@@ -13,7 +13,7 @@
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_seikyu
    add column HKNID  numeric(10);
 alter table tbl_seikyu
@@ -27,7 +27,7 @@ alter table tbl_seikyu
 alter table tbl_seikyu
    add column KOHID4  numeric(10);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_seikyu
    alter HKNID set default 0;
 alter table tbl_seikyu

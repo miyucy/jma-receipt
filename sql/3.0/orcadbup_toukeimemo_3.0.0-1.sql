@@ -1,11 +1,11 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ���׽����ѥ�᡼���н�         --
+-- 統計処理パラメータ覚書         --
 --                                --
 -- Table Name    : TBL_TOUKEIMEMO --
--- ������        : 2006/05/17     --
--- �ѥ�᡼��������ɲ�           --
+-- 更新日        : 2006/05/17     --
+-- パラメータ初期値追加           --
 
 \set ON_ERROR_STOP
 

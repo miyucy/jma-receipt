@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,52 +16,52 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ޤȤ������Խ��ѥ�᥿����̤���ޤȤ���������ѡ�      *
+      *    まとめ入金編集パラメタ２（未収まとめ入金画面用）      *
       *                         COPY  (CPORCSNYUKINS.INC)        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSNYUKINAREAS.
-      *������
-      *    ���ŵ��أɣġ�ɬ�ܡ�
+      *入力値
+      *    医療機関ＩＤ（必須）
            03  LNK-SCNYUKINS-HOSPNUM         PIC 9(2).
-      *    ���ԣɣġ�ɬ�ܡ�
+      *    患者ＩＤ（必須）
            03  LNK-SCNYUKINS-PTID            PIC 9(10).
-      *    ������
+      *    入金日
            03  LNK-SCNYUKINS-NYUKIN-YMD      PIC X(08).
-      *    ������ˡ
+      *    入金方法
            03  LNK-SCNYUKINS-NYUKIN-HOHO     PIC X(02).
-      *    ������������
+      *    入金額設定情報
            03  LNK-SCNYUKINS-AREA.
                05  LNK-SCNYUKINS-MAX         PIC 9(05).
                05  LNK-SCNYUKINS-TBL    OCCURS 500.
-      *            ������ʬ
+      *            入外区分
                    07  LNK-SCNYUKINS-NYUGAIKBN     PIC X(01).
-      *            ��ɼ�ֹ�
+      *            伝票番号
                    07  LNK-SCNYUKINS-DENPNUM       PIC 9(07).
-      *            ��������
+      *            入金日２
                    07  LNK-SCNYUKINS-NYUKIN-YMD2   PIC X(08).
-      *            �������
+      *            入金時刻
                    07  LNK-SCNYUKINS-NYUKIN-HMS2   PIC X(06).
-      *            ������ˡ
+      *            入金方法
                    07  LNK-SCNYUKINS-NYUKIN-HOHO2  PIC X(02).
-      *            �����
+      *            入金額
                    07  LNK-SCNYUKINS-NYUKIN-MONEY  PIC S9(08).
       *
-      *            �ʲ��ֵѾ���
+      *            以下返却情報
                    07  LNK-SCNYUKINS-SKYMONEY      PIC S9(08).
                    07  LNK-SCNYUKINS-NYUKIN-TOTAL  PIC S9(08).
                    07  LNK-SCNYUKINS-DENPJTIKBN    PIC X(01).
                    07  LNK-SCNYUKINS-CREATEKBN     PIC X(01).
                    07  LNK-SCNYUKINS-DENPEDANUM    PIC 9(02).
       *
-      *����������
-      *00:����
-      *10:�ѥ�᡼������
-      *11:��Ǽ�������顼
-      *12:��Ǽ���٥��󥵡��ȥ��顼
+      *復帰コード
+      *00:正常
+      *10:パラメータ不正
+      *11:収納更新エラー
+      *12:収納明細インサートエラー
            03  LNK-SCNYUKINS-RC              PIC 9(02).
       *
       *

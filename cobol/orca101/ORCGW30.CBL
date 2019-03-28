@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGW30.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄê
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡»Ø¼¨¤»¤óÀßÄê¡Ê£×£³£°¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  05/02/07    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢æŒ‡ç¤ºã›ã‚“è¨­å®šï¼ˆï¼·ï¼“ï¼ï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  05/02/07    NACLâˆ’å¤šã€…ç´  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.00    NACL-å¤šã€…ç´  07/05/02  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,13 +39,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "W01COMMON-SPA".
       *
-      *    ²èÌÌÍÑ£Ó£Ð£Á
+      *    ç”»é¢ç”¨ï¼³ï¼°ï¼¡
        01  SPA-W30.
            03  SPA-W30-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -56,7 +56,7 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-STYUKYMD    PIC X(09).
                    07  SPA-GMN-EDYUKYMD    PIC X(09).
-      *            Æþ±¡»Ø¼¨¤»¤ó¶èÊ¬
+      *            å…¥é™¢æŒ‡ç¤ºã›ã‚“åŒºåˆ†
                    07  SPA-GMN-SIJISENKBN-G.
                        09  SPA-GMN-SIJISENKBN      PIC X(01).
                        09  SPA-GMN-SIJISENKBN-H    PIC X(01).
@@ -65,27 +65,27 @@
                        09  SPA-GMN-SIJISENKBN-LST  PIC X(12)
                                                    OCCURS   2.
                    07  SPA-SIJISEN-MAX             PIC 9(04).
-      *            Æþ±¡½èÊýäµ
+      *            å…¥é™¢å‡¦æ–¹ç®‹
                    07  SPA-GMN-SYOHOU-AREA.
                        09  SPA-GMN-SYOHOU-TBL          OCCURS  4.
                            11  SPA-GMN-SYOHOU-HEAD     PIC X(30).
                            11  SPA-GMN-SYOHOU-PRT      PIC 9(02).
-      *            Æþ±¡ËãÌô½èÊýäµ
+      *            å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹
                    07  SPA-GMN-MAYAKU-AREA.
                        09  SPA-GMN-MAYAKU-TBL          OCCURS  4.
                            11  SPA-GMN-MAYAKU-HEAD     PIC X(30).
                            11  SPA-GMN-MAYAKU-PRT      PIC 9(02).
-      *            Ãí¼Í½èÊýäµ
+      *            æ³¨å°„å‡¦æ–¹ç®‹
                    07  SPA-GMN-CHUSYA-AREA.
                        09  SPA-GMN-CHUSYA-TBL          OCCURS  4.
                            11  SPA-GMN-CHUSYA-HEAD     PIC X(30).
                            11  SPA-GMN-CHUSYA-PRT      PIC 9(02).
-      *            Ãí¼ÍËãÌô½èÊýäµ
+      *            æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹
                    07  SPA-GMN-CHUMAYA-AREA.
                        09  SPA-GMN-CHUMAYA-TBL        OCCURS  4.
                            11  SPA-GMN-CHUMAYA-HEAD   PIC X(30).
                            11  SPA-GMN-CHUMAYA-PRT    PIC 9(02).
-      *            »Ø¼¨äµ
+      *            æŒ‡ç¤ºç®‹
                    07  SPA-GMN-SIJISEN-AREA.
                        09  SPA-GMN-SIJISEN-TBL         OCCURS  4.
                            11  SPA-GMN-SIJISEN-HEAD    PIC X(30).
@@ -104,14 +104,14 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-INIT            PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDT                 PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-HEAD-INPUT           PIC X(30).
       *
@@ -140,40 +140,40 @@
                05  WRK-HDD         PIC 9(02).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY  "CPSYSKANRI.INC".
       *
-      *    Æþ±¡»Ø¼¨¤»¤óÀßÄê¾ðÊó
+      *    å…¥é™¢æŒ‡ç¤ºã›ã‚“è¨­å®šæƒ…å ±
            COPY  "CPSK5007.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕ¥µ¥Ö¥ë¡¼¥Á¥óÎÎ°è
+      *    æ—¥ä»˜ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³é ˜åŸŸ
       *
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
-      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+      *    å…¨è§’ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSKANACHK.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -192,7 +192,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -209,15 +209,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ²èÌÌÁ«°Ü
+      *    ç”»é¢é·ç§»
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ÆþÎÏ
+      *    å…¥åŠ›
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ²èÌÌÁ«°Ü¤¬¤Ê¤¤»þ¡¢²èÌÌÉ½¼¨¤Ø
+      *    ç”»é¢é·ç§»ãŒãªã„æ™‚ã€ç”»é¢è¡¨ç¤ºã¸
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -230,21 +230,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ¥¨¥é¡¼²èÌÌ¤è¤ê
+      *    ã‚¨ãƒ©ãƒ¼ç”»é¢ã‚ˆã‚Š
            IF      SPA-MOTOPG          =   "WERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ½é´ü²èÌÌ¥»¥Ã¥È
+      *        åˆæœŸç”»é¢ã‚»ãƒƒãƒˆ
                PERFORM 300-SCREEN-SEC
-      *        ²èÌÌÊÔ½¸
+      *        ç”»é¢ç·¨é›†
                IF      FLG-END             =   ZERO
                    PERFORM 500-GMNHEN-SEC
                    PERFORM 510-GSRAUTH-SEC
@@ -267,11 +267,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ½é´ü²èÌÌ½èÍý
+      *    åˆæœŸç”»é¢å‡¦ç†
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    Â¾¤Î£Ì£Ä¤è¤ê
+      *    ä»–ã®ï¼¬ï¼¤ã‚ˆã‚Š
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
@@ -288,20 +288,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ³ÎÇ§²èÌÌ¡Ê£Ã£É£Ä£±¡Ë£Ï£Ë½èÍý
+      *    ç¢ºèªç”»é¢ï¼ˆï¼£ï¼©ï¼¤ï¼‘ï¼‰ï¼¯ï¼«å‡¦ç†
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
            EVALUATE      SPA-WIDCD
                WHEN   "1001"
-      *            ¹¹¿·
+      *            æ›´æ–°
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM  491-KOUSHIN-SYORI-SEC
                    ELSE
                        MOVE     1              TO  SPA-GMN-CUR
                    END-IF
                WHEN   "1002"
-      *            ºï½ü
+      *            å‰Šé™¤
                    IF      SPA-WID1-FLG    =   "OK"
                        PERFORM  4032-DEL-SYORI-SEC
                    ELSE
@@ -316,7 +316,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý
+      *    ã‚¹ãƒ‘åˆæœŸç·¨é›†å‡¦ç†
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -325,8 +325,8 @@
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
       *
-           MOVE    "0 È¯¹Ô¤·¤Ê¤¤"      TO  SPA-GMN-SIJISENKBN-LST(1)
-           MOVE    "1 È¯¹Ô¤¹¤ë"        TO  SPA-GMN-SIJISENKBN-LST(2)
+           MOVE    "0 ç™ºè¡Œã—ãªã„"      TO  SPA-GMN-SIJISENKBN-LST(1)
+           MOVE    "1 ç™ºè¡Œã™ã‚‹"        TO  SPA-GMN-SIJISENKBN-LST(2)
            MOVE    2                   TO  SPA-SIJISEN-MAX
       *
            MOVE    ZERO                TO  FLG-INIT
@@ -360,7 +360,7 @@
       *
                EVALUATE    SYS-5007-KBNCD
                    WHEN    "01"
-      *                Æþ±¡½èÊýäµ
+      *                å…¥é™¢å‡¦æ–¹ç®‹
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >   4
                            MOVE    SYS-5007-SIJISEN-HEAD(IDX)
@@ -369,7 +369,7 @@
                                            TO  SPA-GMN-SYOHOU-PRT (IDX)
                        END-PERFORM
                    WHEN    "02"
-      *                Æþ±¡ËãÌô½èÊýäµ
+      *                å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >   4
                            MOVE    SYS-5007-SIJISEN-HEAD(IDX)
@@ -378,7 +378,7 @@
                                            TO  SPA-GMN-MAYAKU-PRT (IDX)
                        END-PERFORM
                    WHEN    "03"
-      *                Ãí¼Í½èÊýäµ
+      *                æ³¨å°„å‡¦æ–¹ç®‹
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >   4
                            MOVE    SYS-5007-SIJISEN-HEAD(IDX)
@@ -387,7 +387,7 @@
                                            TO  SPA-GMN-CHUSYA-PRT (IDX)
                        END-PERFORM
                    WHEN    "04"
-      *                Ãí¼ÍËãÌô½èÊýäµ
+      *                æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >   4
                            MOVE    SYS-5007-SIJISEN-HEAD(IDX)
@@ -396,7 +396,7 @@
                                            TO  SPA-GMN-CHUMAYA-PRT (IDX)
                        END-PERFORM
                    WHEN    "05"
-      *                »Ø¼¨äµ
+      *                æŒ‡ç¤ºç®‹
                        PERFORM VARYING IDX     FROM    1   BY  1
                                UNTIL   IDX     >   4
                            MOVE    SYS-5007-SIJISEN-HEAD(IDX)
@@ -435,22 +435,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌ½é´üÊÔ½¸½èÍý
+      *    ç”»é¢åˆæœŸç·¨é›†å‡¦ç†
       *****************************************************************
        3101-INIT-HEN-SEC         SECTION.
       *
-           MOVE    "Æþ±¡½èÊýäµ"            TO  SPA-GMN-SYOHOU-HEAD(1)
-           MOVE    "Æþ±¡½èÊýäµ¡Ê¹µ¡Ë"      TO  SPA-GMN-SYOHOU-HEAD(2)
-           MOVE    "Æþ±¡½èÊýäµ¡ÊÃæ»ß¡Ë"    TO  SPA-GMN-SYOHOU-HEAD(3)
+           MOVE    "å…¥é™¢å‡¦æ–¹ç®‹"            TO  SPA-GMN-SYOHOU-HEAD(1)
+           MOVE    "å…¥é™¢å‡¦æ–¹ç®‹ï¼ˆæŽ§ï¼‰"      TO  SPA-GMN-SYOHOU-HEAD(2)
+           MOVE    "å…¥é™¢å‡¦æ–¹ç®‹ï¼ˆä¸­æ­¢ï¼‰"    TO  SPA-GMN-SYOHOU-HEAD(3)
            MOVE    SPACE                   TO  SPA-GMN-SYOHOU-HEAD(4)
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
                MOVE    1                   TO  SPA-GMN-SYOHOU-PRT(IDX)
            END-PERFORM
       *
-           MOVE    "Æþ±¡ËãÌô½èÊýäµ"        TO  SPA-GMN-MAYAKU-HEAD(1)
-           MOVE    "Æþ±¡ËãÌô½èÊýäµ¡Ê¹µ¡Ë"  TO  SPA-GMN-MAYAKU-HEAD(2)
-           MOVE    "Æþ±¡ËãÌô½èÊýäµ¡ÊÃæ»ß¡Ë"
+           MOVE    "å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹"        TO  SPA-GMN-MAYAKU-HEAD(1)
+           MOVE    "å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹ï¼ˆæŽ§ï¼‰"  TO  SPA-GMN-MAYAKU-HEAD(2)
+           MOVE    "å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹ï¼ˆä¸­æ­¢ï¼‰"
                                            TO  SPA-GMN-MAYAKU-HEAD(3)
            MOVE    SPACE                   TO  SPA-GMN-MAYAKU-HEAD(4)
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -458,18 +458,18 @@
                MOVE    1                   TO  SPA-GMN-MAYAKU-PRT(IDX)
            END-PERFORM
       *
-           MOVE    "Ãí¼Í½èÊýäµ"            TO  SPA-GMN-CHUSYA-HEAD(1)
-           MOVE    "Ãí¼Í½èÊýäµ¡Ê¹µ¡Ë"      TO  SPA-GMN-CHUSYA-HEAD(2)
-           MOVE    "Ãí¼Í½èÊýäµ¡ÊÃæ»ß¡Ë"    TO  SPA-GMN-CHUSYA-HEAD(3)
+           MOVE    "æ³¨å°„å‡¦æ–¹ç®‹"            TO  SPA-GMN-CHUSYA-HEAD(1)
+           MOVE    "æ³¨å°„å‡¦æ–¹ç®‹ï¼ˆæŽ§ï¼‰"      TO  SPA-GMN-CHUSYA-HEAD(2)
+           MOVE    "æ³¨å°„å‡¦æ–¹ç®‹ï¼ˆä¸­æ­¢ï¼‰"    TO  SPA-GMN-CHUSYA-HEAD(3)
            MOVE    SPACE                   TO  SPA-GMN-CHUSYA-HEAD(4)
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
                MOVE    1                   TO  SPA-GMN-CHUSYA-PRT(IDX)
            END-PERFORM
       *
-           MOVE    "Ãí¼ÍËãÌô½èÊýäµ"        TO  SPA-GMN-CHUMAYA-HEAD(1)
-           MOVE    "Ãí¼ÍËãÌô½èÊýäµ¡Ê¹µ¡Ë"  TO  SPA-GMN-CHUMAYA-HEAD(2)
-           MOVE    "Ãí¼ÍËãÌô½èÊýäµ¡ÊÃæ»ß¡Ë"
+           MOVE    "æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹"        TO  SPA-GMN-CHUMAYA-HEAD(1)
+           MOVE    "æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹ï¼ˆæŽ§ï¼‰"  TO  SPA-GMN-CHUMAYA-HEAD(2)
+           MOVE    "æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹ï¼ˆä¸­æ­¢ï¼‰"
                                            TO  SPA-GMN-CHUMAYA-HEAD(3)
            MOVE    SPACE                   TO  SPA-GMN-CHUMAYA-HEAD(4)
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -477,9 +477,9 @@
                MOVE    1                   TO  SPA-GMN-CHUMAYA-PRT(IDX)
            END-PERFORM
       *
-           MOVE    "»Ø¼¨äµ"                TO  SPA-GMN-SIJISEN-HEAD(1)
-           MOVE    "»Ø¼¨äµ¡Ê¹µ¡Ë"          TO  SPA-GMN-SIJISEN-HEAD(2)
-           MOVE    "»Ø¼¨äµ¡ÊÃæ»ß¡Ë"        TO  SPA-GMN-SIJISEN-HEAD(3)
+           MOVE    "æŒ‡ç¤ºç®‹"                TO  SPA-GMN-SIJISEN-HEAD(1)
+           MOVE    "æŒ‡ç¤ºç®‹ï¼ˆæŽ§ï¼‰"          TO  SPA-GMN-SIJISEN-HEAD(2)
+           MOVE    "æŒ‡ç¤ºç®‹ï¼ˆä¸­æ­¢ï¼‰"        TO  SPA-GMN-SIJISEN-HEAD(3)
            MOVE    SPACE                   TO  SPA-GMN-SIJISEN-HEAD(4)
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
@@ -491,19 +491,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    Ìá¤ë
+      *    æˆ»ã‚‹
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *    ºï½ü
+      *    å‰Šé™¤
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM  403-DEL-SEC
-      *    ÅÐÏ¿
+      *    ç™»éŒ²
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
            END-EVALUATE
@@ -512,27 +512,27 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ²ñÏÃ¡¡½èÍý
+      *    ä¼šè©±ã€€å‡¦ç†
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
-      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›ãƒã‚§ãƒƒã‚¯å‡¦ç†
            PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ²èÌÌ¤ò£Ó£Ð£Á¥»¥Ã¥È
+      *    ç”»é¢ã‚’ï¼³ï¼°ï¼¡ã‚»ãƒƒãƒˆ
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ´ðËÜ¥Á¥§¥Ã¥¯½èÍý
+      *    åŸºæœ¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -540,7 +540,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌ¤ò£Ó£Ð£Á¥»¥Ã¥È½èÍý
+      *    ç”»é¢ã‚’ï¼³ï¼°ï¼¡ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        4101-GMN-SPA-SET-SEC        SECTION.
       *
@@ -571,30 +571,30 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ðËÜ¥Á¥§¥Ã¥¯½èÍý
+      *    åŸºæœ¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-      *    Æþ±¡»Ø¼¨¤»¤ó¶èÊ¬
+      *    å…¥é™¢æŒ‡ç¤ºã›ã‚“åŒºåˆ†
            PERFORM 4100-SIJISENKBN-CHK-SEC
       *
-      *    Æþ±¡½èÊýäµ
+      *    å…¥é™¢å‡¦æ–¹ç®‹
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4102-SYOHOU-CHK-SEC
            END-IF
-      *    Æþ±¡ËãÌô½èÊýäµ
+      *    å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4103-MAYAKU-CHK-SEC
            END-IF
-      *    Ãí¼Í½èÊýäµ
+      *    æ³¨å°„å‡¦æ–¹ç®‹
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4104-CHUSYA-CHK-SEC
            END-IF
-      *    Ãí¼ÍËãÌô½èÊýäµ
+      *    æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4104-CHUMAYA-CHK-SEC
            END-IF
-      *    »Ø¼¨äµ
+      *    æŒ‡ç¤ºç®‹
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4105-SIJISEN-CHK-SEC
            END-IF
@@ -604,7 +604,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡»Ø¼¨¤»¤ó¶èÊ¬¥Á¥§¥Ã¥¯
+      *    å…¥é™¢æŒ‡ç¤ºã›ã‚“åŒºåˆ†ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        4100-SIJISENKBN-CHK-SEC       SECTION.
       *
@@ -629,7 +629,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡½èÊýäµ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢å‡¦æ–¹ç®‹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4102-SYOHOU-CHK-SEC       SECTION.
       *
@@ -662,7 +662,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³ÑÊ¸»ú¥Á¥§¥Ã¥¯½èÍý
+      *    å…¨è§’æ–‡å­—ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        41021-KANACHK-SEC       SECTION.
       *
@@ -687,7 +687,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ËãÌô½èÊýäµ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4103-MAYAKU-CHK-SEC       SECTION.
       *
@@ -721,7 +721,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ãí¼Í½èÊýäµ¥Á¥§¥Ã¥¯½èÍý
+      *    æ³¨å°„å‡¦æ–¹ç®‹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4104-CHUSYA-CHK-SEC       SECTION.
       *
@@ -755,7 +755,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ãí¼ÍËãÌô½èÊýäµ¥Á¥§¥Ã¥¯½èÍý
+      *    æ³¨å°„éº»è–¬å‡¦æ–¹ç®‹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4104-CHUMAYA-CHK-SEC       SECTION.
       *
@@ -789,7 +789,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ËãÌô½èÊýäµ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4105-SIJISEN-CHK-SEC       SECTION.
       *
@@ -823,7 +823,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -843,7 +843,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ºï½ü³ÎÇ§²èÌÌÉ½¼¨½èÍý
+      *    å‰Šé™¤ç¢ºèªç”»é¢è¡¨ç¤ºå‡¦ç†
       *****************************************************************
        403-DEL-SEC                 SECTION.
       *
@@ -854,7 +854,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ºï½ü½èÍý£±£°£°£·
+      *    å‰Šé™¤å‡¦ç†ï¼‘ï¼ï¼ï¼—
       *****************************************************************
        4032-DEL-SYORI-SEC          SECTION.
       *
@@ -913,11 +913,11 @@
            EXIT.
       *
       *****************************************************************
-      *       ÅÐÏ¿Á°½èÍý
+      *       ç™»éŒ²å‰å‡¦ç†
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
       *
-      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›ãƒã‚§ãƒƒã‚¯å‡¦ç†
            PERFORM 410-INPUT-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
@@ -933,11 +933,11 @@
            EXIT.
       *
       ******************************************************************
-      *       ÅÐÏ¿½èÍý
+      *       ç™»éŒ²å‡¦ç†
       *****************************************************************
        491-KOUSHIN-SYORI-SEC        SECTION.
       *
-      *    ¹¹¿·ÆüÉÕ¼èÆÀ
+      *    æ›´æ–°æ—¥ä»˜å–å¾—
            CALL    "ORCSMCNDATE"       USING   ORCSMCNDATEAREA
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -981,10 +981,10 @@
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-5007-REC
                ELSE
-      *            ¿·µ¬½é´üÊÔ½¸
+      *            æ–°è¦åˆæœŸç·¨é›†
                    PERFORM 4910-SYS5007-INIT-SEC
                END-IF
-      *        ¶¦ÄÌÊÔ½¸
+      *        å…±é€šç·¨é›†
                PERFORM 4911-DB-HENSYU-SEC
       *
                MOVE    SYS-5007-REC            TO  SYSKANRI-REC
@@ -1037,7 +1037,7 @@
            EXIT.
       *
       ******************************************************************
-      *       ¿·µ¬½é´üÊÔ½¸½èÍý
+      *       æ–°è¦åˆæœŸç·¨é›†å‡¦ç†
       *****************************************************************
        4910-SYS5007-INIT-SEC        SECTION.
       *
@@ -1061,7 +1061,7 @@
            EXIT.
       *
       ******************************************************************
-      *      ¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *      ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        4911-DB-HENSYU-SEC        SECTION.
       *
@@ -1070,7 +1070,7 @@
            MOVE    SPA-GMN-SIJISENKBN  TO  SYS-5007-SIJISENKBN
       *
            EVALUATE    SYS-5007-KBNCD
-      *        Æþ±¡½èÊýäµ
+      *        å…¥é™¢å‡¦æ–¹ç®‹
                WHEN    "01"
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >   4
@@ -1079,7 +1079,7 @@
                        MOVE    SPA-GMN-SYOHOU-PRT (IDX)
                                        TO  SYS-5007-SIJISEN-PRT (IDX)
                    END-PERFORM
-      *        Æþ±¡ËãÌô½èÊýäµ
+      *        å…¥é™¢éº»è–¬å‡¦æ–¹ç®‹
                WHEN    "02"
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >   4
@@ -1088,7 +1088,7 @@
                        MOVE    SPA-GMN-MAYAKU-PRT (IDX)
                                        TO  SYS-5007-SIJISEN-PRT (IDX)
                    END-PERFORM
-      *        Ãí¼Íäµ
+      *        æ³¨å°„ç®‹
                WHEN    "03"
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >   4
@@ -1097,7 +1097,7 @@
                        MOVE    SPA-GMN-CHUSYA-PRT (IDX)
                                        TO  SYS-5007-SIJISEN-PRT (IDX)
                    END-PERFORM
-      *        Ãí¼ÍËãÌôäµ
+      *        æ³¨å°„éº»è–¬ç®‹
                WHEN    "04"
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >   4
@@ -1106,7 +1106,7 @@
                        MOVE    SPA-GMN-CHUMAYA-PRT (IDX)
                                        TO  SYS-5007-SIJISEN-PRT (IDX)
                    END-PERFORM
-      *        »Ø¼¨äµ
+      *        æŒ‡ç¤ºç®‹
                WHEN    "05"
                    PERFORM VARYING IDX     FROM    1   BY  1
                            UNTIL   IDX     >   4
@@ -1122,11 +1122,11 @@
            EXIT.
       *
       *****************************************************************
-      *       ÆþÎÏ¹àÌÜ¤Î´ØÏ¢¥Á¥§¥Ã¥¯½èÍý
+      *       å…¥åŠ›é …ç›®ã®é–¢é€£ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-      *    È¯¹Ô¤¢¤ê¤Î»þ¡¢°õºþÉô¿ô¤¬¤¢¤ë¤³¤È
+      *    ç™ºè¡Œã‚ã‚Šã®æ™‚ã€å°åˆ·éƒ¨æ•°ãŒã‚ã‚‹ã“ã¨
            IF      SPA-GMN-SIJISENKBN  =   "1"
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1148,7 +1148,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼«²èÌÌÊÔ½¸½èÍý
+      *    è‡ªç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1175,7 +1175,7 @@
        500-SET-SCREEN-EXT.
            EXIT.
       *****************************************************************
-      *    ²èÌÌÊÔ½¸½èÍý
+      *    ç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1228,7 +1228,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¶ÈÌ³¸¢¸ÂÈó³èÀ­½èÍý
+      *    æ¥­å‹™æ¨©é™éžæ´»æ€§å‡¦ç†
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
@@ -1242,7 +1242,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºç†
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1250,57 +1250,57 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "Æþ±¡»Ø¼¨¤»¤ó¶èÊ¬¥¨¥é¡¼"
+                   MOVE    "å…¥é™¢æŒ‡ç¤ºã›ã‚“åŒºåˆ†ã‚¨ãƒ©ãƒ¼"
                                                TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "Æþ±¡½èÊý¤Î¸«½Ð¤·¤ÏÁ´³Ñ¤ÇÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"
+                   MOVE    "å…¥é™¢å‡¦æ–¹ã®è¦‹å‡ºã—ã¯å…¨è§’ã§å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚"
                                                 TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "Æþ±¡½èÊý¤Î¸«½Ð¤·¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "å…¥é™¢å‡¦æ–¹ã®è¦‹å‡ºã—ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG
-                   MOVE    "°õºþÉô¿ô¤ÏÆþÎÏ¤Ç¤­¤Þ¤»¤ó¡£"
+                   MOVE    "å°åˆ·éƒ¨æ•°ã¯å…¥åŠ›ã§ãã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG(31:)
                WHEN    "0004"
-                   MOVE   "Æþ±¡ËãÌô½èÊý¤Î¸«½Ð¤·¤ÏÁ´³Ñ¤ÇÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"
+                   MOVE   "å…¥é™¢éº»è–¬å‡¦æ–¹ã®è¦‹å‡ºã—ã¯å…¨è§’ã§å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚"
                                                 TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "Æþ±¡ËãÌô½èÊý¤Î¸«½Ð¤·¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "å…¥é™¢éº»è–¬å‡¦æ–¹ã®è¦‹å‡ºã—ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG
-                   MOVE    "°õºþÉô¿ô¤ÏÆþÎÏ¤Ç¤­¤Þ¤»¤ó¡£"
+                   MOVE    "å°åˆ·éƒ¨æ•°ã¯å…¥åŠ›ã§ãã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG(35:)
                WHEN    "0006"
-                   MOVE    "Ãí¼Í½èÊý¤Î¸«½Ð¤·¤ÏÁ´³Ñ¤ÇÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"
+                   MOVE    "æ³¨å°„å‡¦æ–¹ã®è¦‹å‡ºã—ã¯å…¨è§’ã§å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚"
                                                 TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "Ãí¼Í½èÊý¤Î¸«½Ð¤·¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "æ³¨å°„å‡¦æ–¹ã®è¦‹å‡ºã—ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG
-                   MOVE    "°õºþÉô¿ô¤ÏÆþÎÏ¤Ç¤­¤Þ¤»¤ó¡£"
+                   MOVE    "å°åˆ·éƒ¨æ•°ã¯å…¥åŠ›ã§ãã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG(31:)
                WHEN    "0008"
                    MOVE
-                        "Ãí¼ÍËãÌô½èÊý¤Î¸«½Ð¤·¤ÏÁ´³Ñ¤ÇÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"
+                        "æ³¨å°„éº»è–¬å‡¦æ–¹ã®è¦‹å‡ºã—ã¯å…¨è§’ã§å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚"
                                                 TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "Ãí¼ÍËãÌô½èÊý¤Î¸«½Ð¤·¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "æ³¨å°„éº»è–¬å‡¦æ–¹ã®è¦‹å‡ºã—ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG
-                   MOVE    "°õºþÉô¿ô¤ÏÆþÎÏ¤Ç¤­¤Þ¤»¤ó¡£"
+                   MOVE    "å°åˆ·éƒ¨æ•°ã¯å…¥åŠ›ã§ãã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG(35:)
                WHEN    "0010"
-                   MOVE    "»Ø¼¨äµ¤Î¸«½Ð¤·¤ÏÁ´³Ñ¤ÇÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"
+                   MOVE    "æŒ‡ç¤ºç®‹ã®è¦‹å‡ºã—ã¯å…¨è§’ã§å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚"
                                                 TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "»Ø¼¨äµ¤Î¸«½Ð¤·¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "æŒ‡ç¤ºç®‹ã®è¦‹å‡ºã—ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG
-                   MOVE    "°õºþÉô¿ô¤ÏÆþÎÏ¤Ç¤­¤Þ¤»¤ó¡£"
+                   MOVE    "å°åˆ·éƒ¨æ•°ã¯å…¥åŠ›ã§ãã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG(29:)
                WHEN    "0012"
-                   MOVE    "Æþ±¡»Ø¼¨¤»¤ó¤ÎÆâÍÆÀßÄê¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "å…¥é™¢æŒ‡ç¤ºã›ã‚“ã®å†…å®¹è¨­å®šãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                 TO  SPA-ERRMSG
       *
                WHEN    "1001"
-                   MOVE    "¹¹¿·¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"    TO  SPA-ERRMSG
+                   MOVE    "æ›´æ–°ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ"    TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "ºï½ü¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"    TO  SPA-ERRMSG
+                   MOVE    "å‰Šé™¤ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ"    TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD       TO  SPA-ERRMSG
            END-EVALUATE
@@ -1325,7 +1325,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸É½¼¨
+      *    ã‚¬ã‚¤ãƒ‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
@@ -1333,10 +1333,10 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "Æþ±¡»Ø¼¨¤»¤óÀßÄê¾ðÊó¤òÅÐÏ¿¤·¤Þ¤¹¡£" 
+                   MOVE    "å…¥é™¢æŒ‡ç¤ºã›ã‚“è¨­å®šæƒ…å ±ã‚’ç™»éŒ²ã—ã¾ã™ã€‚" 
                                                    TO  WRK-WIDMSG
                WHEN    "1002"
-                   MOVE    "Æþ±¡»Ø¼¨¤»¤óÀßÄê¾ðÊó¤òºï½ü¤·¤Þ¤¹¡£" 
+                   MOVE    "å…¥é™¢æŒ‡ç¤ºã›ã‚“è¨­å®šæƒ…å ±ã‚’å‰Šé™¤ã—ã¾ã™ã€‚" 
                                                    TO  WRK-WIDMSG
                WHEN    OTHER
                    MOVE    SPA-WIDCD               TO  WRK-WIDMSG
@@ -1363,7 +1363,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý    
+      *    ç”»é¢ã‚«ãƒ¼ã‚½ãƒ«ã‚»ãƒƒãƒˆå‡¦ç†    
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1467,7 +1467,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥«¡¼¥½¥ëÊÔ½¸½èÍý
+      *    ã‚«ãƒ¼ã‚½ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        50011-CUR-SET-SEC           SECTION.
       *
@@ -1569,7 +1569,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ½èÍý
+      *    ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼å‡¦ç†
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
       *
@@ -1584,7 +1584,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1597,7 +1597,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1611,7 +1611,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ´ÉÍý¥Þ¥¹¥¿¡¼£Ã£Ì£Ï£Ó£Å½èÍý
+      *    ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼ï¼£ï¼¬ï¼¯ï¼³ï¼¥å‡¦ç†
       *****************************************************************
        901-SYSKANRI-CLOSE-SEC          SECTION.
       *
@@ -1624,7 +1624,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

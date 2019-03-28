@@ -3,9 +3,9 @@
 SET client_encoding = 'EUC_JP';
 INSERT INTO tbl_mstkanri
 SELECT 1,'ORCADB29','R-040800-1-00000000-0','R-040800-1-00000000-0','','','',
-to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'),'°åÌôÉÊÊ¬Îà¥Ş¥¹¥¿'
+to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'),'åŒ»è–¬å“åˆ†é¡ãƒã‚¹ã‚¿'
 WHERE NOT EXISTS (SELECT 1 FROM tbl_mstkanri WHERE hospnum = 1 AND kanricd = 'ORCADB29');
 INSERT INTO tbl_mstkanri
 SELECT 1,'ORCADB30','R-040800-1-00000000-0','R-040800-1-00000000-0','','','',
-to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'),'¸şÀº¿ÀÌôÀ®Ê¬¥³¡¼¥É¥Ş¥¹¥¿'
+to_char(now(),'yyyymmdd'),to_char(now(),'hh24miss'),'å‘ç²¾ç¥è–¬æˆåˆ†ã‚³ãƒ¼ãƒ‰ãƒã‚¹ã‚¿'
 WHERE NOT EXISTS (SELECT 1 FROM tbl_mstkanri WHERE hospnum = 1 AND kanricd = 'ORCADB30');

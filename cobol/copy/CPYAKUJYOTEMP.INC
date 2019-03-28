@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ÌôºÞ¾ðÊó       (CPYAKUJYOTEMP.INC) 
+      *  è–¬å‰¤æƒ…å ±       (CPYAKUJYOTEMP.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  TEMP-REC.
            03  TEMP-KEY.
                05  TEMP-HOSPNUM         PIC 9(2).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
                05  TEMP-TERMID          PIC X(64).
-      *°åÌôÉÊ¥³¡¼¥É
+      *åŒ»è–¬å“ã‚³ãƒ¼ãƒ‰
                05  TEMP-SRYCD           PIC X(09).
-      *£Ù£Ê¥³¡¼¥É
+      *ï¼¹ï¼ªã‚³ãƒ¼ãƒ‰
                05  TEMP-YJCD            PIC X(12).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  TEMP-RENNUM          PIC 9(2).
-      *·Á
+      *å½¢
            03  TEMP-SHAPE               PIC X(360).
-      *¿§
+      *è‰²
            03  TEMP-COLOR               PIC X(360).
-      *µ­¹æ
+      *è¨˜å·
            03  TEMP-MARK                PIC X(360).
-      *¸úÇ½¸ú²Ì
+      *åŠ¹èƒ½åŠ¹æžœ
            03  TEMP-EFFECT              PIC X(2000).
-      *Ãí°Õ»ö¹à
+      *æ³¨æ„äº‹é …
            03  TEMP-CAUTION             PIC X(4000).
-      *À½Â¤²ñ¼ÒÌ¾
+      *è£½é€ ä¼šç¤¾å
            03  TEMP-MAKE-COMPANY        PIC X(400).
-      *ÈÎÇä²ñ¼ÒÌ¾
+      *è²©å£²ä¼šç¤¾å
            03  TEMP-SALE-COMPANY        PIC X(400).
-      *²èÁü¥Õ¥¡¥¤¥ëÌ¾£±
+      *ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«åï¼‘
            03  TEMP-PHOTO1-FILENAME     PIC X(256).
-      *²èÁü¥Õ¥¡¥¤¥ëÌ¾£²
+      *ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«åï¼’
            03  TEMP-PHOTO2-FILENAME     PIC X(256).
-      *²èÁü¥Õ¥¡¥¤¥ëÌ¾£³
+      *ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«åï¼“
            03  TEMP-PHOTO3-FILENAME     PIC X(256).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  TEMP-CREYMD              PIC  X(08).
-      *Ì¾¾Î
+      *åç§°
            03  TEMP-NAME                PIC X(200).

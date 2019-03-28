@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯¥Þ¥¹¥¿   COPY (CPNYUKSNCHK.INC)          *
+      *    å…¥é™¢æ–™åŠ ç®—ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿   COPY (CPNYUKSNCHK.INC)          *
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  NYUKSNCHK-REC.
            03  NYUKSNCHK-KEY.
-      *Æþ±¡ÎÁ¶èÊ¬
+      *å…¥é™¢æ–™åŒºåˆ†
                05  NYUKSNCHK-NYUINKBN  PIC  X(03).
-      *²Ã»»¶èÊ¬
+      *åŠ ç®—åŒºåˆ†
                05  NYUKSNCHK-KSNKBN    PIC  X(03).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  NYUKSNCHK-YUKOSTYMD PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  NYUKSNCHK-YUKOEDYMD PIC  X(08).
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
            03  NYUKSNCHK-CHKKBN        PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  NYUKSNCHK-TERMID        PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  NYUKSNCHK-OPID          PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  NYUKSNCHK-CREYMD        PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  NYUKSNCHK-UPYMD         PIC  X(08).
-      *¹¹¿·»þ´Ö 
+      *æ›´æ–°æ™‚é–“ 
            03  NYUKSNCHK-UPHMS         PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  NYUKSNCHKUP-KEY.
                05  NYUKSNCHKUP-NYUINKBN      PIC  X(03).
                05  NYUKSNCHKUP-KSNKBN        PIC  X(03).

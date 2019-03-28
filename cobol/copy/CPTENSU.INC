@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,32 +16,32 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ޥ���    COPY (CPTENSU.INC)        *
+      *         点数マスタ    COPY (CPTENSU.INC)        *
       *                       RECORD LEN  650 BYTE      *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC-¿��Ǽ   02/03/15  ��ȯ�����ʶ�ʬ��
-      *                                     �����Ŭ��������ʬ
-      *                                     �����Ŭ���������� �ɲ�
-      * 01.00.02     NACL-¿��Ǽ  04/12/20  �������������ɲ�
-      * 01.00.03     NACL-��ƣ    06/03/15  �ɥʡ�ʬ���׶�ʬ �ɲ�
-      * 01.00.04     NACL-��ƣ    08/03/07  ������ѻٱ�û�
-      *                                     ���Ŵѻ�ˡ�оݶ�ʬ
-      *                                     ��켱�̶�ʬ �ɲ�
-      * 04.06.00     NACL-¿��Ǽ  10/10/29  ���ߴ�ࡡ�����б�
-      * 04.07.00     NACL-��ƣ    14/03/06  ��ɡ�м���������û�
-      *                                     ��ɡ�м���ѹ������ȿ��ڽ�����û�
-      *                                     Ĺ�����������û�
-      *                                     DPCŬ����ʬ
-      * 04.08.00     NACL-¿��Ǽ  16/03/XX  �󿯽�Ū���ư�֥�˥���󥰲û�
-      *                                     �����¸Ʊ���ȿ��û�
-      *                                     ����ɽ��ʬ�ֹ�
-      *                                     ϫ�һ����Բ�
-      *                                     �ͻ�û���ϫ�ҡ�
-      * 05.00.00     NACL-��ƣ    17/01/05  �ޥ�������ʬ
-      * 05.01.00     NACL-��ƣ    18/03/05  �������������ȿ�ɸ�ܲû�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-多々納   02/03/15  後発医薬品区分、
+      *                                     基準不適合逓減区分
+      *                                     基準不適合逓減施設 追加
+      * 01.00.02     NACL-多々納  04/12/20  検索点数キー追加
+      * 01.00.03     NACL-伊藤    06/03/15  ドナー分集計区分 追加
+      * 01.00.04     NACL-伊藤    08/03/07  画像手術支援加算
+      *                                     医療観察法対象区分
+      *                                     麻酔識別区分 追加
+      * 04.06.00     NACL-多々納  10/10/29  施設基準　４桁対応
+      * 04.07.00     NACL-伊藤    14/03/06  副鼻腔手術用内視鏡加算
+      *                                     副鼻腔手術用骨軟部組織切除機器加算
+      *                                     長時間麻酔管理加算
+      *                                     DPC適応区分
+      * 04.08.00     NACL-多々納  16/03/XX  非侵襲的血行動態モニタリング加算
+      *                                     凍結保存同種組織加算
+      *                                     点数表区分番号
+      *                                     労災算定不可
+      *                                     四肢加算（労災）
+      * 05.00.00     NACL-伊藤    17/01/05  マスター区分
+      * 05.01.00     NACL-伊藤    18/03/05  悪性腫瘍病理組織標本加算
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -95,9 +95,9 @@
            03  TNS-KGNAGE              PIC  X(02).
            03  TNS-JGNAGE              PIC  X(02).
            03  TNS-TIMEKSNKBN          PIC  9(01).
-      *    �����Ŭ��������ʬ
+      *    基準不適合逓減区分
            03  TNS-KIJUNTEIGENKBN      PIC  9(01).
-      *    �����Ŭ�������оݻ��ߴ�ॳ����
+      *    基準不適合逓減対象施設基準コード
            03  TNS-KIJUNTEIGENCD       PIC  9(04).
            03  TNS-LASERKBN            PIC  9(01).
            03  TNS-CHPMESUKSN          PIC  9(01).
@@ -142,19 +142,19 @@
            03  TNS-DPCKBN              PIC  9(01).
       *H26.4 ADD END
       *H28.4 ADD START
-      *    �󿯽�Ū���ư�֥�˥���󥰲û�
+      *    非侵襲的血行動態モニタリング加算
            03  TNS-HISINSYUMONITORKSN  PIC  9(01).
-      *    �����¸Ʊ���ȿ��û�
+      *    凍結保存同種組織加算
            03  TNS-TOUKETUHOZONKSN     PIC  9(01).
-      *    ����ɽ��ʬ�ֹ�
+      *    点数表区分番号
            03  TNS-KUBUNBANGOU         PIC  X(30).
-      *    ϫ�һ����Բ�
+      *    労災算定不可
            03  TNS-ROSAIKBN            PIC  9(01).
-      *    �ͻ�û���ϫ�ҡ�
+      *    四肢加算（労災）
            03  TNS-SISIKSN             PIC  9(01).
       *H28.4 ADD END
       *H30.4 ADD START
-      *    �������������ȿ�ɸ�ܲû�
+      *    悪性腫瘍病理組織標本加算
            03  TNS-AKUSEIBYORIKSN      PIC  9(01).
       *H30.4 ADD END
            03  TNS-OLDTENSKB           PIC  9(01).
@@ -167,7 +167,7 @@
       *(100)
            03  TNS-YKZKBN              PIC  9(01).
            03  TNS-ZAIGATAKBN          PIC  9(01).
-      *    ��ȯ�����ʶ�ʬ
+      *    後発医薬品区分
            03  TNS-KOUHATUKBN          PIC  9(01).
            03  TNS-LONGTOYOKBN         PIC  9(01).
            03  TNS-MEIUSESKB           PIC  9(01).
@@ -193,9 +193,9 @@
            03  TNS-KOKUCHI-KOUBAN      PIC  9(02).
            03  TNS-KOKUJISKBKBN1       PIC  9(01).
            03  TNS-KOKUJISKBKBN2       PIC  9(01).
-      *(09593XXXX �����ս������谷�ʳ���ˤǻ���)
+      *(09593XXXX 自賠責集計等取扱（外来）で使用)
            03  TNS-NAMECHGKBN          PIC  9(01).
-      *(09593XXXX �����ս������谷�������ˤǻ���)
+      *(09593XXXX 自賠責集計等取扱（入院）で使用)
            03  TNS-KANANAMECHGKBN      PIC  9(01).
            03  TNS-IDOKANREN           PIC  X(09).
            03  TNS-KOUHYOJYUNNUM       PIC  9(09).
@@ -211,7 +211,7 @@
            03  TNS-UPYMD               PIC  X(08).
            03  TNS-UPHMS               PIC  X(06).
            03  TNS-MASTER-CLASS        PIC  9(01).
-      *�����祭�������ѹ���
+      *　　主キー更新用項目
            03  TNSUP-KEY.
                05  TNSUP-HOSPNUM       PIC 9(2).
                05  TNSUP-SRYCD         PIC  X(09).

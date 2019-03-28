@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹤�����Ģ����
+      *    ＡＰＩレスポンスお薬手帳情報
       *    COPY (CPOKUSURIGETV2RES.INC)
       ******************************************************************
        01  XML-OKUSURIGETRES.
@@ -30,26 +30,26 @@
                05  OKUSURIGETRES-INFORMATION-TIME    PIC X(08).
                05  OKUSURIGETRES-API-RESULT          PIC X(04).
                05  OKUSURIGETRES-API-RESULT-MSG      PIC X(100).
-      *        ���Ծ���
+      *        患者情報
                05  OKUSURIGETRES-PTINF-AREA.
                  07  OKUSURIGETRES-PTNUM             PIC X(20).
                  07  OKUSURIGETRES-NAME              PIC X(100).
                  07  OKUSURIGETRES-KANANAME          PIC X(100).
                  07  OKUSURIGETRES-BIRTHDAY          PIC X(10).
                  07  OKUSURIGETRES-SEX               PIC X(1).
-      *        ������Ģ�����ǡ����ơ��֥�ʣ�����ޤǡ�
+      *        お薬手帳管理データテーブル（１０件まで）
                05  OKUSURIGETRES-INFOMATION  OCCURS  10.
                  07  OKUSURIGETRES-KEY-AREA.
-      *            Ϣ��
+      *            連番
                    09  OKUSURIGETRES-RENNUM          PIC X(04).
-      *            ���롼��
+      *            グループ
                    09  OKUSURIGETRES-TBL-GROUP       PIC X(14).
       *            UUID
                    09  OKUSURIGETRES-TBL-UUID        PIC X(36).
-      *            ������Ϣ��
+      *            処理内連番
                    09  OKUSURIGETRES-SHORI-RENNUM    PIC X(04).
-      *          ������
+      *          診療日
                  07  OKUSURIGETRES-PERFORM-DATE      PIC X(10).
-      *        ������Ģ�ǡ���
+      *        お薬手帳データ
                05  OKUSURIGETRES-DATA.
                    07  OKUSURIGETRES-CSV-DATA        PIC X(30000).

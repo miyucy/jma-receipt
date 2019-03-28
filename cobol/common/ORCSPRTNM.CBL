@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSPRTNM.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ����饤��Ģɼ̾��������ץ��̾����
-      *  �ֵѥ��顼������  : 00:����
-      *                    ��10:�оݥǡ����ʤ�
-      *                      99:�ѥ�᡼������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03.06.27    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : オンライン帳票名・出力先プリンタ名取得
+      *  返却エラーコード  : 00:正常
+      *                    　10:対象データなし
+      *                      99:パラメータ不正
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03.06.27    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
-      * 01.00.01     NACL-¿��Ǽ  04/12/16   ����ƣ������������ɲ�
-      * 01.00.02     NACL-����    05/10/24   MONFUNC �б�
-      * 01.00.03     NACL-¿��Ǽ  06/04/10   ���������ٽ��ɲ�
-      * 04.00.00     NACL-¿��Ǽ  08/01/25   ɸ��ε��������̾�б�
-      * 04.03.00     NACL-¿��Ǽ  08/09/04   ����������Ģ���б�
-      * 04.04.00     NACL-¿��Ǽ  09/01/21   ͽ��ɼ�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
+      * 01.00.01     NACL-多々納  04/12/16   カルテ３号紙（入院）追加
+      * 01.00.02     NACL-太田    05/10/24   MONFUNC 対応
+      * 01.00.03     NACL-多々納  06/04/10   診療費明細書追加
+      * 04.00.00     NACL-多々納  08/01/25   標準の旧処方せん名対応
+      * 04.03.00     NACL-多々納  08/09/04   入院お薬手帳等対応
+      * 04.04.00     NACL-多々納  09/01/21   予約票対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -52,19 +52,19 @@
       *
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
            03  FLG-ORG             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    ワーク領域
        01  WRK-AREA.
            03  WRK-ERRMSG          PIC X(100).
            03  WRK-SRYYMD          PIC X(08).
@@ -76,31 +76,31 @@
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "MCPAREA".
       *
-      *    ���򼰥ץ�������������
+      *    選択式プログラム一覧取得
            COPY    "CPORCSORCAPG.INC".
       *
-      *    �ե�����õ������
+      *    ファイル探索サブ
            COPY    "CPORCSACCESS.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
       *
-      *����Ģɼ̾�����ƥ�����ʳ����
+      *　　帳票名システム管理（外来）
            COPY    "CPSK1032.INC".
-      *����Ģɼ̾�����ƥ������������
+      *　　帳票名システム管理（入院）
            COPY    "CPSK1035.INC".
       *
-      *    ������ץ��̾������ƾ���ʳ����
+      *    出力先プリンタ名割り当て情報（外来）
            COPY  "CPSK1031.INC".
       *
-      *    ������ץ��̾������ƾ����������
+      *    出力先プリンタ名割り当て情報（入院）
            COPY  "CPSK1034.INC".
       *
            COPY    "MCPDATA.INC".
@@ -108,17 +108,17 @@
       *    COPY    "CPORCMCP.INC".  
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
       *
@@ -129,7 +129,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -138,27 +138,27 @@
            INITIALIZE                  IDX-AREA
            MOVE    ZERO                TO  ORCSPRTNM-RC
       *
-      *    �����
+      *    基準日
            IF      ORCSPRTNM-SRYYMD    =   SPACE
                MOVE    SPA-SYSYMD          TO  WRK-SRYYMD
            ELSE
                MOVE    ORCSPRTNM-SRYYMD    TO  WRK-SRYYMD
            END-IF
       *
-      *    ������ʬ
+      *    入外区分
            IF      ORCSPRTNM-NYUGAIKBN     =   SPACE  OR  ZERO
                MOVE    SPA-NYUGAIKBN           TO  WRK-NYUGAIKBN
            ELSE
                MOVE    ORCSPRTNM-NYUGAIKBN     TO  WRK-NYUGAIKBN
            END-IF
       *
-      *    �ѥ�᥿�����å�
+      *    パラメタチェック
            EVALUATE    ORCSPRTNM-KBN
                WHEN    "1"
-      *            ����饤��Ģɼ̾����
+      *            オンライン帳票名取得
                    PERFORM 100-PGNAME-SYORI-SEC
                WHEN    "2"
-      *            ������ץ��̾����
+      *            出力先プリンタ名取得
                    PERFORM 200-PRTNAME-SYORI-SEC
                WHEN    OTHER
                    MOVE    99              TO  ORCSPRTNM-RC
@@ -170,7 +170,7 @@
            .
       *
       *****************************************************************
-      *    ����饤��Ģɼ̾��������
+      *    オンライン帳票名取得処理
       *****************************************************************
        100-PGNAME-SYORI-SEC                SECTION.
       *
@@ -179,18 +179,18 @@
            MOVE    ZERO                TO  FLG-ORG
            MOVE    "1"                 TO  WRK-SITEKBN
       *
-      *    ������Υץ������̾����
+      *    職員毎のプログラム名取得
            MOVE    ORCSPRTNM-KBNCD     TO  WRK-KBNCD
            MOVE    SPA-STAFFCD         TO  WRK-KBNCD(1:5)
            PERFORM 1001-PGNAME-SET-SEC
       *
            IF      WRK-PRTPG           =   SPACE
-      *        ɸ��Υץ������̾����
+      *        標準のプログラム名取得
                MOVE    ORCSPRTNM-KBNCD     TO  WRK-KBNCD
                PERFORM 1001-PGNAME-SET-SEC
            END-IF
       *
-      *    ��������ɸ��� �ȣ��������������ΣУ�̾
+      *    処方せん標準で Ｈ１４．１０以前のＰＧ名
            IF     (FLG-ORG             =   1  )
               AND (WRK-PRTPG           =   "ORCHC19")
                MOVE    SPACE               TO  WRK-PRTPG
@@ -201,7 +201,7 @@
            END-IF
       *
            IF      WRK-PRTPG           =   SPACE
-      *        ɸ��Υץ������̾�Ȥ���
+      *        標準のプログラム名とする
                PERFORM 11011-HYOJUN-PRTPG-SEC
                IF      ORCSPRTNM-PRTPG        =   SPACE
                    MOVE    "orcnop"    TO  ORCSPRTNM-PRTPG
@@ -259,7 +259,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ̾�����ƥ������������
+      *    帳票名システム管理検索処理
       *****************************************************************
        11011-HYOJUN-PRTPG-SEC                SECTION.
       *
@@ -284,15 +284,15 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ̾�����ƥ������������
+      *    帳票名システム管理検索処理
       *****************************************************************
        1001-PGNAME-SET-SEC                SECTION.
       *
            IF      WRK-NYUGAIKBN       =   "1"
-      *        ����
+      *        入院
                PERFORM 10012-1035-SET-SEC
            ELSE
-      *        ����
+      *        外来
                PERFORM 10011-1032-SET-SEC
            END-IF
       *
@@ -301,7 +301,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ̾�����ƥ�������������ʳ����
+      *    帳票名システム管理検索処理（外来）
       *****************************************************************
        10011-1032-SET-SEC                SECTION.
       *
@@ -331,12 +331,12 @@ grpsys                            SPA-AREA
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1032-REC
                                                SYSKANRI-REC
-      *        �ȼ���ȯʬ
+      *        独自開発分
                IF      SYS-1032-ORCACSTCHK     =   "T"
                    MOVE    SYS-1032-ORCACSTNM  TO  WRK-PRTPG
                    MOVE    ZERO                TO  FLG-ORG
                ELSE
-      *        �ϣңã�ɸ��ʬ
+      *        ＯＲＣＡ標準分
                    MOVE    SYS-1032-ORCAORGNM  TO  WRK-PRTPG
                    MOVE    1                   TO  FLG-ORG
                END-IF
@@ -354,7 +354,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ̾�����ƥ��������������������
+      *    帳票名システム管理検索処理（入院）
       *****************************************************************
        10012-1035-SET-SEC                SECTION.
       *
@@ -384,12 +384,12 @@ grpsys                            SPA-AREA
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1035-REC
                                                SYSKANRI-REC
-      *        �ȼ���ȯʬ
+      *        独自開発分
                IF      SYS-1035-ORCACSTCHK     =   "T"
                    MOVE    SYS-1035-ORCACSTNM  TO  WRK-PRTPG
                    MOVE    ZERO                TO  FLG-ORG
                ELSE
-      *        �ϣңã�ɸ��ʬ
+      *        ＯＲＣＡ標準分
                    MOVE    SYS-1035-ORCAORGNM  TO  WRK-PRTPG
                    MOVE    1                   TO  FLG-ORG
                END-IF
@@ -407,20 +407,20 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������ץ��̾����
+      *    出力先プリンタ名取得
       *****************************************************************
        200-PRTNAME-SYORI-SEC                SECTION.
       *
            MOVE    SPACE               TO  SYSKANRI-REC
            MOVE    ZERO                TO  FLG-OK
       *
-      *    ������ν�����ץ��̾����
+      *    職員毎の出力先プリンタ名取得
            MOVE    SPACE               TO  WRK-KBNCD
            MOVE    SPA-STAFFCD         TO  WRK-KBNCD(1:5)
            PERFORM 2001-PRTNAME-SET-SEC
       *
            IF      FLG-OK              =   ZERO
-      *        ɸ��μ���
+      *        標準の取得
                MOVE    "*"                 TO  WRK-KBNCD
                PERFORM 2001-PRTNAME-SET-SEC
            END-IF
@@ -434,15 +434,15 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������ץ��̾��������
+      *    出力先プリンタ名取得処理
       *****************************************************************
        2001-PRTNAME-SET-SEC                SECTION.
       *
            IF      WRK-NYUGAIKBN       =   "1"
-      *        ����
+      *        入院
                PERFORM 20012-1034-SET-SEC
            ELSE
-      *        ����
+      *        外来
                PERFORM 20011-1031-SET-SEC
            END-IF
       *
@@ -451,7 +451,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������ץ��̾���������ʳ����
+      *    出力先プリンタ名検索処理（外来）
       *****************************************************************
        20011-1031-SET-SEC                SECTION.
       *
@@ -496,7 +496,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������ץ��̾����������������
+      *    出力先プリンタ名検索処理（入院）
       *****************************************************************
        20012-1034-SET-SEC                SECTION.
       *
@@ -541,7 +541,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *

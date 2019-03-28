@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *  •·•‚≈–œø≤ËÃÃ ≤ËÃÃ£”£–£¡
+      *  „É°„É¢ÁôªÈå≤ÁîªÈù¢ ÁîªÈù¢Ôº≥Ôº∞Ôº°
       *----------------------------------------------------------*
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
        01  SPA-XF01.
            03  SPA-HZN-MOTOPG              PIC X(08).
@@ -29,7 +29,7 @@
                05  SPA-GMN-NEXT                  PIC 9(01).
                05  SPA-GMN-CUR                   PIC 9(03).
                05  SPA-GMN-AREA.
-      *        ∏´Ω–ŒŒ∞Ë
+      *        Ë¶ãÂá∫È†òÂüü
                    07  SPA-GMN-PTNUM           PIC X(20).
                    07  SPA-GMN-PTID            PIC 9(10).
                    07  SPA-GMN-NAME            PIC X(50).
@@ -38,7 +38,7 @@
                    07  SPA-GMN-BIRTHDAY        PIC X(10).
                    07  SPA-GMN-NENREI          PIC X(10).
                    07  SPA-GMN-SYSYMD          PIC X(22).
-      *            ºı…’æ Û
+      *            Âèó‰ªòÊÉÖÂ†±
                    07  SPA-GMN-UKEMEI          PIC X(50).
       *
                05  SPA-GMN-TBLG.
@@ -54,26 +54,26 @@
                    07  SPA-TBL-MAX                 PIC 9(04).
       *
                05  SPA-GMN-INPUT.
-      *            •·•‚£±
+      *            „É°„É¢Ôºë
                    07  SPA-GMN-SRYKA01-G.
                        09  SPA-GMN-SRYKA01         PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-SRYKA01MEI      PIC X(12).
                    07  SPA-GMN-MEMO01              PIC X(1000).
-      *            ∆‚…Ùœ¢»÷
+      *            ÂÜÖÈÉ®ÈÄ£Áï™
                    07  SPA-NAI-RENNUM01            PIC 9(02).
-      *            •·•‚£≤
+      *            „É°„É¢Ôºí
                    07  SPA-GMN-SRYKA02-G.
                        09  SPA-GMN-SRYKA02         PIC X(02).
                        09  SPA-GMN-F2              PIC X(01).
                        09  SPA-GMN-SRYKA02MEI      PIC X(12).
                    07  SPA-GMN-MEMO02              PIC X(1000).
-      *            ∆‚…Ùœ¢»÷
+      *            ÂÜÖÈÉ®ÈÄ£Áï™
                    07  SPA-NAI-RENNUM02            PIC 9(02).
-      *            ¡™¬Ú»÷πÊ
+      *            ÈÅ∏ÊäûÁï™Âè∑
                    07  SPA-GMN-SELNUM              PIC 9(03).
       *
-      *        ø«Œ≈≤ 
+      *        Ë®∫ÁôÇÁßë
                05  SPA-GMN-SRYKA-LISTG.
                    07  SPA-GMN-SRYKA-LIST      OCCURS  41.
                        09  SPA-GMN-SRYKAL          PIC X(02).
@@ -86,19 +86,19 @@
                05  SPA-NAI-MEMOKBN                 PIC 9(01).
       *
            03  SPA-XFID1-AREA.
-      *∑Ÿπ•·•√•ª°º•∏
+      *Ë≠¶Âëä„É°„ÉÉ„Çª„Éº„Ç∏
                05  SPA-XFIDCD              PIC  X(04).
-      *∑Ÿπ≤ËÃÃ§Ë§Í
+      *Ë≠¶ÂëäÁîªÈù¢„Çà„Çä
                05  SPA-XFID1-AREA.
                    07  SPA-XFID1-FLG       PIC  X(02).
            03  SPA-XFID2-AREA.
-      *∑Ÿπ•·•√•ª°º•∏
+      *Ë≠¶Âëä„É°„ÉÉ„Çª„Éº„Ç∏
                05  SPA-XFIDCD2             PIC  X(04).
-      *∑Ÿπ≤ËÃÃ§Ë§Í
+      *Ë≠¶ÂëäÁîªÈù¢„Çà„Çä
                05  SPA-XFID2-AREA.
                    07  SPA-XFID2-FLG       PIC  X(03).
       *
-      *     ∏Œ„¡™¬Ú≤ËÃÃÕ—
+      *    Êñá‰æãÈÅ∏ÊäûÁîªÈù¢Áî®
            03  SPA-XF011-AREA.
                05  SPA-XF011-CUR            PIC 9(02).
                05  SPA-XF011-BUNNREI-G.
@@ -112,7 +112,7 @@
                05  SPA-XF011-PAGE         PIC 9(03).
                05  SPA-XF011-NEXT         PIC 9(01).
       *
-      *    £√£Ã£¡£…£Õ≤ËÃÃ
+      *    Ôº£Ôº¨Ôº°Ôº©Ôº≠ÁîªÈù¢
            03  SPA-CLAIM-FLG                        PIC 9(01).
            03  SPA-CLAIM-MULTIHOST                  PIC 9(01).
            03  SPA-XF01X-AREA.

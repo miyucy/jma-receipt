@@ -1,35 +1,35 @@
 kanri_cd    : "1034"
-name        : "Ä¢É¼¥×¥í¥°¥é¥àÁªÂò¾ğÊó (Æş±¡¡Ë"
+name        : "å¸³ç¥¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ é¸æŠæƒ…å ± (å…¥é™¢ï¼‰"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "ORCAORGNM"
-  item_jp   : "£Ï£Ò£Ã£ÁÉ¸½à¥×¥í¥°¥é¥àÌ¾"
+  item_jp   : "ï¼¯ï¼²ï¼£ï¼¡æ¨™æº–ãƒ—ãƒ­ã‚°ãƒ©ãƒ å"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "ORCAORGCHK"
-  item_jp   : "£Ï£Ò£Ã£ÁÉ¸½à¥×¥í¥°¥é¥à¥Á¥§¥Ã¥¯¾õÂÖ"
+  item_jp   : "ï¼¯ï¼²ï¼£ï¼¡æ¨™æº–ãƒ—ãƒ­ã‚°ãƒ©ãƒ ãƒã‚§ãƒƒã‚¯çŠ¶æ…‹"
   type      : "X"
   start     : 21
   length    : 1
 - item_no   : 3
   item      : "ORCACSTNM"
-  item_jp   : "ÆÈ¼«³«È¯¥×¥í¥°¥é¥àÌ¾"
+  item_jp   : "ç‹¬è‡ªé–‹ç™ºãƒ—ãƒ­ã‚°ãƒ©ãƒ å"
   type      : "X"
   start     : 22
   length    : 20
 - item_no   : 4
   item      : "ORCACSTCHK"
-  item_jp   : "ÆÈ¼«³«È¯¥×¥í¥°¥é¥à¥Á¥§¥Ã¥¯¾õÂÖ"
+  item_jp   : "ç‹¬è‡ªé–‹ç™ºãƒ—ãƒ­ã‚°ãƒ©ãƒ ãƒã‚§ãƒƒã‚¯çŠ¶æ…‹"
   type      : "X"
   start     : 42
   length    : 1
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 43
   length    : 458

@@ -1,35 +1,35 @@
 kanri_cd    : "1050"
-name        : "¿¦°÷¾ğÊó£²"
+name        : "è·å“¡æƒ…å ±ï¼’"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "ICCARDRW"
-  item_jp   : "£É£Ã¥«¡¼¥É¥ê¡¼¥À¡¿¥é¥¤¥¿"
+  item_jp   : "ï¼©ï¼£ã‚«ãƒ¼ãƒ‰ãƒªãƒ¼ãƒ€ï¼ãƒ©ã‚¤ã‚¿"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "GLINECNT"
-  item_jp   : "ÊÇ¹Ô¿ô¡¡³°Íè"
+  item_jp   : "é è¡Œæ•°ã€€å¤–æ¥"
   type      : "X"
   start     : 2
   length    : 2
 - item_no   : 3
   item      : "NLINECNT"
-  item_jp   : "ÊÇ¹Ô¿ô¡¡Æş±¡"
+  item_jp   : "é è¡Œæ•°ã€€å…¥é™¢"
   type      : "X"
   start     : 4
   length    : 2
 - item_no   : 4
   item      : "PRTCONF"
-  item_jp   : "¥×¥ê¥ó¥¿¤Ø¤Î¥Ç¡¼¥¿Á÷¿®"
+  item_jp   : "ãƒ—ãƒªãƒ³ã‚¿ã¸ã®ãƒ‡ãƒ¼ã‚¿é€ä¿¡"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 7
   length    : 494

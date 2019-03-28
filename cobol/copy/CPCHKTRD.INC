@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,46 +16,46 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿£²       COPY (CPCHKTRD.INC)                   *
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ï¼’       COPY (CPCHKTRD.INC)                   *
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  CHKTRD-REC.
            03  CHKTRD-KEY.
                05  CHKTRD-HOSPNUM        PIC 9(2).
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
                05  CHKTRD-CHKKBN         PIC  X(01).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  CHKTRD-SRYCD          PIC  X(09).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  CHKTRD-YUKOSTYMD      PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  CHKTRD-YUKOEDYMD      PIC  X(08).
-      *¥³¡¼¥É¶èÊ¬
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†
                05  CHKTRD-CDKBN          PIC  X(01).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  CHKTRD-RENNUM         PIC  9(03).
-      *Å¬ÍÑ¥³¡¼¥É
+      *é©ç”¨ã‚³ãƒ¼ãƒ‰
            03  CHKTRD-CD                 PIC  X(9).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  CHKTRD-NYUGAIKBN          PIC  X(1).
-      *Æ±°ìÆþ³°À©¸Â¶èÊ¬
+      *åŒä¸€å…¥å¤–åˆ¶é™åŒºåˆ†
            03  CHKTRD-NYUGAIBNDKBN       PIC  X(1).
-      *ÆüÊÌ¡¢·îÊÌ¥Á¥§¥Ã¥¯¶èÊ¬
+      *æ—¥åˆ¥ã€æœˆåˆ¥ãƒã‚§ãƒƒã‚¯åŒºåˆ†
            03  CHKTRD-DAYMONTHKBN        PIC  X(1).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  CHKTRD-TERMID             PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  CHKTRD-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  CHKTRD-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  CHKTRD-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö 
+      *æ›´æ–°æ™‚é–“ 
            03  CHKTRD-UPHMS              PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  CHKTRD-UPKEY.
                05  CHKTRD-UPCHKTRDKBN      PIC  X(01).
                05  CHKTRD-UPSRYCD        PIC  X(09).
@@ -64,7 +64,7 @@
                05  CHKTRD-UPCDKBN        PIC  X(01).
                05  CHKTRD-UPRENNUM       PIC  9(03).
       *
-      *¸¡º÷ÍÑ¹àÌÜ
+      *æ¤œç´¢ç”¨é …ç›®
            03  CHKTRD-SELNAME            PIC  X(200).
            03  CHKTRD-SELCDSYU           PIC X(1).
            03  CHKTRD-SELINPUTCD         PIC X(20).

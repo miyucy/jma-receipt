@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ´µ¼Ô°ìÍ÷°õºþ           COPY (CPORCHC28.INC)
-      *                                (ORCHC28 ¤Ç»ÈÍÑ¡Ë
+      *    æ‚£è€…ä¸€è¦§å°åˆ·           COPY (CPORCHC28.INC)
+      *                                (ORCHC28 ã§ä½¿ç”¨ï¼‰
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCHC28AREA.
-      *É½Âê
+      *è¡¨é¡Œ
            03  ORCHC28-HYODAI              PIC X(100).
-      *¾ò·ï£±
+      *æ¡ä»¶ï¼‘
            03  ORCHC28-JYOKEN1             PIC X(100).
-      *¾ò·ï£²
+      *æ¡ä»¶ï¼’
            03  ORCHC28-JYOKEN2             PIC X(100).
-      *´µ¼ÔIDÎÎ°è
+      *æ‚£è€…IDé ˜åŸŸ
            03  ORCHC28-PTID-AREA.
-      *´µ¼ÔID·ï¿ô
+      *æ‚£è€…IDä»¶æ•°
                05  ORCHC28-PTID-COUNT      PIC 9(05).
       *
                05  ORCHC28-PTID-OCC        OCCURS  200.
-      *Ï¢ÈÖ
+      *é€£ç•ª
                    07  ORCHC28-PTID-SEQ    PIC X(5).
-      *´µ¼ÔID
+      *æ‚£è€…ID
                    07  ORCHC28-PTID        PIC 9(10).
       *

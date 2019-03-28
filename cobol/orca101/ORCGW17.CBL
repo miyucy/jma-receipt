@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.                 ORCGW17.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : �ǡ��������å�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/04/01    NACL�ݿ���    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : データチェック設定
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/04/01    NACL−森脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,16 +40,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-      *    ���󥹥������
+      *    コンスタント値
            COPY    "ENUM-VALUE".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W17.
            03  SPA-GMN-AREA.
                05  SPA-GMN-CUR         PIC 9(03).
@@ -240,12 +240,12 @@
                    07  SPA-MOT-STYMD       PIC X(08).
                    07  SPA-MOT-EDYMD       PIC X(08).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD             PIC X(08).
            03  SYS-TIME            PIC X(06).
       *
-      *    �ե饰���ꥢ
+      *    フラグエリア
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
@@ -256,14 +256,14 @@
            03  FLG-SKIP            PIC 9(01).
            03  FLG-CLIST-ROW       PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX-KOH             PIC 9(02).
            03  IDX-FTS             PIC 9(02).
            03  IDX-JKS             PIC 9(02).
            03  IDX-LST             PIC 9(03).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-DBPATH-KOH      PIC X(20).
            03  WRK-DBPATH-SYS      PIC X(20).
@@ -287,34 +287,34 @@
            03  CONST-CLIST-MAX     PIC 9(05)   VALUE   100.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    �����å��ӽ�����
+      *    チェック排除情報
            COPY  "CPSK1040.INC".
       *
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -332,7 +332,7 @@
                                            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -350,15 +350,15 @@
            EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
                WHEN    "LINK"      ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *        ��������
+      *        画面遷移
                WHEN    "PUTG"      ALSO    "CLICKED"
                    PERFORM 200-GMNSENI
-      *        ����
+      *        入力
                WHEN    OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF    ( FLG-END             =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -371,24 +371,24 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF    ( SPA-MOTOPG          =   "WERR" )
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END             =   1 )
                    GO  TO  100-INIT-EXT
                END-IF 
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
-      *            ���顼��å�����ɽ������
+      *            エラーメッセージ表示処理
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
@@ -399,7 +399,7 @@
            MOVE    SPACE           TO  MCP-PUTTYPE
            MOVE    "W17    "       TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -408,18 +408,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "WID1"
-      *            ��ǧ���̣ϣ˽���
+      *            確認画面ＯＫ処理
                    PERFORM 330-WID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
            END-EVALUATE
@@ -431,14 +431,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣףɣģ��ˣϣ˽���
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
            IF      SPA-WID1-FLG    =   "OK"
                EVALUATE    SPA-WIDCD
                    WHEN "3001"
-      *                �������
+      *                削除処理
                        PERFORM 481-SAKUJO-SEC
                END-EVALUATE
            END-IF
@@ -450,182 +450,182 @@
        330-WID1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
            MOVE    SPACE           TO  SPA-W17
            INITIALIZE                  SPA-W17
       *
-      *    ͭ��������
+      *    有効開始日
            MOVE    "00000000"      TO  SPA-GMN-YUKOSTYMD
                                        SPA-NAI-YUKOSTYMD
       *
-      *    ͭ����λ��
+      *    有効終了日
            MOVE    "99999999"      TO  SPA-GMN-YUKOEDYMD
                                        SPA-NAI-YUKOEDYMD
-      *    ��ô���ֹ�ȴ��
+      *    負担者番号抜け
            MOVE    "0"             TO  SPA-GMN-FTSCDL(1)
            MOVE    "1"             TO  SPA-GMN-FTSCDL(2)
-           MOVE    "�����å�����"  TO  SPA-GMN-FTSMEIL(1)
-           MOVE    "�����å����ʤ�"
+           MOVE    "チェックする"  TO  SPA-GMN-FTSMEIL(1)
+           MOVE    "チェックしない"
                                    TO  SPA-GMN-FTSMEIL(2)
            MOVE    2               TO  SPA-GMN-FTSNUM-MAX
            MOVE    SPA-GMN-FTSNUM-LIST(1)
                                    TO  SPA-GMN-FTSNUM-G
       *
-      *    ������ֹ�ȴ��
+      *    受給者番号抜け
            MOVE    "0"             TO  SPA-GMN-JKSCDL(1)
            MOVE    "1"             TO  SPA-GMN-JKSCDL(2)
-           MOVE    "�����å�����"  TO  SPA-GMN-JKSMEIL(1)
-           MOVE    "�����å����ʤ�"
+           MOVE    "チェックする"  TO  SPA-GMN-JKSMEIL(1)
+           MOVE    "チェックしない"
                                    TO  SPA-GMN-JKSMEIL(2)
            MOVE    2               TO  SPA-GMN-JKSNUM-MAX
            MOVE    SPA-GMN-JKSNUM-LIST(1)
                                    TO  SPA-GMN-JKSNUM-G
       *
-      *    ��ô���ֹ�Ⱦ��
+      *    負担者番号半角
            MOVE    "1"                 TO  SPA-GMN-FTSHANKAKUCDL(1)
-           MOVE    "ǧ���"            TO  SPA-GMN-FTSHANKAKUMEIL(1)
+           MOVE    "認める"            TO  SPA-GMN-FTSHANKAKUMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-FTSHANKAKUCDL(2)
-           MOVE    "���顼�Ȥ���"      TO  SPA-GMN-FTSHANKAKUMEIL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-FTSHANKAKUMEIL(2)
            MOVE    2                   TO  SPA-GMN-FTSHANKAKU-MAX
            MOVE    SPA-GMN-FTSHANKAKU-LIST(1)
                                        TO  SPA-GMN-FTSHANKAKU-G
       *
-      *    ��ô���ֹ�����
+      *    負担者番号全角
            MOVE    "1"                 TO  SPA-GMN-FTSZENKAKUCDL(1)
-           MOVE    "ǧ���"            TO  SPA-GMN-FTSZENKAKUMEIL(1)
+           MOVE    "認める"            TO  SPA-GMN-FTSZENKAKUMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-FTSZENKAKUCDL(2)
-           MOVE    "���顼�Ȥ���"      TO  SPA-GMN-FTSZENKAKUMEIL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-FTSZENKAKUMEIL(2)
            MOVE    2                   TO  SPA-GMN-FTSZENKAKU-MAX
            MOVE    SPA-GMN-FTSZENKAKU-LIST(1)
                                        TO  SPA-GMN-FTSZENKAKU-G
       *
-      *    ��ô���ֹ���������å�
+      *    負担者番号数字チェック
            MOVE    "1"                 TO  SPA-GMN-FTSNUMERICCDL(1)
-           MOVE    "ǧ���"            TO  SPA-GMN-FTSNUMERICMEIL(1)
+           MOVE    "認める"            TO  SPA-GMN-FTSNUMERICMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-FTSNUMERICCDL(2)
-           MOVE    "���顼�Ȥ���"      TO  SPA-GMN-FTSNUMERICMEIL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-FTSNUMERICMEIL(2)
            MOVE    2                   TO  SPA-GMN-FTSNUMERIC-MAX
            MOVE    SPA-GMN-FTSNUMERIC-LIST(1)
                                        TO  SPA-GMN-FTSNUMERIC-G
       *
-      *    ��ô���ֹ��������å�
+      *    負担者番号桁数チェック
            MOVE    "0"                 TO  SPA-GMN-FTSKETACDL(1)
-           MOVE    "�����å�����"      TO  SPA-GMN-FTSKETAMEIL(1)
+           MOVE    "チェックする"      TO  SPA-GMN-FTSKETAMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-FTSKETACDL(2)
-           MOVE    "�����å����ʤ�"    TO  SPA-GMN-FTSKETAMEIL(2)
+           MOVE    "チェックしない"    TO  SPA-GMN-FTSKETAMEIL(2)
            MOVE    2                   TO  SPA-GMN-FTSKETA-MAX
            MOVE    SPA-GMN-FTSKETA-LIST(2)
                                        TO  SPA-GMN-FTSKETA-G
       *
-      *    ��ô���ֹ��������å�
+      *    負担者番号桁数チェック
            MOVE    "01"                TO  SPA-GMN-FTSKETAMINCDL(1)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(1)
+           MOVE    "１桁"              TO  SPA-GMN-FTSKETAMINMEIL(1)
            MOVE    "02"                TO  SPA-GMN-FTSKETAMINCDL(2)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(2)
+           MOVE    "２桁"              TO  SPA-GMN-FTSKETAMINMEIL(2)
            MOVE    "03"                TO  SPA-GMN-FTSKETAMINCDL(3)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(3)
+           MOVE    "３桁"              TO  SPA-GMN-FTSKETAMINMEIL(3)
            MOVE    "04"                TO  SPA-GMN-FTSKETAMINCDL(4)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(4)
+           MOVE    "４桁"              TO  SPA-GMN-FTSKETAMINMEIL(4)
            MOVE    "05"                TO  SPA-GMN-FTSKETAMINCDL(5)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(5)
+           MOVE    "５桁"              TO  SPA-GMN-FTSKETAMINMEIL(5)
            MOVE    "06"                TO  SPA-GMN-FTSKETAMINCDL(6)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(6)
+           MOVE    "６桁"              TO  SPA-GMN-FTSKETAMINMEIL(6)
            MOVE    "07"                TO  SPA-GMN-FTSKETAMINCDL(7)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(7)
+           MOVE    "７桁"              TO  SPA-GMN-FTSKETAMINMEIL(7)
            MOVE    "08"                TO  SPA-GMN-FTSKETAMINCDL(8)
-           MOVE    "����"              TO  SPA-GMN-FTSKETAMINMEIL(8)
+           MOVE    "８桁"              TO  SPA-GMN-FTSKETAMINMEIL(8)
            MOVE    8                   TO  SPA-GMN-FTSKETAMIN-MAX
       *
-      *    ������ֹ�Ⱦ��
+      *    受給者番号半角
            MOVE    "1"                 TO  SPA-GMN-JKSHANKAKUCDL(1)
-           MOVE    "ǧ���"            TO  SPA-GMN-JKSHANKAKUMEIL(1)
+           MOVE    "認める"            TO  SPA-GMN-JKSHANKAKUMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-JKSHANKAKUCDL(2)
-           MOVE    "���顼�Ȥ���"      TO  SPA-GMN-JKSHANKAKUMEIL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-JKSHANKAKUMEIL(2)
            MOVE    2                   TO  SPA-GMN-JKSHANKAKU-MAX
            MOVE    SPA-GMN-JKSHANKAKU-LIST(1)
                                        TO  SPA-GMN-JKSHANKAKU-G
       *
-      *    ������ֹ�����
+      *    受給者番号全角
            MOVE    "1"                 TO  SPA-GMN-JKSZENKAKUCDL(1)
-           MOVE    "ǧ���"            TO  SPA-GMN-JKSZENKAKUMEIL(1)
+           MOVE    "認める"            TO  SPA-GMN-JKSZENKAKUMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-JKSZENKAKUCDL(2)
-           MOVE    "���顼�Ȥ���"      TO  SPA-GMN-JKSZENKAKUMEIL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-JKSZENKAKUMEIL(2)
            MOVE    2                   TO  SPA-GMN-JKSZENKAKU-MAX
            MOVE    SPA-GMN-JKSZENKAKU-LIST(1)
                                        TO  SPA-GMN-JKSZENKAKU-G
       *
-      *    ������ֹ���������å�
+      *    受給者番号数字チェック
            MOVE    "1"                 TO  SPA-GMN-JKSNUMERICCDL(1)
-           MOVE    "ǧ���"            TO  SPA-GMN-JKSNUMERICMEIL(1)
+           MOVE    "認める"            TO  SPA-GMN-JKSNUMERICMEIL(1)
            MOVE    "2"                 TO  SPA-GMN-JKSNUMERICCDL(2)
-           MOVE    "���顼�Ȥ���"      TO  SPA-GMN-JKSNUMERICMEIL(2)
+           MOVE    "エラーとする"      TO  SPA-GMN-JKSNUMERICMEIL(2)
            MOVE    2                   TO  SPA-GMN-JKSNUMERIC-MAX
            MOVE    SPA-GMN-JKSNUMERIC-LIST(1)
                                        TO  SPA-GMN-JKSNUMERIC-G
       *
-      *    ������ֹ��������å�
+      *    受給者番号桁数チェック
            MOVE    "0"                 TO  SPA-GMN-JKSKETACDL(1)
-           MOVE    "�����å�����"      TO  SPA-GMN-JKSKETAMEIL(1)
+           MOVE    "チェックする"      TO  SPA-GMN-JKSKETAMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-JKSKETACDL(2)
-           MOVE    "�����å����ʤ�"    TO  SPA-GMN-JKSKETAMEIL(2)
+           MOVE    "チェックしない"    TO  SPA-GMN-JKSKETAMEIL(2)
            MOVE    2                   TO  SPA-GMN-JKSKETA-MAX
            MOVE    SPA-GMN-JKSKETA-LIST(2)
                                        TO  SPA-GMN-JKSKETA-G
       *
-      *    ������ֹ��������å�
+      *    受給者番号桁数チェック
            MOVE    "01"                TO  SPA-GMN-JKSKETAMINCDL(1)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(1)
+           MOVE    "１桁"              TO  SPA-GMN-JKSKETAMINMEIL(1)
            MOVE    "02"                TO  SPA-GMN-JKSKETAMINCDL(2)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(2)
+           MOVE    "２桁"              TO  SPA-GMN-JKSKETAMINMEIL(2)
            MOVE    "03"                TO  SPA-GMN-JKSKETAMINCDL(3)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(3)
+           MOVE    "３桁"              TO  SPA-GMN-JKSKETAMINMEIL(3)
            MOVE    "04"                TO  SPA-GMN-JKSKETAMINCDL(4)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(4)
+           MOVE    "４桁"              TO  SPA-GMN-JKSKETAMINMEIL(4)
            MOVE    "05"                TO  SPA-GMN-JKSKETAMINCDL(5)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(5)
+           MOVE    "５桁"              TO  SPA-GMN-JKSKETAMINMEIL(5)
            MOVE    "06"                TO  SPA-GMN-JKSKETAMINCDL(6)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(6)
+           MOVE    "６桁"              TO  SPA-GMN-JKSKETAMINMEIL(6)
            MOVE    "07"                TO  SPA-GMN-JKSKETAMINCDL(7)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(7)
+           MOVE    "７桁"              TO  SPA-GMN-JKSKETAMINMEIL(7)
            MOVE    "08"                TO  SPA-GMN-JKSKETAMINCDL(8)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(8)
+           MOVE    "８桁"              TO  SPA-GMN-JKSKETAMINMEIL(8)
            MOVE    "09"                TO  SPA-GMN-JKSKETAMINCDL(9)
-           MOVE    "����"              TO  SPA-GMN-JKSKETAMINMEIL(9)
+           MOVE    "９桁"              TO  SPA-GMN-JKSKETAMINMEIL(9)
            MOVE    "10"                TO  SPA-GMN-JKSKETAMINCDL(10)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(10)
+           MOVE    "１０桁"            TO  SPA-GMN-JKSKETAMINMEIL(10)
            MOVE    "11"                TO  SPA-GMN-JKSKETAMINCDL(11)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(11)
+           MOVE    "１１桁"            TO  SPA-GMN-JKSKETAMINMEIL(11)
            MOVE    "12"                TO  SPA-GMN-JKSKETAMINCDL(12)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(12)
+           MOVE    "１２桁"            TO  SPA-GMN-JKSKETAMINMEIL(12)
            MOVE    "13"                TO  SPA-GMN-JKSKETAMINCDL(13)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(13)
+           MOVE    "１３桁"            TO  SPA-GMN-JKSKETAMINMEIL(13)
            MOVE    "14"                TO  SPA-GMN-JKSKETAMINCDL(14)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(14)
+           MOVE    "１４桁"            TO  SPA-GMN-JKSKETAMINMEIL(14)
            MOVE    "15"                TO  SPA-GMN-JKSKETAMINCDL(15)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(15)
+           MOVE    "１５桁"            TO  SPA-GMN-JKSKETAMINMEIL(15)
            MOVE    "16"                TO  SPA-GMN-JKSKETAMINCDL(16)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(16)
+           MOVE    "１６桁"            TO  SPA-GMN-JKSKETAMINMEIL(16)
            MOVE    "17"                TO  SPA-GMN-JKSKETAMINCDL(17)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(17)
+           MOVE    "１７桁"            TO  SPA-GMN-JKSKETAMINMEIL(17)
            MOVE    "18"                TO  SPA-GMN-JKSKETAMINCDL(18)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(18)
+           MOVE    "１８桁"            TO  SPA-GMN-JKSKETAMINMEIL(18)
            MOVE    "19"                TO  SPA-GMN-JKSKETAMINCDL(19)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(19)
+           MOVE    "１９桁"            TO  SPA-GMN-JKSKETAMINMEIL(19)
            MOVE    "20"                TO  SPA-GMN-JKSKETAMINCDL(20)
-           MOVE    "������"            TO  SPA-GMN-JKSKETAMINMEIL(20)
+           MOVE    "２０桁"            TO  SPA-GMN-JKSKETAMINMEIL(20)
            MOVE    20                  TO  SPA-GMN-JKSKETAMIN-MAX
       *
-      *    ����ܹ����������
+      *    コンボ項目設定処理
            PERFORM 3101-HKNNUM-COMBO-SET-SEC
       *
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
            PERFORM 3101-CLIST-SET-SEC
            MOVE    1               TO  FLG-CLIST-ROW
       *
-      *    ����������֤򥻥å�
+      *    カーソル位置をセット
            IF      SPA-GMN-CLIST-MAX   >   ZERO
                MOVE    001             TO  SPA-GMN-CUR
            ELSE
@@ -637,11 +637,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���񥳥�ܹ����������
+      *    公費コンボ項目設定処理
       *****************************************************************
        3101-HKNNUM-COMBO-SET-SEC   SECTION.
       *
-      *    �ݸ��ֹ��ɤ߹���
+      *    保険番号読み込み
            MOVE    ZERO            TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
@@ -655,7 +655,7 @@
       *
            PERFORM 31011-HKNNUM-SELECT-SEC
       *
-      *    ����μ��ॳ��ܥ��å�
+      *    公費の種類コンボセット
            MOVE    ZERO            TO  IDX-KOH
            PERFORM UNTIL ( FLG-HKNNUM  =   1  )
                    OR    ( IDX-KOH     >=  99 )
@@ -677,13 +677,13 @@
       *
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key3"              TO  MCP-PATHNAME
-      *        �ݸ��ֹ��ɤ߹���
+      *        保険番号読み込み
                PERFORM 31011-HKNNUM-FETCH-SEC
            END-PERFORM
       *
            MOVE    IDX-KOH         TO  SPA-GMN-KOUHI-MAX
       *
-      *    �ݸ��ֹ楯������
+      *    保険番号クローズ
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -693,11 +693,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ꥹ�ȹ����������
+      *    公費リスト項目設定処理
       *****************************************************************
        3101-HKNNUM-CLIST-SET-SEC   SECTION.
       *
-      *    �ݸ��ֹ��ɤ߹���
+      *    保険番号読み込み
            MOVE    ZERO            TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
       *
@@ -713,7 +713,7 @@
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 31011-HKNNUM-SELECT-SEC
       *
-      *    ����μ��ॻ�å�
+      *    公費の種類セット
            PERFORM UNTIL ( FLG-HKNNUM  =   1  )
                IF    ( HKN-HKNKOHSBTKBN    =   "1" OR "4" OR
                                                "8" OR "9" )
@@ -724,13 +724,13 @@
                    MOVE    HKN-HKNNUM  TO  SPA-GMN-CDCL(IDX-LST)
                END-IF
       *
-      *        �ݸ��ֹ��ɤ߹���
+      *        保険番号読み込み
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 31011-HKNNUM-FETCH-SEC
            END-PERFORM
       *
-      *    �ݸ��ֹ楯������
+      *    保険番号クローズ
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -740,11 +740,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
       *****************************************************************
        3101-CLIST-SET-SEC          SECTION.
       *
-      *    �����å��ӽ��ɤ߹���
+      *    チェック排除読み込み
            MOVE    ZERO            TO  FLG-SYSKANRI
            INITIALIZE                  SYS-1040-REC
       *
@@ -757,10 +757,10 @@
       ***  MOVE    "SYSKANRI-KEY5" TO  WRK-DBPATH-SYS
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
-      *    �����ƥ������������
+      *    システム管理検索処理
            PERFORM 3101-SYSKANRI-SELECT-SEC
       *
-      *    �����å��ꥹ�ȥ��å�
+      *    チェックリストセット
            MOVE    ZERO            TO  IDX-LST
            PERFORM UNTIL ( FLG-SYSKANRI    =   1  )
                    OR    ( IDX-LST         >=  CONST-CLIST-MAX )
@@ -768,21 +768,21 @@
                MOVE    MCPDATA-REC     TO  SYS-1040-REC
                ADD     1               TO  IDX-LST
       *
-      *        �ֹ�
+      *        番号
                MOVE    IDX-LST         TO  SPA-GMN-NUMCL(IDX-LST)
       *
-      *        ����μ���
+      *        公費の種類
                PERFORM 3101-HKNNUM-CLIST-SET-SEC
       *
-      *        ��ô���ֹ�
+      *        負担者番号
                MOVE    SYS-1040-FTNJANUMCHK
                                    TO  SPA-GMN-FTNNUMCL(IDX-LST)
       *
-      *        ������ֹ�
+      *        受給者番号
                MOVE    SYS-1040-JKYSNUMCHK
                                    TO  SPA-GMN-JKSNUMCL(IDX-LST)
       *
-      *        ��ô���ֹ�Ⱦ��
+      *        負担者番号半角
                IF    ( SYS-1040-FTNJHANKAKUCHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-FTSHANKAKUCL(IDX-LST)
@@ -791,7 +791,7 @@
                                    TO  SPA-GMN-FTSHANKAKUCL(IDX-LST)
                END-IF
       *
-      *        ��ô���ֹ�����
+      *        負担者番号全角
                IF    ( SYS-1040-FTNJZENKAKUCHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-FTSZENKAKUCL(IDX-LST)
@@ -800,7 +800,7 @@
                                    TO  SPA-GMN-FTSZENKAKUCL(IDX-LST)
                END-IF
       *
-      *        ��ô���ֹ���������å�
+      *        負担者番号数字チェック
                IF    ( SYS-1040-FTNJNUMERICCHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-FTSNUMERICCL(IDX-LST)
@@ -809,7 +809,7 @@
                                    TO  SPA-GMN-FTSNUMERICCL(IDX-LST)
                END-IF
       *
-      *        ��ô���ֹ��������å�
+      *        負担者番号桁数チェック
                IF    ( SYS-1040-FTNJKETACHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-FTSKETACL(IDX-LST)
@@ -826,7 +826,7 @@
                                    TO  SPA-GMN-FTSKETAMINCL(IDX-LST)
                END-IF
       *
-      *        ������ֹ�Ⱦ��
+      *        受給者番号半角
                IF    ( SYS-1040-JKYSHANKAKUCHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-JKSHANKAKUCL(IDX-LST)
@@ -835,7 +835,7 @@
                                    TO  SPA-GMN-JKSHANKAKUCL(IDX-LST)
                END-IF
       *
-      *        ������ֹ�����
+      *        受給者番号全角
                IF    ( SYS-1040-JKYSZENKAKUCHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-JKSZENKAKUCL(IDX-LST)
@@ -844,7 +844,7 @@
                                    TO  SPA-GMN-JKSZENKAKUCL(IDX-LST)
                END-IF
       *
-      *        ������ֹ���������å�
+      *        受給者番号数字チェック
                IF    ( SYS-1040-JKYSNUMERICCHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-JKSNUMERICCL(IDX-LST)
@@ -853,7 +853,7 @@
                                    TO  SPA-GMN-JKSNUMERICCL(IDX-LST)
                END-IF
       *
-      *        ������ֹ��������å�
+      *        受給者番号桁数チェック
                IF    ( SYS-1040-JKYSKETACHK
                                    =   SPACE )
                    MOVE    "1"     TO  SPA-GMN-JKSKETACL(IDX-LST)
@@ -870,21 +870,21 @@
                                    TO  SPA-GMN-JKSKETAMINCL(IDX-LST)
                END-IF
       *
-      *        ͭ����������
+      *        有効開始日付
                MOVE    SYS-1040-STYUKYMD   TO  WRK-YMD
-      *        ���ե����å�
+      *        日付チェック
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-STYMDCL(IDX-LST)
                MOVE    WRK-SYMD        TO  SPA-NAI-STYMD(IDX-LST)
       *
-      *        ͭ��λ����
+      *        有終了日付
                MOVE    SYS-1040-EDYUKYMD   TO  WRK-YMD
-      *        ���ե����å�
+      *        日付チェック
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-EDYMDCL(IDX-LST)
                MOVE    WRK-SYMD        TO  SPA-NAI-EDYMD(IDX-LST)
       *
-      *        �����å��ӽ��ɤ߹���
+      *        チェック排除読み込み
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 3101-SYSKANRI-FETCH-SEC
@@ -892,7 +892,7 @@
       *
            MOVE    IDX-LST         TO  SPA-GMN-CLIST-MAX
       *
-      *    �����å��ӽ�CLOSE
+      *    チェック排除CLOSE
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -902,32 +902,32 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"   ALSO    "B01"
-      *            ��롡����
+      *            戻る　処理
                    PERFORM 210-BACK
-      *        ���ꥢ
+      *        クリア
                WHEN    "CLICKED"   ALSO    "B02"
-      *            ��說�ꥢ����
+      *            条件クリア処理
                    PERFORM 420-CLEAR-SEC
-      *        �ɲ�
+      *        追加
                WHEN    "CLICKED"   ALSO    "B06"
-      *            �ɲý���
+      *            追加処理
                    PERFORM 480-TUIKA-SEC
-      *        �ѹ�
+      *        変更
                WHEN    "CLICKED"   ALSO    "B07"
-      *            �ѹ�����
+      *            変更処理
                    PERFORM 480-HENKOU-SEC
-      *        ���
+      *        削除
                WHEN    "CLICKED"   ALSO    "B08"
-      *            �����ǧ����
+      *            削除確認処理
                    PERFORM 480-SAKUJO-SEC
            END-EVALUATE
            .
@@ -936,25 +936,25 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *        �����ֹ�
+      *        選択番号
                WHEN    "ACTIVATE"  ALSO    "SELNUM"
-      *            �����ֹ��Խ�����
+      *            選択番号編集処理
                    PERFORM 4101-SELNUM-SET-SEC
-      *        ������
+      *        行選択
                WHEN    ANY         ALSO    "CHECKLIST"
-      *            �����å��ꥹ���Խ�����
+      *            チェックリスト編集処理
                    PERFORM 4101-CLIST-SET-SEC
-      *        ����¾
+      *        その他
                WHEN    OTHER
                    MOVE    ZERO        TO  SPA-GMN-CUR
-      *            ���ϥ����å�����
+      *            入力チェック処理
                    PERFORM 4101-INPUT-SET-SEC
            END-EVALUATE
       *
@@ -964,14 +964,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    選択番号編集処理
       *****************************************************************
        4101-SELNUM-SET-SEC         SECTION.
       *
            MOVE    W17-SELNUM      TO  SPA-GMN-SELNUM
       *
            IF    ( SPA-GMN-SELNUM      =   ZERO )
-      *        ���Ϲ��ܤ���������
+      *        入力項目を初期化する
                PERFORM 420-CLEAR-SEC
                MOVE    002             TO  SPA-GMN-CUR
                GO  TO  4101-SELNUM-SET-EXT
@@ -985,7 +985,7 @@
       *
            MOVE    002             TO  SPA-GMN-CUR
            MOVE    SPA-GMN-SELNUM  TO  IDX-LST
-      *    �ꥹ�Ȥ����Ƥ򥻥å�
+      *    リストの内容をセット
            PERFORM 420-INPUT-LIST-SET-SEC
       *
            .
@@ -994,17 +994,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å��ꥹ���Խ�����
+      *    チェックリスト編集処理
       *****************************************************************
        4101-CLIST-SET-SEC          SECTION.
       *
-      *    ������
+      *    行選択
            MOVE    ZERO            TO  WRK-SELNUM
       *
            PERFORM VARYING IDX-LST     FROM    1   BY  1
                    UNTIL   IDX-LST     >       SPA-GMN-CLIST-MAX
                IF      W17-CLIST-SELECT(IDX-LST)   =   "T"
-      *            �ꥹ�Ȥ����Ƥ򥻥å�
+      *            リストの内容をセット
                    PERFORM 420-INPUT-LIST-SET-SEC
                    MOVE    IDX-LST         TO  SPA-GMN-SELNUM
                    MOVE    SPA-GMN-CLIST-MAX   TO  IDX-LST
@@ -1017,68 +1017,68 @@
            EXIT.
       *
       *****************************************************************
-      *    �ꥹ�Ȥ����Ƥ򥻥åȽ���
+      *    リストの内容をセット処理
       *****************************************************************
        420-INPUT-LIST-SET-SEC      SECTION.
       *
            INITIALIZE                  SPA-MOT-AREA
       *
-      *    ͭ�����ֳ�����
+      *    有効期間開始日
            MOVE    SPA-NAI-STYMD(IDX-LST)
                                    TO  SPA-GMN-YUKOSTYMD
                                        SPA-NAI-YUKOSTYMD
                                        SPA-MOT-STYMD
-      *    ͭ�����ֽ�λ��
+      *    有効期間終了日
            MOVE    SPA-NAI-EDYMD(IDX-LST)
                                    TO  SPA-GMN-YUKOEDYMD
                                        SPA-NAI-YUKOEDYMD
                                        SPA-MOT-EDYMD
       *
-      *    ���񥳥��
+      *    公費コンボ
            MOVE    SPA-GMN-CDCL(IDX-LST)
                                    TO  SPA-GMN-KOUHI-G
                                        SPA-MOT-KOHCD
-      *    ��ô���ֹ楳���
+      *    負担者番号コンボ
            MOVE    SPA-GMN-FTNNUMCL(IDX-LST)
                                    TO  SPA-GMN-FTSNUM-G
-      *    ������ֹ楳���
+      *    受給者番号コンボ
            MOVE    SPA-GMN-JKSNUMCL(IDX-LST)
                                    TO  SPA-GMN-JKSNUM-G
-      *    ��ô���ֹ�Ⱦ�ѥ����
+      *    負担者番号半角コンボ
            MOVE    SPA-GMN-FTSHANKAKUCL(IDX-LST)
                                    TO  SPA-GMN-FTSHANKAKU-G
-      *    ��ô���ֹ����ѥ����
+      *    負担者番号全角コンボ
            MOVE    SPA-GMN-FTSZENKAKUCL(IDX-LST)
                                    TO  SPA-GMN-FTSZENKAKU-G
-      *    ��ô���ֹ���������
+      *    負担者番号数字コンボ
            MOVE    SPA-GMN-FTSNUMERICCL(IDX-LST)
                                    TO  SPA-GMN-FTSNUMERIC-G
-      *    ��ô���ֹ��������
+      *    負担者番号桁数コンボ
            MOVE    SPA-GMN-FTSKETACL(IDX-LST)
                                    TO  SPA-GMN-FTSKETA-G
-      *    ��ô���ֹ��������
+      *    負担者番号桁数コンボ
            MOVE    SPA-GMN-FTSKETAMINCL(IDX-LST)
                                    TO  SPA-GMN-FTSKETAMIN-G
-      *    ������ֹ�Ⱦ�ѥ����
+      *    受給者番号半角コンボ
            MOVE    SPA-GMN-JKSHANKAKUCL(IDX-LST)
                                    TO  SPA-GMN-JKSHANKAKU-G
-      *    ������ֹ����ѥ����
+      *    受給者番号全角コンボ
            MOVE    SPA-GMN-JKSZENKAKUCL(IDX-LST)
                                    TO  SPA-GMN-JKSZENKAKU-G
-      *    ������ֹ���������
+      *    受給者番号数字コンボ
            MOVE    SPA-GMN-JKSNUMERICCL(IDX-LST)
                                    TO  SPA-GMN-JKSNUMERIC-G
-      *    ������ֹ��������
+      *    受給者番号桁数コンボ
            MOVE    SPA-GMN-JKSKETACL(IDX-LST)
                                    TO  SPA-GMN-JKSKETA-G
-      *    ������ֹ��������
+      *    受給者番号桁数コンボ
            MOVE    SPA-GMN-JKSKETAMINCL(IDX-LST)
                                    TO  SPA-GMN-JKSKETAMIN-G
       *
-      *    ���񥳥�ܤ����Ƥ�ƥ��å�
+      *    公費コンボの内容を再セット
            PERFORM 3101-HKNNUM-COMBO-SET-SEC
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -1086,42 +1086,42 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        4101-INPUT-SET-SEC          SECTION.
       *
-      *    ���񥳥��
+      *    公費コンボ
            MOVE    W17-KOUHI       TO  SPA-GMN-KOUHI-G
-      *    ��ô���ֹ楳���
+      *    負担者番号コンボ
            MOVE    W17-FTSNUM      TO  SPA-GMN-FTSNUM-G
-      *    ������ֹ楳���
+      *    受給者番号コンボ
            MOVE    W17-JKSNUM      TO  SPA-GMN-JKSNUM-G
-      *    ��ô���ֹ�Ⱦ�ѥ����
+      *    負担者番号半角コンボ
            MOVE    W17-FTSHANKAKU   TO  SPA-GMN-FTSHANKAKU-G
-      *    ��ô���ֹ����ѥ����
+      *    負担者番号全角コンボ
            MOVE    W17-FTSZENKAKU   TO  SPA-GMN-FTSZENKAKU-G
-      *    ��ô���ֹ���������
+      *    負担者番号数字コンボ
            MOVE    W17-FTSNUMERIC   TO  SPA-GMN-FTSNUMERIC-G
-      *    ��ô���ֹ��������
+      *    負担者番号桁数コンボ
            MOVE    W17-FTSKETA      TO  SPA-GMN-FTSKETA-G
-      *    ��ô���ֹ��������
+      *    負担者番号桁数コンボ
            MOVE    W17-FTSKETAMIN   TO  SPA-GMN-FTSKETAMIN-G
-      *    ������ֹ�Ⱦ�ѥ����
+      *    受給者番号半角コンボ
            MOVE    W17-JKSHANKAKU   TO  SPA-GMN-JKSHANKAKU-G
-      *    ������ֹ����ѥ����
+      *    受給者番号全角コンボ
            MOVE    W17-JKSZENKAKU   TO  SPA-GMN-JKSZENKAKU-G
-      *    ������ֹ���������
+      *    受給者番号数字コンボ
            MOVE    W17-JKSNUMERIC   TO  SPA-GMN-JKSNUMERIC-G
-      *    ������ֹ��������
+      *    受給者番号桁数コンボ
            MOVE    W17-JKSKETA      TO  SPA-GMN-JKSKETA-G
-      *    ������ֹ��������
+      *    受給者番号桁数コンボ
            MOVE    W17-JKSKETAMIN   TO  SPA-GMN-JKSKETAMIN-G
-      *    ͭ�����ֳ�����
+      *    有効期間開始日
            MOVE    W17-YUKOSTYMD   TO  SPA-GMN-YUKOSTYMD
-      *    ͭ�����ֽ�λ��
+      *    有効期間終了日
            MOVE    W17-YUKOEDYMD   TO  SPA-GMN-YUKOEDYMD
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -1129,95 +1129,95 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
-      *    ͭ�����ֳ����������å�
+      *    有効期間開始日チェック
            PERFORM 4110-YUKOSTYMD-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ͭ�����ֽ�λ�������å�
+      *    有効期間終了日チェック
            PERFORM 4111-YUKOEDYMD-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ���񥳥�ܥ����å�
+      *    公費コンボチェック
            PERFORM 4112-KOUHI-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ楳��ܥ����å�
+      *    負担者番号コンボチェック
            PERFORM 4113-FTSNUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ֹ楳��ܥ����å�
+      *    受給者番号コンボチェック
            PERFORM 4114-JKSNUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ�Ⱦ�ѥ���ܥ����å�
+      *    負担者番号半角コンボチェック
            PERFORM 4114-FTSHANKAKU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ����ѥ���ܥ����å�
+      *    負担者番号全角コンボチェック
            PERFORM 4114-FTSZENKAKU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ��������ܥ����å�
+      *    負担者番号数字コンボチェック
            PERFORM 4114-FTSNUMERIC-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ�������ܥ����å�
+      *    負担者番号桁数コンボチェック
            PERFORM 4114-FTSKETA-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ�������ܥ����å�
+      *    負担者番号桁数コンボチェック
            PERFORM 4114-FTSKETAMIN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ֹ�Ⱦ�ѥ���ܥ����å�
+      *    受給者番号半角コンボチェック
            PERFORM 4114-JKSHANKAKU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ֹ����ѥ���ܥ����å�
+      *    受給者番号全角コンボチェック
            PERFORM 4114-JKSZENKAKU-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ֹ��������ܥ����å�
+      *    受給者番号数字コンボチェック
            PERFORM 4114-JKSNUMERIC-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ֹ�������ܥ����å�
+      *    受給者番号桁数コンボチェック
            PERFORM 4114-JKSKETA-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-      *    ������ֹ�������ܥ����å�
+      *    受給者番号桁数コンボチェック
            PERFORM 4114-JKSKETAMIN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
@@ -1228,11 +1228,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ͭ���������Խ�����
+      *    有効開始日編集処理
       *****************************************************************
        4110-YUKOSTYMD-CHK-SEC      SECTION.
       *
-      *    ����ʤ��ALL"0"�򥻥åȤ���
+      *    空白ならばALL"0"をセットする
            IF    ( SPA-GMN-YUKOSTYMD       =   SPACE )
             OR   ( SPA-GMN-YUKOSTYMD (1:3) =  "000" )
                MOVE    "00000000"      TO  SPA-GMN-YUKOSTYMD
@@ -1243,17 +1243,17 @@
       *
            MOVE    SPACE               TO  SPA-NAI-YUKOSTYMD
       *
-      *    ͭ����������
+      *    有効開始日付
            MOVE    SPA-GMN-YUKOSTYMD   TO  WRK-YMD
-      *    ���ե����å�
+      *    日付チェック
            PERFORM 5002-HIZUKE-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    WRK-YUKOSTYMD   TO  WRK-YMD
-      *        ���ե����å�
+      *        日付チェック
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-YUKOSTYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-YUKOSTYMD
-      *        �����Խ����顼
+      *        日付編集エラー
                MOVE    "0005"          TO  SPA-ERRCD
                MOVE    005             TO  SPA-GMN-CUR
                GO  TO  4110-YUKOSTYMD-CHK-EXT
@@ -1263,7 +1263,7 @@
            MOVE    WRK-SYMD        TO  SPA-NAI-YUKOSTYMD
       *
            IF    ( WRK-MCP-WIDGET  =   "YUKOSTYMD" )
-      *        ���񥳥�ܤ����Ƥ�ƥ��å�
+      *        公費コンボの内容を再セット
                PERFORM 3101-HKNNUM-COMBO-SET-SEC
            END-IF
       *
@@ -1273,11 +1273,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ͭ����λ���Խ�����
+      *    有効終了日編集処理
       *****************************************************************
        4111-YUKOEDYMD-CHK-SEC      SECTION.
       *
-      *    ����ʤ��ALL"9"�򥻥åȤ���
+      *    空白ならばALL"9"をセットする
            IF    ( SPA-GMN-YUKOEDYMD       =   SPACE )
             OR   ( SPA-GMN-YUKOSTYMD (1:3) =  "999" )
                MOVE    "99999999"      TO  SPA-GMN-YUKOEDYMD
@@ -1286,17 +1286,17 @@
       *
            MOVE    SPA-NAI-YUKOEDYMD   TO  WRK-YUKOEDYMD
       *
-      *    ͭ����������
+      *    有効開始日付
            MOVE    SPA-GMN-YUKOEDYMD   TO  WRK-YMD
-      *    ���ե����å�
+      *    日付チェック
            PERFORM 5002-HIZUKE-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                MOVE    WRK-YUKOEDYMD   TO  WRK-YMD
-      *        ���ե����å�
+      *        日付チェック
                PERFORM 5002-HIZUKE-CHK-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-YUKOEDYMD
                MOVE    WRK-SYMD        TO  SPA-NAI-YUKOEDYMD
-      *        �����Խ����顼
+      *        日付編集エラー
                MOVE    "0006"          TO  SPA-ERRCD
                MOVE    006             TO  SPA-GMN-CUR
                GO  TO  4111-YUKOEDYMD-CHK-EXT
@@ -1306,7 +1306,7 @@
            MOVE    WRK-SYMD        TO  SPA-NAI-YUKOEDYMD
       *
            IF    ( WRK-MCP-WIDGET  =   "YUKOEDYMD" )
-      *        ���񥳥�ܤ����Ƥ�ƥ��å�
+      *        公費コンボの内容を再セット
                PERFORM 3101-HKNNUM-COMBO-SET-SEC
            END-IF
       *
@@ -1316,7 +1316,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    公費編集処理
       *****************************************************************
        4112-KOUHI-CHK-SEC          SECTION.
       *
@@ -1324,7 +1324,7 @@
                GO  TO  4112-KOUHI-CHK-EXT
            END-IF
       *
-      *    ����򥻥å�
+      *    公費をセット
            PERFORM VARYING IDX-KOH     FROM    1   BY   1
                    UNTIL ( IDX-KOH     >   SPA-GMN-KOUHI-MAX )
                    OR    ( SPA-GMN-KOHCD
@@ -1336,7 +1336,7 @@
                MOVE    SPA-GMN-KOUHI-LIST(IDX-KOH)
                                        TO  SPA-GMN-KOUHI-G
            ELSE
-      *        �����ֹ楨�顼
+      *        公費番号エラー
                MOVE    "0002"          TO  SPA-ERRCD
                MOVE    002             TO  SPA-GMN-CUR
            END-IF
@@ -1346,7 +1346,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ô���ֹ��Խ�����
+      *    負担者番号編集処理
       *****************************************************************
        4113-FTSNUM-CHK-SEC         SECTION.
       *
@@ -1356,7 +1356,7 @@
                GO  TO  4113-FTSNUM-CHK-EXT
            END-IF
       *
-      *    ��ô���ֹ�򥻥å�
+      *    負担者番号をセット
            PERFORM VARYING IDX-FTS     FROM    1   BY   1
                    UNTIL ( IDX-FTS     >   SPA-GMN-FTSNUM-MAX )
                    OR    ( SPA-GMN-FTSCD
@@ -1368,7 +1368,7 @@
                MOVE    SPA-GMN-FTSNUM-LIST(IDX-FTS)
                                        TO  SPA-GMN-FTSNUM-G
            ELSE
-      *        ��ô���ֹ楨�顼
+      *        負担者番号エラー
                MOVE    "0003"          TO  SPA-ERRCD
                MOVE    003             TO  SPA-GMN-CUR
            END-IF
@@ -1378,7 +1378,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ֹ��Խ�����
+      *    受給者番号編集処理
       *****************************************************************
        4114-JKSNUM-CHK-SEC         SECTION.
       *
@@ -1388,7 +1388,7 @@
                GO  TO  4114-JKSNUM-CHK-EXT
            END-IF
       *
-      *    ������ֹ�򥻥å�
+      *    受給者番号をセット
            PERFORM VARYING IDX-JKS     FROM    1   BY   1
                    UNTIL ( IDX-JKS     >   SPA-GMN-JKSNUM-MAX )
                    OR    ( SPA-GMN-JKSCD
@@ -1400,7 +1400,7 @@
                MOVE    SPA-GMN-JKSNUM-LIST(IDX-JKS)
                                        TO  SPA-GMN-JKSNUM-G
            ELSE
-      *        ������ֹ楨�顼
+      *        受給者番号エラー
                MOVE    "0004"          TO  SPA-ERRCD
                MOVE    004             TO  SPA-GMN-CUR
            END-IF
@@ -1409,7 +1409,7 @@
        4114-JKSNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô���ֹ�Ⱦ���Խ�����
+      *    負担者番号半角編集処理
       *****************************************************************
        4114-FTSHANKAKU-CHK-SEC          SECTION.
       *
@@ -1437,7 +1437,7 @@
        4114-FTSHANKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô���ֹ������Խ�����
+      *    負担者番号全角編集処理
       *****************************************************************
        4114-FTSZENKAKU-CHK-SEC          SECTION.
       *
@@ -1465,7 +1465,7 @@
        4114-FTSZENKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô���ֹ�����Խ�����
+      *    負担者番号数字編集処理
       *****************************************************************
        4114-FTSNUMERIC-CHK-SEC          SECTION.
       *
@@ -1493,7 +1493,7 @@
        4114-FTSNUMERIC-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô���ֹ��������å�����
+      *    負担者番号桁数チェック処理
       *****************************************************************
        4114-FTSKETA-CHK-SEC          SECTION.
       *
@@ -1520,7 +1520,7 @@
        4114-FTSKETA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô���ֹ��������å�����
+      *    負担者番号桁数チェック処理
       *****************************************************************
        4114-FTSKETAMIN-CHK-SEC          SECTION.
       *
@@ -1549,7 +1549,7 @@
        4114-FTSKETAMIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ֹ�Ⱦ���Խ�����
+      *    受給者番号半角編集処理
       *****************************************************************
        4114-JKSHANKAKU-CHK-SEC          SECTION.
       *
@@ -1577,7 +1577,7 @@
        4114-JKSHANKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ֹ������Խ�����
+      *    受給者番号全角編集処理
       *****************************************************************
        4114-JKSZENKAKU-CHK-SEC          SECTION.
       *
@@ -1605,7 +1605,7 @@
        4114-JKSZENKAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ֹ�����Խ�����
+      *    受給者番号数字編集処理
       *****************************************************************
        4114-JKSNUMERIC-CHK-SEC          SECTION.
       *
@@ -1634,7 +1634,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ֹ��������å�����
+      *    受給者番号桁数チェック処理
       *****************************************************************
        4114-JKSKETA-CHK-SEC          SECTION.
       *
@@ -1662,7 +1662,7 @@
        4114-JKSKETA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ֹ��������å�����
+      *    受給者番号桁数チェック処理
       *****************************************************************
        4114-JKSKETAMIN-CHK-SEC          SECTION.
       *
@@ -1690,7 +1690,7 @@
        4114-JKSKETAMIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -1700,7 +1700,7 @@
            MOVE    "CHANGE"        TO  MCP-PUTTYPE
            MOVE    "W01"           TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -1710,60 +1710,60 @@
            EXIT.
       *
       *****************************************************************
-      *    ��說�ꥢ����
+      *    条件クリア処理
       *****************************************************************
        420-CLEAR-SEC               SECTION.
       *
-      *    �����ֹ楯�ꥢ
+      *    選択番号クリア
            MOVE    ZERO            TO  SPA-GMN-SELNUM
       *
-      *    �����ֹ楯�ꥢ
+      *    公費番号クリア
            INITIALIZE                  SPA-GMN-KOUHI-G
       *
-      *    ��ô���ֹ�ȴ������ͥ��å�
+      *    負担者番号抜け初期値セット
            MOVE    SPA-GMN-FTSNUM-LIST(1)
                                    TO  SPA-GMN-FTSNUM-G
-      *    ������ֹ�ȴ������ͥ��å�
+      *    受給者番号抜け初期値セット
            MOVE    SPA-GMN-JKSNUM-LIST(1)
                                    TO  SPA-GMN-JKSNUM-G
-      *    ��ô���ֹ�Ⱦ�ѽ���ͥ��å�
+      *    負担者番号半角初期値セット
            MOVE    SPA-GMN-FTSHANKAKU-LIST(1)
                                    TO  SPA-GMN-FTSHANKAKU-G
-      *    ��ô���ֹ����ѽ���ͥ��å�
+      *    負担者番号全角初期値セット
            MOVE    SPA-GMN-FTSZENKAKU-LIST(1)
                                    TO  SPA-GMN-FTSZENKAKU-G
-      *    ��ô���ֹ��������ͥ��å�
+      *    負担者番号数字初期値セット
            MOVE    SPA-GMN-FTSNUMERIC-LIST(1)
                                    TO  SPA-GMN-FTSNUMERIC-G
-      *    ��ô���ֹ��������å�����ͥ��å�
+      *    負担者番号桁数チェック初期値セット
            MOVE    SPA-GMN-FTSKETA-LIST(2)
                                    TO  SPA-GMN-FTSKETA-G
            MOVE    SPACE           TO  SPA-GMN-FTSKETAMIN-G
-      *    ������ֹ�Ⱦ�ѽ���ͥ��å�
+      *    受給者番号半角初期値セット
            MOVE    SPA-GMN-JKSHANKAKU-LIST(1)
                                    TO  SPA-GMN-JKSHANKAKU-G
-      *    ������ֹ����ѽ���ͥ��å�
+      *    受給者番号全角初期値セット
            MOVE    SPA-GMN-JKSZENKAKU-LIST(1)
                                    TO  SPA-GMN-JKSZENKAKU-G
-      *    ������ֹ��������ͥ��å�
+      *    受給者番号数字初期値セット
            MOVE    SPA-GMN-JKSNUMERIC-LIST(1)
                                    TO  SPA-GMN-JKSNUMERIC-G
-      *    ������ֹ��������å�����ͥ��å�
+      *    受給者番号桁数チェック初期値セット
            MOVE    SPA-GMN-JKSKETA-LIST(2)
                                    TO  SPA-GMN-JKSKETA-G
            MOVE    SPACE           TO  SPA-GMN-JKSKETAMIN-G
       *
-      *    ͭ������������ͥ��å�
+      *    有効開始日初期値セット
            MOVE    "00000000"      TO  SPA-GMN-YUKOSTYMD
                                        SPA-NAI-YUKOSTYMD
       *
-      *    ͭ����λ������ͥ��å�
+      *    有効終了日初期値セット
            MOVE    "99999999"      TO  SPA-GMN-YUKOEDYMD
                                        SPA-NAI-YUKOEDYMD
-      *    ����ܹ����������
+      *    コンボ項目設定処理
            PERFORM 3101-HKNNUM-COMBO-SET-SEC
       *
-      *    ����������֥��å�
+      *    カーソル位置セット
            IF      SPA-GMN-CLIST-MAX   >   ZERO
                MOVE    001             TO  SPA-GMN-CUR
            ELSE
@@ -1775,11 +1775,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɲý���
+      *    追加処理
       *****************************************************************
        480-TUIKA-SEC               SECTION.
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 4101-INPUT-SET-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-TUIKA-EXT
@@ -1787,22 +1787,22 @@
       *
            MOVE    "INS"           TO  WRK-UPDKBN
       *
-      *    ��Ϣ�����å�
+      *    関連チェック
            PERFORM 4900-KANRENCHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-TUIKA-EXT
            END-IF
       *
-      *    ��������å�
+      *    履歴チェック
            PERFORM 4901-RIREKI-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-TUIKA-EXT
            END-IF
       *
-      *    �����å��ӽ����󥻥åȽ���
+      *    チェック排除情報セット処理
            PERFORM 4701-KOUMOKU-SET-SEC
       *
-      *    �����å��ӽ�����ޥ����ɲ�
+      *    チェック排除情報マスタ追加
            MOVE    SPA-HOSPNUM         TO  SYS-1040-HOSPNUM
            MOVE    SYS-1040-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1814,20 +1814,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( MCP-RC              =   ZERO )
                CONTINUE
            ELSE
-      *        �ɲü��ԥ��顼
+      *        追加失敗エラー
                MOVE   "4002"           TO  SPA-ERRCD
                MOVE    002             TO  SPA-GMN-CUR
                GO  TO 480-TUIKA-EXT
            END-IF
       *
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
            PERFORM 3101-CLIST-SET-SEC
            MOVE    2               TO  FLG-CLIST-ROW
       *
-      *    ���Ϲ��ܤ���������
+      *    入力項目を初期化する
            PERFORM 420-CLEAR-SEC
       *
-      *    �����������å�
+      *    最大件数チェック
            IF    ( SPA-GMN-CLIST-MAX   >=  CONST-CLIST-MAX )
                MOVE    "1104"      TO  SPA-ERRCD
            END-IF
@@ -1836,7 +1836,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        480-TUIKA-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ӽ����󥻥åȽ���
+      *    チェック排除情報セット処理
       *****************************************************************
        4701-KOUMOKU-SET-SEC        SECTION.
       *
@@ -1874,13 +1874,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SYS-1040-JKYSKETAMAX
       *
            IF    ( WRK-UPDKBN          =   "UPD" )
-      *        ��������
+      *        更新時間
                ACCEPT  SYS-TIME        FROM    TIME
                MOVE    SYS-TIME        TO  SYS-1040-UPHMS
-      *        ����ǯ����
+      *        更新年月日
                MOVE    SPA-SYSYMD      TO  SYS-1040-UPYMD
            ELSE
-      *        ����ǯ����
+      *        作成年月日
                MOVE    SPA-SYSYMD      TO  SYS-1040-CREYMD
            END-IF
       *
@@ -1888,18 +1888,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4701-KOUMOKU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ѹ�����
+      *    変更処理
       *****************************************************************
        480-HENKOU-SEC              SECTION.
       *
            IF      SPA-GMN-SELNUM      >   SPA-GMN-CLIST-MAX
-      *        �����ֹ椬�礭�����륨�顼
+      *        選択番号が大きすぎるエラー
                MOVE    "0001"          TO  SPA-ERRCD
                MOVE    001             TO  SPA-GMN-CUR
                GO  TO  480-HENKOU-EXT
            END-IF
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 4101-INPUT-SET-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-HENKOU-EXT
@@ -1907,22 +1907,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "UPD"           TO  WRK-UPDKBN
       *
-      *    ��Ϣ�����å�
+      *    関連チェック
            PERFORM 4900-KANRENCHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-HENKOU-EXT
            END-IF
       *
-      *    ��������å�
+      *    履歴チェック
            PERFORM 4901-RIREKI-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-HENKOU-EXT
            END-IF
       *
-      *    �����å��ӽ����󥻥åȽ���
+      *    チェック排除情報セット処理
            PERFORM 4701-KOUMOKU-SET-SEC
       *
-      *    �����ѥ����򥻥å�
+      *    更新用キーをセット
            MOVE    SYS-1040-REC    TO  SYSKANRI-REC
            MOVE    "1040"          TO  SYSUP-KANRICD
            MOVE    SPA-MOT-KOHCD   TO  SYSUP-KBNCD
@@ -1930,7 +1930,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-MOT-EDYMD   TO  SYSUP-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYSUP-HOSPNUM
       *
-      *    �����å��ӽ�����ޥ�������
+      *    チェック排除情報マスタ更新
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1942,42 +1942,42 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( MCP-RC          =   ZERO )
                CONTINUE
            ELSE
-      *        �������ԥ��顼
+      *        更新失敗エラー
                MOVE   "4004"           TO  SPA-ERRCD
                MOVE    002             TO  SPA-GMN-CUR
                GO  TO 480-HENKOU-EXT
            END-IF
       *
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
            PERFORM 3101-CLIST-SET-SEC
       *
-      *    ���Ϲ��ܤ���������
+      *    入力項目を初期化する
            PERFORM 420-CLEAR-SEC
       *
            .
        480-HENKOU-EXT.
            EXIT.
       *****************************************************************
-      *    �����ǧ����
+      *    削除確認処理
       *****************************************************************
        480-SAKUJO-SEC              SECTION.
       *
            MOVE    "DEL"           TO  WRK-UPDKBN
       *
-      *    ���Ϲ��ܤδ�Ϣ�����å�����
+      *    入力項目の関連チェック処理
            PERFORM 4900-KANRENCHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  480-SAKUJO-EXT
            END-IF
       *
-      *    ������뤫��ǧ����
+      *    削除するか確認する
            MOVE    "3001"          TO  SPA-WIDCD
       *
            .
        480-SAKUJO-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        481-SAKUJO-SEC              SECTION.
       *
@@ -1999,16 +1999,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( MCP-RC              =   ZERO )
                CONTINUE
            ELSE
-      *        ������ԥ��顼
+      *        削除失敗エラー
                MOVE    "4005"          TO  SPA-ERRCD
                MOVE    002             TO  SPA-GMN-CUR
                GO  TO  481-SAKUJO-EXT
            END-IF
       *
-      *    �����å��ӽ�����ꥹ���Խ�����
+      *    チェック排除情報リスト編集処理
            PERFORM 3101-CLIST-SET-SEC
       *
-      *    ���Ϲ��ܤ���������
+      *    入力項目を初期化する
            PERFORM 420-CLEAR-SEC
       *
            .    
@@ -2016,24 +2016,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *       ���Ϲ��ܤδ�Ϣ�����å�����
+      *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC          SECTION.
       *
            IF  ( SPA-NAI-YUKOEDYMD     <   SPA-NAI-YUKOSTYMD )
-      *        ���մط��Խ����顼
+      *        日付関係編集エラー
                MOVE    "0008"          TO  SPA-ERRCD
                MOVE    005             TO  SPA-GMN-CUR
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-      *    �����ֹ��ֹ�
+      *    選択番号番号
            IF    ( SPA-GMN-SELNUM  NOT =   ZERO )
                IF    ( WRK-UPDKBN          =   "UPD" )
                  OR  ( WRK-UPDKBN          =   "DEL" )
                    CONTINUE
                ELSE
-      *            �����ֹ椬���Ϥ���Ƥ��륨�顼
+      *            選択番号が入力されているエラー
                    MOVE    "1101"          TO  SPA-ERRCD
                    MOVE    001             TO  SPA-GMN-CUR
                    GO  TO  4900-KANRENCHK-EXT
@@ -2041,13 +2041,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                IF    ( WRK-UPDKBN          =   "INS" )
                    IF    ( SPA-GMN-KOHCD       =   SPACE )
-      *                �����ֹ椬���򤵤�Ƥ��ʤ����顼
+      *                公費番号が選択されていないエラー
                        MOVE    "0002"          TO  SPA-ERRCD
                        MOVE    002             TO  SPA-GMN-CUR
                        GO  TO  4900-KANRENCHK-EXT
                    END-IF
                ELSE
-      *            �����ֹ椬���Ϥ���Ƥ��ʤ����顼
+      *            選択番号が入力されていないエラー
                    MOVE    "1102"          TO  SPA-ERRCD
                    MOVE    001             TO  SPA-GMN-CUR
                    GO  TO  4900-KANRENCHK-EXT
@@ -2059,13 +2059,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������å�����
+      *    履歴チェック処理
       *****************************************************************
        4901-RIREKI-CHK-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-DABURI
       *
-      *    ��������å�
+      *    履歴チェック
            MOVE    SPACE               TO  SYS-1040-REC
            INITIALIZE                      SYS-1040-REC
            MOVE    "1040"              TO  SYS-1040-KANRICD
@@ -2078,7 +2078,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       ***  MOVE    "SYSKANRI-KEY8"     TO  WRK-DBPATH-SYS
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
-      *    �����ƥ������������
+      *    システム管理検索処理
            PERFORM 3101-SYSKANRI-SELECT-SEC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
@@ -2099,19 +2099,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
       *
-      *        �����ƥ�����ɤ߹��߽���
+      *        システム管理読み込み処理
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key8"              TO  MCP-PATHNAME
                PERFORM 3101-SYSKANRI-FETCH-SEC
            END-PERFORM
       *
-      *    �����ƥ����CLOSE����
+      *    システム管理CLOSE処理
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF    ( FLG-DABURI    =   1 )
-      *        ���ֽ�ʣ���顼
+      *        期間重複エラー
                MOVE    "1103"          TO  SPA-ERRCD
                MOVE    005             TO  SPA-GMN-CUR
            END-IF
@@ -2121,21 +2121,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-      *    �����Խ�����
+      *    画面編集処理
            PERFORM 500-GMNHEN-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
-      *        ���顼��å�����ɽ������
+      *        エラーメッセージ表示処理
                PERFORM 510-ERRSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
            IF      SPA-WIDCD       NOT =   SPACE
-      *        �����ɥ�å�����ɽ������
+      *        ガイドメッセージ表示処理
                PERFORM 520-WIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
@@ -2143,14 +2143,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "W17    "           TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
            .
        500-SET-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -2167,7 +2167,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  W17-B06-STATE
            END-IF
       *
-      *    �����å��ꥹ�Ȥ򥻥å�
+      *    チェックリストをセット
            PERFORM VARYING IDX-LST     FROM    1   BY  1
                    UNTIL ( IDX-LST     >       SPA-GMN-CLIST-MAX )
                MOVE    SPA-GMN-NUMCL(IDX-LST)
@@ -2177,15 +2177,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-KOUHICL(IDX-LST)
                                        TO  W17-CLIST-KOUHIL(IDX-LST)
                IF    ( SPA-GMN-FTNNUMCL(IDX-LST)   =   "1" )
-                   MOVE    "��"        TO  W17-CLIST-FTNNUML(IDX-LST)
+                   MOVE    "−"        TO  W17-CLIST-FTNNUML(IDX-LST)
                ELSE
-                   MOVE    "��"        TO  W17-CLIST-FTNNUML(IDX-LST)
+                   MOVE    "○"        TO  W17-CLIST-FTNNUML(IDX-LST)
                END-IF
       *
                IF    ( SPA-GMN-JKSNUMCL(IDX-LST)   =   "1" )
-                   MOVE    "��"        TO  W17-CLIST-JKSNUML(IDX-LST)
+                   MOVE    "−"        TO  W17-CLIST-JKSNUML(IDX-LST)
                ELSE
-                   MOVE    "��"        TO  W17-CLIST-JKSNUML(IDX-LST)
+                   MOVE    "○"        TO  W17-CLIST-JKSNUML(IDX-LST)
                END-IF
                MOVE    SPA-GMN-STYMDCL(IDX-LST)
                                        TO  W17-CLIST-STYMDL(IDX-LST)
@@ -2199,10 +2199,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-CLIST-MAX   TO  W17-CLIST-COUNT
       *
-      *    �����ֹ�
+      *    選択番号
            MOVE    SPA-GMN-SELNUM      TO  W17-SELNUM
       *
-      *    ����μ���
+      *    公費の種類
            MOVE    SPA-GMN-KOUHI-G     TO  W17-KOUHI
            PERFORM VARYING IDX-KOH     FROM    1   BY  1
                    UNTIL   IDX-KOH     >       SPA-GMN-KOUHI-MAX
@@ -2211,7 +2211,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-KOUHI-MAX   TO  W17-KOUHI-COUNT
       *
-      *    ��ô���ֹ�ȴ��
+      *    負担者番号抜け
            MOVE    SPA-GMN-FTSNUM-G    TO  W17-FTSNUM
            PERFORM VARYING IDX-FTS     FROM    1   BY  1
                    UNTIL   IDX-FTS     >       SPA-GMN-FTSNUM-MAX
@@ -2220,7 +2220,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-FTSNUM-MAX  TO  W17-FTSNUM-COUNT
       *
-      *    ������ֹ�ȴ��
+      *    受給者番号抜け
            MOVE    SPA-GMN-JKSNUM-G    TO  W17-JKSNUM
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
                    UNTIL   IDX-JKS     >       SPA-GMN-JKSNUM-MAX
@@ -2229,7 +2229,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-JKSNUM-MAX  TO  W17-JKSNUM-COUNT
       *
-      *    ��ô���ֹ�Ⱦ�ѥ����å�
+      *    負担者番号半角チェック
            MOVE    SPA-GMN-FTSHANKAKU-G TO  W17-FTSHANKAKU
            PERFORM VARYING IDX-FTS     FROM    1   BY  1
                    UNTIL   IDX-FTS     >       SPA-GMN-FTSHANKAKU-MAX
@@ -2239,7 +2239,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FTSHANKAKU-MAX
                                        TO  W17-FTSHANKAKU-COUNT
       *
-      *    ��ô���ֹ����ѥ����å�
+      *    負担者番号全角チェック
            MOVE    SPA-GMN-FTSZENKAKU-G TO  W17-FTSZENKAKU
            PERFORM VARYING IDX-FTS     FROM    1   BY  1
                    UNTIL   IDX-FTS     >       SPA-GMN-FTSZENKAKU-MAX
@@ -2249,7 +2249,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FTSZENKAKU-MAX
                                        TO  W17-FTSZENKAKU-COUNT
       *
-      *    ��ô���ֹ���������å�
+      *    負担者番号数字チェック
            MOVE    SPA-GMN-FTSNUMERIC-G TO  W17-FTSNUMERIC
            PERFORM VARYING IDX-FTS     FROM    1   BY  1
                    UNTIL   IDX-FTS     >       SPA-GMN-FTSNUMERIC-MAX
@@ -2259,7 +2259,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FTSNUMERIC-MAX
                                        TO  W17-FTSNUMERIC-COUNT
       *
-      *    ��ô���ֹ��������å�
+      *    負担者番号桁数チェック
            MOVE    SPA-GMN-FTSKETA-G TO  W17-FTSKETA
            PERFORM VARYING IDX-FTS     FROM    1   BY  1
                    UNTIL   IDX-FTS     >       SPA-GMN-FTSKETA-MAX
@@ -2269,7 +2269,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FTSKETA-MAX
                                        TO  W17-FTSKETA-COUNT
       *
-      *    ��ô���ֹ��������å�
+      *    負担者番号桁数チェック
            MOVE    SPA-GMN-FTSKETAMIN-G TO  W17-FTSKETAMIN
            PERFORM VARYING IDX-FTS     FROM    1   BY  1
                    UNTIL   IDX-FTS     >       SPA-GMN-FTSKETAMIN-MAX
@@ -2279,7 +2279,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-FTSKETAMIN-MAX
                                        TO  W17-FTSKETAMIN-COUNT
       *
-      *    ������ֹ�Ⱦ�ѥ����å�
+      *    受給者番号半角チェック
            MOVE    SPA-GMN-JKSHANKAKU-G TO  W17-JKSHANKAKU
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
                    UNTIL   IDX-JKS     >       SPA-GMN-JKSHANKAKU-MAX
@@ -2289,7 +2289,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JKSHANKAKU-MAX
                                        TO  W17-JKSHANKAKU-COUNT
       *
-      *    ������ֹ����ѥ����å�
+      *    受給者番号全角チェック
            MOVE    SPA-GMN-JKSZENKAKU-G TO  W17-JKSZENKAKU
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
                    UNTIL   IDX-JKS     >       SPA-GMN-JKSZENKAKU-MAX
@@ -2299,7 +2299,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JKSZENKAKU-MAX
                                        TO  W17-JKSZENKAKU-COUNT
       *
-      *    ������ֹ���������å�
+      *    受給者番号数字チェック
            MOVE    SPA-GMN-JKSNUMERIC-G TO  W17-JKSNUMERIC
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
                    UNTIL   IDX-JKS     >       SPA-GMN-JKSNUMERIC-MAX
@@ -2308,7 +2308,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-JKSNUMERIC-MAX
                                        TO  W17-JKSNUMERIC-COUNT
-      *    ������ֹ��������å�
+      *    受給者番号桁数チェック
            MOVE    SPA-GMN-JKSKETA-G TO  W17-JKSKETA
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
                    UNTIL   IDX-JKS     >       SPA-GMN-JKSKETA-MAX
@@ -2318,7 +2318,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JKSKETA-MAX
                                        TO  W17-JKSKETA-COUNT
       *
-      *    ������ֹ��������å�
+      *    受給者番号桁数チェック
            MOVE    SPA-GMN-JKSKETAMIN-G TO  W17-JKSKETAMIN
            PERFORM VARYING IDX-JKS     FROM    1   BY  1
                    UNTIL   IDX-JKS     >       SPA-GMN-JKSKETAMIN-MAX
@@ -2328,9 +2328,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-JKSKETAMIN-MAX
                                        TO  W17-JKSKETAMIN-COUNT
       *
-      *    ͭ��������
+      *    有効開始日
            MOVE    SPA-GMN-YUKOSTYMD   TO  W17-YUKOSTYMD
-      *    ͭ����λ��
+      *    有効終了日
            MOVE    SPA-GMN-YUKOEDYMD   TO  W17-YUKOEDYMD
       *
       *  
@@ -2356,7 +2356,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                W17-JKSKETAMIN-ITEM-STATE
            END-IF
       *
-      *    �������륻�å�
+      *    カーソルセット
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -2364,19 +2364,19 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
            IF     (SPA-ERRCD           =   SPACE)
               AND (SPA-GMN-CUR         =   ZERO )
-      *        ���ϸĽ�Υ��åȽ���
+      *        入力個所のセット処理
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
       *
            PERFORM 5012-SKIP-CUR-SEC
       *
-      *    �������륻�å�
+      *    カーソルセット
            EVALUATE    SPA-GMN-CUR
                WHEN    001
                    MOVE    "SELNUM"        TO  MCP-WIDGET
@@ -2429,11 +2429,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
-      *    ���ϲս꤫�饫������򥻥å�
+      *    入力箇所からカーソルをセット
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "SELNUM"
                    MOVE    002             TO  SPA-GMN-CUR
@@ -2475,7 +2475,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������륹���å׽���
+      *    カーソルスキップ処理
       *****************************************************************
        5012-SKIP-CUR-SEC               SECTION.
       *
@@ -2496,94 +2496,94 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        5012-SKIP-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
            MOVE    SPACE           TO  SPA-ERRMSG
       *
-      *    ���顼��å��������å�
+      *    エラーメッセージセット
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "選択番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "公費番号入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "��ô���ֹ�ȴ�������å����ϥ��顼"
+                   MOVE    "負担者番号抜けチェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "������ֹ�ȴ�������å����ϥ��顼"
+                   MOVE    "受給者番号抜けチェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "ͭ�����ֳ��������ϥ��顼"
+                   MOVE    "有効期間開始日入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "ͭ�����ֽ�λ�����ϥ��顼"
+                   MOVE    "有効期間終了日入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "ͭ���������դ���������դˤʤäƤ��ޤ�"
+                   MOVE    "有効開始日付より前の日付になっています"
                                            TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "���դ�����������ޤ���"
+                   MOVE    "日付が正しくありません"
                                            TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "��ô���ֹ�Ⱦ��ʸ�������å����ϥ��顼"
+                   MOVE    "負担者番号半角文字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "��ô���ֹ�����ʸ�������å����ϥ��顼"
+                   MOVE    "負担者番号全角文字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0013"
-                   MOVE    "������ֹ�Ⱦ��ʸ�������å����ϥ��顼"
+                   MOVE    "受給者番号半角文字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "������ֹ�����ʸ�������å����ϥ��顼"
+                   MOVE    "受給者番号全角文字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "��ô���ֹ���������å����ϥ��顼"
+                   MOVE    "負担者番号数字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0016"
-                   MOVE    "������ֹ���������å����ϥ��顼"
+                   MOVE    "受給者番号数字チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0017"
-                   MOVE    "��ô���ֹ��������å����ϥ��顼"
+                   MOVE    "負担者番号桁数チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "��ô���ֹ������ϥ��顼"
+                   MOVE    "負担者番号桁数入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0019"
-                   MOVE    "������ֹ��������å����ϥ��顼"
+                   MOVE    "受給者番号桁数チェック入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE    "������ֹ������ϥ��顼"
+                   MOVE    "受給者番号桁数入力エラー"
                                            TO  SPA-ERRMSG
                WHEN    "1101"
-                   MOVE    "�оݤΥǡ��������򤵤�Ƥ��ޤ�"
+                   MOVE    "対象のデータが選択されています"
                                            TO  SPA-ERRMSG
                WHEN    "1102"
-                   MOVE    "�����ֹ�����Ϥ��Ƥ�������"
+                   MOVE    "選択番号を入力してください"
                                            TO  SPA-ERRMSG
                WHEN    "1103"
-                   MOVE    "ͭ�����֤ν�ʣ����ǡ�����¸�ߤ��ޤ�"
+                   MOVE    "有効期間の重複するデータが存在します"
                                            TO  SPA-ERRMSG
                WHEN    "1104"
-                   MOVE    "�ɲò�ǽ��������ã���ޤ���"
+                   MOVE    "追加可能最大件数に達しました"
                                            TO  SPA-ERRMSG
                WHEN    "4001"
-                   MOVE    "��������ǡ���������¸�ߤ��ޤ�"
+                   MOVE    "該当するデータが既に存在します"
                                            TO  SPA-ERRMSG
                WHEN    "4002"
-                   MOVE    "�ɲý����˼��Ԥ��ޤ���"
+                   MOVE    "追加処理に失敗しました"
                                            TO  SPA-ERRMSG
                WHEN    "4003"
-                   MOVE    "��������ǡ�����¸�ߤ��ޤ���"
+                   MOVE    "該当するデータが存在しません"
                                            TO  SPA-ERRMSG
                WHEN    "4004"
-                   MOVE    "���������˼��Ԥ��ޤ���"
+                   MOVE    "更新処理に失敗しました"
                                            TO  SPA-ERRMSG
                WHEN    "4005"
-                   MOVE    "��������˼��Ԥ��ޤ���"
+                   MOVE    "削除処理に失敗しました"
                                            TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -2598,7 +2598,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "NEW"           TO  MCP-PUTTYPE
            MOVE    "WERR"          TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -2608,14 +2608,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ������
+      *    ガイドメッセージ表示処理
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
-      *    ��ǧ��å��������å�
+      *    確認メッセージセット
            EVALUATE    SPA-WIDCD
                WHEN    "3001"
-                   MOVE    "������ޤ�����������Ǥ���"
+                   MOVE    "削除します。よろしいですか"
                                            TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -2632,7 +2632,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "NEW"           TO  MCP-PUTTYPE
            MOVE    "WID1"          TO  MCP-WINDOW
       *
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -2641,11 +2641,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        520-WIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
       *
-      *    ���դ����̡̣ɣ��ɤ⤷���ϣ��̡̣ɣ��ɤΤȤ�����ȴ����
+      *    日付がＡＬＬ”０”もしくはＡＬＬ”９”のとき処理抜ける
            IF    ( WRK-YMD             =   "00000000" )
              OR  ( WRK-YMD             =   "99999999" )
                MOVE    WRK-YMD         TO  WRK-HENYMDG
@@ -2656,7 +2656,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE           TO  WRK-HENYMDG
                                        WRK-SYMD
       *
-      *    ���ղ��̥����å�
+      *    日付画面チェック
            INITIALIZE                  ORCSGDAYAREA
            MOVE    WRK-YMD         TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -2665,20 +2665,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
                MOVE    SGDAY-SDAY      TO  WRK-SYMD
            ELSE
-      *        ���ե��顼
+      *        日付エラー
                MOVE    "0010"          TO  SPA-ERRCD
            END-IF
            .
        5002-HIZUKE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ӽ����󸡺�����
+      *    チェック排除情報検索処理
       *****************************************************************
        3101-SYSKANRI-SELECT-SEC    SECTION.
       *
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-      *        �����å��ӽ������ɹ�����
+      *        チェック排除情報読込処理
                PERFORM 3101-SYSKANRI-FETCH-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -2688,7 +2688,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        3101-SYSKANRI-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ӽ������ɹ�����
+      *    チェック排除情報読込処理
       *****************************************************************
         3101-SYSKANRI-FETCH-SEC    SECTION.
       *
@@ -2703,13 +2703,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        3101-SYSKANRI-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ�ޥ�������������
+      *    保険番号マスター検索処理
       *****************************************************************
        31011-HKNNUM-SELECT-SEC     SECTION.
       *
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-      *        �ݸ��ֹ�ޥ������ɹ�����
+      *        保険番号マスター読込処理
                PERFORM 31011-HKNNUM-FETCH-SEC
            ELSE
                MOVE    1               TO  FLG-HKNNUM
@@ -2719,7 +2719,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        31011-HKNNUM-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɹ�����
+      *    保険番号マスター読込処理
       *****************************************************************
        31011-HKNNUM-FETCH-SEC      SECTION.
       *
@@ -2731,7 +2731,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF    ( MCP-RC          =   ZERO )
                    MOVE    ZERO        TO  FLG-HKNNUM
                    MOVE    MCPDATA-REC TO  HKNNUM-REC
-      *            ���������������Υǡ����������
+      *            １００〜８９９のデータだけ抽出
                    IF    ( HKN-HKNNUM         >=  "100")
                      AND ( HKN-HKNNUM         <=  "899" )
                        MOVE    ZERO    TO  FLG-SKIP
@@ -2746,7 +2746,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        31011-HKNNUM-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2759,7 +2759,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2774,7 +2774,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2787,7 +2787,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

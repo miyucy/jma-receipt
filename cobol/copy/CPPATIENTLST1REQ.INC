@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,16 +16,16 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����ȴ��԰�������      COPY (CPPATIENTLST1SEQ.INC)
+      *    ＡＰＩリクエスト患者一覧取得      COPY (CPPATIENTLST1SEQ.INC)
       ******************************************************************
         01  XML-PATIENTLST1REQ.
             03  PATLSTREQ-OBJECT           PIC X(36).
             03  PATLSTREQ-MODE             PIC S9(9)   BINARY.
             03  PATLSTREQ-PATIENTINFOREQ.
-      *       �оݳ�������
+      *       対象開始日付
               05  PATLSTREQ-START-DATE     PIC X(10).
-      *       �оݽ�λ����
+      *       対象終了日付
               05  PATLSTREQ-END-DATE       PIC X(10).
-      *       �ƥ��ȴ��Զ�ʬ(1:�ޤޤʤ���
+      *       テスト患者区分(1:含まない）
               05  PATLSTREQ-TEST-KBN       PIC X(01).
       *

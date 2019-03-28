@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,24 +16,24 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ����ե�����̾�������֡�COPY (CPORCSGETTEMP.INC)
+      *    一時ファイル名取得サブ　COPY (CPORCSGETTEMP.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SGETTEMP-AREA.
-      *    �ߥɥ륦����
+      *    ミドルウェア
            03  SGETTEMP-MW                 PIC 9(01).
-      *    ���ϰ���
-      *    �ե�����̾�ʥѥ�̵����
+      *    入力引数
+      *    ファイル名（パス無し）
            03  SGETTEMP-BASENAME           PIC X(1024).
            03  SGETTEMP-BASENAMES-OCC      OCCURS 10.
                05  SGETTEMP-BASENAMES      PIC X(1024).
-      *    �ֵ���
-      *    FULLNAME���BASENAME���ϰ���
+      *    返却値
+      *    FULLNAME内のBASENAME開始位置
            03  SGETTEMP-ST                 PIC 9(05).
-      *    ����ǥ��쥯�ȥ�̾
+      *    一時ディレクトリ名
            03  SGETTEMP-TEMPDIR            PIC X(1024).
            03  SGETTEMP-FULLNAME-AREA.
       *    TEMPDIR + "/" + BASENAME

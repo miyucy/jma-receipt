@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI021R2V2.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Íè±¡´µ¼Ô°ìÍ÷  (xml2)
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  13/08/XX    NACL¡ÝÂ¿¡¹Ç¼¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ¥é™¢æ‚£è€…ä¸€è¦§  (xml2)
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  13/08/XX    NACLâˆ’å¤šã€…ç´ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  17/04/04  ºÇÂç·ï¿ô¤ò1000¤Ø
-      * 05.00.00     NACL-Â¿¡¹Ç¼  19/12/07  ´µ¼Ô¾ðÊó¹¹¿·ÆüÊÔ½¸
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.08.00     NACL-å¤šã€…ç´  17/04/04  æœ€å¤§ä»¶æ•°ã‚’1000ã¸
+      * 05.00.00     NACL-å¤šã€…ç´  19/12/07  æ‚£è€…æƒ…å ±æ›´æ–°æ—¥ç·¨é›†
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -40,10 +40,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TEND                PIC 9(01).
@@ -60,7 +60,7 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-SP                  PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -72,10 +72,10 @@
       *
            03  TBL-MAX             PIC 9(04).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
       *01  CNT-AREA.
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -87,7 +87,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    »þ´ÖÊÔ½¸
+      *    æ™‚é–“ç·¨é›†
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -98,7 +98,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ¥¨¥é¡¼¥³¡¼¥É
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -114,10 +114,10 @@
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
            03  WRK-PTNUM               PIC X(20).
            03  WRK-PTID                PIC 9(10).
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-RENNUM              PIC 9(01).
       *
@@ -136,7 +136,7 @@
            03  WRK-VIS-SRYKA               PIC X(02).
            03  WRK-VIS-SRYKA-NAME          PIC X(80).
       *
-      *    È¾³ÑÁ´³ÑÊÑ´¹
+      *    åŠè§’å…¨è§’å¤‰æ›
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
@@ -145,68 +145,68 @@
       *
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
+      *    æ‚£è€…ç•ªå·å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSPTID.INC".
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
-      *    API XMLÆÉ¤ß¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLèª­ã¿è¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPVISITPTLSTV2REQ.INC".
-      *    API XML½ñ¤­¹þ¤ßÍÑÄêµÁÂÎ¡Ê¼õ¿ÇÆüÉÕ»ØÄê¡Ë
+      *    API XMLæ›¸ãè¾¼ã¿ç”¨å®šç¾©ä½“ï¼ˆå—è¨ºæ—¥ä»˜æŒ‡å®šï¼‰
            COPY    "CPVISITPTLST01V2RES.INC".
-      *    API XML½ñ¤­¹þ¤ßÍÑÄêµÁÂÎ¡Ê¼õ¿ÇÇ¯·î»ØÄê¡Ë
+      *    API XMLæ›¸ãè¾¼ã¿ç”¨å®šç¾©ä½“ï¼ˆå—è¨ºå¹´æœˆæŒ‡å®šï¼‰
            COPY    "CPVISITPTLST02V2RES.INC".
       *
-      *    API XMLÆÉ¤ß¹þ¤ß¶¦ÄÌÄêµÁ
+      *    API XMLèª­ã¿è¾¼ã¿å…±é€šå®šç¾©
            COPY    "CPAPIV2REQ.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¥»¥Ã¥ÈÎÎ°è
+      *    ä¿é™ºçµ„åˆã›ã‚»ãƒƒãƒˆé ˜åŸŸ
            COPY    "CPORCSAPIHKN.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
-      *    ¡Ê¿¦°÷¾ðÊó¡Ë
+      *    ï¼ˆè·å“¡æƒ…å ±ï¼‰
            COPY    "CPSK1010.INC".
-      *    ¡Ê¿ÇÎÅ²Ê¾ðÊó¡Ë
+      *    ï¼ˆè¨ºç™‚ç§‘æƒ…å ±ï¼‰
            COPY    "CPSK1005.INC".
-      *    ¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë
+      *    ï¼ˆåŒ»ç™‚æ©Ÿé–¢æƒ…å ±ï¼‰
            COPY    "CPSK1001.INC".
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ´µ¼ÔÈÖ¹æ¥Þ¥¹¥¿
+      *    æ‚£è€…ç•ªå·ãƒžã‚¹ã‚¿
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ¼õ¿ÇÍúÎò
+      *    å—è¨ºå±¥æ­´
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ´µ¼ÔÊÝ¸±¾ðÊó
+      *    æ‚£è€…ä¿é™ºæƒ…å ±
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó
+      *    æ‚£è€…å…¬è²»æƒ…å ±
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
@@ -216,7 +216,7 @@
       *
            COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -233,7 +233,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -247,19 +247,19 @@
            INITIALIZE                      SPA-AREA
       *****INITIALIZE                      CNT-AREA
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
       *
            IF      WRK-ERRCD           =   "99"
-      *        ¥æ¡¼¥¶£É£Ä¥¨¥é¡¼
+      *        ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤ã‚¨ãƒ©ãƒ¼
                MOVE   404                  TO  APILST10-HTTPSTATUS
            ELSE
-      *        ÊÖµÑÎÎ°èÊÔ½¸
+      *        è¿”å´é ˜åŸŸç·¨é›†
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
@@ -272,14 +272,14 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-VISITPTLST01RES
            INITIALIZE                      XML-VISITPTLST02RES
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -288,14 +288,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ÆüÉÕ¡¦»þ´Ö½ÐÎÏÊÔ½¸
+      *    æ—¥ä»˜ãƒ»æ™‚é–“å‡ºåŠ›ç·¨é›†
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  VIS01RES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  VIS01RES-INFORMATION-TIME
       *
-      *    °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ¥»¥Ã¥È 
+      *    åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·ã‚»ãƒƒãƒˆ 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -304,7 +304,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    £Ó£Ð£Á¶¦ÄÌÀßÄê
+      *    ï¼³ï¼°ï¼¡å…±é€šè¨­å®š
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -322,11 +322,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML¾ðÊó¼è¤ê½Ð¤·
+      *    XMLæƒ…å ±å–ã‚Šå‡ºã—
            PERFORM 1000-APTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -338,15 +338,15 @@
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    VISREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        ¼õ¿ÇÇ¯·îÆü
+      *        å—è¨ºå¹´æœˆæ—¥
                MOVE    1                   TO  FLG-SYORI
            WHEN    "02"
-      *        ¼õ¿ÇÇ¯·î
+      *        å—è¨ºå¹´æœˆ
                MOVE    2                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
-      *    ÆþÎÏ¹àÌÜ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›é …ç›®ãƒã‚§ãƒƒã‚¯å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -356,10 +356,10 @@
       *
            EVALUATE    VISREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        ¼õ¿ÇÇ¯·îÆü
+      *        å—è¨ºå¹´æœˆæ—¥
                PERFORM 2002-SYORI-01-SEC
            WHEN    "02"
-      *        ¼õ¿ÇÇ¯·î¾ðÊó
+      *        å—è¨ºå¹´æœˆæƒ…å ±
                PERFORM 2003-SYORI-02-SEC
            END-EVALUATE
       *
@@ -368,7 +368,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó¤«¤éÆâÍÆ¤ò¼è¤ê½Ð¤¹
+      *    XMLæƒ…å ±ã‹ã‚‰å†…å®¹ã‚’å–ã‚Šå‡ºã™
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -376,7 +376,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-APIREQ
-      * XML¾ðÊó¼è¤ê½Ð¤·
+      * XMLæƒ…å ±å–ã‚Šå‡ºã—
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_visitptlstv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -418,20 +418,20 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó½ñ¤­¹þ¤ß½èÍý
+      *    XMLæƒ…å ±æ›¸ãè¾¼ã¿å‡¦ç†
       *****************************************************************
        300-APTXMLMAKE-SEC   SECTION.
       *
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
                MOVE    ZERO                TO  VIS01RES-API-RESULT
-               MOVE    "½èÍý½ªÎ»"          TO  VIS01RES-API-RESULT-MSG
+               MOVE    "å‡¦ç†çµ‚äº†"          TO  VIS01RES-API-RESULT-MSG
            ELSE
                IF      WRK-ERRMSG          =   SPACE
-      *        ¥¨¥é¡¼¡¦·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *        ã‚¨ãƒ©ãƒ¼ãƒ»è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                MOVE    WRK-ERRCD           TO  VIS01RES-API-RESULT
@@ -451,7 +451,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó½ñ¤­¹þ¤ß½èÍý¡Ê¼õ¿ÇÍúÎòÆâÍÆ¡Ë
+      *    XMLæƒ…å ±æ›¸ãè¾¼ã¿å‡¦ç†ï¼ˆå—è¨ºå±¥æ­´å†…å®¹ï¼‰
       *****************************************************************
        3001-MDC01XMLMAKE-SEC        SECTION.
       *
@@ -497,11 +497,11 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó½ñ¤­¹þ¤ß½èÍý¡Ê¿ÇÎÅ¹Ô°ÙÆâÍÆ¡Ë
+      *    XMLæƒ…å ±æ›¸ãè¾¼ã¿å‡¦ç†ï¼ˆè¨ºç™‚è¡Œç‚ºå†…å®¹ï¼‰
       *****************************************************************
        3002-MDC02XMLMAKE-SEC        SECTION.
       *
-      *    ¶¦ÄÌÊÔ½¸
+      *    å…±é€šç·¨é›†
            MOVE   "Medical Info"           TO  VIS02RES-RESKEY
       *
            MOVE    VIS01RES-INFORMATION-DATE
@@ -567,7 +567,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆÉ¤ß¹þ¤ó¤ÀXML¤ÎLOW-VALUE ¤ò  SPACE ¤ËÃÖ´¹
+      *    èª­ã¿è¾¼ã‚“ã XMLã®LOW-VALUE ã‚’  SPACE ã«ç½®æ›
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -583,18 +583,18 @@
            EXIT.
       *
       *****************************************************************
-      *    Íè±¡°ìÍ÷¾ðÊóÀßÄêÆâÍÆ¥Á¥§¥Ã¥¯
+      *    æ¥é™¢ä¸€è¦§æƒ…å ±è¨­å®šå†…å®¹ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    ÊÔ½¸½èÍý
+      *    ç·¨é›†å‡¦ç†
            PERFORM 20010-INPUT-HEN-SEC
       *
-      *    ¿ÇÎÅÆü¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚æ—¥ãƒã‚§ãƒƒã‚¯
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-VISIT-CHK-SEC
            END-IF
-      *    ¿ÇÎÅ²Ê¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
            IF     (WRK-VIS-SRYKA   NOT =   SPACE  )
            AND    (WRK-ERRCD           =   SPACE  )
                MOVE    WRK-VIS-SRYKA   TO  WRK-SRYKA
@@ -618,18 +618,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¹àÌÜÊÑ´¹ÊÔ½¸½èÍý
+      *    å…¥åŠ›é …ç›®å¤‰æ›ç·¨é›†å‡¦ç†
       *****************************************************************
        20010-INPUT-HEN-SEC     SECTION.
       *
-      *    ¿ÇÎÅ²Ê
+      *    è¨ºç™‚ç§‘
            MOVE    VISREQ-DEP-CODE         TO  WRK-VIS-SRYKA
-      *    ¿ÇÎÅÆüÉÕ
+      *    è¨ºç™‚æ—¥ä»˜
            MOVE    VISREQ-VISIT-DATE       TO  WRK-HEN-DATE
            MOVE    SPACE                   TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD                TO  WRK-VISIT-YMD
-      *    Ì¤ÀßÄê»þ¤Ï¥·¥¹¥Æ¥à¾ðÊóÀßÄê
+      *    æœªè¨­å®šæ™‚ã¯ã‚·ã‚¹ãƒ†ãƒ æƒ…å ±è¨­å®š
            IF      WRK-VISIT-YMD       =   SPACE
                MOVE    SMCNDATE-YMD        TO  WRK-VISIT-YMD
                MOVE    VIS01RES-INFORMATION-DATE
@@ -637,14 +637,14 @@
                MOVE    "K1"                TO  WRK-KEICD
            END-IF
            IF      FLG-SYORI           =   2
-      *        Ç¯·î»ØÄê¤Ï¡¢Æü¤ò£°£±¤È¤¹¤ë
+      *        å¹´æœˆæŒ‡å®šã¯ã€æ—¥ã‚’ï¼ï¼‘ã¨ã™ã‚‹
                MOVE    "01"            TO  WRK-VISIT-DD
            END-IF
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¤È¤¹¤ë
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ã¨ã™ã‚‹
            MOVE    WRK-VISIT-YMD       TO  SPA-SYSYMD
       *
-      *    É¬¿ÜÆþÎÏ¥Á¥§¥Ã¥¯
-      *    ¿ÇÎÅ²Ê
+      *    å¿…é ˆå…¥åŠ›ãƒã‚§ãƒƒã‚¯
+      *    è¨ºç™‚ç§‘
            IF      WRK-VIS-SRYKA       =   SPACE
                IF     (FLG-SYORI           =   2      )
                AND    (WRK-ERRCD           =   SPACE  )
@@ -656,11 +656,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅÆüÉÕ¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚æ—¥ä»˜ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-VISIT-CHK-SEC    SECTION.
       *
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯¥µ¥Ö
+      *    æ—¥ä»˜ãƒã‚§ãƒƒã‚¯ã‚µãƒ–
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -681,11 +681,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²Ê¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-SRYKA-CHK-SEC         SECTION.
       *
-      *    ¿ÇÎÅ²Ê¤ÎÂ¸ºß¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
@@ -693,7 +693,7 @@
            MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SYS-1005-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -708,17 +708,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õ¿ÇÍúÎòÊÔ½¸½èÍý
+      *    å—è¨ºå±¥æ­´ç·¨é›†å‡¦ç†
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
-      *    ¾ðÊóÆâÍÆÊÔ½¸
+      *    æƒ…å ±å†…å®¹ç·¨é›†
            PERFORM 20021-VISITRES-HEN-SEC
       *
-      *    ³°Íè
+      *    å¤–æ¥
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
-      *    ¼õ¿ÇÎò¤ò¸¡º÷
+      *    å—è¨ºæ­´ã‚’æ¤œç´¢
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
@@ -746,7 +746,7 @@
                        (WRK-ERRCD      NOT =   SPACE)
       *
                MOVE    ZERO            TO  FLG-CHK
-      *        ¿ÇÎÅ²Ê°ìÃ×¥Á¥§¥Ã¥¯
+      *        è¨ºç™‚ç§‘ä¸€è‡´ãƒã‚§ãƒƒã‚¯
                IF     (WRK-VIS-SRYKA   NOT =   SPACE )
                  AND  (WRK-VIS-SRYKA   NOT =   JYURRK-SRYKA )
                    MOVE    1               TO  FLG-CHK
@@ -761,7 +761,7 @@
                    IF      TBL-MAX         >   1000
                        MOVE    "12"            TO  WRK-ERRCD
                    ELSE
-      *                ÌÀºÙ¹àÌÜÊÔ½¸
+      *                æ˜Žç´°é …ç›®ç·¨é›†
                        PERFORM 20021-JYURRK-HENSYU-SEC
                    END-IF
                END-IF
@@ -775,7 +775,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      TBL-MAX             =   ZERO
-      *        ÂÐ¾Ý¤Ê¤·
+      *        å¯¾è±¡ãªã—
                MOVE    "13"                TO  WRK-ERRCD
                IF      WRK-VIS-SRYKA   NOT =   SPACE
                    MOVE    WRK-VIS-SRYKA       TO  VIS01RES-DEP-CODE (1)
@@ -787,7 +787,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õ¿ÇÍúÎòÆâÍÆÊÔ½¸½èÍý
+      *    å—è¨ºå±¥æ­´å†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        20021-VISITRES-HEN-SEC        SECTION.
       *
@@ -798,15 +798,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õ¿ÇÍúÎòÆâÍÆÊÔ½¸½èÍý
+      *    å—è¨ºå±¥æ­´å†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        20021-JYURRK-HENSYU-SEC        SECTION.
       *
-      *    ´µ¼Ô¾ðÊó¸¡º÷
+      *    æ‚£è€…æƒ…å ±æ¤œç´¢
            PERFORM 200211-PTNUM-HEN-SEC
       *
            ADD    1                    TO  IDX
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
            MOVE    WRK-PTNUM           TO  VIS01RES-PATIENTID (IDX)
       *
            MOVE    PTINF-NAME          TO  VIS01RES-NAME     (IDX)
@@ -816,33 +816,33 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  VIS01RES-BIRTHDAY  (IDX)
            MOVE    PTINF-SEX           TO  VIS01RES-SEX  (IDX)
-      *    Ï¢ÈÖ
+      *    é€£ç•ª
            MOVE    JYURRK-RENNUM       TO  VIS01RES-NUMBER (IDX)
-      *    ÅÁÉ¼ÈÖ¹æ
+      *    ä¼ç¥¨ç•ªå·
            MOVE    JYURRK-DENPNUM      TO  VIS01RES-DENPNUM (IDX)
-      *    ¿ÇÎÅ²Ê
+      *    è¨ºç™‚ç§‘
            PERFORM 200212-SRYKAMEI-HEN-SEC
            MOVE    JYURRK-SRYKA        TO  VIS01RES-DEP-CODE (IDX)
            MOVE    WRK-SRYKA-NAME      TO  VIS01RES-DEP-NAME (IDX)
-      *    ¥É¥¯¥¿¡¼
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼
            IF      JYURRK-DRCD     NOT =   ZERO
                PERFORM 200213-DRCD-HEN-SEC
                MOVE    WRK-DRCD            TO  VIS01RES-DR-CODE (IDX)
                MOVE    WRK-DRCD-NAME       TO  VIS01RES-DR-NAME (IDX)
            END-IF
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
            MOVE    JYURRK-HKNCOMBINUM  TO  VIS01RES-COMBINATION-NUMBER
                                                                (IDX)
            PERFORM 200214-HKNCOMBI-HEN-SEC
       *H29.4
-      *    ¹¹¿·Æü
+      *    æ›´æ–°æ—¥
            MOVE    JYURRK-UPYMD        TO  WRK-SYMD
            MOVE    JYURRK-UPHMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  VIS01RES-UPDATE-DATE(IDX)
            MOVE    WRK-HEN-TIME        TO  VIS01RES-UPDATE-TIME(IDX)
       *H29.12
-      *    ´µ¼ÔÅÐÏ¿¹¹¿·Æü
+      *    æ‚£è€…ç™»éŒ²æ›´æ–°æ—¥
            MOVE    PTNUM-UPYMD         TO  WRK-SYMD
            MOVE    PTNUM-UPHMS         TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
@@ -853,11 +853,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¥Á¥§¥Ã¥¯
+      *    æ‚£è€…ç•ªå·ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        200211-PTNUM-HEN-SEC     SECTION.
       *
-      *    ´µ¼ÔÈÖ¹æ¼èÆÀ
+      *    æ‚£è€…ç•ªå·å–å¾—
       *    INITIALIZE                  ORCSPTIDAREA
       *    MOVE    JYURRK-HOSPNUM      TO  SPTID-HOSPNUM
       *    MOVE    JYURRK-PTID         TO  SPTID-PTID
@@ -865,12 +865,12 @@
       *                                        SPA-AREA
       *    MOVE    SPTID-PTNUM         TO  WRK-PTNUM
       *    IF      SPTID-RC        NOT =   ZERO
-      *        ´µ¼ÔÈÖ¹æ¥¨¥é¡¼
+      *        æ‚£è€…ç•ªå·ã‚¨ãƒ©ãƒ¼
       *        MOVE    ALL "*"             TO  WRK-PTNUM
       *        MOVE    1                   TO  FLG-ERR
       *****END-IF
       *H29.12
-      *    ´µ¼ÔÈÖ¹æ¸¡º÷
+      *    æ‚£è€…ç•ªå·æ¤œç´¢
            INITIALIZE                  PTNUM-REC
            MOVE    JYURRK-HOSPNUM      TO  PTNUM-HOSPNUM
            MOVE    JYURRK-PTID         TO  PTNUM-PTID
@@ -878,7 +878,7 @@
            IF      FLG-PTNUM           =   ZERO
                MOVE    PTNUM-PTNUM         TO  WRK-PTNUM
            ELSE
-      *        ´µ¼ÔÈÖ¹æ¥¨¥é¡¼
+      *        æ‚£è€…ç•ªå·ã‚¨ãƒ©ãƒ¼
                MOVE    ALL "*"             TO  WRK-PTNUM
                MOVE    1                   TO  FLG-ERR
            END-IF
@@ -895,7 +895,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÌ¾¾ÎÊÔ½¸½èÍý
+      *    è¨ºç™‚ç§‘åç§°ç·¨é›†å‡¦ç†
       *****************************************************************
        200212-SRYKAMEI-HEN-SEC        SECTION.
       *
@@ -908,7 +908,7 @@
                END-IF
            END-PERFORM
            IF       IDX-H              =   ZERO
-      *        ¿ÇÎÅ²Ê¸¡º÷
+      *        è¨ºç™‚ç§‘æ¤œç´¢
                MOVE    JYURRK-SRYKA        TO   WRK-SRYKA
                PERFORM 20011-SRYKA-CHK-SEC
            ELSE
@@ -920,7 +920,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼Ì¾¾ÎÊÔ½¸½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼åç§°ç·¨é›†å‡¦ç†
       *****************************************************************
        200213-DRCD-HEN-SEC         SECTION.
       *
@@ -933,7 +933,7 @@
                END-IF
            END-PERFORM
            IF       IDX-H              =   ZERO
-      *        ¥É¥¯¥¿¡¼¸¡º÷
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼æ¤œç´¢
                MOVE    JYURRK-DRCD        TO   WRK-DRCD
                PERFORM 2002131-DRCD-CHK-SEC
            ELSE
@@ -946,7 +946,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼ÊÔ½¸½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ç·¨é›†å‡¦ç†
       *****************************************************************
        2002131-DRCD-CHK-SEC         SECTION.
       *
@@ -957,7 +957,7 @@
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SYS-1010-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -972,7 +972,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸½èÍý
+      *    ä¿é™ºçµ„åˆã›ç·¨é›†å‡¦ç†
       *****************************************************************
        200214-HKNCOMBI-HEN-SEC     SECTION.
       *
@@ -982,38 +982,38 @@
            MOVE    JYURRK-HKNCOMBINUM  TO  COMB-HKNCOMBINUM
            PERFORM 920-HKNCOMBI-READ-SEC
       *
-      *    ¼çÊÝ¸±¡ÝÊÝ¸±ÈÖ¹æ
+      *    ä¸»ä¿é™ºâˆ’ä¿é™ºç•ªå·
            MOVE    COMB-HKNNUM         TO  VIS01RES-MAIN-INSURANCE-CLASS
                                                             (IDX)
-      *    ¼çÊÝ¸±¡ÝÃ»½ÌÀ©ÅÙÌ¾
+      *    ä¸»ä¿é™ºâˆ’çŸ­ç¸®åˆ¶åº¦å
            MOVE    COMB-SYU-TANSEIDONAME
                                        TO  VIS01RES-MAIN-INSURANCE-NAME
                                                             (IDX)
            IF      COMB-HKNID      NOT =   ZERO
-      *        ÊÝ¸±¾ðÊóÊÔ½¸
+      *        ä¿é™ºæƒ…å ±ç·¨é›†
                PERFORM 930-PTHKNINF-READ-SEC
-      *        ÊÝ¸±¼ÔÈÖ¹æ
+      *        ä¿é™ºè€…ç•ªå·
                MOVE    PTHKN-HKNJANUM  TO
                                        VIS01RES-MAIN-INSURANCE-NUMBER
                                                             (IDX)
-      *        µ­¹æ¡¦ÈÖ¹æ
+      *        è¨˜å·ãƒ»ç•ªå·
                MOVE    PTHKN-KIGO      TO  VIS01RES-MAIN-MARK  (IDX)
                MOVE    PTHKN-NUM       TO  VIS01RES-MAIN-NUMBER(IDX)
            END-IF
-      *    ¸øÈñ¾ðÊó
+      *    å…¬è²»æƒ…å ±
            PERFORM VARYING    IDK      FROM    1   BY  1
                    UNTIL      IDK      >   4
                IF      COMB-KOHID (IDK)    NOT =   ZERO
-      *            ¸øÈñ¤Î¼ïÎà
+      *            å…¬è²»ã®ç¨®é¡ž
                    MOVE    COMB-KOHHKNNUM (IDK)
                                        TO  VIS01RES-INSURANCE-CLASS
                                                             (IDX IDK)
                    MOVE    COMB-KOH-TANSEIDONAME (IDK)
                                        TO  VIS01RES-INSURANCE-NAME
                                                             (IDX IDK)
-      *            ¸øÈñ¾ðÊóÊÔ½¸
+      *            å…¬è²»æƒ…å ±ç·¨é›†
                    PERFORM 940-PTKOHINF-READ-SEC
-      *            ÉéÃ´¼ÔÈÖ¹æ
+      *            è² æ‹…è€…ç•ªå·
                    MOVE    PTKOH-FTNJANUM  TO  VIS01RES-PROVIDER-NUMBER
                                                             (IDX IDK)
                    MOVE    PTKOH-JKYSNUM   TO  VIS01RES-RECIPIENT-NUMBER
@@ -1025,17 +1025,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õ¿ÇÍúÎò¿ÇÎÅ¹Ô°ÙÆâÍÆÊÔ½¸½èÍý
+      *    å—è¨ºå±¥æ­´è¨ºç™‚è¡Œç‚ºå†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        2003-SYORI-02-SEC          SECTION.
       *
-      *    ¾ðÊóÆâÍÆÊÔ½¸
+      *    æƒ…å ±å†…å®¹ç·¨é›†
            PERFORM 20031-VISITRES02-HEN-SEC
       *
-      *    ³°Íè
+      *    å¤–æ¥
            MOVE    "2"                 TO  SPA-NYUGAIKBN
       *
-      *    ¼õ¿ÇÎò¤ò¸¡º÷
+      *    å—è¨ºæ­´ã‚’æ¤œç´¢
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
@@ -1067,15 +1067,15 @@
       *
                IF     (WRK-PTID        NOT =   ZERO )
                   AND (JYURRK-PTID         =   WRK-PTID)
-      *            ¼õ¿ÇÆüÀßÄê
+      *            å—è¨ºæ—¥è¨­å®š
                    PERFORM 20031-JYURRK-DAYHEN-SEC
                ELSE
-      *            ´µ¼Ô¾ðÊóÀßÄê
+      *            æ‚£è€…æƒ…å ±è¨­å®š
                    ADD     1               TO  TBL-MAX
                    IF      TBL-MAX         >   2000
                        MOVE    "14"            TO  WRK-ERRCD
                    ELSE
-      *                ÌÀºÙ¹àÌÜÊÔ½¸
+      *                æ˜Žç´°é …ç›®ç·¨é›†
                        PERFORM 20031-JYURRK-HENSYU02-SEC
                    END-IF
                END-IF
@@ -1089,7 +1089,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      TBL-MAX             =   ZERO
-      *        ÂÐ¾Ý¤Ê¤·
+      *        å¯¾è±¡ãªã—
                MOVE    "13"                TO  WRK-ERRCD
            END-IF
       *
@@ -1098,7 +1098,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õ¿ÇÍúÎòÆâÍÆÊÔ½¸½èÍý
+      *    å—è¨ºå±¥æ­´å†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        20031-VISITRES02-HEN-SEC        SECTION.
       *
@@ -1110,17 +1110,17 @@
        20031-VISITRES02-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¾ðÊó½ÐÎÏ¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…æƒ…å ±å‡ºåŠ›æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20031-JYURRK-HENSYU02-SEC     SECTION.
       *
-      *    ´µ¼Ô¾ðÊó¸¡º÷
+      *    æ‚£è€…æƒ…å ±æ¤œç´¢
            PERFORM 200211-PTNUM-HEN-SEC
       *
            MOVE    JYURRK-PTID         TO  WRK-PTID
       *
            ADD    1                    TO  IDX
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
            MOVE    WRK-PTNUM           TO  VIS02RES-PATIENTID (IDX)
       *
            MOVE    PTINF-NAME          TO  VIS02RES-NAME     (IDX)
@@ -1132,7 +1132,7 @@
            MOVE    PTINF-SEX           TO  VIS02RES-SEX  (IDX)
       *
            MOVE    ZERO                TO  VIS02RES-VISIT-CALENDAR (IDX)
-      *    ¼õ¿ÇÆüÀßÄê
+      *    å—è¨ºæ—¥è¨­å®š
            PERFORM 20031-JYURRK-DAYHEN-SEC
       *
            .
@@ -1140,7 +1140,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õ¿ÇÆüÀßÄê½èÍý
+      *    å—è¨ºæ—¥è¨­å®šå‡¦ç†
       *****************************************************************
        20031-JYURRK-DAYHEN-SEC                SECTION.
       *
@@ -1153,7 +1153,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1182,7 +1182,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÑ´¹ÊÔ½¸½èÍý
+      *    æ—¥ä»˜å¤‰æ›ç·¨é›†å‡¦ç†
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1204,73 +1204,73 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "¿ÇÎÅ²ÊÌ¤ÀßÄê"
+               MOVE    "è¨ºç™‚ç§‘æœªè¨­å®š"
                                                TO  WRK-ERRMSG
            WHEN    "10"
-               MOVE    "¿ÇÎÅÆüÀßÄê¸í¤ê"
+               MOVE    "è¨ºç™‚æ—¥è¨­å®šèª¤ã‚Š"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "¿ÇÎÅ²Ê¥³¡¼¥É¸í¤ê"
+               MOVE    "è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰èª¤ã‚Š"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-      *        MOVE    "ÂÐ¾Ý¤¬£µ£°£°·ï°Ê¾åÂ¸ºß¤·¤Þ¤¹¡£"
-               MOVE    "ÂÐ¾Ý¤¬£±£°£°£°·ï°Ê¾åÂ¸ºß¤·¤Þ¤¹¡£"
+      *        MOVE    "å¯¾è±¡ãŒï¼•ï¼ï¼ä»¶ä»¥ä¸Šå­˜åœ¨ã—ã¾ã™ã€‚"
+               MOVE    "å¯¾è±¡ãŒï¼‘ï¼ï¼ï¼ä»¶ä»¥ä¸Šå­˜åœ¨ã—ã¾ã™ã€‚"
                                                TO  WRK-ERRMSG
            WHEN    "13"
-               MOVE    "ÂÐ¾Ý¤¬¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "å¯¾è±¡ãŒã‚ã‚Šã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
            WHEN    "14"
-               MOVE    "ÂÐ¾Ý¤¬£²£°£°£°·ï°Ê¾åÂ¸ºß¤·¤Þ¤¹¡£"
+               MOVE    "å¯¾è±¡ãŒï¼’ï¼ï¼ï¼ä»¶ä»¥ä¸Šå­˜åœ¨ã—ã¾ã™ã€‚"
                                                TO  WRK-ERRMSG
-      *·Ù¹ð
+      *è­¦å‘Š
            WHEN    "K1"
-               MOVE    "¿ÇÎÅÆü¤òÀßÄê¤·¤Þ¤·¤¿"
+               MOVE    "è¨ºç™‚æ—¥ã‚’è¨­å®šã—ã¾ã—ãŸ"
                                                TO  WRK-ERRMSG
-      *¶¦ÄÌ¥¨¥é¡¼
+      *å…±é€šã‚¨ãƒ©ãƒ¼
            WHEN    "89"
-      *        ORCSCOMMON ¤Î¥¨¥é¡¼
+      *        ORCSCOMMON ã®ã‚¨ãƒ©ãƒ¼
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "¿¦°÷¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "è·å“¡æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "¥·¥¹¥Æ¥àÆüÉÕ¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "´µ¼ÔÈÖ¹æ¹½À®¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "æ‚£è€…ç•ªå·æ§‹æˆæƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "¥°¥ë¡¼¥×°åÎÅµ¡´Ø¤¬ÉÔÀ°¹ç¤Ç¤¹¡£"
-                           "½èÍý¤ò½ªÎ»¤·¤Æ²¼¤µ¤¤¡£"
+                   STRING  "ã‚°ãƒ«ãƒ¼ãƒ—åŒ»ç™‚æ©Ÿé–¢ãŒä¸æ•´åˆã§ã™ã€‚"
+                           "å‡¦ç†ã‚’çµ‚äº†ã—ã¦ä¸‹ã•ã„ã€‚"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "¥·¥¹¥Æ¥à¹àÌÜ¤¬ÀßÄê¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ é …ç›®ãŒè¨­å®šã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "Â¾Ã¼Ëö»ÈÍÑÃæ"          TO  WRK-ERRMSG
+               MOVE    "ä»–ç«¯æœ«ä½¿ç”¨ä¸­"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "½èÍý¶èÊ¬Ì¤ÀßÄê"        TO  WRK-ERRMSG
+               MOVE    "å‡¦ç†åŒºåˆ†æœªè¨­å®š"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "Á÷¿®ÆâÍÆ¤Ë¸í¤ê¤¬¤¢¤ê¤Þ¤¹¡£"
+               MOVE   "é€ä¿¡å†…å®¹ã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™ã€‚"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "Á÷¿®ÆâÍÆ¤ÎÆÉ¹þ¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE   "é€ä¿¡å†…å®¹ã®èª­è¾¼ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "¥æ¡¼¥¶£É£ÄÌ¤ÅÐÏ¿¡£"
+               MOVE    "ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤æœªç™»éŒ²ã€‚"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1278,7 +1278,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô´ðËÜ¾ðÊó¼èÆÀ
+      *    æ‚£è€…åŸºæœ¬æƒ…å ±å–å¾—
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -1309,7 +1309,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô´ðËÜ¾ðÊó¼èÆÀ
+      *    æ‚£è€…åŸºæœ¬æƒ…å ±å–å¾—
       *****************************************************************
        900-PTNUM-READ-SEC              SECTION.
       *
@@ -1339,7 +1339,7 @@
        900-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¼õ¿ÇÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å—è¨ºå±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -1357,7 +1357,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¼èÆÀ½èÍý
+      *    ä¿é™ºçµ„åˆã›å–å¾—å‡¦ç†
       *****************************************************************
        920-HKNCOMBI-READ-SEC              SECTION.
       *
@@ -1388,7 +1388,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¼èÆÀ½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±å–å¾—å‡¦ç†
       *****************************************************************
        930-PTHKNINF-READ-SEC              SECTION.
       *
@@ -1423,7 +1423,7 @@
        930-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¼èÆÀ½èÍý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±å–å¾—å‡¦ç†
       *****************************************************************
        940-PTKOHINF-READ-SEC              SECTION.
       *
@@ -1459,7 +1459,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-SEL-SEC         SECTION.
       *
@@ -1477,7 +1477,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
+      *    ã‚«ãƒ¼ã‚½ãƒ«ã‚¯ãƒ­ãƒ¼ã‚¹
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1486,7 +1486,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¡£Ò£Å£Á£Ä
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ã€€ï¼²ï¼¥ï¼¡ï¼¤
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1503,7 +1503,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1517,7 +1517,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1531,7 +1531,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

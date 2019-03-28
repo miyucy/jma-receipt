@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɴ�����Ͽ����ʴ��ܾ����(���β���V3)
+      *    ＡＰＩ患者登録情報（基本情報）(一体化　V3)
       *                                   COPY (CPPATIENTMODV3RES1.INC)
       ******************************************************************
        01  XML-PATIENTMODRES.
@@ -29,166 +29,166 @@
            02  PTMODRES-MODE              PIC S9(9)   BINARY.
            02  PTMODRES-RECORDNAME        PIC X(128).
            02  PTMODRES-APPOINTRES.
-      *      �ꥯ�������ֹ�
+      *      リクエスト番号
              03  PTMODRES-REQUEST-NUMBER    PIC X(2).
-      *      �쥹�ݥ��ֹ�
+      *      レスポンス番号
              03  PTMODRES-RESPONSE-NUMBER   PIC X(2).
-      *      UID���Żҥ���ơ�
+      *      UID（電子カルテ）
              03  PTMODRES-KARTE-UID         PIC X(36).
-      *      UID�ʥ��륫��
+      *      UID（オルカ）
              03  PTMODRES-ORCA-UID          PIC X(36).
-      *      ��³��ʬ
+      *      継続区分
              03  PTMODRES-CONT-MODE         PIC X(05).
-      *      �»���
+      *      実施日
              03  PTMODRES-INFORMATION-DATE  PIC X(10).
-      *      �»ܻ���
+      *      実施時間
              03  PTMODRES-INFORMATION-TIME  PIC X(8).
-      *      �ֵѥ�����
+      *      返却コード
              03  PTMODRES-API-RESULT        PIC X(3).
-      *      �ֵѥ�å�����
+      *      返却メッセージ
              03  PTMODRES-API-RESULT-MSG    PIC X(100).
       *
              03  PTMODRES-RESKEY              PIC X(100).
-      *      ���Ծ���
+      *      患者情報
              03  PTMODRES-PTINF-INFO.
-      *        �����ֹ�
+      *        患者番号
                05  PTMODRES-PATIENTID        PIC X(20).
-      *        ���Ի�̾
+      *        患者氏名
                05  PTMODRES-NAME             PIC X(50).
-      *        ���ԥ��ʻ�̾
+      *        患者カナ氏名
                05  PTMODRES-KANANAME         PIC X(50).
-      *        ��ǯ����
+      *        生年月日
                05  PTMODRES-BIRTHDAY         PIC X(10).
-      *        ����
+      *        性別
                05  PTMODRES-SEX              PIC X(01).
-      *        ���Ӽ�̾
+      *        世帯主名
                05  PTMODRES-SETAI-NAME       PIC X(50).
-      *        ³��
+      *        続柄
                05  PTMODRES-ZOKUGARA         PIC X(30).
-      *        ����
+      *        職業
                05  PTMODRES-JOB              PIC X(20).
-      *        �̾�
+      *        通称
                05  PTMODRES-NICKNAME         PIC  X(50).
-      *        ���������ֹ�
+      *        携帯電話番号
                05  PTMODRES-KEITAI-TEL       PIC  X(015).
-      *        �ƣ����ֹ�
+      *        ＦＡＸ番号
                05  PTMODRES-FAX              PIC  X(015).
-      *        �Żҥ᡼�륢�ɥ쥹
+      *        電子メールアドレス
                05  PTMODRES-EMAIL            PIC  X(050).
-      *        �������
+      *        自宅情報
                05  PTMODRES-ADDRESS-INFO.
-      *            ͹���ֹ�
+      *            郵便番号
                    07  PTMODRES-HOME-ZIP-CODE     PIC X(7).
-      *            ����
+      *            住所
                    07  PTMODRES-HOME-ADDRESSES1   PIC X(100).
-      *            �����ֹ�
+      *            番地番号
                    07  PTMODRES-HOME-ADDRESSES2   PIC X(100).
-      *            �����ֹ�ʼ����
+      *            電話番号（自宅）
                    07  PTMODRES-HOME-HPONE1       PIC X(15).
-      *            �����ֹ��Ϣ�����
+      *            電話番号（連絡先）
                    07  PTMODRES-HOME-HPONE2       PIC X(15).
-      *        ��̳�����
+      *        勤務先情報
                05  PTMODRES-OFFICE-INFO.
-      *            ��̳��̾
+      *            勤務先名
                    07  PTMODRES-OFFICE-NAME        PIC X(50).
-      *            ͹���ֹ�
+      *            郵便番号
                    07  PTMODRES-OFFICE-ZIP-CODE    PIC X(7).
-      *            ����
+      *            住所
                    07  PTMODRES-OFFICE-ADDRESSES1  PIC X(100).
-      *            �����ֹ�
+      *            番地番号
                    07  PTMODRES-OFFICE-ADDRESSES2  PIC X(100).
-      *            �����ֹ�
+      *            電話番号
                    07  PTMODRES-OFFICE-HPONE        PIC X(15).
-      *         Ϣ�������
+      *         連絡先情報
                 05  PTMODRES-RENRAKU-INFO.
-      *           Ϣ����̾
+      *           連絡先名
                   07  PTMODRES-RENRAKU-NAME        PIC X(50).
-      *           Ϣ����³��
+      *           連絡先続柄
                   07  PTMODRES-RENRAKU-ZOKUGARA    PIC X(30).
-      *           ͹���ֹ�
+      *           郵便番号
                   07  PTMODRES-RENRAKU-ZIP-CODE    PIC X(7).
-      *           ����
+      *           住所
                   07  PTMODRES-RENRAKU-ADDRESSES1  PIC X(100).
-      *           �����ֹ�
+      *           番地番号
                   07  PTMODRES-RENRAKU-ADDRESSES2  PIC X(100).
-      *           �����ֹ桡��
+      *           電話番号　昼
                   07  PTMODRES-RENRAKU-HPONE1      PIC X(15).
-      *           �����ֹ桡��
+      *           電話番号　夜
                   07  PTMODRES-RENRAKU-HPONE2      PIC X(15).
-      *         ���������
+      *         帰省先情報
                 05  PTMODRES-KISEI-INFO.
-      *           ��̳��̾
+      *           勤務先名
                   07  PTMODRES-KISEI-NAME          PIC X(50).
-      *           ͹���ֹ�
+      *           郵便番号
                   07  PTMODRES-KISEI-ZIP-CODE      PIC X(7).
-      *           ����
+      *           住所
                   07  PTMODRES-KISEI-ADDRESSES1    PIC X(100).
-      *           �����ֹ�
+      *           番地番号
                   07  PTMODRES-KISEI-ADDRESSES2    PIC X(100).
-      *           �����ֹ�
+      *           電話番号
                   07  PTMODRES-KISEI-HPONE         PIC X(15).
-      *        �ش���
+      *        禁忌１
                05  PTMODRES-TABOO-1              PIC  X(100).
-      *        �ش���
+      *        禁忌２
                05  PTMODRES-TABOO-2              PIC  X(100).
-      *        ����륮����
+      *        アレルギー１
                05  PTMODRES-ALLERGY-1            PIC  X(100).
-      *        ����륮����
+      *        アレルギー２
                05  PTMODRES-ALLERGY-2            PIC  X(100).
-      *        �����ɣ�
+      *        感染症１
                05  PTMODRES-KANSENSYO-1          PIC  X(100).
-      *        �����ɣ�
+      *        感染症２
                05  PTMODRES-KANSENSYO-2          PIC  X(100).
-      *        �����ȣ�
+      *        コメント１
                05  PTMODRES-COMMENT-1            PIC  X(100).
-      *        �����ȣ�
+      *        コメント２
                05  PTMODRES-COMMENT-2            PIC  X(100).
-      *        �ƥ��ȴ��Զ�ʬ
+      *        テスト患者区分
                05  PTMODRES-TEST-PATIENT         PIC  X(01).
-      *        ��˴��ʬ
+      *        死亡区分
                05  PTMODRES-DEATHKBN             PIC  X(01).
-      *        ���Ȼ�ͳ
+      *        減免事由
                05  PTMODRES-DISCOUNTKBN          PIC  X(02).
                05  PTMODRES-DISCOUNTKBN-NAME     PIC  X(20).
-      *        ���Ψ
+      *        割引率
                05  PTMODRES-DISCOUNT             PIC  X(02).
                05  PTMODRES-DISCOUNT-NAME        PIC  X(14).
-      *        ���֣����飳
+      *        状態１から３
                05  PTMODRES-CONDITION-KBN-G.
                     07  PTMODREQ-CONDITION-OCC    OCCURS   3.
                         09  PTMODRES-CONDITION-KBN     PIC X(02).
                         09  PTMODRES-CONDITION-NAME    PIC X(20).
       *
-      *      Ʊ�촵�Ծ���
+      *      同一患者情報
              03  PTMODRES-JUFUKU-PATIENT-G.
                  05  PTMODRES-JUFUKU-PATIENT-INFO   OCCURS   20.
-      *              �����ֹ�
+      *              患者番号
                      07  PTMODRES-JFK-PATIENTID      PIC X(20).
-      *              ���Ի�̾
+      *              患者氏名
                      07  PTMODRES-JFK-NAME           PIC X(50).
-      *              ���ԥ��ʻ�̾
+      *              患者カナ氏名
                      07  PTMODRES-JFK-KANANAME       PIC X(50).
-      *              ��ǯ����
+      *              生年月日
                      07  PTMODRES-JFK-BIRTHDAY       PIC X(10).
-      *              ����
+      *              性別
                      07  PTMODRES-JFK-SEX            PIC X(01).
-      *              ����
+      *              住所
                      07  PTMODRES-JFK-HOME-ADRS      PIC X(100).
-      *              �����ֹ�
+      *              番地番号
                      07  PTMODRES-JFK-HOME-BANTI     PIC X(100).
       *
-      *      ���顼��å�����
+      *      エラーメッセージ
              03  PTMODRES-PATIENT-ERRMSG-G.
                  05  PTMODRES-PATIENT-ERRMSG-INF  OCCURS   50.
                      07  PTMODRES-ERROR        PIC X(04).
                      07  PTMODRES-ERROR-MSG    PIC X(200).
-      *      ��˥󥰥�å�����
+      *      ワーニングメッセージ
              03  PTMODRES-WARNING-MSG-G.
                  05  PTMODRES-WARNING-INF    OCCURS   50.
                      07  PTMODRES-WARNING      PIC X(04).
                      07  PTMODRES-WARNING-MSG  PIC X(200).
       *
-      *      ��ǧ��å�����
+      *      確認メッセージ
              03  PTMODRES-SELECT-G.
                  05  PTMODRES-SELECT-CODE      PIC X(04).
                  05  PTMODRES-SELECT-MSG       PIC X(200).

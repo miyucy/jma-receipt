@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- �Ȳ��ѿ��Ź԰٥ơ��֥�
+-- 照会用診療行為テーブル
 -- Create Date : 2010/04/09        --
 --
 create  table  tbl_srysrh (

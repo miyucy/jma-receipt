@@ -17,5 +17,5 @@ create	table	tbl_nrrksrh	(
 ALTER TABLE ONLY tbl_nrrksrh
     ADD CONSTRAINT tbl_nrrksrh_primary_key PRIMARY KEY (hospnum,ptid,sryymd,zainum);
 
-COMMENT ON TABLE tbl_nrrksrh IS 'Æþ±¡ÍúÎò¾È²ñ';
+COMMENT ON TABLE tbl_nrrksrh IS 'å…¥é™¢å±¥æ­´ç…§ä¼š';
 

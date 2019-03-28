@@ -1,5 +1,5 @@
 \set ON_ERROR_STOP
 
 COPY "tbl_ldmap" FROM stdin;
-ORCA41	3	1	41 •«°º•ø•¡•ß•√•Ø	1	1			ORCA41																																																	
+ORCA41	3	1	41 „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ	1	1			ORCA41																																																	
 \.

@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- •∏•Á•÷•Ì•∞¥…Õ˝                 --
+-- „Ç∏„Éß„Éñ„É≠„Ç∞ÁÆ°ÁêÜ                 --
 --                                --
 -- Table Name  : TBL_JOBLOG       --
 -- Create Date : 2006/10/23       --

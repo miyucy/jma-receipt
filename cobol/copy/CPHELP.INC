@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �إ�ץޥ���                  COPY (CPHELP.INC)       *
+      *    ヘルプマスタ                  COPY (CPHELP.INC)       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  HELP-REC.
            03  HELP-KEY.
                05  HELP-HOSPNUM          PIC 9(2).
-      *�إ�׶�ʬ�ʣ� ɸ�ࡢ�� ������
+      *ヘルプ区分（０ 標準、１ 自院）
                05  HELP-HELPKBN           PIC  X(01).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
                05  HELP-KEY-OPID          PIC  X(16).
-      *�̣�̾
+      *ＬＤ名
                05  HELP-LDNAME            PIC  X(20).
-      *�ܼ���
+      *目次１
                05  HELP-MENUNUM1          PIC  9(04).
-      *�ܼ���
+      *目次２
                05  HELP-MENUNUM2          PIC  9(04).
-      *����
+      *枝番
                05  HELP-EDANUM            PIC  9(04).
-      *�ܼ����ե饰�ʣ����ܼ��������
+      *目次２フラグ（１＝目次２あり）
            03  HELP-MENU2FLG              PIC  9(01).
-      *�ܼ�̾��
+      *目次名称
            03  HELP-MENU                  PIC  X(60).
-      *�إ������
+      *ヘルプ内容
            03  HELP-HELP                  PIC  X(100).
-      *ü���ɣ�
+      *端末ＩＤ
            03  HELP-TERMID                PIC  X(64).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  HELP-OPID                  PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  HELP-CREYMD                PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  HELP-UPYMD                 PIC  X(08).
-      *��������
+      *更新時間
            03  HELP-UPHMS                 PIC  X(06).
       *

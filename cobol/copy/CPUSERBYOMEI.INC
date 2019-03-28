@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ������̾�ޥ�����       (CPUSERBYOMEI.INC)
+      *  自院病名マスター       (CPUSERBYOMEI.INC)
       *****************************************************************
-      *  ��������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    03/10/28  ��̾�����ɤ򣲣����ѹ�
-      *                                     ��̾�����ɿ��򣹡ʣ��ˤ��ѹ�
-      *                                     ��̾���̡�������̾�����ɡ�
-      *                                     �������̥����ɤ��ɲ�
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03/10/28  病名コードを２１に変更
+      *                                     病名コード数を９（２）に変更
+      *                                     病名種別・基本病名コード・
+      *                                     基本部位コードを追加
       *****************************************************************
       *
       *01  USERBYOMEI-REC.
            03  USBYO-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  USBYO-HOSPNUM        PIC 9(2).
-      *�����ɼ���
+      *コード種別
                05  USBYO-CDSYU         PIC X(01).
-      *��̾���ϥ�����
+      *病名入力コード
                05  USBYO-BYOMEIINPUTCD PIC X(20).
-      *ʬ�ॳ����
+      *分類コード
            03  USBYO-BUNRUICD          PIC X(03).
-      *ɽ��Ϣ��
+      *表示連番
            03  USBYO-DSPSEQ            PIC 9(02).
-      *��̾�����ɿ�
+      *病名コード数
            03  USBYO-BYOMEICDSU        PIC 9(02).
-      *��̾������
+      *病名コード
            03  USBYO-BYOMEICD-G.
                05  USBYO-BYOMEICD-1    PIC X(07).
                05  USBYO-BYOMEICD-2    PIC X(07).
@@ -67,38 +67,38 @@
            03  USBYO-BYOMEICD-R        REDEFINES   USBYO-BYOMEICD-G.
                05  USBYO-BYOMEICD      PIC X(07)
                                        OCCURS   21.
-      *�����ե饰
+      *疑いフラグ
            03  USBYO-UTAGAIFLG         PIC X(01).
-      *������ʬ
+      *慢性区分
            03  USBYO-MANSEIKBN         PIC 9(02).
-      *��̾
+      *病名
            03  USBYO-BYOMEI            PIC X(160).
-      *��̾ʸ����
+      *病名文字数
            03  USBYO-BYOMEIMOJI        PIC 9(02).
-      *�������̾
+      *カルテ病名
            03  USBYO-CHARTBYOMEI       PIC X(160).
-      *�������̾ʸ����
+      *カルテ病名文字数
            03  USBYO-CHARTBYOMEIMOJI   PIC 9(02).
-      *��­������
+      *補足コメント
            03  USBYO-HOSOKU-COMMENT    PIC X(80).
-      *��̾�Խ��ե饰
+      *病名編集フラグ
            03  USBYO-BYOMEIHENFLG      PIC X(01).
-      *�ݸ���̾�ե饰
+      *保険病名フラグ
            03  USBYO-HKNBYOMEIFLG      PIC X(01).
-      *��̾����
+      *病名種別
            03  USBYO-BYOMEISBT         PIC X(01).
-      *������̾������
+      *基本病名コード
            03  USBYO-KHNBYOMEICD       PIC X(07).
-      *�������̥�����
+      *基本部位コード
            03  USBYO-KHNBUICD-G.
                05  USBYO-KHNBUICD      PIC X(07)   OCCURS  3.
-      *ü���ɣ�
+      *端末ＩＤ
            03  USBYO-TERMID            PIC X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  USBYO-OPID              PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  USBYO-CREYMD            PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  USBYO-UPYMD             PIC X(08).
-      *��������
+      *更新時間
            03  USBYO-UPHMS             PIC X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,29 +18,29 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORAPI052BR5V3.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ������̾�ޥ����ǡ����ܹ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  17/09/12    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 患者病名マスタデータ移行
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  17/09/12    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
@@ -48,11 +48,11 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
@@ -65,13 +65,13 @@
       *
            03  FLG-CHK             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT             PIC 9(10).
            03  CNT-OUT1            PIC 9(10).
            03  CNT-XMLCOUNT        PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -79,14 +79,14 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -96,7 +96,7 @@
            03  WRK-PARA-BASE-MONTH PIC X(06).
            03  WRK-PARA-ERRFILE    PIC X(64).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
            03  WRK-ERRMSG          PIC X(300).
@@ -141,140 +141,140 @@
                05  WRK-HEN-T2      PIC X(01).
                05  WRK-HEN-TSS     PIC X(02).
       *
-      *    ������̾�ǡ���
+      *    患者病名データ
        01  PTBYOMEILST-REC.
            03  PTBYOMEILST-OCC          OCCURS   28.
-      *        �����ֹ�
+      *        患者番号
                05  PTBYOLST-PATIENTID   PIC X(20).
-      *        ���Ի�̾
+      *        患者氏名
                05  PTBYOLST-NAME        PIC X(100).
-      *        ���ԥ��ʻ�̾
+      *        患者カナ氏名
                05  PTBYOLST-KANANAME    PIC X(100).
-      *        ������
+      *        誕生日
                05  PTBYOLST-BIRTHDAY    PIC X(10).
-      *        ����
+      *        性別
                05  PTBYOLST-SEX         PIC X(1).
       *
                05  PTBYOLST-ERRCD       PIC X(03).
                05  PTBYOLST-BASE-MONTH  PIC X(07).
                05  PTBYOLST-INFORMATION-OVERFLOW
                                         PIC X(5).
-      *        ��̾����
+      *        病名情報
                05  PTBYOLST-DISEASE-INF-G   OCCURS   50.
       *
                    07  PTBYOLST-DISEASE-ERRCD  PIC X(03).
-      *            ������ʬ
+      *            入外区分
                    07  PTBYOLST-NYUGAIKBN      PIC X(1).
-      *            ���Ų�
+      *            診療科
                    07  PTBYOLST-SRYKA          PIC X(02).
-      *            �ݸ��ȹ礻�ֹ�
+      *            保険組合せ番号
                    07  PTBYOLST-HKNCOMBI       PIC X(04).
-      *            ��̾
+      *            病名
                    07  PTBYOLST-DISEASE-NAME   PIC X(80).
-      *            ��̾������
+      *            病名コード
                    07  PTBYOLST-DISEASE-SINGLE-G.
                        09  PTBYOLST-DISEASE-SINGLE OCCURS   21.
-      *                    ��̾������
+      *                    病名コード
                            11  PTBYOLST-SINGLE-CODE    PIC X(07).
-      *                    ��̾
+      *                    病名
                            11  PTBYOLST-SINGLE-NAME    PIC X(80).
-      *                    ���֥�����
+      *                    状態コード
                            11  PTBYOLST-SINGLE-FLG     PIC X(01).
-      *            ����̾�ե饰
+      *            主病名フラグ
                    07  PTBYOLST-CATEGORY       PIC X(02).
-      *            �����ե饰
+      *            疑いフラグ
                    07  PTBYOLST-SUSPECTEDFLAG  PIC X(02).
-      *        ���ų�����
+      *        診療開始日
                    07  PTBYOLST-START-DATE     PIC X(10).
-      *        ž����
+      *        転帰日
                    07  PTBYOLST-END-DATE       PIC X(10).
-      *        ž����ʬ
+      *        転帰区分
                    07  PTBYOLST-OUTCOME        PIC X(02).
-      *        ��­������
+      *        補足コメント
                    07  PTBYOLST-SUPPLEMENT-NAME
                                                PIC X(40).
-      *        ��­�����ȥ�����
+      *        補足コメントコード
                    07  PTBYOLST-SUPPLEMENT-SINGLE-G.
                        09  PTBYOLST-SUPPLEMENT-SINGLE   OCCURS   3.
-      *                    ��­�����ȥ�����
+      *                    補足コメントコード
                            11  PTBYOLST-SUPPLEMENT-SINGLE-CODE
                                                PIC X(10).
-      *        �������̾
+      *        カルテ病名
                    07  PTBYOLST-KARTE-NAME     PIC X(80).
-      *        ������ʬ
+      *        疾患区分
                    07  PTBYOLST-DISEASE-CLASS  PIC X(02).
-      *        �쥻�ץ�ɽ���ե饰
+      *        レセプト表示フラグ
                    07  PTBYOLST-RECEIPT-PRINT  PIC X(01).
-      *        �쥻�ץ�ɽ�����
+      *        レセプト表示月数
                    07  PTBYOLST-RECEIPT-PERIOD PIC X(02).
-      *        �ݸ���̾�ե饰
+      *        保険病名フラグ
                     07  PTBYOLST-INSURANCE-DISEASE PIC X(05).
-      *        ��������ʬ
+      *        原疾患区分
                    07  PTBYOLST-NUMBER-MASTER  PIC X(02).
-      *        ��ʻ�ɶ�ʬ
+      *        合併症区分
                    07  PTBYOLST-NUMBER-SERVANT PIC X(02).
-      *        �ౡ������
+      *        退院証明書
                    07   PTBYOLST-DISCHARGEFLG  PIC X(5).
       *
-      *    ��̾�����ƥ�ͽ�󥳡��ɥơ��֥�
+      *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    ��̾
+      *    病名
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    ������̾
+      *    自院病名
        01  USERBYOMEI-REC.
            COPY    "CPUSERBYOMEI.INC".
       *
-      *    ����
+      *    患者
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ֹ湽������
+      *    患者番号構成情報
            COPY    "CPSK1009.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -289,7 +289,7 @@
            COPY    "CPORCSAPIFILE.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -303,7 +303,7 @@
                                    COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -318,7 +318,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -359,14 +359,14 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORAPI052BR5V3"     TO  JOB-PGID
-           MOVE    "������̾�����ֵ�"  TO  JOB-SHELLMSG
+           MOVE    "患者病名情報返却"  TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    �����ֹ湽����������
+      *    患者番号構成管理情報
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
@@ -389,13 +389,13 @@
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                        TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
-               MOVE    "�����ֹ湽���������󤬼����Ǥ��ޤ���Ǥ���"
+               MOVE    "患者番号構成管理情報が取得できませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
            END-IF
       *
-      *    �����ƥ�����
+      *    システム月取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -407,7 +407,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -448,7 +448,7 @@
                    MOVE    1                   TO  FLG-PTBYOMEI
                END-IF
       *
-      *        ��̾�ޥ����Խ�����
+      *        病名マスタ編集処理
                PERFORM     UNTIL   FLG-PTBYOMEI  =   1
                    PERFORM     UNTIL   FLG-PTBYOMEI    =   1
                                OR      CNT-OUT1        >=  28
@@ -494,7 +494,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ����Խ�����
+      *    病名マスタ編集処理
       *****************************************************************
        2001-PTBYOMEILST-HENSYU-SEC          SECTION.
       *
@@ -658,7 +658,7 @@
                    IF  (   BYO-BYOMEICD (1:3)    =   "ZZZ"    )
                    AND ( ( BYO-BYOMEICD (4:1)    <   "1" ) OR 
                          ( BYO-BYOMEICD (4:1)    =   "C" )    )
-      *                ͽ����̾�����ɸ���
+      *                予約病名コード検索
                        SET     TBL-BYOMEICD-IDX  TO  1
                        SEARCH  TBL-BYOMEICD-OCC
                                            VARYING TBL-BYOMEICD-IDX
@@ -676,7 +676,7 @@
                                MOVE    ZERO        TO  FLG-BYOMEI
                        END-SEARCH
                    ELSE
-      *                ��̾�ޥ�������
+      *                病名マスタ検索
                        IF      BYO-BYOMEICD    =   "0000999"
                            MOVE    SPACE           TO
                                        PTBYOLST-SINGLE-NAME
@@ -780,7 +780,7 @@
                MOVE    PTBYO-HOSOKU-COMMENT
                                            TO  PTBYOLST-SUPPLEMENT-NAME
                                                                (IDX IDY)
-      *        ��­�����ȥ�����
+      *        補足コメントコード
                PERFORM VARYING IDZ     FROM    1   BY  1
                        UNTIL   IDZ     >       3
                        OR      PTBYO-HOSOKUCD (IDZ)
@@ -790,24 +790,24 @@
                                    PTBYOLST-SUPPLEMENT-SINGLE-CODE
                                                            (IDX IDY IDZ)
                END-PERFORM
-      *        �������̾
+      *        カルテ病名
                MOVE    PTBYO-CHARTBYOMEI   TO  PTBYOLST-KARTE-NAME
                                                                (IDX IDY)
-      *        ������ʬ
+      *        疾患区分
                IF      PTBYO-MANSEIKBN
                                        NOT =   ZERO
                    MOVE    PTBYO-MANSEIKBN TO  PTBYOLST-DISEASE-CLASS
                                                                (IDX IDY)
                END-IF
-      *        �쥻�ץ�ɽ���ե饰
+      *        レセプト表示フラグ
                MOVE    PTBYO-REZEFLG       TO  PTBYOLST-RECEIPT-PRINT
                                                                (IDX IDY)
-      *        �쥻�ץ�ɽ�����
+      *        レセプト表示月数
                IF      PTBYO-REZEMM    NOT =   ZERO
                    MOVE    PTBYO-REZEMM        TO
                                        PTBYOLST-RECEIPT-PERIOD (IDX IDY)
                END-IF
-      *        �ݸ���̾�ե饰
+      *        保険病名フラグ
                IF      PTBYO-HKNBYOMEIFLG  =   "1"
                    MOVE    "True"              TO
                                    PTBYOLST-INSURANCE-DISEASE  (IDX IDY)
@@ -815,17 +815,17 @@
                    MOVE    "False"             TO
                                    PTBYOLST-INSURANCE-DISEASE  (IDX IDY)
                END-IF
-      *        ��������ʬ
+      *        原疾患区分
                IF      PTBYO-CLASS1    NOT =   ZERO
                    MOVE    PTBYO-CLASS1        TO
                                    PTBYOLST-NUMBER-MASTER      (IDX IDY)
                END-IF
-      *        ��ʻ�ɶ�ʬ
+      *        合併症区分
                IF      PTBYO-CLASS2    NOT =   ZERO
                    MOVE    PTBYO-CLASS2        TO
                                    PTBYOLST-NUMBER-SERVANT     (IDX IDY)
                END-IF
-      *        �ౡ�����񵭺ܥե饰
+      *        退院証明書記載フラグ
                IF      PTBYO-DISCHARGEFLG
                                            =   "1"
                    MOVE    "True"              TO
@@ -843,7 +843,7 @@
                CONTINUE
            ELSE
                IF      IDY                 >   50
-      *            50��ʾ夢��
+      *            50件以上あり
                    MOVE    "True"             TO
                                            PTBYOLST-INFORMATION-OVERFLOW
                                                                    (IDX)
@@ -858,7 +858,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        20011-PTBYOMEILST-ERR-SEC      SECTION.
       *
@@ -879,7 +879,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -908,7 +908,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -930,7 +930,7 @@
            EXIT.
       *
       *****************************************************************
-      *    EXPORT ����
+      *    EXPORT 処理
       *****************************************************************
        910-XMLEXPORT-SEC          SECTION.
       *
@@ -971,12 +971,12 @@
       *
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-OUT         =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
@@ -998,7 +998,7 @@
                IF      SAPIFILE-RC     =   0
                    CONTINUE
                ELSE
-                   STRING   "������ե�����������顼 RC="
+                   STRING   "ｘｍｌファイル作成エラー RC="
                                            DELIMITED   BY  SIZE
                             SAPIFILE-RC    DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -1007,7 +1007,7 @@
                END-IF
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-OUT         TO  JOB-UPDCNT
@@ -1023,7 +1023,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1037,7 +1037,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1052,7 +1052,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -1069,7 +1069,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1085,7 +1085,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1114,7 +1114,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����ɹ�
+      *    患者情報読込
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -1145,7 +1145,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ɹ�
+      *    患者病名読込
       *****************************************************************
        900-PTBYOMEI-READ-N-SEC         SECTION.
       *
@@ -1165,7 +1165,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ɹ�
+      *    病名読込
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -1198,7 +1198,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ɹ�
+      *    自院病名読込
       *****************************************************************
        900-USERBYOMEI-READ-SEC         SECTION.
       *
@@ -1231,7 +1231,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ɹ�
+      *    保険組合せ読込
       *****************************************************************
        900-COMB-READ-SEC                SECTION.
       *
@@ -1256,7 +1256,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ɹ�
+      *    保険組合せ読込
       *****************************************************************
        900-COMB-READ-N-SEC         SECTION.
       *
@@ -1274,7 +1274,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ������ɹ�
+      *    患者労災保険情報読込
       *****************************************************************
        900-PTRSIINF-READ-SEC         SECTION.
       *
@@ -1305,7 +1305,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1319,7 +1319,7 @@
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        900-DBFETCH-SEC                 SECTION.
       *
@@ -1335,7 +1335,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        900-CLOSE-SEC           SECTION.
       *
@@ -1350,7 +1350,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1374,7 +1374,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

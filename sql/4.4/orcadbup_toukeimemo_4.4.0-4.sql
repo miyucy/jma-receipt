@@ -1,6 +1,6 @@
 --                                    --
--- Åý·×³Ð¤¨½ñ¤­¥Ç¡¼¥¿¹¹¿·             --
--- Æü¼¡¡¦·î¼¡Åý·×¥×¥í¥°¥é¥à           --
+-- çµ±è¨ˆè¦šãˆæ›¸ããƒ‡ãƒ¼ã‚¿æ›´æ–°             --
+-- æ—¥æ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆãƒ—ãƒ­ã‚°ãƒ©ãƒ            --
 --                                    --
 -- Create Date : 2009/03/05           --
 --                                    --
@@ -12,8 +12,8 @@ delete from tbl_toukeimemo where pgid = 'ORCBDR02' and kanricd = '0000' and kbnc
 delete from tbl_toukeimemo where hospnum = 0;
 
 COPY tbl_toukeimemo FROM stdin;
-ORCBDR01	0000	000     	00000000	99999999									ºï½üÆü¡¡»ØÄê¤µ¤ì¤¿ÆüÉÕ°ÊÁ°¤Î¼õÉÕ¾ðÊó¤òºï½ü¤·¤Þ¤¹¡£\n\nºï½üÆü¤Ï¸½ºß¤ÎÆüÉÕ¤è¤ê£²¥ö·î°Ê¾åÁ°¤ÎÆüÉÕ¤ò»ØÄê¤·¤Æ²¼¤µ¤¤¡£\n			20090305	20090305	140000	0	 		
-ORCBDR02	0000	000     	00000000	99999999									ºï½üÆü¡¡»ØÄê¤µ¤ì¤¿ÆüÉÕ°ÊÁ°¤ÎÍ½Ìó¾ðÊó¤òºï½ü¤·¤Þ¤¹¡£\n\nºï½üÆü¤Ï¸½ºß¤ÎÆüÉÕ¤è¤ê£²¥ö·î°Ê¾åÁ°¤ÎÆüÉÕ¤ò»ØÄê¤·¤Æ²¼¤µ¤¤¡£\n			20090305	20090305	140000	0	 		
+ORCBDR01	0000	000     	00000000	99999999									å‰Šé™¤æ—¥ã€€æŒ‡å®šã•ã‚ŒãŸæ—¥ä»˜ä»¥å‰ã®å—ä»˜æƒ…å ±ã‚’å‰Šé™¤ã—ã¾ã™ã€‚\n\nå‰Šé™¤æ—¥ã¯ç¾åœ¨ã®æ—¥ä»˜ã‚ˆã‚Šï¼’ãƒ¶æœˆä»¥ä¸Šå‰ã®æ—¥ä»˜ã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„ã€‚\n			20090305	20090305	140000	0	 		
+ORCBDR02	0000	000     	00000000	99999999									å‰Šé™¤æ—¥ã€€æŒ‡å®šã•ã‚ŒãŸæ—¥ä»˜ä»¥å‰ã®äºˆç´„æƒ…å ±ã‚’å‰Šé™¤ã—ã¾ã™ã€‚\n\nå‰Šé™¤æ—¥ã¯ç¾åœ¨ã®æ—¥ä»˜ã‚ˆã‚Šï¼’ãƒ¶æœˆä»¥ä¸Šå‰ã®æ—¥ä»˜ã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„ã€‚\n			20090305	20090305	140000	0	 		
 \.
 
 insert into tbl_toukeimemo select a.pgid,a.kanricd,a.kbncd,a.styukymd,a.edyukymd,a.para1,a.para2,a.para3,a.para4,a.para5,

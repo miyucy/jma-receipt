@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,14 +18,14 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGI47.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������׾Ȳ�
-      *  ����ݡ��ͥ��̾  : ���ģ̶�ʬ�����Ŷ�ʬ����
-      *  ������            : 
-      *  05/03/09    NACL-����    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院会計照会
+      *  コンポーネント名  : ＡＤＬ区分・医療区分入力
+      *  管理者            : 
+      *  05/03/09    NACL-太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -38,16 +38,16 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    ���̳��������
+      *    画面活性非活性
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ��ץ����ɶ��̥ѥ�᥿
+      *    会計カード共通パラメタ
            COPY    "I4COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-I47.
            03  SPA-I47-AREA.
                05  SPA-I47-ADLINPUTKBN             PIC X(01).
@@ -111,7 +111,7 @@
                        09  SPA-NAI-DAY             PIC 9(02)
                                                    OCCURS  31.
       *
-      *    �ե饰���ꥢ
+      *    フラグエリア
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
            03  FLG-ERR                     PIC 9(01).
@@ -135,13 +135,13 @@
            03  FLG-DESIGNR                 PIC 9(01).
            03  FLG-SHOW-ZERO               PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-MAX                     PIC 9(05).
            03  CNT-DAY                     PIC 9(05).
            03  CNT-NISSU                   PIC 9(05).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
@@ -1388,7 +1388,7 @@
       *
            COPY    "CPRYOYOCD.INC".
       *
-      *    �����ΰ� ���
+      *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                //SPA-// BY //WKSPA-//.
       *
@@ -1396,7 +1396,7 @@
            COPY  "CPMEDKBN.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
@@ -1419,39 +1419,39 @@
            COPY    "CPNYUINACT.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
            COPY    "CPORCSS005.INC".
            COPY    "CPORCSS010.INC".
            COPY    "CPORCSS011.INC".
       *
-      *    ���Ŷ�ʬ�����ģ�ɾ��ɼ
+      *    医療区分・ＡＤＬ評価票
            COPY    "CPORCHCN68.INC".
            COPY    "CPONPRTDATA.INC".
       *
-      *    ���饤����Ȱ�������
+      *    クライアント印刷制御
            COPY    "CPORCSPRTCTRL.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -1469,7 +1469,7 @@
                                                  SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -1487,15 +1487,15 @@
            EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
            WHEN    "LINK"          ALSO    ANY
                PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
            WHEN     "PUTG"         ALSO    "CLICKED"
                PERFORM 200-GMNSENI
-      *    ����
+      *    入力
            WHEN      OTHER
                PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF    ( FLG-END         =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -1509,23 +1509,23 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF    ( SPA-MOTOPG          =   "I4ERR" )
                MOVE    SPACE       TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END     =   1 )
                    GO  TO  100-INIT-EXT
                END-IF
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    PERFORM 510-ERRSET-SEC
@@ -1543,7 +1543,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -1561,7 +1561,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC                  SECTION.
       *
@@ -1624,7 +1624,7 @@
        310-SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    ADL��ʬ�������������
+      *    ADL区分固定値設定処理
       *****************************************************************
        3101-EDIT-CONST-ADLKBN-SEC      SECTION.
       *
@@ -1639,20 +1639,20 @@
       *
                MOVE    1                   TO  CONST-ADLKBN-ALLKBN (1)
                MOVE    1001                TO  CONST-ADLKBN-ZAINUM (1)
-               MOVE    "���ᡡ�٥åɤβ�ư��"
+               MOVE    "　ａ　ベッドの可動性"
                                            TO  CONST-ADLKBN-NAME   (1)
       *
                MOVE    1                   TO  CONST-ADLKBN-ALLKBN (2)
                MOVE    1002                TO  CONST-ADLKBN-ZAINUM (2)
-               MOVE    "���⡡�ܾ�"        TO  CONST-ADLKBN-NAME   (2)
+               MOVE    "　ｂ　移乗"        TO  CONST-ADLKBN-NAME   (2)
       *
                MOVE    1                   TO  CONST-ADLKBN-ALLKBN (3)
                MOVE    1003                TO  CONST-ADLKBN-ZAINUM (3)
-               MOVE    "���㡡����"        TO  CONST-ADLKBN-NAME   (3)
+               MOVE    "　ｃ　食事"        TO  CONST-ADLKBN-NAME   (3)
       *
                MOVE    1                   TO  CONST-ADLKBN-ALLKBN (4)
                MOVE    1004                TO  CONST-ADLKBN-ZAINUM (4)
-               MOVE    "���䡡�ȥ���λ���" TO CONST-ADLKBN-NAME   (4)
+               MOVE    "　ｄ　トイレの使用" TO CONST-ADLKBN-NAME   (4)
            ELSE
       *
                MOVE    24                  TO  CONST-ADLTEN-MAX
@@ -1660,14 +1660,14 @@
       *
                MOVE    1                   TO  CONST-ADLKBN-ALLKBN (1)
                MOVE    3000                TO  CONST-ADLKBN-ZAINUM (1)
-               MOVE     "���ģ�����"       TO  CONST-ADLKBN-NAME   (1)
+               MOVE     "ＡＤＬ点数"       TO  CONST-ADLKBN-NAME   (1)
            END-IF
       *
            .
        3101-EDIT-CONST-ADLKBN-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Խ�����
+      *    入院期間編集処理
       *****************************************************************
        3101-EDIT-NYUIN-DAY-SEC         SECTION.
       *
@@ -1685,7 +1685,7 @@
        3101-EDIT-NYUIN-DAY-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܷ�������������������Խ�����
+      *    療養型入院基本料算定期間編集処理
       *****************************************************************
        3101-EDIT-RYOYO-DAY-SEC         SECTION.
       *
@@ -1729,7 +1729,7 @@
        3101-EDIT-RYOYO-DAY-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܷ�������������������Խ�����
+      *    療養型入院基本料算定期間編集処理
       *****************************************************************
        31011-EDIT-RYOYO-DAY-SEC         SECTION.
       *
@@ -1769,7 +1769,7 @@
        31011-EDIT-RYOYO-DAY-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܷ��������������Ź԰٥����ɥ����å�����
+      *    療養型入院基本料診療行為コードチェック処理
       *****************************************************************
        310111-RYOYOCD-CHK-SEC          SECTION.
       *
@@ -1826,7 +1826,7 @@
        310111-RYOYOCD-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ܥܥå����������
+      *    コンボボックス初期処理
       *****************************************************************
        3101-COMBO-SYOKI-SEC            SECTION.
       *
@@ -1835,7 +1835,7 @@
        3101-COMBO-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    ���ģ̶�ʬ�����Ŷ�ʬ�ꥹ���Խ�����
+      *    ＡＤＬ区分・医療区分リスト編集処理
       *****************************************************************
        3101-EDIT-RYOLST-SEC            SECTION.
       *
@@ -2009,7 +2009,7 @@
        3101-EDIT-RYOLST-EXT.
            EXIT.
       *****************************************************************
-      *    ���ģ̶�ʬ�����Ŷ�ʬ�ꥹ���Խ����� �ʰ��Ŷ�ʬ�Խ���
+      *    ＡＤＬ区分・医療区分リスト編集処理 （医療区分編集）
       *****************************************************************
        31011-EDIT-RYOLST-MEDKBN-SEC    SECTION.
       *
@@ -2068,7 +2068,7 @@
        31011-EDIT-RYOLST-MEDKBN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ŷ�ʬ�����Խ�����
+      *    医療区分情報編集処理
       *****************************************************************
        31011-EDIT-MEDINF-SEC           SECTION.
       *
@@ -2173,7 +2173,7 @@
        31011-EDIT-MEDINF-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧ���̤��������ν���
+      *    確認画面から戻り時の処理
       *****************************************************************
        330-I4ID1-SET-SEC               SECTION.
       *
@@ -2206,33 +2206,33 @@
        330-I4ID1-SET-EXT.
            .
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                     SECTION.
       *
            MOVE    MCP-WIDGET      TO      WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
            WHEN    "CLICKED"       ALSO    "B01"
                MOVE   "CHANGE"     TO  MCP-PUTTYPE
                PERFORM 210-BACK
-      *    ���ꥢ
+      *    クリア
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 220-CLEAR-SEC
-      *    ���ѹ�
+      *    剤変更
            WHEN    "CLICKED"       ALSO    "B08"
                PERFORM 4101-ZAIHENKOU-SEC
-      *    ɾ��ɼȯ��
+      *    評価票発行
            WHEN    "CLICKED"       ALSO    "B10"
                PERFORM 210-HYOKAHYO-SEC
-      *    ɾ��ɼȯ�ԡ�Ƭ���
+      *    評価票発行（頭紙）
            WHEN    "CLICKED"       ALSO    "B10S"
                PERFORM 2102-HYOKAHYO-SEC
-      *    �������ѹ�
+      *    入院料変更
            WHEN    "CLICKED"       ALSO    "B11"
                PERFORM 211-TOUROKU-SEC
-      *    ��Ͽ
+      *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 212-TOUROKU-SEC
            END-EVALUATE
@@ -2241,7 +2241,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                       SECTION.
       *
@@ -2260,7 +2260,7 @@
                PERFORM 4101-RYOLIST-SEL-SEC
            WHEN    OTHER
       *
-      *        ���ϥ����å�����
+      *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
        
            END-EVALUATE
@@ -2270,7 +2270,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -2289,7 +2289,7 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ꥢ������
+      *    クリア　処理
       *****************************************************************
        220-CLEAR-SEC                   SECTION.
       *
@@ -2302,7 +2302,7 @@
        220-CLEAR-EXT.
            EXIT.
       *****************************************************************
-      *    ɾ��ɼȯ�Խ���
+      *    評価票発行処理
       *****************************************************************
        210-HYOKAHYO-SEC                 SECTION.
       *
@@ -2313,7 +2313,7 @@
                END-IF
            END-IF
       *
-      *     ��Ϣ�����å�����α�ʰ����������Ƥ��ǧ��������θ��
+      *     関連チェックは保留（印刷して内容を確認する場合を考慮）
       *     IF    ( SPA-ERRCD       =   SPACE )
       *         PERFORM 410-KANREN-CHK-SEC
       *     END-IF
@@ -2334,7 +2334,7 @@
        210-HYOKAHYO-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ��֥����å�����
+      *    患者状態チェック処理
       *****************************************************************
        2101-PTSTS-CHK-SEC              SECTION.
       *
@@ -2384,7 +2384,7 @@
        2101-PTSTS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ɾ��ɼȯ�Խ���
+      *    評価票発行処理
       *****************************************************************
        2101-HYOKAHYO-SEC                 SECTION.
       *
@@ -2397,13 +2397,13 @@
        2101-HYOKAHYO-EXT.
            EXIT.
       *****************************************************************
-      *    ɾ��ɼȯ�Խ���
+      *    評価票発行処理
       *****************************************************************
        21011-HYOKAHYO-SEC                 SECTION.
       *
            INITIALIZE                      ONPRTDATA
       *
-      *    ������������������
+      *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"  USING   SPA-AREA
            IF    ( SPA-CLIENT-PRT-FLG  =   2 )
              OR  ( SPA-PRTCONF         =   "1" )
@@ -2427,7 +2427,7 @@
            MOVE    SPACE           TO    SPA-PRT-FLG
       *
            IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        �������ߡ�����
+      *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
            END-IF
@@ -2437,7 +2437,7 @@
        21011-HYOKAHYO-EXT.
            EXIT.
       *****************************************************************
-      *    ɾ��ɼȯ�Խ���
+      *    評価票発行処理
       *****************************************************************
        2102-HYOKAHYO-SEC                 SECTION.
       *
@@ -2450,7 +2450,7 @@
        2102-HYOKAHYO-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ͽ������
+      *    登録　処理
       *****************************************************************
        211-TOUROKU-SEC                 SECTION.
       *
@@ -2473,7 +2473,7 @@
        211-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ͽ������
+      *    登録　処理
       *****************************************************************
        2111-TOUROKU-SEC                SECTION.
       *
@@ -2491,7 +2491,7 @@
        2111-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ͽ������
+      *    登録　処理
       *****************************************************************
        21111-TOUROKU-SEC               SECTION.
       *
@@ -2550,7 +2550,7 @@
        21111-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ͽ������
+      *    登録　処理
       *****************************************************************
        212-TOUROKU-SEC                 SECTION.
       *
@@ -2574,7 +2574,7 @@
        212-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ͽ������
+      *    登録　処理
       *****************************************************************
        2121-TOUROKU-SEC                SECTION.
       *
@@ -2589,7 +2589,7 @@
        2121-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ͽ������
+      *    登録　処理
       *****************************************************************
        21211-TOUROKU-SEC               SECTION.
       *
@@ -2620,7 +2620,7 @@
        21211-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܥ쥻�ץȥ����ȥޥ�����������
+      *    療養レセプトコメントマスタ作成処理
       *****************************************************************
        21211-RYOCOM-INS-SEC            SECTION.
       *
@@ -2661,7 +2661,7 @@
        21211-RYOCOM-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܥ쥻�ץȥ����ȥޥ�����������
+      *    療養レセプトコメントマスタ作成処理
       *****************************************************************
        21212-RYOCOM-INS-SEC            SECTION.
       *
@@ -2700,14 +2700,14 @@
        21212-RYOCOM-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
@@ -2718,7 +2718,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
@@ -2736,7 +2736,7 @@
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
@@ -2760,7 +2760,7 @@
        4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���̥����å�����
+      *    日別チェック処理
       *****************************************************************
        4101-DAY-CHK-SEC                SECTION.
       *
@@ -2809,7 +2809,7 @@
        4101-DAY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ�����å�����
+      *    選択番号チェック処理
       *****************************************************************
        4101-SELNUM-CHK-SEC             SECTION.
       *
@@ -2840,7 +2840,7 @@
        4101-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ��ϰϥ����å�����
+      *    選択番号範囲チェック処理
       *****************************************************************
        4101-SELNUM-LIMIT-CHK-SEC       SECTION.
       *
@@ -2876,7 +2876,7 @@
        4101-SELNUM-LIMIT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��罤�������å�����
+      *    一括修正チェック処理
       *****************************************************************
        4101-GRPINPUT-CHK-SEC           SECTION.
       *
@@ -3069,7 +3069,7 @@
        4101-GRPINPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϰϥ����å�����
+      *    点数範囲チェック処理
       *****************************************************************
        4101-TENSU-LIMIT-CHK-SEC        SECTION.
       *
@@ -3113,7 +3113,7 @@
        4101-TENSU-LIMIT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϰϥ����å�����
+      *    日付範囲チェック処理
       *****************************************************************
        4101-DAY-LIMIT-CHK-SEC          SECTION.
       *
@@ -3149,7 +3149,7 @@
        4101-DAY-LIMIT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ʣ������������å�����
+      *    複数行選択チェック処理
       *****************************************************************
        41011-MULTI-SEL-CHK-SEC         SECTION.
       *
@@ -3158,7 +3158,7 @@
            MOVE    ZERO            TO  FLG-DESIGNR
            MOVE    ZERO            TO  WRK-INPUT-MODE
       *
-      *    ���Ϥ��ʤ��Ȥ�
+      *    入力がないとき
            IF    ( WRK-SELNUM-MUL  =   SPACE )
                MOVE    1           TO  SPA-GMN-CUR
                MOVE    "0001"      TO  SPA-ERRCD
@@ -3284,7 +3284,7 @@
        41011-MULTI-SEL-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ϣ�����å�����
+      *    関連チェック処理
       *****************************************************************
        410-KANREN-CHK-SEC              SECTION.
       *
@@ -3293,7 +3293,7 @@
        410-KANREN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ�����å�����
+      *    選択番号チェック処理
       *****************************************************************
        4100-SELNUM-CHK-SEC             SECTION.
       *
@@ -3332,7 +3332,7 @@
        4100-SELNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������ϥ����å�����
+      *    一括入力チェック処理
       *****************************************************************
        4100-GRPINPUT-CHK-SEC             SECTION.
       *
@@ -3412,7 +3412,7 @@
        4100-GRPINPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ꥹ���������
+      *    コラムリスト選択処理
       *****************************************************************
        4101-NYULIST-SEL-SEC            SECTION.
       *
@@ -3435,7 +3435,7 @@
        4101-NYULIST-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ꥹ���������
+      *    コラムリスト選択処理
       *****************************************************************
        4101-RYOLIST-SEL-SEC            SECTION.
       *
@@ -3470,7 +3470,7 @@
        4101-RYOLIST-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���ե��ꥢ�Խ�����
+      *    日付エリア編集処理
       *****************************************************************
        41011-EDIT-DAYAREA-SEC          SECTION.
       *
@@ -3553,7 +3553,7 @@
        41011-EDIT-DAYAREA-EXT.
            EXIT.
       *****************************************************************
-      *    ���ѹ�����
+      *    剤変更処理
       *****************************************************************
        4101-ZAIHENKOU-SEC              SECTION.
       *
@@ -3584,7 +3584,7 @@
        4101-ZAIHENKOU-EXT.
            EXIT.
       *****************************************************************
-      *    �������¥����å�����
+      *    日数制限チェック処理
       *****************************************************************
        4101-NISSU-CHK-SEC              SECTION.
       *
@@ -3642,7 +3642,7 @@
        4101-NISSU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �������¥����å�����
+      *    日数制限チェック処理
       *****************************************************************
        41011-NISSU-CHK-SEC             SECTION.
       *
@@ -3702,7 +3702,7 @@
        41011-NISSU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ѹ�����
+      *    剤変更処理
       *****************************************************************
        41011-ZAIHENKOU-SEC             SECTION.
       *
@@ -3813,7 +3813,7 @@
        41011-ZAIHENKOU-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -3845,7 +3845,7 @@
        500-SET-SCREEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -3905,12 +3905,12 @@
                     AND  ( FLG-MEDKBN3LMT          =   0 )
                        IF    ( FLG-MEDKBN3LMT      =   0 )
                         AND  ( FLG-MEDKBN2LMT      =   0 )
-                           MOVE    "�ɡ�������֤˸¤꤬�����ʬ"
+                           MOVE    "Ｉ　算定期間に限りがある区分"
                                    TO  I47-TNAME(IDX-LST)
                            COMPUTE IDX-LST =   IDX-LST +   1
                        END-IF
                        MOVE    1       TO  FLG-MEDKBN3LMT
-                       MOVE    "���Ŷ�ʬ��"
+                       MOVE    "医療区分３"
                                    TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -3919,12 +3919,12 @@
                     AND  ( FLG-MEDKBN2LMT          =   0 )
                        IF    ( FLG-MEDKBN3LMT      =   0 )
                         AND  ( FLG-MEDKBN2LMT      =   0 )
-                           MOVE    "�ɡ�������֤˸¤꤬�����ʬ"
+                           MOVE    "Ｉ　算定期間に限りがある区分"
                                    TO  I47-TNAME(IDX-LST)
                            COMPUTE IDX-LST =   IDX-LST +   1
                        END-IF
                        MOVE    1       TO  FLG-MEDKBN2LMT
-                       MOVE    "���Ŷ�ʬ��"
+                       MOVE    "医療区分２"
                                        TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -3933,12 +3933,12 @@
                     AND  ( FLG-MEDKBN3             =   0 )
                        IF    ( FLG-MEDKBN3         =   0 )
                         AND  ( FLG-MEDKBN2         =   0 )
-                           MOVE    "�ɣɻ�����֤˸¤꤬�ʤ���ʬ"
+                           MOVE    "ＩＩ算定期間に限りがない区分"
                                    TO  I47-TNAME(IDX-LST)
                            COMPUTE IDX-LST =   IDX-LST +   1
                        END-IF
                        MOVE    1       TO  FLG-MEDKBN3
-                       MOVE    "���Ŷ�ʬ��"
+                       MOVE    "医療区分３"
                                    TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -3947,12 +3947,12 @@
                     AND  ( FLG-MEDKBN2             =   0 )
                        IF    ( FLG-MEDKBN3         =   0 )
                         AND  ( FLG-MEDKBN2         =   0 )
-                           MOVE    "�ɣɻ�����֤˸¤꤬�ʤ���ʬ"
+                           MOVE    "ＩＩ算定期間に限りがない区分"
                                    TO  I47-TNAME(IDX-LST)
                            COMPUTE IDX-LST =   IDX-LST +   1
                        END-IF
                        MOVE    1       TO  FLG-MEDKBN2
-                       MOVE    "���Ŷ�ʬ��"
+                       MOVE    "医療区分２"
                                        TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -3964,7 +3964,7 @@
                     AND  ( SPA-NAI-TSRYCD     (IDX0)  =   "820000159" )
                     AND  ( FLG-MEDCOM                 =   0   )
                        MOVE    1       TO  FLG-MEDCOM
-                       MOVE    "����"
+                       MOVE    "——"
                                        TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -3974,14 +3974,14 @@
                     AND  ( SPA-NAI-TZAINUM (IDX0)    <=   2089 )
                     AND  ( FLG-MEDMORE                =   0   )
                        MOVE    1       TO  FLG-MEDMORE
-                       MOVE    "����"  TO  I47-TNAME(IDX-LST)
+                       MOVE    "——"  TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
                    WHEN  ( SPA-NAI-TZAISKBKBN (IDX0)  =   "1" )
                     AND  ( FLG-ADLKBN                 =   0 )
                     AND  ( SPA-I47-ADLINPUTKBN        =   "1" )
                        MOVE    1       TO  FLG-ADLKBN
-                       MOVE    "���ģ̶�ʬ"
+                       MOVE    "ＡＤＬ区分"
                                        TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -3994,14 +3994,14 @@
                    WHEN  ( SPA-NAI-TMEDKBN (IDX0)  =   3 )
                     AND  ( FLG-MEDKBN3             =   0 )
                        MOVE    1       TO  FLG-MEDKBN3
-                       MOVE    "���Ŷ�ʬ��"
+                       MOVE    "医療区分３"
                                    TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
                    WHEN  ( SPA-NAI-TMEDKBN (IDX0)  =   2 )
                     AND  ( FLG-MEDKBN2             =   0 )
                        MOVE    1       TO  FLG-MEDKBN2
-                       MOVE    "���Ŷ�ʬ��"
+                       MOVE    "医療区分２"
                                        TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -4009,7 +4009,7 @@
                     AND  ( FLG-ADLKBN                 =   0 )
                     AND  ( SPA-I47-ADLINPUTKBN        =   "1" )
                        MOVE    1       TO  FLG-ADLKBN
-                       MOVE    "���ģ̶�ʬ"
+                       MOVE    "ＡＤＬ区分"
                                        TO  I47-TNAME(IDX-LST)
                        COMPUTE IDX-LST =   IDX-LST +   1
                        PERFORM 5001-GMNHEN-SEC
@@ -4034,10 +4034,10 @@
       *
            PERFORM 5001-GMNHEN-NYULIST-SEC
       *
-      *    ���ܾ����Խ�
+      *    項目状態編集
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
-      *    �����������
+      *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -4045,7 +4045,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        5001-GMNHEN-SEC                 SECTION.
       *
@@ -4114,7 +4114,7 @@
        5001-GMNHEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ����� ����������ꥹ�ȡ�
+      *    画面編集処理 （入院情報リスト）
       *****************************************************************
        5001-GMNHEN-NYULIST-SEC         SECTION.
       *
@@ -4122,11 +4122,11 @@
       *
            MOVE    1                   TO  WRK-ZZ
            MOVE    WRK-ZZ              TO  I47-TNL-NUM (1)
-           MOVE    "������"            TO  I47-TNL-NAME  (1)
+           MOVE    "入院料"            TO  I47-TNL-NAME  (1)
       *
            MOVE    2                   TO  WRK-ZZ
            MOVE    WRK-ZZ              TO  I47-TNL-NUM (2)
-           MOVE    "���Ŷ�ʬ"          TO  I47-TNL-NAME  (2)
+           MOVE    "医療区分"          TO  I47-TNL-NAME  (2)
       *
            IF    ( SPA-I47-ADLINPUTKBN =   "1" )
                MOVE    3               TO  WRK-ZZ
@@ -4147,7 +4147,7 @@
                    END-IF
                END-IF
            END-IF
-           MOVE    "���ģ�����"        TO  I47-TNL-NAME  (3)
+           MOVE    "ＡＤＬ点数"        TO  I47-TNL-NAME  (3)
       *
            PERFORM 50011-GMNHEN-NYULIST-NYU-SEC
       *
@@ -4200,38 +4200,38 @@
                                                              (IDX-DAY)
                        EVALUATE    SS011-DAY2 (IDX-DAY)
                        WHEN    1
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ａ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    2
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｂ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    3
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｃ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    4
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｄ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    5
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｅ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    6
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｆ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    7
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｇ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    8
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｈ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        WHEN    9
-                          MOVE    "��" TO  I47-NYULIST-NDAY
+                          MOVE    "Ｉ" TO  I47-NYULIST-NDAY
                                                    (IDX-DAY)
                        END-EVALUATE
 
                        MOVE    "red"   TO   I47-LBLINFO-STYLE
-                       STRING  "�������Ȱ��Ŷ�ʬ�����ģ̶�ʬ��ɾ����"
+                       STRING  "入院料と医療区分・ＡＤＬ区分の評価が"
                                             DELIMITED  BY  SIZE
-                               "���פ��ʤ���������ޤ�"
+                               "一致しない日があります"
                                             DELIMITED  BY  SIZE
                        INTO    I47-LBLINFO
                        END-STRING
@@ -4244,7 +4244,7 @@
        5001-GMNHEN-NYULIST-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ŷ�ʬ�����ģ������Խ�����
+      *    医療区分、ＡＤＬ点数編集処理
       *****************************************************************
        50011-EDIT-MEDADL-SEC               SECTION.
       *
@@ -4304,7 +4304,7 @@
        50011-EDIT-MEDADL-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ����� ����������ꥹ��:��������
+      *    画面編集処理 （入院情報リスト:入院料）
       *****************************************************************
        50011-GMNHEN-NYULIST-NYU-SEC         SECTION.
       *
@@ -4315,29 +4315,29 @@
                    MOVE    WRK-Z9      TO   I47-NYULIST-NDAY (IDX-DAY)
       *
              IF    ( SPA-I47-RYOYO-KHN (IDX-DAY) = 5 OR 6 OR 9 OR 10 )
-               MOVE    "��"            TO  I47-TNL-DAY(1 IDX-DAY)
+               MOVE    "特"            TO  I47-TNL-DAY(1 IDX-DAY)
              ELSE
                EVALUATE    SPA-I47-RYOYO-DAY (IDX-DAY)
                WHEN    1
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ａ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    2
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｂ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    3
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｃ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    4
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｄ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    5
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｅ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    6
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｆ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    7
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｇ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    8
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｈ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    9
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "Ｉ"        TO  I47-TNL-DAY(1 IDX-DAY)
                WHEN    -1
-                   MOVE    "��"        TO  I47-TNL-DAY(1 IDX-DAY)
+                   MOVE    "・"        TO  I47-TNL-DAY(1 IDX-DAY)
                END-EVALUATE
              END-IF
            END-PERFORM
@@ -4346,16 +4346,16 @@
        50011-GMNHEN-NYULIST-NYU-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ����� ����������ꥹ��:���Ŷ�ʬ��
+      *    画面編集処理 （入院情報リスト:医療区分）
       *****************************************************************
        50011-GMNHEN-NYULIST-MED-SEC         SECTION.
       *
            EVALUATE    TRUE
            WHEN      ( MEDKBN-DAYALL (1)   =    1 )
-               MOVE    "��"            TO  I47-TNL-DAYALL(2)
+               MOVE    "３"            TO  I47-TNL-DAYALL(2)
            WHEN      ( MEDKBN-DAY-G  (1)   =    ZERO )
                AND   ( MEDKBN-DAYALL (2)   =    1    )
-               MOVE    "��"            TO  I47-TNL-DAYALL(2)
+               MOVE    "２"            TO  I47-TNL-DAYALL(2)
            WHEN      ( MEDKBN-DAY-G  (1)   =    ZERO )
                AND   ( MEDKBN-DAY-G  (2)   =    ZERO )
                MOVE    1               TO  WRK-ZZ
@@ -4368,10 +4368,10 @@
       *
                        EVALUATE    TRUE
                        WHEN  ( MEDKBN-DAY (1 IDX-DAY)   =  1 )
-                           MOVE    "��"    TO  I47-TNL-DAY (2 IDX-DAY)
+                           MOVE    "３"    TO  I47-TNL-DAY (2 IDX-DAY)
                        WHEN  ( MEDKBN-DAYALL (2)        =  1 )
                        WHEN  ( MEDKBN-DAY (2 IDX-DAY)   =  1 )
-                           MOVE    "��"    TO  I47-TNL-DAY (2 IDX-DAY)
+                           MOVE    "２"    TO  I47-TNL-DAY (2 IDX-DAY)
                        WHEN    OTHER
                            MOVE    1       TO  WRK-ZZ
                            MOVE    WRK-ZZ  TO  I47-TNL-DAY (2 IDX-DAY)
@@ -4385,7 +4385,7 @@
        50011-GMNHEN-NYULIST-MED-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ����� ����������ꥹ��:���ģ̶�ʬ��
+      *    画面編集処理 （入院情報リスト:ＡＤＬ区分）
       *****************************************************************
        50011-GMNHEN-NYULIST-ADL-SEC         SECTION.
       *
@@ -4414,7 +4414,7 @@
        50011-GMNHEN-NYULIST-ADL-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܾ����Խ�����
+      *    項目状態編集処理
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
@@ -4438,7 +4438,7 @@
       *             MOVE    WIDGET-INSENSITIVE
       *                                 TO  I47-DAY-AREA-STATE
       *             MOVE    "blue"      TO  I47-LBLINFO2-STYLE
-      *             MOVE    "¾�����Ϲ��ܤ����Ƥ�꼫ư�����ꤷ�ޤ���"
+      *             MOVE    "他の入力項目の内容より自動で設定します。"
       *                                 TO  I47-LBLINFO2
       *         END-IF
            END-IF
@@ -4447,7 +4447,7 @@
        500-GMNHEN-STATE-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ����������ֽ���
+      *    カーソル位置処理
       *****************************************************************
        5001-MAPCUR-SEC                 SECTION.
       *
@@ -4478,7 +4478,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC              SECTION.
       *
@@ -4506,7 +4506,7 @@
        5011-INPUT-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    �������륹���å׽���
+      *    カーソルスキップ処理
       *****************************************************************
        5011-INPUT-CUR-SKIP-SEC         SECTION.
       *
@@ -4516,7 +4516,7 @@
        5011-INPUT-CUR-SKIP-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC                  SECTION.
       *
@@ -4524,60 +4524,60 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "�����ֹ�����Ϥ˸��꤬����ޤ�"
+               MOVE    "選択番号の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "���ꤵ�줿�ֹ椬¿�����ޤ�"
+               MOVE    "指定された番号が多すぎます"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "�����ֹ�����Ϥ��Ƥ�������"
+               MOVE    "選択番号を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "0004"
-               MOVE    "���ꤵ�줿���֤�¿�����ޤ�"
+               MOVE    "指定された期間が多すぎます"
                                        TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "��罤�������Ϥ˸��꤬����ޤ�"
+               MOVE    "一括修正の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0006"
-               MOVE    "���̤����Ϥ˸��꤬����ޤ�"
+               MOVE    "日別の入力に誤りがあります"
                                        TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "�������ֳ��Ǥ�"
+               MOVE    "入院期間外です"
                                        TO  SPA-ERRMSG
            WHEN    "0008"
-               STRING  "�ģţӣǣɣΡݣҹ������"
+               STRING  "ＤＥＳＧＩＮ−Ｒ合計点と"
                                            DELIMITED   BY  SIZE
-                       "¾�ι��ܤ�Ʊ��������Ǥ��ޤ���"
+                       "他の項目は同時に選択できません"
                                            DELIMITED   BY  SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0101"
-               MOVE    "Ϣ³���ƣ�������ۤ������Ϥ���Ƥ��ޤ�"
+               MOVE    "連続して１４日を越えて入力されています"
                                        TO  SPA-ERRMSG
            WHEN    "0102"
-               STRING  "Ϣ³���ƣ�������ۤ������Ϥ���Ƥ��ޤ�"
+               STRING  "連続して１４日を越えて入力されています"
                                            DELIMITED   BY  SIZE
-                       "��"                DELIMITED   BY  SIZE
+                       "【"                DELIMITED   BY  SIZE
                        WRK-ERRMSG(1:20)    DELIMITED   BY  SIZE
-                       "��"                DELIMITED   BY  SIZE
+                       "】"                DELIMITED   BY  SIZE
                        INTO    SPA-ERRMSG
                END-STRING
            WHEN    "0103"
-               MOVE    "Ϣ³���ƣ�����ۤ������Ϥ���Ƥ��ޤ�"
+               MOVE    "連続して７日を越えて入力されています"
                                        TO  SPA-ERRMSG
            WHEN    "0104"
-               STRING  "Ϣ³���ƣ�����ۤ������Ϥ���Ƥ��ޤ�"
+               STRING  "連続して７日を越えて入力されています"
                                            DELIMITED   BY  SIZE
-                       "��"                DELIMITED   BY  SIZE
+                       "【"                DELIMITED   BY  SIZE
                        WRK-ERRMSG(1:20)    DELIMITED   BY  SIZE
-                       "��"                DELIMITED   BY  SIZE
+                       "】"                DELIMITED   BY  SIZE
                        INTO    SPA-ERRMSG
                END-STRING
            WHEN    "1001"
-               MOVE    "�ޤ�������Ǥ����ѹ����꤫���ꥢ�򤷤Ƥ�������"
+               MOVE    "剤が修正中です。変更確定かクリアをしてください"
                                        TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4005"
-               MOVE    "���������˼��Ԥ��ޤ���"
+               MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -4601,7 +4601,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-I4IDSET-SEC                 SECTION.
       *
@@ -4609,10 +4609,10 @@
       *
            EVALUATE    SPA-IIDCD
            WHEN    "2001"
-               MOVE    "���Ŷ�ʬ�����ģ̶�ʬ����Ͽ���ޤ�"
+               MOVE    "医療区分・ＡＤＬ区分を登録します"
                                        TO  WRK-I4IDMSG
            WHEN    "2002"
-             MOVE "���Ŷ�ʬ�����ģ̶�ʬ����Ͽ�塢���������ѹ���Ԥ��ޤ�"
+             MOVE "医療区分・ＡＤＬ区分を登録後、入院料の変更を行います"
                                        TO  WRK-I4IDMSG
            END-EVALUATE
       *
@@ -4621,8 +4621,8 @@
            MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE
            MOVE    WRK-I4IDMSG         TO  I4ID1-ID1MSG
       *
-           MOVE    "���"              TO  I4ID1-B01
-           MOVE    "�ϣ�"              TO  I4ID1-B12
+           MOVE    "戻る"              TO  I4ID1-B01
+           MOVE    "ＯＫ"              TO  I4ID1-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *
@@ -4640,7 +4640,7 @@
        520-I4IDSET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        521-I4IDSET-SEC                 SECTION.
       *
@@ -4648,7 +4648,7 @@
       *
            EVALUATE    SPA-IIDCD
            WHEN    "2003"
-               MOVE    "�������ѹ������塢ɾ��ɼ��ȯ�Ԥ�Ԥ��ޤ�"
+               MOVE    "入院料変更処理後、評価票の発行を行います"
                                        TO  WRK-I4IDMSG
            END-EVALUATE
       *
@@ -4657,10 +4657,10 @@
            MOVE    SPA-IIDCD           TO  I4ID2-ID1CODE
            MOVE    WRK-I4IDMSG         TO  I4ID2-ID1MSG
       *
-           MOVE    "F1:���"           TO  I4ID2-B01
-           MOVE    "F11:���������ѹ���Ԥ鷺��ȯ��"
+           MOVE    "F1:戻る"           TO  I4ID2-B01
+           MOVE    "F11:入院料の変更を行わずに発行"
                                        TO  I4ID2-B11
-           MOVE    "F12:�ϣ�"          TO  I4ID2-B12
+           MOVE    "F12:ＯＫ"          TO  I4ID2-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *
@@ -4678,7 +4678,7 @@
        521-I4IDSET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ʥ����å�����
+      *    カナチェック処理
       *****************************************************************
        800-KANA-CHK-SEC             SECTION.
       *
@@ -4704,7 +4704,7 @@
        800-KANA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��������������
+      *    月末日取得処理
       *****************************************************************
        800-GETUMATU-SEC                SECTION.
       *
@@ -4720,7 +4720,7 @@
        800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
-      *    ������������
+      *    カレンダー処理
       *****************************************************************
        800-CALENDAR-SEC               SECTION.
       *
@@ -4738,7 +4738,7 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ŷ�ʬ�����ģ����������������å�
+      *    医療区分、ＡＤＬ点数妥当性チェック
       *****************************************************************
        800-ORCSS011-SEC                SECTION.
       *
@@ -4747,7 +4747,7 @@
        800-ORCSS011-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -4758,7 +4758,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܥ쥻�ץȥ����ȥޥ����������
+      *    療養レセプトコメントマスタ削除処理
       *****************************************************************
        900-RYOCOM-DEL3-SEC             SECTION.
       *
@@ -4782,7 +4782,7 @@
        900-RYOCOM-DEL3-EXT.
             EXIT.
       *****************************************************************
-      *    ���ܥ쥻�ץȥ����ȥޥ�����������
+      *    療養レセプトコメントマスタ検索処理
       *****************************************************************
        900-RYOCOM-KEY-SEL-SEC          SECTION.
       *
@@ -4814,7 +4814,7 @@
        900-RYOCOM-KEY-SEL-EXT.
             EXIT.
       *****************************************************************
-      *    �����ޥ�����������(KEY)
+      *    点数マスタ検索処理(KEY)
       *****************************************************************
        900-TENSU-KEY-SEL-SEC       SECTION.
       *
@@ -4838,7 +4838,7 @@
                MOVE    1           TO  FLG-TENSU
            END-IF
       *
-      *    �����ޥ�����������
+      *    点数マスタクローズ
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
@@ -4848,7 +4848,7 @@
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ������׸�������
+      *    入院会計検索処理
       *****************************************************************
        900-NYUINACCT-KEY19-SEL-SEC     SECTION.
       *
@@ -4880,7 +4880,7 @@
            EXIT.
            .
       *****************************************************************
-      *    ������׸�������
+      *    入院会計検索処理
       *****************************************************************
        900-NYUINACCT-KEY35-SEL-SEC     SECTION.
       *
@@ -4906,7 +4906,7 @@
        900-NYUINACCT-KEY35-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �������FETCH����
+      *    入院会計FETCH処理
       *****************************************************************
        900-NYUINACCT-KEY35-FET-SEC     SECTION.
       *
@@ -4927,7 +4927,7 @@
        900-NYUINACCT-KEY35-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �������Ź԰ٸ�������
+      *    入院診療行為検索処理
       *****************************************************************
        900-NYUINACT-KEY9-SEL-SEC       SECTION.
       *
@@ -4954,7 +4954,7 @@
        900-NYUINACT-KEY9-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �������Ź԰�FETCH����
+      *    入院診療行為FETCH処理
       *****************************************************************
        900-NYUINACT-KEY9-FET-SEC       SECTION.
       *
@@ -4972,7 +4972,7 @@
        900-NYUINACT-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ������������(KEY10)
+      *    システム管理検索処理(KEY10)
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -4999,7 +4999,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ������������(KEY2)
+      *    システム管理検索処理(KEY2)
       *****************************************************************
        900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
@@ -5022,7 +5022,7 @@
        900-SYSKANRI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ����FETCH����(KEY2)
+      *    システム管理FETCH処理(KEY2)
       *****************************************************************
        900-SYSKANRI-KEY2-FET-SEC      SECTION.
       *
@@ -5041,7 +5041,7 @@
        900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -5058,7 +5058,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -5072,7 +5072,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -5086,7 +5086,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -5100,7 +5100,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ģţ̣ţԣŽ���
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -5114,7 +5114,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -5128,7 +5128,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£գУģ��ԣŽ���
+      *    ＤＢＵＰＤＡＴＥ処理
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -5142,7 +5142,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

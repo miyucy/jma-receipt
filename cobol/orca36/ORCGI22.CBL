@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI22.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���ԾȲ�
-      *  ����ݡ��ͥ��̾  : ���ϻؼ����̡ʣɣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/10/14    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者照会
+      *  コンポーネント名  : 出力指示画面（Ｉ２２）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/10/14    NACL-太田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.01.01    NACL-ƣ��    07/10/19  ���饤�������¸�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.01.01    NACL-藤原    07/10/19  クライアント保存対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,34 +41,34 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �������ԾȲ��̣ӣУ�
+      *    入院患者照会共通ＳＰＡ
            COPY    "I2SCR-SPA".
       *
-      *    �������ԾȲ��Ѷ��̥ѥ�᥿
+      *    入院患者照会用共通パラメタ
            COPY    "I2COMMON-SPA".
       *
-      *    ���󥹥������
+      *    コンスタント値
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-NUM                             PIC 9(09).
            03  WRK-MCP-WIDGET                      PIC X(64).
       *
-      *    �������ΰ�
+      *    固定値領域
        01  CONST-AREA.
            03  CONST-LINE                          PIC 9(05)
                VALUE   30.
@@ -78,18 +78,18 @@
                VALUE   "ORCBI201".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -108,7 +108,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -126,15 +126,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -147,18 +147,18 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF  ( SPA-MOTOPG            =   "I2ERR" )
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -175,7 +175,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -185,12 +185,12 @@
            MOVE  212                   TO  SPA-GMN-I22-CUR
       *
            IF  ( SPA-I22-PROC-FLG     =   ZERO )
-      *        �ãӣֽ��Ͻ���
+      *        ＣＳＶ出力処理
       *
                IF      SPA-I20-CLIENT-SAVE
                                        =   "1"
                    MOVE    "1"             TO  SPA-GMN-I22-FILEL   (1)
-                   MOVE    "���饤�������¸"
+                   MOVE    "クライアント保存"
                                            TO  SPA-GMN-I22-FILEMEIL(1)
                    MOVE    1               TO  SPA-GMN-I22-FILE-MAX
                    MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-FILE-STATE
@@ -207,11 +207,11 @@
                END-IF
       *
                MOVE    "1"             TO  SPA-GMN-I22-CDKBNL   (1)
-               MOVE    "�ţգ�"        TO  SPA-GMN-I22-CDKBNMEIL(1)
+               MOVE    "ＥＵＣ"        TO  SPA-GMN-I22-CDKBNMEIL(1)
                MOVE    "2"             TO  SPA-GMN-I22-CDKBNL   (2)
-               MOVE    "�ӡݣ���"     TO  SPA-GMN-I22-CDKBNMEIL(2)
+               MOVE    "Ｓ−ｊｉｓ"     TO  SPA-GMN-I22-CDKBNMEIL(2)
                MOVE    "3"             TO  SPA-GMN-I22-CDKBNL   (3)
-               MOVE    "�գԣơݣ�"     TO  SPA-GMN-I22-CDKBNMEIL(3)
+               MOVE    "ＵＴＦ−８"     TO  SPA-GMN-I22-CDKBNMEIL(3)
                MOVE    3               TO  SPA-GMN-I22-CDKBN-MAX
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-CDKBN-STATE
                MOVE    SPA-GMN-I22-CDKBNLST (1)
@@ -219,9 +219,9 @@
       *
       *
                MOVE    "3001"          TO  SPA-GMN-I22-CD
-               MOVE    "�ãӣֽ��Ϥ򳫻Ϥ��ޤ�"
+               MOVE    "ＣＳＶ出力を開始します"
                                        TO  SPA-GMN-I22-MSG
-               MOVE    "���ϥե�����̾"
+               MOVE    "出力ファイル名"
                                        TO  SPA-GMN-I22-LBLFILENAME
                IF    ( SPA-MW          =   SPA-GINBEE )
                    MOVE    SPA-I22-FILENAME
@@ -234,16 +234,16 @@
                    END-STRING
                END-IF
                MOVE    WIDGET-NORMAL   TO  SPA-GMN-I22-FILENAME-STATE
-               MOVE    "�������"      TO  SPA-GMN-I22-LBLNUMSEL
+               MOVE    "件数指定"      TO  SPA-GMN-I22-LBLNUMSEL
            ELSE
                MOVE    "3002"          TO  SPA-GMN-I22-CD
-               MOVE    "���������򳫻Ϥ��ޤ�"
+               MOVE    "印刷処理を開始します"
                                        TO  SPA-GMN-I22-MSG
                MOVE    SPACE           TO  SPA-GMN-I22-LBLFILENAME
                                            SPA-GMN-I22-FILENAME
                MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-GMN-I22-FILENAME-STATE
-               MOVE    "�ڡ�������"    TO  SPA-GMN-I22-LBLNUMSEL
+               MOVE    "ページ指定"    TO  SPA-GMN-I22-LBLNUMSEL
                MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-GMN-I22-FILE-STATE
                                            SPA-GMN-I22-CDKBN-STATE
@@ -257,17 +257,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *     ���
+      *     戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *     ����
+      *     確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KAKUTEI
            END-EVALUATE
@@ -276,16 +276,16 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                             SECTION.
       *
            MOVE    MCP-WIDGET          TO        WRK-MCP-WIDGET
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            .
@@ -294,7 +294,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
@@ -305,38 +305,38 @@
        400-GMN-INPUT-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC           SECTION.
       *
-      *    ���̤�ӣУ��˥��å�
+      *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
            PERFORM 4100-FILENAME-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ���Ϸ���ʥڡ������˥����å�
+      *    開始件数（ページ数）チェック
            PERFORM 4100-STNUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ��λ����ʥڡ������˥����å�
+      *    終了件数（ページ数）チェック
            PERFORM 4100-EDNUM-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ����������å�
+      *    出力先チェック
            PERFORM 4100-FILE-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    ʸ�������ɥ����å�
+      *    文字コードチェック
            PERFORM 4100-CDKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  410-INPUT-CHK-EXT
@@ -347,30 +347,30 @@
        410-INPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC        SECTION.
       *
-      *    �ե�����̾
+      *    ファイル名
            MOVE    I22-FILENAME   TO  SPA-GMN-I22-FILENAME
       *
-      *    ���Ϸ���ʥڡ�������
+      *    開始件数（ページ数）
            MOVE    I22-STNUM      TO  SPA-GMN-I22-STNUM
       *
-      *    ��λ����ʥڡ�������
+      *    終了件数（ページ数）
            MOVE    I22-EDNUM      TO  SPA-GMN-I22-EDNUM
       *
-      *    ������
+      *    出力先
            MOVE    I22-FILE       TO  SPA-GMN-I22-FILE-G
       *
-      *    ʸ��������
+      *    文字コード
            MOVE    I22-CDKBN      TO  SPA-GMN-I22-CDKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
       *****************************************************************
        4100-FILENAME-CHK-SEC           SECTION.
       *
@@ -402,14 +402,14 @@
        4100-FILENAME-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ϸ���ʥڡ������˥����å�
+      *    開始件数（ページ数）チェック
       *****************************************************************
        4100-STNUM-CHK-SEC              SECTION.
       *
            MOVE    SPA-GMN-I22-STNUM
                                    TO  WRK-NUM
       *
-      *    ����ʥڡ��������ϰϥ����å�
+      *    件数（ページ数）範囲チェック
            PERFORM 4100-NUM-HANI-CHK-SEC
       *
            MOVE    WRK-NUM         TO  SPA-GMN-I22-STNUM
@@ -418,14 +418,14 @@
        4100-STNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����ʥڡ������˥����å�
+      *    終了件数（ページ数）チェック
       *****************************************************************
        4100-EDNUM-CHK-SEC              SECTION.
       *
            MOVE    SPA-GMN-I22-EDNUM
                                    TO  WRK-NUM
       *
-      *    ����ʥڡ��������ϰϥ����å�
+      *    件数（ページ数）範囲チェック
            PERFORM 4100-NUM-HANI-CHK-SEC
       *
            MOVE    WRK-NUM         TO  SPA-GMN-I22-EDNUM
@@ -434,7 +434,7 @@
        4100-EDNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ����ʥڡ��������ϰϥ����å�
+      *    件数（ページ数）範囲チェック
       *****************************************************************
        4100-NUM-HANI-CHK-SEC           SECTION.
       *
@@ -452,7 +452,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������å�����
+      *    出力先チェック処理
       *****************************************************************
        4100-FILE-CHK-SEC           SECTION.
       *
@@ -483,7 +483,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʸ�������ɥ����å�����
+      *    文字コードチェック処理
       *****************************************************************
        4100-CDKBN-CHK-SEC           SECTION.
       *
@@ -512,7 +512,7 @@
        4100-CDKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -533,17 +533,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꡡ����
+      *    確定　処理
       *****************************************************************
        490-KAKUTEI                 SECTION.
       *
-      *    ���ϻ������å�
+      *    入力時チェック
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  490-KAKUTEI-EXT
            END-IF
       *
-      *    ���ϥե�����̤̾���ϥ����å��ʣãӣֽ��ϻ���
+      *    出力ファイル名未入力チェック（ＣＳＶ出力時）
            IF  ( SPA-I22-PROC-FLG     =   ZERO )
                IF  ( SPA-GMN-I22-FILENAME
                                        =   SPACE )
@@ -566,7 +566,7 @@
                END-PERFORM
            END-IF
       *
-      *    ���(�ڡ������˻�������å�
+      *    件数(ぺージ数）指定チェック
            IF  ( SPA-GMN-I22-STNUM    >   SPA-GMN-I22-EDNUM )
       *
                IF  ( SPA-I22-PROC-FLG =   ZERO )
@@ -579,7 +579,7 @@
                GO  TO  490-KAKUTEI-EXT
            END-IF
       *
-      *    �ѣ��������
+      *    Ｑ０２に戻る
            MOVE    SPA-GMN-I22-FILENAME
                                        TO  SPA-I22-FILENAME
            IF      SPA-GMN-I22-FILE   =   SPACE
@@ -589,26 +589,26 @@
            END-IF
       *
            IF  ( SPA-I22-PROC-FLG     =   1 )
-      *        ���Ϸ��
+      *        開始件数
                COMPUTE SPA-I22-STKNS
                    = ( SPA-GMN-I22-STNUM  -   1 ) *   CONST-LINE  +   1
-      *        ��λ���
+      *        終了件数
                COMPUTE SPA-I22-EDKNS
                    =   SPA-GMN-I22-EDNUM          *   CONST-LINE
-      *        ���ϥڡ���
+      *        開始ページ
                MOVE    SPA-GMN-I22-STNUM
                                        TO  SPA-I22-STPAGE
-      *        ��λ�ڡ���
+      *        終了ページ
                MOVE    SPA-GMN-I22-EDNUM
                                        TO  SPA-I22-EDPAGE
            ELSE
-      *        ���Ϸ��
+      *        開始件数
                MOVE    SPA-GMN-I22-STNUM
                                        TO  SPA-I22-STKNS
-      *        ��λ���
+      *        終了件数
                MOVE    SPA-GMN-I22-EDNUM
                                        TO  SPA-I22-EDKNS
-      *        ʸ�������ɶ�ʬ
+      *        文字コード区分
                IF      SPA-GMN-I22-CDKBN  =   SPACE
                    MOVE    "1"                 TO  SPA-I22-CDKBN
                ELSE
@@ -632,7 +632,7 @@
        490-KAKUTEI-EXT.
            EXIT.
      *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -654,38 +654,38 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
            MOVE    SPACE              TO  I22
            INITIALIZE                     I22
       *
-      *    ��å�����������
+      *    メッセージコード
            MOVE    SPA-GMN-I22-CD     TO  I22-ID1CODE
       *
-      *    ��å�����
+      *    メッセージ
            MOVE    SPA-GMN-I22-MSG    TO  I22-ID1MSG
       *
-      *    �ե�����̾�ʥ�٥��
+      *    ファイル名（ラベル）
            MOVE    SPA-GMN-I22-LBLFILENAME
                                        TO  I22-LBLFILENAME
       *
-      *    �ե�����̾
+      *    ファイル名
            MOVE    SPA-GMN-I22-FILENAME
                                        TO  I22-FILENAME
            MOVE    SPA-GMN-I22-FILENAME-STATE
                                        TO  I22-FILENAME-STATE
       *
-      *    ���Ϸ���ʥڡ����˿�
+      *    開始件数（ページ）数
            MOVE    SPA-GMN-I22-STNUM
                                        TO  I22-STNUM
       *
-      *    ��λ����ʥڡ����˿�
+      *    終了件数（ページ）数
            MOVE    SPA-GMN-I22-EDNUM
                                        TO  I22-EDNUM
       *
-      *    ������
+      *    出力先
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-I22-FILE-MAX
@@ -708,7 +708,7 @@
                                                I22-CDKBN-ITEM-STATE
            END-IF
       *
-      *    ʸ��������
+      *    文字コード
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-I22-CDKBN-MAX
                MOVE    SPA-GMN-I22-CDKBNLST (IDX2)
@@ -721,10 +721,10 @@
                                            I22-EDNUM-STATE
                MOVE    "T"             TO  I22-STNUM-VISIBLE
                                            I22-EDNUM-VISIBLE
-      *        �ե�����̾�ʥ�٥��
+      *        ファイル名（ラベル）
                MOVE    SPA-GMN-I22-LBLNUMSEL
                                        TO  I22-LBLNUMSEL
-               MOVE    "��"            TO  I22-LBLNUMSEL2
+               MOVE    "〜"            TO  I22-LBLNUMSEL2
            ELSE
                MOVE    WIDGET-INSENSITIVE
                                        TO  I22-STNUM-STATE
@@ -740,7 +740,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -751,27 +751,27 @@
       *
            EVALUATE    SPA-GMN-I22-CUR
       *
-      *    �ե�����̾
+      *    ファイル名
            WHEN   001
                MOVE  "FILENAME"    TO  MCP-WIDGET
       *
-      *    ���Ϸ���ʥڡ����˿�
+      *    開始件数（ページ）数
            WHEN   002
                MOVE  "STNUM"       TO  MCP-WIDGET
       *
-      *    ��λ����ʥڡ����˿�
+      *    終了件数（ページ）数
            WHEN   003
                MOVE  "EDNUM"       TO  MCP-WIDGET
       *
-      *    ������
+      *    出力先
            WHEN   004
                MOVE  "FILE"        TO  MCP-WIDGET
       *
-      *    ʸ��������
+      *    文字コード
            WHEN   005
                MOVE  "CDKBN"       TO  MCP-WIDGET
       *
-      *    ����ܥ���
+      *    確定ボタン
            WHEN   212
                MOVE  "B12"         TO  MCP-WIDGET
            END-EVALUATE
@@ -781,29 +781,29 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
            EVALUATE    WRK-MCP-WIDGET
       *
-      *    ɽ��
+      *    表題
            WHEN    "FILENAME"
                MOVE    002         TO  SPA-GMN-I22-CUR
       *
-      *    ������
+      *    条件上段
            WHEN    "STNUM"
                MOVE    003         TO  SPA-GMN-I22-CUR
       *
-      *    ��ﲼ��
+      *    条件下段
            WHEN    "EDNUM"
                MOVE    004         TO  SPA-GMN-I22-CUR
       *
-      *    ������
+      *    出力先
            WHEN   "FILE"
                MOVE    005         TO  SPA-GMN-I22-CUR
       *
-      *    ʸ��������
+      *    文字コード
            WHEN   "CDKBN"
                MOVE    212         TO  SPA-GMN-I22-CUR
       *
@@ -839,7 +839,7 @@
        5011-INPUT-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -848,23 +848,23 @@
            EVALUATE    SPA-ERRCD
            WHEN    "1001"
            WHEN    "1005"
-               MOVE    "���ϥե�����̾�����Ϥ��줤�Ƥ��ޤ���"
+               MOVE    "出力ファイル名が入力されいていません"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
-               MOVE    "���Ϸ���佪λ����ȤʤäƤ��ޤ�"
+               MOVE    "開始件数＞終了件数となっています"
                                        TO  SPA-ERRMSG
            WHEN    "1003"
-               MOVE    "���ϥڡ����佪λ�ڡ����ȤʤäƤ��ޤ�"
+               MOVE    "開始ページ＞終了ページとなっています"
                                        TO  SPA-ERRMSG
            WHEN    "1004"
-               STRING   "���ϥե�����̾��" DELIMITED  BY  SIZE
-                        "���郎���Ϥ���Ƥ��ޤ�"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "：¥が入力されています"
                                              DELIMITED  BY  SIZE
                                              INTO  SPA-ERRMSG
                END-STRING
            WHEN    "1006"
-               STRING   "���ϥե�����̾��" DELIMITED  BY  SIZE
-                        "��������Ϥ���Ƥ��ޤ�"
+               STRING   "出力ファイル名に" DELIMITED  BY  SIZE
+                        "：¥／が入力されています"
                                              DELIMITED  BY  SIZE
                                              INTO  SPA-ERRMSG
                END-STRING
@@ -890,7 +890,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

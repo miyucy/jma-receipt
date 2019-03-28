@@ -1,6 +1,6 @@
 --                                    --
--- Åý·×³Ð¤¨½ñ¤­¥Ç¡¼¥¿¹¹¿·             --
--- Æü¼¡¡¦·î¼¡Åý·×¥×¥í¥°¥é¥à           --
+-- çµ±è¨ˆè¦šãˆæ›¸ããƒ‡ãƒ¼ã‚¿æ›´æ–°             --
+-- æ—¥æ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆãƒ—ãƒ­ã‚°ãƒ©ãƒ            --
 --                                    --
 -- Create Date : 2009/02/25           --
 --                                    --
@@ -11,7 +11,7 @@ delete from tbl_toukeimemo where pgid = 'ORCBMSTCOPY' and kanricd = '0000' and k
 delete from tbl_toukeimemo where hospnum = 0;
 
 COPY tbl_toukeimemo FROM stdin;
-ORCBMSTCOPY	0000	000     	00000000	99999999									½èÍý¶èÊ¬¡¡¡¡£±¡§ÆþÎÏ¥³¡¼¥É¤ÎÊ£¼Ì\n¡¡¡¡¡¡¡¡¡¡¡¡£²¡§ÅÀ¿ô¥Þ¥¹¥¿¤ÎÊ£¼Ì\n¡¡¡¡¡¡¡¡¡¡¡¡£³¡§ÆþÎÏ¥»¥Ã¥È¤ÎÊ£¼Ì\n\nÊ£¼Ì¸µ°åÎÅµ¡´Ø¡¡¡¡Ê£¼Ì¸µ¤È¤¹¤ëÂ¾±¡¤Î°åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ¡Ê¿ô»ú£²·å¡Ë\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¤ò»ØÄê¤·¤Þ¤¹¡£\n\n\n			20090225	20090225	100000	0	 		
+ORCBMSTCOPY	0000	000     	00000000	99999999									å‡¦ç†åŒºåˆ†ã€€ã€€ï¼‘ï¼šå…¥åŠ›ã‚³ãƒ¼ãƒ‰ã®è¤‡å†™\nã€€ã€€ã€€ã€€ã€€ã€€ï¼’ï¼šç‚¹æ•°ãƒžã‚¹ã‚¿ã®è¤‡å†™\nã€€ã€€ã€€ã€€ã€€ã€€ï¼“ï¼šå…¥åŠ›ã‚»ãƒƒãƒˆã®è¤‡å†™\n\nè¤‡å†™å…ƒåŒ»ç™‚æ©Ÿé–¢ã€€ã€€è¤‡å†™å…ƒã¨ã™ã‚‹ä»–é™¢ã®åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·ï¼ˆæ•°å­—ï¼’æ¡ï¼‰\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã‚’æŒ‡å®šã—ã¾ã™ã€‚\n\n\n			20090225	20090225	100000	0	 		
 \.
 
 insert into tbl_toukeimemo select a.pgid,a.kanricd,a.kbncd,a.styukymd,a.edyukymd,a.para1,a.para2,a.para3,a.para4,a.para5,

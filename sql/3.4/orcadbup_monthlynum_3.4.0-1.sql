@@ -1,18 +1,18 @@
 --                                    --
--- ·îÂå¤ê¼õµë¼ÔÈÖ¹æ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹     --
+-- æœˆä»£ã‚Šå—çµ¦è€…ç•ªå·ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´     --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¸øÈñ£É£Ä(KOHID)                  --
+-- é …ç›®ã®è¿½åŠ                          --
+--   å…¬è²»ï¼©ï¼¤(KOHID)                  --
 --                                    --
 -- Create Date : 2007/02/06           --
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_monthlynum
    add column KOHID  numeric(10);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_monthlynum
    alter KOHID set default 0;
 

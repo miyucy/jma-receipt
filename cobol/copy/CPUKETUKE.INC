@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,57 +16,57 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¼õÉÕ               (CPUKETUKE.INC) 
+      *  å—ä»˜               (CPUKETUKE.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  UKETUKE-REC.
       *
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  UKE-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  UKE-HOSPNUM          PIC 9(2).
-      *¼õÉÕÇ¯·îÆü
+      *å—ä»˜å¹´æœˆæ—¥
                05  UKE-UKEYMD          PIC  X(08).
-      *¼õÉÕ£É£Ä
+      *å—ä»˜ï¼©ï¼¤
                05  UKE-UKEID           PIC  9(05).
-      *¼õÉÕ»þ´Ö
+      *å—ä»˜æ™‚é–“
            03  UKE-UKETIME             PIC  X(06).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  UKE-PTID                PIC  9(10).
-      *´µ¼Ô»áÌ¾
+      *æ‚£è€…æ°å
            03  UKE-NAME                PIC X(100).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  UKE-SRYKA               PIC X(02).
-      *¥É¥¯¥¿¡¼¥³¡¼¥É
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  UKE-DRCD                PIC X(05).
-      *¿ÇÎÅÆâÍÆ
+      *è¨ºç™‚å†…å®¹
            03  UKE-SRYNAIYO            PIC X(02).
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
            03  UKE-HKNCOMBI            PIC 9(04).
-      *²ñ·×»þ´Ö
+      *ä¼šè¨ˆæ™‚é–“
            03  UKE-KAIKEITIME          PIC 9(04).
-      *¥­¡¼Í½Ìó»þ´Ö
+      *ã‚­ãƒ¼äºˆç´„æ™‚é–“
            03  UKE-KEYYYKTIME          PIC 9(04).
-      *Í½Ìó»þ´Ö
+      *äºˆç´„æ™‚é–“
            03  UKE-YYKTIME             PIC 9(04).
-      *Í½Ìó£É£Ä
+      *äºˆç´„ï¼©ï¼¤
            03  UKE-YYKID               PIC 9(02).
-      *É½¼¨½ç
+      *è¡¨ç¤ºé †
            03  UKE-HYOJIJUN            PIC 9(04).
-      *³ÎÇ§Ï¢Íí
+      *ç¢ºèªé€£çµ¡
            03  UKE-KAKREN              PIC X(02).
-      *Á÷¼õ¿®¥Õ¥é¥°
+      *é€å—ä¿¡ãƒ•ãƒ©ã‚°
            03  UKE-SRFLG               PIC X(02).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  UKE-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  UKE-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  UKE-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  UKE-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  UKE-UPHMS               PIC  X(06).

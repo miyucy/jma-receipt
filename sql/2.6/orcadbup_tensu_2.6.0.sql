@@ -1,17 +1,17 @@
 --                                   --
--- ÅÀ¿ô¥Ş¥¹¥¿¤ÎÀßÄê                  --
+-- ç‚¹æ•°ãƒã‚¹ã‚¿ã®è¨­å®š                  --
 --                                   --
 -- Create Date : 2005/05/10          --
 --                                   --
 
--- Æş±¡ÍÑ¥·¥¹¥Æ¥àÍ½Ìó¥³¡¼¥ÉºîÀ®      --
--- 099999917 ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¸ÂÄê¡Ë--
+-- å…¥é™¢ç”¨ã‚·ã‚¹ãƒ†ãƒ äºˆç´„ã‚³ãƒ¼ãƒ‰ä½œæˆ      --
+-- 099999917 ç™‚é¤Šæ‹…å½“æ‰‹å½“ï¼ˆåŒ—æµ·é“é™å®šï¼‰--
 
 insert into tbl_tensu (srycd,yukostymd,yukoedymd,srykbn,srysyukbn,yukoketa,name,kanayukoketa,kananame,tensikibetu,ten,tanicd,datakbn,
 chuksncd,chuksntsuban,kgnage,jgnage,ageksnkgn1,ageksnjgn1,ageksnsrycd1,ageksnkgn2,ageksnjgn2,ageksnsrycd2,ageksnkgn3,
 ageksnjgn3,ageksnsrycd3,ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099999917','00000000','99999999','99','990',6,'ÎÅÍÜÃ´Åö¼êÅö',12,'¥ê¥ç¥¦¥è¥¦¥¿¥ó¥È¥¦¥Æ¥¢¥Æ',3,10,'000',1,
+('099999917','00000000','99999999','99','990',6,'ç™‚é¤Šæ‹…å½“æ‰‹å½“',12,'ãƒªãƒ§ã‚¦ãƒ¨ã‚¦ã‚¿ãƒ³ãƒˆã‚¦ãƒ†ã‚¢ãƒ†',3,10,'000',1,
 '0000','0','00','00','00','00','         ','00','00','         ','00','00','         ','00','00','         ',' ',' ','         ',
 '            ','         ','        ','        ','        ','20050401','        ','000000');

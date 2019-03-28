@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,61 +16,61 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����Ų�ץޥ����ʼ��     COPY (CPSRYACCTM.INC)      *
+      *    新診療会計マスタ（主）     COPY (CPSRYACCTM.INC)      *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SRYACCTM-REC.
            03  ACCTM-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  ACCTM-HOSPNUM          PIC 9(2).
-      *������ʬ
+      *入外区分
                05  ACCTM-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  ACCTM-PTID            PIC  9(10).
-      *���Ų�
+      *診療科
                05  ACCTM-SRYKA           PIC  X(02).
-      *����ǯ��
+      *診療年月
                05  ACCTM-SRYYM           PIC  X(06).
-      *���Ŷ�ʬ
+      *診療区分
                05  ACCTM-SRYKBN          PIC  X(02).
-      *���ֹ�
+      *剤番号
                05  ACCTM-ZAINUM          PIC  9(08).
-      *�ݸ��ȹ礻
+      *保険組合せ
            03  ACCTM-HKNCOMBI            PIC  9(04).
-      *���ݶ�ʬ
+      *自保区分
            03  ACCTM-JIHOKBN             PIC  X(01).
-      *������
+      *剤点数
            03  ACCTM-ZAITEN              PIC  9(08).
-      *���ť����ɷ�
+      *診療コード計
            03  ACCTM-SRYCDTOTAL          PIC  9(14).
-      *���̷�
+      *数量計
            03  ACCTM-SURYOUTOTAL         PIC  9(07)V9(05).
-      *���ٿ�
+      *明細数
            03  ACCTM-MEISAISU            PIC  9(07).
-      *�޲��
+      *剤回数
            03  ACCTM-ZAIKAISU            PIC  9(07).
-      *�굻������
+      *手技点数１
            03  ACCTM-SYUTEN1             PIC  9(07).
-      *�굻������
+      *手技点数２
            03  ACCTM-SYUTEN2             PIC  9(07).
-      *��������
+      *薬剤点数
            03  ACCTM-YKZTEN              PIC  9(07).
-      *�������
+      *器材点数
            03  ACCTM-KIZAITEN            PIC  9(07).
-      *�ɥ�����������
+      *ドクターコード
            03  ACCTM-DRCD                PIC  X(05).
-      *������ե饰
+      *剤請求フラグ
            03  ACCTM-ZAIREQFLG           PIC  X(01).
-      *����Ψ
+      *逓減率
            03  ACCTM-TEIGENRATE          PIC  9(03).
-      *����Ϣ��
+      *最大連番
            03  ACCTM-RENNUMMAX           PIC  9(03).
-      *���Ų���ơ��֥�
+      *診療回数テーブル
            03  ACCTM-DAY-AREA.
-      *        ���Ų���ơ��֥�ʹ�ס��������飳������
+      *        診療回数テーブル（合計：１日から３１日）
                05  ACCTM-DAY-1           PIC  9(03).
                05  ACCTM-DAY-2           PIC  9(03).
                05  ACCTM-DAY-3           PIC  9(03).
@@ -105,16 +105,16 @@
            03  ACCTM-DAY-AREA-R          REDEFINES   ACCTM-DAY-AREA.
                05  ACCTM-DAY             PIC  9(03)
                                          OCCURS   31.
-      *ü���ɣ�
+      *端末ＩＤ
            03  ACCTM-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  ACCTM-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  ACCTM-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  ACCTM-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  ACCTM-UPHMS               PIC  X(06).
-      *����ǯ����ѹ���
+      *診療年月検索用項目
            03  ACCTM-STSRYYM             PIC  X(06).
            03  ACCTM-EDSRYYM             PIC  X(06).

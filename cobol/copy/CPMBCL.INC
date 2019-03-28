@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,14 +15,14 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ************************************************************
-      *    •–•√•¡•Ì•∞(MONBATCH_CLOG)     COPY (CPMBCL.INC)       *
+      *    „Éê„ÉÉ„ÉÅ„É≠„Ç∞(MONBATCH_CLOG)     COPY (CPMBCL.INC)       *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
       * 01  MBCL-REC.
             03  MBCL-ID                PIC X(37).
             03  MBCL-NUM               PIC S9(9)   BINARY.
-      *     •Ì•∞° 1024byte X 400lines°À
+      *     „É≠„Ç∞Ôºà1024byte X 400linesÔºâ
             03  MBCL-CLOG              PIC X(410000).

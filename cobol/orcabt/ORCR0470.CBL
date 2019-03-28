@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,47 +18,47 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0470.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץȡ�ϫ�ҡ������ա�
-      *  ����ݡ��ͥ��̾  : ���̳��ϫ�Ҽ��������ٽ�ե��������
-      *                      Ŧ�����¤��ؤ���ϫ�ҡ������ա�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC�ݾ�Ʀ��   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      摘要欄並び替え（労災・自賠責）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−小豆沢   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    02.09.20  �����ΤȤ���ɽ���ֹ���Խ����ʤ�
-      *                                     �����ΤȤ�ZAITEN���Խ�����
-      *  01.00.02    NACL-����    02.11.26  ���ǥ����ɤο��Ŷ�ʬ�Խ�
-      *  01.00.03    NACL-����    03.03.03  ���ֹ�彤���б�
-      *  01.00.04    NACL-����    03.03.06  ��ƿǤΥ������Խ��б�
-      *  ��߽����ɲ�
-      *  01.01.01    NACL-ƣ��    04/10/13  ��߽������ɲ�
-      *  01.01.02    NACL-����    05/05/26  ��ѡ����ε��ܽ��ѹ��б�
-      *  01.01.03    NACL-����    05/08/31  ���ֹ��Խ�����
-      *  01.01.04    NACL-����    05.09.06  �����ս����ͼ��б�
-      *  01.01.05    NACL-����    05/11/01  �ʸ��������������б�
-      *  03.01.01    NACL-����    06/07/14  ���Ŷ�ʬ�֤������ե饰���Խ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    02.09.20  検査のときは表用番号を編集しない
+      *                                     検査のときZAITENを編集する
+      *  01.00.02    NACL-門脇    02.11.26  検診コードの診療区分編集
+      *  01.00.03    NACL-門脇    03.03.03  剤番号桁修正対応
+      *  01.00.04    NACL-門脇    03.03.06  初再診のコメント編集対応
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/05/26  手術・麻酔の記載順変更対応
+      *  01.01.03    NACL-門脇    05/08/31  剤番号編集修正
+      *  01.01.04    NACL-門脇    05.09.06  自賠責従来様式対応
+      *  01.01.05    NACL-門脇    05/11/01  （検選）等コメント対応
+      *  03.01.01    NACL-門脇    06/07/14  診療区分置き換えフラグの編集
       *
-      *  03.05.01    NACL-����    07/05/25  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/06/01  realtime preview �����ɲ�
-      *  04.02.01    NACL-����    08/03/24  ʿ������ǯ��������б�
-      *                                     �ʿ��Ŷ�ʬ���������������б���
-      *  04.02.02    NACL-����    08/04/21  ��������¾���ܽ��б�
+      *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
+      *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *
-      *  04.03.01    NACL-����    08/07/09  �����ε��ܽ��ѹ������ս��
-      *  04.04.01    NACL-����    10/03/29  �����б�
-      *                                     �ʲ������ǣ����ܰʹ߸����Խ���
+      *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
+      *  04.04.01    NACL-門脇    10/03/29  改正対応
+      *                                     （画像診断２回目以降減算編集）
       *
-      *  04.05.01    NACL-����    09/06/10  Ŧ�������ؤΥ����ȵ����б�
-      *  04.05.02    NACL-����    10/01/21  �����б�
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-門脇    10/01/21  治験対応
       *
-      *  04.07.01    NACL-����    13/12/03  �����ա�ϫ�ҽ��ˤΥ쥻�ץ��ͼ�
-      *                                     �ɲ��б�
+      *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
+      *                                     追加対応
       *
-      *  04.08.01    NACL-����    13/01/25  ������ʬ�������ѥ쥻�ץȵ����б�
-      *  04.08.02    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -80,7 +80,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE47X-KEY
                                    FILE    STATUS  IS  STS-RECE47.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -99,7 +99,7 @@
        01  RECE47X-REC. 
            COPY    "CPRCF047.INC"  REPLACING   //RECE47//
                                    BY          //RECE47X//.
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -111,11 +111,11 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE47//.
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE46                              PIC X(02).
            03  STS-RECE47                              PIC X(02).
@@ -125,13 +125,13 @@
            03  FLG-END                                 PIC 9(01).
            03  FLG-SAISHIN                             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                      PIC  X(06).
@@ -146,27 +146,27 @@
            03  WRK-RECEERR             PIC X(200). 
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *     
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -183,7 +183,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -200,7 +200,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -245,15 +245,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0470"      TO  JOB-PGID
-               MOVE    "Ŧ�����¤��ؤ���ϫ�ҡ������ա�"
+               MOVE    "摘要欄並び替え（労災・自賠責）"
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
@@ -269,7 +269,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -277,7 +277,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM     900-RECE46-READ-SEC
       *
-      *    ��������������
+      *    処理中止設定処理
            IF      CNT-IN-CANCEL   =   50
                MOVE    ZERO            TO  CNT-IN-CANCEL
                PERFORM 500-CANCEL-HENSYU-SEC
@@ -287,7 +287,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
@@ -347,9 +347,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE46-ASTER         TO      RECE47-ASTER 
            MOVE    RECE46-TEKIYO        TO      RECE47-TEKIYO
            IF      RECE46-SRYKBN        =       "12"
-               IF      RECE46-ASTER         =       "��"
+               IF      RECE46-ASTER         =       "＊"
                    IF      RECE46-TEKIYO(1:24)  =
-                                        "�ƿǡʿ��Ž�ˡʣ����ܡ�"
+                                        "再診（診療所）（１回目）"
                        MOVE   1             TO      FLG-SAISHIN
                    END-IF
                END-IF
@@ -399,7 +399,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ǡ������������ʣƣ���������
+      *    データ更新処理（Ｆ００６１）
       *****************************************************************
        2101-RECE47-WRITE-SEC                SECTION.
       *
@@ -412,7 +412,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -420,7 +420,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    RECE47-FILE
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
@@ -436,7 +436,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -451,7 +451,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ������Ͻ���
+      *            ジョブ管理開始処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -467,7 +467,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -480,7 +480,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -493,7 +493,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -510,7 +510,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��֥ե�����ңţ��Ľ���
+      *    中間ファイルＲＥＡＤ処理
       *****************************************************************
        900-RECE46-READ-SEC            SECTION.
       *
@@ -529,7 +529,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -546,7 +546,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -559,7 +559,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -577,7 +577,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

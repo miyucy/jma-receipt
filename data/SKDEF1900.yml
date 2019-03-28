@@ -1,191 +1,191 @@
 kanri_cd    : "1900"
-name        : "°åÎÅµ¡´ØÊÔ½¸¾ğÊó"
+name        : "åŒ»ç™‚æ©Ÿé–¢ç·¨é›†æƒ…å ±"
 class_cd    : "*"
 item_max    : 31
 item_list   :
 - item_no   : 1
   item      : "PRTKBN1"
-  item_jp   : "°åÊİ¥ì¥»¥×¥È¡ÊÆş±¡³°¡Ë"
+  item_jp   : "åŒ»ä¿ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢å¤–ï¼‰"
   type      : "X"
   start     : 1
   length    : 2
 - item_no   : 2
   item      : "PRTKBN2"
-  item_jp   : "Ï«ºÒ¥ì¥»¥×¥È¡ÊÆş±¡³°¡Ë"
+  item_jp   : "åŠ´ç½ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢å¤–ï¼‰"
   type      : "X"
   start     : 3
   length    : 4
 - item_no   : 3
   item      : "PRTKBN3"
-  item_jp   : "¼«ÇåÀÕ¥ì¥»¥×¥È¡ÊÆş±¡³°¡Ë"
+  item_jp   : "è‡ªè³ è²¬ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢å¤–ï¼‰"
   type      : "X"
   start     : 5
   length    : 2
 - item_no   : 4
   item      : "PRTKBN4"
-  item_jp   : "°åÊİ¥ì¥»¥×¥È¡ÊÆş±¡¡Ë"
+  item_jp   : "åŒ»ä¿ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 7
   length    : 2
 - item_no   : 5
   item      : "PRTKBN5"
-  item_jp   : "Ï«ºÒ¥ì¥»¥×¥È¡ÊÆş±¡¡Ë"
+  item_jp   : "åŠ´ç½ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 9
   length    : 2
 - item_no   : 6
   item      : "PRTKBN6"
-  item_jp   : "¼«ÇåÀÕ¥ì¥»¥×¥È¡ÊÆş±¡¡Ë"
+  item_jp   : "è‡ªè³ è²¬ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 11
   length    : 2
 - item_no   : 7
   item      : "PRTKBN7"
-  item_jp   : "¿ÇÎÅÊó½·ÀÁµá½ñ¡Ê¼ÒÊİ¡Ë"
+  item_jp   : "è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸ï¼ˆç¤¾ä¿ï¼‰"
   type      : "X"
   start     : 13
   length    : 2
 - item_no   : 8
   item      : "PRTKBN8"
-  item_jp   : "¿ÇÎÅÊó½·ÀÁµá½ñ¡Ê¹ñÊİ¡Ë"
+  item_jp   : "è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸ï¼ˆå›½ä¿ï¼‰"
   type      : "X"
   start     : 15
   length    : 2
 - item_no   : 9
   item      : "PRTKBN9"
-  item_jp   : "½èÊı¤»¤ó"
+  item_jp   : "å‡¦æ–¹ã›ã‚“"
   type      : "X"
   start     : 17
   length    : 2
 - item_no   : 10
   item      : "PRTKBN10"
-  item_jp   : "ÀÁµá½ñ·óÎÎ¼ı½ñ"
+  item_jp   : "è«‹æ±‚æ›¸å…¼é ˜åæ›¸"
   type      : "X"
   start     : 19
   length    : 2
 - item_no   : 11
   item      : "PRTKBN11"
-  item_jp   : "Æş±¡ÀÁµá½ñ·óÎÎ¼ı½ñ"
+  item_jp   : "å…¥é™¢è«‹æ±‚æ›¸å…¼é ˜åæ›¸"
   type      : "X"
   start     : 21
   length    : 2
 - item_no   : 12
   item      : "PRTKBN12"
-  item_jp   : "¿ÇÎÅÈñÌÀºÙ½ñ"
+  item_jp   : "è¨ºç™‚è²»æ˜ç´°æ›¸"
   type      : "X"
   start     : 23
   length    : 2
 - item_no   : 13
   item      : "PRTKBN13"
-  item_jp   : "ÌôºŞ¾ğÊóÄó¶¡½ñ"
+  item_jp   : "è–¬å‰¤æƒ…å ±æä¾›æ›¸"
   type      : "X"
   start     : 25
   length    : 2
 - item_no   : 14
   item      : "PRTKBN14"
-  item_jp   : "¸ø³²¥ì¥»¥×¥È¡ÊÆş±¡³°¡Ë"
+  item_jp   : "å…¬å®³ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢å¤–ï¼‰"
   type      : "X"
   start     : 27
   length    : 2
 - item_no   : 15
   item      : "PRTKBN15"
-  item_jp   : "¸ø³²¥ì¥»¥×¥È¡ÊÆş±¡¡Ë"
+  item_jp   : "å…¬å®³ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 29
   length    : 2
 - item_no   : 16
   item      : "PRTKBN16"
-  item_jp   : "¿ÇÎÅÊó½·ÀÁµá½ñ¡Ê¸ø³²¡Ë"
+  item_jp   : "è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸ï¼ˆå…¬å®³ï¼‰"
   type      : "X"
   start     : 31
   length    : 2
 - item_no   : 17
   item      : "PRTKBN17"
-  item_jp   : "¿ÇÎÅÊó½·ÀÁµá½ñ¡Ê¹­°èÏ¢¹ç¡Ë"
+  item_jp   : "è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸ï¼ˆåºƒåŸŸé€£åˆï¼‰"
   type      : "X"
   start     : 33
   length    : 2
 - item_no   : 18
   item      : "PRTKBN18"
-  item_jp   : "¤ªÌô¼êÄ¢"
+  item_jp   : "ãŠè–¬æ‰‹å¸³"
   type      : "X"
   start     : 35
   length    : 2
 - item_no   : 19
   item      : "PRTKBN19"
-  item_jp   : "¥ì¥»¥×¥ÈÅÅ»»"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆé›»ç®—"
   type      : "X"
   start     : 37
   length    : 2
 - item_no   : 20
   item      : "PRTKBN20"
-  item_jp   : "¾É¾õ¾Üµ­"
+  item_jp   : "ç—‡çŠ¶è©³è¨˜"
   type      : "X"
   start     : 39
   length    : 2
 - item_no   : 21
   item      : "PRTKBN21"
-  item_jp   : "¸÷¥Ç¥£¥¹¥¯ÅùÁ÷ÉÕ½ñ"
+  item_jp   : "å…‰ãƒ‡ã‚£ã‚¹ã‚¯ç­‰é€ä»˜æ›¸"
   type      : "X"
   start     : 41
   length    : 2
 - item_no   : 22
   item      : "PRTKBN22"
-  item_jp   : "Í½ÌóÉ¼"
+  item_jp   : "äºˆç´„ç¥¨"
   type      : "X"
   start     : 43
   length    : 2
 - item_no   : 23
   item      : "PRTKBN23"
-  item_jp   : "¿ÇÎÅÊó½·ÀÁµá½ñ¡ÊÏ«ºÒ¡Ë"
+  item_jp   : "è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸ï¼ˆåŠ´ç½ï¼‰"
   type      : "X"
   start     : 45
   length    : 2
 - item_no   : 24
   item      : "PRTKBN24"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸"
   type      : "X"
   start     : 47
   length    : 2
 - item_no   : 25
   item      : "PRTKBN25"
-  item_jp   : "¼«ÈñÆâÌõÌÀºÙ½ñ"
+  item_jp   : "è‡ªè²»å†…è¨³æ˜ç´°æ›¸"
   type      : "X"
   start     : 49
   length    : 2
 - item_no   : 26
   item      : "PRTKBN26"
-  item_jp   : "Ì¤ÀßÄê"
+  item_jp   : "æœªè¨­å®š"
   type      : "X"
   start     : 51
   length    : 2
 - item_no   : 27
   item      : "PRTKBN27"
-  item_jp   : "Ì¤ÀßÄê"
+  item_jp   : "æœªè¨­å®š"
   type      : "X"
   start     : 53
   length    : 2
 - item_no   : 28
   item      : "PRTKBN28"
-  item_jp   : "Ì¤ÀßÄê"
+  item_jp   : "æœªè¨­å®š"
   type      : "X"
   start     : 55
   length    : 2
 - item_no   : 29
   item      : "PRTKBN29"
-  item_jp   : "Ì¤ÀßÄê"
+  item_jp   : "æœªè¨­å®š"
   type      : "X"
   start     : 57
   length    : 2
 - item_no   : 30
   item      : "PRTKBN30"
-  item_jp   : "Ì¤ÀßÄê"
+  item_jp   : "æœªè¨­å®š"
   type      : "X"
   start     : 59
   length    : 2
 - item_no   : 31
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 61
   length    : 440

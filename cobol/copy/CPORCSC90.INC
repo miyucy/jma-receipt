@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,21 +16,21 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÊÔ½¸ÍÑ¥Ñ¥é¥á¥¿¡¡   COPY (CPORCSC90.INC)
-      *                              (ORCSC90 ¤Ç»ÈÍÑ¡Ë
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šç·¨é›†ç”¨ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€   COPY (CPORCSC90.INC)
+      *                              (ORCSC90 ã§ä½¿ç”¨ï¼‰
       *
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     MCC-Â¿¡¹Ç¼   01.06.11  Ãí¼Í±Õ¤ÎÇÑ´þÄÉ²Ã
-      * 01.00.03     MCC-Â¿¡¹Ç¼   01.08.09  ¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹¡ÊSPA¤ò¶¦ÄÌ¡Ë
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     MCC-å¤šã€…ç´   01.06.11  æ³¨å°„æ¶²ã®å»ƒæ£„è¿½åŠ 
+      * 01.00.03     MCC-å¤šã€…ç´   01.08.09  ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆå¤‰æ›´ï¼ˆSPAã‚’å…±é€šï¼‰
       ************************************************************
       *
        01  ORCSC90AREA.
-      *    ½èÍý¶èÊ¬¡Ê£±¡§ÌÀºÙ¡¢£²¡§¹ç·×¡Ë
+      *    å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šæ˜Žç´°ã€ï¼’ï¼šåˆè¨ˆï¼‰
            03  LNK-SC90-KBN            PIC X(01).
-      *    ÂÐ¾Ý¹Ô¡ÊÉ¬¿Ü¡Ë
+      *    å¯¾è±¡è¡Œï¼ˆå¿…é ˆï¼‰
            03  LNK-SC90-IDX            PIC 9(04).
       *
            03  LNK-SC90-KAISU          PIC 9(03).
@@ -38,31 +38,31 @@
            03  LNK-SC90-HAIKI          PIC 9(01).
       *
            03  LNK-SC90-SUM-AREA.
-      *        ÅÀ¿ô·×
+      *        ç‚¹æ•°è¨ˆ
                05  LNK-SC90-TENSUKEI       PIC 9(08)V99.
-      *        ÅÀ¿ô·×¡ÊÄÌÂ§²Ã»»ÂÐ¾Ý³°·×¡Ë
+      *        ç‚¹æ•°è¨ˆï¼ˆé€šå‰‡åŠ ç®—å¯¾è±¡å¤–è¨ˆï¼‰
                05  LNK-SC90-TENGAKEI       PIC 9(08)V99.
-      *        ÆâÉþºÞ·×
+      *        å†…æœå‰¤è¨ˆ
                05  LNK-SC90-ZAIKEI         PIC 9(08)V9(5).
-      *        ³°ÍÑÌô·×
+      *        å¤–ç”¨è–¬è¨ˆ
                05  LNK-SC90-GAIKEI         PIC 9(08)V9(5).
-      *        ÆâÉþºÞÅÀ¿ô
+      *        å†…æœå‰¤ç‚¹æ•°
                05  LNK-SC90-ZAITEN         PIC 9(08).
-      *        ³°ÍÑºÞÅÀ¿ô
+      *        å¤–ç”¨å‰¤ç‚¹æ•°
                05  LNK-SC90-GAITEN         PIC 9(08).
-      *        ´ïºàÅÀ¿ô
+      *        å™¨æç‚¹æ•°
                05  LNK-SC90-KIZKEI         PIC 9(08).
                05  LNK-SC90-KIZTEN         PIC 9(08).
-      *        ´ïºàÅÀ¿ô¡Ê»ÀÁÇÅÀ¿ô¡Ë
+      *        å™¨æç‚¹æ•°ï¼ˆé…¸ç´ ç‚¹æ•°ï¼‰
                05  LNK-SC90-SANKEI         PIC 9(08).
                05  LNK-SC90-SANTEN         PIC 9(08).
-      *        ´ïºàÅÀ¿ô¡ÊÃâÁÇÅÀ¿ô¡Ë
+      *        å™¨æç‚¹æ•°ï¼ˆçª’ç´ ç‚¹æ•°ï¼‰
                05  LNK-SC90-CHIKEI         PIC 9(08).
                05  LNK-SC90-CHITEN         PIC 9(08).
-      *        ¥Õ¥£¥ë¥àÅÀ¿ô
+      *        ãƒ•ã‚£ãƒ«ãƒ ç‚¹æ•°
                05  LNK-SC90-FIRTEN         PIC 9(08).
                05  LNK-SC90-MAISU          PIC 9(08).
-      *        Ê¬²è¿ô
+      *        åˆ†ç”»æ•°
                05  LNK-SC90-BUNGSU         PIC 9(08).
       *
       *

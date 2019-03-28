@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSGDAY.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ���ղ������ϥ����å�����
-      *  �ֵѥ��顼������  : 00:���10:���ե��顼��99���ѥ�᡼������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  XX.XX.XX    �ΣΣ�        ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 日付画面入力チェック処理
+      *  返却エラーコード  : 00:正常　10:日付エラー、99：パラメータ不正
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  XX.XX.XX    ＮＮＮ        新規作成
       *****************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  02/11/21  ����ǯ�ǣ��������ǰʾ奨�顼
-      * 01.00.02     NACL-¿��Ǽ  02/12/12  ���ϥ����פʤ��ɲ�
-      * 04.06.00     NACL-¿��Ǽ  10/08/30  ǯ���ά�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/11/21  西暦年’３０００’以上エラー
+      * 01.00.02     NACL-多々納  02/12/12  入力タイプなし追加
+      * 04.06.00     NACL-多々納  10/08/30  年月省略対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,14 +46,14 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-ERR             PIC 9(01).
            03  FLG-TEN             PIC 9(01).
            03  FLG-SEKI            PIC 9(01).
            03  FLG-TYPE            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -110,25 +110,25 @@
            03  WRK-ERRCD               PIC X(02).
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
       **** COPY    "CPORCSPTID.INC".
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
        01  MCPDATA-REC                 PIC X(5000).
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -138,7 +138,7 @@
            ORCSGDAYAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -148,15 +148,15 @@
            MOVE    ZERO                TO  SGDAY-RC
            INITIALIZE                      SGDAY-OT-AREA
       *
-      *    ���������Ѵ�
+      *    入力日付変換
            IF      SGDAY-INDAY         =   SPACE  OR  ZERO
                MOVE    99                  TO  SGDAY-RC
            ELSE
-      *        Ⱦ�ѥ����å�
+      *        半角チェック
                PERFORM 100-INDAY-INITCHK-SEC
            END-IF
            IF      SGDAY-RC            =   ZERO
-      *        ���������Ѵ�
+      *        入力日付変換
                PERFORM 100-INDAY-CHK-SEC
                IF      WRK-ERRCD       NOT =   SPACE
                    MOVE    99                  TO  SGDAY-RC
@@ -164,7 +164,7 @@
                END-IF
            END-IF
       *
-      *    �����Ѵ�
+      *    日付変換
            IF      SGDAY-RC            =   ZERO
                PERFORM 200-DAY-HEN-SEC
            END-IF
@@ -174,7 +174,7 @@
            .
       *
       *****************************************************************
-      *    Ⱦ�ѥ����å�����
+      *    半角チェック処理
       *****************************************************************
        100-INDAY-INITCHK-SEC               SECTION.
       *
@@ -189,7 +189,7 @@
                   (KANACHK-SYUBETU     =   1     )
                CONTINUE
            ELSE
-      *        Ⱦ�Ѱʳ��ϥ��顼
+      *        半角以外はエラー
                MOVE    99                  TO  SGDAY-RC
                MOVE    SGDAY-INDAY         TO  SGDAY-OTDAY
            END-IF
@@ -198,11 +198,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ո�������
+      *    入力日付検索処理
       *****************************************************************
        100-INDAY-CHK-SEC               SECTION.
       *
-      *    �����ƥ������Խ�
+      *    システム日付編集
            IF     (SGDAY-SYSYMD        =   SPACE
                                        OR  ZERO )
                CONTINUE
@@ -212,13 +212,13 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY1-AREA
                IF      STS-DAY-RC1         =   ZERO
-      *            ����ǯ
+      *            和暦年
                    MOVE    LNK-DAY1-WYMD(1:3)  TO  WRK-SYSWNEN
-      *            ǯ����
+      *            年・月
                    MOVE    SGDAY-SYSYY         TO  WRK-SYSYY
                    MOVE    SGDAY-SYSMM         TO  WRK-SYSMM
                    MOVE    SGDAY-SYSDD         TO  WRK-SYSDD
-      *            ����
+      *            前月
                    IF      WRK-SYSMM           =   01
                        MOVE    12                  TO  WRK-SYSZMM
                        COMPUTE WRK-SYSZYY          =   WRK-SYSYY   -   1
@@ -245,13 +245,13 @@
                    MOVE    ZERO            TO  IDX1
                ELSE
                    EVALUATE    FLG-TEN
-      *                 ǯ
+      *                 年
                        WHEN    ZERO
                            ADD     1                   TO  IDX1
                            MOVE    SGDAY-INDAY(IDX:1)  TO
                                                        WRK-YY(IDX1:1)
                            MOVE    IDX1                TO  WRK-KETA
-      *                 ��
+      *                 月
                        WHEN    1
                            ADD     1                   TO  IDX1
                            IF      IDX1                >   2
@@ -260,9 +260,9 @@
                                MOVE    SGDAY-INDAY(IDX:1)  TO
                                                        WRK-MM(IDX1:1)
                            END-IF
-      *                 ��
+      *                 日
                        WHEN    2
-      *                    ǯ��λ������ϥ��顼
+      *                    年月の時、日はエラー
                            IF      SGDAY-INTYPE        =   "1"
                                MOVE    "99"            TO  WRK-ERRCD
                            END-IF
@@ -273,7 +273,7 @@
                                MOVE    SGDAY-INDAY(IDX:1)  TO
                                                        WRK-DD(IDX1:1)
                            END-IF
-      *                 ����¾
+      *                 その他
                        WHEN    OTHER
                            MOVE    "99"                TO  WRK-ERRCD
                    END-EVALUATE
@@ -283,7 +283,7 @@
       *
            EVALUATE    SGDAY-INTYPE
                WHEN    SPACE
-      *            ǯ����
+      *            年月日
                    IF      FLG-TEN             =   ZERO
                        IF      WRK-KETA        NOT =   7   AND 8
                            MOVE    "99"                TO  WRK-ERRCD
@@ -294,32 +294,32 @@
                        END-IF
                    END-IF
                WHEN    "1"
-      *        ǯ��
+      *        年月
                    IF      FLG-TEN             =   ZERO
                        IF      WRK-KETA        NOT =   5  AND 6
                            MOVE    "99"                TO  WRK-ERRCD
                        END-IF
                    END-IF
                WHEN    "2"
-      *        �����å��ʤ�
+      *        チェックなし
                    IF      FLG-TEN             =   ZERO
                        EVALUATE    WRK-KETA
                            WHEN    2
-      *                        ����ǯ
+      *                        和暦年
                                MOVE    3                   TO  FLG-TYPE
                                MOVE    "01"                TO  WRK-MM
                                MOVE    "01"                TO  WRK-DD
                            WHEN    3
                            WHEN    4
-      *                        ǯ
+      *                        年
                                MOVE    3                   TO  FLG-TYPE
                            WHEN    5
                            WHEN    6
-      *                        ǯ��
+      *                        年月
                                MOVE    2                   TO  FLG-TYPE
                            WHEN    7
                            WHEN    8
-      *                        ǯ����
+      *                        年月日
                                MOVE    1                   TO  FLG-TYPE
                            WHEN    OTHER
                                MOVE    "99"                TO  WRK-ERRCD
@@ -340,7 +340,7 @@
                    END-IF
            END-EVALUATE
       *
-      *    ǯ�������Ϥǥ����ƥ����դ����꤬�����
+      *    年月日入力でシステム日付の設定がある時
       *    IF     (WRK-ERRCD           =   SPACE )  OR
            IF     (WRK-SYSYM           =   SPACE )
              OR   (SGDAY-INTYPE    NOT =   SPACE )
@@ -348,7 +348,7 @@
            ELSE
                EVALUATE    FLG-TEN
                WHEN        ZERO
-      *            ���Τ����ϡ������ƥ�ǯ��Ȥ���
+      *            日のみ入力　システム年月とする
                    EVALUATE    WRK-KETA
                    WHEN    1
                    WHEN    2
@@ -360,7 +360,7 @@
                        MOVE    1                   TO  FLG-TYPE
                        MOVE    8                   TO  WRK-KETA
                        IF      SGDAY-SYSKBN        =   "2"
-      *                    �����ƥ����դ��̤�����λ��ϡ�����Ȥ���
+      *                    システム日付より未来日の時は、前月とする
                            IF      WRK-HENYMD          >   WRK-SYSYMD
                                MOVE    WRK-SYSZYM      TO  WRK-HENYMD
                                                                  (1:6)
@@ -369,20 +369,20 @@
                        MOVE    WRK-HENYMD          TO  SGDAY-INDAY
                    WHEN    3
                    WHEN    4
-      *                �����Τ����ϡ������ƥ�ǯ��Ȥ���
+      *                月日のみ入力　システム年月とする
                        MOVE    SGDAY-INDAY(1:WRK-KETA) TO  WRK-INSUJI
                        PERFORM 1001-SUUJI-CHK-SEC
                        MOVE    WRK-OTSUJI          TO  WRK-HENMMDD
                        EVALUATE    SGDAY-SYSKBN
                        WHEN    "1"
-      *                    ������λ�������Ȥ���
+      *                    １２月の時は前月とする
                            IF      WRK-HENMM           =   12
                                MOVE    WRK-SYSZYY          TO  WRK-HENYY
                            ELSE
                                MOVE    WRK-SYSYY           TO  WRK-HENYY
                            END-IF
                        WHEN    "2"
-      *                    �����ƥ����դ��̤��������ǯ�Ȥ���
+      *                    システム日付より未来日は前年とする
                            IF      WRK-HENMMDD         >   WRK-SYSMMDD
                                COMPUTE WRK-HENYY       =   WRK-SYSYY
                                                        -   1
@@ -390,7 +390,7 @@
                                MOVE    WRK-SYSYY           TO  WRK-HENYY
                            END-IF
                        WHEN    OTHER
-      *                    �����ƥ�ǯ
+      *                    システム年
                            MOVE    WRK-SYSYY           TO  WRK-HENYY
                        END-EVALUATE
                        MOVE    SPACE               TO  WRK-ERRCD
@@ -398,7 +398,7 @@
                        MOVE    8                   TO  WRK-KETA
                        MOVE    WRK-HENYMD          TO  SGDAY-INDAY
                    WHEN    6
-      *                �����ǯ�����Τ����ϡ���������ꤹ��
+      *                和暦の年月日のみ入力　和暦を設定する
                        MOVE    SPACE               TO  WRK-WYMD
                        STRING  WRK-SYSWGO          DELIMITED  BY  SIZE
                                SGDAY-INDAY         DELIMITED  BY  SPACE
@@ -410,7 +410,7 @@
                        MOVE    7                   TO  WRK-KETA
                    END-EVALUATE
                WHEN    1
-      *            ǯ�η夬��������Ϸ�����Ƚ�Ǥ���
+      *            年の桁が２、１桁は月日と判断する
                    IF      WRK-KETA            =   1
                                                OR  2
                        MOVE    WRK-MM              TO  WRK-DD
@@ -421,14 +421,14 @@
                        MOVE    WRK-HMM             TO  WRK-MM
                        EVALUATE    SGDAY-SYSKBN
                        WHEN    "1"
-      *                    ������λ�����ǯ�Ȥ���
+      *                    １２月の時は前年とする
                            IF      WRK-MM          =   "12"
                                MOVE    WRK-SYSZYY          TO  WRK-YY
                            ELSE
                                MOVE    WRK-SYSYY           TO  WRK-YY
                            END-IF
                        WHEN    "2"
-      *                    �����ƥ����դ��̤�����ϲ�����Ȥ���
+      *                    システム日付より未来日は過去日とする
                            IF     (WRK-MM          >   WRK-SYSMM )
                                COMPUTE WRK-SYY         =   WRK-SYSYY
                                                        -   1
@@ -437,7 +437,7 @@
                                MOVE    WRK-SYSYY           TO  WRK-YY
                            END-IF
                        WHEN    OTHER
-      *                    �����ƥ�ǯ
+      *                    システム年
                                MOVE    WRK-SYSYY           TO  WRK-YY
                        END-EVALUATE
                        MOVE    2               TO  FLG-TEN
@@ -445,7 +445,7 @@
                        MOVE    4               TO  WRK-KETA
                    END-IF
                WHEN    2
-      *            ǯ�η夬���������ǯ�Τߤ�Ƚ�Ǥ���
+      *            年の桁が２桁は和暦年のみと判断する
                    IF     (WRK-KETA            =   1
                                                OR  2 )
                      AND  (WRK-YY(1:WRK-KETA)   NUMERIC   )
@@ -465,7 +465,7 @@
                GO      TO      100-INDAY-CHK-EXT
            END-IF
       *
-      *    �ɡ��ɤʤ��Υ����å�
+      *    ”．”なしのチェック
            IF      FLG-TEN             =   ZERO
                EVALUATE    WRK-KETA
                    WHEN    3
@@ -481,7 +481,7 @@
                            MOVE    01                TO  WRK-WDD
                        END-IF
                        MOVE    1                 TO  FLG-SEKI
-      *                ����
+      *                和暦
                        EVALUATE    SGDAY-INDAY(1:1)
                            WHEN    "M"
                            WHEN    "m"
@@ -501,7 +501,7 @@
                                MOVE    "4"                 TO  WRK-WGO
       *TEST
       *TEST
-      *2019.5.1����ο����沾�б��ʸ����G �Ȥ���
+      *2019.5.1からの新元号仮対応（元号）G とする
                            WHEN    "G"
                            WHEN    "g"
                            WHEN    "5"
@@ -512,7 +512,7 @@
                        IF      WRK-WYMD        NOT NUMERIC
                            MOVE    "99"        TO  WRK-ERRCD
                        END-IF
-      *            ����
+      *            西暦
                    WHEN    4
                    WHEN    8
                    WHEN    6
@@ -525,7 +525,7 @@
                            MOVE    SGDAY-INDAY(1:6)  TO  WRK-SYMD(1:6)
                            MOVE    01                TO  WRK-SDD
                        END-IF
-      *                �����ǯ���������ʲ��Ǥ��뤳��
+      *                西暦の年３０００以下であること
                        IF      WRK-SYMD(1:2)       >=  "30"
                            MOVE    "99"            TO  WRK-ERRCD
                        END-IF
@@ -544,22 +544,22 @@
                    GO      TO      100-INDAY-CHK-EXT
                END-IF
            ELSE
-      *        ǯ�η��
+      *        年の桁数
                IF      WRK-KETA        >   4
                    MOVE    "99"                TO  WRK-ERRCD
                    GO      TO      100-INDAY-CHK-EXT
                END-IF
            END-IF
       *
-      *    ���ʤ��λ��������Ȥ���
+      *    日なしの時、０１とする
            IF      FLG-TEN             =   1
                MOVE    "01"            TO  WRK-DD
            END-IF
       *
-      *    ǯ�����å�
-      *    ǯ�η��
+      *    年チェック
+      *    年の桁数
            IF      WRK-KETA        =   4
-      *        ���񣴷�
+      *        西暦４桁
                MOVE    WRK-YY              TO  WRK-INSUJI
                PERFORM 1001-SUUJI-CHK-SEC
                IF      WRK-ERRCD           =   SPACE
@@ -568,7 +568,7 @@
                END-IF
            ELSE
                EVALUATE    WRK-YY(1:1)    
-      *            ��������å�
+      *            和暦チェック
                    WHEN    "M"
                    WHEN    "m"
                    WHEN    "1"
@@ -603,7 +603,7 @@
                        MOVE    1                   TO  FLG-SEKI
       *TEST
       *TEST
-      *2019.5.1����ο����沾�б��ʸ����G �Ȥ���
+      *2019.5.1からの新元号仮対応（元号）G とする
                        MOVE    1                   TO  FLG-SEKI
                    WHEN    "G"
                    WHEN    "g"
@@ -642,7 +642,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    数字変換処理
       *****************************************************************
        1001-SUUJI-CHK-SEC                SECTION.
       *
@@ -663,14 +663,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    月日変換処理
       *****************************************************************
        1002-MMDD-HEN-SEC                SECTION.
       *
            MOVE    ZERO                TO  WRK-HMM
            MOVE    ZERO                TO  WRK-HDD
       *
-      *    ��
+      *    月
            MOVE    WRK-MM              TO  WRK-INSUJI
            PERFORM 1001-SUUJI-CHK-SEC
            MOVE    WRK-OTSUJI          TO  WRK-HMM
@@ -678,7 +678,7 @@
                GO      TO      1002-MMDD-HEN-EXT
            END-IF
       *
-      *    ��
+      *    日
            IF      WRK-DD              =   SPACE
                MOVE    "01"                TO  WRK-INSUJI
            END-IF
@@ -694,7 +694,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    日付変換処理
       *****************************************************************
        200-DAY-HEN-SEC                SECTION.
       *
@@ -702,7 +702,7 @@
            INITIALIZE                      LNK-DAY1-AREA
       *
            IF      FLG-SEKI            =   1
-      *        ���������Ѵ�
+      *        和暦西暦変換
                MOVE    "12"                TO  LNK-DAY1-IRAI
                MOVE    WRK-WYMD            TO  LNK-DAY1-WYMD
                CALL    "ORCSDAY"           USING   STS-AREA-DAY

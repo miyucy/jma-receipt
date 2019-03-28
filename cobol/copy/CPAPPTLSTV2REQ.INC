@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÍ½Ìó°ìÍ÷(xml2)     COPY (CPAPPTLSTV2REQ.INC)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆäºˆç´„ä¸€è¦§(xml2)     COPY (CPAPPTLSTV2REQ.INC)
       ******************************************************************
         01  XML-APPOINTLSTREQ.
             02  APLSTREQ-CONTEXT           PIC S9(9)   BINARY.
@@ -24,9 +24,9 @@
             02  APLSTREQ-MODE              PIC S9(9)   BINARY.
             02  APLSTREQ-RECORDNAME        PIC X(128).
             02  APLSTREQ-APPOINT.
-      *       Í½ÌóÆü
+      *       äºˆç´„æ—¥
               03  APLSTREQ-APPOINT-DATE        PIC X(10).
-      *       ¿ÇÎÅÆâÍÆ¶èÊ¬¥³¡¼¥É
+      *       è¨ºç™‚å†…å®¹åŒºåˆ†ã‚³ãƒ¼ãƒ‰
               03  APLSTREQ-APPOINT-DEP-INFO    PIC X(2).
-      *       ¥É¥¯¥¿¡¼¥³¡¼¥É
+      *       ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
               03  APLSTREQ-APPOINT-DR-CODE     PIC X(5).

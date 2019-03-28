@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �Ҳ�����        �� COPY (CPSYKRRK.INC)     *
+      *    紹介履歴　        　 COPY (CPSYKRRK.INC)     *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SYKRRK-REC.
-      *����
+      *キー
            03  SYK-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  SYK-HOSPNUM              PIC 9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SYK-PTID                PIC  9(10).
-      *�Ҳ��ʬ
+      *紹介区分
                05  SYK-SYKKBN              PIC  X(01).
-      *�Ҳ�ǯ����
+      *紹介年月日
                05  SYK-SYKYMD              PIC  X(08).
-      *�Ҳ���ŵ��أɣ�
+      *紹介医療機関ＩＤ
            03  SYK-SYKIRYID                PIC  X(10).
-      *�Ҳ���ŵ���̾��
+      *紹介医療機関名称
            03  SYK-SYKIRYNAME              PIC  X(100).
-      *�Ҳ��
+      *紹介科
            03  SYK-SYKKA                   PIC  X(02).
-      *�ӣϣ���
+      *ＳＯＡＰ
            03  SYK-SOAP                    PIC  X(100).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYK-TERMID                  PIC  X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  SYK-OPID                    PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYK-CREYMD                  PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYK-UPYMD                   PIC  X(08).
-      *��������
+      *更新時間
            03  SYK-UPHMS                   PIC  X(06).

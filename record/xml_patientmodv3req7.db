@@ -16,15 +16,15 @@ xml_patientmodv3req7 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         };
-#---    ´µ¼Ô¶Ø´÷ÌôºŞ¾ğÊó
+#---    æ‚£è€…ç¦å¿Œè–¬å‰¤æƒ…å ±
 	Patient_Contra_Information	{
             Contra_Mode			varchar(6);
 	    Patient_Contra_Info	{
-#---            ÌôºŞ¥³¡¼¥É
+#---            è–¬å‰¤ã‚³ãƒ¼ãƒ‰
 		Medication_Code		varchar(09);
-#---            ¶Ø´÷³«»ÏÆüÉÕ
+#---            ç¦å¿Œé–‹å§‹æ—¥ä»˜
                 Contra_StartDate	varchar(10);
-#---            ÅêÌô³«»ÏÆüÉÕ
+#---            æŠ•è–¬é–‹å§‹æ—¥ä»˜
                 Medication_StartDate	varchar(10);
 	        } [500];
         };

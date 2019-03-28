@@ -6,17 +6,17 @@
 # 
 # version 1.3.0
 #                  '01-10-30 by Ymmt
-# version 1.4.0 ¥Ş¥ë¥Á¥¹¥ì¥Ã¥ÉÂĞ±ş
+# version 1.4.0 ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰å¯¾å¿œ
 #                  '02-11-12 by hiki
-# version 1.4.1 £±ÉÃÃæ¤ÎÊ£¿ô¼õ¿®ÂĞ±ş
-#               ¸å¤í¤Ë¡¢¼õ¿®¤ÎÅÙ¤Ë¥«¥¦¥ó¥È¥¢¥Ã¥×¤µ¤ì¤ëÈÖ¹æ¤òÉÕ²Ã¤·¤Æ¤¤¤ë
+# version 1.4.1 ï¼‘ç§’ä¸­ã®è¤‡æ•°å—ä¿¡å¯¾å¿œ
+#               å¾Œã‚ã«ã€å—ä¿¡ã®åº¦ã«ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—ã•ã‚Œã‚‹ç•ªå·ã‚’ä»˜åŠ ã—ã¦ã„ã‚‹
 #                  '03-10-15 by hiki
-# version 1.4.2 ÅÓÃæ¤ÇÀÜÂ³¤¬ÀÚ¤ì¤¿¤ê¡¢nmap¥³¥Ş¥ó¥É¤Ø¤ÎÂĞºö
+# version 1.4.2 é€”ä¸­ã§æ¥ç¶šãŒåˆ‡ã‚ŒãŸã‚Šã€nmapã‚³ãƒãƒ³ãƒ‰ã¸ã®å¯¾ç­–
 #                  '05-02-08 by hiki
 # version 1.4.3 fix correction of socket opening.
 #                  '2011-02-09
-# version 1.4.4 ¥½¥±¥Ã¥È¥ª¡¼¥×¥ó¼ºÇÔ»ş¤ÎÌµ¸Â¥ë¡¼¥×¤ò½¤Àµ.
-#               ¥í¥°½ĞÎÏ¤òÄÉ²Ã.
+# version 1.4.4 ã‚½ã‚±ãƒƒãƒˆã‚ªãƒ¼ãƒ—ãƒ³å¤±æ•—æ™‚ã®ç„¡é™ãƒ«ãƒ¼ãƒ—ã‚’ä¿®æ­£.
+#               ãƒ­ã‚°å‡ºåŠ›ã‚’è¿½åŠ .
 #                  '2011-11-30
 
 $DEBUG = false
@@ -39,13 +39,13 @@ $file_path = "/var/tmp"
 $logfl = "/tmp/claim_rcv.log"
 
 $sh_path_name = "../../../scripts/claim/HL03.sh"
-$seq_put = 0        # ³ÊÇ¼»ş¤Ë¥»¥Ã¥È¤·¤¿¼±ÊÌÈÖ¹æ
-$seq_exec = 0       # ¼Â¹ÔÃæ¼±ÊÌÈÖ¹æ
-$seq_max = 32767    # ¼±ÊÌÈÖ¹æ¤ÎºÇÂçÃÍ
-$thr_sleeptime = 1  # ¥¹¥ì¥Ã¥É¤Î½ç½øÂÔ¤Á»ş¤Îsleep»ş´Ö
-$fname_seq = 0      # ¼õ¿®¥«¥¦¥ó¥¿(¥Õ¥¡¥¤¥ëÌ¾¤Ë»ÈÍÑ¤¹¤ë)
+$seq_put = 0        # æ ¼ç´æ™‚ã«ã‚»ãƒƒãƒˆã—ãŸè­˜åˆ¥ç•ªå·
+$seq_exec = 0       # å®Ÿè¡Œä¸­è­˜åˆ¥ç•ªå·
+$seq_max = 32767    # è­˜åˆ¥ç•ªå·ã®æœ€å¤§å€¤
+$thr_sleeptime = 1  # ã‚¹ãƒ¬ãƒƒãƒ‰ã®é †åºå¾…ã¡æ™‚ã®sleepæ™‚é–“
+$fname_seq = 0      # å—ä¿¡ã‚«ã‚¦ãƒ³ã‚¿(ãƒ•ã‚¡ã‚¤ãƒ«åã«ä½¿ç”¨ã™ã‚‹)
 
-# Îã³°¥¯¥é¥¹
+# ä¾‹å¤–ã‚¯ãƒ©ã‚¹
 class ConnectError < StandardError ; end
 class CReadError < StandardError ; end
 
@@ -69,7 +69,7 @@ class FileSockRcv
       begin
         while @eot != (buf = @sckt.read(1))
           if buf == nil
-            # ¥½¥±¥Ã¥ÈÀÜÂ³¤¬ÀÚ¤ì¤¿
+            # ã‚½ã‚±ãƒƒãƒˆæ¥ç¶šãŒåˆ‡ã‚ŒãŸ
             Log("Connect Error: read socket data is nil")
             raise ConnectError, 'read socket data is nil.'
           end
@@ -77,11 +77,11 @@ class FileSockRcv
           f.print buf
         end
       rescue ConnectError
-        # ÅÓÃæ¤ÇÀÜÂ³¤¬ÀÚ¤ì¤¿¾ì¹ç¤Ø¤ÎÂĞ±ş
+        # é€”ä¸­ã§æ¥ç¶šãŒåˆ‡ã‚ŒãŸå ´åˆã¸ã®å¯¾å¿œ
         Log("Connect Error")
         raise ConnectError, ''
       rescue
-        # nmap¥³¥Ş¥ó¥É¤Ø¤ÎÂĞ±ş
+        # nmapã‚³ãƒãƒ³ãƒ‰ã¸ã®å¯¾å¿œ
         Log("CRead Error: socket read error")
         raise CReadError, 'socket read error.'
       end
@@ -105,21 +105,21 @@ class SndRsp
   end
 end
 
-# ¥Ş¥ë¥Á¥¹¥ì¥Ã¥É»ş¤Ë¼Â¹Ô¤¹¤ë¥¯¥é¥¹
+# ãƒãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰æ™‚ã«å®Ÿè¡Œã™ã‚‹ã‚¯ãƒ©ã‚¹
 class ExecThreadMain
-  # ¥³¥ó¥¹¥È¥é¥¯¥¿
+  # ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
   #
-  #   °ú¿ô
-  #     seq      <= À¸À®¥¹¥ì¥Ã¥É¤Î¥·¡¼¥±¥ó¥·¥ã¥ëÈÖ¹æ(0¡Á32767)
-  #     sh_path  <= µ¯Æ°¥·¥§¥ë¤Î¥Õ¥ë¥Ñ¥¹Ì¾
-  #     xml_path <= ÆÉ¤ß¹ş¤ßXML¥Õ¥¡¥¤¥ë¤Î¥Õ¥ë¥Ñ¥¹Ì¾
-  #     out_file <= ½ĞÎÏ¥Æ¥­¥¹¥È¥Õ¥¡¥¤¥ëÌ¾
+  #   å¼•æ•°
+  #     seq      <= ç”Ÿæˆã‚¹ãƒ¬ãƒƒãƒ‰ã®ã‚·ãƒ¼ã‚±ãƒ³ã‚·ãƒ£ãƒ«ç•ªå·(0ã€œ32767)
+  #     sh_path  <= èµ·å‹•ã‚·ã‚§ãƒ«ã®ãƒ•ãƒ«ãƒ‘ã‚¹å
+  #     xml_path <= èª­ã¿è¾¼ã¿XMLãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ•ãƒ«ãƒ‘ã‚¹å
+  #     out_file <= å‡ºåŠ›ãƒ†ã‚­ã‚¹ãƒˆãƒ•ã‚¡ã‚¤ãƒ«å
   #
-  #   Ãí°Õ
-  #     $seq_put¤ÎÃÍ¤Ï¡¢¥¹¥ì¥Ã¥É¤ËÃÍ¤òÅÏ¤·¤Æ¤«¤é¥«¥¦¥ó¥È¥¢¥Ã¥×¤·¤Æ¤¯¤À¤µ¤¤¡£
+  #   æ³¨æ„
+  #     $seq_putã®å€¤ã¯ã€ã‚¹ãƒ¬ãƒƒãƒ‰ã«å€¤ã‚’æ¸¡ã—ã¦ã‹ã‚‰ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—ã—ã¦ãã ã•ã„ã€‚
   #
   def initialize(seq, sh_path, xml_path, out_file)
-    # ¥·¡¼¥±¥ó¥·¥ã¥ëÈÖ¹æ¤ò¥¯¥é¥¹ÊÑ¿ôÎÎ°è¤ËÊİÂ¸
+    # ã‚·ãƒ¼ã‚±ãƒ³ã‚·ãƒ£ãƒ«ç•ªå·ã‚’ã‚¯ãƒ©ã‚¹å¤‰æ•°é ˜åŸŸã«ä¿å­˜
     @thr_seq = seq
     @sh_pathname = sh_path
     @xml_pathname = xml_path
@@ -127,24 +127,24 @@ class ExecThreadMain
   end
 
 
-  # ¥Ç¥³¡¼¥É¥á¥¤¥ó½èÍı
+  # ãƒ‡ã‚³ãƒ¼ãƒ‰ãƒ¡ã‚¤ãƒ³å‡¦ç†
   def decode_main
     `#{@sh_pathname} #{@xml_pathname} #{@out_filename}`
   end
 
 
-  # ¼Â¹ÔÂÔ¤Á´Ø¿ô
-  # ³ÊÇ¼¼±ÊÌÈÖ¹æ¤È¼Â¹Ô¼±ÊÌÈÖ¹æ¤ÎÈæ³Ó¤È¥¦¥¨¥¤¥È½èÍı¤È³ÊÇ¼¼±ÊÌÈÖ¹æ¤Î¥«¥¦¥ó¥È¥¢¥Ã¥×
+  # å®Ÿè¡Œå¾…ã¡é–¢æ•°
+  # æ ¼ç´è­˜åˆ¥ç•ªå·ã¨å®Ÿè¡Œè­˜åˆ¥ç•ªå·ã®æ¯”è¼ƒã¨ã‚¦ã‚¨ã‚¤ãƒˆå‡¦ç†ã¨æ ¼ç´è­˜åˆ¥ç•ªå·ã®ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
   def exec_start
     while @thr_seq != $seq_exec
-      # ½ç½øÂÔ¤Á
+      # é †åºå¾…ã¡
       sleep $thr_sleeptime
     end
   end
 
 
-  # ¼Â¹Ô´°Î»´Ø¿ô
-  # ¼Â¹Ô¼±ÊÌÈÖ¹æ¤Î¥«¥¦¥ó¥È¥¢¥Ã¥×
+  # å®Ÿè¡Œå®Œäº†é–¢æ•°
+  # å®Ÿè¡Œè­˜åˆ¥ç•ªå·ã®ã‚«ã‚¦ãƒ³ãƒˆã‚¢ãƒƒãƒ—
   def exec_end
     $seq_exec += 1
     if $seq_exec > $seq_max
@@ -153,12 +153,12 @@ class ExecThreadMain
   end
 
 
-  # ¥¹¥ì¥Ã¥É¥á¥¤¥ó½èÍı
-  # ¤³¤³¤«¤é¡¢½ç¼¡¼Â¹ÔÂÔ¤Á¡¦½èÍı¼Â¹Ô¤ò¸Æ¤Ó½Ğ¤¹(public)
+  # ã‚¹ãƒ¬ãƒƒãƒ‰ãƒ¡ã‚¤ãƒ³å‡¦ç†
+  # ã“ã“ã‹ã‚‰ã€é †æ¬¡å®Ÿè¡Œå¾…ã¡ãƒ»å‡¦ç†å®Ÿè¡Œã‚’å‘¼ã³å‡ºã™(public)
   def main
-    exec_start  # ½ç½øÂÔ¤Á
-    decode_main # ½ç¼¡¼Â¹Ô
-    exec_end    # ½èÍı½ªÎ»ÄÌÃÎ
+    exec_start  # é †åºå¾…ã¡
+    decode_main # é †æ¬¡å®Ÿè¡Œ
+    exec_end    # å‡¦ç†çµ‚äº†é€šçŸ¥
   end
 
   public  :main
@@ -239,7 +239,7 @@ class ClaimRcv
         Log("Decode claim data to #{out_file} and kick COBOL\n")
         Log("#{$sh_path_name} #{file_path_name} #{out_file}\n\n")
 
-        # ¥¹¥ì¥Ã¥É¤ÎÀ¸À®½èÍı
+        # ã‚¹ãƒ¬ãƒƒãƒ‰ã®ç”Ÿæˆå‡¦ç†
         thr_execflg = 0
         #Thread.start {
           if $DEBUG
@@ -250,7 +250,7 @@ class ClaimRcv
           end
 
           thr = nil
-          # ¥¹¥ì¥Ã¥ÉÀ¸À®¥á¥¤¥ó½èÍı
+          # ã‚¹ãƒ¬ãƒƒãƒ‰ç”Ÿæˆãƒ¡ã‚¤ãƒ³å‡¦ç†
           thr = ExecThreadMain.new($seq_put, $sh_path_name, file_path_name, out_file)
           $seq_put += 1
           if $seq_put > $seq_max
@@ -258,18 +258,18 @@ class ClaimRcv
           end
 
           thr_execflg = 1
-          # ¥á¥¤¥ó½èÍı
+          # ãƒ¡ã‚¤ãƒ³å‡¦ç†
           thr.main
 
           if $DEBUG
             thr_end_time = Time.now.strftime("%H:%M:%S")
             Log("Thread End[" + String($seq_exec) + "] ")
-            Log("[" + thr_start_time + "¡Á" + thr_end_time + "]\n")
+            Log("[" + thr_start_time + "ã€œ" + thr_end_time + "]\n")
             Log("End Sequence NO. = [" + String($seq_put) + "]\n")
           end
         #}
 
-        # ¥¹¥ì¥Ã¥ÉÀ¸À®¤Î¥¦¥¨¥¤¥È½èÍı
+        # ã‚¹ãƒ¬ãƒƒãƒ‰ç”Ÿæˆã®ã‚¦ã‚¨ã‚¤ãƒˆå‡¦ç†
         while thr_execflg == 0
           sleep 1
         end

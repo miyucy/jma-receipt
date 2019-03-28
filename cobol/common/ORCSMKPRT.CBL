@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSMKPRT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ����饤��Ģɼ��������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/09/12    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : オンライン帳票印刷サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/09/12    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-��ƣ    06/03/03  ���ե��å��б�
-      *  03.05.00    NACL-����    07/05/22  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-伊藤    06/03/03  オフセット対応
+      *  03.05.00    NACL-太田    07/05/22  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,15 +44,15 @@
        01  STS-AREA.
            03  STS-IN              PIC X(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *     �����ѥǡ��� ̾���ΰ� 
+      *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPSHELLTBL.INC".
       *****COPY    "ORCA-DBPATH".
       *
@@ -60,7 +60,7 @@
            03  FLG-SYORI           PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-DIA             PIC X(10).
            03  WRK-ENCODING        PIC X(01).
@@ -69,36 +69,36 @@
            03  WRK-MKPRT-ST        PIC 9(05).
            03  WRK-CLIENT-TEMP-FLG PIC 9(01).
       *
-      *    �ǥ��쥯�ȥ����
+      *    デイレクトリ位置
        01  SHELL-NAME.
            03  FILLER              PIC X(30)   VALUE
                "scripts/daily/".
-      *   �ģ��
+      *   Ｄｉａ
        01  SHELL-DIA.
            03  FILLER              PIC X(40)   VALUE
                "scripts/daily/print-data.rb".
-      *   �ͣϣΣУ�
+      *   ＭＯＮＰＥ
        01  SHELL-MONPE.
            03  FILLER              PIC X(10)   VALUE
                "red2ps".
-      *    �ƣϣңͰ���
+      *    ＦＯＲＭ位置
        01  SHELL-FORM.
            03  FILLER              PIC X(10)   VALUE
                "form/".
-      *    �쥳���ɰ���
+      *    レコード位置
        01  SHELL-RECORD.
            03  FILLER              PIC X(10)   VALUE
                "record/".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    monpe�����ǡ����㤭�̤콤������
+      *    monpe印刷データ泣き別れ修正サブ
            COPY  "CPORCSFIXREDDATA.INC".
-      *    ���ե��å���
+      *    オフセット用
            COPY   "CPSK1044.INC".
-      *    �ǥ��쥯�ȥ�����Խ�����
+      *    ディレクトリ位置編集サブ
            COPY   "CPMKPASS.INC".
       *
            COPY    "MCPDATA.INC".
@@ -106,11 +106,11 @@
       *
            COPY    "MCPAREA".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -124,7 +124,7 @@ grpsys     COPY    "COMMON-SPA".
       *
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -156,7 +156,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        200-MON-PRINT-SEC            SECTION.
       *
@@ -166,19 +166,19 @@ grpsys     COPY    "COMMON-SPA".
                                        SGETTEMP-AREA
            MOVE    SGETTEMP-ST     TO  WRK-MKPRT-ST
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルディレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
-      *    �ӣȣţ̣�̾
+      *    ＳＨＥＬＬ名
            STRING  SHELL-NAME          DELIMITED  BY  SPACE
                    MKPRT-ID            DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-01
            END-STRING
-      *    �ƣϣң�
+      *    ＦＯＲＭ
            STRING  SHELL-FORM          DELIMITED  BY  SPACE
                    MKPRT-DIA           DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-03
            END-STRING
-      *    DEF̾
+      *    DEF名
            STRING  SHELL-RECORD        DELIMITED  BY  SPACE
                    MKPRT-DEF           DELIMITED  BY  SPACE
                                        INTO    MKPASS-IN-04
@@ -196,17 +196,17 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SHELL-MONPE         TO  SHELLTBL-ARG1
       *    FROM
            MOVE    MKPASS-OT-03        TO  SHELLTBL-ARG2
-      *    ���᡼������ե饰��T:�����
+      *    イメージ削除フラグ（T:削除）
            MOVE    "T"                 TO  SHELLTBL-ARG3
-      *    �ǡ�������
+      *    データ内容
            MOVE    MKPRT-DAT (WRK-MKPRT-ST:)
                                        TO  SHELLTBL-ARG4
-      *    ��������
+      *    印刷位置
            MOVE    MKPRT-PRTNM         TO  SHELLTBL-ARG5
-      *    ���ե��å�
+      *    オフセット
            MOVE    SYS-1044-OFFSET-X   TO  SHELLTBL-ARG6
            MOVE    SYS-1044-OFFSET-Y   TO  SHELLTBL-ARG7
-      *    ���󥳡��ǥ���
+      *    エンコーディング
            MOVE    WRK-ENCODING        TO  SHELLTBL-ARG8
       *
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
@@ -222,7 +222,7 @@ grpsys                            SPA-AREA
        200-MON-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ���ե��åȼ�������
+      *    オフセット取得処理
       *****************************************************************
        201-OFFSET-GET-SEC              SECTION.
       *

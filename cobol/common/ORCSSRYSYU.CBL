@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSSRYSYU.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ���ż���̾�ơ��֥��Խ�����
-      *  �ֵѥ��顼������  : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/00/00    MCC��¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 診療種別名テーブル編集処理
+      *  返却エラーコード  : 
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/00/00    MCC−多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.00    NACL-¿��Ǽ  02/09/12  �ǥ��쥯�ȥ�򥵥֥ץ���
-      *  01.00.01    NACL-¿��Ǽ  02/10/09  ������򣱣�����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.00    NACL-多々納  02/09/12  ディレクトリをサブプロへ
+      *  01.00.01    NACL-多々納  02/10/09  最大数を１００へ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -37,7 +37,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���Ź԰٥ơ��֥�
+      *    診療行為テーブル
            SELECT  SRYKBN-FILE     ASSIGN  FILE-NAME
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-SRYKBN.
@@ -45,7 +45,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���Ź԰٥ơ��֥�
+      *    診療行為テーブル
        FD  SRYKBN-FILE.
        01  SRYKBN-REC.
            03  SYRKBN-DATA.
@@ -56,7 +56,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ѥ�᥿�ե�����̾
+      *    パラメタファイル名
       *01  FILE-NAME.
       *    03  FILLER          PIC X(16)   VALUE   "/usr/local/orca/".
       *    03  FILLER          PIC X(05)   VALUE   "data/".
@@ -64,7 +64,7 @@
       *
        01  FILE-NAME               PIC X(512).
       *
-      *    �ե�����̾
+      *    ファイル名
        01  DATA-FILE1.
            03  FILLER              PIC X(15)   VALUE  "patch-lib/data/".
            03  FILLER              PIC X(15)   VALUE   "SRYKBNNAME.TXT".
@@ -72,23 +72,23 @@
            03  FILLER              PIC X(05)   VALUE   "data/".
            03  FILLER              PIC X(15)   VALUE   "SRYKBNNAME.TXT".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-SRYKBN          PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SRYKBN          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -99,17 +99,17 @@
            MSYU-DATA-REC.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    フィアルデイレクトリ位置指定
            INITIALIZE                  ORCSMKPASSAREA
            MOVE    DATA-FILE1          TO  MKPASS-IN-01
            CALL    "ORCSMKPASS"        USING   ORCSMKPASSAREA
            MOVE    MKPASS-OT-01        TO  FILE-NAME
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            OPEN    INPUT               SRYKBN-FILE
            IF      STS-SRYKBN      NOT =   ZERO
       *        DISPLAY "PATCH-LIB SRYKBN-FILE OPEN ERR :" STS-SRYKBN "."
@@ -134,7 +134,7 @@
            .
       *
       *****************************************************************
-      *    ���ż��̥ơ��֥륻�åȽ���
+      *    診療種別テーブルセット処理
       *****************************************************************
        1001-SRYKBN-SET-SEC             SECTION.
       *

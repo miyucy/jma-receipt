@@ -13,7 +13,7 @@ xml_medicalv3res5 {
 	Api_Result				varchar(3);
 	Api_Result_Message			varchar(100);
 	Reskey					varchar(100);
-#--- ´µ¼Ô¾ğÊó
+#--- æ‚£è€…æƒ…å ±
 	Patient_Information {
 		Patient_ID			varchar(20);
         	WholeName			varchar(100);
@@ -21,55 +21,55 @@ xml_medicalv3res5 {
         	BirthDate			varchar(10);
         	Sex				varchar(1);
 		};
-#---    ¥ê¥Ï¥Ó¥êÅù³«»ÏÆü¥ê¥¹¥È
+#---    ãƒªãƒãƒ“ãƒªç­‰é–‹å§‹æ—¥ãƒªã‚¹ãƒˆ
 	Perform_Information  {
-#---    ³«»ÏÆüÍ½Ìó¥³¡¼¥É
+#---    é–‹å§‹æ—¥äºˆç´„ã‚³ãƒ¼ãƒ‰
 		Medication_Code		varchar(09);
 		Medication_Name		varchar(80);
-#---    »»ÄêÇ¯·î
+#---    ç®—å®šå¹´æœˆ
 		Perform_Date		varchar(7);
-#---    Êİ¸±ÁÈ¹ç¤»ÈÖ¹æ
+#---    ä¿é™ºçµ„åˆã›ç•ªå·
 		Insurance_Combination_Number	varchar(04);
-#---    Êİ¸±ÁÈ¹ç¤»ÈÖ¹æÌ¾¾Î
+#---    ä¿é™ºçµ„åˆã›ç•ªå·åç§°
 		Insurance_Combination_Name	varchar(100);
-#---    »»ÄêÆü
+#---    ç®—å®šæ—¥
 		Perform_Day_Info {
 			Perform_Day	varchar(02);
 			} [31];
-#---    ÅĞÏ¿¶èÊ¬£±
+#---    ç™»éŒ²åŒºåˆ†ï¼‘
 		Perform_Code1 		varchar(1);
-#---    ¥³¥á¥ó¥ÈÅĞÏ¿¶èÊ¬£²
+#---    ã‚³ãƒ¡ãƒ³ãƒˆç™»éŒ²åŒºåˆ†ï¼’
 		Perform_Code2 		varchar(1);
-#---    ½ªÎ»Æü
+#---    çµ‚äº†æ—¥
 		Perform_End_Date		varchar(10);
-#---    ½ªÎ»ÆüÅĞÏ¿¶èÊ¬£²
+#---    çµ‚äº†æ—¥ç™»éŒ²åŒºåˆ†ï¼’
 		Perform_Code3 		varchar(1);
 		}[100];
 #---
-#---    ÁªÂò»»ÄêÍúÎò
+#---    é¸æŠç®—å®šå±¥æ­´
 	Select_Perform_Information  {
-#---    ½èÍı¶èÊ¬
+#---    å‡¦ç†åŒºåˆ†
 		Perform_Mode		varchar(6);
-#---    ³«»ÏÆüÍ½Ìó¥³¡¼¥É
+#---    é–‹å§‹æ—¥äºˆç´„ã‚³ãƒ¼ãƒ‰
 		Medication_Code		varchar(09);
 		Medication_Name		varchar(80);
-#---    »»ÄêÇ¯·î
+#---    ç®—å®šå¹´æœˆ
 		Perform_Date		varchar(7);
-#---    Êİ¸±ÁÈ¹ç¤»ÈÖ¹æ
+#---    ä¿é™ºçµ„åˆã›ç•ªå·
 		Insurance_Combination_Number	varchar(04);
-#---    Êİ¸±ÁÈ¹ç¤»ÈÖ¹æÌ¾¾Î
+#---    ä¿é™ºçµ„åˆã›ç•ªå·åç§°
 		Insurance_Combination_Name	varchar(100);
-#---    »»ÄêÆü
+#---    ç®—å®šæ—¥
 		Perform_Day_Info {
 			Perform_Day	varchar(02);
 			} [31];
-#---    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
+#---    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 		Medical_Result_Information {
 	        	Result			varchar(4);
 	        	Result_Message		varchar(100);
             		} [50];
         	};
-#---    ¥ê¥Ï¥Ó¥ê¥³¥á¥ó¥ÈÆâÍÆ
+#---    ãƒªãƒãƒ“ãƒªã‚³ãƒ¡ãƒ³ãƒˆå†…å®¹
 	Rehabilitation_Comment_Information  {
 		Rehabilitation_Comment_Day_Info  {
 			Rehabilitation_Comment_Day	varchar(02);
@@ -78,17 +78,17 @@ xml_medicalv3res5 {
 				Rehabilitation_Comment		varchar(80);
 				Rehabilitation_Comment_End_Date	varchar(10);
 				} [50];
-#---    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
+#---    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 		        Comment_Result			varchar(4);
 		        Comment_Result_Message1		varchar(100);
 			}[31] ;
 		};
-#---    ¥ê¥Ï¥Ó¥êÅù³«»ÏÆüÌ¤ÅĞÏ¿¥ê¥¹¥È
+#---    ãƒªãƒãƒ“ãƒªç­‰é–‹å§‹æ—¥æœªç™»éŒ²ãƒªã‚¹ãƒˆ
 	Not_Set_Perform_Information  {
-#---    ³«»ÏÆüÍ½Ìó¥³¡¼¥É
+#---    é–‹å§‹æ—¥äºˆç´„ã‚³ãƒ¼ãƒ‰
 		Medication_Code		varchar(09);
 		Medication_Name		varchar(80);
-#---    Å¬±ş³«»ÏÆü
+#---    é©å¿œé–‹å§‹æ—¥
 		Medication_Start_Date	varchar(10);
 		}[100] ;
 	};

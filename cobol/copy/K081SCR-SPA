@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,26 +16,26 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Ź԰� �����ؼ������̣ӣУ�
-      *                           (SPA-WORK �� SPA-ETCKYOUTU-AREA)
+      *    診療行為 入院指示せん共通ＳＰＡ
+      *                           (SPA-WORK の SPA-ETCKYOUTU-AREA)
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  SPA-K081.
-      *    �����ؼ�����ȯ�Զ�ʬ����
+      *    入院指示せん発行区分内容
            03  SPA-K081NAI-AREA.
                05  SPA-NAI-SIJISENKBN              PIC 9(01).
                05  SPA-NAI-SYOHOU                  PIC 9(01).
                05  SPA-NAI-CHUSYA                  PIC 9(01).
                05  SPA-NAI-SIJISEN                 PIC 9(01).
                05  SPA-K081-OKFLG                  PIC 9(01).
-      *    �桼���ץ�����൯ư̵ͭ
+      *    ユーザプログラム起動有無
                05  SPA-K081NAI-GYOUMU-FLG             PIC X(01).
                05  SPA-K081NAI-GYOUMU-ARI             PIC 9(01).
       *
-      *    �����ؼ������������
+      *    入院指示せん印刷画面
            03  SPA-K081GMN-AREA.
                05  SPA-K081GMN-CUR                 PIC 9(02).
       *
@@ -93,9 +93,9 @@
                    07  SPA-K081GMN-CHK3FLG         PIC 9(01).
                    07  SPA-K081GMN-CHK3-VALUE      PIC X(01).
       *
-      *    �桼���ץ�����������
+      *    ユーザプログラム画面用
            03  SPA-K081GMN-USERPG-AREA.
-      *        �ա���
+      *        Ｕ・Ｐ
                05  SPA-K081GMN-USERPG-G.
                    09  SPA-K081GMN-USERPG            PIC X(01).
                    09  SPA-K081GMN-UP1               PIC X(01).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSRECESORT.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ∂¶ƒÃ
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : •Ï•ªÕ—¥Ô∫‡∫∆ ‘Ω∏•µ•÷
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  07/03/13    NACL°›¬ø°π«º  ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÂÖ±ÈÄö
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : „É¨„ÇªÁî®Âô®ÊùêÂÜçÁ∑®ÈõÜ„Çµ„Éñ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  07/03/13    NACL‚àíÂ§ö„ÄÖÁ¥ç  Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  03.05.00    NACL-¬ø°π«º  07/05/10  •∞•Î°º•◊ø«Œ≈¬–±˛
-      *  03.05.01    NACL-¬ø°π«º  07/07/10  •’•£•Î•‡Ãµ§∑§Œ¬–±˛
-      *  04.06.01    NACL-¬ø°π«º  11/01/25  ∆±ª˛ ªª‹¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  03.05.00    NACL-Â§ö„ÄÖÁ¥ç  07/05/10  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
+      *  03.05.01    NACL-Â§ö„ÄÖÁ¥ç  07/07/10  „Éï„Ç£„É´„É†ÁÑ°„Åó„ÅÆÂØæÂøú
+      *  04.06.01    NACL-Â§ö„ÄÖÁ¥ç  11/01/25  ÂêåÊôÇ‰ΩµÊñΩÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,7 +43,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SRYACCTPLUS     PIC 9(01).
@@ -56,7 +56,7 @@
            03  FLG-END2            PIC 9(01).
            03  FLG-END3            PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -74,7 +74,7 @@
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-KIZIGOK         PIC 9(07).
            03  WRK-SRYCD           PIC X(09).
@@ -83,29 +83,29 @@
            03  TBL-IN-CHK-G.
                05  TBL-IN-CHK          PIC X(01)   OCCURS   50.
       *
-      *    ø«Œ≈π‘∞Ÿ•∆°º•÷•Î
+      *    Ë®∫ÁôÇË°åÁÇ∫„ÉÜ„Éº„Éñ„É´
        01  TBL-SRYACT-AREA.
             03  TBL-SRYACT-OCC     OCCURS   50.
                 05  TBL-SRY-SRYCD      PIC X(09).
                 05  TBL-SRY-SRYSYUKBN  PIC X(03).
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ø«Œ≈≤Ò∑◊…Ì≤√æ Û•ﬁ•π•ø°›
+      *    Ë®∫ÁôÇ‰ºöË®àÈôÑÂä†ÊÉÖÂ†±„Éû„Çπ„Çø‚àí
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø°›
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø‚àí
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
-      *    ≈¿øÙ•ﬁ•π•ø°›
+      *    ÁÇπÊï∞„Éû„Çπ„Çø‚àí
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
            COPY    "MCPDATA.INC".
@@ -113,11 +113,11 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    •Ï•ª¥Ô∫‡∫∆ ‘Ω∏•—•È•·•ø
+      *    „É¨„ÇªÂô®ÊùêÂÜçÁ∑®ÈõÜ„Éë„É©„É°„Çø
            COPY    "CPORCSRECESORT.INC".
 grpsys*
 grpsys     COPY    "COMMON-SPA".
@@ -128,7 +128,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -137,10 +137,10 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
       *
            INITIALIZE                  ORCSRECESORT-OUT-AREA
-      *    ø«Œ≈≤Ò∑◊…Ì≤√æ Û∏°∫˜
+      *    Ë®∫ÁôÇ‰ºöË®àÈôÑÂä†ÊÉÖÂ†±Ê§úÁ¥¢
            PERFORM 100-INIT-SYORI-SEC
            IF      ORCSRECESORT-ERRCD  =   ZERO
-      *        ¥Ô∫‡∫∆ ‘Ω∏
+      *        Âô®ÊùêÂÜçÁ∑®ÈõÜ
                PERFORM 200-MAIN-SYORI-SEC
            END-IF
       *
@@ -150,11 +150,11 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊…Ì≤√æ Û∏°∫˜ΩËÕ˝
+      *    Ë®∫ÁôÇ‰ºöË®àÈôÑÂä†ÊÉÖÂ†±Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        100-INIT-SYORI-SEC              SECTION.
       *
-      *    ø«Œ≈≤Ò∑◊…Ì≤√æ Û∏°∫˜
+      *    Ë®∫ÁôÇ‰ºöË®àÈôÑÂä†ÊÉÖÂ†±Ê§úÁ¥¢
            MOVE    SPACE               TO  SRYACCTPLUS-REC
            INITIALIZE                  SRYACCTPLUS-REC
            MOVE    ORCSRECESORT-HOSPNUM    TO  ACCTP-HOSPNUM
@@ -182,7 +182,7 @@ grpsys     COPY    "COMMON-SPA".
            IF      FLG-SRYACCTPLUS     =   1
                MOVE    1                   TO  ORCSRECESORT-ERRCD
            END-IF
-      *    ≤Ë¡¸ø«√«§«∆±ª˛ ªª‹§¨§¢§ÎæÏπÁ°¢ø«Œ≈π‘∞Ÿ•∆°º•÷•Î∏°∫˜
+      *    ÁîªÂÉèË®∫Êñ≠„ÅßÂêåÊôÇ‰ΩµÊñΩ„Åå„ÅÇ„ÇãÂ†¥Âêà„ÄÅË®∫ÁôÇË°åÁÇ∫„ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢
            IF     (FLG-SRYACCTPLUS     =   ZERO )  AND
                   (ORCSRECESORT-SRYKBN(1:1)    =   "7" )
                IF      (ACCTP-FIRTEN (2)   >   ZERO )   OR
@@ -198,7 +198,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        1001-SRYACT-HEN-SEC             SECTION.
       *
@@ -253,16 +253,16 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥Ô∫‡∫∆ ‘Ω∏ΩËÕ˝
+      *    Âô®ÊùêÂÜçÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SYORI-SEC             SECTION.
       *
-      *    ª¿¡« ‰¿µŒ®∑ËƒÍ
+      *    ÈÖ∏Á¥†Ë£úÊ≠£ÁéáÊ±∫ÂÆö
            MOVE    ZERO                TO  IDX-HOSI
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   50  )
                          OR   (ORCSRECESORT-IN-SRYCD (IDX2)  =   SPACE)
-      *        ª¿¡« ‰¿µŒ®
+      *        ÈÖ∏Á¥†Ë£úÊ≠£Áéá
                IF      ORCSRECESORT-IN-SRYCD (IDX2)
                                                =   "770020070"
                    MOVE    IDX2                TO  IDX-HOSI
@@ -278,22 +278,22 @@ grpsys     COPY    "COMMON-SPA".
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   50  )
                          OR   (ORCSRECESORT-IN-SRYCD (IDX2)  =   SPACE)
-      *        ¥Ô∫‡
+      *        Âô®Êùê
                IF      ORCSRECESORT-IN-SRYCD (IDX2)(1:1)   =   "7"
-      *            •’•£•Î•‡»ΩƒÍ
+      *            „Éï„Ç£„É´„É†Âà§ÂÆö
                    IF     (ORCSRECESORT-IN-DATAKBN(IDX2)   =   "3" ) OR
                           (ORCSRECESORT-IN-SRYCD (IDX2)
                                                        =   "799990070")
                        IF      FLG-DOUJI           =   ZERO
-      *                    ∆±ª˛ ªª‹§ §∑
+      *                    ÂêåÊôÇ‰ΩµÊñΩ„Å™„Åó
                            MOVE    1               TO  IDX
                            ADD     1               TO  IDY1
                            MOVE    IDY1            TO  IDXZ
                            PERFORM 2009-TBL-HEN-SEC
                        END-IF
                    ELSE
-      *            •’•£•Î•‡∞ ≥∞
-      *                ª¿¡« ‰¿µŒ®§œ¬–æ›≥∞§»§π§Î
+      *            „Éï„Ç£„É´„É†‰ª•Â§ñ
+      *                ÈÖ∏Á¥†Ë£úÊ≠£Áéá„ÅØÂØæË±°Â§ñ„Å®„Åô„Çã
                        IF      ORCSRECESORT-IN-SRYCD (IDX2)
                                                =   "770020070"
                            CONTINUE
@@ -302,54 +302,54 @@ grpsys     COPY    "COMMON-SPA".
                        END-IF
                    END-IF
                END-IF
-      *        •≥•·•Û•»
+      *        „Ç≥„É°„É≥„Éà
                IF     (ORCSRECESORT-IN-SRYCD (IDX2)(1:1)   =   "8")
                    IF    IDX                   >   ZERO
                        PERFORM 2002-COMMENT-HEN-SEC
                    END-IF
                END-IF
-      *        ¥Ô∫‡°¶•≥•·•Û•»∞ ≥∞
+      *        Âô®Êùê„Éª„Ç≥„É°„É≥„Éà‰ª•Â§ñ
                IF     (ORCSRECESORT-IN-SRYCD (IDX2)(1:1)   =   "8"
                                                            OR  "7")
                    MOVE    ZERO                TO  IDX
                END-IF
            END-PERFORM
       *
-      *    •∆°º•÷•ÎøÙ
+      *    „ÉÜ„Éº„Éñ„É´Êï∞
            MOVE    IDY1                TO  ORCSRECESORT-TBLMAX (1)
            MOVE    IDY2                TO  ORCSRECESORT-TBLMAX (2)
            MOVE    IDY3                TO  ORCSRECESORT-TBLMAX (3)
            MOVE    IDY4                TO  ORCSRECESORT-TBLMAX (4)
-      *    ≈¿øÙ ‘Ω∏
-      *    ª¿¡«
+      *    ÁÇπÊï∞Á∑®ÈõÜ
+      *    ÈÖ∏Á¥†
            MOVE    ACCTP-SANSOTEN      TO  ORCSRECESORT-ZAITEN (2)
-      *    √‚¡«
+      *    Á™íÁ¥†
            MOVE    ACCTP-CHISOTEN      TO  ORCSRECESORT-ZAITEN (3)
       *
       *!!!!!!!
       *H25.2
-      *    ≤Ë¡¸ø«√«§Œ•’•£•Î•‡Œ¡∆±ª˛ ªª‹Õ≠
+      *    ÁîªÂÉèË®∫Êñ≠„ÅÆ„Éï„Ç£„É´„É†ÊñôÂêåÊôÇ‰ΩµÊñΩÊúâ
            IF      FLG-DOUJI           =   1
                PERFORM 20071-GAZOU-SRYCD-HEN-SEC
            END-IF
       *!!!!!!!
-      *    ºÍµªÀË§Œ≈¿øÙ§ÚΩ∏∑◊° À‹ÕË§œ Ã°π§À•Ï•ª≈≈µ≠∫‹§π§Î°À
+      *    ÊâãÊäÄÊØé„ÅÆÁÇπÊï∞„ÇíÈõÜË®àÔºàÊú¨Êù•„ÅØÂà•„ÄÖ„Å´„É¨„ÇªÈõªË®òËºâ„Åô„ÇãÔºâ
            MOVE    ZERO                TO  FLG-PLUS-ARI
            MOVE    ZERO                TO  IDX-SRY
            MOVE    1                   TO  IDX4
            PERFORM VARYING     IDX3    FROM    1   BY  1
                    UNTIL       IDX3    >   5
-      *        ≤Ë¡¸ø«√«
+      *        ÁîªÂÉèË®∫Êñ≠
                IF      FLG-DOUJI           =   1
                    PERFORM 2007-GAZOU-HEN-SEC
                ELSE
-      *        ≤Ë¡¸ø«√«∞ ≥∞§œΩ∏∑◊
-      *        •’•£•Î•‡
+      *        ÁîªÂÉèË®∫Êñ≠‰ª•Â§ñ„ÅØÈõÜË®à
+      *        „Éï„Ç£„É´„É†
                    ADD     ACCTP-FIRTEN (IDX3)
                                            TO  ORCSRECESORT-ZAITEN (1)
                END-IF
       *
-      *        §Ω§Œ¬æ¥Ô∫‡≈¿øÙ° •’•£•Î•‡°¶ª¿¡«°¶√‚¡«∞ ≥∞°À
+      *        „Åù„ÅÆ‰ªñÂô®ÊùêÁÇπÊï∞Ôºà„Éï„Ç£„É´„É†„ÉªÈÖ∏Á¥†„ÉªÁ™íÁ¥†‰ª•Â§ñÔºâ
                ADD     ACCTP-KIZAITEN(IDX3) TO  ORCSRECESORT-ZAITEN (4)
       *
                IF     (ACCTP-FIRTEN (IDX3)  NOT =   ZERO )  OR
@@ -365,7 +365,7 @@ grpsys     COPY    "COMMON-SPA".
            ADD     ORCSRECESORT-ZAITEN(6)  TO  WRK-KIZIGOK
            ADD     ORCSRECESORT-ZAITEN(7)  TO  WRK-KIZIGOK
            ADD     ORCSRECESORT-ZAITEN(8)  TO  WRK-KIZIGOK
-      *    ¥Ô∫‡πÁ∑◊§¨∞„§¶ª˛°¢…’≤√æ Û§À¥Ô∫‡≈¿µ≠∫‹§ §∑§»§π§Î
+      *    Âô®ÊùêÂêàË®à„ÅåÈÅï„ÅÜÊôÇ„ÄÅ‰ªòÂä†ÊÉÖÂ†±„Å´Âô®ÊùêÁÇπË®òËºâ„Å™„Åó„Å®„Åô„Çã
            IF     (WRK-KIZIGOK         <   ORCSRECESORT-KIZAITEN ) AND
                   (FLG-PLUS-ARI        =   ZERO     )
                COMPUTE ORCSRECESORT-ZAITEN (4) =   ORCSRECESORT-KIZAITEN
@@ -378,7 +378,7 @@ grpsys     COPY    "COMMON-SPA".
       *!!!!!!!
       *H25.2
       *****************************************************************
-      *    ≤Ë¡¸ø«√«•’•£•Î•‡ ‘Ω∏ΩËÕ˝
+      *    ÁîªÂÉèË®∫Êñ≠„Éï„Ç£„É´„É†Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        20071-GAZOU-SRYCD-HEN-SEC                SECTION.
       *
@@ -405,13 +405,13 @@ grpsys     COPY    "COMMON-SPA".
                        IF      TBL-SRY-SRYSYUKBN (IDX-SRY)
                                                     =   "721"
                                                     OR  "720"
-      *                    £ÿ¿˛ª£±∆Œ¡
+      *                    Ôº∏Á∑öÊíÆÂΩ±Êñô
                            MOVE    TBL-SRY-SRYCD(IDX-SRY)
                                                     TO  WRK-72-SRYCD
                        END-IF
                    END-IF
                END-PERFORM
-      *        …’≤√æ Û§Œ•≥°º•…§¨ª£±∆Œ¡§«§ §§æÏπÁ§œª£±∆Œ¡§À√÷¥π§®§Î
+      *        ‰ªòÂä†ÊÉÖÂ†±„ÅÆ„Ç≥„Éº„Éâ„ÅåÊíÆÂΩ±Êñô„Åß„Å™„ÅÑÂ†¥Âêà„ÅØÊíÆÂΩ±Êñô„Å´ÁΩÆÊèõ„Åà„Çã
                IF      WRK-72-SRYCD    NOT =   SPACE
                    IF      WRK-SRYSYUKBN(1:2)  =   "72"
                                                OR  "71"
@@ -428,7 +428,7 @@ grpsys     COPY    "COMMON-SPA".
       *!!!!!!!
       *
       *****************************************************************
-      *    ≤Ë¡¸ø«√«•’•£•Î•‡ ‘Ω∏ΩËÕ˝
+      *    ÁîªÂÉèË®∫Êñ≠„Éï„Ç£„É´„É†Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2007-GAZOU-HEN-SEC                SECTION.
       *
@@ -448,7 +448,7 @@ grpsys     COPY    "COMMON-SPA".
                    UNTIL      (IDX2    >   50  )
                          OR   (ORCSRECESORT-IN-SRYCD (IDX2)  =   SPACE)
                          OR   (FLG-END2    =   1   )
-      *        ¥Ô∫‡
+      *        Âô®Êùê
                MOVE    ZERO                TO  FLG-END3
                IF     (TBL-IN-CHK  (IDX2)  =   SPACE )
                    PERFORM VARYING     IDX-SRY    FROM    IDX4  BY  1
@@ -487,46 +487,46 @@ grpsys     COPY    "COMMON-SPA".
       *
       *
       *****************************************************************
-      *    •’•£•Î•‡∞ ≥∞ ‘Ω∏ΩËÕ˝
+      *    „Éï„Ç£„É´„É†‰ª•Â§ñÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2009-TBL-HEN-SEC            SECTION.
       *
            MOVE    ORCSRECESORT-IN-SRYCD (IDX2)
                                        TO  ORCSRECESORT-SRYCD
                                                         (IDX IDXZ)
-      *    •«°º•ø∂Ë ¨
+      *    „Éá„Éº„ÇøÂå∫ÂàÜ
            MOVE    ORCSRECESORT-IN-DATAKBN (IDX2)
                                        TO  ORCSRECESORT-DATAKBN
                                                         (IDX IDXZ)
-      *    øÙŒÃ
+      *    Êï∞Èáè
            MOVE    ORCSRECESORT-IN-SRYSURYO (IDX2)
                                        TO  ORCSRECESORT-SRYSURYO
                                                         (IDX IDXZ)
-      *    ≤ÛøÙ
+      *    ÂõûÊï∞
            MOVE    ORCSRECESORT-IN-SRYKAISU (IDX2)
                                        TO  ORCSRECESORT-SRYKAISU
                                                         (IDX IDXZ)
-      *    √±∞Ã•≥°º•…
+      *    Âçò‰Ωç„Ç≥„Éº„Éâ
            MOVE    ORCSRECESORT-IN-TANICD (IDX2)
                                        TO  ORCSRECESORT-TANICD
                                                         (IDX IDXZ)
-      *    ≈¿øÙº± Ã∂Ë ¨
+      *    ÁÇπÊï∞Ë≠òÂà•Âå∫ÂàÜ
            MOVE    ORCSRECESORT-IN-TENSIKIBETU (IDX2)
                                        TO  ORCSRECESORT-TENSIKIBETU
                                                         (IDX IDXZ)
-      *    ≈¿øÙ
+      *    ÁÇπÊï∞
            MOVE    ORCSRECESORT-IN-TEN (IDX2)
                                        TO  ORCSRECESORT-TEN
                                                         (IDX IDXZ)
-      *    ¥¡ª˙ÃææŒ
+      *    Êº¢Â≠óÂêçÁß∞
            MOVE    ORCSRECESORT-IN-NAME (IDX2)
                                        TO  ORCSRECESORT-NAME
                                                         (IDX IDXZ)
-      *    •Ï•ª≈≈Õ—∆√ƒÍ¥Ô∫‡æ¶… Ãæ
+      *    „É¨„ÇªÈõªÁî®ÁâπÂÆöÂô®ÊùêÂïÜÂìÅÂêç
            MOVE    ORCSRECESORT-IN-RECEDENNAME (IDX2)
                                        TO  ORCSRECESORT-RECEDENNAME
                                                         (IDX IDXZ)
-      *    ¥ÿœ¢•≥•·•Û•»∏°∫˜Õ—£À£≈£Ÿ
+      *    Èñ¢ÈÄ£„Ç≥„É°„É≥„ÉàÊ§úÁ¥¢Áî®Ôº´Ôº•Ôºπ
            MOVE    ORCSRECESORT-IN-KEY (IDX2)
                                        TO  ORCSRECESORT-KEY
                                                         (IDX IDXZ)
@@ -538,37 +538,37 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    •’•£•Î•‡∞ ≥∞ ‘Ω∏ΩËÕ˝
+      *    „Éï„Ç£„É´„É†‰ª•Â§ñÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2001-KIZAI-HEN-SEC            SECTION.
       *
            EVALUATE    ORCSRECESORT-IN-TOKUKIZAISBT1 (IDX2)
                WHEN    ZERO
-      *            ¥Ô∫‡
+      *            Âô®Êùê
                    MOVE    4                   TO  IDX
                    ADD     1                   TO  IDY4
                    MOVE    IDY4                TO  IDXZ
                    PERFORM 2009-TBL-HEN-SEC
                WHEN    2
                    IF      ORCSRECESORT-IN-SANSOKBN (IDX2) =   "9"
-      *            √‚¡«
+      *            Á™íÁ¥†
                        MOVE    3               TO  IDX
                        ADD     1               TO  IDY3
                        MOVE    IDY3            TO  IDXZ
                        PERFORM 2009-TBL-HEN-SEC
                    ELSE
-      *            ª¿¡«
+      *            ÈÖ∏Á¥†
                        MOVE    2               TO  IDX
                        ADD     1               TO  IDY2
                        MOVE    IDY2            TO  IDXZ
                        PERFORM 2009-TBL-HEN-SEC
-      *                π‚µ§∞µ≤√ªª∞ ≥∞
+      *                È´òÊ∞óÂúßÂä†ÁÆó‰ª•Â§ñ
                        IF     (ORCSRECESORT-IN-SANSOKBN (IDX2) =   "1")
                          AND  (ORCSRECESORT-IN-SRYCD (IDX2)
                                                NOT =   "770000000"  )
                            CONTINUE
                        ELSE
-      *                ª¿¡« ‰¿µŒ®§Úª¿¡«§Œƒæ≤º§À∫∆ ‘Ω∏
+      *                ÈÖ∏Á¥†Ë£úÊ≠£Áéá„ÇíÈÖ∏Á¥†„ÅÆÁõ¥‰∏ã„Å´ÂÜçÁ∑®ÈõÜ
                            IF      IDX-HOSI    NOT =   ZERO
                                ADD     1               TO  IDY2
                                MOVE    IDX2            TO  IDX-HZN
@@ -580,7 +580,7 @@ grpsys     COPY    "COMMON-SPA".
                        END-IF
                    END-IF
                WHEN    3
-      *            π‚¿˛ŒÃŒ®•§•Í•∏•¶•‡° §Ω§Œ¬æ¥Ô∫‡°À
+      *            È´òÁ∑öÈáèÁéá„Ç§„É™„Ç∏„Ç¶„É†Ôºà„Åù„ÅÆ‰ªñÂô®ÊùêÔºâ
                    MOVE    4                   TO  IDX
                    ADD     1                   TO  IDY4
                    MOVE    IDY4            TO  IDXZ
@@ -592,28 +592,28 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    •≥•·•Û•» ‘Ω∏ΩËÕ˝
+      *    „Ç≥„É°„É≥„ÉàÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2002-COMMENT-HEN-SEC             SECTION.
       *
            EVALUATE    IDX
                WHEN    1
-      *            •’•£•Î•‡
+      *            „Éï„Ç£„É´„É†
                    ADD     1                   TO  IDY1
                    MOVE    IDY1                TO  IDXZ
                    PERFORM 2009-TBL-HEN-SEC
                WHEN    2
-      *            ª¿¡«
+      *            ÈÖ∏Á¥†
                    ADD     1                   TO  IDY2
                    MOVE    IDY2                TO  IDXZ
                    PERFORM 2009-TBL-HEN-SEC
                WHEN    3
-      *            √‚¡«
+      *            Á™íÁ¥†
                    ADD     1                   TO  IDY3
                    MOVE    IDY3                TO  IDXZ
                    PERFORM 2009-TBL-HEN-SEC
                WHEN    4
-      *            §Ω§Œ¬æ¥Ô∫‡
+      *            „Åù„ÅÆ‰ªñÂô®Êùê
                    ADD     1                   TO  IDY4
                    MOVE    IDY4                TO  IDXZ
                    PERFORM 2009-TBL-HEN-SEC
@@ -624,7 +624,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø…’≤√•∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø‰ªòÂä†„ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-SRYACCTPLUS-READ-SEC                SECTION.
       *
@@ -640,7 +640,7 @@ grpsys     COPY    "COMMON-SPA".
        910-SRYACCTPLUS-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø°º∆…π˛
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        920-SRYACT-READ-SEC         SECTION.
       *
@@ -658,7 +658,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ≈¿øÙ•ﬁ•π•ø°º∆…π˛
+      *    ÁÇπÊï∞„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -692,7 +692,7 @@ grpsys     COPY    "COMMON-SPA".
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    •∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -705,7 +705,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -720,7 +720,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•πΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„ÇπÂá¶ÁêÜ
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

@@ -1,15 +1,15 @@
 \set ON_ERROR_STOP
 --
--- ´µ¼ÔÈÖ¹æ(PTID)ÄÉ²Ã
+-- æ‚£è€…ç•ªå·(PTID)è¿½åŠ 
 -- 
 -- Create Date : 2007/2/21          --
 --
---  ¹àÌÜÄÉ²Ã                        --
+--  é …ç›®è¿½åŠ                         --
 alter table TBL_CHK004
    add column PTID		numeric(10,0);
 
 
---  ¥¼¥íÀßÄê                       --
+--  ã‚¼ãƒ­è¨­å®š                       --
 update TBL_CHK004 set ptid = 0;
 
 alter table TBL_CHK004

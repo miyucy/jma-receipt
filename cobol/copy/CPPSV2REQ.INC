@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,8 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ******************************************************
        01  PSREQ-AREA.
            03  PSREQ-CONTEXT               PIC S9(9)   BINARY.
@@ -25,11 +25,11 @@
            03  PSREQ-MODE                  PIC S9(9)   BINARY.
            03  PSREQ-RECORDNAME            PIC X(128).
            03  PSREQ-DATA-AREA.
-      *       ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *       ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
               05  PSREQ-REQNUM             PIC X(2).
-      *       ´µ¼ÔÈÖ¹æ
+      *       æ‚£è€…ç•ªå·
               05  PSREQ-PTNUM              PIC X(20).
-      *       ÅÁÉ¼ÈÖ¹æ
+      *       ä¼ç¥¨ç•ªå·
               05  PSREQ-DENPNUM            PIC X(7).
-      *       ±¡³°¶èÊ¬
+      *       é™¢å¤–åŒºåˆ†
               05  PSREQ-INGAIKBN           PIC X(5).

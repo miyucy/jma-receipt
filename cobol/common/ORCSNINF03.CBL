@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCSNINF03.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡¿©»ö¾ðÊó¼èÆÀ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  13/09/03    NACL¡ÝÂÀÅÄ¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢é£Ÿäº‹æƒ…å ±å–å¾—
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  13/09/03    NACLâˆ’å¤ªç”°ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -58,7 +58,7 @@
            03  IDXH                    PIC 9(05).
            03  IDXN                    PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
@@ -132,66 +132,66 @@
                                        BY          //TSPA-//.
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
+      *    æ‚£è€…ç•ªå·å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSPTID.INC".
       *
-      *    ÆþÂà±¡Æü¼èÆÀ¥µ¥Ö¥Ñ¥é¥á¥¿
+      *    å…¥é€€é™¢æ—¥å–å¾—ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSNTYMD.INC".
       *
-      *    ²ÊÊÌ¡¦ÊÝ¸±ÊÌÆþ±¡²ñ·×ÊÔ½¸¥µ¥Ö
+      *    ç§‘åˆ¥ãƒ»ä¿é™ºåˆ¥å…¥é™¢ä¼šè¨ˆç·¨é›†ã‚µãƒ–
            COPY    "CPORCSS009.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¥»¥Ã¥ÈÎÎ°è
+      *    ä¿é™ºçµ„åˆã›ã‚»ãƒƒãƒˆé ˜åŸŸ
            COPY    "CPORCSAPIHKN.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿
            COPY    "CPTENSU.INC".
            COPY    "CPTTNS.INC".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            COPY    "CPSK1010.INC".
-      *    Æþ±¡´ðËÜ
+      *    å…¥é™¢åŸºæœ¬
            COPY    "CPSK5000.INC".
-      *    ÉÂÅï
+      *    ç—…æ£Ÿ
            COPY    "CPSK5001.INC".
-      *    ÉÂ¼¼
+      *    ç—…å®¤
            COPY    "CPSK5002.INC".
-      *    ¿ÇÎÅ²Ê¾ðÊó
+      *    è¨ºç™‚ç§‘æƒ…å ±
            COPY    "CPSK1005.INC".
-      *    ¼¼ÎÁº¹³Û
+      *    å®¤æ–™å·®é¡
            COPY    "CPSK5113.INC".
       *
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    Æþ±¡¿ÇÎÅ²ñ·×
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆ
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
@@ -199,13 +199,13 @@
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
       *
            COPY    "CPORCSNINF03.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -213,7 +213,7 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -226,15 +226,15 @@
            INITIALIZE                  TGAIHAKU-AREA
            INITIALIZE                  TTNS-AREA
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF    ( WRK-ERRCD          =   SPACE )
                PERFORM 200-MAIN-SEC
            END-IF
       *
-      *    ÊÖµÑÎÎ°èÊÔ½¸
+      *    è¿”å´é ˜åŸŸç·¨é›†
            PERFORM 300-END-SEC
       *
            .
@@ -243,7 +243,7 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -277,7 +277,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -292,7 +292,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÊóÊÔ½¸½èÍý
+      *    æ‚£è€…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-PTINF-EDIT-SEC                 SECTION.
       *
@@ -310,7 +310,7 @@
        2001-PTINF-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×¾ðÊóÊÔ½¸½èÍý
+      *    å…¥é™¢ä¼šè¨ˆæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-NACCT-EDIT-SEC                 SECTION.
       *
@@ -363,7 +363,7 @@
        2001-NACCT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×¾ðÊóÊÔ½¸½èÍý
+      *    å…¥é™¢ä¼šè¨ˆæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-NACCT-EDIT-SEC                SECTION.
       *
@@ -378,7 +378,7 @@
            PERFORM 800-DATE-SEC
            MOVE    WRK-DATE        TO  SNINF03-SRYYMD (IDXA)
       *
-           MOVE    "¿ÇÎÅ²Ê"        TO  SNINF03-SRYKA-LBL  (IDXA)
+           MOVE    "è¨ºç™‚ç§‘"        TO  SNINF03-SRYKA-LBL  (IDXA)
            MOVE    SS009-SRYKA-DAY (IDXD)
                                    TO  SNINF03-SRYKA-DATA (IDXA)
            INITIALIZE                  SYSKANRI-REC
@@ -393,11 +393,11 @@
            MOVE    SYS-1005-SRYKANAME
                                    TO  SNINF03-SRYKA-NAME (IDXA)
       *
-           MOVE    "ÉÂÅïÈÖ¹æ"      TO  SNINF03-BTUNUM-LBL (IDXA)
+           MOVE    "ç—…æ£Ÿç•ªå·"      TO  SNINF03-BTUNUM-LBL (IDXA)
            MOVE    SS009-BRMNUM-DAY(IDXD)(1:2)
                                    TO  SNINF03-BTUNUM-DATA(IDXA)
       *
-           MOVE    "ÉÂÅïÌ¾"        TO  SNINF03-BTUNAME-LBL(IDXA)
+           MOVE    "ç—…æ£Ÿå"        TO  SNINF03-BTUNAME-LBL(IDXA)
            INITIALIZE                  SYSKANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    "5001"          TO  SYS-KANRICD
@@ -410,7 +410,7 @@
            MOVE    SYS-5001-BTU-NAME
                                    TO  SNINF03-BTUNAME-DATA (IDXA)
       *
-           MOVE    "ÉÂ¼¼ÈÖ¹æ"      TO  SNINF03-BRMNUM-LBL   (IDXA)
+           MOVE    "ç—…å®¤ç•ªå·"      TO  SNINF03-BRMNUM-LBL   (IDXA)
            INITIALIZE                  SYSKANRI-REC
            MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            MOVE    "5002"          TO  SYS-KANRICD
@@ -426,7 +426,7 @@
            MOVE    SS009-HKNCOMBI-DAY (IDXD)
                                    TO  SNINF03-HKNCOMBI (IDXA)
       *
-           MOVE    "³°Çñ¡¦Â¾°åÎÅµ¡´Ø¼õ¿Ç¾ðÊóÅù"
+           MOVE    "å¤–æ³Šãƒ»ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæƒ…å ±ç­‰"
                                    TO  SNINF03-PTSTATUS-LBL (IDXA)
            MOVE    TNACCT-DAY (CONST-GAIHAKU IDXD)
                                    TO  WRK-PTSTATUS-N
@@ -436,88 +436,88 @@
            WHEN  ( KEY-SRYYM       >=  CONST-H2804 )
                EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
                WHEN    ZERO
-                   MOVE    "Æþ±¡Ãæ"    TO  SNINF03-PTSTATUS-NAME (IDXA)
+                   MOVE    "å…¥é™¢ä¸­"    TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    1
-                   MOVE    "³°Çñ"      TO  SNINF03-PTSTATUS-NAME (IDXA)
+                   MOVE    "å¤–æ³Š"      TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    2
-                   MOVE    "¼£ÎÅ¤Î°Ù¤Î³°Çñ"
+                   MOVE    "æ²»ç™‚ã®ç‚ºã®å¤–æ³Š"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    3
-                   MOVE    "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ"
+                   MOVE    "é¸å®šå…¥é™¢ä¸­ã®å¤–æ³Š"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    4
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£´£°¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼”ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    5
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£°¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼‘ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    6
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£²£°¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼’ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    8
-                   MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
+                   MOVE    "ç‰¹å®šæ™‚é–“é€€é™¢æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    9
-                   MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
+                   MOVE    "ç‰¹å®šæ›œæ—¥å…¥é€€é™¢æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    13
-                   MOVE   "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£±£°¡ó¸º»»"
+                   MOVE   "ç‰¹å®šæ›œæ—¥å…¥é€€é™¢æ¸›ç®—ï¼‹ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼‘ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                END-EVALUATE
       *
                IF  ( KEY-SRYYM         >=  CONST-H3004 )
                    EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
                    WHEN    14
-                       MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ¡ó¸º»»"
+                       MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼•ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                    WHEN    15
-                       MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£µ¡ó¸º»»"
+                       MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼“ï¼•ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                    WHEN    16
-                       MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º»»"
+                       MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼‘ï¼•ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                    WHEN    17
-                       MOVE "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£µ¡ó¸º»»"
+                       MOVE "ç‰¹å®šæ›œæ—¥å…¥é€€é™¢æ¸›ç®—ï¼‹ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼•ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                    END-EVALUATE
                END-IF
            WHEN    OTHER
                EVALUATE    TNACCT-DAY (CONST-GAIHAKU IDXD)
                WHEN    ZERO
-                   MOVE    "Æþ±¡Ãæ"    TO  SNINF03-PTSTATUS-NAME (IDXA)
+                   MOVE    "å…¥é™¢ä¸­"    TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    1
-                   MOVE    "³°Çñ"      TO  SNINF03-PTSTATUS-NAME (IDXA)
+                   MOVE    "å¤–æ³Š"      TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    2
-                   MOVE    "¼£ÎÅ¤Î°Ù¤Î³°Çñ"
+                   MOVE    "æ²»ç™‚ã®ç‚ºã®å¤–æ³Š"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    3
-                   MOVE    "ÁªÄêÆþ±¡Ãæ¤Î³°Çñ"
+                   MOVE    "é¸å®šå…¥é™¢ä¸­ã®å¤–æ³Š"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    4
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£·£°¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼—ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    5
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£³£°¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼“ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    6
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£µ£µ¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼•ï¼•ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    7
-                   MOVE    "Â¾°åÎÅµ¡´Ø¼õ¿Ç£±£µ¡ó¸º»»"
+                   MOVE    "ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼‘ï¼•ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    8
-                   MOVE    "ÆÃÄê»þ´ÖÂà±¡¸º»»"
+                   MOVE    "ç‰¹å®šæ™‚é–“é€€é™¢æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    9
-                   MOVE    "ÆÃÄêÍËÆüÆþÂà±¡¸º»»"
+                   MOVE    "ç‰¹å®šæ›œæ—¥å…¥é€€é™¢æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                WHEN    13
-                   MOVE  "ÆÃÄêÍËÆüÆþÂà±¡¸º»»¡ÜÂ¾°åÎÅµ¡´Ø¼õ¿Ç£³£°¡ó¸º»»"
+                   MOVE  "ç‰¹å®šæ›œæ—¥å…¥é€€é™¢æ¸›ç®—ï¼‹ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºï¼“ï¼ï¼…æ¸›ç®—"
                                        TO  SNINF03-PTSTATUS-NAME (IDXA)
                END-EVALUATE
            END-EVALUATE
       *
-           MOVE    "Ä«¿©"              TO  SNINF03-SKJ-ASA-LBL   (IDXA)
+           MOVE    "æœé£Ÿ"              TO  SNINF03-SKJ-ASA-LBL   (IDXA)
            MOVE    TNACCT-DAY (CONST-ASA IDXD)
                                        TO  WRK-SKJ-N
            MOVE    WRK-SKJ-N           TO  SNINF03-SKJ-ASA-DATA  (IDXA)
@@ -526,7 +526,7 @@
            PERFORM 200111-SKJ-EDIT-SEC
            MOVE    WRK-SKJ-NAME        TO  SNINF03-SKJ-ASA-NAME  (IDXA)
       *
-           MOVE    "Ãë¿©"              TO  SNINF03-SKJ-HIRU-LBL  (IDXA)
+           MOVE    "æ˜¼é£Ÿ"              TO  SNINF03-SKJ-HIRU-LBL  (IDXA)
            MOVE    TNACCT-DAY (CONST-HIRU IDXD)
                                        TO  WRK-SKJ-N
            MOVE    WRK-SKJ-N           TO  SNINF03-SKJ-HIRU-DATA (IDXA)
@@ -535,7 +535,7 @@
            PERFORM 200111-SKJ-EDIT-SEC
            MOVE    WRK-SKJ-NAME        TO  SNINF03-SKJ-HIRU-NAME (IDXA)
       *
-           MOVE    "Í¼¿©"              TO  SNINF03-SKJ-YU-LBL   (IDXA)
+           MOVE    "å¤•é£Ÿ"              TO  SNINF03-SKJ-YU-LBL   (IDXA)
            MOVE    TNACCT-DAY (CONST-YU IDXD)
                                        TO  WRK-SKJ-N
            MOVE    WRK-SKJ-N           TO  SNINF03-SKJ-YU-DATA  (IDXA)
@@ -544,8 +544,8 @@
            PERFORM 200111-SKJ-EDIT-SEC
            MOVE    WRK-SKJ-NAME        TO  SNINF03-SKJ-YU-NAME  (IDXA)
       *
-           MOVE    "¼¼ÎÁº¹³Û"          TO  SNINF03-SAGAKU-LBL   (IDXA)
-           MOVE    "±ß"                TO  SNINF03-SAGAKU-NAME  (IDXA)
+           MOVE    "å®¤æ–™å·®é¡"          TO  SNINF03-SAGAKU-LBL   (IDXA)
+           MOVE    "å††"                TO  SNINF03-SAGAKU-NAME  (IDXA)
            INITIALIZE                      SYSKANRI-REC
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    "5113"              TO  SYS-KANRICD
@@ -571,7 +571,7 @@
        20011-NACCT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-NYUINRYO-EDIT-SEC        SECTION.
       *
@@ -597,7 +597,7 @@
        200111-NYUINRYO-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        2001111-NYUKHN-EDIT-SEC         SECTION.
       *
@@ -625,7 +625,7 @@
            END-PERFORM
       *
            IF    ( IDX3    >   ZERO )
-               MOVE    "Æþ±¡´ðËÜÎÁÅù"
+               MOVE    "å…¥é™¢åŸºæœ¬æ–™ç­‰"
                                    TO  SNINF03-NYUKHN-LBL (IDXA)
            END-IF
       *
@@ -633,7 +633,7 @@
        2001111-NYUKHN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ²Ã»»ÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™åŠ ç®—ç·¨é›†å‡¦ç†
       *****************************************************************
        2001111-NYUKSN-EDIT-SEC         SECTION.
       *
@@ -646,7 +646,7 @@
       *
                    COMPUTE IDX4  = IDX4    +   1
       *
-                   MOVE    "Æþ±¡²Ã»»"
+                   MOVE    "å…¥é™¢åŠ ç®—"
                                    TO  SNINF03-NYUKSN-LBL (IDXA IDX4)
       *
                    MOVE    TNS-SRYCD
@@ -661,7 +661,7 @@
        2001111-NYUKSN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö³°Çñ¾ðÊóÊÔ½¸½èÍý
+      *    é£Ÿäº‹å¤–æ³Šæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-SKJ-GAIHAKU-EDIT-SEC       SECTION.
       *
@@ -721,7 +721,7 @@
        2001-SKJ-GAIHAKU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö³°Çñ¾ðÊóÊÔ½¸½èÍý
+      *    é£Ÿäº‹å¤–æ³Šæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-SKJ-GAIHAKU-EDIT-SEC          SECTION.
       *
@@ -739,7 +739,7 @@
        20011-SKJ-GAIHAKU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö¾ðÊóÊÔ½¸½èÍý
+      *    é£Ÿäº‹æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SKJ-EDIT-SEC                 SECTION.
       *
@@ -748,24 +748,24 @@
            IF    ( KEY-SRYYM       >=  CONST-H2804 )
                EVALUATE    WRK-DAY
                WHEN    ZERO
-                   MOVE    "¿©»ö¤Ê¤·"  TO  WRK-SKJ-NAME
+                   MOVE    "é£Ÿäº‹ãªã—"  TO  WRK-SKJ-NAME
                WHEN    1
-                   MOVE    "¿©»ö¤¢¤ê"  TO  WRK-SKJ-NAME
+                   MOVE    "é£Ÿäº‹ã‚ã‚Š"  TO  WRK-SKJ-NAME
                WHEN    2
-                   MOVE    "¿©»ö¤¢¤ê¡ÊÆÃÊÌ¿©¡Ë"
+                   MOVE    "é£Ÿäº‹ã‚ã‚Šï¼ˆç‰¹åˆ¥é£Ÿï¼‰"
                                        TO  WRK-SKJ-NAME
                WHEN    3
-                   MOVE    "¿©»ö¤¢¤ê¡ÊÎ®Æ°¿©¡Ë"
+                   MOVE    "é£Ÿäº‹ã‚ã‚Šï¼ˆæµå‹•é£Ÿï¼‰"
                                        TO  WRK-SKJ-NAME
                END-EVALUATE
            ELSE
                EVALUATE    WRK-DAY
                WHEN    ZERO
-                   MOVE    "¿©»ö¤Ê¤·"  TO  WRK-SKJ-NAME
+                   MOVE    "é£Ÿäº‹ãªã—"  TO  WRK-SKJ-NAME
                WHEN    1
-                   MOVE    "¿©»ö¤¢¤ê"  TO  WRK-SKJ-NAME
+                   MOVE    "é£Ÿäº‹ã‚ã‚Š"  TO  WRK-SKJ-NAME
                WHEN    2
-                   MOVE    "¿©»ö¤¢¤ê¡ÊÆÃÊÌ¿©¡Ë"
+                   MOVE    "é£Ÿäº‹ã‚ã‚Šï¼ˆç‰¹åˆ¥é£Ÿï¼‰"
                                        TO  WRK-SKJ-NAME
                END-EVALUATE
            END-IF
@@ -774,7 +774,7 @@
        200111-SKJ-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-HKN-EDIT-SEC               SECTION.
       *
@@ -835,44 +835,44 @@
        2001-HKN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¾ðÊóÊÔ½¸½èÍý
+      *    ä¿é™ºæƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-HKN-EDIT-SEC              SECTION.
       *
-      *    ÊÝ¸±¤Î¼ïÎà
+      *    ä¿é™ºã®ç¨®é¡ž
            MOVE    ORCSAPIHKN-HKNNUM (IDXA)
                                    TO  SNINF03-HKNNUM   (IDXH)
       *
-      *    ÊÝ¸±¼ÔÈÖ¹æ
+      *    ä¿é™ºè€…ç•ªå·
            MOVE    ORCSAPIHKN-HKNJANUM (IDXA)
                                    TO  SNINF03-HKNJANUM (IDXH)
       *
-      *    ÊÝ¸±¤ÎÌ¾¾Î
+      *    ä¿é™ºã®åç§°
            MOVE    ORCSAPIHKN-HKNNUM-NAME (IDXA)
                                    TO  SNINF03-HKNJANAME(IDXH)
       *
-      *    µ­¹æ
+      *    è¨˜å·
            MOVE    ORCSAPIHKN-KIGO  (IDXA)
                                    TO  SNINF03-HKIGO (IDXH)
       *
-      *    ÈÖ¹æ
+      *    ç•ªå·
            MOVE    ORCSAPIHKN-NUM  (IDXA)
                                    TO  SNINF03-HNUM  (IDXH)
       *
-      *    ¸øÈñ¾ðÊó
+      *    å…¬è²»æƒ…å ±
            PERFORM VARYING IDXK    FROM    1   BY  1
                    UNTIL ( IDXK    >   4 )
       *
-      *        ¸øÈñ¤Î¼ïÎà
+      *        å…¬è²»ã®ç¨®é¡ž
                MOVE    ORCSAPIHKN-KOHNUM (IDXA IDXK)
                                    TO  SNINF03-KOHNUM  (IDXH IDXK)
-      *        ¸øÈñ¤Î¼ïÎàÌ¾¾Î
+      *        å…¬è²»ã®ç¨®é¡žåç§°
                MOVE    ORCSAPIHKN-KOHNUM-NAME (IDXA IDXK)
                                    TO  SNINF03-KOHNAME (IDXH IDXK)
-      *        ÉéÃ´¼ÔÈÖ¹æ
+      *        è² æ‹…è€…ç•ªå·
                MOVE    ORCSAPIHKN-FTNJANUM (IDXA IDXK)
                                    TO  SNINF03-FTNJANUM(IDXH IDXK)
-      *        ¼õµë¼ÔÈÖ¹æ
+      *        å—çµ¦è€…ç•ªå·
                MOVE    ORCSAPIHKN-JKYSNUM (IDXA IDXK)
                                    TO  SNINF03-JKYSNUM (IDXH IDXK)
            END-PERFORM
@@ -881,7 +881,7 @@
        20011-HKN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -891,7 +891,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -913,7 +913,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-SYMD-SEC                    SECTION.
       *
@@ -929,7 +929,7 @@
        800-SYMD-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-HIZUKE-SEC                      SECTION.
       *
@@ -956,7 +956,7 @@
        800-HIZUKE-EXT.
            EXIT.
       *****************************************************************
-      *    »þ¹ïÊÔ½¸½èÍý
+      *    æ™‚åˆ»ç·¨é›†å‡¦ç†
       *****************************************************************
        800-TIME-SEC                    SECTION.
       *
@@ -972,7 +972,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
@@ -998,7 +998,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¾ðÊó¼èÆÀ½èÍý
+      *    æ‚£è€…æƒ…å ±å–å¾—å‡¦ç†
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -1027,7 +1027,7 @@
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷½èÍý
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-NYUINACCT-KEY17-SEL-SEC     SECTION.
       *
@@ -1058,7 +1058,7 @@
        900-NYUINACCT-KEY17-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷½èÍý
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢å‡¦ç†
       *****************************************************************
        901-NYUINACCT-KEY17-SEL-SEC     SECTION.
       *
@@ -1085,7 +1085,7 @@
        901-NYUINACCT-KEY17-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×FETCH½èÍý
+      *    å…¥é™¢ä¼šè¨ˆFETCHå‡¦ç†
       *****************************************************************
        901-NYUINACCT-KEY17-FET-SEC     SECTION.
       *
@@ -1106,7 +1106,7 @@
        901-NYUINACCT-KEY17-FET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷½èÍý
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-NYUINACCT-KEY51-SEL-SEC     SECTION.
       *
@@ -1132,7 +1132,7 @@
        900-NYUINACCT-KEY51-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×FETCH½èÍý
+      *    å…¥é™¢ä¼šè¨ˆFETCHå‡¦ç†
       *****************************************************************
        900-NYUINACCT-KEY51-FET-SEC     SECTION.
       *
@@ -1152,16 +1152,16 @@
        900-NYUINACCT-KEY51-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý(KEY1)
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†(KEY1)
       *****************************************************************
        900-TENSU-KEY-SEL-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¥Á¥§¥Ã¥¯
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯ãƒã‚§ãƒƒã‚¯
            PERFORM 9001-TTNS-CHK-SEC
       *
-      *    ÂàÈò¥ï¡¼¥¯¤ËÂ¸ºß¤·¤Ê¤¤¾ì¹ç¤Ï£Ä£Â¤ò¸¡º÷
+      *    é€€é¿ãƒ¯ãƒ¼ã‚¯ã«å­˜åœ¨ã—ãªã„å ´åˆã¯ï¼¤ï¼¢ã‚’æ¤œç´¢
            IF    ( TTNS-FLG            =   ZERO )
       *
                INITIALIZE                      TNS-TENSU-REC
@@ -1176,7 +1176,7 @@
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
       *
-      *            ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¤ËÊÔ½¸¤¹¤ë
+      *            ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯ã«ç·¨é›†ã™ã‚‹
                    PERFORM 9001-TTNS-HEN-SEC
                ELSE
                    MOVE    1               TO  FLG-TENSU
@@ -1193,7 +1193,7 @@
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¥Á¥§¥Ã¥¯½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        9001-TTNS-CHK-SEC               SECTION.
       *
@@ -1219,7 +1219,7 @@
        9001-TTNS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯ÊÔ½¸½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯ç·¨é›†å‡¦ç†
       *****************************************************************
        9001-TTNS-HEN-SEC               SECTION.
       *
@@ -1239,7 +1239,7 @@
        9001-TTNS-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -1257,7 +1257,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1272,7 +1272,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

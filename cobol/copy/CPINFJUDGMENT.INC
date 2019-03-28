@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ´¶À÷¾ÉÈ½Äê                                (CPINFJUDGMENT.INC)*
+      *  æ„ŸæŸ“ç—‡åˆ¤å®š                                (CPINFJUDGMENT.INC)*
       *****************************************************************
-      *  ½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
       *01  INFJUDGMENT-REC.
            03  INFJUD-KEY.
-      *£É£Ä
+      *ï¼©ï¼¤
              05  INFJUD-ID             PIC 9(05).
-      *ÉÂ¸¶ÂÎ¶èÊ¬
+      *ç—…åŽŸä½“åŒºåˆ†
            03  INFJUD-DISEASE          PIC 9(02).
-      *È½Äê¥³¡¼¥É
+      *åˆ¤å®šã‚³ãƒ¼ãƒ‰
            03  INFJUD-CODE             PIC X(09).
-      *¥³¡¼¥É¶èÊ¬
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†
            03  INFJUD-CODE-KBN         PIC 9(01).
-      *¿ÇÎÅ¶èÊ¬
+      *è¨ºç™‚åŒºåˆ†
            03  INFJUD-SRYKBN           PIC X(02).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  INFJUD-CREYMD           PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  INFJUD-UPYMD            PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  INFJUD-UPHMS            PIC X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSFILECHK.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : �ե�����¸�ߥ����å�
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : ファイル存在チェック
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/08/07    NACL-����     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/08/07    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 00.00.01     NACL-����    03/05/30  �ե���������å�����
-      * 04.08.00     NACL-¿��Ǽ  14/07/30  ����ǥ��쥯�ȥ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 00.00.01     NACL-森脇    03/05/30  ファイルチェック修正
+      * 04.08.00     NACL-多々納  14/07/30  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -37,7 +37,7 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ե�����
+      *    入力：ファイル
            SELECT  IN-FILE     ASSIGN  ASS-IN
                                ORGANIZATION    IS  LINE SEQUENTIAL
                                FILE    STATUS  IS  STS-IN.
@@ -45,7 +45,7 @@
        DATA                DIVISION.
        FILE                    SECTION.
       *
-      *    ���ϥե�����
+      *    入力ファイル
        FD  IN-FILE.
        01  IN-REC          PIC X(01).
       *
@@ -53,31 +53,31 @@
 grpsys*
 grpsys COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
       **** 03  ASS-IN      PIC X(256).
            03  ASS-IN      PIC X(1024).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN      PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN      PIC 9(01).
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                 SECTION.
            COPY    "CPORCSFILECHK.INC".
@@ -87,7 +87,7 @@ grpsys COPY    "COMMON-SPA".
                                USING
                                ORCSFILECHKAREA.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC            SECTION.
       *
@@ -103,16 +103,16 @@ grpsys COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC            SECTION.
       *
            MOVE    ZERO        TO  FLG-AREA
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    FILECHK-NAME    TO  ASS-IN
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT           IN-FILE
            .
       *
@@ -120,14 +120,14 @@ grpsys COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
            IF          STS-IN      NOT     =   ZERO
                MOVE    2           TO  FILECHK-RC
            ELSE
-      *        �쥳���ɴ����ե������ɹ���
+      *        レコード管理ファイル読込み
                PERFORM 900-IN-READ-SEC
       *
                IF          FLG-IN      =   ZERO
@@ -135,7 +135,7 @@ grpsys COPY    "COMMON-SPA".
                ELSE
                    MOVE    1           TO  FILECHK-RC
                END-IF
-      *        ��λ����
+      *        終了処理
                PERFORM 300-END-SEC
            END-IF
           .
@@ -144,11 +144,11 @@ grpsys COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC             SECTION.
       *
-      *    ���ϥե����롡��λ����
+      *    入力ファイル　終了処理
            CLOSE               IN-FILE
            .
       *
@@ -156,7 +156,7 @@ grpsys COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե������ɹ��߽���
+      *    入力ファイル読込み処理
       *****************************************************************
        900-IN-READ-SEC         SECTION.
       *

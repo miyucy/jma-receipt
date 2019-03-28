@@ -1,17 +1,17 @@
 kanri_cd    : "5107"
-name        : "�Ǹ�տͿ���ʬ"
+name        : "看護師人数区分"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "BTU-KNGSISUKBN-NM"
-  item_jp   : "�Ǹ�տͿ���ʬ̾��"
+  item_jp   : "看護師人数区分名称"
   type      : "X"
   start     : 1
   length    : 10
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "ͽ��"
+  item_jp   : "予備"
   type      : "X"
   start     : 11
   length    : 490

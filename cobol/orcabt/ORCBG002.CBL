@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG002.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ·î¼¡Ä¢É¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Äê´üÀÁµá´µ¼Ô¥ê¥¹¥È
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  03/04/28    NACL-ÂÀÅÄ     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æœˆæ¬¡å¸³ç¥¨
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å®šæœŸè«‹æ±‚æ‚£è€…ãƒªã‚¹ãƒˆ
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  03/04/28    NACL-å¤ªç”°     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-ÂÀÅÄ    04/03/29  ÀÁµá¶â³Û¤ò¼ýÇ¼¤è¤ê¼èÆÀ¤¹¤ë
-      *                                     ¤è¤¦ÊÑ¹¹
-      *  03.05.01    NACL-¿¹ÏÆ    07/06/07  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.05.00    NACL-¿¹ÏÆ    09/12/15  £Ã£Ó£Ö½ÐÎÏÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACL-å¤ªç”°    04/03/29  è«‹æ±‚é‡‘é¡ã‚’åŽç´ã‚ˆã‚Šå–å¾—ã™ã‚‹
+      *                                     ã‚ˆã†å¤‰æ›´
+      *  03.05.01    NACL-æ£®è„‡    07/06/07  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  04.05.00    NACL-æ£®è„‡    09/12/15  ï¼£ï¼³ï¼¶å‡ºåŠ›å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,7 +38,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    Äê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ë¡Ê½é´ü²½¡¿ÆÉ¹þÍÑ¡Ë
+      *    å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆåˆæœŸåŒ–ï¼èª­è¾¼ç”¨ï¼‰
 grpsys*DD  SELECT  BG00201-FILE   ASSIGN   ORCBG002PARA
 grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
                                   ORGANIZATION    IS  INDEXED
@@ -46,7 +46,7 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
                                   RECORD  KEY     IS  BG00201-ISAM-KEY
                                   FILE    STATUS  IS  STS-BG00201.
       * 
-006900*    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+006900*    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -66,13 +66,13 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
                                                //PTTEIKIRRK-//
                                    BY          //BG00201-PTTEIKIRRK-//.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    Äê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ë
+      *    å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01//
                                    BY          //BG00201//.
@@ -81,12 +81,12 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
       *
            COPY    "HCMG002.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
        01  STS-AREA.
            03  STS-BG00201                         PIC X(02).
            03  STS-RECEERR                         PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-PTTEIKIRRK                      PIC 9(01).
@@ -96,20 +96,20 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
            03  FLG-BG00201                         PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-LINE                            PIC 9(02).
            03  CNT-PAGE                            PIC 9(03).
            03  CNT-BG00201                         PIC 9(05).
       *
-      *    ¥·¥¹¥Æ¥àÎÎ°è
+      *    ã‚·ã‚¹ãƒ†ãƒ é ˜åŸŸ
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY                          PIC 9(02).
                05  SYS-MM                          PIC 9(02).
                05  SYS-DD                          PIC 9(02).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX1                                PIC 9(05).
            03  IDX2                                PIC 9(05).
@@ -118,7 +118,7 @@ grpsys     SELECT  BG00201-FILE   ASSIGN   BG00201PARA
            03  IDW1                    PIC 9(04).
            03  IDW2                    PIC 9(04).
       *
-      *    ¥Ñ¥é¥á¥¿ÎÎ°è
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -149,7 +149,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
                05  ISAM-KEY2-DENPNUM    PIC X(07).
       *----(02.00.01)--ADD-END-----
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-DBPATH                          PIC  X(100).
 grpsys     03  WRK-DBTABLE                         PIC  X(100).
@@ -188,7 +188,7 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
            03  WRK-SHO                 PIC 9(05).
            03  WRK-AMARI               PIC 9(05).
       *
-      *    £Ã£Ó£Ö¥Ç¡¼¥¿ÊÔ½¸ÍÑ
+      *    ï¼£ï¼³ï¼¶ãƒ‡ãƒ¼ã‚¿ç·¨é›†ç”¨
            03  WRK-REC             PIC X(20000).
            03  WRK-REC-LENGTH      PIC 9(05).
            03  WRK-HENSYU-AREA.
@@ -224,12 +224,12 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
       *
        01  CONST-AREA.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE 30.
-      *    ¥³¥ó¥Þ
+      *    ã‚³ãƒ³ãƒž
            03  WRK-KUGIRI          PIC X(01)   VALUE   ",".
-      *    ²þ¹Ô¥³¡¼¥É
+      *    æ”¹è¡Œã‚³ãƒ¼ãƒ‰
            03  WRK-KAIGYO          PIC X(01)   VALUE   X"0D".
       *
-      *    ½ÐÎÏÀè¥Õ¥¡¥¤¥ëÌ¾
+      *    å‡ºåŠ›å…ˆãƒ•ã‚¡ã‚¤ãƒ«å
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
@@ -238,112 +238,112 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
                05  WRK-TO-DATA-STRYM   PIC X(06).
                05  FILLER              PIC X(04)   VALUE   ".csv".
       *
-      *    ¥Ø¥Ã¥À¡¼¾ðÊó
+      *    ãƒ˜ãƒƒãƒ€ãƒ¼æƒ…å ±
        01  CSV-HEAD-01.
-           03  FILLER              PIC X(08)   VALUE   "¿ÇÎÅÇ¯·î".
+           03  FILLER              PIC X(08)   VALUE   "è¨ºç™‚å¹´æœˆ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÉÂÅï¶èÊ¬".
+           03  FILLER              PIC X(08)   VALUE   "ç—…æ£ŸåŒºåˆ†".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(04)   VALUE   "åç§°".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "ÉÂ¼¼".
+           03  FILLER              PIC X(04)   VALUE   "ç—…å®¤".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "¿ÇÎÅ²Ê".
+           03  FILLER              PIC X(06)   VALUE   "è¨ºç™‚ç§‘".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(04)   VALUE   "åç§°".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼ÔÈÖ¹æ".
+           03  FILLER              PIC X(08)   VALUE   "æ‚£è€…ç•ªå·".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "´µ¼Ô»áÌ¾".
+           03  FILLER              PIC X(08)   VALUE   "æ‚£è€…æ°å".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "À­ÊÌ".
+           03  FILLER              PIC X(04)   VALUE   "æ€§åˆ¥".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(04)   VALUE   "åç§°".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "À¸Ç¯·îÆü".
+           03  FILLER              PIC X(08)   VALUE   "ç”Ÿå¹´æœˆæ—¥".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÅÁÉ¼ÈÖ¹æ".
+           03  FILLER              PIC X(08)   VALUE   "ä¼ç¥¨ç•ªå·".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ÀÁµá¶â³Û".
+           03  FILLER              PIC X(08)   VALUE   "è«‹æ±‚é‡‘é¡".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "½èÍý¶èÊ¬".
+           03  FILLER              PIC X(08)   VALUE   "å‡¦ç†åŒºåˆ†".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ì¾¾Î".
+           03  FILLER              PIC X(04)   VALUE   "åç§°".
       *
            COPY    "CPSHELLTBL.INC".
       *
       *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎò
+      *    æ‚£è€…å®šæœŸè«‹æ±‚å±¥æ­´
        01  PTTEIKIRRK-REC.
            COPY    "CPPTTEIKIRRK.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿
+      *    æ‚£è€…ãƒžã‚¹ã‚¿
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ¼ýÇ¼¥Þ¥¹¥¿
+      *    åŽç´ãƒžã‚¹ã‚¿
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
-      *    °åÎÅµ¡´Ø¾ðÊó
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±
            COPY    "CPSK1001.INC".
       *
-      *    ¿ÇÎÅ²ÊÌÜ¾ðÊó
+      *    è¨ºç™‚ç§‘ç›®æƒ…å ±
            COPY    "CPSK1005.INC".
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®¾ðÊó
+      *    æ‚£è€…ç•ªå·æ§‹æˆæƒ…å ±
            COPY    "CPSK1009.INC".
       *
-      *    ÉÂÅï¾ðÊó
+      *    ç—…æ£Ÿæƒ…å ±
            COPY    "CPSK5001.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    °õºþ´ÉÍý
+      *    å°åˆ·ç®¡ç†
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    °õºþÍÑ¥Ç¡¼¥¿
+      *    å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
+      *    æ‚£è€…ç•ªå·å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSPTID.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    °õºþ£Ä£Â¹¹¿·¥µ¥Ö
+      *    å°åˆ·ï¼¤ï¼¢æ›´æ–°ã‚µãƒ–
            COPY    "CPORCSPRT.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ¥Õ¥¡¥¤¥ëºï½ü¥Ñ¥é¥á¥¿
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSFDEL.INC".
       *
-      *    Åý·×£Ã£Ó£ÖÀ©¸æ¥µ¥Ö
+      *    çµ±è¨ˆï¼£ï¼³ï¼¶åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -352,7 +352,7 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -366,7 +366,7 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -381,7 +381,7 @@ grpsys     03  WRK-DBTABLE                         PIC  X(100).
            STOP    RUN
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -420,14 +420,14 @@ grpsys                                 RECEERR
 grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
 grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBG002"          TO  JOB-PGID
-           MOVE    "Äê´üÀÁµá´µ¼Ô°ìÍ÷É½"
+           MOVE    "å®šæœŸè«‹æ±‚æ‚£è€…ä¸€è¦§è¡¨"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
@@ -438,7 +438,7 @@ grpsys*DD  MOVE    "RECEERR"           TO  RECEERR-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID
 grpsys*DD                              TO  RECEERR-TERMID
       *
-      *    ¼ýÇ¼½èÍý¥Õ¥¡¥¤¥ëÌ¾
+      *    åŽç´å‡¦ç†ãƒ•ã‚¡ã‚¤ãƒ«å
 grpsys*DD  MOVE    "BG00201"           TO  ORCBG002PARA-FILE-ID
 grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  ORCBG002PARA-TERMID
 grpsys     MOVE    "BG00201"           TO  BG00201PARA-FILE-ID
@@ -455,13 +455,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BG00201PARA-HOSPNUM
            MOVE    SGETTEMP-FULLNAMES (2)
                                    TO  RECEERR
       *
-      *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿ç·¨é›†å‡¦ç†
            PERFORM 110-PARA-HENSYU-SEC
            IF    ( FLG-END         NOT =   ZERO )
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+      *    åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤ç·¨é›†
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -478,7 +478,7 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
            IF    ( FLG-DBRC            =   ZERO )
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
            ELSE
-               MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
+               MOVE    "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚"
                                        TO  WRK-RECEERR 
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
@@ -489,7 +489,7 @@ grpsys     MOVE    "tbl_syskanri"  TO  WRK-DBTABLE
 grpsys     MOVE    "key10"         TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊóÊÔ½¸
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ç·¨é›†
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
@@ -515,7 +515,7 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                            TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
-               MOVE    "´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
@@ -526,7 +526,7 @@ grpsys     MOVE    "tbl_syskanri"  TO  WRK-DBTABLE
 grpsys     MOVE    "key10"         TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    ÂÐ¾ÝÄê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    å¯¾è±¡å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å‡¦ç†
            PERFORM 110-TEIKI-OUT-SEC
            IF    ( FLG-END         NOT =   ZERO )
                GO  TO  100-INIT-EXT
@@ -537,17 +537,17 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
            EXIT.
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    ½èÍýÂÐ¾ÝÊÔ½¸
+      *    å‡¦ç†å¯¾è±¡ç·¨é›†
            PERFORM 1101-TAISYO-EDIT-SEC
            IF    ( FLG-END         NOT =   ZERO )
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
       *
-      *    ºîÀ®Æü
+      *    ä½œæˆæ—¥
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3         TO  WRK-SYORIYMD
@@ -557,7 +557,7 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
            EXIT.
       *
       *****************************************************************
-      *    ½èÍýÂÐ¾ÝÊÔ½¸½èÍý
+      *    å‡¦ç†å¯¾è±¡ç·¨é›†å‡¦ç†
       *****************************************************************
        1101-TAISYO-EDIT-SEC            SECTION.
       *
@@ -571,21 +571,21 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
       *
            EVALUATE    WRK-PARA-SYORIKBN
            WHEN    "0"
-               MOVE    "¡ÊÁ´·ï¡Ë"      TO  WRK-TAISYO-SYORIMEI
+               MOVE    "ï¼ˆå…¨ä»¶ï¼‰"      TO  WRK-TAISYO-SYORIMEI
            WHEN    "1"
-               MOVE    "¡Ê£±´ü¡Ë"      TO  WRK-TAISYO-SYORIMEI
+               MOVE    "ï¼ˆï¼‘æœŸï¼‰"      TO  WRK-TAISYO-SYORIMEI
            WHEN    "2"
-               MOVE    "¡Ê£²´ü¡Ë"      TO  WRK-TAISYO-SYORIMEI
+               MOVE    "ï¼ˆï¼’æœŸï¼‰"      TO  WRK-TAISYO-SYORIMEI
            WHEN    "3"
-               MOVE    "¡Ê£³´ü¡Ë"      TO  WRK-TAISYO-SYORIMEI
+               MOVE    "ï¼ˆï¼“æœŸï¼‰"      TO  WRK-TAISYO-SYORIMEI
            WHEN    "9"
-               MOVE    "¡Ê·îËö°ì³çÀÁµá¼Ô¤Î¤ß¡Ë"
+               MOVE    "ï¼ˆæœˆæœ«ä¸€æ‹¬è«‹æ±‚è€…ã®ã¿ï¼‰"
                                        TO  WRK-TAISYO-SYORIMEI
       *
-      *    ¤½¤ÎÂ¾¤Ï¥¨¥é¡¼
+      *    ãã®ä»–ã¯ã‚¨ãƒ©ãƒ¼
            WHEN    OTHER
                MOVE    SPACE           TO  WRK-RECEERR
-               STRING  "½èÍý¶èÊ¬¤¬¸í¤ê¤Ç¤¹¡§["     DELIMITED   BY  SIZE
+               STRING  "å‡¦ç†åŒºåˆ†ãŒèª¤ã‚Šã§ã™ï¼š["     DELIMITED   BY  SIZE
                        WRK-PARA-SYORIKBN           DELIMITED   BY  SIZE
                        "]"                         DELIMITED   BY  SIZE
                INTO    WRK-RECEERR
@@ -598,17 +598,17 @@ grpsys     MOVE    "key10"         TO  WRK-DBPATH
        1101-TAISYO-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å‡¦ç†
       *****************************************************************
        110-TEIKI-OUT-SEC           SECTION.
       *
-      *    Äê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ë½é´ü²½
+      *    å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«åˆæœŸåŒ–
            OPEN    OUTPUT              BG00201-FILE
            CLOSE   BG00201-FILE
       *
            OPEN    OUTPUT              BG00201-FILE
       *
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎò¸¡º÷
+      *    æ‚£è€…å®šæœŸè«‹æ±‚å±¥æ­´æ¤œç´¢
            MOVE    ZERO                TO  FLG-PTTEIKIRRK
            INITIALIZE  PTTEIKIRRK-REC
 grpsys*DD  MOVE    SYS-1001-HOSPID     TO  PTTEIKIRRK-HOSPID
@@ -633,7 +633,7 @@ grpsys     MOVE    "key5"          TO  WRK-DBPATH
       *
                MOVE    MCPDATA-REC TO  PTTEIKIRRK-REC
       *
-      *        Äê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ëÊÔ½¸
+      *        å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†
                PERFORM 1101-TEIKI-EDIT-SEC
                IF    ( FLG-END     NOT =   ZERO )
                    GO  TO  110-TEIKI-OUT-EXT
@@ -661,11 +661,11 @@ grpsys     MOVE    "key5"          TO  WRK-DBPATH
        110-TEIKI-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    Äê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
+      *    å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        1101-TEIKI-EDIT-SEC             SECTION.
       *
-      *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷
+      *    åŽç´ãƒžã‚¹ã‚¿æ¤œç´¢
            MOVE    ZERO            TO  FLG-SYUNOU
            INITIALIZE  SYUNOU-REC
 grpsys*DD  MOVE    SYS-1001-HOSPID TO  SYU-HOSPID
@@ -693,7 +693,7 @@ grpsys     MOVE    "key"           TO  WRK-DBPATH
       *
            IF    ( FLG-SYUNOU      NOT =   ZERO )
                MOVE    PTTEIKIRRK-PTID TO  ERR-PTID
-               MOVE    "¼ýÇ¼¥Ç¡¼¥¿¤Î¼èÆÀ¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+               MOVE    "åŽç´ãƒ‡ãƒ¼ã‚¿ã®å–å¾—ã«å¤±æ•—ã—ã¾ã—ãŸ"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -714,7 +714,7 @@ grpsys     MOVE    "key"           TO  WRK-DBPATH
            PERFORM 1101-PTNUM-GET-SEC
            IF    ( WRK-SPTID-PTNUM     =   SPACE )
                MOVE    SYU-PTID        TO  ERR-PTID
-               MOVE    "´µ¼ÔÈÖ¹æ¤Î¼èÆÀ¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+               MOVE    "æ‚£è€…ç•ªå·ã®å–å¾—ã«å¤±æ•—ã—ã¾ã—ãŸ"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -752,13 +752,13 @@ grpsys     MOVE    "key"           TO  WRK-DBPATH
        1101-TEIKI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¼èÆÀ½èÍý
+      *    æ‚£è€…ç•ªå·å–å¾—å‡¦ç†
       *****************************************************************
        1101-PTNUM-GET-SEC              SECTION.
       *
            MOVE    SPACE           TO  WRK-SPTID-PTNUM
       *
-      *    ´µ¼ÔÈÖ¹æ¤ò¼èÆÀ
+      *    æ‚£è€…ç•ªå·ã‚’å–å¾—
            INITIALIZE                  ORCSPTIDAREA
 grpsys*DD  MOVE    WRK-PARA-HOSPID TO  SPTID-HOSPID
 grpsys     MOVE    SPA-HOSPNUM     TO  SPTID-HOSPNUM
@@ -774,7 +774,7 @@ grpsys                                     SPA-AREA
        1101-PTNUM-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -792,13 +792,13 @@ grpsys                                     SPA-AREA
            PERFORM 900-BG00201-READ-SEC
       *
            IF      FLG-BG00201 =   ZERO
-      *    £Ã£Ó£Ö½ÐÎÏ½èÍý
+      *    ï¼£ï¼³ï¼¶å‡ºåŠ›å‡¦ç†
            PERFORM 270-CSV-HEAD-SET-SEC
            PERFORM UNTIL ( FLG-BG00201 =   1 )
       *
                MOVE    SPACE       TO  HCMG002
       *
-      *        ¥Ø¥Ã¥ÀÊÔ½¸½èÍý
+      *        ãƒ˜ãƒƒãƒ€ç·¨é›†å‡¦ç†
                PERFORM 210-HEAD-EDIT-SEC
       *
                MOVE    ZERO        TO  CNT-LINE
@@ -806,15 +806,15 @@ grpsys                                     SPA-AREA
                PERFORM UNTIL ( FLG-BG00201 =   1 )
                        OR    ( CNT-LINE   >=   CONST-LINE-MAX )
       *
-      *            ÌÀºÙÊÔ½¸½èÍý
+      *            æ˜Žç´°ç·¨é›†å‡¦ç†
                    PERFORM 210-BODY-EDIT-SEC
       *
                END-PERFORM
       *
-      *        ¹ç·×¹ÔÊÔ½¸½èÍý
+      *        åˆè¨ˆè¡Œç·¨é›†å‡¦ç†
                PERFORM 210-TOTAL-EDIT-SEC
       *
-      *        ½ÐÎÏ½èÍý
+      *        å‡ºåŠ›å‡¦ç†
                PERFORM 400-PRINT-OUT-SEC
       *
            END-PERFORM
@@ -822,7 +822,7 @@ grpsys                                     SPA-AREA
       *
            CLOSE   BG00201-FILE
       *
-      *    ¥Õ¥¡¥¤¥ëºï½ü
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
            MOVE    ZERO        TO  IF-RESULT
 grpsys*DD  MOVE    ORCBG002PARA
 grpsys     MOVE    BG00201PARA
@@ -837,7 +837,7 @@ grpsys     MOVE    BG00201PARA
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
+      *    å¸³ç¥¨ç·¨é›†<ãƒ˜ãƒƒãƒ€ãƒ¼éƒ¨>å‡¦ç†
       *****************************************************************
        210-HEAD-EDIT-SEC           SECTION.
       *
@@ -854,7 +854,7 @@ grpsys     MOVE    BG00201PARA
        310-HEAD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<ÌÀºÙÉô>½èÍý
+      *    å¸³ç¥¨ç·¨é›†<æ˜Žç´°éƒ¨>å‡¦ç†
       *****************************************************************
        210-BODY-EDIT-SEC           SECTION.
       *
@@ -901,7 +901,7 @@ grpsys     MOVE    BG00201PARA
                    PERFORM 2101-BODY-PTINF-EDIT-SEC
                END-IF
       *
-      *        ¥­¡¼¤òÀßÄê
+      *        ã‚­ãƒ¼ã‚’è¨­å®š
                MOVE    ISAM-KEY-BTUNUM TO  KEY-BTUNUM
                MOVE    ISAM-KEY-BRMNUM TO  KEY-BRMNUM
                MOVE    ISAM-KEY-SRYKA  TO  KEY-SRYKA
@@ -938,13 +938,13 @@ grpsys     MOVE    BG00201PARA
            MOVE    SPACE                   TO  WRK-JYOTAI
            EVALUATE    PTTEIKIRRK-SAKKBN
            WHEN    "1"
-               MOVE    "£±´ü"              TO  WRK-JYOTAI
+               MOVE    "ï¼‘æœŸ"              TO  WRK-JYOTAI
            WHEN    "2"
-               MOVE    "£²´ü"              TO  WRK-JYOTAI
+               MOVE    "ï¼’æœŸ"              TO  WRK-JYOTAI
            WHEN    "3"
-               MOVE    "£³´ü"              TO  WRK-JYOTAI
+               MOVE    "ï¼“æœŸ"              TO  WRK-JYOTAI
            WHEN    "9"
-               MOVE    "·îËö°ì³çÀÁµá"      TO  WRK-JYOTAI
+               MOVE    "æœˆæœ«ä¸€æ‹¬è«‹æ±‚"      TO  WRK-JYOTAI
            END-EVALUATE
            MOVE    WRK-JYOTAI              TO  HCMG002-JYOTAI
                                                            (CNT-LINE)
@@ -960,11 +960,11 @@ grpsys     MOVE    BG00201PARA
        210-BODY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÉÂÅïÌ¾¾ÎÊÔ½¸½èÍý
+      *    ç—…æ£Ÿåç§°ç·¨é›†å‡¦ç†
       *****************************************************************
        2101-BODY-BTUNAME-EDIT-SEC      SECTION.
       *
-      *    ÉÂÅï¾ðÊó
+      *    ç—…æ£Ÿæƒ…å ±
            INITIALIZE                      SYS-5001-REC
            MOVE    "5001"              TO  SYS-5001-KANRICD
       *----(02.00.01)--UPD-START---
@@ -997,7 +997,7 @@ grpsys     MOVE    "key10"             TO  WRK-DBPATH
        2101-BODY-BTUNAME-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÉÂ¼¼Ì¾¾ÎÊÔ½¸½èÍý
+      *    ç—…å®¤åç§°ç·¨é›†å‡¦ç†
       *****************************************************************
        2101-BODY-BRMNUM-EDIT-SEC        SECTION.
       *
@@ -1031,7 +1031,7 @@ grpsys     MOVE    "key10"             TO  WRK-DBPATH
                GO  TO  2101-BODY-BRMNUM-EDIT-EXT
            END-IF
       *
-      *    ÉÂ¼¼ÈÖ¹æ¤¬¿ô»ú¤Î¾ì¹çÁ°¥¼¥í¤ò¤È¤ë
+      *    ç—…å®¤ç•ªå·ãŒæ•°å­—ã®å ´åˆå‰ã‚¼ãƒ­ã‚’ã¨ã‚‹
            IF    ( WRK-BRM-NUM-EDT ( 1 : WRK-IDX1 )
                                        IS  NUMERIC )
                IF    ( WRK-BRM-NUM-EDT ( 1 : 1 )
@@ -1056,11 +1056,11 @@ grpsys     MOVE    "key10"             TO  WRK-DBPATH
        2101-BODY-BRMNUM-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÊÔ½¸½èÍý
+      *    è¨ºç™‚ç§‘ç·¨é›†å‡¦ç†
       *****************************************************************
        2101-BODY-SRYKA-EDIT-SEC        SECTION.
       *
-      *    ¿ÇÎÅ²Ê¾ðÊó
+      *    è¨ºç™‚ç§‘æƒ…å ±
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
       *----(02.00.01)--UPD-START---
@@ -1093,11 +1093,11 @@ grpsys     MOVE    "key10"             TO  WRK-DBPATH
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¾ðÊóÊÔ½¸½èÍý
+      *    æ‚£è€…æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2101-BODY-PTINF-EDIT-SEC        SECTION.
       *
-      *    ´µ¼Ô¾ðÊóÆÉ¤ß¹þ¤ß
+      *    æ‚£è€…æƒ…å ±èª­ã¿è¾¼ã¿
            INITIALIZE                      PTINF-REC
 grpsys*DD  MOVE    SYU-HOSPID          TO  PTINF-HOSPID
 grpsys     MOVE    SYU-HOSPNUM         TO  PTINF-HOSPNUM
@@ -1116,23 +1116,23 @@ grpsys     MOVE    "key"               TO  WRK-DBPATH
 grpsys     MOVE    "key"               TO  WRK-DBPATH
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
       *----(02.00.01)--UPD-START---
            MOVE    ISAM-KEY-PTNUM      TO  WRK-HCMG002-PTNUM
       *----(02.00.01)--UPD-END-----
       *
-      *    »áÌ¾
+      *    æ°å
            MOVE    PTINF-NAME          TO  WRK-HCMG002-NAME
       *
-      *    À­ÊÌ
+      *    æ€§åˆ¥
            EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "ÃË"        TO  WRK-HCMG002-SEX
+                   MOVE    "ç”·"        TO  WRK-HCMG002-SEX
                WHEN    "2"
-                   MOVE    "½÷"        TO  WRK-HCMG002-SEX
+                   MOVE    "å¥³"        TO  WRK-HCMG002-SEX
            END-EVALUATE
       *
-      *    À¸Ç¯·îÆü
+      *    ç”Ÿå¹´æœˆæ—¥
            MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3     TO  WRK-HCMG002-BIRTHDAY
@@ -1141,11 +1141,11 @@ grpsys     MOVE    "key"               TO  WRK-DBPATH
        2101-BODY-PTINF-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¹ç·×¹ÔÊÔ½¸½èÍý
+      *    åˆè¨ˆè¡Œç·¨é›†å‡¦ç†
       *****************************************************************
        210-TOTAL-EDIT-SEC              SECTION.
       *
-           MOVE    "ÊÇÆâ¹ç·×"          TO  HCMG002-TTLMSG(1)
+           MOVE    "é å†…åˆè¨ˆ"          TO  HCMG002-TTLMSG(1)
            MOVE    WRK-SKYMONEY-PAGE   TO  WRK-Z9
            MOVE    WRK-Z9              TO  HCMG002-SEIKYUTTL(1)
       *
@@ -1153,7 +1153,7 @@ grpsys     MOVE    "key"               TO  WRK-DBPATH
                =   WRK-SKYMONEY-TTL    +   WRK-SKYMONEY-PAGE
       *
            IF    ( FLG-BG00201         =   1 )
-               MOVE    "Áí¹ç·×"        TO  HCMG002-TTLMSG(2)
+               MOVE    "ç·åˆè¨ˆ"        TO  HCMG002-TTLMSG(2)
                MOVE    WRK-SKYMONEY-TTL
                                        TO  WRK-Z9
                MOVE    WRK-Z9          TO  HCMG002-SEIKYUTTL(2)
@@ -1164,7 +1164,7 @@ grpsys     MOVE    "key"               TO  WRK-DBPATH
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼°õºþ½èÍý
+      *    å¸³ç¥¨å°åˆ·å‡¦ç†
       *****************************************************************
        400-PRINT-OUT-SEC                SECTION.
       *
@@ -1185,7 +1185,7 @@ grpsys     MOVE    "key"               TO  WRK-DBPATH
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE   "HCMG002.red"        TO  SPRT-PRTID
-           MOVE    "Äê´üÀÁµá´µ¼Ô°ìÍ÷É½"
+           MOVE    "å®šæœŸè«‹æ±‚æ‚£è€…ä¸€è¦§è¡¨"
                                        TO  SPRT-TITLE
            MOVE    HCMG002             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1205,14 +1205,14 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    £Ã£Ó£Ö¡Ê£È£Å£Á£Ä¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
+      *    ï¼£ï¼³ï¼¶ï¼ˆï¼¨ï¼¥ï¼¡ï¼¤ãƒ¬ã‚³ãƒ¼ãƒ‰ï¼‰ç·¨é›†å‡¦ç†
       *****************************************************************
        270-CSV-HEAD-SET-SEC        SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    ²þ¹Ô¥³¡¼¥ÉÊÔ½¸
+      *    æ”¹è¡Œã‚³ãƒ¼ãƒ‰ç·¨é›†
            STRING  CSV-HEAD-01         DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
                    INTO                WRK-REC
@@ -1224,7 +1224,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    £Ã£Ó£Ö¡Ê¥Ç¡¼¥¿¥ì¥³¡¼¥É¡ËÊÔ½¸½èÍý
+      *    ï¼£ï¼³ï¼¶ï¼ˆãƒ‡ãƒ¼ã‚¿ãƒ¬ã‚³ãƒ¼ãƒ‰ï¼‰ç·¨é›†å‡¦ç†
       *****************************************************************
        270-CSV-BODY-SET-SEC        SECTION.
       *
@@ -1235,7 +1235,7 @@ grpsys                                 SPA-AREA
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
-      *    ¿ÇÎÅÇ¯·î
+      *    è¨ºç™‚å¹´æœˆ
            MOVE    WRK-PARA-SRYYM  TO  WRK-HEN-YMD-IN
            MOVE    WRK-HEN-YY-IN   TO  WRK-HEN-YY-OT
            MOVE    WRK-HEN-MM-IN   TO  WRK-HEN-MM-OT
@@ -1245,7 +1245,7 @@ grpsys                                 SPA-AREA
            MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ÉÂÅï
+      *    ç—…æ£Ÿ
            MOVE    ISAM-KEY-BTUNUM TO  WRK-DATA
            MOVE    2               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1254,13 +1254,13 @@ grpsys                                 SPA-AREA
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ÉÂ¼¼
+      *    ç—…å®¤
            MOVE    WRK-HCMG002-BRMNUM
                                    TO  WRK-DATA
            MOVE    6               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ¿ÇÎÅ²Ê
+      *    è¨ºç™‚ç§‘
            MOVE    ISAM-KEY-SRYKA  TO  WRK-DATA
            MOVE    2               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1269,19 +1269,19 @@ grpsys                                 SPA-AREA
            MOVE    8               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
            MOVE    WRK-HCMG002-PTNUM
                                    TO  WRK-DATA
            MOVE    20              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ´µ¼Ô»áÌ¾
+      *    æ‚£è€…æ°å
            MOVE    WRK-HCMG002-NAME
                                    TO  WRK-DATA
            MOVE    30              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    À­ÊÌ
+      *    æ€§åˆ¥
            MOVE    PTINF-SEX       TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1290,7 +1290,7 @@ grpsys                                 SPA-AREA
            MOVE    2               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    À¸Ç¯·îÆü
+      *    ç”Ÿå¹´æœˆæ—¥
            MOVE    PTINF-BIRTHDAY  TO  WRK-HEN-YMD-IN
            MOVE    WRK-HEN-YY-IN   TO  WRK-HEN-YY-OT
            MOVE    WRK-HEN-MM-IN   TO  WRK-HEN-MM-OT
@@ -1300,37 +1300,37 @@ grpsys                                 SPA-AREA
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ÅÁÉ¼ÈÖ¹æ
+      *    ä¼ç¥¨ç•ªå·
            MOVE    SYU-DENPNUM     TO  WRK-DATA
            MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ÀÁµá¶â³Û
+      *    è«‹æ±‚é‡‘é¡
            MOVE    SYU-SKYMONEY    TO  WRK-NUM
            MOVE    13              TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
-      *    ½èÍý¶èÊ¬
+      *    å‡¦ç†åŒºåˆ†
            MOVE    PTTEIKIRRK-SAKKBN   TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
            MOVE    SPACE                   TO  WRK-JYOTAI
            EVALUATE    PTTEIKIRRK-SAKKBN
            WHEN    "1"
-               MOVE    "£±´ü"              TO  WRK-JYOTAI
+               MOVE    "ï¼‘æœŸ"              TO  WRK-JYOTAI
            WHEN    "2"
-               MOVE    "£²´ü"              TO  WRK-JYOTAI
+               MOVE    "ï¼’æœŸ"              TO  WRK-JYOTAI
            WHEN    "3"
-               MOVE    "£³´ü"              TO  WRK-JYOTAI
+               MOVE    "ï¼“æœŸ"              TO  WRK-JYOTAI
            WHEN    "9"
-               MOVE    "·îËö°ì³çÀÁµá"      TO  WRK-JYOTAI
+               MOVE    "æœˆæœ«ä¸€æ‹¬è«‹æ±‚"      TO  WRK-JYOTAI
            END-EVALUATE
            MOVE    WRK-JYOTAI      TO  WRK-DATA
            MOVE    16              TO  WRK-NAGASA
            MOVE    1               TO  WRK-RECEND
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ²þ¹Ô¥³¡¼¥ÉÊÔ½¸
+      *    æ”¹è¡Œã‚³ãƒ¼ãƒ‰ç·¨é›†
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1344,7 +1344,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    Åý·×£Ã£Ó£Ö½ÐÎÏ½èÍý
+      *    çµ±è¨ˆï¼£ï¼³ï¼¶å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-TOUKEICSV-SEC           SECTION.
       *
@@ -1369,7 +1369,7 @@ grpsys                                 SPA-AREA
            MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
            MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "Äê´üÀÁµá´µ¼Ô°ìÍ÷£Ã£Ó£ÖºîÀ®"
+           MOVE    "å®šæœŸè«‹æ±‚æ‚£è€…ä¸€è¦§ï¼£ï¼³ï¼¶ä½œæˆ"
                                    TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
@@ -1378,7 +1378,7 @@ grpsys                                 SPA-AREA
            IF      STOUKEICSV-RETURN   =   ZERO
                CONTINUE
            ELSE
-               MOVE    "Åý·×£Ã£Ó£Ö£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "çµ±è¨ˆï¼£ï¼³ï¼¶ï¼¤ï¼¢ã«æ›´æ–°ã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                       TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -1389,7 +1389,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ½ÐÎÏ¥ì¥³¡¼¥É½èÍý¡ÊÊ¸»ú¡Ë
+      *    å‡ºåŠ›ãƒ¬ã‚³ãƒ¼ãƒ‰å‡¦ç†ï¼ˆæ–‡å­—ï¼‰
       *****************************************************************
        5004-MOJI-HENSYU-SEC        SECTION.
       *
@@ -1426,14 +1426,14 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ½ÐÎÏ¥ì¥³¡¼¥É½èÍý¡Ê¿ô»ú¡Ë------------9.99999¤ÎÊÔ½¸
+      *    å‡ºåŠ›ãƒ¬ã‚³ãƒ¼ãƒ‰å‡¦ç†ï¼ˆæ•°å­—ï¼‰------------9.99999ã®ç·¨é›†
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
            IF      WRK-NAGASA          =   ZERO
                CONTINUE
            ELSE                   
-      *        ³«»Ï°ÌÃÖ
+      *        é–‹å§‹ä½ç½®
                IF      WRK-NAGASA          >   13
                    MOVE    1                   TO  WRK-RECSTR
                ELSE
@@ -1480,7 +1480,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1494,7 +1494,7 @@ grpsys                                 SPA-AREA
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1516,7 +1516,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    °Û¾ï½ªÎ»½èÍý
+      *    ç•°å¸¸çµ‚äº†å‡¦ç†
       *****************************************************************
        500-COBABORT-SEC          SECTION.
       *
@@ -1532,12 +1532,12 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    çµ‚äº†ã€€ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF    ( CNT-BG00201         =   ZERO )
-               MOVE    "½èÍýÂÐ¾Ý¤Î¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "å‡¦ç†å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1545,7 +1545,7 @@ grpsys                                     SPA-AREA
            DISPLAY "*** ORCBG002 IN " CNT-BG00201  " ***"
            DISPLAY "*** ORCBG002 END ***"
       *     
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1565,14 +1565,14 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        800-ERRMSG-EDIT-SEC             SECTION.
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
 	                                       ERR-PTNUM
       *
-      *    ´µ¼ÔÈÖ¹æ¤ò¼èÆÀ
+      *    æ‚£è€…ç•ªå·ã‚’å–å¾—
            INITIALIZE                      ORCSPTIDAREA
 grpsys*DD  MOVE    SYS-1001-HOSPID     TO  SPTID-HOSPID
 grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
@@ -1607,16 +1607,16 @@ grpsys                                     SPA-AREA
       *
            IF    ( WRK-AMARI   =   ZERO )
                STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                       "¡Î´µ¼ÔÈÖ¹æ¡§"      DELIMITED   BY  SIZE
+                       "ï¼»æ‚£è€…ç•ªå·ï¼š"      DELIMITED   BY  SIZE
                        ERR-PTNUM           DELIMITED   BY  SPACE
-                       "¡Ï"                DELIMITED   BY  SIZE
+                       "ï¼½"                DELIMITED   BY  SIZE
                INTO    ERR-HEN-ERRMSG
                END-STRING
            ELSE
                STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                       "¡Î´µ¼ÔÈÖ¹æ:"       DELIMITED   BY  SIZE
+                       "ï¼»æ‚£è€…ç•ªå·:"       DELIMITED   BY  SIZE
                        ERR-PTNUM           DELIMITED   BY  SPACE
-                       "¡Ï"                DELIMITED   BY  SIZE
+                       "ï¼½"                DELIMITED   BY  SIZE
                INTO    ERR-HEN-ERRMSG
                END-STRING
            END-IF
@@ -1626,7 +1626,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *    è¥¿æš¦æ—¥æœ¬èªžå¤‰æ›å‡¦ç†
       *****************************************************************
        800-SEIWA-HEN-SEC         SECTION.
       *
@@ -1645,13 +1645,13 @@ grpsys                                     SPA-AREA
                                            LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "¡¡"
+           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "ã€€"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Äê´üÀÁµá¾ðÊó¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
+      *    å®šæœŸè«‹æ±‚æƒ…å ±ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-BG00201-READ-SEC            SECTION.
       *
@@ -1688,7 +1688,7 @@ grpsys                                     SPA-AREA
        900-BG00201-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-TBL-SELECT-SEC              SECTION.
       *
@@ -1729,7 +1729,7 @@ grpsys*DD                              MCPDATA-REC
        900-TBL-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-TBL-READ-SEC                SECTION.
       *
@@ -1755,7 +1755,7 @@ grpsys*DD                              MCPDATA-REC
        900-TBL-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
@@ -1775,7 +1775,7 @@ grpsys*DD                              MCPDATA-REC
        900-TBL-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1805,7 +1805,7 @@ grpsys*DD                               MCPDATA-REC.
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

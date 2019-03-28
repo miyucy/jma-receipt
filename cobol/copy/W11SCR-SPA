@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,14 +17,14 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �����ƥ������������  ������ץ��̾������ƣӣУ�
+      *    システム管理情報設定  出力先プリンタ名割り当てＳＰＡ
       *          
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W11.
            03  SPA-W11-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -38,7 +38,7 @@
                    07  SPA-GMN-USE-PRINT-SERVER    PIC X(01).
       *
                    07  SPA-GMN-PAGENO      PIC 9(01).
-      *            ������ץ�󥿳�����ƾ���
+      *            出力先プリンタ割り当て情報
                    07  SPA-GMN-1031-AREA.
                        09  SPA-GMN-USERKBN-G.
                            11  SPA-GMN-USERKBN     PIC X(01).
@@ -50,7 +50,7 @@
                            11  SPA-GMN-U1L         PIC X(01).
                            11  SPA-GMN-USERKBNMEIL PIC X(18).
                        09  SPA-GMN-USERKBN-MAX     PIC 9(01).
-      *                ͭ��Ƚ��
+      *                有効判定
                        09  SPA-GMN-YUKOKBN-G.
                            11  SPA-GMN-YUKOKBN     PIC X(01).
                            11  SPA-GMN-Y1          PIC X(01).
@@ -72,11 +72,11 @@
       *
                        09  SPA-GMN-SELNUM          PIC 9(03).
                        09  SPA-GMN-TBL.
-      *                    ���衦�ץ��̾
+      *                    外来・プリンタ名
                            11  SPA-GMN-TBL01       OCCURS  20.
                                13  SPA-GMN-TNAME   PIC X(30).
                                13  SPA-GMN-TPRTNM  PIC X(16).
-      *                    ���衦�ץ������̾
+      *                    外来・プログラム名
                            11  SPA-GMN-TBL02       OCCURS  12.
                                13  SPA-GMN-TORGPGNM
                                                    PIC X(20).
@@ -93,12 +93,12 @@
                                                    OCCURS  6.
                            11  SPA-GMN-ORGPGNM03-MAX
                                                    PIC 9(04).
-      *                    ����Ģɼ
-      *                    �������ץ��̾
+      *                    入院帳票
+      *                    入院・プリンタ名
                            11  SPA-GMN-TBL01-N         OCCURS  20.
                                13  SPA-GMN-TNAME-N     PIC X(30).
                                13  SPA-GMN-TPRTNM-N    PIC X(16).
-      *                    �������ץ������̾
+      *                    入院・プログラム名
                            11  SPA-GMN-TBL02-N         OCCURS  10.
                                13  SPA-GMN-TORGPGNM-N
                                                        PIC X(20).
@@ -132,7 +132,7 @@
                                13  SPA-GMN-CSTPGNM-NLST-MAX  PIC 9(04).
                                13  SPA-GMN-CSTPGNM-NMEIL PIC X(20)
                                                        OCCURS  10.
-      *            Ģɼ�Խ���ʬ����
+      *            帳票編集区分情報
                    07  SPA-GMN-1030-AREA.
                        09  SPA-GMN-SYOHOGEPRTFLG-G.
                            11  SPA-GMN-SYOHOGEPRTFLG
@@ -151,7 +151,7 @@
                                                   PIC 9(02).
       *
                        09  SPA-GMN-SYOHODSPNAME   PIC X(10).
-      *                ����ƣ�����ͼ�
+      *                カルテ３号紙様式
                        09  SPA-GMN-KARUTE3KBN-G.
                            11  SPA-GMN-KARUTE3KBN      PIC X(01).
                            11  SPA-GMN-KARUTE3KBNF1    PIC X(01).
@@ -162,7 +162,7 @@
                                                   PIC 9(02).
                        09  SPA-GMN-GAZOFOLDER     PIC X(128).
       *
-      *                ��ȯ�����ʤؤ��ѹ��Ľ�̾
+      *                後発医薬品への変更可署名
                        09  SPA-GMN-KOUHATUKA-G.
                            11  SPA-GMN-KOUHATUKA       PIC X(01).
                            11  SPA-GMN-KOUHATUKAF1     PIC X(01).
@@ -177,7 +177,7 @@
                        09  SPA-NAI-TBLO           OCCURS  100.
                            11  SPA-NAI-USERCD     PIC 9(5).
       *
-      *        ������ץ�󥿳������ ɸ�����
+      *        出力先プリンタ割り当て 標準情報
                05  SPA-HYOJUN-AREA.
                    07  SPA-NAI-TBL01           OCCURS  20.
                        09  SPA-NAI-TNAME       PIC X(30).
@@ -199,7 +199,7 @@
                        09  SPA-NAI-TCSTPGNM-N  PIC X(20).
                        09  SPA-NAI-TCSTPGCHK-N PIC X(01).
       *
-      *    ������ץ�󥿳������ ���ԡ�����
+      *    出力先プリンタ割り当て コピー情報
            03  SPA-COPY-AREA.
                05  SPA-COPY-TBL             OCCURS  20.
                    07  SPA-COPY-TNAME       PIC X(30).
@@ -220,7 +220,7 @@
                    07  SPA-COPY-TCSTPGNM-N  PIC X(20).
                    07  SPA-COPY-TCSTPGCHK-N PIC X(01).
       *
-      *    Ģɼ���ե��å���Ͽ�ʣף�������
+      *    帳票オフセット登録（Ｗ１１１）
            03  SPA-W111-AREA.
                05  SPA-W111-PAGE           PIC 9(02).
                05  SPA-W111-CUR            PIC 9(02).
@@ -244,7 +244,7 @@
                05  SPA-W111-NAI-G.
                    07  SPA-W111-KBNCD-MAX          PIC 9(08).
                    07  SPA-W111-MAE-SELNUM         PIC 9(03).
-      *    �ƥ��Ȱ����ʣף�����
+      *    テスト印刷（Ｗ６２）
            03  SPA-W62-AREA.
                05  SPA-W62-CUR            PIC 9(02).
                05  SPA-W62-PRTNUM-G.

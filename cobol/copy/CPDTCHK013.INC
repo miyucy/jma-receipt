@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ǡ��������å���֥ե�����     COPY (CPDTCHK013.INC)  *
+      *    データチェック中間ファイル     COPY (CPDTCHK013.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  DTCHK013-REC.
            03  DTCHK013-KEY.
@@ -32,24 +32,24 @@
                05  DTCHK013-SRYSTYMD           PIC X(08).
                05  DTCHK013-SRYEDYMD           PIC X(08).
                05  DTCHK013-MSTKBN             PIC X(01).
-      *    ñ��̾��
+      *    単位名称
            03  DTCHK013-TANINAME               PIC X(12).
-      *    ñ��������β�����
+      *    単位当たりの回数上限
            03  DTCHK013-LIMIT                  PIC 9(05).
-      *    �����ñ�̥�����901�ʷ���ե꡼����ξ���
+      *    月数（単位コード901（月数フリー設定の場合）
            03  DTCHK013-TSUKISU                PIC 9(02).
-      *    ��������
+      *    特例設定
            03  DTCHK013-TOKUREI                PIC 9(01).
-      *    ñ��������β�����
+      *    単位当たりの回数合計
            03  DTCHK013-KAISU-TOTAL            PIC 9(05).
            03  DTCHK013-DAY-G.
                05  DTCHK013-DAY                PIC 9(05)
                                                OCCURS 31.
-      *    ����ǯ��ʽ��ˤβ��
+      *    診療年月（週）の回数
            03  DTCHK013-KAISU1                 PIC 9(05).
-      *    ����ǯ��ʽ��˳��β��
+      *    診療年月（週）外の回数
            03  DTCHK013-KAISU2                 PIC 9(05).
-      *    ����ǯ��ʽ��˳��ǽ�������
+      *    診療年月（週）外最終算定日
            03  DTCHK013-OUTYMD                 PIC X(08).
            03  DTCHK013-NYUINYMD               PIC X(08).
            03  DTCHK013-TAIINYMD               PIC X(08).
@@ -57,7 +57,7 @@
            03  DTCHK013-WEEK                   PIC 9(01).
            03  DTCHK013-JGNCNTERR              PIC 9(01).
            03  DTCHK013-NYUGAIKBN              PIC X(01).
-      *    ����ǯ����ݸ�����
+      *    診療年月の保険情報
            03  DTCHK013-HKNCOMBI-MAX           PIC 9(03).
            03  DTCHK013-HKNCOMBI               PIC 9(04)
                                                OCCURS 40.

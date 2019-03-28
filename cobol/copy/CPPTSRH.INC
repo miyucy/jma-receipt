@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,51 +16,51 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô¾ðÊó¾È²ñ¥Æ¡¼¥Ö¥ë    COPY (CPPTSRH.INC)         *
+      *    æ‚£è€…æƒ…å ±ç…§ä¼šãƒ†ãƒ¼ãƒ–ãƒ«    COPY (CPPTSRH.INC)         *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       ************************************************************
-      *    MCPDATA-REC (50,000byte)¤Ë¼ý¤Þ¤ë¤è¤¦¤Ë¤¹¤ë¤³¤È!!!
+      *    MCPDATA-REC (50,000byte)ã«åŽã¾ã‚‹ã‚ˆã†ã«ã™ã‚‹ã“ã¨!!!
       ************************************************************
       *01  PTSRH-REC.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  PTSRH-HOSPNUM      PIC 9(2).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTSRH-TERMID       PIC X(64).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  PTSRH-PTID         PIC 9(10).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
            03  PTSRH-PTNUM        PIC X(20).
-      *¥«¥Ê»áÌ¾
+      *ã‚«ãƒŠæ°å
            03  PTSRH-KANANAME     PIC X(100).
-      *À­ÊÌ
+      *æ€§åˆ¥
            03  PTSRH-SEX          PIC X(1).
-      *ÃÂÀ¸Æü
+      *èª•ç”Ÿæ—¥
            03  PTSRH-BIRTHDAY     PIC X(8).
-      *¼õµë¼ÔÈÖ¹æ
+      *å—çµ¦è€…ç•ªå·
            03  PTSRH-JKYSNUM      PIC X(20).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  PTSRH-NYUGAIKBN    PIC X(01).
-      *ÊÝ¸±¤Î¼ïÎà
+      *ä¿é™ºã®ç¨®é¡ž
            03  PTSRH-HKNNUM       PIC X(03).
-      *¸øÈñ¤Î¼ïÎà£±
+      *å…¬è²»ã®ç¨®é¡žï¼‘
            03  PTSRH-KOHNUM1      PIC X(03).
-      *¸øÈñ¤Î¼ïÎà£²
+      *å…¬è²»ã®ç¨®é¡žï¼’
            03  PTSRH-KOHNUM2      PIC X(03).
-      *ÅÀ¿ô
+      *ç‚¹æ•°
            03  PTSRH-TOTALTEN     PIC 9(10).
-      *¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
            03  PTSRH-SRYCD        PIC X(09).
-      *¿ÇÎÅ¹Ô°ÙÌ¾¾Î
+      *è¨ºç™‚è¡Œç‚ºåç§°
            03  PTSRH-SRYNAME      PIC X(100).
-      *¿ÇÎÅ¹Ô°Ù¥«¥ÊÌ¾¾Î
+      *è¨ºç™‚è¡Œç‚ºã‚«ãƒŠåç§°
            03  PTSRH-SRYKANANAME  PIC X(100).
-      *¿ÇÎÅ¹Ô°ÙÆþÎÏ½çÈÖ
+      *è¨ºç™‚è¡Œç‚ºå…¥åŠ›é †ç•ª
            03  PTSRH-SRYSEQ       PIC 9(01).
-      *¥á¥â
+      *ãƒ¡ãƒ¢
            03  PTSRH-MEMO-G.
                05  PTSRH-MEMO         PIC X(30000).
                05  PTSRH-MEMO-R1      REDEFINES    PTSRH-MEMO.
@@ -99,7 +99,7 @@
                    07  PTSRH-R3-FIL   PIC X(29864).
                05  PTSRH-MEMO-R4      REDEFINES    PTSRH-MEMO.
                    07  PTSRH-R4-SURYO-EDIT         PIC 9(01).
-      *DB³ÊÇ¼»þ¥Ç¡¼¥¿ÎÎ°èÀáÌó¤Î°Ù¡¢¿ôÃÍ¹àÌÜ¤âÊ¸»ú¹àÌÜ(X)¤ÇÄêµÁ
+      *DBæ ¼ç´æ™‚ãƒ‡ãƒ¼ã‚¿é ˜åŸŸç¯€ç´„ã®ç‚ºã€æ•°å€¤é …ç›®ã‚‚æ–‡å­—é …ç›®(X)ã§å®šç¾©
                    07  PTSRH-R4-KAISUTOTAL         PIC X(07).
                    07  PTSRH-R4-SURYOTOTAL         PIC X(12).
                    07  PTSRH-R4-TANICD             PIC X(03).
@@ -109,34 +109,34 @@
                        09  PTSRH-R4-SRYSURYO       PIC X(11).
                        09  PTSRH-R4-ZAIKAISU       PIC X(03).
                    07  PTSRH-R4-FIL                PIC X(7965).
-      *¥Ç¡¼¥¿¶èÊ¬
-      *    0:¸¡º÷Ãæ(orca13,orca36)
-      *    1:¸¡º÷·ë²Ì(orca13,orca36)
-      *    2:½ÐÎÏÍÑ¥Ç¡¼¥¿(orca13)
-      *    4:½ÐÎÏÍÑ¥Ç¡¼¥¿(orca36)
-      *    a:¸¡º÷Ãæ(orca36 Æþ±¡´µ¼Ô¿ô)
-      *    b:¸¡º÷·ë²Ì(orca36 Æþ±¡´µ¼Ô¿ô)
-      *    c:½ÐÎÏÍÑ¥Ç¡¼¥¿(orca36 Æþ±¡´µ¼Ô¿ô)
+      *ãƒ‡ãƒ¼ã‚¿åŒºåˆ†
+      *    0:æ¤œç´¢ä¸­(orca13,orca36)
+      *    1:æ¤œç´¢çµæžœ(orca13,orca36)
+      *    2:å‡ºåŠ›ç”¨ãƒ‡ãƒ¼ã‚¿(orca13)
+      *    4:å‡ºåŠ›ç”¨ãƒ‡ãƒ¼ã‚¿(orca36)
+      *    a:æ¤œç´¢ä¸­(orca36 å…¥é™¢æ‚£è€…æ•°)
+      *    b:æ¤œç´¢çµæžœ(orca36 å…¥é™¢æ‚£è€…æ•°)
+      *    c:å‡ºåŠ›ç”¨ãƒ‡ãƒ¼ã‚¿(orca36 å…¥é™¢æ‚£è€…æ•°)
            03  PTSRH-DATAKBN      PIC X(1).
-      *Ï¢ÈÖ
+      *é€£ç•ª
            03  PTSRH-SEQNUM       PIC 9(07).
-      *ºîÀ®Æü
+      *ä½œæˆæ—¥
            03  PTSRH-CREYMD       PIC X(8).
-      *¹¹¿·Æü
+      *æ›´æ–°æ—¥
            03  PTSRH-UPYMD        PIC X(8).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTSRH-UPHMS        PIC X(6).
-      *°Ê²¼¸¡º÷ÍÑ¹àÌÜ
-      *¥Ç¡¼¥¿¶èÊ¬
+      *ä»¥ä¸‹æ¤œç´¢ç”¨é …ç›®
+      *ãƒ‡ãƒ¼ã‚¿åŒºåˆ†
            03  PTSRH-UPDATAKBN    PIC X(1).
       *SQL
            03  PTSRH-SQL          PIC X(15000).
       *DBESCAPEENCODING
            03  PTSRH-DBSTR        PIC X(500).
-      *·ï¿ô
+      *ä»¶æ•°
            03  PTSRH-KENSU        PIC 9(08).
-      *¥Æ¥­¥¹¥È¡ÊÈÆÍÑ¡Ë
+      *ãƒ†ã‚­ã‚¹ãƒˆï¼ˆæ±Žç”¨ï¼‰
            03  PTSRH-VTEXT        PIC X(1000).
-      *Ê¸»úÎó¡ÊÈÆÍÑ¡Ë
+      *æ–‡å­—åˆ—ï¼ˆæ±Žç”¨ï¼‰
            03  PTSRH-VSTR-G.
                05  PTSRH-VSTR     PIC X(64) OCCURS 3.

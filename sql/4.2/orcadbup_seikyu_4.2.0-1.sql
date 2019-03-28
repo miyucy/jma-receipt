@@ -1,16 +1,16 @@
 --                                    --
--- ÀÁµá´ÉÍı¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹             --
+-- è«‹æ±‚ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´             --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¥Õ¥é¥°                           --
---   ¥Ç¡¼¥¿¥¨¥ê¥¢                     --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ãƒ•ãƒ©ã‚°                           --
+--   ãƒ‡ãƒ¼ã‚¿ã‚¨ãƒªã‚¢                     --
 --                                    --
 -- Create Date : 2008/03/12           --
 --                                    --
 \set ON_ERROR_STOP
 
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_seikyu
    add column flg1 numeric(1);
 alter table tbl_seikyu
@@ -24,7 +24,7 @@ alter table tbl_seikyu
 alter table tbl_seikyu
    add column reserve_area char(50);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_seikyu
    alter flg1 set default 0;
 alter table tbl_seikyu

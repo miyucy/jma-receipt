@@ -1,11 +1,11 @@
 --                                              --
--- �ӥ塼�ƺ���                                 --
--- view_q002   �Ȳ�                           --
--- view_q003   �Ȳ�                           --
--- view_bd001  ��Ǽ��                           --
--- view_bd002  ��Ǽ��                           --
--- view_bd003  ��Ǽ��                           --
--- view_q001   �Ȳ�                           --
+-- ビュー再作成                                 --
+-- view_q002   照会２                           --
+-- view_q003   照会３                           --
+-- view_bd001  収納１                           --
+-- view_bd002  収納２                           --
+-- view_bd003  収納３                           --
+-- view_q001   照会１                           --
 --                                              --
 -- Create Date : 2009/01/15                     --
 --                                              --
@@ -49,7 +49,7 @@ union all
 	select	a.hospnum,a.ptid,'1' as nyugaikbn ,b.sryka,b.srykbn,'',a.sryymd,b.srycd as srycd1 ,'' as srycd2 , '' as srycd3, '' as srycd4,'' as srycd5     from tbl_nrrksrh a , tbl_nsrysrh b where a.hospnum = b.hospnum and a.ptid = b.ptid and a.zainum = b.zainum 
 ;
 COMMENT 
-        ON VIEW view_q002 IS '���ԾȲ�ӥ塼2';
+        ON VIEW view_q002 IS '患者照会ビュー2';
 
 
 
@@ -60,13 +60,13 @@ union all
 ;
 
 COMMENT 
-        ON VIEW view_q003 IS '���ԾȲ�ӥ塼3';
+        ON VIEW view_q003 IS '患者照会ビュー3';
 
 
 CREATE VIEW view_bd001 AS
     SELECT a.hospnum, a.ptid, b.ptnum, c.name, c.sex, c.birthday, a.sryka, a.denpprtymd, a.skymoney, a.nyukin_total FROM tbl_syunou_main a, tbl_ptnum b, tbl_ptinf c WHERE ((((((((a.hospnum = b.hospnum) AND (a.ptid = b.ptid)) AND (a.hospnum = c.hospnum)) AND (a.ptid = c.ptid)) AND (a.denpjtikbn <> '3')) AND (a.denpjtikbn <> '7')) AND (a.createkbn <> '3')) AND (c.tstptnumkbn <> '1'));
 
-COMMENT ON VIEW view_bd001 IS '��Ǽ�ӥ塼';
+COMMENT ON VIEW view_bd001 IS '収納ビュー';
 
 CREATE view view_bd002 as
 select
@@ -387,13 +387,13 @@ AND   a.createkbn <> '3'
 AND   d.tstptnumkbn <> '1'
 ;
 
-COMMENT ON VIEW view_bd002 IS '��Ǽ�ӥ塼2';
+COMMENT ON VIEW view_bd002 IS '収納ビュー2';
 
 CREATE VIEW view_bd003 AS
     SELECT a.hospnum, a.nyugaikbn, a.ptid, a.denpnum, a.denpedanum, a.skymoney, a.nyuhen_money, a.nyuhen_ymd, b.sryymd FROM (tbl_syumei a JOIN tbl_syunou_main b USING (hospnum, nyugaikbn, ptid, denpnum));
 
 
-COMMENT ON VIEW view_bd003 IS '��Ǽ�ӥ塼3';
+COMMENT ON VIEW view_bd003 IS '収納ビュー3';
 
 
 CREATE VIEW view_q001 AS
@@ -479,5 +479,5 @@ CREATE VIEW view_q001 AS
        AND (view_q004.sryymd <= tbl_ptkohinf.tekedymd));
 
 COMMENT 
-        ON VIEW view_q001 IS '���ԾȲ�ӥ塼1';
+        ON VIEW view_q001 IS '患者照会ビュー1';
 

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,126 +16,126 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    �����쥻�ץȡ����ܾ���         COPY (CPRCF100.INC) 
+      *    公害レセプト・基本情報         COPY (CPRCF100.INC) 
       ******************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.01    NACL-����    10/02/16  ͽ�������ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-門脇    10/02/16  予備項目追加
       *
-      *  04.06.01    NACL-����    10/07/02  ����������������󥻥����
-      *                                     �ʣ����ܡ˻���ե饰�ɲ�
-      *  04.08.01    NACL-����    18/04/06  ʿ������ǯ��������б�
-      *  04.08.02    NACL-����    18/05/22  ʿ������ǯ��������б�
-      *  04.08.03    NACL-����    18/06/11  �����������פΥ������б�
+      *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料
+      *                                     （１回目）算定フラグ追加
+      *  04.08.01    NACL-門脇    18/04/06  平成３０年４月改正対応
+      *  04.08.02    NACL-門脇    18/05/22  平成３０年４月改正対応
+      *  04.08.03    NACL-門脇    18/06/11  逓減点数集計のサイン対応
       ******************************************************************
       *01  RECE100-REC.
            03  RECE100-KEY.
-      *���ŵ����ֹ�
+      *医療機関番号
                05  RECE100-HOSPNUM         PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  RECE100-SRYYM           PIC 9(06).
-      *������ʬ
+      *入外区分
                05  RECE100-NYUGAIKBN       PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RECE100-PTID            PIC 9(10).
-      *�쥻�ץȿ��Ų�
+      *レセプト診療科
                05  RECE100-RECEKA          PIC X(02).
-      *����ɣ�
+      *公費ＩＤ
                05  RECE100-HKNID           PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE100-TEKSTYMD        PIC X(08). 
       *
-      *�쥻�ץȼ���
+      *レセプト種別
            03  RECE100-RECESYUBETU         PIC 9(04).
       *
-      *�쥻�ץ��о�ǯ��������
+      *レセプト対象年月日情報
            03  RECE100-TEKYMD.
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE100-TEKSTYMD-X      PIC X(08). 
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
                05  RECE100-TEKEDYMD-X      PIC X(08).
       *
-      *���Ծ���
+      *患者情報
            03  RECE100-PTINF.
-      *�����ֹ�  
+      *患者番号  
                05  RECE100-PTNUM           PIC X(20).
-      *���ʻ�̾
+      *カナ氏名
                05  RECE100-KANANAME        PIC X(50).
-      *������̾
+      *漢字氏名
                05  RECE100-NAME            PIC X(100).
-      *����
+      *性別
                05  RECE100-SEX             PIC X(01).
-      *��ǯ����
+      *生年月日
                05  RECE100-BIRTHDAY        PIC 9(08).
-      *��˴��ʬ
+      *死亡区分
                05  RECE100-DEATHKBN        PIC X(01).
-      *ǯ��
+      *年齢
                05  RECE100-AGE             PIC 9(03).
-      *�ƥ��ȴ����ֹ��ʬ
+      *テスト患者番号区分
                05  RECE100-TSTPTNUMKBN     PIC X(01).
       *
-      *���ݸ�����
+      *主保険情報
            03  RECE100-HKNINF.
-      *���ݸ����ݸ��ֹ�
+      *主保険−保険番号
                05  RECE100-HKNNUM          PIC X(03).
-      *���ݸ����ݸ����ֹ�
+      *主保険−保険者番号
                05  RECE100-HKNJANUM        PIC X(08).
-      *���ݸ��ݵ���
+      *主保険−記号
                05  RECE100-KIGO            PIC X(80).
-      *���ݸ����ֹ�
+      *主保険−番号
                05  RECE100-NUM             PIC X(80).
       *
-      *���Ųʾ���
+      *診療科情報
            03  RECE100-SRYKAINF            OCCURS  20.
-      *���Ų�
+      *診療科
                05  RECE100-SRYKA           PIC X(02).
       *
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            03  RECE100-HKNCOMBI            PIC 9(04).
       *
-      *������
+      *実日数
            03  RECE100-JNISSU              PIC 9(03).
       *
-      *���Ŷ�ʬ����������ʣ��������ס�
+      *診療区分別点数情報（４１：小計）
            03  RECE100-SRYKBNINF           OCCURS  41.
-      *��������
+      *基本点数
                05  RECE100-KHNTEN          PIC 9(08).
-      *���
+      *回数
                05  RECE100-KAISU           PIC 9(05).
-      *����
+      *点数
                05  RECE100-TENSU           PIC S9(08)   OCCURS  2.
       *
-      *��׾���
+      *合計情報
            03  RECE100-TOTALTENINF-AREA.
                05  RECE100-TOTALTENINF     OCCURS  4.
-      *�������
+      *合計点数
                    07  RECE100-TOTALTEN    PIC 9(08).
       *
-      *�������ơ��֥����
+      *実日数テーブル情報
            03  RECE100-JNISSUTBLINF        OCCURS  31.
-      *�������ơ��֥�
+      *実日数テーブル
                05  RECE100-JNISSUTBL       PIC X(01).
-      *���Ļ����Ļ��Υ����ȥե饰
+      *乳幼児・幼児のコメントフラグ
            03  RECE100-NYUYOJIFLG          PIC X(01).
-      *����������������󥻥�����ʣ����ܡ˻���ե饰
+      *小児特定疾患カウンセリング料（１回目）算定フラグ
            03  RECE100-SYOUNIFLG           PIC X(01).
-      *������žɲ�ͽ�ɥ�������Ƴ���ʣ����ܤ���
-      *�����ܤޤǡ˻���ե饰
+      *乳腺炎重症化予防ケア・指導料（２回目から
+      *４回目まで）算定フラグ
            03  RECE100-NYUSENFLG           PIC X(01).
       *
-      *��ǻ��ֶ�ʬ
+      *初診時間区分
            03  RECE100-SHOSHINTIME         PIC X(01).
-      *�����®���θ����û��ե饰
+      *外来迅速検体検査加算フラグ
            03  RECE100-KENTAIKASANFLG      PIC X(01).
-      *�����ȥ�����ȥե饰
+      *コメントカウントフラグ
            03  RECE100-COMCNTFLG           PIC X(01).
-      *������
+      *印刷順
            03  RECE100-PRTSEQ              PIC 9(03).
-      *̤����ե饰
+      *未請求フラグ
            03  RECE100-MISEIKYU-FLG        PIC X(02).
-      *̤������ʬ
+      *未訂正区分
            03  RECE100-TEISEIKBN           PIC X(01).
-      *�쥻�ץȼ����������顼����
+      *レセプト種別不明エラー情報
            03  RECE100-ERR-AREA.
                05  RECE100-ERR-ERRKBN      PIC 9(01).
                05  RECE100-ERR-DAY         PIC 9(02).
@@ -143,22 +143,22 @@
                05  RECE100-ERR-TEKSTYMD    PIC 9(08).
                05  RECE100-ERR-TEKEDYMD    PIC 9(08).
       *
-      *�����������������ڤӱ���������������Ķ��ͳ�����Ⱦ���
+      *湿布薬制限枚数解除及び院外湿布薬７０枚超理由コメント情報
            03  RECE100-SIPPUCHKFLG         PIC 9(01).
            03  RECE100-SIPPUCHKINF.
              04  RECE100-SIPPUCHK-OCC      OCCURS  10.
                05  RECE100-SIPPUCHK-OCC2   OCCURS  31.
                    07  RECE100-SIPPUCHK    PIC 9(03).
       *
-      *ǥ�إե饰
+      *妊婦フラグ
            03  RECE100-NINPUFLG            PIC 9(01).
       *
-      *�����ե饰
+      *検査フラグ
            03  RECE100-KENSA-BNPFLG        PIC 9(01).
            03  RECE100-KENSA-NTPROFLG      PIC 9(01).
            03  RECE100-KENSA-ANPFLG        PIC 9(01).
       *
-      *ͽ��
+      *予備
            03  RECE100-YOBIETC-AREA.
                05  RECE100-YOBIETCINF      OCCURS 10.
                    07  RECE100-YOBIETC     PIC 9(09).

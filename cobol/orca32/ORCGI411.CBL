@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGI411.
       ********************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������׾Ȳ� 
-      *  ����ݡ��ͥ��̾  : �ץ�ӥ塼�ݸ��ȹ礻���򥵥֡ʣɣ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  12/11/09    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院会計照会 
+      *  コンポーネント名  : プレビュー保険組合せ選択サブ（Ｉ４１１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  12/11/09    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,35 +40,35 @@
       *
       *
        WORKING-STORAGE             SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ��׾Ȳ��̥ѥ�᥿
+      *    会計照会共通パラメタ
            COPY    "I4COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "I4SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-ERR             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
            03  CNT-ENT             PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDH                 PIC 9(04).
            03  IDK                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-HKNCOMBINUM     PIC  X(04).
@@ -85,27 +85,27 @@
                05  WRK-HDD         PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
       *    COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -124,7 +124,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -143,15 +143,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -164,21 +164,21 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA.
            INITIALIZE                  CNT-AREA.
            INITIALIZE                  WRK-AREA.
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "I4ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -196,7 +196,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
@@ -207,7 +207,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        310-SPA-SET-SEC                 SECTION.
       *
@@ -218,7 +218,7 @@
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX     >   SPA-NAI-MAX-41
                IF      SPA-NAI-TZAISKBKBN-41 (IDX) =   "5"
-      *            �ݸ�Ƚ��
+      *            保険判定
                    PERFORM VARYING IDK     FROM    1   BY  1
                            UNTIL   IDK     >   SPA-NAI-SRYMATU
                        IF      SPA-NAI-DAY-41 (IDX IDK)    NOT =   ZERO
@@ -246,7 +246,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
       *****************************************************************
        3101-HKNCOMBI-SET-SEC                  SECTION.
       *
@@ -275,7 +275,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
@@ -299,7 +299,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -312,12 +312,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE               TO  SPA-I411-SELNUM
                    PERFORM 210-BACK
@@ -326,15 +326,15 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        �ֹ�����
+      *        番号入力
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41011-SELNUM-CHK-SEC
-      *        ������
+      *        行選択
                WHEN    ANY             ALSO    "HKNLIST"
                    PERFORM 41012-LISTSEL-SEC
            END-EVALUATE.
@@ -343,14 +343,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �ֹ����򡡽���
+      *    番号選択　処理
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
       *
            MOVE    1                   TO  SPA-I411-GMN-CUR
       *
            MOVE    I411-SELNUM         TO  SPA-I411-SELNUM
-      *    �����ֹ�����
+      *    選択番号入力
            INITIALIZE                      ORCSNUMAREA.
            MOVE    SPA-I411-SELNUM     TO  SNUM-INX.
            CALL    "ORCSNUM"           USING
@@ -383,28 +383,28 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�����Խ�����
+      *    保険組合せ内容編集処理
       *****************************************************************
        41012-HKNCOMBI-SELHEN-SEC       SECTION.
       *
-      *     �ݸ�Ƚ��
+      *     保険判定
             EVALUATE    SPA-I411-THKNNUM (IDX)
                WHEN    "971"
-      *            ϫ��
+      *            労災
                    MOVE    "1"                 TO  SPA-XC01-HKNKBN
                    MOVE    SPA-I411-TRSI-HKNKBN (IDX)
                                                TO  SPA-XC01-RSI-HKNKBN
                WHEN    "973"
-      *            ������
+      *            自賠責
                    MOVE    "2"                 TO  SPA-XC01-HKNKBN
                    MOVE    SPA-I411-TRSI-HKNKBN (IDX)
                                                TO  SPA-XC01-RSI-HKNKBN
                WHEN    "975"
-      *            ����
+      *            公害
                    MOVE    "3"             TO  SPA-XC01-HKNKBN
                    MOVE    SPACE           TO  SPA-XC01-RSI-HKNKBN
                WHEN    OTHER
-      *            ����¾
+      *            その他
                    MOVE    "0"             TO  SPA-XC01-HKNKBN
                    MOVE    SPACE           TO  SPA-XC01-RSI-HKNKBN
            END-EVALUATE
@@ -413,11 +413,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        41012-LISTSEL-SEC       SECTION.
       *
-      *    ������
+      *    行選択
            MOVE    SPACE               TO  SPA-I411-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-I411-HKNCOMBI-MAX
@@ -430,7 +430,7 @@
            IF      SPA-I411-SELNUM     =   SPACE
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
-      *        �ݸ��ȹ礻�����å�����
+      *        保険組合せチェック処理
                MOVE    SPA-I411-SELNUM     TO  I411-SELNUM
                PERFORM 41011-SELNUM-CHK-SEC
            END-IF
@@ -439,7 +439,7 @@
        41012-LISTSEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -457,7 +457,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -477,7 +477,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -485,10 +485,10 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "���ϥ��顼"
+                   MOVE    "入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�ݸ��ȹ礻���ϥ��顼"
+                   MOVE    "保険組合せ入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD
@@ -515,7 +515,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

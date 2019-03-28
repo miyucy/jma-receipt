@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,94 +16,94 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ����Ԥΰ�����ô��۵��ܤ˴ؤ�������å��ѥ�᥿      *
+      *    高齢者の一部負担金額記載に関するチェックパラメタ      *
       *                         COPY  (CPORCSKOREIFTNCHK.INC)    *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.02.01    NACL-����    06/08/10  ����Էв����֥ե饰�ɲ�
-      *                                     ���ݸ�ñ�Ȥδ�����ô���ɲ�
-      *                                     �����ޤ���δ�����ô���ɲ�
-      *  03.03.01    NACL-����    06/11/02  ���ۡ��Ƚ�����ʧͱͽ�б�
-      *  03.04.01    NACL-����    06/11/20  ��ۣ����ܰʹ��б�
-      *  03.04.02    NACL-����    07/03/16  �������ͭ��̵���ե饰�ɲ�
-      *                                     �����ޤ���μ��ݸ��ΰ�����
-      *                                     ô�ۣ��ɲ�
-      *  03.04.03    NACL-����    07/04/01  ����ԡ���Ͷ�ʬ�ɲ�
-      *                                     ǯ���ɲ�
-      *                                     ��Ͷ�ʬ�ɲ�
-      *                                     �ֵ��ͤ��������ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.02.01    NACL-門脇    06/08/10  高齢者経過措置フラグ追加
+      *                                     主保険単独の患者負担額追加
+      *                                     公費を含む場合の患者負担額追加
+      *  03.03.01    NACL-門脇    06/11/02  減額・免除・支払猶予対応
+      *  03.04.01    NACL-門脇    06/11/20  高額４回目以降対応
+      *  03.04.02    NACL-門脇    07/03/16  全国公費有り無しフラグ追加
+      *                                     公費を含む場合の主保険の一部負
+      *                                     担額２追加
+      *  03.04.03    NACL-門脇    07/04/01  高齢者・若人区分追加
+      *                                     年齢追加
+      *                                     若人区分追加
+      *                                     返却値に請求金額追加
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-����    07/12/03  ���ֹ��ɲ�
-      *  04.02.01    NACL-����    08/04/01  ��������ʬ�ɲ�
-      *                                     �ڸ����������оݼԶ�ʬ�ɲ�
-      *                                     �ޥ�Ĺ����ɣ��ɲ�
-      *  04.03.01    NACL-����    09/01/05  ��������ã��������ʬ�ɲ�
-      *                                     �ޥ�Ĺ�Τ߶�ʬ�ɲ�
-      *  04.07.01    NACL-����    13/11/11  ���ۡʱߡˤ��б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-門脇    07/12/03  県番号追加
+      *  04.02.01    NACL-門脇    08/04/01  就学前区分追加
+      *                                     軽減特例措置対象者区分追加
+      *                                     マル長公費ＩＤ追加
+      *  04.03.01    NACL-門脇    09/01/05  ７５歳到達月の特例区分追加
+      *                                     マル長のみ区分追加
+      *  04.07.01    NACL-門脇    13/11/11  減額（円）の対応
       ************************************************************
        01  ORCSKOREIFTNCHKAREA.
       *
-      *������
-      *    ���ŵ��أɣ�
+      *入力値
+      *    医療機関ＩＤ
            03  LNK-KOREIFTNCHK-HOSPNUM      PIC 9(2).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  LNK-KOREIFTNCHK-PTID         PIC 9(10).
-      *    ������ʬ
+      *    入外区分
            03  LNK-KOREIFTNCHK-NYUGAIKBN    PIC X(01).
-      *    ����ǯ��
+      *    診療年月
            03  LNK-KOREIFTNCHK-SRYYM        PIC X(06).
-      *    ���ݸ����ݸ��ֹ�
+      *    主保険−保険番号
            03  LNK-KOREIFTNCHK-HKNNUM       PIC X(03).
-      *    ���ݸ����ݸ��ɣ�
+      *    主保険−保険ＩＤ
            03  LNK-KOREIFTNCHK-HKNID        PIC 9(10).
-      *    ������ե饰
+      *    低所得フラグ
            03  LNK-KOREIFTNCHK-TEISYOTOKU   PIC X(01).
-      *    �쥻�ץȲ�
+      *    レセプト科
            03  LNK-KOREIFTNCHK-RECEKA       PIC X(02).
-      *    ����Էв����֥ե饰
+      *    高齢者経過措置フラグ
            03  LNK-KOREIFTNCHK-KEIKASOCHI   PIC X(01).
-      *    ���۶�ʬ
+      *    減額区分
            03  LNK-KOREIFTNCHK-GENGAKUKBN   PIC 9(01).
-      *    ���ۡʳ���
+      *    減額（割合）
            03  LNK-KOREIFTNCHK-GENGAKU-RITU PIC 9(03).
-      *    ���ۡʶ�ۡ�
+      *    減額（金額）
            03  LNK-KOREIFTNCHK-GENGAKU-KIN  PIC 9(07).
-      *    ���۷׻��ե饰
+      *    減額計算フラグ
            03  LNK-KOREIFTNCHK-GENGAKUFLG   PIC 9(01).
-      *    ��ۣ����ܰʹ�
+      *    高額４回目以降
            03  LNK-KOREIFTNCHK-KOHYONKAIME  PIC 9(01).
-      *    ����ԡ���Ͷ�ʬ
+      *    高齢者・若人区分
            03  LNK-KOREIFTNCHK-NENREIKBN    PIC X(01).
-      *    ǯ��
+      *    年齢
            03  LNK-KOREIFTNCHK-AGE          PIC 9(03).
-      *    ���ֹ�
+      *    県番号
            03  LNK-KOREIFTNCHK-PREFNUM      PIC X(02).
-      *    ��������ʬ
+      *    就学前区分
            03  LNK-KOREIFTNCHK-SYUGAKUKBN   PIC 9(01).
-      *    �ޥ�Ĺ����ɣ�
+      *    マル長公費ＩＤ
            03  LNK-KOREIFTNCHK-KOHID-CYOKI  PIC 9(10).
-      *    ��������ã��������ʬ
+      *    ７５歳到達月の特例区分
            03  LNK-KOREIFTNCHK-TOKU75       PIC 9(01).
-      *    �ޥ�Ĺ�Τ߶�ʬ
+      *    マル長のみ区分
            03  LNK-KOREIFTNCHK-CYOKINOMI    PIC 9(01).
-      *    ������ʬ
+      *    所得区分
            03  LNK-KOREIFTNCHK-SYOTOKUKBN   PIC 9(01).
       *
-      *�ֵ���
+      *返却値
            03  LNK-KOREIFTNCHK-OUT-AREA.
-      *���ݸ�ñ�Ȥδ�����ô��
+      *主保険単独の患者負担額
              05 LNK-KOREIFTNCHK-FTNGAKU     PIC 9(07).
-      *�����ޤ���δ�����ô��
+      *公費を含む場合の患者負担額
              05 LNK-KOREIFTNCHK-KOHFTNGAKU  PIC 9(07).
-      *�����ޤ���μ��ݸ��ΰ�����ô��
+      *公費を含む場合の主保険の一部負担額
              05 LNK-KOREIFTNCHK-ICHIBUGAKU  PIC 9(07).
-      *�����ޤ���μ��ݸ��ΰ�����ô�ۡʣ���ñ�̡ˡ�Ƚ���ѡ�
+      *公費を含む場合の主保険の一部負担額（１円単位）（判定用）
              05 LNK-KOREIFTNCHK-ICHIBUGAKU2 PIC 9(07).
-      *����������ԡ����������������
+      *入　：高齢者＋地方公費の請求金額
              05 LNK-KOREIFTNCHK-CHIHOUGAKU  PIC 9(07).
       *
-      *����������
+      *復帰コード
            03  LNK-KOREIFTNCHK-RC           PIC 9(02).

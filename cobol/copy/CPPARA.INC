@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,33 +16,33 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ѥ�᥿��  COPY  (CPPARA.INC)               *
+      *    パラメタ　  COPY  (CPPARA.INC)               *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    ¿��Ǽ       02/07/30  ü���ɣĤ�16 ���� 32 ��
-      *  01.00.02    ��ƣ         03/03/12  ü���ɣĤ�32 ���� 64 ��
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    多々納       02/07/30  端末ＩＤを16 から 32 へ
+      *  01.00.02    伊藤         03/03/12  端末ＩＤを32 から 64 へ
       ************************************************************
       *01  PARA-REC.
            03  PARA-KEY.
                05  PARA-HOSPNUM           PIC 9(2).
-      *��̳�ɣ�
+      *業務ＩＤ
                05  PARA-GYOUMUID          PIC X(04).
-      *ü���ɣ�
+      *端末ＩＤ
                05  PARA-TERMID            PIC X(64).
-      *�ե�����̾
+      *ファイル名
                05  PARA-FILEMEI           PIC X(20).
-      *����
+      *枝番
                05  PARA-EDANUM            PIC 9(03).
-      *�ǡ����ΰ�
+      *データ領域
            03  PARA-DATA-REC.
                05  PARA-DATA-REC1         PIC X(1000).
                05  PARA-DATA-REC2         PIC X(1000).
                05  PARA-DATA-REC3         PIC X(1000).
                05  PARA-DATA-REC4         PIC X(1000).
                05  PARA-DATA-REC5         PIC X(1000).
-      *����ǯ����
+      *更新年月日
            03  PARA-UPYMD                 PIC X(08).
-      *��������
+      *更新時間
            03  PARA-UPHMS                 PIC X(06).

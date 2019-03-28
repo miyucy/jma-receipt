@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,25 +16,25 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ����  COPY (CPSYSBASE.INC)               *
+      *         システム基本  COPY (CPSYSBASE.INC)               *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SYSBASE-REC.
            03  SYSBASE-KEY.
-      *    ���롼���ֹ�
+      *    グループ番号
                05  SYSBASE-GRPNUM      PIC  9(02).
-      *    ���ŵ��ؼ����ֹ�
+      *    医療機関識別番号
            03  SYSBASE-HOSPNUM         PIC  9(02).
-      *    ���ŵ���̾��
+      *    医療機関名称
            03  SYSBASE-HOSPNAME        PIC  X(120).
-      *    ���Ѵ���
+      *    運用期限
            03  SYSBASE-KIGEN           PIC  X(08).
-      *    �ܱ�ʬ�����롼��
+      *    本院分院グループ
            03  SYSBASE-HONBUNGRP       PIC  9(02).
-      *    �ܱ�ʬ����ʬ
+      *    本院分院区分
            03  SYSBASE-HONBUNKBN       PIC  X(01).
       *
            03  SYSBASE-CREYMD          PIC  X(08).

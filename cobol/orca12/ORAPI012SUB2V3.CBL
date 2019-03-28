@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORAPI012SUB2V3.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : �ݸ��ȹ礻�����ֵ��Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  17/07/XX    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 保険組合せ情報返却編集サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  17/07/XX    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PARA                PIC 9(01).
@@ -48,10 +48,10 @@
       *
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *01  CNT-AREA.
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -62,7 +62,7 @@
            03  IDD1                PIC 9(04).
            03  IDD2                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -74,7 +74,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -97,7 +97,7 @@
       *
            03  WRK-HKNNUM              PIC X(03).
            03  WRK-HOJOKBN             PIC X(01).
-      *    ��ôΨ�����Խ�
+      *    負担率・額編集
            03  WRK-FTNRATE             PIC 9(02)V99.
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
@@ -115,7 +115,7 @@
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
       *
-      *    �ݸ��ȹ礻����¸
+      *    保険組合せの保存
        01  TBL-HKNCOMBI-AREA.
            02  TBL-HKNCOMBI-REC        OCCURS    200.
            COPY    "CPHKNCOMBI.INC"
@@ -125,52 +125,52 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *
-      *    �����ʬ̾���Խ��ѥ�᥿
+      *    補助区分名称編集パラメタ
            COPY    "CPORAPI012SUB1.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �ѥ�᥿
+      *    パラメタ
            COPY    "CPORAPI012SUB2V3.INC".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ���Բ��̥����ΰ�
+      *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -181,7 +181,7 @@
       *
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -191,9 +191,9 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *
-      *    ���������
+      *    初期　処理
            PERFORM 100-INIT-SEC
-      *    �硡����
+      *    主　処理
            IF      AP12SUB2V3-ERRCD    =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
@@ -202,7 +202,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC               SECTION.
       *
@@ -213,10 +213,10 @@
            END-IF
       *
            IF      AP12SUB2V3-SYORIKBN =   "2"
-      *        ������
+      *        処理中
                MOVE    2               TO  FLG-SYORI
            ELSE
-      *        ��Ͽ����
+      *        登録内容
                MOVE    1               TO  FLG-SYORI
            END-IF
       *
@@ -225,11 +225,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC               SECTION.
       *
-      *    ������
+      *    最大件数
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "P02"               TO  PARA-GYOUMUID
@@ -251,12 +251,12 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      PARA-EDANUM         >   200
-      *        ��ǯ���ޤǤ��о�
+      *        ３年前までを対象
                MOVE    WRK-SYSYMD          TO  WRK-ENDYMD
                COMPUTE WRK-ENDYY           =   WRK-ENDYY
                                            -   3
                MOVE    01                  TO  WRK-ENDDD
-      *        �ٹ�
+      *        警告
                MOVE    "73"                TO  AP12SUB2V3-ERRCD
            ELSE
                MOVE    SPACE               TO  WRK-ENDYMD
@@ -264,24 +264,24 @@
            PERFORM 2001-HKNCOMBI-SET-SEC
       *
            IF      IDY                 >   200
-      *        ��ǯ���ޤǤ��о�
+      *        ２年前までを対象
                MOVE    WRK-SYSYMD          TO  WRK-ENDYMD
                COMPUTE WRK-ENDYY           =   WRK-ENDYY
                                            -   2
                MOVE    01                  TO  WRK-ENDDD
-      *        �ٹ�
+      *        警告
                MOVE    "74"                TO  AP12SUB2V3-ERRCD
       *
                PERFORM 2001-HKNCOMBI-SET-SEC
            END-IF
       *
            IF      IDY                 >   200
-      *        ��ǯ���ޤǤ��о�
+      *        １年前までを対象
                MOVE    WRK-SYSYMD          TO  WRK-ENDYMD
                COMPUTE WRK-ENDYY           =   WRK-ENDYY
                                            -   1
                MOVE    01                  TO  WRK-ENDDD
-      *        �ٹ�
+      *        警告
                MOVE    "75"                TO  AP12SUB2V3-ERRCD
       *
                PERFORM 2001-HKNCOMBI-SET-SEC
@@ -294,7 +294,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�����ΰ��ݸ������Խ�����
+      *    保険組合せ出力領域保険情報編集処理
       *****************************************************************
        2001-HKNCOMBI-SET-SEC         SECTION.
       *
@@ -324,10 +324,10 @@
       *
                IF     (WRK-ENDYMD      NOT =   SPACE )
                 AND   (COMB-TEKEDYMD       <   WRK-ENDYMD)
-      *            �оݳ�
+      *            対象外
                    CONTINUE
                ELSE
-      *            �о�
+      *            対象
                    ADD     1               TO  IDY
                    IF      IDY             >   200
                        MOVE    1               TO  FLG-PARA
@@ -354,7 +354,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�����ΰ��ݸ������Խ�����
+      *    保険組合せ出力領域保険情報編集処理
       *****************************************************************
        2002-HKNCOMBI-HENSYU-SEC         SECTION.
       *
@@ -366,7 +366,7 @@
                    UNTIL       IDY     >   TBL-HKNCOMB-MAX
                MOVE    ZERO                TO  WRK-HKNCOMBINUM
                MOVE    ZERO                TO  IDH2
-      *        �ݸ��ȹ礻�ֹ�ι߽�
+      *        保険組合せ番号の降順
                PERFORM VARYING     IDH     FROM    1   BY  1
                        UNTIL       IDH     >   TBL-HKNCOMB-MAX
                    IF      (TBL-COMB-HKNCOMBINUM(IDH)  NOT =   ZERO)
@@ -390,60 +390,60 @@
        2002-HKNCOMBI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�����ΰ��ݸ������Խ�����
+      *    保険組合せ出力領域保険情報編集処理
       *****************************************************************
        20011-COMBINATION-HEN-SEC     SECTION.
       *
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            MOVE    COMB-HKNCOMBINUM
                                    TO  AP12SUB2V3-COMBINATION-NUMBER
                                                                (IDY)
       *
            IF      COMB-HKNID      =   ZERO
-      *        �ݸ��ʤ�
+      *        保険なし
                CONTINUE
            ELSE
-      *        �ݸ��ɣ�
+      *        保険ＩＤ
                MOVE    COMB-HKNID      TO  AP12SUB2V3-COMB-MAIN-ID
                                                                (IDY)
-      *        �ݸ��μ���
+      *        保険の種類
                MOVE    COMB-HKNNUM     TO  AP12SUB2V3-COMB-MAIN-CLASS
                                                                (IDY)
-      *        �ݸ���̾��
+      *        保険の名称
                MOVE    COMB-SYU-TANSEIDONAME
                                    TO  AP12SUB2V3-COMB-MAIN-NAME (IDY)
-      *        ��³��ʬ
+      *        継続区分
                MOVE    COMB-CONTKBN    TO  AP12SUB2V3-COMB-CONTINUATION
                                                              (IDY)
-      *        �����ʬ
+      *        補助区分
                MOVE    COMB-HOJOKBN    TO  AP12SUB2V3-COMB-ASSISTANCE
                                                              (IDY)
-      *        �����ʬ̾��
+      *        補助区分名称
                MOVE    COMB-HKNNUM     TO  WRK-HKNNUM
                MOVE    COMB-HOJOKBN    TO  WRK-HOJOKBN
                PERFORM 200111-HOJOKBN-NAME-HEN-SEC
                MOVE    API012SUB1-HOJOKBN-NAME
                                        TO  AP12SUB2V3-COMB-ASSI-NAME
                                                                   (IDY)
-      *        �ܿͲ�²��ʬ
+      *        本人家族区分
                MOVE    COMB-HONKZKKBN  TO  AP12SUB2V3-COMB-FAMILY (IDY)
            END-IF
       *
-      *    ������ô���
+      *    入院負担割合
            COMPUTE WRK-FTNRATE     =   COMB-NYU-KFTNRATE
                                    /   100
            MOVE    WRK-FTNRATE     TO  WRK-Z9
            MOVE    WRK-Z9          TO  WRK-FTNRATEMEI
            MOVE    WRK-FTNRATEMEI  TO  AP12SUB2V3-COMBINATION-RATE-ADM
                                                                (IDY)
-      *    ������ô���
+      *    外来負担割合
            COMPUTE WRK-FTNRATE     =   COMB-GAI-KFTNRATE
                                    /   100
            MOVE    WRK-FTNRATE     TO  WRK-Z9
            MOVE    WRK-Z9          TO  WRK-FTNRATEMEI
            MOVE    WRK-FTNRATEMEI  TO  AP12SUB2V3-COMBINATION-RATE-OUT
                                                                (IDY)
-      *    ͭ��������
+      *    有効開始日
            MOVE    COMB-TEKSTYMD   TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE    TO  AP12SUB2V3-COMB-START-DATE(IDY)
@@ -452,14 +452,14 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE    TO  AP12SUB2V3-COMB-END-DATE (IDY)
       *
-      *    ������λ�������������Խ�
+      *    処理中の時、削除・新規編集
            IF      FLG-SYORI           =   2
-      *        �����ʬ
+      *        削除区分
                IF      COMB-DELKBN     =   "1"
                    MOVE    "Delete"        TO  AP12SUB2V3-COMB-MODE
                                                                 (IDY)
                ELSE
-      *            ������Ƚ��
+      *            新規の判定
                    IF      COMB-CHGKBN     =   "A"
                        MOVE    "New"       TO  AP12SUB2V3-COMB-MODE
                                                                (IDY)
@@ -467,53 +467,53 @@
                END-IF
            END-IF
       *
-      *    �ݸ�
+      *    保険
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-PTHKN-MAX )
                           OR  (COMB-HKNID  =   ZERO )
                IF      COMB-HKNID      =   SPA-PTHKN-HKNID (IDX)
-      *            �����λ����ɣĥ��ꥢ
+      *            新規の時、ＩＤクリア
                    IF     (SPA-PTHKN-MODE  (IDX)   =   "1" )
                     AND   (FLG-SYORI               =   2   )
                        MOVE    ZERO        TO  AP12SUB2V3-COMB-MAIN-ID
                                                                (IDY)
                    END-IF
       *
-      *            �ݸ����ֹ�
+      *            保険者番号
                    MOVE    SPA-PTHKN-HKNJANUM (IDX)
                                        TO  AP12SUB2V3-COMB-MAIN-NUMBER
                                                                (IDY)
-      *            ����
+      *            記号
                    MOVE    SPA-PTHKN-KIGO (IDX)
                                        TO  AP12SUB2V3-COMB-MARK  (IDY)
-      *            �ֹ�
+      *            番号
                    MOVE    SPA-PTHKN-NUM  (IDX)
                                        TO  AP12SUB2V3-COMB-NUMBER (IDY)
                    MOVE    SPA-PTHKN-MAX   TO  IDX
                END-IF
            END-PERFORM
       *
-      *    �������
+      *    公費情報
            PERFORM VARYING     IDY2    FROM    1   BY  1
                    UNTIL      (IDY2    >   4      )
                           OR  (COMB-KOHID (IDY2)   =   ZERO )
-      *        ����ɣ�
+      *        公費ＩＤ
                MOVE    COMB-KOHID (IDY2)
                                        TO  AP12SUB2V3-INSURANCE-ID
                                                              (IDY IDY2)
-      *        ����μ���
+      *        公費の種類
                MOVE    COMB-KOHHKNNUM (IDY2)
                                    TO  AP12SUB2V3-INSURANCE-CLASS
                                                              (IDY IDY2)
-      *        ����μ���̾��
+      *        公費の種類名称
                MOVE    COMB-KOH-TANSEIDONAME (IDY2)
                                    TO  AP12SUB2V3-INSURANCE-NAME
                                                              (IDY IDY2)
-      *        �������
+      *        公費情報
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2    >   SPA-PTKOH-MAX )
                    IF      COMB-KOHID (IDY2)   =   SPA-PTKOH-KOHID(IDX2)
-      *                �����λ����ɣĥ��ꥢ
+      *                新規の時、ＩＤクリア
                        IF     (SPA-PTKOH-MODE (IDX2)   =   "1" )
                         AND   (FLG-SYORI               =   2   )
                            MOVE    ZERO
@@ -521,18 +521,18 @@
                                                              (IDY IDY2)
                        END-IF
       *
-      *                ��ô���ֹ�
+      *                負担者番号
                        MOVE    SPA-PTKOH-FTNJANUM (IDX2)
                                    TO  AP12SUB2V3-PROVIDER-NUMBER
                                                              (IDY IDY2)
-      *                ������ֹ�
+      *                受給者番号
                        MOVE    SPA-PTKOH-JKYSNUM (IDX2)
                                    TO  AP12SUB2V3-RECIPIENT-NUMBER
                                                              (IDY IDY2)
                        MOVE    SPA-PTKOH-MAX       TO  IDX2
                    END-IF
                END-PERFORM
-      *        ��ôΨ����ô���Խ�
+      *        負担率・負担額編集
                PERFORM 200112-KOHFTN-HENSYU-SEC
            END-PERFORM
       *
@@ -540,7 +540,7 @@
        20011-COMBINATION-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ʬ̾���Խ�
+      *    補助区分名称編集
       *****************************************************************
        200111-HOJOKBN-NAME-HEN-SEC             SECTION.
       *
@@ -557,15 +557,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ôΨ����ô���Խ�����
+      *    負担率・負担額編集処理
       *****************************************************************
        200112-KOHFTN-HENSYU-SEC        SECTION.
       *
            MOVE    SPACE               TO  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-      *    �ݸ��ֹ�ʸ����
+      *    保険番号（公費）
            MOVE    COMB-KOHHKNNUM (IDY2)   TO  HKN-HKNNUM
-      *    ��ʧ��ʬ
+      *    支払区分
            MOVE    COMB-KOHPAYKBN (IDY2)   TO  HKN-PAYKBN
            MOVE    COMB-TEKSTYMD       TO  HKN-TEKSTYMD
            MOVE    COMB-TEKSTYMD       TO  HKN-TEKEDYMD
@@ -586,19 +586,19 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �ܿ͡ݳ���ݲ����ô���
+      *    本人−外来−回−負担割合
            COMPUTE WRK-FTNRATE         =   HKN-HON-GAIKFTNRATE
                                        /   100
            MOVE    WRK-FTNRATE         TO  WRK-Z9
            MOVE    WRK-Z9              TO  WRK-FTNRATEMEI
            MOVE    WRK-FTNRATEMEI      TO  AP12SUB2V3-RATE-OUTPATIENT
                                                              (IDY IDY2)
-      *    �����³�
+      *    外来上限額
            IF      HKN-HON-GAIKKOTGAK  =   ZERO
-      *        �ܿ͡ݳ�������ݾ�³�
+      *        本人−外来−日−上限額
                MOVE    HKN-HON-GAIDJGNGAK  TO  WRK-ZZ9
            ELSE
-      *        �ܿ͡ݳ���ݲ�ݾ�³�
+      *        本人−外来−回−上限額
                MOVE    HKN-HON-GAIKKOTGAK  TO  WRK-ZZ9
            END-IF
            MOVE    WRK-ZZ9             TO  WRK-INDATA
@@ -606,19 +606,19 @@
            MOVE    WRK-OTDATA          TO  AP12SUB2V3-MONEY-OUTPATIENT
                                                              (IDY IDY2)
       *
-      *    �ܿ͡������ݲ����ô���
+      *    本人−入院−回−負担割合
            COMPUTE WRK-FTNRATE         =   HKN-HON-NYUKFTNRATE
                                        /   100
            MOVE    WRK-FTNRATE         TO  WRK-Z9
            MOVE    WRK-Z9              TO  WRK-FTNRATEMEI
            MOVE    WRK-FTNRATEMEI      TO  AP12SUB2V3-RATE-ADMISSION
                                                              (IDY IDY2)
-      *    �����³�
+      *    外来上限額
            IF      HKN-HON-NYUKKOTGAK  =   ZERO
-      *        �ܿ͡����������ݾ�³�
+      *        本人−入院−日−上限額
                MOVE    HKN-HON-NYUDJGNGAK  TO  WRK-ZZ9
            ELSE
-      *        �ܿ͡������ݲ�ݾ�³�
+      *        本人−入院−回−上限額
                MOVE    HKN-HON-NYUKKOTGAK  TO  WRK-ZZ9
            END-IF
            MOVE    WRK-ZZ9             TO  WRK-INDATA
@@ -631,7 +631,7 @@
       *
       *
       *****************************************************************
-      *    �������Խ�����
+      *    左ずめ編集処理
       *****************************************************************
        800-MOJIHEN-SEC                SECTION.
       *
@@ -650,7 +650,7 @@
       *
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -679,7 +679,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ�������������
+      *    保険番号マスタ次検索処理
       *****************************************************************
        980-HKNNUM-READ-SEC              SECTION.
       *
@@ -695,7 +695,7 @@
        980-HKNNUM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -713,7 +713,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�CALL����
+      *    テーブルCALL処理
       *****************************************************************
        900-ORCDBMAIN-SEC                SECTION.
       *
@@ -727,7 +727,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -741,7 +741,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -755,7 +755,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

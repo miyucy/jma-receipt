@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,19 +17,19 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �����ޥ������� ���̣ӣУ�     (SPA-FREE ������)
+      *    点数マスタ設定 画面ＳＰＡ     (SPA-FREE の内容)
       *            Z03,Z90
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC-¿��Ǽ   01/07/17  ����̾�Ρ���պμ������ɲ�
-      * 01.00.02     MCC-¿��Ǽ   02/03/17  ���ߴ����Ŭ���ɲ�
-      * 01.00.03     NACL-¿��Ǽ  02/10/09  ���ż��̤κ�����򣱣�����
-      * 04.07.00     NACL-¿��Ǽ  14/09/09  ���ż��̤κ�����򣲣�����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-多々納   01/07/17  正式名称、血液採取料等追加
+      * 01.00.02     MCC-多々納   02/03/17  施設基準不適合追加
+      * 01.00.03     NACL-多々納  02/10/09  診療種別の最大数を１００へ
+      * 04.07.00     NACL-多々納  14/09/09  診療種別の最大数を２００へ
       *****************************************************************
        01  SPA-Z03.
       *
-      *    �軰���̣ӣУ����ꥢ
+      *    第三画面ＳＰＡエリア
            03  SPA-GMN-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-MAX         PIC 9(04).
@@ -175,7 +175,7 @@
                        09  SPA-GMN-HOSPSRYKBNCOB   PIC X(30)
                                                    OCCURS  9.
                    07  SPA-HOSPSRYKBN-MAX           PIC 9(04).
-      *            ���Ŵѻ�ˡ
+      *            医療観察法
                    07  SPA-GMN-IRYOKAN-G.
                        09  SPA-GMN-IRYOKAN         PIC 9(1).
                        09  SPA-GMN-F3              PIC X(1).
@@ -184,7 +184,7 @@
                        09  SPA-GMN-IRYOKANCOB      PIC X(20)
                                                    OCCURS  9.
                    07  SPA-IRYOKAN-MAX             PIC 9(04).
-      *            �ģУö�ʬ
+      *            ＤＰＣ区分
                    07  SPA-GMN-DPCKBN              PIC 9(01).
       *
                    07  SPA-GMN-OSINKBN-G.
@@ -228,9 +228,9 @@
                    07  SPA-GMN-TSUSOKUAGE      PIC 9(1).
                    07  SPA-GMN-KGNAGE          PIC X(2).
                    07  SPA-GMN-JGNAGE          PIC X(2).
-      *            ϫ�һ����ԲĶ�ʬ
+      *            労災算定不可区分
                    07  SPA-GMN-ROSAIKBN        PIC 9(01).
-      *            �η�����ʬ
+      *            採血料区分
                    07  SPA-GMN-SAIKETUKBN-G.
                        09  SPA-GMN-SAIKETUKBN  PIC X(01).
                        09  SPA-GMN-DUMMY       PIC X(01).
@@ -239,7 +239,7 @@
                        09  SPA-GMN-SAIKETUCOMB     PIC X(16)
                                                OCCURS  4.
                    07  SPA-SAIKETUKBN-MAX          PIC 9(04).
-      *            ���󸡺�����ʬ
+      *            前回検査日区分
                    07  SPA-GMN-ZENKNSKBN-G.
                        09  SPA-GMN-ZENKNSKBN       PIC X(01).
                        09  SPA-GMN-ZENKNSKBNF1     PIC X(01).
@@ -248,7 +248,7 @@
                        09  SPA-GMN-ZENKNSKBN-COMB  PIC X(30)
                                                OCCURS  5.
                    07  SPA-ZENKNSKBN-MAX          PIC 9(04).
-      *            ���ϥ����å���ʬ
+      *            入力チェック区分
                    07  SPA-GMN-INPCHKKBN       PIC 9(01).
       *
                05  SPA-GMN-KAISU.
@@ -272,7 +272,7 @@
                        09  SPA-GMN-AGEKSNKGN   PIC X(2).
                        09  SPA-GMN-AGEKSNJGN   PIC X(2).
                        09  SPA-GMN-AGEKSNSRYCD PIC X(09).
-      *            �桼�������²��
+      *            ユーザ設定上限回数
                    07  SPA-GMN-PLUS-SANTEIRRK-G.
                        09  SPA-GMN-PLUS-SANTEIRRK      PIC 9(01).
                        09  SPA-GMN-DUMMY2              PIC X(01).
@@ -293,7 +293,7 @@
                    07  SPA-GMN-LASERKSN        PIC 9(1).
                    07  SPA-GMN-CHPMESUKSN      PIC 9(1).
                    07  SPA-GMN-MICMESUKSN      PIC 9(1).
-      *            �ɥʡ�ʬ���׶�ʬ
+      *            ドナー分集計区分
                    07  SPA-GMN-DONORKBN        PIC 9(1).
                    07  SPA-GMN-SEKIZUISOKUTEI  PIC 9(1).
                    07  SPA-GMN-KEIBUJYUTU      PIC 9(1).
@@ -301,19 +301,19 @@
                    07  SPA-GMN-AUTOFUNGO       PIC 9(1).
                    07  SPA-GMN-CHPGYOKOSOTIKSN PIC 9(1).
                    07  SPA-GMN-SHORTSTAYOPE    PIC 9(1).
-      *            ��������ѻٱ�û�
+      *            画像等手術支援加算
                    07  SPA-GMN-GAZOOPESUP      PIC 9(1).
-      *            ��켱��
+      *            麻酔識別
                    07  SPA-GMN-MASUISKBKBN     PIC 9(1).
-      *            ���ߴ����Ŭ���ʬ
+      *            施設基準不適合区分
                    07  SPA-GMN-KIJUNTEIGENKBN  PIC  9(01).
-      *            �����Ŭ�������оݻ��ߴ�ॳ����
+      *            基準不適合逓減対象施設基準コード
                    07  SPA-GMN-KIJUNTEIGENCD   PIC  9(04).
-      *            ��ɡ�м���������û�
+      *            副鼻腔手術用内視鏡加算
                    07  SPA-GMN-FUKUBIKUNAIKBN  PIC  9(01).
-      *            ��ɡ�м����������ȿ��ڽ�����û�
+      *            副鼻腔手術用軟骨部組織切除機器加算
                    07  SPA-GMN-FUKUBIKUKOTUKBN PIC  9(01).
-      *            Ĺ�����������û�
+      *            長時間麻酔管理加算
                    07  SPA-GMN-TIMEMASUIKBN    PIC  9(01).
       *
                    07  SPA-GMN-KNSJISKBN       PIC 9(1).
@@ -328,14 +328,14 @@
                    07  SPA-GMN-KANGOKSN        PIC 9(2).
                    07  SPA-GMN-CHIIKIKSN       PIC 9(1).
       *H28.4
-      *            �󿯽�Ū���ư�֥�˥���󥰲û�
+      *            非侵襲的血行動態モニタリング加算
                    07  SPA-GMN-HISINSYUMONKSN   PIC 9(1).
-      *            �����¸Ʊ���ȿ��û�
+      *            凍結保存同種組織加算
                    07  SPA-GMN-TOUKETUHOZONKSN  PIC 9(1).
-      *            ϫ�һͻ�û���ʬ
+      *            労災四肢加算区分
                    07  SPA-GMN-SISIKSN          PIC 9(01).
       *H30.4
-      *            �������������ȿ�ɸ�ܲû�
+      *            悪性腫瘍病理組織標本加算
                    07  SPA-GMN-AKUSEIBYORIKSN  PIC 9(01).
       *            
                05  SPA-GMN-BANGO.
@@ -359,10 +359,10 @@
                    07  SPA-GMN-KOKUJISKBKBN1   PIC 9(1).
                    07  SPA-GMN-KOKUJISKBKBN2   PIC 9(1).
       *H28.4
-      *            ����ɽ��ʬ�ֹ�
+      *            点数表区分番号
                    07  SPA-GMN-KUBUNBANGOU     PIC X(30).
       *
-      *    �軰��������
+      *    第三画面内容
            03  SPA-NAI-AREA.
                05  SPA-NAI-YUKOSTYMD           PIC X(08).
                05  SPA-NAI-YUKOEDYMD           PIC X(08).

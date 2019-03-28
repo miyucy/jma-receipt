@@ -1,14 +1,14 @@
 --                                    --
--- ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹     --
+-- æ‚£è€…åŠ´ç½ä¿é™ºæƒ…å ±ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´     --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---  ¼«ÇåÀÕÃ´Åö°å¥³¡¼¥É   DRCD         --
---  ¼«ÇåÀÕÊÝ¸±²ñ¼ÒÌ¾     HOKENNAME    --
+-- é …ç›®ã®è¿½åŠ                          --
+--  è‡ªè³ è²¬æ‹…å½“åŒ»ã‚³ãƒ¼ãƒ‰   DRCD         --
+--  è‡ªè³ è²¬ä¿é™ºä¼šç¤¾å     HOKENNAME    --
 --                                    --
 -- Create Date : 2005/01/07           --
 --                                    --
 
--- TBL_PTRSIINFWK ºîÀ®                --
+-- TBL_PTRSIINFWK ä½œæˆ                --
 
 create table TBL_PTRSIINFWK (
 HOSPID				char(24)	not null,
@@ -45,16 +45,16 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_PTRSIINFWK_primary_key primary key (HOSPID,PTID,HKNID));
 
--- TBL_PTRSIINF ¢ª TBL_PTRSIINFWK   --
+-- TBL_PTRSIINF â†’ TBL_PTRSIINFWK   --
 
 insert into TBL_PTRSIINFWK
 select * from TBL_PTRSIINF;
 
--- TBL_PTRSIINF ºï½ü               --
+-- TBL_PTRSIINF å‰Šé™¤               --
 
 drop table TBL_PTRSIINF;
 
--- TBL_PTRSIINF ºîÀ®               --
+-- TBL_PTRSIINF ä½œæˆ               --
 
 create table TBL_PTRSIINF (
 HOSPID				char(24)	not null,
@@ -93,7 +93,7 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_PTRSIINF_primary_key primary key (HOSPID,PTID,HKNID));
 
--- TBL_PTRSIINFWK ¢ª TBL_PTRSIINF   --
+-- TBL_PTRSIINFWK â†’ TBL_PTRSIINF   --
 
 insert into TBL_PTRSIINF
 (HOSPID,
@@ -136,7 +136,7 @@ CITYNAME,CITYKBN,SINKEI,TENKI,SHOBYOYMD,SISIKBN,RYOSTYMD,RYOEDYMD,SONSHOUKBN,SON
 SINSATUYMD,SINSATUEND,KAKUNINYMD,SAKUJOKBN,COMMENT,SAIGAIKBN,JIBAISEIKBN,TERMID,OPID,CREYMD,
 UPYMD,UPHMS from TBL_PTRSIINFWK;
 
--- TBL_PTRSIINFWK ºï½ü             --
+-- TBL_PTRSIINFWK å‰Šé™¤             --
 
 drop table TBL_PTRSIINFWK;
 

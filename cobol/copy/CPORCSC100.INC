@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡Ä´ºÞÎÁ°ì³ç¹¹¿·¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSC100.INC)
-      *                            »ÈÍÑ¥×¥í¥°¥é¥à 
+      *    å…¥é™¢èª¿å‰¤æ–™ä¸€æ‹¬æ›´æ–°ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSC100.INC)
+      *                            ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSC100AREA.
       *
-      *½èÍý¶èÊ¬¡Ê£±¡§ÆþÎÏ¡¢£²¡§ÅÐÏ¿¡Ë
+      *å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šå…¥åŠ›ã€ï¼’ï¼šç™»éŒ²ï¼‰
            03  ORCSC100-KBN                 PIC  X(01).
-      *    £±¡§¥Á¥§¥Ã¥¯½èÍý
+      *    ï¼‘ï¼šãƒã‚§ãƒƒã‚¯å‡¦ç†
            03  ORCSC100-TOROKU              PIC  X(01).
-      *    £±¡§½é´ü¶èÊ¬
+      *    ï¼‘ï¼šåˆæœŸåŒºåˆ†
            03  ORCSC100-INIT                PIC  9(01).
-      *    £±¡§Æ±°ì¸¡ºººï½ü
+      *    ï¼‘ï¼šåŒä¸€æ¤œæŸ»å‰Šé™¤
            03  ORCSC100-KENSADEL            PIC  9(01).
-      *    £±¡§¥ê¥Ï¥Ó¥ê³ÎÇ§¤¢¤ê
+      *    ï¼‘ï¼šãƒªãƒãƒ“ãƒªç¢ºèªã‚ã‚Š
            03  ORCSC100-RIHTEI              PIC  9(01).
-      *½ÐÎÏ
+      *å‡ºåŠ›
            03  ORCSC100-OUT-AREA.
-      *        £±¡§Æþ±¡¸¡ºº¤Þ¤È¤á¥¨¥é¡¼
+      *        ï¼‘ï¼šå…¥é™¢æ¤œæŸ»ã¾ã¨ã‚ã‚¨ãƒ©ãƒ¼
                05  ORCSC100-KENSAERR        PIC 9(01).
       *

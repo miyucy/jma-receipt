@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,34 +17,34 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �����ޥ������� ���̣ӣУ�   
+      *    点数マスタ設定 共通ＳＰＡ   
       *
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02/02/25  �ٹ��å����������ɲ�
-      *  01.00.02    NACL-����    06/03/20  �ץ�ӥ塼�ե饰�ɲ�
-      *  05.00.00    NACL-¿��Ǽ  17/01/XX  �桼�������������ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02/02/25  警告メッセージ２の追加
+      *  01.00.02    NACL-森脇    06/03/20  プレビューフラグ追加
+      *  05.00.00    NACL-多々納  17/01/XX  ユーザー点数識別追加
       *****************************************************************
-      *    ���̣ӣУ����ꥢ
+      *    共通ＳＰＡエリア
        01  SPA-Z01KYOUTU.
            03  SPA-Z01-KYOUTU-AREA.
                05  SPA-Z01-SRYCD                 PIC X(09).
       *********05  SPA-Z01-SRYKBN                PIC X(02).
                05  SPA-Z01-NAMEH                 PIC X(100).
-      *        �о�ͭ������
+      *        対象有効期限
                05  SPA-Z01-KOUMOKU.
                    07  SPA-Z01-YUKOSTYMD         PIC X(08).
                    07  SPA-Z01-YUKOEDYMD         PIC X(08).
                    07  SPA-Z01-YUKOSTYMDH        PIC X(09).
                    07  SPA-Z01-YUKOEDYMDH        PIC X(09).
       *
-      *  ������ʬ��1=�̾￷����2=�̾､����3=��������
+      *  処理区分　1=通常新規、2=通常修正、3=改正処理
            03  SPA-Z01-SYORIKBN              PIC 9(01).
       *H29.1
-      *    �桼�����������̡�2���桼�����ޥ�����
+      *    ユーザー点数識別（2：ユーザーマスタ）
            03  SPA-MASTER-CLASS            PIC 9(01).
-      *    �����б��ʣ���������
+      *    更新対応（１：更新）
            03  SPA-MENTE-OK                PIC 9(01).
       *
       *----(01.00.02)--ADD-START---
@@ -52,21 +52,21 @@
            03  SPA-Z91-JOB-JOBID           PIC  9(07).
       *----(01.00.02)--ADD-END-----
       *
-      *���󥳡���
+      *前回コード
            03  SPA-MAE-SRYCD                   PIC X(09).
            03  SPA-Z08MAE-SRYCD                PIC X(09).
       * 
-      *�ٹ��å�����
+      *警告メッセージ
            03  SPA-ZIDCD                       PIC X(04).
-      *�ٹ��å�������
+      *警告メッセージ２
            03  SPA-ZIDCD2                      PIC X(04).
-      *�ٹ���̤��
+      *警告画面より
            03  SPA-ZID1-AREA. 
                07  SPA-ZID1-FLG                PIC X(02).
       *----(01.00.02)--ADD-START---
                07  SPA-Z97-FLG                 PIC X(02).
       *----(01.00.02)--ADD-END-----
-      *�ˣ������̤��
+      *Ｋ９８画面より
            03  SPA-Z98-AREA.
                07  SPA-Z98-CDSYUBETU       PIC X(01).
                07  SPA-Z98-INPUTCD         PIC X(22).

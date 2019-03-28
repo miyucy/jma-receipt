@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,27 +18,27 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGM02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��̳����
-      *  ����ݡ��ͥ��̾  : ��̳����ʣͣ�����
-      *  ������            : 
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 業務選択
+      *  コンポーネント名  : 業務選択（Ｍ０２）
+      *  管理者            : 
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/09/04  105 �ݸ��ԥޥ������ɲ�      
-      *  01.01.01    MCC-¿��Ǽ   01/09/20  JOIN�ν���      
-      *  01.01.02    MCC-ƣ��     01/09/27  MVER���ɲ�  
-      *  01.02.01    MCC-ƣ��     01/11/21  ORCMCPSUB���ѹ�  
-      *  01.02.02    MCC-¿��Ǽ   02/02/22  MID1���ɲ�
-      *  01.02.03    MCC-����     02/06/20  106 ��̾����ޥ������ɲ�
-      *  01.02.04    NACL-����    02/07/30  107 ���޾���ޥ������ɲ�
-      *  01.02.05    NACL-��ƣ    04/02/05  M97���ɲ�
-      *  01.02.06    NACL-����    04/08/04  108 ����ޥ������ɲ�
-      *  01.02.07    NACL-¿��Ǽ  05/01/21  109 �إ�ץޥ����ɲ�
-      *  01.02.08    NACL-��ƣ    06/02/22  MONFUNC �б�
-      *  04.05.00    NACL-¿��Ǽ  10/02/05  �ץ饰��������ɲ�
-      *  04.08.00    NACL-��ƣ    14/09/26  �ץ饰������̥�˥塼�ذ�ư
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/09/04  105 保険者マスタの追加      
+      *  01.01.01    MCC-多々納   01/09/20  JOINの修正      
+      *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
+      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
+      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
+      *  01.02.03    MCC-太田     02/06/20  106 人名辞書マスタの追加
+      *  01.02.04    NACL-森脇    02/07/30  107 薬剤情報マスタの追加
+      *  01.02.05    NACL-伊藤    04/02/05  M97の追加
+      *  01.02.06    NACL-森脇    04/08/04  108 住所マスタの追加
+      *  01.02.07    NACL-多々納  05/01/21  109 ヘルプマスタ追加
+      *  01.02.08    NACL-伊藤    06/02/22  MONFUNC 対応
+      *  04.05.00    NACL-多々納  10/02/05  プラグイン画面追加
+      *  04.08.00    NACL-伊藤    14/09/26  プラグインを別メニューへ移動
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,10 +51,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "M00COMMON-SPA".
       *   
            COPY    "ENUM-VALUE".
@@ -69,20 +69,20 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-GSEL    PIC 9(03).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  IDX                   PIC 9(03).
            03  WRK-SYSYMD.
@@ -112,32 +112,32 @@
            03  PID                 PIC X(10).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �����ƥ�����ޥ����ΰ�
-      *    ��������
+      *    システム管理マスタ領域
+      *    職員情報
            COPY  "CPSK1010.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1001.INC".
-      *    ����������
+      *    主科設定情報
            COPY  "CPSK2009.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -172,7 +172,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -187,15 +187,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -209,21 +209,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
            END-IF
@@ -242,12 +242,12 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            INITIALIZE              SPA-M02-AREA
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                PERFORM 320-SYS-1010-SPASET-SEC
@@ -260,12 +260,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
            MOVE    1               TO  SPA-GMN-CUR
-      *    ���ŵ��أɣ��Խ�
+      *    医療機関ＩＤ編集
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -283,10 +283,10 @@
                PERFORM 900-SYSKANRI-READ-SEC
                IF      FLG-SYSKANRI    =   ZERO
                    MOVE    MCPDATA-REC       TO  SYS-1001-REC
-      *            �±�����
+      *            病院種別
                    MOVE    SYS-1001-HOSPSBT  TO  SPA-HOSPSBT
       *
-      *            �ǡ��������ե饰
+      *            データ作成フラグ
                    IF     (SYS-1001-DATACREATEFLG  =   SPACE )  OR
                           (SYS-1001-DATACREATEFLG  NOT NUMERIC)
                        MOVE    ZERO          TO  SPA-DATACREATEFLG
@@ -294,7 +294,7 @@
                        MOVE    SYS-1001-DATACREATEFLG
                                              TO  SPA-DATACREATEFLG
                    END-IF
-      *            �ǡ��������ˡ��ʬ
+      *            データ提出方法区分
                    IF     (SYS-1001-DATATEISYUTUKBN  =   SPACE )  OR
                           (SYS-1001-DATATEISYUTUKBN  NOT NUMERIC)
                        MOVE    ZERO          TO  SPA-DATATEISYUTUKBN
@@ -302,7 +302,7 @@
                        MOVE    SYS-1001-DATATEISYUTUKBN
                                              TO  SPA-DATATEISYUTUKBN
                    END-IF
-      *            �ǡ��������ɶ�ʬ
+      *            データ感染症区分
                    IF     (SYS-1001-DATAINFECTIONKBN  =   SPACE )  OR
                           (SYS-1001-DATAINFECTIONKBN  NOT NUMERIC)
                        MOVE    ZERO          TO  SPA-DATAINFECTIONKBN
@@ -324,12 +324,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        320-SYS-1010-SPASET-SEC              SECTION.
       *
       *
-      *    ��������
+      *    職員情報
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -372,12 +372,12 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ��������ʤ�
+      *    職員情報なし
            IF     FLG-OK               =   ZERO
                INITIALIZE                  SYS-1010-REC
            END-IF
       *
-      *2001.9.27 �����ץ��ƥ��ȡʣУ�̤������
+      *2001.9.27 強制プロテクト（ＰＧ未作成）
       **** MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
            MOVE    "0"                 TO  SYS-1010-GSRAUTH(4:1)
                                            SYS-1010-GSRAUTH(18:1)
@@ -386,22 +386,22 @@
                                            SYS-1010-GSRAUTH(41:1)
                                            SYS-1010-GSRAUTH(46:1)
                                            SYS-1010-GSRAUTH(47:1)
-      *2001.9.27 �����ץ��ƥ��ȡʣУ�̤������END
+      *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
-      *TEST �إ�פ��ɲä���ޤ�
+      *TEST ヘルプを追加するまで
       ***     MOVE    "1"                  TO SYS-1010-GSRAUTH(69:1)
-      *TEST �إ�פ��ɲä���ޤ�
+      *TEST ヘルプを追加するまで
       *****MOVE    SYS-1010-REC         TO  SPA-WORK   
            .
        320-SYS-1010-SPASET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        321-SYS-2009-SPASET-SEC           SECTION.
       *
-      *    ����������
+      *    主科設定情報
            INITIALIZE                      SPA-SYUKA-INFO
            MOVE    SPACE               TO  SYS-2009-REC
            INITIALIZE                  SYS-2009-REC
@@ -442,15 +442,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    �ƶ�̳��ư��
+      *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
            END-EVALUATE
@@ -459,7 +459,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -473,7 +473,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϡ�����
+      *    入力　処理
       *****************************************************************
        4101-KEY-ENT-SEC            SECTION.
       *
@@ -492,7 +492,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϡ�����
+      *    入力　処理
       *****************************************************************
        400-GYOMU-SEL-SEC            SECTION.
       *
@@ -506,48 +506,48 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̳��ư������
+      *    業務起動　処理
       *****************************************************************
        420-GYOMU-START-SEC         SECTION.
       *
           MOVE    SPACE               TO  SPA-SAKIPG
           EVALUATE    WRK-GNO
-      * �����ƥ�����ޥ���
+      * システム管理マスタ
                WHEN    "101"
                    IF      SYS-1010-GSRAUTH(61:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "W01"           TO  SPA-SAKIPG
                    END-IF
-      * �����ޥ���
+      * 点数マスタ
                WHEN    "102"
                    IF      SYS-1010-GSRAUTH(62:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "Z01"           TO  SPA-SAKIPG
                    END-IF
-      * �����å��ޥ���
+      * チェックマスタ
                WHEN    "103"
                    IF      SYS-1010-GSRAUTH(63:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "X01"           TO  SPA-SAKIPG
                    END-IF
-      * �ݸ��ֹ�ޥ���
+      * 保険番号マスタ
                WHEN    "104"
                    IF      SYS-1010-GSRAUTH(64:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "V01"           TO  SPA-SAKIPG
                    END-IF
-      * �ݸ��ԥޥ���
+      * 保険者マスタ
                WHEN    "105"
                    IF      SYS-1010-GSRAUTH(65:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
                        MOVE    "N01"           TO  SPA-SAKIPG
                    END-IF
-      * ��̾����ޥ���
+      * 人名辞書マスタ
                WHEN    "106"
                    IF      SYS-1010-GSRAUTH(66:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -555,7 +555,7 @@
                        MOVE    "N11"           TO  SPA-SAKIPG
                    END-IF
       *----(01.02.04)----START-----------------
-      * ���޾���ޥ���
+      * 薬剤情報マスタ
                WHEN    "107"
                    IF      SYS-1010-GSRAUTH(67:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -564,7 +564,7 @@
                    END-IF
       *----(01.02.04)----END-------------------
       *----(01.02.06)----START-----------------
-      * ����ޥ���
+      * 住所マスタ
                WHEN    "108"
                    IF      SYS-1010-GSRAUTH(68:1)    =  "0" OR SPACE
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -572,7 +572,7 @@
                        MOVE    "N31"           TO  SPA-SAKIPG
                    END-IF
       *----(01.02.06)----END-------------------
-      * �إ�ץޥ���
+      * ヘルプマスタ
                WHEN    "109"
                    IF      SYS-1010-GSRAUTH(69:1)    =  "0" OR SPACE
                        MOVE    "0002"          TO  SPA-ERRCD
@@ -606,7 +606,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -624,7 +624,7 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -649,7 +649,7 @@
       *
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -668,7 +668,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̳�������������
+      *    業務権限非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
@@ -730,7 +730,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -744,16 +744,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "���ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "���ζ�̳������Ǥ��ޤ���"
+                   MOVE    "この業務は選択できません"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -777,7 +777,7 @@
        510-ERRSET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
       *
@@ -796,7 +796,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -811,7 +811,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *
@@ -826,7 +826,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

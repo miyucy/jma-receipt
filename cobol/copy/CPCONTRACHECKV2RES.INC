@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ�ʻ�Ѷش����ޥ����å�����
+      *    ＡＰＩレスポンス併用禁忌薬剤チェック情報
       *                                   COPY (CPCONTRACHECKV2RES.INC)
       ******************************************************************
        01  XML-CONTRA-CHECKV2RES.
@@ -29,60 +29,60 @@
             03  CHKRES-MODE                PIC S9(9)   BINARY.
             03  CHKRES-RECORDNAME          PIC X(128).
             03  CHKRES-MEDICALRES.
-      *        �»���
+      *        実施日
                05  CHKRES-INFORMATION-DATE  PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                05  CHKRES-INFORMATION-TIME  PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                05  CHKRES-API-RESULT        PIC X(2).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                05  CHKRES-API-RESULT-MSG    PIC X(100).
       *
                05  CHKRES-RESKEY            PIC X(100).
-      *        ����ǯ��
+      *        診療年月
                05  CHKRES-PERFORM-YM        PIC X(07).
-      *        ���Ծ���
+      *        患者情報
                05  CHKRES-PATIENTID        PIC X(20).
                05  CHKRES-NAME             PIC X(100).
                05  CHKRES-KANANAME         PIC X(100).
                05  CHKRES-BIRTHDAY         PIC X(10).
                05  CHKRES-SEX              PIC X(1).
       *
-      *        �����å������ֵ�
+      *        チェック内容返却
                05  CHKRES-MEDICAL-INF-G.
                    07  CHKRES-MDC-INFO          OCCURS   30.
-      *                ���ť�����
+      *                診療コード
                        09  CHKRES-PRSCRPT-CODE          PIC X(9).
-      *                ����̾��
+      *                診療名称
                        09  CHKRES-PRSCRPT-NAME          PIC X(80).
-      *                ���顼��ʬ
+      *                エラー区分
                        09  CHKRES-PRSCRPT-ERRCD         PIC X(02).
-      *                ���顼��å�����
+      *                エラーメッセージ
                        09  CHKRES-PRSCRPT-ERRMSG        PIC X(80).
       *
-      *                �ش�����
+      *                禁忌情報
                        09  CHKRES-INTERACT-INFO-G.
                            10  CHKRES-INTERACT-INFO    OCCURS   30.
-      *                        �ش���������
+      *                        禁忌薬コード
                                11  CHKRES-DRUGCD-CODE      PIC X(9).
-      *                        �ش���̾��
+      *                        禁忌薬名称
                                11  CHKRES-DRUGCD-NAME      PIC X(80).
-      *                        �ɾ��ܵ���ʬ
+      *                        症状詳記区分
                                11  CHKRES-INTERACT-CODE    PIC X(07).
-      *                        ��Ϳ��
+      *                        投与日
                                11  CHKRES-ADMINISTE-DATE   PIC X(10).
-      *                        ����ʬ
+      *                        今回分
                                11  CHKRES-ADMINISTE-KBN    PIC X(01).
-      *                        ������
+      *                        方向性
                                11  CHKRES-CONTEXT-CLASS    PIC X(06).
       *
-      *        �ɾ��ܵ������ֵ�
+      *        症状詳記内容返却
                05  CHKRES-SSKIJYO-INF-G.
                    07  CHKRES-SSKIJYO-INFO           OCCURS   50.
-      *                �ɾ��ܵ���ʬ��INTERACT-CODE��
+      *                症状詳記区分（INTERACT-CODE）
                        09  CHKRES-SYOJYOUCD           PIC X(07).
-      *                �ɾ�
+      *                症状
                        09  CHKRES-SYOJYOU             PIC X(2048).
-      *                ���ѵ�Ϳ
+      *                作用機与
                        09  CHKRES-SAYOKIJYO           PIC X(2048).
       *

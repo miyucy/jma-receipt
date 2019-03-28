@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,43 +18,43 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGP029.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : �����ֹ���Ͽ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 患者番号登録処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-����     01/04/13  Ģɼ���ϻ��ѥ�᡼������
-      *  01.00.02    MCC-����     01/05/24  �ѥ�᥿���ѹ�
-      *  01.00.03    MCC-¿��Ǽ   01/06/13  ��Ͽ�塢���Ź԰����ܤ��ɲ�
-      *  01.00.04    MCC-¿��Ǽ   02/04/05  ϫ���ݸ����ɲ�
-      *  01.00.05    MCC-¿��Ǽ   02/06/18  ����������ֹ���ɲ�
-      *  02.00.00    MCC-¿��Ǽ   02/06/25  ���Ծ��󡦵������򡦴����ֹ�
-      *                                     ��ѥ�᥿����ӣУ��ǹ�����
-      *  02.00.01    NACL-¿��Ǽ  02/07/31  �ѥ�᥿�ե������ģ¤�
-      *  02.00.02    NACL-¿��Ǽ  03/03/24  ������ô���ɲ�
-      *  02.00.03    NACL-¿��Ǽ  03/04/22  �ݸ��ȹ��ѹ�����å������ɲ�
-      *  02.00.04    NACL-¿��Ǽ  03/06/27  �������ޥ���Ģɼ̾���������ɲ�
-      *  02.00.05    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  02.00.06    NACL-¿��Ǽ  06/02/27  ����б�
-      *  03.04.00    NACL-ƣ��    07/02/06  ������μ�����ֹ��ѹ����б�
-      *  03.04.01    NACL-¿��Ǽ  07/02/16  �ѣҥǡ����б�
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
-      *  03.05.01    NACL-¿��Ǽ  07/06/11  ��̾�ѹ���ͽ�󡦼����б�
-      *  04.03.00    NACL-¿��Ǽ  08/07/22  �õ������ɲ�
-      *  04.05.00    NACL-¿��Ǽ  09/07/XX  ���Ը�����ô�۵�ǽ�ɲ�
-      *  04.07.00    NACL-¿��Ǽ  11/08/XX  �����ݸ���ǧ�����ɲ�
-      *  04.07.00    NACL-¿��Ǽ  12/01/12  ����������ư
-      *  04.07.00    NACL-¿��Ǽ  12/11/22  �����ϰ�Ϣ���ɲ�
-      *  04.07.00    NACL-¿��Ǽ  12/12/21  �쥻�ץ�ʬ���б�
-      *  04.07.00    NACL-¿��Ǽ  14/02/XX  ���Բ������ɲ��б�
-      *  04.07.00    NACL-¿��Ǽ  14/03/XX  �ϰ��������оݼ����б�
-      *  04.08.00    NACL-¿��Ǽ  15/11/XX  APIV3(HAORI)�б�
-      *  04.08.00    NACL-¿��Ǽ  16/03/XX  ʿ������ǯ��������б�
-      *  05.00.00    NACL-¿��Ǽ  16/12/15  ���ԸĿ��ֹ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-太田     01/04/13  帳票出力時パラメータ誤り
+      *  01.00.02    MCC-太田     01/05/24  パラメタの変更
+      *  01.00.03    MCC-多々納   01/06/13  登録後、診療行為遷移を追加
+      *  01.00.04    MCC-多々納   02/04/05  労災保険の追加
+      *  01.00.05    MCC-多々納   02/06/18  月代り受給者番号の追加
+      *  02.00.00    MCC-多々納   02/06/25  患者情報・旧姓履歴・患者番号
+      *                                     をパラメタからＳＰＡで更新へ
+      *  02.00.01    NACL-多々納  02/07/31  パラメタファイルをＤＢへ
+      *  02.00.02    NACL-多々納  03/03/24  公費負担額追加
+      *  02.00.03    NACL-多々納  03/04/22  保険組合変更時メッセージ追加
+      *  02.00.04    NACL-多々納  03/06/27  カスタマイズ帳票名取得サブ追加
+      *  02.00.05    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  02.00.06    NACL-多々納  06/02/27  主科対応
+      *  03.04.00    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.01    NACL-多々納  07/02/16  ＱＲデータ対応
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
+      *  04.03.00    NACL-多々納  08/07/22  特記事項追加
+      *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
+      *  04.07.00    NACL-多々納  11/08/XX  患者保険確認履歴追加
+      *  04.07.00    NACL-多々納  12/01/12  印刷処理移動
+      *  04.07.00    NACL-多々納  12/11/22  患者地域連携追加
+      *  04.07.00    NACL-多々納  12/12/21  レセプト分割対応
+      *  04.07.00    NACL-多々納  14/02/XX  患者介護情報追加対応
+      *  04.07.00    NACL-多々納  14/03/XX  地域包括診療対象疾病対応
+      *  04.08.00    NACL-多々納  15/11/XX  APIV3(HAORI)対応
+      *  04.08.00    NACL-多々納  16/03/XX  平成２８年４月改正対応
+      *  05.00.00    NACL-多々納  16/12/15  患者個人番号対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -67,14 +67,14 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������Ͽ�����ΰ�
+      *    患者登録スパ領域
            COPY    "P02COMMON-SPA".
-      *    ������Ͽ�����̥����ΰ�
+      *    患者登録全画面スパ領域
            COPY    "P02SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -114,11 +114,11 @@
       *
            03  FLG-OK              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -130,7 +130,7 @@
                05  SYS-TSS         PIC 9(02).
                05  SYS-TDD         PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -140,7 +140,7 @@
            03  IDH2                PIC 9(02).
            03  IDH3                PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -171,14 +171,14 @@
       *
            03  WRK-PTSAME-CNT          PIC 9(02).
       *
-      *    ���Ը������ꡡ����ˣţ�
+      *    患者個別設定　設定ＫＥＹ
            03  WRK-CONF-CKEY           PIC  X(25).
-      *                  ����ǡ���
+      *                  設定データ
            03  WRK-CONF-CDATA          PIC  X(10).
       *
-      *    ����ƣУ�̾
+      *    カルテＰＧ名
       *    03  WRK-KARUTE-PG           PIC X(20).
-      *    ��������У�̾
+      *    処方せんＰＧ名
       *    03  WRK-SYOHOU-PG           PIC X(20).
       *
        01  WRK-HENSYU-AREA.
@@ -195,183 +195,183 @@
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
       *
-      *���������ô���
+      *公費一部負担件数
        01  MAX-KOHFTN              PIC 9(03)   VALUE   300.
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �����ֹ湽�������ޥ���
+      *    患者番号構成管理マスタ
            COPY    "CPSK1009.INC".
-      *������Ģɼ�ץ�������
+      *　　（帳票プログラム）
       *    COPY    "CPSK1032.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ����ޥ���
+      *    公費マスタ
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    ��������
+      *    受診内容
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
-      *    ͽ��ޥ�����
+      *    予約マスター
        01  YYK-REC.
            COPY    "CPYYK.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ��������
+      *    旧姓履歴
        01  KYUSEIRRK-REC.
            COPY    "CPKYUSEIRRK.INC".
       *
-      *    �����
+      *    低所得
        01  TSYRRK-REC.
            COPY    "CPTSYRRK.INC".
       *
-      *    ǯ��
+      *    年金
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
       *
-      *    �����ֹ��Ѵ��ʴ�����
+      *    患者番号変換（管理）
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ����������ֹ�
+      *    月代り受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
-      *    ���Ը�����ô
+      *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
       *
-      *    �����õ�����ޥ���
+      *    患者特記事項マスタ
        01  PTTOKKI-REC.
            COPY    "CPPTTOKKI.INC".
       *
-      *    ���ԥ쥻�ץ�ʬ��ơ��֥�
+      *    患者レセプト分割テーブル
        01  PT-HDIST-DAY-REC.
            COPY    "CPPT-HDIST-DAY.INC".
       *
-      *    ���Ը�����ô��
+      *    患者公費負担額
        01  PTKOHFTNETC-REC.
            COPY    "CPPTKOHFTNETC.INC".
       *
-      *    QR������(���ݸ��Ծ�)
+      *    QRコード(被保険者証)
        01  QRCDHKN-REC.
            COPY    "CPQRCDHKN.INC".
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HZN-HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC"  REPLACING
                                      //COMB-// BY //HZN-COMB-//.
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  HZN-PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC"  REPLACING
                                      //PTHKN-// BY //HZN-PTHKN-//.
-      *    ����ޥ���
+      *    公費マスタ
        01  HZN-PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC"  REPLACING
                                      //PTKOH-// BY //HZN-PTKOH-//.
-      *    �����
+      *    低所得
        01  HZN-TSYRRK-REC.
            COPY    "CPTSYRRK.INC"    REPLACING
                                      //TSYRRK-// BY //HZN-TSYRRK-//.
       *
-      *    ǯ��
+      *    年金
        01  HZN-TNKRRK-REC.
            COPY    "CPTNKRRK.INC"     REPLACING
                                      //TNKRRK-// BY //HZN-TNKRRK-//.
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  HZN-PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC"  REPLACING
                                      //PTRSI-// BY //HZN-PTRSI-//.
       *
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
        01  HZN-PTSAME-REC.
            COPY    "CPPTSAME.INC"      REPLACING
                                        //PTSAME-// BY //HZN-PTSAME-//.
       *
       *
-      *    �����ϰ�Ϣ�ȥơ��֥�
+      *    患者地域連携テーブル
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
       *
       *
-      *    ���Ը�������ơ��֥�
+      *    患者個別設定テーブル
        01  PTCONF-REC.
            COPY    "CPPTCONF.INC".
       *
-      *    ���Բ���ݸ�����ơ��֥�
+      *    患者介護保険情報テーブル
        01  PTCARE-HKNINF-REC.
            COPY    "CPPTCARE-HKNINF.INC".
       *
-      *    ���Բ��ǧ��Ծ���ơ��֥�
+      *    患者介護認定者情報テーブル
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
       *H28.12
-      *    ���ԸĿ��ֹ�ơ��֥�
+      *    患者個人番号テーブル
        01  PTMYNUMBER-REC.
            COPY    "CPPTMYNUMBER.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
       **   COPY    "CPORCSPRTNM.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �쥻�ץȺ��������ޥ�����������
+      *    レセプト作成管理マスタ更新サブ
            COPY    "CPORCSRECEUPD.INC".
       *
-      *    ����󥢥������ѥѥ�᥿
+      *    主情報アクセス用パラメタ
            01  ORCSSYUACCAREA.
                COPY    "CPORCSSYUACC.INC".
       *
-      *    �ݸ���ǧǯ����������Ͽ����
+      *    保険確認年月日履歴登録サブ
            COPY    "CPORCSPTHKNRRK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -384,7 +384,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -392,27 +392,27 @@
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
       *
-      *    ���������
+      *    初期　処理
            PERFORM 100-INIT-SEC
       *
-      *    �ݸ��ȹ礻�ѹ��δ��ֳ������å�
+      *    保険組合せ変更の期間外チェック
            IF     (SPA-P02-SYORI   NOT =   1    )  AND
                   (SPA-KEI2-FLG        =   ZERO )
                PERFORM 1001-HKNCOMBI-KIKANCHK-SEC
                MOVE    1               TO  FLG-END
            END-IF
-      *APIV3   �����å��Τ�
+      *APIV3   チェックのみ
            IF      SPA-P02-GAMEN   =   "APICHK"
                MOVE    1               TO  FLG-END
            END-IF
       *
            IF      FLG-END         =   ZERO
                IF      SPA-P02-GAMEN   =   "API"
-      *            ���Уɹ�������
+      *            ＡＰＩ更新処理
                    PERFORM 300-API-KOUSIN-SEC
                ELSE
       *
-      *            �ģ¹�������
+      *            ＤＢ更新処理
                    PERFORM 200-MAIN-SEC
                END-IF
            END-IF
@@ -425,7 +425,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -433,7 +433,7 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -443,13 +443,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ѹ��δ��ֳ������å�����
+      *    保険組合せ変更の期間外チェック処理
       *****************************************************************
        1001-HKNCOMBI-KIKANCHK-SEC       SECTION.
       *
            MOVE    SPACE               TO  SPA-KEI-ERRCD
            MOVE    SPACE               TO  WRK-PIDCD
-      *    �ѥ�᥿�ե�������
+      *    パラメタファイルより
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "P02"               TO  PARA-GYOUMUID
@@ -475,7 +475,7 @@
                MOVE    SPA-GMN-PTID        TO  COMB-PTID
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM 940-HKNCOMBI-READ-SEC
-      *        �ݸ��ѹ��ˤ�������������̵ͭ�����å�
+      *        保険変更による受診履歴修正の有無チェック
                IF      FLG-HKNCOMBI        =   ZERO
                    IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
                           (HZN-COMB-TEKEDYMD   NOT =   COMB-TEKEDYMD) OR
@@ -500,38 +500,38 @@
        1001-HKNCOMBI-KIKANCHK-EXT.
            EXIT.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �����ֹ���󹹿�
+      *    患者番号情報更新
            PERFORM 280-PTNUM-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
       *
-      *    ���Ծ��󹹿�
+      *    患者情報更新
            PERFORM 210-PTINF-SYORI-SEC
       *ver.4.7
-      *    �����ϰ�Ϣ�Ⱦ��󹹿�
+      *    患者地域連携情報更新
            PERFORM 210-PTPUBLIC-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
       *ver.4.7
-      *    ���Ը���������󹹿�
+      *    患者個別設定情報更新
            PERFORM 211-PTCONF-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
       *
-      *    �������򹹿�
+      *    旧姓履歴更新
            PERFORM 260-KYUSEIRRK-SYORI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
            END-IF
       *
-      *    ������ô��
+      *    公費負担額
            INITIALIZE                      PTKOHFTN-REC
            MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
@@ -542,10 +542,10 @@
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ���ԥ쥻�ץ�ʬ��ơ��֥���
+      *    患者レセプト分割テーブル削除
            PERFORM 300-PTHDISTDAY-DELETE-SEC
       *
-      *    �ѥ�᥿�ե�������
+      *    パラメタファイルより
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -591,15 +591,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    "TNKRRK"
                        PERFORM 291-TNKRRK-SYORI-SEC
                    WHEN    "PTRSIINF"
-      *                ����ϫ���ݸ�����
+      *                患者労災保険情報
                        PERFORM 292-PTRSIINF-SYORI-SEC
       *
                    WHEN    "PTKOHFTN"
-      *                ������ô���󹹿�
+      *                公費負担情報更新
                        PERFORM 300-PTKOHFTN-SYORI-SEC
       *H24.12
                    WHEN    "PTHDISTDAY"
-      *                ���ԥ쥻�ץ�ʬ��ơ��֥빹��
+      *                患者レセプト分割テーブル更新
                        PERFORM 300-PTHDISTDAY-SYORI-SEC
                END-EVALUATE
       *
@@ -611,53 +611,53 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���Ը�����ô�ۥơ��֥빹��
+      *    患者公費負担額テーブル更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 3001-PTKOHFTNETC-SYORI-SEC
            END-IF
-      *    �õ�����ơ��֥빹��
+      *    特記事項テーブル更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 300-PTTOKKI-SYORI-SEC
            END-IF
       *ver.4.7
-      *    ���Բ���ݸ����󹹿�
+      *    患者介護保険情報更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2130-PTCARE-HKNINF-SYORI-SEC
            END-IF
-      *    ���Բ��ǧ��Ծ��󹹿�
+      *    患者介護認定者情報更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2140-PTCARE-NINTEI-SYORI-SEC
            END-IF
       *H28.12
-      *    ���ԸĿ��ֹ���󹹿�
+      *    患者個人番号情報更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2150-MYNUMBER-SYORI-SEC
            END-IF
       *
-      *    �쥻�ץȺ��������ޥ�������
+      *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2009-RECEUPD-UPDATE-SEC
            END-IF
-      *    ��ʾ�������
+      *    主科情報設定
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-P02-SYORI       =   1     )  AND
                   (SPA-NAI-SYUKAYM NOT =   SPACE )
                PERFORM 2110-SYUKA-INSERT-SEC
            END-IF
-      *    ����ɳ�ա�Ʊ�촵�Լ��̡�����
+      *    患者紐付（同一患者識別）設定
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-GRPHOSPKBN      =   1     )
                PERFORM 2110-PTSAME-SYORI-SEC
            END-IF
       *
-      ***  �ѣҾ��󹹿�
+      ***  ＱＲ情報更新
       *    IF     (SPA-ERRCD           =   SPACE )  AND
       *           (SPA-QR-SYORI    NOT =   SPACE )
       *        PERFORM 2120-QRCDHKN-UPD-SEC
       **** END-IF
       *
-      *ver.4.7�����饤����Ȱ����б��ΰ١�ORCGP02 �ذ�ư
-      *    ����ơ������ȯ�Խ���
+      *ver.4.7　クライアント印刷対応の為、ORCGP02 へ移動
+      *    カルテ／処方箋発行処理
       **   PERFORM 2100-HC01-SYORI-SEC
       *
            IF      WRK-ERRCD       NOT =   SPACE
@@ -669,7 +669,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȺ��������ޥ�����������
+      *    レセプト作成管理マスタ更新処理
       *****************************************************************
         2009-RECEUPD-UPDATE-SEC           SECTION.
       *
@@ -690,7 +690,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
         2009-RECEUPD-UPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ���������
+      *    患者マスター処理
       *****************************************************************
        210-PTINF-SYORI-SEC            SECTION.
       *
@@ -705,11 +705,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      PTINF-REC
                MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  PTINF-PTID
-      *        �������Խ�
+      *        入力値編集
                PERFORM 2101-PTINF-HENSYU-SEC
-      *        ����ǯ����
+      *        作成年月日
                MOVE    SMCNDATE-YMD        TO  PTINF-CREYMD
-      *        ����ǯ����
+      *        更新年月日
                MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
       *
@@ -729,9 +729,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            ELSE
                MOVE    MCPDATA-REC         TO  PTINF-REC
-      *        �������Խ�
+      *        入力値編集
                PERFORM 2101-PTINF-HENSYU-SEC
-      *        ����ǯ����
+      *        更新年月日
                MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
                MOVE    SPA-OPID            TO  PTINF-OPID
@@ -753,7 +753,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        210-PTINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ����Խ�����
+      *    患者情報編集処理
       *****************************************************************
        2101-PTINF-HENSYU-SEC        SECTION.
       *
@@ -790,10 +790,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KANSENSYO-1     TO  PTINF-KANSENSYO-1
            MOVE    SPA-GMN-KANSENSYO-2     TO  PTINF-KANSENSYO-2
       *
-      *    �ƥ��ȴ����ֹ��ʬ
+      *    テスト患者番号区分
            MOVE    SPA-GMN-TSTPTNUMKBN     TO  PTINF-TSTPTNUMKBN
       *
-      *    Ϣ����
+      *    連絡先
            MOVE    SPA-GMN21-FAX            TO  PTINF-FAX
            MOVE    SPA-GMN21-KEITAI-TEL     TO  PTINF-KEITAI-TEL
            MOVE    SPA-GMN21-EMAIL          TO  PTINF-EMAIL
@@ -823,7 +823,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *ver.4.7
       *****************************************************************
-      *    �����ϰ�Ϣ�Ⱦ��󹹿�����
+      *    患者地域連携情報更新処理
       *****************************************************************
        210-PTPUBLIC-SYORI-SEC        SECTION.
       *
@@ -836,7 +836,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-PTPUBLIC        =   ZERO
                IF     (SPA-GMN28-PATIENTID1    =   SPACE )
                   AND (SPA-GMN28-AGREEMENT     =   SPACE )
-      *            �ϰ�Ϣ�ȣɣĤ�����ʤ���
+      *            地域連携ＩＤが空白なら削除
                    MOVE    PTPUBLIC-REC        TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_ptnum_public"  TO  MCP-TABLE
@@ -850,7 +850,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "9000"          TO  SPA-ERRCD
                    END-IF
                ELSE
-      *            ����
+      *            更新
                    PERFORM 2101-PTPUBLIC-UPS-SEC
                END-IF
            ELSE
@@ -858,7 +858,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   AND (SPA-GMN28-AGREEMENT     =   SPACE )
                    CONTINUE
                ELSE
-      *            �ϰ�Ϣ�Ⱦ�ɣġ�Ʊ�ն�ʬ�������Ͽ
+      *            地域連携情ＩＤ・同意区分あれば登録
                    PERFORM 2101-PTPUBLIC-INS-SEC
                END-IF
            END-IF
@@ -866,19 +866,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        210-PTPUBLIC-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϰ�Ϣ�ȥǡ�����Ͽ����
+      *    患者地域連携データ登録処理
       *****************************************************************
        2101-PTPUBLIC-INS-SEC        SECTION.
       *
            INITIALIZE                      PTPUBLIC-REC
            MOVE    SPA-HOSPNUM         TO  PTPUBLIC-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTPUBLIC-PTID
-      *    �������Խ�
+      *    入力値編集
            MOVE    SPA-GMN28-PATIENTID1
                                        TO  PTPUBLIC-PATIENT-ID1
            MOVE    SPA-GMN28-AGREEMENT
                                        TO  PTPUBLIC-AGREEMENT
-      *    ����ǯ����
+      *    作成年月日
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTPUBLIC-UPHMS
@@ -900,17 +900,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        2101-PTPUBLIC-INS-EXT.
            EXIT.
       *****************************************************************
-      *    �����ϰ�Ϣ�ȥǡ�����������
+      *    患者地域連携データ更新処理
       *****************************************************************
        2101-PTPUBLIC-UPS-SEC        SECTION.
       *
            MOVE    MCPDATA-REC         TO  PTPUBLIC-REC
-      *    �������Խ�
+      *    入力値編集
            MOVE    SPA-GMN28-PATIENTID1
                                        TO  PTPUBLIC-PATIENT-ID1
            MOVE    SPA-GMN28-AGREEMENT
                                        TO  PTPUBLIC-AGREEMENT
-      *    ����ǯ����
+      *    更新年月日
            MOVE    SMCNDATE-YMD        TO  PTPUBLIC-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTPUBLIC-UPHMS
            MOVE    SPA-OPID            TO  PTPUBLIC-OPID
@@ -932,11 +932,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *ver.4.7
       *****************************************************************
-      *    ���Ը���������󹹿�����
+      *    患者個別設定情報更新処理
       *****************************************************************
        211-PTCONF-SYORI-SEC        SECTION.
       *
-      *    ������Ģ�ѣҶ�ʬ
+      *    お薬手帳ＱＲ区分
            MOVE    SPA-GMN28-MNOTE-QRKBN   TO  WRK-CONF-CDATA
            MOVE    "MNOTEQR"               TO  WRK-CONF-CKEY
            PERFORM 2111-PTCONF-DBSYORI-SEC
@@ -944,7 +944,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      211-PTCONF-SYORI-EXT
            END-IF
       *
-      *    ������Ģ�ǡ����ե����ޥåȶ�ʬ
+      *    お薬手帳データフォーマット区分
            MOVE    SPA-GMN28-MNOTE-CSV     TO  WRK-CONF-CDATA
            MOVE    "MNOTEVER"              TO  WRK-CONF-CKEY
            PERFORM 2111-PTCONF-DBSYORI-SEC
@@ -952,7 +952,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      211-PTCONF-SYORI-EXT
            END-IF
       *
-      *    ����ǡ����ե����ޥåȶ�ʬ
+      *    日医データフォーマット区分
            MOVE    SPA-GMN28-JMAMRVER      TO  WRK-CONF-CDATA
            MOVE    "JMAMRVER"              TO  WRK-CONF-CKEY
            PERFORM 2111-PTCONF-DBSYORI-SEC
@@ -961,7 +961,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *H26.1
-      *    �������ν�
+      *    出生時体重
            IF      SPA-GMN-BIRTHWEIGHT     =   ZERO
                MOVE    SPACE                   TO  WRK-CONF-CDATA
            ELSE
@@ -974,7 +974,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *H26.4
-      *    �ϰ��������оݼ���
+      *    地域包括診療対象疾病
            PERFORM VARYING     IDH1    FROM    1   BY  1
                    UNTIL       IDH1    >   4
                IF      SPA-GMN28-CHKHKTBYO(IDH1)  =   SPACE
@@ -992,7 +992,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      211-PTCONF-SYORI-EXT
            END-IF
       *H28.4
-      *    ǧ�ξ��ϰ�������
+      *    認知症地域包括診療
            IF      SPA-GMN28-NNCHIKBN  =   ZERO
                MOVE    SPACE           TO  SPA-GMN28-NNCHIKBN
            END-IF
@@ -1002,7 +1002,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      211-PTCONF-SYORI-EXT
            END-IF
-      *    ����������Ĥ�����
+      *    小児かかりつけ診療
            IF      SPA-GMN28-SYOUNIKBN =   ZERO
                MOVE    SPACE           TO  SPA-GMN28-SYOUNIKBN
            END-IF
@@ -1013,7 +1013,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      211-PTCONF-SYORI-EXT
            END-IF
       *H30.4
-      *    ǥ�ض�ʬ
+      *    妊婦区分
            IF      SPA-GMN28-NINPUKBN   =   ZERO
                MOVE    SPACE           TO  SPA-GMN28-NINPUKBN
            END-IF
@@ -1024,7 +1024,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      211-PTCONF-SYORI-EXT
            END-IF
       *H28.12
-      *    ��Ƴ������ư����
+      *    指導料等自動算定
            MOVE    ZERO                TO  IDH2
            PERFORM VARYING     IDH1    FROM    1   BY  1
                    UNTIL      (IDH1    >   3    )
@@ -1067,7 +1067,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        211-PTCONF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը���������Ͽ����
+      *    患者個別設定登録処理
       *****************************************************************
        2111-PTCONF-DBSYORI-SEC        SECTION.
       *
@@ -1094,10 +1094,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �ģ¤���
+      *    ＤＢあり
            IF      FLG-PTCONF          =   ZERO
                IF      WRK-CONF-CDATA      =   SPACE
-      *            �ģº��
+      *            ＤＢ削除
                    MOVE    PTCONF-REC          TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_ptconf"        TO  MCP-TABLE
@@ -1111,12 +1111,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "9000"          TO  SPA-ERRCD
                    END-IF
                ELSE
-      *            �ģ¹���
+      *            ＤＢ更新
                    PERFORM 21111-PTCONF-UPS-SEC
                END-IF
            ELSE
                IF      WRK-CONF-CDATA  NOT =   SPACE
-      *            ��Ͽ
+      *            登録
                    PERFORM 21112-PTCONF-INS-SEC
                END-IF
            END-IF
@@ -1125,7 +1125,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        2111-PTCONF-DBSYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�������ǡ�����Ͽ����
+      *    患者個別設定データ登録処理
       *****************************************************************
        21112-PTCONF-INS-SEC        SECTION.
       *
@@ -1133,9 +1133,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTCONF-PTID
            MOVE    WRK-CONF-CKEY       TO  PTCONF-CKEY
-      *    �������Խ�
+      *    入力値編集
            MOVE    WRK-CONF-CDATA      TO  PTCONF-CDATA
-      *    ����ǯ����
+      *    作成年月日
            MOVE    SMCNDATE-YMD        TO  PTCONF-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTCONF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTCONF-UPHMS
@@ -1157,13 +1157,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        21112-PTCONF-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�������ǡ�����������
+      *    患者個別設定データ更新処理
       *****************************************************************
        21111-PTCONF-UPS-SEC        SECTION.
       *
-      *    �������Խ�
+      *    入力値編集
            MOVE    WRK-CONF-CDATA      TO  PTCONF-CDATA
-      *    ����ǯ����
+      *    更新年月日
            MOVE    SMCNDATE-YMD        TO  PTCONF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTCONF-UPHMS
            MOVE    SPA-OPID            TO  PTCONF-OPID
@@ -1186,7 +1186,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    �����ݸ��ޥ���������
+      *    患者保険マスター処理
       *****************************************************************
        220-PTHKNINF-SYORI-SEC        SECTION.
       *
@@ -1197,7 +1197,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 910-PTHKNINF-READ-SEC
       *
            IF      FLG-PTHKNINF        =   1
-      *        ��������
+      *        更新情報
                MOVE    SMCNDATE-YMD        TO  PTHKN-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTHKN-UPHMS
@@ -1218,7 +1218,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
-      *        ��������
+      *        更新情報
       *D       MOVE    MCPDATA-REC         TO  HZN-PTHKNINF-REC
                MOVE    HZN-PTHKN-CREYMD    TO  PTHKN-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTHKN-UPYMD
@@ -1239,14 +1239,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            ",PTHKN-TEKSTYMD:" PTHKN-TEKSTYMD
                    MOVE    "9000"          TO  SPA-ERRCD
                END-IF
-      *        ��ǧǯ��������
+      *        確認年月日履歴
                IF     (SPA-ERRCD           =   SPACE )
                   AND (HZN-PTHKN-KAKUNINYMD    NOT =   SPACE )
                   AND (PTHKN-KAKUNINYMD        NOT =   SPACE )
                    IF      HZN-PTHKN-KAKUNINYMD    =   PTHKN-KAKUNINYMD
                        CONTINUE
                    ELSE
-      *                �����ѹ�����
+      *                今回変更あり
                        PERFORM 2209-PTHKNRRK-ADD-SEC
                    END-IF
                END-IF
@@ -1255,7 +1255,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        220-PTHKNINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����ݸ���ǧǯ�����������
+      *    患者保険確認年月日履歴処理
       *****************************************************************
        2209-PTHKNRRK-ADD-SEC        SECTION.
       *
@@ -1276,7 +1276,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2209-PTHKNRRK-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը���ޥ���������
+      *    患者公費マスター処理
       *****************************************************************
        230-PTKOHINF-SYORI-SEC        SECTION.
       *
@@ -1288,7 +1288,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-PTKOHINF        =   1
                MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
-      *        ��������
+      *        更新情報
                MOVE    SMCNDATE-YMD        TO  PTKOH-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTKOH-UPHMS
@@ -1308,7 +1308,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "9000"          TO  SPA-ERRCD
                END-IF
            ELSE
-      *        ��������
+      *        更新情報
       *D       MOVE    MCPDATA-REC         TO  HZN-PTKOHINF-REC
                MOVE    HZN-PTKOH-CREYMD    TO  PTKOH-CREYMD
                MOVE    SMCNDATE-YMD        TO  PTKOH-UPYMD
@@ -1330,9 +1330,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    ����������ֹ���Ͽ�������ݸ�ǡ�������Ͽ�λ���
+      *    月代り受給者番号登録（生活保護で、新規登録の時）
            IF      PTKOH-KOHNUM        =   "012"
-      *        ��αˮ���ɲ�
+      *        残留邦人追加
                                        OR  "025"
                PERFORM 2301-MONTHLYNUM-SYORI-SEC
            END-IF
@@ -1340,7 +1340,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        230-PTKOHINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ����������ֹ�ޥ���������
+      *    月代り受給者番号マスター処理
       *****************************************************************
        2301-MONTHLYNUM-SYORI-SEC        SECTION.
       *
@@ -1348,14 +1348,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTID        TO  PTKOH-PTID
       *
            IF      PTKOH-SAKJOKBN      =   "1"
-      *        ���ʬ
+      *        削除分
                MOVE    SPACE               TO  MONTHLYNUM-REC
                INITIALIZE                      MONTHLYNUM-REC
                MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
                MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
                MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
                MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
-      *        Ŭ�ѳ���ǯ����
+      *        適用開始年月日
                MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
                MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
                MOVE    "key"               TO  WRK-MCP-PATHNAME
@@ -1370,24 +1370,24 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        SPA-AREA
                END-IF
            ELSE
-      *        �Խ�
+      *        編集
                MOVE    SPACE               TO  MONTHLYNUM-REC
                INITIALIZE                      MONTHLYNUM-REC
                MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
                MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
                MOVE    PTKOH-KOHID         TO  MONTHLYNUM-KOHID
                MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
-      *        Ŭ�ѳ���ǯ����
+      *        適用開始年月日
                MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
                MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
                MOVE    "key4"              TO  WRK-MCP-PATHNAME
                PERFORM 925-MONTHLYNUM-READ-SEC
                IF      FLG-MONTHLYNUM      =   ZERO
-      *            ����ʬ
+      *            修正分
                    IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
                           (PTKOH-JKYSNUM   NOT =   MONTHLYNUM-JKYSNUM)
                        MOVE    PTKOH-JKYSNUM   TO  MONTHLYNUM-JKYSNUM
-      *                ��������
+      *                更新情報
                        MOVE    SMCNDATE-YMD        TO  MONTHLYNUM-UPYMD
                        MOVE    SMCNDATE-HMS        TO  MONTHLYNUM-UPHMS
       *
@@ -1413,18 +1413,18 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *            MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
       *            MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
       *            MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
-      *            Ŭ�ѳ���ǯ����
+      *            適用開始年月日
       *            MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
       *            MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
       *            MOVE    "key"               TO  WRK-MCP-PATHNAME
       *            PERFORM 925-MONTHLYNUM-READ-SEC
       *            IF      FLG-MONTHLYNUM      =   ZERO
-      *                ����ʬ
+      *                修正分
       *                IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
       *                       (PTKOH-JKYSNUM   NOT =
       *                                            MONTHLYNUM-JKYSNUM)
       *                    MOVE    PTKOH-JKYSNUM   TO MONTHLYNUM-JKYSNUM
-      *                    ��������
+      *                    更新情報
       *                    MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
       *                    MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
       *
@@ -1448,7 +1448,7 @@ grpsys*                    CALL    "ORCDBMAIN"     USING   MCPAREA
                        IF      PTKOH-JKYSNUM       =   SPACE
                            GO      TO      2301-MONTHLYNUM-SYORI-EXT
                        END-IF
-      *                ����
+      *                新規
                        MOVE    SPACE           TO  MONTHLYNUM-REC
                        INITIALIZE                  MONTHLYNUM-REC
                        MOVE    PTKOH-HOSPNUM   TO  MONTHLYNUM-HOSPNUM
@@ -1488,13 +1488,13 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        2301-MONTHLYNUM-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ǽ��եޥ���������
+      *    受診受付マスター処理
       *****************************************************************
        240-UKETUKE-SYORI-SEC        SECTION.
       *
            MOVE    PARA-DATA-REC        TO  UKETUKE-REC
       *
-      *    ����ʳ��ο��Ųʡ��ɥ���������Ź԰����Ϥΰ٣ӣУ��إ��å�
+      *    削除以外の診療科、ドクターを診療行為入力の為ＳＰＡへセット
            IF     (UKE-UPYMD       NOT =   ALL "9")  AND
                   (UKE-KAIKEITIME      =   ZERO   )
                MOVE    UKE-SRYKA           TO  SPA-SRYKA
@@ -1506,7 +1506,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 930-UKETUKE-READ-SEC
       *
            IF      FLG-UKETUKE         =   1
-      *        �ɲäλ������գɣĤ����
+      *        追加の時、受付ＩＤを取得
                MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
                MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
                MOVE    ZERO                TO  UKE-UKEID
@@ -1592,7 +1592,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-PTID        TO  UKE-PTID
       *
                IF      UKE-UPYMD       =   ALL "9"
-      *            ���
+      *            削除
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBDELETE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
@@ -1611,7 +1611,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SPA-OPID            TO  UKE-OPID
       *
-      *            ����
+      *            更新
                    MOVE    UKETUKE-REC         TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_uketuke"       TO  MCP-TABLE
@@ -1627,7 +1627,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 END-IF
            END-IF
       *
-      *    ͽ��Ԥ��象�Ѥߤ����
+      *    予約者の来院済みを処理
            IF      UKE-KEYYYKTIME  NOT =   SPACE
                PERFORM 2401-YYK-SYORI-SEC
            END-IF
@@ -1636,7 +1636,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ͽ�����
+      *    予約処理
       *****************************************************************
        2401-YYK-SYORI-SEC             SECTION.
       *
@@ -1663,7 +1663,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *H26.8   �ɥ��������������Ƥ��ѹ��������
+      *H26.8   ドクター・診療内容を変更した場合
            IF      FLG-YYK             =   ZERO
                IF     (YYK-PTID        NOT =   ZERO )
                 AND   (YYK-PTID        NOT =   UKE-PTID)
@@ -1694,11 +1694,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR (YYK-PTID            =   ZERO    )
                        OR (YYK-NAME        NOT =   SPA-GMN-NAME )
                        MOVE    "1"                 TO  YYK-RAIINZUMI
-      *                ���ԣɣ�
+      *                患者ＩＤ
                        IF     (YYK-PTID            =   ZERO    )
                            MOVE    SPA-GMN-PTID        TO  YYK-PTID
                        END-IF
-      *                ��̾�ѹ�
+      *                氏名変更
                        MOVE    SPA-GMN-NAME        TO  YYK-NAME
       *
                        MOVE    YYK-REC             TO  MCPDATA-REC
@@ -1717,18 +1717,18 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻����
+      *    保険組合せ処理
       *****************************************************************
        250-HKNCOMBI-SYORI-SEC        SECTION.
       *
            MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
-      *    ��ɽ����ʬ����
+      *    非表示区分設定
            PERFORM 2502-HKNCOMBI-HYOJI-SEC
       *
            MOVE    SPA-GMN-PTID        TO  COMB-PTID
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            PERFORM 940-HKNCOMBI-READ-SEC
-      *    �ݸ��ѹ��ˤ�������������̵ͭ�����å�
+      *    保険変更による受診履歴修正の有無チェック
            IF      FLG-HKNCOMBI        =   ZERO
       *D       MOVE    MCPDATA-REC         TO  HZN-HKNCOMBI-REC
                IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
@@ -1737,7 +1737,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 2501-HKNCOMBI-CHK-SEC
                END-IF
            END-IF
-      *    ����������ѹ���ʬ���ꥢ
+      *    新規設定を変更区分クリア
            IF      COMB-CHGKBN         =   "A"
                MOVE    SPACE               TO  COMB-CHGKBN
            END-IF
@@ -1788,7 +1788,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ѹ��ˤ�������������̵ͭ�����å�����
+      *    保険変更による受診履歴修正の有無チェック処理
       *****************************************************************
        2502-HKNCOMBI-HYOJI-SEC             SECTION.
       *
@@ -1812,7 +1812,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ѹ��ˤ�������������̵ͭ�����å�����
+      *    保険変更による受診履歴修正の有無チェック処理
       *****************************************************************
        2501-HKNCOMBI-CHK-SEC             SECTION.
       *
@@ -1848,13 +1848,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "K910"          TO  WRK-PIDCD
                    END-IF
                ELSE
-      *            ����λ�
+      *            削除の時
                    MOVE    "9100"          TO  SPA-KEI-ERRCD
                    MOVE    "K910"          TO  WRK-PIDCD
                END-IF
            END-IF
       *
-      *    ��̾�����å�
+      *    病名チェック
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
            MOVE    HZN-COMB-HOSPNUM    TO  PTBYO-HOSPNUM
@@ -1893,7 +1893,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                ELSE
-      *            ����λ�
+      *            削除の時
                    IF      SPA-KEI-ERRCD       =   SPACE
                        MOVE    "9101"          TO  SPA-KEI-ERRCD
                        MOVE    "K911"          TO  WRK-PIDCD
@@ -1909,11 +1909,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ���������
+      *    旧姓履歴マスター処理
       *****************************************************************
        260-KYUSEIRRK-SYORI-SEC             SECTION.
       *
-      *    ��������Ϥ��٤ƺ��
+      *    旧姓履歴はすべて削除
            PERFORM 260-KYUSEIRRK-DEL-SEC
       *
       *
@@ -1936,7 +1936,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            MOVE    SPA-GMN25-KYU-CREYMD (IDX)
       *************                            TO  KYUSEI-CREYMD
       *
-      *            �������������ʳ��Ϲ����Ȥ���
+      *            更新日が当日以外は更新とする
                    IF      SPA-GMN25-KYU-UPYMD (IDX)
                                                =   SMCNDATE-YMD
                        MOVE    SMCNDATE-YMD        TO  KYUSEI-CREYMD
@@ -1969,7 +1969,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ���������
+      *    旧姓履歴マスター処理
       *****************************************************************
        260-KYUSEIRRK-DEL-SEC            SECTION.
       *
@@ -1989,13 +1989,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        260-KYUSEIRRK-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ��Ѵ��ʴ����˥ޥ���������
+      *    患者番号変換（管理）マスター処理
       *****************************************************************
        280-PTNUM-SYORI-SEC             SECTION.
       *
-      *    ���ԣɣķ���
+      *    患者ＩＤ決定
            IF      SPA-GMN-PTID        =   ZERO
-      *        �����ֹ���ָ���
+      *        患者番号採番検索
                INITIALIZE                  SYS-1009-REC
                MOVE    "1009"              TO  SYS-1009-KANRICD
                MOVE    "*"                 TO  SYS-1009-KBNCD
@@ -2029,7 +2029,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  SYS-1009-PTID
                END-IF
                COMPUTE SYS-1009-PTID           =   SYS-1009-PTID  +   1
-      *        �Уԣɣġ᥼�����Ϥʤ�
+      *        ＰＴＩＤ＝ゼロ　はなし
                IF      SYS-1009-PTID           =   ZERO
                    MOVE    "8001"              TO  SPA-ERRCD
                    MOVE    1                   TO  SYS-1009-PTID
@@ -2039,7 +2039,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  SYS-1009-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYS-1009-UPHMS
                MOVE    SPA-OPID            TO  SYS-1009-OPID
-      *        �����ֹ����  ����
+      *        患者番号採番  更新
                MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    SYS-1009-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -2138,7 +2138,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        280-PTNUM-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ������ޥ���������
+      *    低所得マスター処理
       *****************************************************************
        290-TSYRRK-SYORI-SEC            SECTION.
       *
@@ -2146,7 +2146,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTID        TO  TSYRRK-PTID
       *
            EVALUATE    TRUE
-      *    ���
+      *    削除
            WHEN    ( TSYRRK-UPYMD      =   ALL "9" )
                MOVE    TSYRRK-REC      TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
@@ -2159,7 +2159,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "P029 TSYRRK DEL ERR:" MCP-RC
                           ",KEY:" TSYRRK-KEY
                END-IF
-      *    �ѹ�
+      *    変更
            WHEN    ( TSYRRK-NINSTYMD-O     NOT =   SPACE )
       *
       *DD      MOVE    MCPDATA-REC         TO  HZN-TSYRRK-REC
@@ -2181,7 +2181,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                           ",KEY:" TSYRRK-KEY
                    MOVE    "9000"          TO  SPA-ERRCD
                END-IF
-      *    �ɲ�
+      *    追加
            WHEN    OTHER
                MOVE    SPA-GMN-PTID    TO  TSYRRK-PTID
       *
@@ -2209,7 +2209,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        290-TSYRRK-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ��ޥ���������
+      *    年金マスター処理
       *****************************************************************
        291-TNKRRK-SYORI-SEC             SECTION.
       *
@@ -2217,7 +2217,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
       *
            EVALUATE    TRUE
-      *    ���
+      *    削除
            WHEN    ( TNKRRK-UPYMD      =   ALL "9" )
                MOVE    TNKRRK-REC      TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
@@ -2230,7 +2230,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    DISPLAY "P029 TNKRRK DEL ERR:" MCP-RC
                           ",KEY:" TNKRRK-KEY
                END-IF
-      *    �ѹ�
+      *    変更
            WHEN    ( TNKRRK-STYMD-O    NOT =   SPACE )
       *
       *DD      MOVE    MCPDATA-REC         TO  HZN-TNKRRK-REC
@@ -2252,7 +2252,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                           ",KEY:" TNKRRK-KEY
                    MOVE    "9000"          TO  SPA-ERRCD
                END-IF
-      *    �ɲ�
+      *    追加
            WHEN    OTHER
                MOVE    SPA-GMN-PTID        TO  TNKRRK-PTID
       *
@@ -2280,7 +2280,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ�����ޥ���������
+      *    患者労災保険情報マスター処理
       *****************************************************************
        292-PTRSIINF-SYORI-SEC        SECTION.
       *
@@ -2336,12 +2336,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������ô���󹹿�����
+      *    公費負担情報更新処理
       *****************************************************************
        300-PTKOHFTN-SYORI-SEC         SECTION.
       *
            MOVE    PARA-DATA-REC       TO  PTKOHFTN-REC
-      *    ������ô�ɹ���
+      *    公費負担読込み
            MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
            MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
@@ -2368,7 +2368,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-OPID            TO  PTKOHFTN-OPID
                MOVE    SPACE               TO  PTKOHFTN-TERMID
       *
-      *        ����
+      *        新規
                MOVE    SPA-GMN-PTID        TO  PTKOHFTN-PTID
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2392,7 +2392,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-OPID            TO  PTKOHFTN-OPID
       *
-      *        ����
+      *        更新
                MOVE    PTKOHFTN-REC        TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptkohftn"      TO  MCP-TABLE
@@ -2410,11 +2410,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-PTKOHFTN-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �õ�������󹹿�����
+      *    特記事項情報更新処理
       *****************************************************************
        300-PTTOKKI-SYORI-SEC         SECTION.
       *
-      *    �õ�����Ϥ��٤ƺ��
+      *    特記事項はすべて削除
            INITIALIZE                      PTTOKKI-REC
            MOVE    SPA-HOSPNUM         TO  PTTOKKI-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTTOKKI-PTID
@@ -2434,7 +2434,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-NAI26-TNYUGIKBN(IDX)
                                            TO  PTTOKKI-NYUGAIKBN
                MOVE    IDX                 TO  PTTOKKI-RENNUM
-      *        �õ�����
+      *        特記事項
                MOVE    SPA-GMN26-TCD(IDX)
                                            TO  PTTOKKI-CD
                MOVE    SPA-GMN26-TNAIYO(IDX)
@@ -2448,7 +2448,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTTOKKI-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTTOKKI-UPHMS
                MOVE    SPA-OPID            TO  PTTOKKI-OPID
-      *    �ɲ�
+      *    追加
                MOVE    PTTOKKI-REC         TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_pttokki"       TO  MCP-TABLE
@@ -2466,11 +2466,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-PTTOKKI-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ��������
+      *    患者レセプト分割削除処理
       *****************************************************************
        300-PTHDISTDAY-DELETE-SEC         SECTION.
       *
-      *    ���ԥ쥻�ץ�ʬ��Ϥ��٤ƺ��
+      *    患者レセプト分割はすべて削除
            INITIALIZE                      PT-HDIST-DAY-REC
            MOVE    SPA-HOSPNUM         TO  PT-HDIST-DAY-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PT-HDIST-DAY-PTID
@@ -2485,7 +2485,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-PTHDISTDAY-DELETE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ�乹������
+      *    患者レセプト分割更新処理
       *****************************************************************
        300-PTHDISTDAY-SYORI-SEC         SECTION.
       *
@@ -2520,7 +2520,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-OPID            TO  PT-HDIST-DAY-OPID
       *
-      *        ����
+      *        新規
                MOVE    SPA-GMN-PTID        TO  PT-HDIST-DAY-PTID
                MOVE    PT-HDIST-DAY-REC    TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2544,7 +2544,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-OPID            TO  PT-HDIST-DAY-OPID
       *
-      *        ����
+      *        更新
                MOVE    PT-HDIST-DAY-REC    TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
@@ -2562,11 +2562,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-PTHDISTDAY-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�����ô�ۥơ��֥빹������
+      *    患者公費負担額テーブル更新処理
       *****************************************************************
        3001-PTKOHFTNETC-SYORI-SEC         SECTION.
       *
-      *    ���󹹿��оݷ�ʬ�Ϥ��٤ƺ��
+      *    今回更新対象月分はすべて削除
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL      (IDX     >   MAX-KOHFTN )  OR
                               (SPA-NAI24-KOHFTN-ID (IDX)   =   ZERO)
@@ -2582,7 +2582,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
                IF      SPA-NAI24-KOHFTN-YM (IDX)   =   SPACE
-      *            ������
+      *            公費削除
                    MOVE    "del2"              TO  MCP-PATHNAME
                ELSE
                    MOVE    "del3"              TO  MCP-PATHNAME
@@ -2628,12 +2628,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        3001-PTKOHFTNETC-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô���󹹿�����
+      *    公費負担情報更新処理
       *****************************************************************
        30011-PTKOHFTNETC-DBSYORI-SEC         SECTION.
       *
            MOVE    PARA-DATA-REC       TO  PTKOHFTNETC-REC
-      *    ������ô�ɹ���
+      *    公費負担読込み
            MOVE    SPA-GMN-PTID        TO  PTKOHFTNETC-PTID
            MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
            MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
@@ -2659,7 +2659,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-OPID            TO  PTKOHFTNETC-OPID
       *
-      *        ����
+      *        新規
                MOVE    SPA-GMN-PTID        TO  PTKOHFTNETC-PTID
                MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2683,7 +2683,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                MOVE    SPA-OPID            TO  PTKOHFTNETC-OPID
       *
-      *        ����
+      *        更新
                MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
@@ -2702,11 +2702,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *ver.4.7
       *****************************************************************
-      *    ���Բ���ݸ����󹹿�����
+      *    患者介護保険情報更新処理
       *****************************************************************
        2130-PTCARE-HKNINF-SYORI-SEC         SECTION.
       *
-      *    ���٤ƺ��
+      *    すべて削除
            INITIALIZE                      PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTCRHKN-PTID
@@ -2721,14 +2721,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL      (IDX     >   SPA-GMN28-CRHKN-MAX )
                            OR (SPA-ERRCD   NOT =   SPACE )
-      *        ��Ͽ
+      *        登録
                PERFORM 21301-PTCAREHKNINF-INS-SEC
            END-PERFORM
            .
        2130-PTCARE-HKNINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Բ���ݸ�����ǡ�����Ͽ����
+      *    患者介護保険情報データ登録処理
       *****************************************************************
        21301-PTCAREHKNINF-INS-SEC        SECTION.
       *
@@ -2743,7 +2743,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  PTCRHKN-TEKSTYMD
            MOVE    SPA-NAI28-TCRHENDYMD(IDX)
                                        TO  PTCRHKN-TEKEDYMD
-      *    ����ǯ����
+      *    作成年月日
            MOVE    SMCNDATE-YMD        TO  PTCRHKN-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTCRHKN-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTCRHKN-UPHMS
@@ -2766,11 +2766,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Բ��ǧ��Ծ��󹹿�����
+      *    患者介護認定者情報更新処理
       *****************************************************************
        2140-PTCARE-NINTEI-SYORI-SEC         SECTION.
       *
-      *    ���٤ƺ��
+      *    すべて削除
            INITIALIZE                      PTCARE-NINTEI-REC
            MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTCRNIN-PTID
@@ -2800,7 +2800,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTCRNIN-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTCRNIN-UPHMS
                MOVE    SPA-OPID            TO  PTCRNIN-OPID
-      *        �ɲ�
+      *        追加
                MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
@@ -2820,11 +2820,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *H28.12
       *****************************************************************
-      *    ���ԸĿ��ֹ���󹹿�����
+      *    患者個人番号情報更新処理
       *****************************************************************
        2150-MYNUMBER-SYORI-SEC         SECTION.
       *
-      *    ���٤ƺ��
+      *    すべて削除
            INITIALIZE                      PTMYNUMBER-REC
            MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTMYNUM-PTID
@@ -2852,7 +2852,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SMCNDATE-YMD        TO  PTMYNUM-UPYMD
                MOVE    SMCNDATE-HMS        TO  PTMYNUM-UPHMS
                MOVE    SPA-OPID            TO  PTMYNUM-OPID
-      *        �ɲ�
+      *        追加
                MOVE    PTMYNUMBER-REC      TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptmynumber"    TO  MCP-TABLE
@@ -2872,14 +2872,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    ��ʾ����������
+      *    主科情報設定処理
       *****************************************************************
        2110-SYUKA-INSERT-SEC         SECTION.
       *
            INITIALIZE                      ORCSSYUACCAREA
-      *    ������ʬ
+      *    処理区分
            MOVE    "02"                TO  LNK-SYUACC-I-KBN
-      *    ����ǯ��
+      *    診療年月
            MOVE    SPA-NAI-SYUKAYM     TO  LNK-SYUACC-I-SRYYM
            MOVE    SPA-NAI-SYUKA       TO  LNK-SYUACC-IO-H-SRYKA
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
@@ -2896,7 +2896,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2110-SYUKA-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ����ɳ�ա�Ʊ�촵�Լ��̡˹�������
+      *    患者紐付（同一患者識別）更新処理
       *****************************************************************
        2110-PTSAME-SYORI-SEC         SECTION.
       *
@@ -2919,22 +2919,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-PTSAME          =   1
                IF      SPA-NAI-GRPHOSPNUM  NOT =   ZERO
-      *            Ʊ�촵�Լ����ɲ�
+      *            同一患者識別追加
                    PERFORM 21101-PTSAME-ADD-SEC
                END-IF
            ELSE
                IF      SPA-NAI-GRPHOSPNUM      =   ZERO
-      *            Ʊ�켱�̺��
+      *            同一識別削除
                    PERFORM 21102-PTSAME-DELETE-SEC
                ELSE
                    IF     (SPA-NAI-GRPHOSPNUM  =   PTSAME-SAME-HOSPNUM)
                       AND (SPA-NAI-GRPPTID     =   PTSAME-SAME-PTID   )
                        CONTINUE
                    ELSE
-      *            ɳ�դ��ѹ�
-      *                Ʊ�켱�̺��
+      *            紐付け変更
+      *                同一識別削除
                        PERFORM 21102-PTSAME-DELETE-SEC
-      *                Ʊ�촵�Լ����ɲ�
+      *                同一患者識別追加
                        PERFORM 21101-PTSAME-ADD-SEC
                    END-IF
                END-IF
@@ -2945,7 +2945,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�촵�Լ����ɲý���
+      *    同一患者識別追加処理
       *****************************************************************
        21101-PTSAME-ADD-SEC         SECTION.
       *
@@ -2966,12 +2966,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-PTSAME           =   ZERO
-      *        ����Ʊ�촵�Լ��̤���Ͽ�Ѥ�
+      *        既に同一患者識別が登録済み
                MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  PTSAME-PTID
                PERFORM 211011-PTSAME-INS-SEC
            ELSE
-      *        Ʊ�촵�Լ��̤ʤ�
+      *        同一患者識別なし
                INITIALIZE                      PTSAME-REC
                MOVE    SPA-NAI-GRPHOSPNUM  TO  PTSAME-HOSPNUM
                MOVE    SPA-NAI-GRPPTID     TO  PTSAME-PTID
@@ -2990,7 +2990,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        21101-PTSAME-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    Ʊ�촵�Լ����ɲý���
+      *    同一患者識別追加処理
       *****************************************************************
        211011-PTSAME-INS-SEC         SECTION.
       *
@@ -3017,7 +3017,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *   Ʊ�켱�̺���ý���
+      *   同一識別削除加処理
       *****************************************************************
        21102-PTSAME-DELETE-SEC         SECTION.
       *
@@ -3028,7 +3028,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    Ʊ�촵�Ԥ��ʤ��ʤä����
+      *    同一患者がなくなった場合
            MOVE    PTSAME-REC          TO  MCPDATA-REC
            MOVE    "tbl_ptsame"        TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -3066,7 +3066,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѣҾ��󹹿�����
+      *    ＱＲ情報更新処理
       *****************************************************************
        2120-QRCDHKN-UPD-SEC         SECTION.
       *
@@ -3117,12 +3117,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Уɴ����ݸ����󹹿�����
+      *    ＡＰＩ患者保険情報更新処理
       *****************************************************************
        300-API-KOUSIN-SEC         SECTION.
       *
-      *    �ݸ��������ݸ��ȹ礻�Τ�
-      *    �ѥ�᥿�ե�������
+      *    保険・公費・保険組合せのみ
+      *    パラメタファイルより
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -3152,7 +3152,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        ADD     1        TO  WRK-KOH-CNT
                    WHEN    "HKNCOMBI"
                        PERFORM 250-HKNCOMBI-SYORI-SEC
-      *            ϫ���ݸ�
+      *            労災保険
                    WHEN    "PTRSIINF"
                        IF      SPA-RSIAPI-FLG      =   "1"
                            PERFORM 292-PTRSIINF-SYORI-SEC
@@ -3171,7 +3171,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        300-API-KOUSIN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ������ɤ߹���
+      *    患者マスター読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -3200,7 +3200,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ޥ������ɤ߹���
+      *    保険マスター読み込み
       *****************************************************************
        910-PTHKNINF-READ-SEC         SECTION.
       *
@@ -3230,7 +3230,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����ޥ������ɤ߹���
+      *    公費マスター読み込み
       *****************************************************************
        920-PTKOHINF-READ-SEC         SECTION.
       *
@@ -3260,7 +3260,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����ޥ������ɤ߹���
+      *    公費マスター読み込み
       *****************************************************************
        925-MONTHLYNUM-READ-SEC         SECTION.
       *
@@ -3290,7 +3290,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ϫ���ݸ��ޥ������ɤ߹���
+      *    労災保険マスター読み込み
       *****************************************************************
        990-PTRSIINF-READ-SEC         SECTION.
       *
@@ -3320,7 +3320,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���եޥ������ɤ߹���
+      *    受付マスター読み込み
       *****************************************************************
        930-UKETUKE-READ-SEC         SECTION.
       *
@@ -3348,7 +3348,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        930-UKETUKE-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ��Ѵ��ɤ߹���
+      *    患者番号変換読み込み
       *****************************************************************
        950-PTNUM-READ-SEC           SECTION.
       *
@@ -3364,7 +3364,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        950-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ���ɤ߹���
+      *    予約読み込み
       *****************************************************************
        980-YYK-READ-SEC           SECTION.
       *
@@ -3380,7 +3380,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        980-YYK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɤ߹���
+      *    保険組合せマスター読み込み
       *****************************************************************
        940-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -3409,7 +3409,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        940-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ������ô�ޥ������ɤ߹���
+      *    公費負担マスター読み込み
       *****************************************************************
        991-PTKOHFTN-READ-SEC         SECTION.
       *
@@ -3426,7 +3426,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        991-PTKOHFTN-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�����ô�ۥޥ������ɤ߹���
+      *    患者公費負担額マスター読み込み
       *****************************************************************
        991-PTKOHFTNETC-READ-SEC         SECTION.
       *
@@ -3443,7 +3443,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        991-PTKOHFTNETC-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -3460,7 +3460,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        970-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        980-PTBYOMEI-READ-SEC         SECTION.
       *
@@ -3478,7 +3478,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        960-SYSKANRI-READ-SEC           SECTION.
       *
@@ -3496,7 +3496,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�촵�Լ��̥ޥ������ɹ�����
+      *    同一患者識別マスター読込処理
       *****************************************************************
        900-PTSAME-READ-SEC         SECTION.
       *
@@ -3513,7 +3513,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    QR������(���ݸ��Ծ�)�ɹ�
+      *    QRコード(被保険者証)読込
       *****************************************************************
        900-QRCDHKN-READ-SEC         SECTION.
       *
@@ -3530,7 +3530,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ϰ�Ϣ���ɤ߹���
+      *    患者地域連携読み込み
       *****************************************************************
        900-PTPUBLIC-READ-SEC         SECTION.
       *
@@ -3559,7 +3559,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PTPUBLIC-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ��ơ��֥��ɤ߹���
+      *    患者レセプト分割テーブル読み込み
       *****************************************************************
        991-PTHDISTDAY-READ-SEC         SECTION.
       *
@@ -3576,7 +3576,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        991-PTHDISTDAY-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը�������ơ��֥��ɤ߹���
+      *    患者個別設定テーブル読み込み
       *****************************************************************
        930-PTCONF-READ-SEC         SECTION.
       *
@@ -3594,7 +3594,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Բ���ݸ����ɤ߹���
+      *    患者介護保険情読み込み
       *****************************************************************
        900-PTCAREHKNINF-READ-SEC         SECTION.
       *
@@ -3625,7 +3625,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3638,7 +3638,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -3653,7 +3653,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -3666,7 +3666,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *

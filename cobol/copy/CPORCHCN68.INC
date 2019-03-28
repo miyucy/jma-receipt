@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,25 +16,25 @@
       * 113-8681, Japan.
       ********************************************************************
       *-------------------------------------------------------------*
-      *    ���Ŷ�ʬ�����ģ̶�ʬɾ��ɼ�ѥ�᥿  COPY (CPORCHCN68.INC)
+      *    医療区分・ＡＤＬ区分評価票パラメタ  COPY (CPORCHCN68.INC)
       *-------------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCHCN68AREA.
-      *    ������ʬ��0:Ƭ��/1:���ư�����
+      *    印刷区分（0:頭紙/1:内容印字）
            03  ORCHCN68-PRTKBN         PIC X(01).
-      *    ����ǯ��
+      *    診療年月
            03  ORCHCN68-SRYYM          PIC X(06).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  ORCHCN68-PTID           PIC 9(10).
-      *    �����ֹ�
+      *    患者番号
            03  ORCHCN68-PTNUM          PIC X(20).
-      *    Ϣ��
+      *    連番
            03  ORCHCN68-CNT            PIC 9(06).
-      *    �Хå���������(BATCH="1")
+      *    バッチ印刷情報(BATCH="1")
            03  ORCHCN68-BATCH          PIC X(1).
            03  ORCHCN68-PRTAREA        PIC X(25000).
 

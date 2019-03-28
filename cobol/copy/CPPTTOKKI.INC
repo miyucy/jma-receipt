@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,37 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ´µ¼ÔÆÃµ­»ö¹à¥Æ¡¼¥Ö¥ë       (CPPTTOKKI.INC)
+      *  æ‚£è€…ç‰¹è¨˜äº‹é …ãƒ†ãƒ¼ãƒ–ãƒ«       (CPPTTOKKI.INC)
       *****************************************************************
-      *  ½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
       *01  PTTOKKI-REC.
            03  PTTOKKI-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTTOKKI-HOSPNUM     PIC 9(2).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  PTTOKKI-NYUGAIKBN   PIC X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTTOKKI-PTID        PIC 9(10).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  PTTOKKI-RENNUM      PIC 9(02).
-      *ÆÃµ­»ö¹à¥³¡¼¥É
+      *ç‰¹è¨˜äº‹é …ã‚³ãƒ¼ãƒ‰
            03  PTTOKKI-CD              PIC X(02).
-      *ÆÃµ­»ö¹àÆâÍÆ
+      *ç‰¹è¨˜äº‹é …å†…å®¹
            03  PTTOKKI-NAIYO           PIC X(12).
-      *³«»ÏÇ¯·î
+      *é–‹å§‹å¹´æœˆ
            03  PTTOKKI-STYM            PIC X(06).
-      *½ªÎ»Ç¯·î
+      *çµ‚äº†å¹´æœˆ
            03  PTTOKKI-EDYM            PIC X(06).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTTOKKI-TERMID          PIC X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTTOKKI-OPID            PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTTOKKI-CREYMD          PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTTOKKI-UPYMD           PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTTOKKI-UPHMS           PIC X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    �����԰٣ӣУ����ǡ��������� ���� COPY (I4SCR-NYU.INC)
-      *             ���̤Υ����ΰ��ǡ����ǻ��Ѥ���
-      *                                  �ʳƹ԰٥����å��˻��ѡ�
+      *    入院行為ＳＰＡ　データ　　　 　　 COPY (I4SCR-NYU.INC)
+      *             画面のスパ領域をデータで使用する
+      *                                  （各行為チェックに使用）
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *
       ************************************************************
       *
@@ -40,7 +40,7 @@
                        09  SPA-GMN-TENSU         PIC X(08).
                        09  SPA-GMN-KAISU         PIC X(04).
                        09  SPA-GMN-KEI           PIC 9(08).
-      *                ���ϥ����ɤη��
+      *                入力コードの桁数
                        09  SPA-GMN-INCNT         PIC 9(02).
       *
                    07  SPA-COM-TBLREC.
@@ -48,11 +48,11 @@
                        09  SPA-COM-PAGE          PIC 9(04).
                        09  SPA-COM-GYOU          PIC 9(04).
                        09  SPA-COM-CUR           PIC X(01).
-      *                �������ϰ���
+      *                今回入力位置
                        09  SPA-COM-IN            PIC X(01).
-      *                ��������ͭ��
+      *                今回入力有り
                        09  SPA-COM-IN2           PIC X(01).
-      *                ��������ͭ��
+      *                数量入力有り
                        09  SPA-COM-IN3           PIC X(01).
                        09  SPA-MAE-INPUTCD       PIC X(22).
       *
@@ -60,15 +60,15 @@
                        09  SPA-COM-SRYKBN        PIC X(02).
                        09  SPA-COM-INPUTCD       PIC X(09).
                        09  SPA-COM-SURYO         PIC 9(05)V9(03).
-      *                �޹������
+      *                剤合計点数
                        09  SPA-COM-TENSU         PIC 9(08).
-      *                ����
+      *                点数
                        09  SPA-COM-TEN           PIC 9(07)V99.
-      *                �����ʤ������ͷ׻����
+      *                点数（きざみ値計算後）
                        09  SPA-COM-KISOTEN       PIC 9(07)V99.
                        09  SPA-COM-KAISU         PIC 9(08).
                        09  SPA-COM-KEI           PIC 9(08).
-      *                ��������������
+      *                外用薬用入力用
                        09  SPA-COM-SURYO2        PIC 9(05)V9(03).
                        09  SPA-COM-KAISU2        PIC 9(08).
       *
@@ -82,161 +82,161 @@
                                                  SPA-COM-INPUTCHI-G.
                            11  SPA-COM-ATAI          PIC X(08)
                                                      OCCURS  4.
-      *                �굻���ף�
+      *                手技料計１
                        09  SPA-COM-SYUTEN1       PIC 9(08).
-      *                �굻���ף�
+      *                手技料計２
                        09  SPA-COM-SYUTEN2       PIC 9(08).
-      *                ��������
+      *                薬剤点数
                        09  SPA-COM-YKZTEN        PIC 9(08).
-      *                ��������
+      *                薬剤点数
                        09  SPA-COM-KIZAITEN      PIC 9(08).
       *
                        09  SPA-COM-ZAINUM        PIC 9(08).
-      *                �޽�λ
+      *                剤終了
                        09  SPA-COM-ZAIEND        PIC X(01).
-      *                ��ư�����ʬ�ʣ�������ɽ�����������Ͼ��ˤ���ѹ���
+      *                自動算定区分（１：画面表示、２：入力条件により変更）
                        09  SPA-COM-AUTOKBN       PIC X(01).
-      *                ��������
+      *                数量入力
                        09  SPA-COM-SURFLG        PIC X(01).
-      *                �������
+      *                回数入力
                        09  SPA-COM-KAIFLG        PIC X(01).
-      *                ̾������
+      *                名称入力
                        09  SPA-COM-MEIFLG        PIC X(01).
-      *                ������
+      *                計入力
                        09  SPA-COM-KEIFLG        PIC X(01).
-      *                ��������
+      *                自費入力
                        09  SPA-COM-JIHIFLG       PIC X(01).
-      *                �������ѿ��Ź԰٥�����
+      *                履歴算定用診療行為コード
                        09  SPA-COM-CHK-SRYCD     PIC X(09).
-      *                ����ɽ�������ϥ�����
+      *                画面表示用入力コード
                        09  SPA-COM-ICD-INPUTCD   PIC X(22).
-      *                ���ϥ�����ɽ���Ѥ�
+      *                入力コード表示済み
                        09  SPA-COM-GMNFLG        PIC X(01).
       *
                        09  SPA-COM-FLGAREA.
-      *                    �ش����޷ٹ�ѥե饰
+      *                    禁忌薬剤警告済フラグ
                            11  SPA-COM-KNKFLG        PIC X(01).
                            11  SPA-COM-KNKUMU        PIC X(01).
-      *                    ϫ���ɤ��ؤ��û�ʬ
+      *                    労災読み替え加算分
                            11  SPA-COM-RSIFLG2       PIC X(01).
-      *                    �ٹ�ѥե饰
+      *                    警告済フラグ
                            11  SPA-COM-KZMFLG        PIC X(01).
-      *                    ʻ�ѻ���ѥե饰
+      *                    併用算定済フラグ
                            11  SPA-COM-SDOFLG        PIC X(01).
-      *                    ���ܥ����å��ѥե饰
+      *                    基本チェック済フラグ
                            11  SPA-COM-CHKFLG        PIC X(01).
-      *                    ���ֲû��ե饰
+      *                    時間加算フラグ
                            11  SPA-COM-TIMEFLG       PIC 9(01).
-      *                �׻������å��ѥե饰����󥯥ꥢ��
+      *                計算チェック済フラグ（毎回クリア）
                        09  SPA-COM-SANFLG        PIC 9(01).
-      *                �����о�̵ͭ�ʣ�������ͭ���
+      *                逓減対象有無（１：逓減有り）
                        09  SPA-COM-TEIGEN-FLG    PIC  9(01).
-      *                �����оݥ����å���
+      *                逓減対象チェック済
                        09  SPA-COM-TEIGEN-CHK    PIC  9(01).
-      *                ϫ�Ҷ�ʬ��ϫ���ѤΥ����ɡ�
+      *                労災区分（労災用のコード）
                        09  SPA-COM-RSIKBN        PIC  9(01).
-      *                ϫ�� �ʳ�������û����ɤ��ؤ��ե饰��
+      *                労災 （外来管理加算の読み替えフラグ）
                        09  SPA-COM-RSIGIRI       PIC  9(01).
-      *                �������������
+      *                入院回数・日数
                        09  SPA-COM-NYUIN-AREA.
                            11  SPA-COM-NYU-KAI        PIC 9(03).
                            11  SPA-COM-NYUINDAY       PIC 9(01)
                                                       OCCURS  31.
-      *        �����ޥ�������
-      *                �����ޥ����ο��Ŷ�ʬ
+      *        点数マスタ項目
+      *                点数マスタの診療区分
                        09  SPA-COM-TNSSRYKBN     PIC X(02).
-      *                �����ޥ����ο��ż���
+      *                点数マスタの診療種別
                        09  SPA-COM-TNSSRYSYUKBN  PIC X(03).
-      *                �ǡ�����ʬ
+      *                データ区分
                        09  SPA-COM-DATAKBN       PIC X(01).
-      *                �����ޥ�������������
+      *                点数マスタ　薬剤内容
                        09  SPA-COM-MADOKUKBN     PIC 9(01).
                        09  SPA-COM-SINKEIKBN     PIC 9(01).
                        09  SPA-COM-SEIBUTUKBN    PIC 9(01).
                        09  SPA-COM-ZOEIZAIKBN    PIC 9(01).
                        09  SPA-COM-CSYYOURYO     PIC 9(05).
-      *                ñ�̥�����
+      *                単位コード
                        09  SPA-COM-TANICD        PIC X(03).
-      *                ���޶�ʬ
+      *                薬剤区分
                        09  SPA-COM-YKZKBN        PIC 9(01).
                        09  SPA-COM-ZAIGATAKBN    PIC 9(01).
-      *                �����ޥ��������̶�ʬ
+      *                点数マスタ　部位区分
                        09  SPA-COM-BUIKBN        PIC X(01).
-      *                �������»�Ƚ�Ƕ�ʬ
+      *                検査等実施判断区分
                        09  SPA-COM-KNSJISKBN     PIC  9(01).
-      *                �������»�Ƚ�ǥ��롼��
+      *                検査等実施判断グループ
                        09  SPA-COM-KNSJISGRPKBN  PIC  9(02).
-      *                ���û�������
+      *                注加算コード
                        09  SPA-COM-CHUKSNCD      PIC  X(04).
-      *                ���û�����
+      *                注加算通番
                        09  SPA-COM-CHUKSNTUBAN   PIC  X(01).
-      *                ��§�û��оݳ���ʬ
+      *                通則加算対象外区分
                        09  SPA-COM-TUSOKUGAIKBN   PIC  X(01).
-      *                ��§ǯ���ʬ
+      *                通則年齢区分
                        09  SPA-COM-TSUSOKUAGE    PIC  X(01).
-      *                ���ֲû���ʬ
+      *                時間加算区分
                        09  SPA-COM-TIMEKSNKBN    PIC  9(01).
-      *                �����ѡ�����оݸ���
+      *                検査用　包括対象検査
                        09  SPA-COM-HOUKNSKBN     PIC  9(02).
-      *                �����ѡ���ʬ�ֹ�
+      *                検査用　区分番号
                        09  SPA-COM-CDKBN.
                            11  SPA-COM-CDKBN-KBN   PIC  X(01).
                            11  SPA-COM-CDKBN-SYO   PIC  X(01).
                            11  SPA-COM-CDKBN-BU    PIC  X(02).
-      *                    ϫ���ѡ���ʬ�ֹ�
+      *                    労災用　区分番号
                            11  SPA-COM-CDKBN-KBNNUM     PIC  X(03).
-      *                ���������ʬ
+      *                算定履歴区分
                        09  SPA-COM-SANTEIRRKKBN    PIC  9(01).
-      *                ��������û���ʬ
+      *                外来管理加算区分
                        09  SPA-COM-GAIKANRIKBN     PIC  9(01).
-      *                ��Ƴ������
+      *                指導管理料
                        09  SPA-COM-SDOKNRYO        PIC  9(02).
-      *                ��������
+      *                点数識別
                        09  SPA-COM-TENSIKIBETU     PIC  9(01).
-      *                ������ǯ��û���ʬ
+      *                特定器材年齢加算区分
                        09  SPA-COM-TOKUKIZAIAGEKSNKBN   PIC  9(01).
-      *                ��������ʬ
+      *                酸素等区分
                        09  SPA-COM-SANSOKBN        PIC  9(01).
-      *                ��������̣�
+      *                特定器材種別１
                        09  SPA-COM-TOKUKIZAISBT1   PIC  9(01).
-      *                ��������ʴ��ξ�¡�
+      *                上限点数（器材の上限）
                        09  SPA-COM-JGNTEN          PIC  9(07).
-      *                �ݸ�Ŭ�Ѷ�ʬ
+      *                保険適用区分
                        09  SPA-COM-HKNTEKKBN       PIC  9(01).
-      *                �����󽸷��輱��
+      *                点数欄集計先識別
                        09  SPA-COM-GAITENTTLKBN    PIC  9(03).
-      *                �����󽸷��輱��
+      *                点数欄集計先識別
                        09  SPA-COM-NYUTENTTLKBN    PIC  9(03).
-      *                ���Ƕ�ʬ
+      *                往診区分
                        09  SPA-COM-OSINKBN         PIC  9(01).
-      *    ��������
-      *                �������ͷ׻�����
+      *    画像診断
+      *                きざみ値計算識別
                        09  SPA-COM-KZMCOMPSIKIBETU     PIC 9(01).
-      *                �������ͷ׻����
+      *                きざみ値計算上限
                        09  SPA-COM-KZMJGN              PIC  9(08).
-      *                ���������ʬ
+      *                包括逓減区分
                        09  SPA-COM-HOUKATUTEIGENKBN    PIC  9(03).
-      *                ǯ��û�
+      *                年齢加算
                        09  SPA-COM-AGEKSNTBL           OCCURS 4.
-      *                    ǯ��û�����
+      *                    年齢加算下限
                            11  SPA-COM-AGEKSNKGN       PIC  X(02).
-      *                    ǯ��û����
+      *                    年齢加算上限
                            11  SPA-COM-AGEKSNJGN       PIC  X(02).
-      *                    ǯ��û����ť�����
+      *                    年齢加算診療コード
                            11  SPA-COM-AGEKSNSRYCD     PIC  X(09).
-      *                ���������
+      *                日数・回数
                        09  SPA-COM-DAYCNT              PIC  9(01).
-      *                �����оݶ�ʬ
+      *                逓減対象区分
                        09  SPA-COM-TEIGENKBN           PIC  9(01).
-      *                ��ȯ�����ʶ�ʬ
+      *                後発医薬品区分
                        09  SPA-COM-KOUHATUKBN          PIC  9(01).
-      *                �����Ŭ��������ʬ
+      *                基準不適合逓減区分
                        09  SPA-COM-KIJUNTEIGENKBN      PIC  9(01).
-      *                �����Ŭ�������оݻ��ߴ��
+      *                基準不適合逓減対象施設基準
                        09  SPA-COM-KIJUNTEIGENCD       PIC  9(03).
-      *    �����ޥ����ղþ�����
-      *                �η��ʬ
+      *    点数マスタ付加情報より
+      *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).
-      *                ���ϥ����å���ʬ
+      *                入力チェック区分
                        09  SPA-COM-INPCHKKBN           PIC 9(01).
       * 

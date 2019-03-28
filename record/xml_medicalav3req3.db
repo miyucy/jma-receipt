@@ -10,21 +10,21 @@ xml_medicalav3req3 {
     		Perform_Date		varchar(10);
 		Perform_Time		varchar(8);
 		Orca_Uid		varchar(36);
-#--- ½èÍı¶èÊ¬
+#--- å‡¦ç†åŒºåˆ†
 		Patient_Mode		varchar(06);
 		Medical_Mode		varchar(01);
 		Delete_Number_Info    {
 			Delete_Number	varchar(02);
 				} [30];
-#--- °õºş¶èÊ¬
+#--- å°åˆ·åŒºåˆ†
 		Print_Information    {
-#---    ½èÊı¤»¤ó
+#---    å‡¦æ–¹ã›ã‚“
 		Print_Prescription_H_Class	varchar(1);
-#---    Ãí¼Í¤»¤ó
+#---    æ³¨å°„ã›ã‚“
 		Print_Order_Injection_Class	varchar(1);
-#---    »Ø¼¨¤»¤ó
+#---    æŒ‡ç¤ºã›ã‚“
 		Print_Order_Direction_Class	varchar(1);
-#---    °õºş¥É¥¯¥¿¡¼
+#---    å°åˆ·ãƒ‰ã‚¯ã‚¿ãƒ¼
 		Print_Physician_Code		varchar(5);
 		};
 	};

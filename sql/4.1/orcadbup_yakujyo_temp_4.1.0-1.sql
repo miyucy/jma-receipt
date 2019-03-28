@@ -3,7 +3,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ÌôºŞ¾ğÊó¥Æ¥ó¥İ¥é¥ê             --
+-- è–¬å‰¤æƒ…å ±ãƒ†ãƒ³ãƒãƒ©ãƒª             --
 --                                --
 -- Table Name  : TBL_YAKUJYO_TEMP --
 -- Update      : 2007/12/10       --

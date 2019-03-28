@@ -1,15 +1,15 @@
 --                                    --
--- �쥻�ץȥ����ȥơ��֥���ѹ�     --
+-- レセプトコメントテーブルの変更     --
 --                                    --
--- ���ܤ��ɲ�                         --
---   �����ɾ��ܵ���ʬ SJKBN           --
+-- 項目の追加                         --
+--   　　症状詳記区分 SJKBN           --
 --                                    --
 -- Create Date : 2006/06/14           --
 --                                    --
 
 \set ON_ERROR_STOP
 
--- TBL_RECECOMWK ����                 --
+-- TBL_RECECOMWK 作成                 --
 
 create table TBL_RECECOMWK (
 HOSPID				char(24)	not null,
@@ -28,16 +28,16 @@ UPHMS				char(6),
 constraint TBL_RECECOMWK_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYM,HKNCOMBI,SRYDD));
 
--- TBL_RECECOM �� TBL_RECECOMWK   --
+-- TBL_RECECOM → TBL_RECECOMWK   --
 
 insert into TBL_RECECOMWK
 select * from TBL_RECECOM;
 
--- TBL_RECECOM ���               --
+-- TBL_RECECOM 削除               --
 
 drop table TBL_RECECOM;
 
--- TBL_RECECOM ����               --
+-- TBL_RECECOM 作成               --
 
 create table TBL_RECECOM (
 HOSPID				char(24)	not null,
@@ -57,7 +57,7 @@ UPHMS				char(6),
 constraint TBL_RECECOM_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYM,HKNCOMBI,SRYDD,SJKBN));
 
--- TBL_RECECOMWK �� TBL_RECECOM   --
+-- TBL_RECECOMWK → TBL_RECECOM   --
 
 insert into TBL_RECECOM
 (HOSPID,
@@ -93,6 +93,6 @@ UPHMS
 
 from TBL_RECECOMWK;
 
--- TBL_RECECOMWK ���             --
+-- TBL_RECECOMWK 削除             --
 
 drop table TBL_RECECOMWK;

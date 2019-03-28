@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG007.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ��ץ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/07/30    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 会計カード
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/07/30    NACL-太田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����    07/05/28  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/05/28  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,7 +35,7 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    �����оݴ��ԥե�����
+      *    処理対象患者ファイル
            SELECT  BG00701-FILE    ASSIGN   ORCBG00701PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
@@ -43,14 +43,14 @@
                                    FILE    STATUS  IS  STS-BG00701.
       *
       *
-006900*    ���顼�ե�����
+006900*    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����оݴ��ԥ����ȥե�����
+      *    処理対象患者ソートファイル
        FD  BG00701-FILE.
        01  BG00701-REC.
            03  BG00701-KEY                     PIC X(130).
@@ -62,28 +62,28 @@
                                                OCCURS  31.
            03  BG00701-TSTPTNUMKBN             PIC X(01).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                         PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����оݴ��ԥե�����
+      *    処理対象患者ファイル
            COPY    "CPCOMMONDAT2.INC"
                                            REPLACING   //RECE01//
                                            BY          //ORCBG00701//.
-@@@@@@*    �ե�����̾�˳�ĥ�Ҥ������Խ����Ƥ�����Ϻ�����롣
+@@@@@@*    ファイル名に拡張子を別途編集している場合は削除する。
       *    03  FILLER                      PIC X(04)   VALUE   ".dat".
       *
-@@@@@@*    ���顼�ե�����̾�ѤΥ��ԡ�����ɲ�
+@@@@@@*    エラーファイル名用のコピー句を追加
            COPY    "CPRECEERR.INC".
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
            03  STS-BG00701                         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-SRYACCT                         PIC 9(01).
@@ -101,14 +101,14 @@
            03  FLG-KIKAN-DAY                       PIC 9(01).
            03  FLG-BTPARA                          PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-BG007                           PIC 9(05).
            03  CNT-PAGE                            PIC 9(08).
            03  CNT-JOB-UPDCNT                      PIC 9(08).
            03  CNT-BG00701                         PIC 9(05).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME                            PIC 9(08).
            03  SYS-YMD.
@@ -116,7 +116,7 @@
                05  SYS-MM                          PIC 9(02).
                05  SYS-DD                          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
            03  IDX1                                PIC 9(05).
@@ -127,13 +127,13 @@
            03  IDXE                                PIC 9(05).
            03  IDX-DAY                             PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
            03  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-HOSPNUM                    PIC 9(02).
-@@@@@@*    ���顼�ե�����̾�ϥ��ԡ������Ѥ��롣
+@@@@@@*    エラーファイル名はコピー句を使用する。
       *    03  RECEERR                             PIC X(100).
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-PTNUM                      PIC X(20).
@@ -150,7 +150,7 @@
            03  WRK-PARA-HIDEHOKATSU                PIC X(01).
            03  WRK-PARA-EDIT-MEDADL                PIC X(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD                            PIC X(08).
            03  WRK-EDTYMD1                         PIC X(10).
@@ -169,7 +169,7 @@
                05  WRK-STR-LEFT-ZX99               PIC Z(9)9.
                05  WRK-STR-LEFT-FL                 PIC X(490).
            03  WRK-STR-LEFT-TMP                    PIC X(500).
-      *        �����Խ��ѹ���
+      *        全角編集用項目
            03  WRK-N.
                05  WRK-BG007-KNS-N                 PIC X(10).
                05  WRK-BG007-TIME-N                PIC X(16).
@@ -180,7 +180,7 @@
            03  WRK-YMD-G.
                05  WRK-YMD-YM                      PIC X(06).
                05  WRK-YMD-DD                      PIC 9(02).
-      *    0:�ʤ�1:����2����3:ϫ��4:����5:����
+      *    0:なし1:社保2国保3:労災4:自賠5:自費
            03  WRK-HOKENBUNRUI                     PIC X(01).
            03  WRK-NYUGAI                          PIC 9(01).
            03  WRK-PTID                            PIC 9(10).
@@ -191,7 +191,7 @@
                05  WRK-GETUMATU-DD                 PIC 9(02).
       *
        01  SORTKEY-AREA.
-      *    �����ֹ桦���ʻ�̾��
+      *    病棟番号・カナ氏名順
            03  SORTKEY1-KEY.
                05  SORTKEY1-SRYKA                  PIC X(02).
                05  SORTKEY1-HOKENBUNRUI            PIC X(01).
@@ -199,31 +199,31 @@
                05  SORTKEY1-KANANAME               PIC X(100).
                05  SORTKEY1-PTNUM                  PIC X(20).
                05  SORTKEY1-DUMMY                  PIC X(05).
-      *    �����ֹ桦�����ֹ��
+      *    病棟番号・患者番号順
            03  SORTKEY2-KEY    REDEFINES           SORTKEY1-KEY.
                05  SORTKEY2-SRYKA                  PIC X(02).
                05  SORTKEY2-HOKENBUNRUI            PIC X(01).
                05  SORTKEY2-BTUNUM                 PIC 9(02).
                05  SORTKEY2-PTNUM                  PIC X(20).
                05  SORTKEY2-DUMMY                  PIC X(105).
-      *    ���ʻ�̾��
+      *    カナ氏名順
            03  SORTKEY3-KEY    REDEFINES           SORTKEY1-KEY.
                05  SORTKEY3-SRYKA                  PIC X(02).
                05  SORTKEY3-HOKENBUNRUI            PIC X(01).
                05  SORTKEY3-KANANAME               PIC X(100).
                05  SORTKEY3-PTNUM                  PIC X(20).
                05  SORTKEY3-DUMMY                  PIC X(07).
-      *    �����ֹ��
+      *    患者番号順
            03  SORTKEY4-KEY    REDEFINES           SORTKEY1-KEY.
                05  SORTKEY4-SRYKA                  PIC X(02).
                05  SORTKEY4-HOKENBUNRUI            PIC X(01).
                05  SORTKEY4-PTNUM                  PIC X(20).
                05  SORTKEY4-DUMMY                  PIC X(107).
-      *    ���̻ؼ���
+      *    個別指示順
            03  SORTKEY5-KEY    REDEFINES           SORTKEY1-KEY.
                05  SORTKEY5-RENNUM                 PIC 9(10).
                05  SORTKEY5-DUMMY                  PIC X(120).
-      *    �����ߥʥ�ǥ��åȽ�
+      *    ターミナルデジット順
            03  SORTKEY6-KEY    REDEFINES           SORTKEY1-KEY.
                05  SORTKEY6-SRYKA                  PIC X(02).
                05  SORTKEY6-HOKENBUNRUI            PIC X(01).
@@ -251,10 +251,10 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    �����ޥ���������
+      *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
       *
-      *    ��������������
+      *    患者入院履歴ワーク
        01  CHKRRK-REC.
            COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
                                            BY          //CHKRRK-//.
@@ -262,86 +262,86 @@
        01  LASTRRK-REC.
            COPY    "CPPTNYUINRRK.INC"      REPLACING   //PTNYUINRRK-//
                                            BY          //LASTRRK-//.
-      *    ���Ų�ץ��
+      *    診療会計ワーク
        01  CHKACCT-REC.
            COPY    "CPSRYACCT.INC"         REPLACING   //ACCT-//
                                            BY          //CHKACCT-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �ѥ�᥿
+      *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
            COPY    "CPQTOANY.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ�
+      *    患者番号
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ������������
+      *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����ģ����極��
+      *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ��ץ������Խ�����
+      *    会計カード編集サブ
            COPY    "CPORCHCM34.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    �ݸ�ʬ��
+      *    保険分類
            COPY    "CPORCSS001.INC".
       *
-      *    �����Ѵ�
+      *    数値変換
            COPY    "CPORCSNUM.INC".
       *
-@@@@@@*    ���֥ץ������Υ��ԡ����ɲ�
-      *    ����ե�����̾�Խ�
+@@@@@@*    サブプログラムのコピーを追加
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ����ơ��֥��Խ�
+      *    一時テーブル編集
            COPY    "CPORCSTEMPTBL.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -349,7 +349,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -363,7 +363,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -381,7 +381,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -394,7 +394,7 @@
            INITIALIZE                  ERR-EDIT-AREA
 grpsys     INITIALIZE                  SPA-AREA
            INITIALIZE                  WRK-PARA
-@@@@@@*    ���顼�ե�����̾�����
+@@@@@@*    エラーファイル名初期化
            INITIALIZE                  RECEERR
       *
            PERFORM 100-DBOPEN-SEC
@@ -427,7 +427,7 @@ grpsys     INITIALIZE                  SPA-AREA
                                        WRK-PARA-EDDAY
 grpsys     END-UNSTRING
       *
-      *    �ӣУ����ꥢ���åȽ���
+      *    ＳＰＡエリアセット処理
            PERFORM 110-SPA-SET-SEC
       *
            MOVE    SPACE               TO  WRK-TITLE
@@ -466,10 +466,10 @@ grpsys     END-UNSTRING
            END-IF
       *
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
-               MOVE    "��ץ����ɡ�����"
+               MOVE    "会計カード−入院"
                                        TO  WRK-TITLE
            ELSE
-               MOVE    "��ץ����ɡݳ���"
+               MOVE    "会計カード−外来"
                                        TO  WRK-TITLE
            END-IF
       *
@@ -486,7 +486,7 @@ grpsys     END-UNSTRING
            MOVE    1                   TO  WRK-STDAY
            MOVE    WRK-GETUMATU-DD     TO  WRK-EDDAY
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
@@ -500,9 +500,9 @@ grpsys     END-UNSTRING
                                            JOBKANRI-REC
                                            SPA-AREA
       *
-@@@@@@*    ���֥ץ�������ꡢ����ե�����̾���Խ���Ԥ���
-@@@@@@*    ORCBG00701PARA-FULLNAME������
-@@@@@@*    ORCBG00701PARA-BASENAME�����ѤϤǤ��ޤ���
+@@@@@@*    サブプログラムより、一時ファイル名の編集を行う。
+@@@@@@*    ORCBG00701PARA-FULLNAME設定後の
+@@@@@@*    ORCBG00701PARA-BASENAME再利用はできません。
            INITIALIZE                      SGETTEMP-AREA
       *
            MOVE    WRK-PARA-HOSPNUM    TO  ORCBG00701PARA-HOSPNUM
@@ -519,7 +519,7 @@ grpsys     END-UNSTRING
            MOVE    SGETTEMP-FULLNAMES (2)
                                        TO  RECEERR
       *
-      *    �����ѥ�᥿���ꥢ���åȽ���
+      *    印刷パラメタエリアセット処理
            PERFORM 110-ORCSPRTAREA-SET-SEC
       *
            MOVE    ZERO                TO  CNT-BG007
@@ -533,7 +533,7 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ����ꥢ���åȽ���
+      *    ＳＰＡエリアセット処理
       *****************************************************************
        110-SPA-SET-SEC                 SECTION.
       *
@@ -549,11 +549,11 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    �����ѥ�᥿���ꥢ���åȽ���
+      *    印刷パラメタエリアセット処理
       *****************************************************************
        110-ORCSPRTAREA-SET-SEC         SECTION.
       *
-      *    �����ѥ�᥿�Խ�
+      *    印刷パラメタ編集
            INITIALIZE                      ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
            MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
@@ -580,7 +580,7 @@ grpsys     END-UNSTRING
        110-ORCSPRTAREA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�����å�����
+      *    パラメタチェック処理
       *****************************************************************
        1001-PARA-CHK-SEC               SECTION.
       *
@@ -603,7 +603,7 @@ grpsys     END-UNSTRING
                        MOVE    SNUM-OUTNUM TO  WRK-STDAY
                    END-EVALUATE
                ELSE
-                   MOVE    "�����������������Ϥ��Ƥ���������"
+                   MOVE    "開始日を正しく入力してください。"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1               TO  FLG-END
@@ -630,7 +630,7 @@ grpsys     END-UNSTRING
                            MOVE    SNUM-OUTNUM TO  WRK-EDDAY
                        END-EVALUATE
                    ELSE
-                       MOVE    "��λ�������������Ϥ��Ƥ���������"
+                       MOVE    "終了日を正しく入力してください。"
                                                TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    1               TO  FLG-END
@@ -642,7 +642,7 @@ grpsys     END-UNSTRING
                IF    ( WRK-STDAY       <=  WRK-EDDAY )
                    CONTINUE
                ELSE
-                   MOVE    "�������佪λ���ǻ��ꤵ��Ƥ��ޤ���"
+                   MOVE    "開始日＞終了日で指定されています。"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1               TO  FLG-END
@@ -653,7 +653,7 @@ grpsys     END-UNSTRING
        1001-PARA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -664,15 +664,15 @@ grpsys     END-UNSTRING
       *
            EVALUATE    WRK-PARA-NYUGAIKBN
                                    ALSO WRK-PARA-PTNUM
-      *    ����������
+      *    入院全患者
            WHEN        "1"         ALSO SPACE
                PERFORM 210-NYU-ALL-HEN-SEC
-      *    ����������
+      *    外来全患者
            WHEN        "2"         ALSO SPACE
                PERFORM 210-GAI-ALL-HEN-SEC
-      *    �������괵��
+      *    入院指定患者
            WHEN        "1"         ALSO NOT SPACE
-      *    ������괵��
+      *    外来指定患者
            WHEN        "2"         ALSO NOT SPACE
                IF    ( WRK-PARA-PTNUM  =   "*" )
                    PERFORM 210-KBT-HEN-SEC
@@ -697,11 +697,11 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    ��ץ������Խ������������оݿ���ǯ�������ԡ�
+      *    会計カード編集処理−入院対象診療年月全患者−
       *****************************************************************
        210-NYU-ALL-HEN-SEC         SECTION.
       *
-      *    �����оݴ��ԥե������Խ�����
+      *    処理対象患者ファイル編集処理
            PERFORM 2101-NYU-BG00701-HEN-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  210-NYU-ALL-HEN-EXT
@@ -711,7 +711,7 @@ grpsys     END-UNSTRING
        210-NYU-ALL-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե������Խ�����
+      *    処理対象患者ファイル編集処理
       *****************************************************************
        2101-NYU-BG00701-HEN-SEC        SECTION.
       *
@@ -742,7 +742,7 @@ grpsys     END-UNSTRING
        2101-NYU-BG00701-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ץ������Խ������ݸ��̻ؼ����ԡ�
+      *    会計カード編集処理−個別指示患者−
       *****************************************************************
        210-KBT-HEN-SEC             SECTION.
       *
@@ -784,7 +784,7 @@ grpsys     END-UNSTRING
        210-KBT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ץ������Խ��������������̻ؼ����ԡ�
+      *    会計カード編集処理−入院個別指示患者−
       *****************************************************************
        210-NYU-KBT-HEN-SEC             SECTION.
       *
@@ -797,7 +797,7 @@ grpsys     END-UNSTRING
        210-NYU-KBT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե������Խ�����
+      *    処理対象患者ファイル編集処理
       *****************************************************************
        21011-NYU-BG00701-HEN-SEC       SECTION.
       *
@@ -821,7 +821,7 @@ grpsys     END-UNSTRING
        21011-NYU-BG00701-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե�������Ͻ�����������
+      *    処理対象患者ファイル出力処理（入院）
       *****************************************************************
        21011-NYU-BG00701-OUT-SEC       SECTION.
       *
@@ -857,7 +857,7 @@ grpsys     END-UNSTRING
        21011-NYU-BG00701-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե�������Ͻ���
+      *    処理対象患者ファイル出力処理
       *****************************************************************
        21011-BG00701-WRITE-SEC     SECTION.
       *
@@ -919,7 +919,7 @@ grpsys     END-UNSTRING
        21011-BG00701-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե�������Ͻ���
+      *    処理対象患者ファイル出力処理
       *****************************************************************
        210111-BG00701-WRITE-SEC    SECTION.
       *
@@ -1010,11 +1010,11 @@ grpsys     END-UNSTRING
        210111-BG00701-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    �ǿ�����������������
+      *    最新入院歴情報取得処理
       *****************************************************************
        21011-LASTRRK-GET-SEC           SECTION.
       *
-      *    �ǿ������������������
+      *    最新の入院履歴情報を取得
            INITIALIZE  LASTRRK-REC
            MOVE    PTINF-HOSPNUM        TO  LASTRRK-HOSPNUM
            MOVE    PTINF-PTID          TO  LASTRRK-PTID
@@ -1029,7 +1029,7 @@ grpsys     END-UNSTRING
            ELSE
                INITIALIZE              ERR-EDIT-AREA
                MOVE    PTINF-PTID      TO  ERR-PTID
-               MOVE    "�ǿ���������μ����˼��Ԥ��ޤ���"
+               MOVE    "最新入院履歴の取得に失敗しました"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG
@@ -1046,7 +1046,7 @@ grpsys     END-UNSTRING
        21011-LASTRRK-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ��ץ������Խ������ݻ��괵�ԤΤߡ�
+      *    会計カード編集処理−指定患者のみ−
       *****************************************************************
        210-KJN-HEN-SEC             SECTION.
       *
@@ -1062,7 +1062,7 @@ grpsys     END-UNSTRING
            ELSE
                INITIALIZE              ERR-EDIT-AREA
                MOVE    WRK-PARA-PTNUM  TO  ERR-PTNUM
-               MOVE    "�����δ��Ԥ�¸�ߤ��ޤ���"
+               MOVE    "該当の患者は存在しません"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -1097,7 +1097,7 @@ grpsys     END-UNSTRING
            IF    ( CNT-BG00701         =   ZERO )
                INITIALIZE              ERR-EDIT-AREA
                MOVE    WRK-PARA-PTNUM  TO  ERR-PTNUM
-               MOVE    "�����δ��Ԥο��ž����¸�ߤ��ޤ���"
+               MOVE    "該当の患者の診療情報は存在しません"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -1111,11 +1111,11 @@ grpsys     END-UNSTRING
        210-KJN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ץ������Խ������ݳ����оݿ���ǯ�������ԡ�
+      *    会計カード編集処理−外来対象診療年月全患者−
       *****************************************************************
        210-GAI-ALL-HEN-SEC         SECTION.
       *
-      *    �����оݴ��ԥե�������Ͻ���
+      *    処理対象患者ファイル出力処理
            PERFORM 2101-GAI-BG00701-HEN-SEC
            IF    ( FLG-END     NOT =   ZERO )
                GO  TO  210-GAI-ALL-HEN-EXT
@@ -1125,7 +1125,7 @@ grpsys     END-UNSTRING
        210-GAI-ALL-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե�������Ͻ����ʳ����
+      *    処理対象患者ファイル出力処理（外来）
       *****************************************************************
        2101-GAI-BG00701-HEN-SEC        SECTION.
       *
@@ -1157,7 +1157,7 @@ grpsys     END-UNSTRING
        2101-GAI-BG00701-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե�������Ͻ����ʳ����
+      *    処理対象患者ファイル出力処理（外来）
       *****************************************************************
        21011-GAI-BG00701-HEN-SEC       SECTION.
       *
@@ -1197,7 +1197,7 @@ grpsys     END-UNSTRING
        21011-GAI-BG00701-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ץ������Խ�����
+      *    会計カード編集処理
       *****************************************************************
        2101-KAIKEI-HEN-SEC             SECTION.
       *
@@ -1225,7 +1225,7 @@ grpsys     END-UNSTRING
        2101-KAIKEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����в��Խ�����
+      *    処理経過編集処理
       *****************************************************************
        2101-SYORI-KEIKA-HEN-SEC        SECTION.
       *
@@ -1255,13 +1255,13 @@ grpsys     END-UNSTRING
       *    MOVE    WRK-OUT-INPUT   TO  WRK-BG007-TIME-N
            MOVE    WRK-MAE-INPUT   TO  WRK-BG007-TIME-N
       *
-      *    ���ƥå��������
+      *    ステップ途中処理
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-           STRING  "���������"        DELIMITED BY SIZE
+           STRING  "処理件数："        DELIMITED BY SIZE
                    WRK-BG007-KNS-N     DELIMITED BY SPACE
-                   "�"              DELIMITED BY SIZE
+                   "件　"              DELIMITED BY SIZE
                    WRK-BG007-TIME-N    DELIMITED BY SPACE
            INTO    JOB-YOBI
            END-STRING
@@ -1282,7 +1282,7 @@ grpsys     END-UNSTRING
        2101-SYORI-KEIKA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ץ������Խ����ָƽн���
+      *    会計カード編集サブ呼出処理
       *****************************************************************
        2101-ORCHCM34-CALL-SEC          SECTION.
       *
@@ -1326,7 +1326,7 @@ grpsys     END-UNSTRING
            IF    ( ORCHCM34-RC     NOT =   ZERO )
                INITIALIZE              ERR-EDIT-AREA
                MOVE    SPA-PTID        TO  ERR-PTID
-               MOVE    "��ץ����ɤκ����˼��Ԥ��ޤ���"
+               MOVE    "会計カードの作成に失敗しました"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -1343,7 +1343,7 @@ grpsys     END-UNSTRING
        2101-ORCHCM34-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1357,7 +1357,7 @@ grpsys     END-UNSTRING
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -1379,14 +1379,14 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            PERFORM 800-BG00701-DEL-SEC
       *
            IF    ( CNT-BG007           =   ZERO )
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1394,7 +1394,7 @@ grpsys     END-UNSTRING
            DISPLAY "*** ORCBG007 IN " CNT-BG007  " ***"
            DISPLAY "*** ORCBG007 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -1415,7 +1415,7 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����ֹ渡������
+      *    患者情報・番号検索処理
       *****************************************************************
        800-PTINF-PTNUM-SEL-SEC         SECTION.
       *
@@ -1423,7 +1423,7 @@ grpsys     END-UNSTRING
            IF    ( FLG-PTNUM       NOT =   ZERO )
                INITIALIZE          ERR-EDIT-AREA
                MOVE    WRK-SEL-PTID TO ERR-PTID
-               MOVE    "�����ֹ�μ����˼��Ԥ��ޤ���"
+               MOVE    "患者番号の取得に失敗しました"
                                        TO  ERR-ERRMSG
                PERFORM 800-ERRMSG-EDIT-SEC
                MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -1435,7 +1435,7 @@ grpsys     END-UNSTRING
                IF    ( FLG-PTINF   NOT =   ZERO )
                    INITIALIZE          ERR-EDIT-AREA
                    MOVE    WRK-SEL-PTID TO ERR-PTID
-                   MOVE    "���Ծ���μ����˼��Ԥ��ޤ���"
+                   MOVE    "患者情報の取得に失敗しました"
                                         TO  ERR-ERRMSG
                    PERFORM 800-ERRMSG-EDIT-SEC
                    MOVE    ERR-HEN-ERRMSG  TO  WRK-RECEERR
@@ -1449,7 +1449,7 @@ grpsys     END-UNSTRING
        800-PTINF-PTNUM-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ�ʬ�ॵ�ָƽн���
+      *    保険分類サブ呼出処理
       *****************************************************************
        800-ORCSS001-SEC             SECTION.
 
@@ -1486,11 +1486,11 @@ grpsys     END-UNSTRING
        800-ORCSS001-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե�����������
+      *    処理対象患者ファイル削除処理
       *****************************************************************
        800-BG00701-DEL-SEC             SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    ORCBG00701PARA  TO  IF-FILENAME
            CALL    "orcfiledel"    USING
@@ -1500,7 +1500,7 @@ grpsys     END-UNSTRING
        800-BG00701-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        800-ZENKAKU-HEN-SEC         SECTION.
       *
@@ -1520,7 +1520,7 @@ grpsys     END-UNSTRING
        800-ZENKAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ʸ���󺸵ͽ���
+      *    文字列左詰処理
       *****************************************************************
        800-STR-HIDARIZUME-HEN-SEC      SECTION.
       *
@@ -1543,7 +1543,7 @@ grpsys     END-UNSTRING
        800-STR-HIDARIZUME-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��������������
+      *    月末日取得処理
       *****************************************************************
        800-GETUMATU-SEC      SECTION.
       *
@@ -1559,7 +1559,7 @@ grpsys     END-UNSTRING
        800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -1579,13 +1579,13 @@ grpsys     END-UNSTRING
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "　"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        800-ERRMSG-EDIT-SEC         SECTION.
       *
@@ -1621,16 +1621,16 @@ grpsys     END-UNSTRING
       *
            IF    ( WRK-AMARI   =   ZERO )
                STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                       "�δ����ֹ桧"      DELIMITED   BY  SIZE
+                       "［患者番号："      DELIMITED   BY  SIZE
                        ERR-PTNUM           DELIMITED   BY  SPACE
-                       "��"                DELIMITED   BY  SIZE
+                       "］"                DELIMITED   BY  SIZE
                INTO    ERR-HEN-ERRMSG
                END-STRING
            ELSE
                STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                       "�δ����ֹ�:"       DELIMITED   BY  SIZE
+                       "［患者番号:"       DELIMITED   BY  SIZE
                        ERR-PTNUM           DELIMITED   BY  SPACE
-                       "��"                DELIMITED   BY  SIZE
+                       "］"                DELIMITED   BY  SIZE
                INTO    ERR-HEN-ERRMSG
                END-STRING
            END-IF
@@ -1640,7 +1640,7 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    ����ơ��֥��������
+      *    一時テーブル作成処理
       *****************************************************************
        800-TEMP-TABLE-CREATE-SEC           SECTION.
       *
@@ -1661,7 +1661,7 @@ grpsys     END-UNSTRING
        800-TEMP-TABLE-CREATE-EXT.
            EXIT.
       *****************************************************************
-      *    ����ơ��֥��Ѵ�����
+      *    一時テーブル廃棄処理
       *****************************************************************
        800-TEMP-TABLE-DROP-SEC         SECTION.
       *
@@ -1679,13 +1679,13 @@ grpsys     END-UNSTRING
        800-TEMP-TABLE-DROP-EXT.
            EXIT.
       *****************************************************************
-      *    �������򸡺�����(KEY43)
+      *    入院履歴検索処理(KEY43)
       *****************************************************************
        900-PTNYUINRRK-KEY43-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-      *    �оݴ������
+      *    対象患者抽出
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD
@@ -1706,7 +1706,7 @@ grpsys     END-UNSTRING
        900-PTNYUINRRK-KEY43-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������FETCH����(KEY43)
+      *    入院履歴FETCH処理(KEY43)
       *****************************************************************
        900-PTNYUINRRK-KEY43-FET-SEC    SECTION.
       *
@@ -1726,13 +1726,13 @@ grpsys     END-UNSTRING
        900-PTNYUINRRK-KEY43-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �������򸡺�����
+      *    入院履歴検索処理
       *****************************************************************
        900-PTNYUINRRK-KEY44-SEL-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-PTNYUINRRK
       *
-      *    �оݴ������
+      *    対象患者抽出
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    QTOANY-PTID         TO  PTNYUINRRK-PTID
@@ -1759,7 +1759,7 @@ grpsys     END-UNSTRING
        900-PTNYUINRRK-KEY43-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�׸�������
+      *    診療会計検索処理
       *****************************************************************
        900-SRYACCT-KEY8-SEL-SEC        SECTION.
       *
@@ -1785,7 +1785,7 @@ grpsys     END-UNSTRING
        900-SRYACCT-KEY8-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų��FETCH����
+      *    診療会計FETCH処理
       *****************************************************************
        900-SRYACCT-KEY8-FET-SEC        SECTION.
       *
@@ -1820,7 +1820,7 @@ grpsys     END-UNSTRING
        900-SRYACCT-KEY8-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�׸�������
+      *    診療会計検索処理
       *****************************************************************
        900-SRYACCT-KEY9-SEL-SEC        SECTION.
       *
@@ -1851,7 +1851,7 @@ grpsys     END-UNSTRING
        900-SRYACCT-KEY9-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų��FETCH����
+      *    診療会計FETCH処理
       *****************************************************************
        900-SRYACCT-KEY9-FET-SEC        SECTION.
       *
@@ -1886,13 +1886,13 @@ grpsys     END-UNSTRING
        900-SRYACCT-KEY9-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ��󸡺�����(KEY)
+      *    患者情報検索処理(KEY)
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-PTINF
       *
-      *    �оݴ������
+      *    対象患者抽出
            INITIALIZE                      PTINF-REC
            MOVE    WRK-PARA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    WRK-SEL-PTID        TO  PTINF-PTID
@@ -1915,7 +1915,7 @@ grpsys     END-UNSTRING
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ渡������(KEY)
+      *    患者番号検索処理(KEY)
       *****************************************************************
        900-PTNUM-KEY-SEL-SEC          SECTION.
       *
@@ -1943,7 +1943,7 @@ grpsys     END-UNSTRING
        900-PTNUM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ渡������(KEY4)
+      *    患者番号検索処理(KEY4)
       *****************************************************************
        900-PTNUM-KEY4-SEL-SEC          SECTION.
       *
@@ -1971,7 +1971,7 @@ grpsys     END-UNSTRING
        900-PTNUM-KEY4-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �Хå��ѥ�᥿��������
+      *    バッチパラメタ検索処理
       *****************************************************************
        900-BTPARA-KEY8-SEL-SEC         SECTION.
       *
@@ -2001,7 +2001,7 @@ grpsys     END-UNSTRING
        900-BTPARA-KEY8-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �Хå��ѥ�᥿��������
+      *    バッチパラメタ検索処理
       *****************************************************************
        900-BTPARA-KEY8-FET-SEC         SECTION.
       *
@@ -2021,7 +2021,7 @@ grpsys     END-UNSTRING
        900-BTPARA-KEY8-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �����оݴ��ԥե������ɹ�����
+      *    処理対象患者ファイル読込処理
       *****************************************************************
        900-BG00701-READ-SEC            SECTION.
       *
@@ -2073,7 +2073,7 @@ grpsys     END-UNSTRING
        900-BG00701-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2090,7 +2090,7 @@ grpsys     END-UNSTRING
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������(FETCH�ϹԤʤ�ʤ���
+      *    テーブル検索処理(FETCHは行なわない）
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -2104,7 +2104,7 @@ grpsys     END-UNSTRING
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        910-DBFETCH-SEC            SECTION.
       *
@@ -2118,7 +2118,7 @@ grpsys     END-UNSTRING
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -2132,7 +2132,7 @@ grpsys     END-UNSTRING
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                  SECTION.
       *
@@ -2156,7 +2156,7 @@ grpsys     END-UNSTRING
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -2179,7 +2179,7 @@ grpsys     END-UNSTRING
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -2196,7 +2196,7 @@ grpsys     END-UNSTRING
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

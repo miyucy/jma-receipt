@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,37 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ¡ÊÊ¿À®£³£°Ç¯ÅÙ²þÀµ¡Ë
-      *                             ¥Ñ¥é¥á¥¿¡¡COPY (CPORCSKANGOGEN.INC)
-      *                             »ÈÍÑ¥×¥í¥°¥é¥à (ORORCSKANGOGEN)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´ØÈÖ¹æ
-      *      ´µ¼Ô£É£Ä
-      *      »»ÄêÇ¯·î
+      *    å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—å–å¾—ï¼ˆå¹³æˆï¼“ï¼å¹´åº¦æ”¹æ­£ï¼‰
+      *                             ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€COPY (CPORCSKANGOGEN.INC)
+      *                             ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORORCSKANGOGEN)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ç•ªå·
+      *      æ‚£è€…ï¼©ï¼¤
+      *      ç®—å®šå¹´æœˆ
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSKANGOGEN-AREA.
       *
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  LNK-KANGOGEN-HOSPNUM           PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-KANGOGEN-PTID              PIC  9(10).
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-KANGOGEN-SANTEIYM          PIC  X(06).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-KANGOGEN-HENKYAKU-AREA.
              05  LNK-KANGOGEN-TBL.
-      *        Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¥³¡¼¥É
+      *        å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—ã‚³ãƒ¼ãƒ‰
                07  LNK-KANGOGEN-OCC  OCCURS  31.
                    09  LNK-KANGOGEN-SRYCD         PIC  X(09).
                    09  LNK-KANGOGEN-TEN           PIC  9(05).
       *
-      *Éüµ¢¥³¡¼¥É¡Ê£±¡§ÉÂ±¡°Ê³°¡¡£²¡§»»ÄêÇ¯·î¥¨¥é¡¼¡¡
-      *            £³¡§´µ¼Ô¸¡º÷¥¨¥é¡¼¡¡£´¡§Æþ±¡²ñ·×¤Ê¤·
-      *            £µ¡§»»Äê·î¤Ë¸º³Û³ºÅöÆü¤ÎÆþÎÏÌµ¤·¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šç—…é™¢ä»¥å¤–ã€€ï¼’ï¼šç®—å®šå¹´æœˆã‚¨ãƒ©ãƒ¼ã€€
+      *            ï¼“ï¼šæ‚£è€…æ¤œç´¢ã‚¨ãƒ©ãƒ¼ã€€ï¼”ï¼šå…¥é™¢ä¼šè¨ˆãªã—
+      *            ï¼•ï¼šç®—å®šæœˆã«æ¸›é¡è©²å½“æ—¥ã®å…¥åŠ›ç„¡ã—ï¼‰
            03  LNK-KANGOGEN-RC                PIC S9(9) BINARY.
       *

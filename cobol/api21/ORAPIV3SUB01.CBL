@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPIV3SUB01.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���̥���󥻥륵�֡ʰ��β���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  15/07/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 共通キャンセルサブ（一体化）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  15/07/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PARA                PIC 9(01).
@@ -48,14 +48,14 @@
       *
            03  FLG-ERR                 PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *01  CNT-AREA.
       *    03  CNT-SRYCNT              PIC 9(04).
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
       *
@@ -66,7 +66,7 @@
       *
            03  WRK-MCP-TERM            PIC X(62).
       *
-      *    ����̳���
+      *    全業務解除
        01  CONS-ORCA-UID       PIC X(64)   VALUE
                    "267c5110-71b6-431e-baac-0989ab98a505".
       *
@@ -75,27 +75,27 @@
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *     �ѥ�᥿�ơ��֥�
+      *     パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
        01  APIPARA-REC.
            COPY    "CPAPIPARA.INC".
       *
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
@@ -104,14 +104,14 @@
            COPY    "MCPDATA2.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
       *
            COPY    "MCPAREA".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
            COPY    "CPORAPIV3SUB01.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -121,7 +121,7 @@
            .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -135,11 +135,11 @@
       *
            IF      APIV3SUB01-TERMID   =    CONS-ORCA-UID
                                        OR   CONS-ORCA-UID2
-      *        ����̳������������λ
+      *        全業務　強制処理終了
                PERFORM 400-ALL-CANCEL-SEC
            ELSE
                IF      APIV3SUB01-ERRCD     =   SPACE
-      *            ����������λ
+      *            強制処理終了
                    PERFORM 200-CANCEL-SEC
                END-IF
            END-IF
@@ -151,11 +151,11 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
-      *    ɬ�ܹ��ܥ����å�
+      *    必須項目チェック
            IF     (APIV3SUB01-TERMID    =   SPACE )
               AND (APIV3SUB01-KARTE-UID =   SPACE )
                MOVE    "01"            TO  APIV3SUB01-ERRCD
@@ -176,13 +176,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������λ
+      *    強制処理終了
       *****************************************************************
        200-CANCEL-SEC   SECTION.
       *
            MOVE    APIV3SUB01-PTNUM     TO  WRK-PTNUM
            IF      APIV3SUB01-TERMID    =   SPACE
-      *        ORUCA-UID ����
+      *        ORUCA-UID 取得
                PERFORM 2001-TERMID-GET-SEC
            ELSE
                MOVE    APIV3SUB01-TERMID    TO  WRK-TERMID
@@ -191,9 +191,9 @@
            IF     (WRK-TERMID          =   SPACE )
                 MOVE    "03"                TO  APIV3SUB01-ERRCD
            ELSE
-      *        �ѥ�᥿�������
+      *        パラメタ削除処理
                PERFORM 2002-FILE-DELETE-SEC
-      *        ��¾������
+      *        排他制御解除
                IF      APIV3SUB01-PARA-GYOUMUID  NOT =   SPACE
                    PERFORM 990-LOCK-OUT-SEC
                    IF      SLOCK-RETURN    NOT =   ZERO
@@ -208,11 +208,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����������
+      *    データ削除処理
       *****************************************************************
        2001-TERMID-GET-SEC          SECTION.
       *
-      *    �ѥ�᥿����
+      *    パラメタ検索
            MOVE    SPACE               TO  WRK-TERMID
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM             TO  APIPARA-HOSPNUM
@@ -231,7 +231,7 @@
                MOVE    1               TO  FLG-PARA
            END-IF
            PERFORM UNTIL       FLG-APIPARA     =   1
-      *        �����ֹ椬����
+      *        患者番号が一致
                IF     (WRK-PTNUM           =   SPACE )
                OR    ((WRK-PTNUM       NOT =   SPACE        ) AND
                       (WRK-PTNUM           =   APIPARA-PTNUM))
@@ -253,11 +253,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����������
+      *    データ削除処理
       *****************************************************************
        2002-FILE-DELETE-SEC          SECTION.
       *
-      *    ��̳�����¸�ե�������
+      *    業務一時保存ファイル削除
            IF      APIV3SUB01-PARA-GYOUMUID  NOT =   SPACE
                MOVE    APIV3SUB01-PARA-GYOUMUID  TO  WRK-PARA-GYOUMUID
                PERFORM 20021-PARA-DELETE-SEC
@@ -268,7 +268,7 @@
                PERFORM 20021-PARA-DELETE-SEC
            END-IF
       *
-      *    API�����¸�ե�������
+      *    API一時保存ファイル削除
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    APIV3SUB01-API-GYOUMUID
@@ -308,7 +308,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ե�����������
+      *    パラメタファイル削除処理
       *****************************************************************
        20021-PARA-DELETE-SEC         SECTION.
       *
@@ -336,7 +336,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����̳������������λ
+      *    全業務　強制処理終了
       *****************************************************************
        400-ALL-CANCEL-SEC         SECTION.
       *
@@ -360,7 +360,7 @@
                UNTIL  (FLG-APIPARA         =   1     )
       *
                MOVE    APIPARA-TERMID      TO  WRK-TERMID
-      *        API�����¸�ե�������
+      *        API一時保存ファイル削除
                INITIALIZE                  PARA-REC
                MOVE    APIPARA-HOSPNUM     TO  PARA-HOSPNUM
                MOVE    APIPARA-TERMID      TO  PARA-TERMID
@@ -379,9 +379,9 @@
                MOVE    "del4"              TO  MCP-PATHNAME
                PERFORM 910-SPATMP-CALL-SEC
       *
-      *        ��¾������
+      *        排他制御解除
                PERFORM 990-LOCK-OUT-SEC
-      *        APIPARA ���
+      *        APIPARA 削除
                MOVE    APIPARA-REC         TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
                MOVE    "key"               TO  MCP-PATHNAME
@@ -400,18 +400,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾����������(���)
+      *    排他制御解除処理(削除)
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
       *
            MOVE    MCP-TERM            TO  WRK-MCP-TERM
-      *    ��¾����������
+      *    排他制御解除処理
            MOVE    APIV3SUB01-PARA-GYOUMUID
                                        TO  SPA-MOTOPG
                                            MCP-WINDOW
            MOVE    ZERO                TO  SLOCK-PTID
            MOVE    3                   TO  SLOCK-MODE
-      *    API+���륫�գɣ� ��TERMID
+      *    API+オルカＵＩＤ をTERMID
            MOVE    WRK-TERMID          TO  MCP-TERM
       *
            CALL    "ORCSLOCK"          USING
@@ -423,29 +423,29 @@
        990-LOCK-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        300-ERRMSG-HEN-SEC          SECTION.
       *
            EVALUATE    APIV3SUB01-ERRCD
                WHEN    "01"
-                   MOVE    "�գɣĤ����꤬����ޤ���"
+                   MOVE    "ＵＩＤの設定がありません"
                                        TO  APIV3SUB01-ERRMSG
                WHEN    "02"
-                   MOVE    "��̳�����꤬����ޤ���"
+                   MOVE    "業務の設定がありません"
                                        TO  APIV3SUB01-ERRMSG
                WHEN    "03"
-                   MOVE    "���륫�գɣĤ������Ǥ��ޤ���"
+                   MOVE    "オルカＵＩＤが取得できません"
                                        TO  APIV3SUB01-ERRMSG
                WHEN    "04"
-                   MOVE    "��¾����˼��Ԥ��ޤ���"
+                   MOVE    "排他解除に失敗しました"
                                        TO  APIV3SUB01-ERRMSG
            END-EVALUATE
            .
        300-ERRMSG-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-APIPARA-READ-SEC        SECTION.
       *
@@ -463,7 +463,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥븡������
+      *    一時保存テーブル検索処理
       *****************************************************************
        910-SPATMP-CALL-SEC                SECTION.
       *
@@ -477,7 +477,7 @@
        910-SPATMP-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥�CALL����
+      *    テーブルCALL処理
       *****************************************************************
        900-ORCDBMAIN-SEC                SECTION.
       *
@@ -491,7 +491,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -502,7 +502,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -513,7 +513,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

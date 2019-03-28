@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,50 +16,50 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡Ä´ºÞÎÁ°ì³ç¹¹¿·¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSCNYUHEN.INC)
-      *                            »ÈÍÑ¥×¥í¥°¥é¥à 
+      *    å…¥é™¢èª¿å‰¤æ–™ä¸€æ‹¬æ›´æ–°ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSCNYUHEN.INC)
+      *                            ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSCNYUHENAREA.
       *
-      *ÆþÎÏ
+      *å…¥åŠ›
            03  ORCSCNYUHEN-IN-AREA.
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
                05  ORCSCNYUHEN-KBN                 PIC  X(01).
-      *        ¿ÇÎÅÆü¡ÊÉ¬¿Ü¡Ë
+      *        è¨ºç™‚æ—¥ï¼ˆå¿…é ˆï¼‰
                05  ORCSCNYUHEN-SRYYMD              PIC  X(08).
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
                05  ORCSCNYUHEN-KBN2                PIC  X(01).
-      *½ÐÎÏ
+      *å‡ºåŠ›
            03  ORCSCNYUHEN-OUT-AREA.
-      *        £±¡§Æþ±¡¤¢¤ê¡¢£°¡§Æþ±¡¤Ê¤·
+      *        ï¼‘ï¼šå…¥é™¢ã‚ã‚Šã€ï¼ï¼šå…¥é™¢ãªã—
                05  ORCSCNYUHEN-RRK-NYUIN           PIC 9(01).
-      *        £±¡§Æþ±¡Ãæ¡¢£²¡§Åö·î¤ËÆþ±¡¤¢¤ê
+      *        ï¼‘ï¼šå…¥é™¢ä¸­ã€ï¼’ï¼šå½“æœˆã«å…¥é™¢ã‚ã‚Š
                05  ORCSCNYUHEN-NYUIN-KBN           PIC 9(01).
-      *        ¿ÇÎÅÆü¤ÎÆþ±¡¾ðÊó
+      *        è¨ºç™‚æ—¥ã®å…¥é™¢æƒ…å ±
                05  ORCSCNYUHEN-NYUINYMD            PIC X(08).
                05  ORCSCNYUHEN-TAIINYMD            PIC X(08).
                05  ORCSCNYUHEN-NYUINKA             PIC X(02).
                05  ORCSCNYUHEN-HKNCOMBI            PIC X(04).
                05  ORCSCNYUHEN-DRCD                PIC X(05).
-      *        ¿ÇÎÅ·î¤ÎÆþ±¡Æü
+      *        è¨ºç™‚æœˆã®å…¥é™¢æ—¥
                05  ORCSCNYUHEN-NYUIN-DAYG.
                    07  ORCSCNYUHEN-NYUDAY          PIC 9(01)
                                                    OCCURS   31.
-      *        ¿ÇÎÅÆü°ÊÁ°¤ÎºÇ½ªÂà±¡Æü
+      *        è¨ºç™‚æ—¥ä»¥å‰ã®æœ€çµ‚é€€é™¢æ—¥
                05  ORCSCNYUHEN-MAE-TAIINYMD        PIC X(08).
-      *        ºÇ½ªÂà±¡Æü
+      *        æœ€çµ‚é€€é™¢æ—¥
                05  ORCSCNYUHEN-LAST-TAIINYMD       PIC X(08).
-      *        Â¾°å±¡Âà±¡Æü
+      *        ä»–åŒ»é™¢é€€é™¢æ—¥
                05  ORCSCNYUHEN-TAI-TAIINYMD        PIC X(08).
-      *        Æ±°ìºÆÆþ±¡Í­Ìµ
+      *        åŒä¸€å†å…¥é™¢æœ‰ç„¡
                05  ORCSCNYUHEN-DOUNYUKBN           PIC 9(01).
                05  ORCSCNYUHEN-DOUNYUIN            PIC 9(02).
-      *        ·ÑÂ³½é²óÆþ±¡Æü
+      *        ç¶™ç¶šåˆå›žå…¥é™¢æ—¥
                05  ORCSCNYUHEN-STR-NYUINYMD        PIC X(08).
-      *        Æ±°ìºÆÆþ±¡Í­Ìµ¡ÊÂà±¡Æü¡Ë
+      *        åŒä¸€å†å…¥é™¢æœ‰ç„¡ï¼ˆé€€é™¢æ—¥ï¼‰
                05  ORCSCNYUHEN-DOUTAIKBN           PIC 9(01).
       *

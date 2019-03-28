@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHC03SUB.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�
-      *  ����ݡ��ͥ��̾  : �������μ����Ǽ�Խ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/07/16    NACL��¿��Ǽ   ��������
-      *  05/07/14    NACL�ݾ�Ʀ��   ���񣱣������б�
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為
+      *  コンポーネント名  : 請求書兼領収書収納編集
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/07/16    NACL−多々納   新規作成
+      *  05/07/14    NACL−小豆沢   自費１０項目対応
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
-      *  03.05.01    NACL-¿��Ǽ  07/08/XX  �������ι�׶���б�
-      *  04.05.00    NACL-¿��Ǽ  10/05/XX  ���������ٽ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  03.05.01    NACL-多々納  07/08/XX  訂正時の合計金額対応
+      *  04.05.00    NACL-多々納  10/05/XX  請求書兼明細書対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,7 +44,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
@@ -52,7 +52,7 @@
       *
            03  FLG-OK              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -65,12 +65,12 @@
            03  IDX-TBL             PIC 9(04).
            03  IDX-DN              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-HKNCOMBI        PIC X(04).
            03  WRK-SRYKA           PIC X(02).
            03  WRK-GRP-DENPNUM     PIC 9(07).
-      *    �������
+      *    請求額等
            03  WRK-SKYMONE-AREA.
                05  WRK-SKYMONEY           PIC S9(07).
                05  WRK-SKYMONEY-TAX       PIC S9(07).
@@ -78,27 +78,27 @@
                05  WRK-HENKIN             PIC S9(07).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ��ץޥ�����
+      *    収納合計マスタ−
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
-      *    ��¸�Ѽ�Ǽ���
+      *    保存用収納ワーク
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //WRK-SYU-//.
-      *    ��¸�Ѽ�Ǽ���
+      *    保存用収納ワーク
        01  TBL-SYUNOU-AREA.
          02  TBL-SYUNOU-REC        OCCURS   15.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //TBL-SYU-//.
-      *    �������
+      *    請求額等
        01  TBL-SEIKYU-AREA.
            03  TBL-SEIKYU-TBL       OCCURS   15.
                05  TBL-SKYMONEY           PIC S9(07).
@@ -106,13 +106,13 @@
                05  TBL-NYUKIN-TOTAL       PIC S9(07).
                05  TBL-HENKIN             PIC S9(07).
       *
-      *    ��¸�Ѽ�Ǽ�����
+      *    保存用収納ワーク２
        01  LNK-SYUNOU-AREA.
          02  LNK-SYUNOU-REC        OCCURS   15.
            COPY    "CPSYUNOU.INC"  REPLACING
                                      //SYU-// BY //LNK-SYU-//.
        01  LNK-DOUJI-AREA.
-      *    Ʊ�����Ͽ��Ų�
+      *    同時入力診療科
            03  LNK-DOUJI-TBL       OCCURS   15.
                05  LNK-DOUJI-SRYKA-G.
                    07  LNK-DOUJI-SRYKA    PIC  X(02)
@@ -126,12 +126,12 @@
                    07  LNK-DOUJI-DENPNUM      PIC  9(07)
                                               OCCURS  15.
       *H27.8
-      *�ޤȤ���ʣ������¸
+      *まとめ用複数科保存
        01  WRK-DOUJI-SRYKA-G.
            05  WRK-DOUJI-SRYKA    PIC  X(02)
                                           OCCURS  10.
       *
-      *    �������
+      *    請求額等
        01  LNK-SEIKYU-AREA.
            03  LNK-SEIKYU-TBL       OCCURS   15.
                05  LNK-SKYMONEY           PIC S9(07).
@@ -140,7 +140,7 @@
                05  LNK-HENKIN             PIC S9(07).
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "MCPDATA.INC".
@@ -150,16 +150,16 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ����䵶��̥ѥ�᥿
+      *    処方箋共通パラメタ
            COPY    "CPORCHC03.INC".
-      *    ����䵶��̥ѥ�᥿
+      *    処方箋共通パラメタ
            COPY    "CPORCHC03SUB.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -169,7 +169,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -183,10 +183,10 @@
       *
            PERFORM 100-SYUNOU-KEN-SEC
            IF      SYU-GRP-DENPNUM     =   ZERO
-      *        ñ������
+      *        単独入力
                PERFORM 200-ONLY-SYUNOU-HEN-SEC
            ELSE
-      *        ʣ������
+      *        複数入力
                PERFORM 300-GRP-SYUNOU-HEN-SEC
            END-IF
       *
@@ -196,7 +196,7 @@
            .
       *
       *****************************************************************
-      *    ���Ǽ�ޥ�����������
+      *    主収納マスタ検索処理
       *****************************************************************
        100-SYUNOU-KEN-SEC             SECTION.
       *
@@ -228,11 +228,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�Խ�����
+      *    収納編集処理
       *****************************************************************
        200-ONLY-SYUNOU-HEN-SEC             SECTION.
       *
-      *    �����������ẹ��
+      *    訂正時の請求差額
            PERFORM 2001-TEISEI-SYORI-SEC
       *
            ADD     1               TO  IDX-SYU
@@ -252,7 +252,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʣ�����Ųʡ��ݸ��ȹ礻���Խ�����
+      *    複数診療科・保険組合せ別編集処理
       *****************************************************************
        2001-TEISEI-SYORI-SEC             SECTION.
       *
@@ -260,7 +260,7 @@
            MOVE    SYU-SKYMONEY-TAX-SAI    TO  WRK-SKYMONEY-TAX
            MOVE    SYU-NYUKIN-TOTAL        TO  WRK-NYUKIN-TOTAL
            MOVE    ZERO                    TO  WRK-HENKIN
-      *    �������˹�׶��ɽ���λ������۷׻��ʤ�
+      *    訂正時に合計金額表示の時、差額計算なし
            IF     (ORCHC03-TEIKIN-KBN  =   1   )  AND
                   (ORCHC03-HAKKOFLG    =   2   )
                CONTINUE
@@ -271,7 +271,7 @@
       *DDD              OR    (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
                IF     (ORCHC03-OLD-DENPNUM(IDY)    =   SYU-DENPNUM)
                   AND (SYU-SRYKA               NOT =   ZERO  )
-      *            ������������ۺ���
+      *            訂正時の請求額差額
                    COMPUTE WRK-SKYMONEY    =   WRK-SKYMONEY
                                            -   ORCHC03-OLD-SKYMONEY
                                                              (IDY)
@@ -279,10 +279,10 @@
                                            =   WRK-SKYMONEY-TAX
                                            -   ORCHC03-OLD-SKYMONEY-SAI
                                                              (IDY)
-      *            ���������
+      *            今回入金額
                    MOVE    ORCHC03-OLD-NYUKIN-TOTAL (IDY)
                                            TO  WRK-NYUKIN-TOTAL
-      *            �����ֶ�
+      *            今回返金
                    MOVE    ORCHC03-KON-HENKIN (IDY)
                                            TO  WRK-HENKIN
                    MOVE    15              TO  IDY
@@ -295,7 +295,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʣ�����Ųʡ��ݸ��ȹ礻���Խ�����
+      *    複数診療科・保険組合せ別編集処理
       *****************************************************************
        300-GRP-SYUNOU-HEN-SEC             SECTION.
       *
@@ -323,12 +323,12 @@
            END-IF
            PERFORM
                UNTIL       FLG-SYUNOU      =   1
-      *        �����������ẹ��
+      *        訂正時の請求差額
                PERFORM 2001-TEISEI-SYORI-SEC
-      *        ��Ǽ�Խ�
+      *        収納編集
                ADD     1                   TO  IDX-TBL
       *!!!
-      *        �ޥ�Ĺ�θ�����ô���ݸ�Ŭ�Ѷ�ۤ�
+      *        マル長の公費負担を保険適用金額へ
                IF      SYU-HKNTEKKBN   =   "1"
                    MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
                    MOVE    ZERO                TO  SYU-KOH-FTN
@@ -354,16 +354,16 @@
            INITIALIZE                  LNK-DOUJI-AREA2
            MOVE    ZERO                TO  IDX-DN
            EVALUATE    ORCHC03-HAKHOUFLG
-      *        �ʡ��ݸ���
+      *        科・保険別
                WHEN    1
                    PERFORM 3001-SYORI-01-SEC
-      *        �ݸ���
+      *        保険別
                WHEN    2
                    PERFORM 3002-SYORI-02-SEC
-      *        ����
+      *        科別
                WHEN    3
                    PERFORM 3003-SYORI-03-SEC
-      *        ���
+      *        合計
                WHEN    4
                    PERFORM 3004-SYORI-04-SEC
            END-EVALUATE
@@ -372,7 +372,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ųʡ��ݸ��ȹ礻���Խ�����
+      *    診療科・保険組合せ別編集処理
       *****************************************************************
        3001-SYORI-01-SEC             SECTION.
       *
@@ -400,7 +400,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻���Խ�����
+      *    保険組合せ別編集処理
       *****************************************************************
        3002-SYORI-02-SEC               SECTION.
       *
@@ -445,7 +445,7 @@
                    ELSE
                        IF      LNK-SYU-HKNCOMBINUM(IDX-SYU)
                                            =   WRK-SYU-HKNCOMBINUM
-      *                    ��ɼ�ֹ�
+      *                    伝票番号
                            ADD     1               TO  IDX-DN
                            MOVE    WRK-SYU-DENPNUM
                                                    TO  LNK-DOUJI-DENPNUM
@@ -462,7 +462,7 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    �ѥ�᥿���Խ�
+      *    パラメタへ編集
            PERFORM 30023-LNK-TBL-HENSYU-SEC
       *
            .
@@ -470,7 +470,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��ץ쥳�����Խ�����
+      *    収納合計レコード編集処理
       *****************************************************************
        30023-LNK-TBL-HENSYU-SEC             SECTION.
       *
@@ -513,7 +513,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��ץ쥳�����Խ�����
+      *    収納合計レコード編集処理
       *****************************************************************
        30022-SYUTOTAL-CHK-SEC             SECTION.
       *
@@ -540,7 +540,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *!!!
-      *    �ޥ�Ĺ�θ�����ô���ݸ�Ŭ�Ѷ�ۤ�
+      *    マル長の公費負担を保険適用金額へ
            IF      SYUTTL-HKNTEKKBN    =   "1"
                MOVE    SYUTTL-KOH-FTN      TO  SYUTTL-HKNTEKMONEY
                MOVE    ZERO                TO  SYUTTL-KOH-FTN
@@ -550,35 +550,35 @@
            MOVE    SPACE               TO  SYUNOU-REC
            INITIALIZE                  SYUNOU-REC
            MOVE    TBL-SYUNOU-REC(IDX) TO  SYUNOU-REC
-      *���Ų�
+      *診療科
            MOVE    SYUTTL-SRYKA        TO  SYU-SRYKA
-      *��ɼ�ֹ�
+      *伝票番号
            MOVE    SYUTTL-DENPNUM      TO  SYU-DENPNUM
-      *��������
+      *請求内容
            MOVE    SYUTTL-SKY-NAIYOU   TO  SYU-SKY-NAIYOU
-      *�����������Ʒ�
+      *処方せん料再掲
            MOVE    SYUTTL-SHOHOU-SAI   TO  SYU-SHOHOU-SAI
-      *�ݸ�Ŭ�ѳ���ۡݾ����ǡʺƷǡ�
+      *保険適用外金額−消費税（再掲）
            MOVE    SYUTTL-TGMONEY-TAX-SAI TO  SYU-TGMONEY-TAX-SAI
-      *���񣱤��飵
+      *自費１から５
            MOVE    SYUTTL-JIHI-NAIYOU     TO  SYU-JIHI-NAIYOU
-      *���񾮷סʾ����Ǥʤ���
+      *自費小計（消費税なし）
            MOVE    SYUTTL-JIHI-TOTAL      TO  SYU-JIHI-TOTAL
            MOVE    SYUTTL-JIHI-TOTAL-TAX  TO  SYU-JIHI-TOTAL-TAX
            MOVE    SYUTTL-JIHI-TAX        TO  SYU-JIHI-TAX
-      *Ϸ�Ͱ�����ô��
+      *老人一部負担金
            MOVE    SYUTTL-RJN-FTN         TO  SYU-RJN-FTN
            MOVE    SYUTTL-KOH-FTN         TO  SYU-KOH-FTN
            MOVE    SYUTTL-KOH-FTN-ENTANI  TO  SYU-KOH-FTN-ENTANI
-      *Ĵ����
+      *調整金
            MOVE    SYUTTL-CHOSEI          TO  SYU-CHOSEI
            MOVE    SYUTTL-CHOSEI1         TO  SYU-CHOSEI1
            MOVE    SYUTTL-CHOSEI2         TO  SYU-CHOSEI2
-      *�ޤȤ����Ϻ���
+      *まとめ入力差額
            MOVE    SYUTTL-GRP-SGKMONEY    TO  SYU-GRP-SGKMONEY
-      *�ݸ�Ŭ�Ѷ��
+      *保険適用金額
            MOVE    SYUTTL-HKNTEKMONEY     TO  SYU-HKNTEKMONEY
-      *�±����Ȼ�ͳ��ʬ
+      *病院減免事由区分
            MOVE    SYUTTL-DISCOUNT-KBN    TO  SYU-DISCOUNT-KBN
            MOVE    SYUTTL-DISCOUNT-BODY   TO  SYU-DISCOUNT-BODY
            MOVE    SYUTTL-DISCOUNT-RATEKBN
@@ -586,9 +586,9 @@
            MOVE    SYUTTL-DISCOUNT-TEIRITU
                                        TO  SYU-DISCOUNT-TEIRITU
            MOVE    SYUTTL-DISCOUNT-RATE   TO  SYU-DISCOUNT-RATE
-      *���ȶ��
+      *減免金額
            MOVE    SYU-DISCOUNT-MONEY  TO  SYUTTL-DISCOUNT-MONEY
-      *ϫ���ݸ�
+      *労災保険
            MOVE    SYUTTL-RSISHOSHIN-MONEY
                                        TO  SYU-RSISHOSHIN-MONEY
            MOVE    SYUTTL-RSISAISHIN-MONEY
@@ -599,23 +599,23 @@
            MOVE    SYUTTL-RSI-TOTAL       TO  SYU-RSI-TOTAL
            MOVE    SYUTTL-RSIJIBAI-SKYMONEY
                                        TO  SYU-RSIJIBAI-SKYMONEY
-      *�����ۡݾ����ǡʺƷǡ�
+      *請求金額−消費税（再掲）
            MOVE    SYUTTL-SKYMONEY-TAX-SAI
                                        TO  SYU-SKYMONEY-TAX-SAI
-      *������
+      *請求金額
            MOVE    SYUTTL-SKYMONEY        TO  SYU-SKYMONEY
            MOVE    SYUTTL-NYUKIN-TOTAL    TO  SYU-NYUKIN-TOTAL
            MOVE    SYUTTL-NYUKIN-KAISU    TO  SYU-NYUKIN-KAISU
-      *̤����ͳ
+      *未収理由
            MOVE    SYUTTL-MISYURIYU    TO  SYU-MISYURIYU
-      *�����Ƕ�ʬ
+      *在総診区分
            MOVE    SYUTTL-ZAITAKU      TO  SYU-ZAITAKU
-      *���Ŷ�ʬ�̵��ճ�����
+      *診療区分別給付外点数
            MOVE    SYUTTL-KYUFUGAI     TO  SYU-KYUFUGAI
-      *�ݸ�Ŭ�Ѷ�ʬ
+      *保険適用区分
            MOVE    SYUTTL-HKNTEKKBN    TO  SYU-HKNTEKKBN
       *
-      *    Ʊ�����Ͽ��Ų�
+      *    同時入力診療科
            PERFORM VARYING     IDH2    FROM    1   BY  1
                    UNTIL      (IDH2    >   10  )  OR
                               (SYUTTL-DOUJI-SRYKA(IDH2) =   SPACE)
@@ -623,12 +623,12 @@
                                        TO  LNK-DOUJI-SRYKA
                                                        (IDX-SYU IDH2)
            END-PERFORM
-      *    ������������ۺ���
+      *    訂正時の請求額差額
            MOVE    SYUTTL-SKYMONEY         TO  WRK-SKYMONEY
            MOVE    SYUTTL-SKYMONEY-TAX-SAI TO  WRK-SKYMONEY-TAX
            MOVE    SYUTTL-NYUKIN-TOTAL     TO  WRK-NYUKIN-TOTAL
            MOVE    ZERO                    TO  WRK-HENKIN
-      *    �������˹�׶��ɽ���λ������۷׻��ʤ�
+      *    訂正時に合計金額表示の時、差額計算なし
            IF     (ORCHC03-TEIKIN-KBN  =   1   )  AND
                   (ORCHC03-HAKKOFLG    =   2   )
                CONTINUE
@@ -639,7 +639,7 @@
       *D                 OR   (ORCHC03-OLD-DENPNUM(IDY)    =   ZERO)
                IF     (ORCHC03-OLD-SRYKA (IDY)     =   SYU-SRYKA  )
                  AND  (ORCHC03-OLD-HKNCOMBI(IDY)   =   SYU-HKNCOMBINUM)
-      *            ������������ۺ���
+      *            訂正時の請求額差額
                    COMPUTE WRK-SKYMONEY    =   WRK-SKYMONEY
                                            -   ORCHC03-OLD-SKYMONEY
                                                              (IDY)
@@ -669,7 +669,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��׽���
+      *    収納合計処理
       *****************************************************************
        30021-SYUNOU-ADD-SEC             SECTION.
       *
@@ -702,19 +702,19 @@
            ADD     WRK-SYU-KOH-FTN          TO  SYU-KOH-FTN
            ADD     WRK-SYU-KOH-FTN-ENTANI   TO  SYU-KOH-FTN-ENTANI
            ADD     WRK-SYU-YKZ-FTN          TO  SYU-YKZ-FTN
-      *�ݸ�Ŭ�ѳ���ۡݾ����ǡʺƷǡ�
+      *保険適用外金額−消費税（再掲）
            ADD     WRK-SYU-TGMONEY-TAX-SAI  TO  SYU-TGMONEY-TAX-SAI
-      *Ĵ����
+      *調整金
            ADD     WRK-SYU-CHOSEI           TO  SYU-CHOSEI
            ADD     WRK-SYU-CHOSEI1          TO  SYU-CHOSEI1
            ADD     WRK-SYU-CHOSEI2          TO  SYU-CHOSEI2
-      *�����ۡݾ����ǡʺƷǡ�
+      *請求金額−消費税（再掲）
            ADD     WRK-SYU-SKYMONEY-TAX-SAI TO  SYU-SKYMONEY-TAX-SAI
-      *������
+      *請求金額
            ADD     WRK-SYU-SKYMONEY         TO  SYU-SKYMONEY
-      *�����׳�
+      *入金合計額
            ADD     WRK-SYU-NYUKIN-TOTAL     TO  SYU-NYUKIN-TOTAL 
-      *ϫ���ݸ�
+      *労災保険
            ADD     WRK-SYU-RSISHOSHIN-MONEY
                                            TO  SYU-RSISHOSHIN-MONEY
            ADD     WRK-SYU-RSISAISHIN-MONEY
@@ -725,7 +725,7 @@
            ADD     WRK-SYU-RSI-TOTAL       TO  SYU-RSI-TOTAL
            ADD     WRK-SYU-RSIJIBAI-SKYMONEY
                                            TO  SYU-RSIJIBAI-SKYMONEY
-      *�ޤȤ����Ϻ���
+      *まとめ入力差額
            ADD     WRK-SYU-GRP-SGKMONEY    TO  SYU-GRP-SGKMONEY
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX-SYU)
@@ -739,7 +739,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų����Խ�����
+      *    診療科別編集処理
       *****************************************************************
        3003-SYORI-03-SEC               SECTION.
       *
@@ -783,11 +783,11 @@
                            MOVE    LNK-SYU-HKNCOMBINUM(IDX-SYU)
                                                TO  WRK-HKNCOMBI
                            PERFORM 30031-DOUJI-HKNCOMBI-SEC
-      *                    ��ɼ�ֹ�
+      *                    伝票番号
                            ADD     1               TO  IDX-DN
                            MOVE    WRK-SYU-DENPNUM TO  LNK-DOUJI-DENPNUM
                                                       (IDX-SYU IDX-DN)
-      *                    ʣ���ݸ�
+      *                    複数保険
                            MOVE    ZERO        TO  LNK-SYU-HKNCOMBINUM
                                                            (IDX-SYU)
                            PERFORM 30021-SYUNOU-ADD-SEC
@@ -796,7 +796,7 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    �ѥ�᥿���Խ�
+      *    パラメタへ編集
            PERFORM 30023-LNK-TBL-HENSYU-SEC
       *
            .
@@ -804,7 +804,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ޤȤ�ʣ���ݸ��Խ�����
+      *    まとめ複数保険編集処理
       *****************************************************************
        30031-DOUJI-HKNCOMBI-SEC               SECTION.
       *
@@ -827,7 +827,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ޤȤ����Խ�����
+      *    まとめ合計編集処理
       *****************************************************************
        3004-SYORI-04-SEC               SECTION.
       *
@@ -836,28 +836,28 @@
            PERFORM VARYING     IDX     FROM    2   BY  1
                    UNTIL       IDX     >   IDX-TBL
                MOVE    TBL-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
-      *        ��ɼ�ֹ�
+      *        伝票番号
                ADD     1                   TO  IDX-DN
                MOVE    WRK-SYU-DENPNUM     TO  LNK-DOUJI-DENPNUM
                                                  (1 IDX-DN)
            END-PERFORM
       *
       *H27.8
-      *    ���Ų���¸
+      *    診療科保存
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-TBL
                MOVE    TBL-SYUNOU-REC (IDX)    TO  WRK-SYUNOU-REC
-      *        ʣ����
+      *        複数科
                MOVE    1                   TO  IDX-SYU
                MOVE    WRK-SYU-SRYKA       TO  WRK-SRYKA
                PERFORM 30041-DOUJI-SRYKA-SEC
            END-PERFORM
-      *    ���Ų���¸
+      *    診療科保存
            MOVE    LNK-DOUJI-SRYKA-G (1)   TO  WRK-DOUJI-SRYKA-G
       *
-      *    �ݸ��̤˽��פ���
+      *    保険別に集計する
            PERFORM 3002-SYORI-02-SEC
-      *    ��פ���
+      *    合計する
            INITIALIZE                      TBL-SYUNOU-AREA
            MOVE    LNK-SYUNOU-AREA     TO  TBL-SYUNOU-AREA
            MOVE    LNK-SEIKYU-AREA     TO  TBL-SEIKYU-AREA
@@ -890,29 +890,29 @@
                                            TO  LNK-HENKIN
                                                        (IDX-SYU)
                    IF      ORCHC03SUB-MAX      >  1
-      *                ʣ���ݸ�
+      *                複数保険
                        MOVE    WRK-SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
                        PERFORM 30031-DOUJI-HKNCOMBI-SEC
                    END-IF
-      ****         ʣ����
+      ****         複数科
       *            MOVE    WRK-SYU-SRYKA   TO  WRK-SRYKA
       ****         PERFORM 30041-DOUJI-SRYKA-SEC
                ELSE
                    PERFORM 30021-SYUNOU-ADD-SEC
-      *            ʣ���ݸ�
+      *            複数保険
                    MOVE    WRK-SYU-HKNCOMBINUM TO  WRK-HKNCOMBI
                    PERFORM 30031-DOUJI-HKNCOMBI-SEC
                    MOVE    ZERO            TO  LNK-SYU-HKNCOMBINUM
                                                            (IDX-SYU)
-      ****         ʣ����
+      ****         複数科
       *            MOVE    WRK-SYU-SRYKA   TO  WRK-SRYKA
       ****         PERFORM 30041-DOUJI-SRYKA-SEC
                END-IF
            END-PERFORM
       *H27.8
-      *    ���Ų�
+      *    診療科
            MOVE    WRK-DOUJI-SRYKA-G   TO  LNK-DOUJI-SRYKA-G (IDX-SYU)
-      *    �ѥ�᥿���Խ�
+      *    パラメタへ編集
            PERFORM 30023-LNK-TBL-HENSYU-SEC
       *
            .
@@ -920,7 +920,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�����Ͽ��Ų��Խ�����
+      *    同時入力診療科編集処理
       *****************************************************************
        30041-DOUJI-SRYKA-SEC             SECTION.
       *
@@ -948,7 +948,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ޥ������ɹ�
+      *    収納マスター読込
       *****************************************************************
        980-SYUNOU-READ-SEC         SECTION.
       *
@@ -966,7 +966,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��ץޥ������ɹ�
+      *    収納合計マスター読込
       *****************************************************************
        981-SYUTTL-READ-SEC         SECTION.
       *
@@ -983,7 +983,7 @@
        981-SYUTTL-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -995,7 +995,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1008,7 +1008,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    クロース処理
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *

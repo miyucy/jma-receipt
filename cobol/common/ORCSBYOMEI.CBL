@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,41 +18,41 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSBYOMEI.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ��̾�����ɸ�������
-      *  ������            : 
-      *  03/12/01    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 病名コード検索処理
+      *  管理者            : 
+      *  03/12/01    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-ƣ��    04/03/17  ���������ѻ����Τ������å�
-      *  00.00.02    NACL-ƣ��    04/04/13  ʣ������̾�����ɤ�¸�ߤ���
-      *                                     ��̾�Υ������Խ�
-      *                                     �����ĤΥ����ɸ�������̤������
-      *                                     ��̾��¸�ߤ���Ȥ��ν���
-      *  00.00.03    NACL-ƣ��    04/07/08  ��̾�����ƥ�ͽ�󥳡��ɤ�¸��
-      *                                     ������ε���������������ʬ��
-      *                                     �Խ���Ԥʤ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    04/03/17  開始日と廃止日のよるチェック
+      *  00.00.02    NACL-藤原    04/04/13  複数の病名コードが存在する
+      *                                     病名のコード編集
+      *                                     ２１個のコード検索時に未検索の
+      *                                     病名が存在するときの処理
+      *  00.00.03    NACL-藤原    04/07/08  病名システム予約コードが存在
+      *                                     する場合の疑い・慢性疾患区分の
+      *                                     編集を行なう
       *
-      *  02.07.01    NACL-ƣ��    05/10/31  MONFUNC�б�
-      *  02.07.01    NACL-ƣ��    06/01/25  �����ե饰�������̾���Խ���
-      *                                     ˡ���ѹ�
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
+      *  02.07.01    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *                                     法の変更
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.05.01    NACL-ƣ��    09/11/25  �쥻�ť����ȳ�ĥ�б�
-      *                                     ��­�����ȤΥ����å�
+      *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
+      *                                     補足コメントのチェック
       *
-      *  04.06.01    NACL-ƣ��    10/10/20  ���³����Ƴ�������б�
-      *  04.06.02    NACL-ƣ��    13/05/29  �쥻�ť��顼�ե饰��Ƚ���
-      *                                     ����̾�ե饰����Ѥ��ʤ�
+      *  04.06.01    NACL-藤原    10/10/20  難病外来指導管理料対応
+      *  04.06.02    NACL-藤原    13/05/29  レセ電エラーフラグの判定に
+      *                                     主病名フラグを使用しない
       *
-      *  04.07.01    NACL-ƣ��    11/06/10  ��̾���饳���ɸ�������ʣ����
-      *                                     �Ȥ�Ω�Ƥ��ֵѲ�ǽ�ˤ���
+      *  04.07.01    NACL-藤原    11/06/10  病名からコード検索時、複数の
+      *                                     組み立てを返却可能にする
       *
-      *  04.08.01    NACL-ƣ��    15/12/02  ̤�����ɲ�����̾�ΤȤ����ѻߡ�
-      *                                     �ܹԤν����
+      *  04.08.01    NACL-藤原    15/12/02  未コード化傷病名のときの廃止、
+      *                                     移行の初期化
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -64,7 +64,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-BYOMEI          PIC 9(01).
       *
@@ -77,7 +77,7 @@
       *
        01  FLG-KENSAKU-KBN         PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -95,66 +95,66 @@
        01  WRK-AREA.
       *
            03  WRK-BYOMEICD-KENSAKU-AREA.
-      *        ��­�����ȤޤǤ���̾�����ɿ��ʽ�����ʳ���
+      *        補足コメントまでの病名コード数（修飾語以外）
                05  WRK-BYOMEICDSU      PIC 9(02).
-      *        ��̾�����ɿ��ʽ�����ʳ���
+      *        病名コード数（修飾語以外）
                05  WRK-BYOMEICDSU1     PIC 9(02).
-      *        ������̾�����ɿ�
+      *        検索病名コード数
                05  WRK-BYOMEI-MAX      PIC 9(01).
-      *        �Ǹ�Ρʤΰ���
+      *        最後の（の位置
                05  WRK-BYOMEI-YYK-INDEX1
                                        PIC 9(02).
-      *        �Ǹ�Ρˤΰ���
+      *        最後の）の位置
                05  WRK-BYOMEI-YYK-INDEX2
                                        PIC 9(02).
-      *        �Ǹ�Ρʤγ��ϰ���
+      *        最後の（の開始位置
                05  WRK-BYOMEI-YYK-ST   PIC 9(03).
-      *        �Ǹ�Ρˤγ��ϰ���
+      *        最後の）の開始位置
                05  WRK-BYOMEI-YYK-ED   PIC 9(03).
-      *        �ǽ��̤�����ɲ���̾�ΰ���
+      *        最初の未コード化病名の位置
                05  WRK-BYOMEI-HENKAN-INDEX
                                        PIC 9(02).
-      *        �ʡˤ��������­�����Ȥ�Ĺ��
+      *        （）を除いた補足コメントの長さ
                05  WRK-BYOMEI-HOSOKU-LEN
                                        PIC 9(03).
-      *        ��­�����Ȥ��������̾�����ɿ�
+      *        補足コメントを除いた病名コード数
                05  WRK-BYO-BYOMEI-MAX  PIC 9(02).
       *
-      *        �ֵѤ��븡����̾�����ɾ���Ρʡ˥ե饰
+      *        返却する検索病名コード情報の（）フラグ
                05  WRK-LNK-BYOMEI-FLG-AREA.
                    07  WRK-LNK-BYOMEI-FLG  PIC X(01)
                                                OCCURS  21.
-      *        ������̾����
+      *        検索病名情報
                05  WRK-BYOMEI-FLG-TBL.         
-      *            �ʡ˥ե饰
+      *            （）フラグ
                    07  WRK-BYOMEI-FLG  PIC X(01)
                                                OCCURS  40.
-      *        ������̾����
+      *        検索病名情報
                05  WRK-BYOMEI-BYOMEICD-TBL     OCCURS  40.
-      *            ��̾
+      *            病名
                    07  WRK-BYOMEI-BYOMEI
                                        PIC X(200).
       *
                    07  WRK-BYOMEI-BYOMEICD-G   OCCURS  2.
-      *                ��̾������
+      *                病名コード
                        09  WRK-BYOMEI-BYOMEICD 
                                        PIC X(07).    
-      *                �ܹ��襳����
+      *                移行先コード
                        09  WRK-BYOMEI-IKOSAKICD 
                                        PIC X(07).
-      *                �ѻ�ǯ����
+      *                廃止年月日
                        09  WRK-BYOMEI-HAISIYMD 
                                        PIC X(08).
-      *                ñ�Ȼ��Ѷػ߶�ʬ
+      *                単独使用禁止区分
                        09  WRK-BYOMEI-TANDOKUKBN 
                                        PIC 9(02).
-      *                �������������
+      *                特定疾患コード
                        09  WRK-BYOMEI-TOKSKNCD
                                        PIC 9(02).
-      *                ���³��襳����
+      *                難病外来コード
                        09  WRK-BYOMEI-NANBYOCD
                                        PIC 9(02).
-      *                �����ե饰
+      *                疑いフラグ
                        09  WRK-BYOMEI-UTAGAIFLG
                                        PIC X(01).
            03  WRK-KENSAKU-AREA.
@@ -179,54 +179,54 @@
            03  WRK-RECECD-TBL.
                05  WRK-RECECD      PIC X(01)   OCCURS  3.
       *
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（疑い）
            03  WRK-HENFLG1         PIC X(01).
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（急性）
            03  WRK-HENFLG2         PIC X(01). 
       *
-      *    ������
+      *    固定値
        01  WRK-CONS-AREA.
       * 
-      *    ��̾�����ɣͣ���
+      *    病名コードＭＡＸ
            03  WRK-CONS-BYOMEI-MAX PIC 9(02)   VALUE   21.
       *
-      *    ������̾����ͣ���
+      *    検索病名情報ＭＡＸ
            03  WRK-CONS-BYOMEICD-TBL-MAX
                                    PIC 9(02)   VALUE   40.
       *    
-      *    �����̾
+      *    ワーク病名
        01  WRK-BYOMEI-REC.
            COPY    "CPBYOMEI.INC"  REPLACING  //BYO-//
                                  BY         //WRK-BYO-//.
       *
-      *    ��̾�����ƥ�ͽ�󥳡��ɥơ��֥�
+      *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��̾
+      *    病名
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ��̾��Ω����
+      *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -240,7 +240,7 @@ grpsys     COPY    "COMMON-SPA".
                                     SPA-AREA.
      *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -271,7 +271,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *     
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        100-SYORI-SEC       SECTION.
       *
@@ -280,7 +280,7 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
       *
            MOVE    SPACE           TO  LNK-BYO-RC    
-      *    ������ʬ�ˤ�긡������
+      *    処理区分により検索処理
            EVALUATE    LNK-BYO-SYORI
                WHEN    "1"
                WHEN    "3"
@@ -297,7 +297,7 @@ grpsys     COPY    "COMMON-SPA".
                    GO  TO  100-SYORI-EXT
            END-EVALUATE
       *
-      *    ���������ɤ���Ȥ�Ω��
+      *    検索コードより組み立て
            PERFORM 200-TBL-HENSYU-SEC
            IF      LNK-BYO-RC      NOT =   SPACE
       *        DISPLAY "LNK-BYO-RC=" LNK-BYO-RC
@@ -323,11 +323,11 @@ grpsys     COPY    "COMMON-SPA".
       *?     DISPLAY "  HENKAN-ERR=" FLG-HENKAN-ERR "#"
       *?     DISPLAY "  FLG-TBLERR=" FLG-TBLERR "#"
       *
-      *    �ʡˤ��Ǹ�ˤ���Ȥ�����­�����Ȥ�����
+      *    （）が最後にあるときの補足コメントの設定
            IF    ( WRK-BYOMEI-YYK-INDEX1   >   ZERO )
            AND   ( WRK-BYOMEI-YYK-INDEX2   >   ZERO )
            AND   ( WRK-BYOMEI-HOSOKU-LEN   <=  40   )
-      *��       �Խ���̾����­�����ȤϤʤ�
+      *★       編集病名は補足コメントはなし
       **         IF    (     FLG-TBLERR          =   1           )
       **         OR    (   ( LNK-BYO-BYOMEI-MAX  =   ZERO )  AND
       **                   ( LNK-BYO-BYOMEICD-ERR   
@@ -347,10 +347,10 @@ grpsys     COPY    "COMMON-SPA".
                    MOVE    LNK-BYO-BYOMEI (IDXX:WRK-BYOMEI-HOSOKU-LEN)
                                            TO  LNK-BYO-HOSOKU-BYOMEI
                    MOVE    SPACE           TO  LNK-BYO-BYOMEIHENFLG
-      *��      END-IF
+      *★      END-IF
            END-IF     
       *
-      *    ��̾�����ɤϸ����Ǥ��ʤ�����­�����Ȥ�¸�ߤ���Ȥ�
+      *    病名コードは検索できないが補足コメントが存在するとき
            IF    ( LNK-BYO-SYORI       =   "3" OR  "4"       )
            AND   ( WRK-BYOMEI-YYK-INDEX1
                                        =   ZERO              )
@@ -378,7 +378,7 @@ grpsys     COPY    "COMMON-SPA".
                END-IF
            END-IF    
       *
-      *    ������̾�����ɿ��ʾ帡�������Ȥ�
+      *    最大病名コード数以上検索したとき
       *****IF      WRK-BYOMEI-MAX  >   WRK-CONS-BYOMEI-MAX
            IF      FLG-TBLERR      =   1
                MOVE    1               TO  LNK-BYO-BYOMEICD-MAX-ERR  
@@ -391,7 +391,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    ZERO                TO  LNK-BYO-BYOMEICD-ERR
            END-IF
       *
-      *    �����ɤ������Ǥ��ʤ��ä��Ȥ��ʥ�����¸�ߥ��顼�ʳ���
+      *    コードが検索できなかったとき（コード存在エラー以外）
            IF    ( LNK-BYO-BYOMEI-MAX  =   ZERO )
            AND   ( LNK-BYO-BYOMEICD-ERR   
                                    NOT =   "3"  )
@@ -403,10 +403,10 @@ grpsys     COPY    "COMMON-SPA".
                                                LNK-BYO-BYOMEI-MAX
            END-IF
       *
-      *    ���ƥ����ɤ��Ѵ��Ǥ��ʤ��ä��Ȥ�
+      *    全てコードに変換できなかったとき
            IF      FLG-HENKAN-ERR      =   1
       *
-      *        ��̾�����Ѵ�������­�����Ȱʳ���̤�����ɲ���̾�����뤫
+      *        病名から変換時に補足コメント以外に未コード化病名があるか
                IF    ( LNK-BYO-SYORI       =   "3"                     )
                AND   ( LNK-BYO-HOSOKU-BYOMEI
                                        NOT =   SPACE                   )
@@ -440,20 +440,20 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    "1"                 TO  LNK-BYO-BYOMEIHENFLG
            END-IF
       *
-      *    ��̾���鸡�����������Ѵ��Ǥ������
+      *    病名から検索時コード変換できた場合
            IF    ( LNK-BYO-SYORI       =   "3"   )
            AND   ( LNK-BYO-HOSOKU-BYOMEI
                                        =   SPACE )
            AND   ( LNK-BYO-BYOMEIHENFLG
                                        =   SPACE )
-      *        ��­�����Ȥ��ʤ��Ȥ����ѻ���̾�����å�
+      *        補足コメントがないときの廃止病名チェック
                IF    ( LNK-BYO-HAISIYMD-ERR    >   ZERO              )
                AND   ( LNK-BYO-HAISIYMD-ERR    <   LNK-BYO-SRYYMD-IN )
                    PERFORM 200-HAISI-BYOMEI-SYORI-SEC
                END-IF
            END-IF 
       *
-      *    ��̾�����ɤ��鸡���ΤȤ���̾�Խ�
+      *    病名コードから検索のとき病名編集
            IF    ( LNK-BYO-SYORI       =   "2" OR  "4" )
            AND   ( LNK-BYO-BYOMEICD-ERR
                                    NOT =   "3"         )    
@@ -469,7 +469,7 @@ grpsys     COPY    "COMMON-SPA".
                    END-STRING
                END-PERFORM
       *
-      *        Ⱦ�ѥ����å�
+      *        半角チェック
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
                MOVE    WRK-BYOMEI          TO  KANACHK-MAE-INPUT
@@ -477,7 +477,7 @@ grpsys     COPY    "COMMON-SPA".
                IF      KANACHK-RC          =   ZERO
                AND     KANACHK-SYUBETU     =   "2"
                    MOVE    KANACHK-OUT-INPUT   TO  LNK-BYO-BYOMEI
-      *            ��̾ʸ����
+      *            病名文字数
                    IF      KANACHK-MAX     >   80
                        MOVE    2               TO  LNK-BYO-KANACHK-ERR
                    END-IF
@@ -487,7 +487,7 @@ grpsys     COPY    "COMMON-SPA".
                END-IF
            END-IF
       *
-      *    �쥻�ť��顼�ե饰
+      *    レセ電エラーフラグ
            PERFORM 200-RECEDENFLG-HENSYU-SEC
       *
       **   DISPLAY "LNK-BYO-HOSOKU-BYOMEI-ETC="
@@ -518,7 +518,7 @@ grpsys     COPY    "COMMON-SPA".
                                                     TO  IDX
                            END-IF
                        END-PERFORM
-      *                ���פ��륳���ɤ�����Ȥ�
+      *                一致するコードがあるとき
                        IF      FLG-CHK          =   1
                            MOVE    ZERO             TO  FLG-CHK
                        ELSE
@@ -551,13 +551,13 @@ grpsys     COPY    "COMMON-SPA".
                        GO  TO  100-SYORI-SEC
                    END-IF
       *
-      *            ������̤��ҤȤĤΤȤ� 
+      *            検索結果がひとつのとき 
                    IF      LNK-BYOMEI-KENSAKU-MAX   =   1
                        MOVE    LNK-BYOMEI-AREA-OCC (1)  TO
                                                     LNK-BYOMEI-AREA
                        GO  TO  100-SYORI-EXT
                    END-IF
-      *            �Խ���̾�Ǥʤ��ܹ�����ʤ��Ȥ�
+      *            編集病名でなく移行等もないとき
                    PERFORM VARYING IDXX    FROM    1   BY  1
                            UNTIL   IDXX    >   LNK-BYOMEI-KENSAKU-MAX
                        IF    ( LNK-BYO-O-BYOMEIHENFLG(IDXX) =   SPACE )
@@ -574,7 +574,7 @@ grpsys     COPY    "COMMON-SPA".
                    IF      LNK-BYO-BYOMEI-MAX  >   ZERO
                        GO  TO  100-SYORI-EXT
                    END-IF
-      *            �Խ���̾�Ǥʤ����ܹ���������Ȥ�
+      *            編集病名でないが移行等があるとき
                    PERFORM VARYING IDXX    FROM    1   BY  1
                            UNTIL   IDXX    >   LNK-BYOMEI-KENSAKU-MAX
                        IF    ( LNK-BYO-O-BYOMEIHENFLG(IDXX) =   SPACE )
@@ -591,7 +591,7 @@ grpsys     COPY    "COMMON-SPA".
                    IF      LNK-BYO-BYOMEI-MAX  >   ZERO
                        GO  TO  100-SYORI-EXT
                    END-IF
-      *            �Խ���̾�ΤߤΤȤ�
+      *            編集病名のみのとき
                    MOVE    LNK-BYOMEI-AREA-OCC (1)  TO  LNK-BYOMEI-AREA
            END-EVALUATE
            .
@@ -601,11 +601,11 @@ grpsys     COPY    "COMMON-SPA".
            .
       *     
       *****************************************************************
-      *    �쥻�ť��顼�ե饰�Խ�����
+      *    レセ電エラーフラグ編集処理
       *****************************************************************
        200-RECEDENFLG-HENSYU-SEC       SECTION.
       *
-      *   ��­�����Ȥ�����Ȥ��Ͻ�����Ĺ���ǥ����å�
+      *   補足コメントがあるときは除いた長さでチェック
            IF      LNK-BYO-BYOMEI-LEN  >   ZERO
                MOVE    LNK-BYO-BYOMEI-LEN
                                        TO  WRK-MOJISU
@@ -616,13 +616,13 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    LNK-BYO-BYOMEIHENFLG
                                    TO  WRK-BYOMEIHENFLG
       *   
-      *    �����ե饰�����ꤵ��Ƥ���Ȥ�
+      *    疑いフラグが設定されているとき
            IF      LNK-BYO-UTAGAIFLG-IN
                                    NOT =   SPACE
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    LNK-BYO-UTAGAIFLG-IN
                                            TO  SMKBYO-UTAGAIFLG
-      *��      ��­�����Ȥ�����Ȥ��Ͻ�������̾�ǥ����å�
+      *★      補足コメントがあるときは除いた病名でチェック
                IF      LNK-BYO-BYOMEI-LEN  >   ZERO
                    MOVE    LNK-BYO-BYOMEI (1:LNK-BYO-BYOMEI-LEN)
                                                TO  SMKBYO-BYOMEI
@@ -661,7 +661,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *     
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        200-BYOMEI-SYORI-SEC       SECTION.
       *
@@ -669,13 +669,13 @@ grpsys     COPY    "COMMON-SPA".
       *
            INITIALIZE                  WRK-AREA
       *
-      *    ��̾������ΤȤ������Ϥ��ʤ�
+      *    病名が空白のとき処理はしない
            IF      LNK-BYO-BYOMEI      =   SPACE
                MOVE    "2"         TO  LNK-BYO-RC
                GO  TO  200-BYOMEI-SYORI-EXT
            END-IF
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    LNK-BYO-BYOMEI      TO  KANACHK-MAE-INPUT
@@ -689,13 +689,13 @@ grpsys     COPY    "COMMON-SPA".
                GO  TO  200-BYOMEI-SYORI-EXT
            END-IF
       *
-      *    ʸ���������å�
+      *    文字数チェック
            IF      KANACHK-MAX         >   80
                MOVE    2                   TO  LNK-BYO-KANACHK-ERR
                MOVE    9                   TO  FLG-KENSAKU-KBN
                GO  TO  200-BYOMEI-SYORI-EXT
            END-IF
-      *    ��̾ʸ����
+      *    病名文字数
            COMPUTE LNK-BYO-BYOMEIMOJI  =   KANACHK-MAX     /   2 
       *
            MOVE    KANACHK-MAX         TO  WRK-MOJISU        
@@ -706,7 +706,7 @@ grpsys     COPY    "COMMON-SPA".
                ADD 1 TO   FLG-KENSAKU-KBN
       *
            MOVE    ZERO                TO  IDY
-      *    ������̾�Ǹ�������̾�Τ߸�����
+      *    入力病名で検索（病名のみ検索）
            MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
            MOVE    "key4"              TO  WRK-MCP-PATHNAME
            INITIALIZE                      BYOMEI-REC
@@ -725,7 +725,7 @@ grpsys     COPY    "COMMON-SPA".
                GO  TO  200-BYOMEI-SYORI-EXT
            END-IF
       *
-      *    ������̾�Ǹ�������̾�����������Ƹ�����
+      *    入力病名で検索（病名・修飾語全て検索）
            MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
            MOVE    "key6"              TO  WRK-MCP-PATHNAME
            INITIALIZE                      BYOMEI-REC
@@ -751,7 +751,7 @@ grpsys     COPY    "COMMON-SPA".
       *?   DISPLAY "200 FLG-KENSAKU-KBN=" FLG-KENSAKU-KBN " syori"
                ADD 1 TO   FLG-KENSAKU-KBN
       *
-      *    ���Ϥ��줿��̾�Ǹ�����������û�̤��Ƹ�����
+      *    入力された病名で検索（前から短縮して検索）
            INITIALIZE                  WRK-BYOMEICD-KENSAKU-AREA
                                        WRK-KENSAKU-AREA
       *****COMPUTE IDY =   WRK-CONS-BYOMEI-MAX +   1
@@ -765,7 +765,7 @@ grpsys     COPY    "COMMON-SPA".
                PERFORM VARYING IDZ FROM    1   BY  2
                        UNTIL   IDZ >       WRK-KEN-LENGTH
                        OR      WRK-KEN-ADDKBN  =   1
-      *            ��̾�θ���
+      *            病名の検索
                    MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
                    MOVE    "key6"              TO  WRK-MCP-PATHNAME
                    INITIALIZE                  BYOMEI-REC
@@ -799,7 +799,7 @@ grpsys     COPY    "COMMON-SPA".
                  END-IF
                END-PERFORM
       *
-      *        �����Ǥ��ʤ��ä��Ȥ�ͽ�󥳡��ɤǸ���
+      *        検索できなかったとき予約コードで検索
                IF      WRK-KEN-ADDKBN          =   ZERO
                    MOVE    2                   TO  IDX1
                    COMPUTE IDW =   WRK-KEN-LENGTH  -   1
@@ -811,13 +811,13 @@ grpsys     COPY    "COMMON-SPA".
                        GO  TO  200-BYOMEI-SYORI-EXT
                    END-IF
       *
-      *            �����Ǥ����Ȥ�
+      *            検索できたとき
                    IF      WRK-KEN-ADDKBN          =   1
                        COMPUTE WRK-KEN-LENGTH  =   WRK-KEN-LENGTH  -
                                                    IDX1
                    END-IF
       *
-      *            �����Ǥ��ʤ��ä��Ȥ��Ͻ�λ
+      *            検索できなかったときは終了
                    IF      WRK-KEN-ADDKBN          =   ZERO
                        MOVE    ZERO                TO  WRK-KEN-LENGTH
                    END-IF
@@ -825,7 +825,7 @@ grpsys     COPY    "COMMON-SPA".
            END-PERFORM
            END-IF 
       *
-      *    ���Ϥ��줿��̾�Ǹ����ʸ������û�̤��Ƹ�����
+      *    入力された病名で検索（後ろから短縮して検索）
       *
            IF      WRK-KEN-ADDKBN          =   ZERO
            IF      FLG-KENSAKU-KBN     =   2   OR  5
@@ -843,7 +843,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    1                   TO  FLG-HENSYU
       *
                PERFORM             UNTIL   IDZ     >=  WRK-MOJISU
-      *            ��̾�θ���
+      *            病名の検索
                    MOVE    ZERO                TO  WRK-KEN-ADDKBN
                    PERFORM VARYING IDW FROM    WRK-KEN-LENGTH  BY  -2 
                            UNTIL   IDW <       2
@@ -859,7 +859,7 @@ grpsys     COPY    "COMMON-SPA".
                                                TO  BYO-BYOMEI
                        PERFORM 2001-BYOMEICD-KENSAKU-SEC
                        IF      FLG-BYOMEI      =   ZERO
-      *                    ̤��������̾��������Խ�
+      *                    未検索の病名があれば編集
                            IF      FLG-BUBUN           >   ZERO
                                PERFORM 2007-BUBUN-HENSYU-SEC
                                IF      FLG-TBLERR          =   1
@@ -888,7 +888,7 @@ grpsys     COPY    "COMMON-SPA".
                        MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                        PERFORM 900-CLOSE-SEC
       *
-      *                �����Ǥ����Ȥ�
+      *                検索できたとき
                        IF      WRK-KEN-ADDKBN      =   1
                            COMPUTE IDZ     =   IDZ     +   IDX1
                            COMPUTE WRK-KEN-LENGTH
@@ -898,7 +898,7 @@ grpsys     COPY    "COMMON-SPA".
                      END-IF
                    END-PERFORM
       *
-      *            �����Ǥ��ʤ��ä��Ȥ�ͽ�󥳡��ɤǸ���
+      *            検索できなかったとき予約コードで検索
                    IF      WRK-KEN-ADDKBN          =   ZERO
                        MOVE    2                   TO  IDX1
                        MOVE    WRK-KEN-BYOMEI(IDZ:IDX1)  
@@ -909,7 +909,7 @@ grpsys     COPY    "COMMON-SPA".
                            GO  TO  200-BYOMEI-SYORI-EXT
                        END-IF
       *
-      *                �����Ǥ��ʤ��ä��Ȥ��ΰ��֤����
+      *                検索できなかったときの位置を取得
                        IF    ( WRK-KEN-ADDKBN          =   ZERO )
                        AND   ( FLG-BUBUN               =   ZERO )
                             MOVE    IDZ                TO  FLG-BUBUN
@@ -922,7 +922,7 @@ grpsys     COPY    "COMMON-SPA".
                    END-IF
                END-PERFORM
       *   
-      *        ̤��������̾��������Խ�
+      *        未検索の病名があれば編集
                IF      FLG-BUBUN           >   ZERO
                    PERFORM 2007-BUBUN-HENSYU-SEC
                    IF      FLG-TBLERR          =   1
@@ -936,13 +936,13 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *     
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        200-BYOMEICD-SYORI-SEC     SECTION.
       *
            MOVE    1                   TO  FLG-HENSYU
       *
-      *    ��̾�����ɤ����ꤵ��Ƥ��ʤ��Ȥ�
+      *    病名コードが設定されていないとき
            MOVE    ZERO                TO  IDY
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ  >      21
@@ -956,7 +956,7 @@ grpsys     COPY    "COMMON-SPA".
                GO  TO  200-BYOMEICD-SYORI-EXT
            END-IF   
       *
-      *    ��̾�����ɤǸ���
+      *    病名コードで検索
            MOVE    ZERO                TO  IDY
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ  >      21
@@ -1018,17 +1018,17 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *     
       *****************************************************************
-      *    �ѻ���̾��������
+      *    廃止病名検索処理
       *****************************************************************
        200-HAISI-BYOMEI-SYORI-SEC  SECTION.
       *
            PERFORM VARYING IDX FROM    1   BY  2
                    UNTIL   IDX >       200
                    OR      LNK-BYO-BYOMEI (IDX:2)  =   SPACE
-               IF      LNK-BYO-BYOMEI (IDX:2)  =   "��"
+               IF      LNK-BYO-BYOMEI (IDX:2)  =   "（"
                    MOVE    IDX             TO  WRK-BYOMEI-YYK-ST
                END-IF
-               IF      LNK-BYO-BYOMEI (IDX:2)  =   "��"
+               IF      LNK-BYO-BYOMEI (IDX:2)  =   "）"
                    MOVE    IDX             TO  WRK-BYOMEI-YYK-ED
                END-IF
            END-PERFORM
@@ -1062,23 +1062,23 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *     
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        200-TBL-HENSYU-SEC          SECTION.
       *
            MOVE    ZERO            TO  FLG-TBLERR
       *
-      *    ͽ��ʳ�����̾�����ɤ򸡺��Ǥ��ʤ��ä��Ȥ�
+      *    予約以外の病名コードを検索できなかったとき
            IF      WRK-BYOMEI-MAX      =   ZERO
                GO  TO  200-TBL-HENSYU-EXT
            END-IF 
       *
-      *    �����Ǥ��ʤ��ä���̾������Ȥ�
+      *    検索できなかった病名があるとき
            IF      FLG-BUBUN           >   ZERO
                GO  TO  200-TBL-HENSYU-EXT
            END-IF 
       *
-      *    ������̾�����ɾ����Խ�
+      *    検索病名コード情報編集
            MOVE    ZERO                TO  IDY
                                            WRK-BUI-MAX
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1151,7 +1151,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *     
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        2001-BYOMEICD-KENSAKU-SEC        SECTION.
       *
@@ -1176,7 +1176,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������̾�������Խ�����
+      *    検索病名コード編集処理
       *****************************************************************
        2002-BYOMEICD-HENSYU-SEC        SECTION.
       *
@@ -1199,7 +1199,7 @@ grpsys                            SPA-AREA
                    END-IF
            END-EVALUATE
       *    
-      *    ̤�����ɲ�����̾�����ɤΤȤ��ϥ����ɤ����Խ�
+      *    未コード化傷病名コードのときはコードだけ編集
            IF      BYO-BYOMEICD    =   "0000999"
                MOVE    2               TO  IDX
                MOVE    BYO-BYOMEICD    TO
@@ -1243,7 +1243,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        2003-LNK-HENSYU-SEC             SECTION.
       *
@@ -1269,7 +1269,7 @@ grpsys                            SPA-AREA
            MOVE    WRK-BYOMEI-FLG        (IDX)
                                        TO  WRK-LNK-BYOMEI-FLG  (IDY)
       *
-      *    �Ǹ�Ρʡˤγ�Ǽ���֤����
+      *    最後の（）の格納位置を取得
            IF      LNK-BYO-SYORI       =   "3" OR  "4"
                IF      LNK-BYO-TBYOMEICD (IDY)
                                            =   "ZZZ(101"
@@ -1287,7 +1287,7 @@ grpsys                            SPA-AREA
                END-IF
            END-IF 
       *
-      *    ������̾��
+      *    基本病名数
            EVALUATE    LNK-BYO-TBYOMEICD (IDY) (1:3)
                WHEN    "ZZZ"
                    IF      LNK-BYO-TBYOMEICD (IDY) (4:1)   =   "1"
@@ -1299,19 +1299,19 @@ grpsys                            SPA-AREA
                    END-IF
                WHEN    "000"
                    MOVE    1           TO  FLG-HENKAN-ERR
-      *           �ǽ��̤�����ɲ���̾�ΰ��֤����
+      *           最初の未コード化病名の位置を取得
                    IF      WRK-BYOMEI-HENKAN-INDEX =   ZERO
                        MOVE    IDY          TO  WRK-BYOMEI-HENKAN-INDEX
                    END-IF
                WHEN   OTHER
-      *            ������̾������
+      *            基本病名コード
                    IF      LNK-BYO-KHNBYOMEICD    =   SPACE
                        MOVE    LNK-BYO-TBYOMEICD (IDY)
                                                TO  LNK-BYO-KHNBYOMEICD
                    END-IF
       *
                    ADD     1           TO  WRK-BYOMEICDSU1
-      *            ��­�����ȤޤǤδ�����̾��
+      *            補足コメントまでの基本病名数
                    IF    ( WRK-BYOMEI-YYK-INDEX1
                                            >   ZERO )  
                    AND   ( WRK-BYOMEI-YYK-INDEX1
@@ -1326,14 +1326,14 @@ grpsys                            SPA-AREA
            EXIT.
       *     
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        2004-LNK-BYOMEI-HENSYU-SEC      SECTION.
       *
-      *    ��̾�����ɿ�
+      *    病名コード数
            MOVE    LNK-BYO-BYOMEI-MAX  TO  LNK-BYO-BYOMEICDSU
       *
-      *    �����ե饰��������ʬ
+      *    疑いフラグ・慢性区分
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       LNK-BYO-BYOMEI-MAX
       *
@@ -1373,7 +1373,7 @@ grpsys                            SPA-AREA
                END-IF   
            END-PERFORM
       *
-      *    ��̾�����ɤ���ν�����
+      *    病名コードからの処理時
            IF    ( LNK-BYO-SYORI           =   "4" )
                MOVE    LNK-BYO-TBYOMEI (1) TO  WRK-BYOMEI
                PERFORM VARYING IDX FROM    2   BY  1
@@ -1385,7 +1385,7 @@ grpsys                            SPA-AREA
                    END-STRING
                END-PERFORM
       *
-      *        �����ɤ����Ȥ�Ω�Ƥ���̾���ºݤ���̾�Ȱ㤦�Ȥ�
+      *        コードから組み立てた病名が実際の病名と違うとき
                IF    ( WRK-BYOMEI      NOT =   LNK-BYO-BYOMEI )
                AND   ( LNK-BYO-BYOMEI  NOT =   SPACE          )
                    MOVE    "9"                 TO  LNK-BYO-RC
@@ -1393,25 +1393,25 @@ grpsys                            SPA-AREA
                    GO  TO  2004-LNK-BYOMEI-HENSYU-EXT
                END-IF
       *
-      *        ��̾�����ɤ���ν���������­�����Ȥΰ���
+      *        病名コードからの処理時の補足コメントの位置
                MOVE    SPACE               TO  LNK-BYO-BYOMEI
                IF    ( WRK-BYOMEI-YYK-INDEX1   >   1   )
                AND   ( WRK-BYOMEI-YYK-INDEX2   >   3   )
                    PERFORM VARYING IDX FROM    1   BY  2
                            UNTIL   IDX >       200
                            OR      WRK-BYOMEI (IDX:2)  =   SPACE
-                       IF      WRK-BYOMEI (IDX:2)  =   "��"
+                       IF      WRK-BYOMEI (IDX:2)  =   "（"
                            MOVE    IDX             TO  WRK-BYOMEI-YYK-ST
                        END-IF
-                       IF      WRK-BYOMEI (IDX:2)  =   "��"
+                       IF      WRK-BYOMEI (IDX:2)  =   "）"
                            MOVE    IDX             TO  WRK-BYOMEI-YYK-ED
                        END-IF
                    END-PERFORM
                    MOVE    WRK-BYOMEI      TO  LNK-BYO-BYOMEI
                END-IF 
            END-IF     
-      *    �ʡˤ������ΤȤ����ʤ�����ʸ�������뤫���ˤθ��ʸ�������뤫
-      *    �����å�
+      *    （）が片方のとき、（の前に文字があるか、）の後に文字があるか
+      *    チェック
            MOVE    LNK-BYO-BYOMEI-MAX  TO  WRK-BYO-BYOMEI-MAX
       *
            IF    ( WRK-BYOMEI-YYK-INDEX1   >   1    )
@@ -1426,8 +1426,8 @@ grpsys                            SPA-AREA
                                        WRK-BYOMEI-YYK-ED   -
                                        WRK-BYOMEI-YYK-ST   -
                                        2
-      *            ��­�����Ȥ�¸�ߤ���Ȥ��������������̾�ǥ����å���Ԥ�
-      *            ��­�����ȤΡʡˤ����äƤ��Խ���̾�����Ȥ��ʤ�
+      *            補足コメントが存在するとき、それ以前の病名でチェックを行う
+      *            補足コメントの（）があっても編集病名扱いとしない
                    IF      WRK-BYOMEI-HOSOKU-LEN   <=  40
                        PERFORM VARYING IDXX    FROM    1   BY  1
                                UNTIL   IDXX    >
@@ -1463,7 +1463,7 @@ grpsys                            SPA-AREA
                MOVE    WRK-BYOMEICDSU1 TO  WRK-BYOMEICDSU
            END-IF
       *
-      *    ��̾�Խ��ե饰
+      *    病名編集フラグ
            IF      WRK-BYOMEI-FLG-TBL  NOT =   SPACE
                MOVE    "1"             TO  LNK-BYO-BYOMEIHENFLG
                GO  TO  2004-LNK-BYOMEI-HENSYU-EXT
@@ -1475,7 +1475,7 @@ grpsys                            SPA-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-BYO-BYOMEI-MAX
       *
-      *        ñ�Ȼ��Ѷػߥ����å�
+      *        単独使用禁止チェック
                IF      LNK-BYO-TTANDOKUKBN (IDX)
                                        =   ZERO
                    MOVE    "1"             TO  WRK-TANDOKUKBN
@@ -1483,7 +1483,7 @@ grpsys                            SPA-AREA
                    MOVE    LNK-BYO-TBYOMEI (IDX)
                                            TO  WRK-TANDOKUKBN-BYOMEI
                END-IF
-      *        �ѻ���̾�ΤȤ��ʺǽ�˸��Ĥ��������ɡ�
+      *        廃止病名のとき（最初に見つけたコード）
                IF      LNK-BYO-THAISIYMD (IDX)
                                        =   ZERO    OR  ALL "9"
                    CONTINUE
@@ -1494,7 +1494,7 @@ grpsys                            SPA-AREA
                                            TO  LNK-BYO-HAISIYMD-ERR
                    END-IF
                END-IF
-      *        �ܹ��襳���ɤ�����Ȥ��ʺǽ�˸��Ĥ��������ɡ�
+      *        移行先コードがあるとき（最初に見つけたコード）
                IF    ( LNK-BYO-TIKOSAKICD (IDX)
                                    NOT =   SPACE )
                AND   ( LNK-BYO-IKOSAKICD
@@ -1503,7 +1503,7 @@ grpsys                            SPA-AREA
                                            TO  LNK-BYO-IKOSAKICD
                    MOVE    IDX             TO  LNK-BYO-IKOSAKICD-INDEX 
                END-IF
-      *        �����졦��Ƭ������å�
+      *        接尾語・接頭語チェック
                EVALUATE    LNK-BYO-TBYOMEICD(IDX)(1:3)
                                ALSO    LNK-BYO-TBYOMEICD(IDX)(4:1)
                    WHEN    "ZZZ"       ALSO    "1"
@@ -1539,32 +1539,32 @@ grpsys                            SPA-AREA
                END-EVALUATE
            END-PERFORM
       *
-      *    ��̾����
+      *    病名種別
            IF      WRK-RECECD (2)      NOT =   SPACE
                MOVE    ZERO                TO  LNK-BYO-BYOMEISBT
            END-IF
       *
-      *    �����졦��Ƭ������å�����Ƭ��ΤߤΤȤ���
+      *    接尾語・接頭語チェック（接頭語のみのとき）
            IF    ( WRK-RECECD (1)    NOT =   SPACE )
            AND   ( WRK-RECECD (2)        =   SPACE )
            AND   ( WRK-RECECD (3)        =   SPACE )
                MOVE    1      TO  LNK-BYO-BYOMEICD-ERR
            END-IF
-      *    �����졦��Ƭ������å���������ΤߤΤȤ���
+      *    接尾語・接頭語チェック（接尾語のみのとき）
            IF    ( WRK-RECECD (1)        =   SPACE )
            AND   ( WRK-RECECD (2)        =   SPACE )
            AND   ( WRK-RECECD (3)    NOT =   SPACE )
                MOVE    1      TO  LNK-BYO-BYOMEICD-ERR
            END-IF
       *
-      *    ñ�ȶػߤΤߤΤȤ�
+      *    単独禁止のみのとき
            IF      WRK-TANDOKUKBN          =   SPACE
                MOVE    1                   TO  LNK-BYO-TANDOKUKBN-ERR
                MOVE    WRK-TANDOKUKBN-BYOMEI
                                            TO  LNK-BYO-TANDOKUKBN-BYOMEI
            END-IF
       *
-      *    �ܹ�����̾
+      *    移行先病名
            IF      LNK-BYO-IKOSAKICD   NOT =   SPACE
                MOVE    "tbl_byomei"        TO  WRK-MCP-TABLE
                MOVE    "key"               TO  WRK-MCP-PATHNAME
@@ -1573,7 +1573,7 @@ grpsys                            SPA-AREA
                MOVE    BYO-BYOMEI          TO  LNK-BYO-IKOSAKICD-BYOMEI
            END-IF
       *    
-      *    ʣ��������̾�����ɤ�¸�ߤ���Ȥ�
+      *    複数基本病名コードが存在するとき
            IF      WRK-BYOMEICDSU      >   1
                MOVE    9                   TO  LNK-BYO-BYOMEICD-ERR
                GO  TO  2004-LNK-BYOMEI-HENSYU-EXT
@@ -1583,7 +1583,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ͽ�󥳡��ɸ�������
+      *    予約コード検索処理
       *****************************************************************
        2006-KAKKO-KENSAKU-SEC      SECTION.
       *
@@ -1599,7 +1599,7 @@ grpsys                            SPA-AREA
                    MOVE    1               TO  FLG-BYOMEICD-OK
                    MOVE    1               TO  FLG-KENSAKU
       *
-      *            ̤��������̾��������Խ�
+      *            未検索の病名があれば編集
                    IF      FLG-BUBUN           >   ZERO
                        PERFORM 2007-BUBUN-HENSYU-SEC
                        IF      FLG-TBLERR          =   1
@@ -1630,7 +1630,7 @@ grpsys                            SPA-AREA
                                        TO  WRK-BYOMEI-BYOMEI   (IDY)
                    MOVE    1           TO  WRK-KEN-ADDKBN
       *
-      *            �ʡˤΰ��֤����
+      *            （）の位置を取得
                    IF      LNK-BYO-SYORI   =   "3" OR  "4"
                        IF      TBL-YYK-BYOMEICD (TBL-BYOMEICD-IDX)
                                            =   "ZZZ(101"
@@ -1649,7 +1649,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾��ʬ��������
+      *    病名部分検索処理
       *****************************************************************
        2007-BUBUN-HENSYU-SEC   SECTION.
       *
@@ -1684,7 +1684,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -1713,7 +1713,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        900-BYOMEI-READ-N-SEC         SECTION.
       *
@@ -1746,7 +1746,7 @@ grpsys                            SPA-AREA
       *
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *

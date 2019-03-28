@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡²ñ·×ºîÀ®ÍÑ¥Ñ¥é¥á¥¿¡¡¡¡¡¡COPY (CPORCSNYUACCT.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCGI01)
+      *    å…¥é™¢ä¼šè¨ˆä½œæˆç”¨ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€ã€€COPY (CPORCSNYUACCT.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCGI01)
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSNYUACCT-AREA.
       *
-      *Æþ±¡²ñ·×ºîÀ®¶èÊ¬¡Ê£±¡§Æþ±¡ÅÐÏ¿¡¡£²¡§Âà±¡ÅÐÏ¿¡¡£³¡§ÊÑ¹¹
-      *                  £´¡§°ÛÆ°¼è¾Ã»þ¤ÎÆþ±¡²ñ·×ºï½ü
-      *                  £µ¡§Æþ±¡¼è¾Ã¡ÊÆþ±¡²ñ·×¤Î¤ß¡Ë
-      *                  £¶¡§Æþ±¡¼è¾Ã¡ÊÆþ±¡²ñ·×¤È¿ÇÎÅ²ñ·×¡Ë
-      *                ¡¡£·¡§Âà±¡¼è¾Ã¡¡£¸¡§°ÛÆ°¡¡£¹¡§¼¡·îºîÀ®
-      *                ¡¡£Á¡§Âà±¡ÅÐÏ¿¡Ê¿ÇÎÅÊÝÂ¸¡Ë¡Ë
+      *å…¥é™¢ä¼šè¨ˆä½œæˆåŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢ç™»éŒ²ã€€ï¼’ï¼šé€€é™¢ç™»éŒ²ã€€ï¼“ï¼šå¤‰æ›´
+      *                  ï¼”ï¼šç•°å‹•å–æ¶ˆæ™‚ã®å…¥é™¢ä¼šè¨ˆå‰Šé™¤
+      *                  ï¼•ï¼šå…¥é™¢å–æ¶ˆï¼ˆå…¥é™¢ä¼šè¨ˆã®ã¿ï¼‰
+      *                  ï¼–ï¼šå…¥é™¢å–æ¶ˆï¼ˆå…¥é™¢ä¼šè¨ˆã¨è¨ºç™‚ä¼šè¨ˆï¼‰
+      *                ã€€ï¼—ï¼šé€€é™¢å–æ¶ˆã€€ï¼˜ï¼šç•°å‹•ã€€ï¼™ï¼šæ¬¡æœˆä½œæˆ
+      *                ã€€ï¼¡ï¼šé€€é™¢ç™»éŒ²ï¼ˆè¨ºç™‚ä¿å­˜ï¼‰ï¼‰
            03  LNK-SCNYUACCT-SYORI-KBN               PIC  X(01).
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
            03  LNK-SCNYUACCT-BTU-NUM                 PIC  X(02).
-      *ÆÃÄêÆþ±¡ÎÁ¶èÊ¬¡Ê£°¡§°ìÈÌÆþ±¡ÎÁ¡¡£±¡§ÆÃÄêÆþ±¡ÎÁ¡Ë
+      *ç‰¹å®šå…¥é™¢æ–™åŒºåˆ†ï¼ˆï¼ï¼šä¸€èˆ¬å…¥é™¢æ–™ã€€ï¼‘ï¼šç‰¹å®šå…¥é™¢æ–™ï¼‰
            03  LNK-SCNYUACCT-TOKUTEINYUIN-KBN        PIC  X(01).
-      *Æþ±¡²ñ·×ºîÀ®´ü´Ö¡Ê³«»Ï¡Ë
+      *å…¥é™¢ä¼šè¨ˆä½œæˆæœŸé–“ï¼ˆé–‹å§‹ï¼‰
            03  LNK-SCNYUACCT-STSRYYMD                PIC  X(08).
-      *Æþ±¡²ñ·×ºîÀ®´ü´Ö¡Ê½ªÎ»¡Ë
+      *å…¥é™¢ä¼šè¨ˆä½œæˆæœŸé–“ï¼ˆçµ‚äº†ï¼‰
            03  LNK-SCNYUACCT-EDSRYYMD                PIC  X(08).
-      *Æþ±¡´ðËÜÎÁ¥¨¥ê¥¢
+      *å…¥é™¢åŸºæœ¬æ–™ã‚¨ãƒªã‚¢
            03  LNK-SCNYUACCT-NYUKHN.
                05  LNK-SCNYUACCT-NYUKHN-SRYCD        PIC  X(09)
                                                      OCCURS  6.
@@ -49,55 +49,55 @@
                    07  LNK-SCNYUACCT-KAGEN-SRYCD     PIC  X(09).
                    07  LNK-SCNYUACCT-KAGEN-STYUKYMD  PIC  X(08).
                    07  LNK-SCNYUACCT-KAGEN-EDYUKYMD  PIC  X(08).
-      *ÄÌ»»»»ÄêºÑÆü¿ô¡ÊÆþ±¡ÎÁ²Ã»»»»ÄêÍÑ¡Ë
+      *é€šç®—ç®—å®šæ¸ˆæ—¥æ•°ï¼ˆå…¥é™¢æ–™åŠ ç®—ç®—å®šç”¨ï¼‰
            03  LNK-SCNYUACCT-NYUKHN-NISUU            PIC  9(04).
-      *Æþ±¡ÎÁ²Ã»»ÎÎ°è
+      *å…¥é™¢æ–™åŠ ç®—é ˜åŸŸ
            03  LNK-SCNYUACCT-NYUKHNKSN-AREA          OCCURS  20.
-      *Æþ±¡ÎÁ²Ã»»¶èÊ¬
+      *å…¥é™¢æ–™åŠ ç®—åŒºåˆ†
              05  LNK-SCNYUACCT-NYUKHNKSN-KBN         PIC  X(01).
-      *Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
+      *å…¥é™¢æ–™åŠ ç®—è¨ºç™‚ã‚³ãƒ¼ãƒ‰
              05  LNK-SCNYUACCT-NYUKHNKSN-SRYCD       PIC  X(09).
-      *³°Çñ¿ÇÎÅ¥³¡¼¥É
+      *å¤–æ³Šè¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  LNK-SCNYUACCT-GAIHAKU-SRYCD           PIC  X(09).
-      *¼¼ÎÁº¹³Û¿ÇÎÅ¥³¡¼¥É
+      *å®¤æ–™å·®é¡è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  LNK-SCNYUACCT-SAGAKU-SRYCD            PIC  X(09).
-      *¼¼ÎÁº¹³Û¶èÊ¬
+      *å®¤æ–™å·®é¡åŒºåˆ†
            03  LNK-SCNYUACCT-SAGAKU-KBN              PIC  9(02).
-      *¿©»ö¿ÇÎÅ¥³¡¼¥É
+      *é£Ÿäº‹è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  LNK-SCNYUACCT-SHOKUJI-SRYCD           PIC  X(09).
-      *¿©»ö¶èÊ¬
+      *é£Ÿäº‹åŒºåˆ†
            03  LNK-SCNYUACCT-SHOKUJIKBN              PIC  9(01).
-      *¿©»ö¥»¥Ã¥È¶èÊ¬¡Ê¶õÇò¡§SHOKUJIKBN¤ò»ÈÍÑ¡¡£±¡§Ä«ÃëÌë¤Î¿©»ö¶èÊ¬¤ò»ÈÍÑ¡Ë
+      *é£Ÿäº‹ã‚»ãƒƒãƒˆåŒºåˆ†ï¼ˆç©ºç™½ï¼šSHOKUJIKBNã‚’ä½¿ç”¨ã€€ï¼‘ï¼šæœæ˜¼å¤œã®é£Ÿäº‹åŒºåˆ†ã‚’ä½¿ç”¨ï¼‰
            03  LNK-SCNYUACCT-SHOKUJI-SETKBN          PIC  X(01).
-      *¿©»ö¶èÊ¬¡ÊÄ«¡Ë
+      *é£Ÿäº‹åŒºåˆ†ï¼ˆæœï¼‰
            03  LNK-SCNYUACCT-SHOKUJIKBN-ASA          PIC  9(01).
-      *¿©»ö¶èÊ¬¡ÊÃë¡Ë
+      *é£Ÿäº‹åŒºåˆ†ï¼ˆæ˜¼ï¼‰
            03  LNK-SCNYUACCT-SHOKUJIKBN-HIRU         PIC  9(01).
-      *¿©»ö¶èÊ¬¡ÊÌë¡Ë
+      *é£Ÿäº‹åŒºåˆ†ï¼ˆå¤œï¼‰
            03  LNK-SCNYUACCT-SHOKUJIKBN-YORU         PIC  9(01).
-      *¿©Æ²²Ã»»
+      *é£Ÿå ‚åŠ ç®—
            03  LNK-SCNYUACCT-SHOKUDO-SRYCD           PIC  X(09).
-      *¿©Æ²²Ã»»¶èÊ¬
+      *é£Ÿå ‚åŠ ç®—åŒºåˆ†
            03  LNK-SCNYUACCT-SHOKUDO-KBN             PIC  9(01).
-      *ÊÝ¸±ÁÈ¹ç¥³¡¼¥É
+      *ä¿é™ºçµ„åˆã‚³ãƒ¼ãƒ‰
            03  LNK-SCNYUACCT-HKNCOMBINUM-SRYCD       PIC  X(09).
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
            03  LNK-SCNYUACCT-HKNCOMBINUM             PIC  9(04).
-      *Å¾²Ê»þ¸µÆþ±¡²Ê
+      *è»¢ç§‘æ™‚å…ƒå…¥é™¢ç§‘
            03  LNK-SCNYUACCT-MOTO-NYUINKA            PIC  X(02).
-      *ÁªÄêÎÅÍÜÈñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *é¸å®šç™‚é¤Šè²»è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
            03  LNK-SCNYUACCT-SENTEI-SRYCD            PIC  X(09).
-      *ÁªÄêÎÅÍÜÈñ³«»ÏÆü
+      *é¸å®šç™‚é¤Šè²»é–‹å§‹æ—¥
            03  LNK-SCNYUACCT-SENTEI-STYMD            PIC  X(08).
-      *Æþ±¡¥«¥ì¥ó¥À¡¼ÀßÄê¶èÊ¬
+      *å…¥é™¢ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼è¨­å®šåŒºåˆ†
            03  LNK-SCNYUACCT-NYUCAL-KBN              PIC  9(01).
-      *Æ±ÆüºÆÆþ±¡¤ÎÆþ±¡¼è¾Ã»þ¤Î¿ÇÎÅ²ñ·×ºï½ü¶èÊ¬
-      *¡Ê¶õÇò¡§Æ±ÆüºÆÆþ±¡°Ê³°¡¢£±¡§Æ±ÆüºÆÆþ±¡¡Ë
+      *åŒæ—¥å†å…¥é™¢ã®å…¥é™¢å–æ¶ˆæ™‚ã®è¨ºç™‚ä¼šè¨ˆå‰Šé™¤åŒºåˆ†
+      *ï¼ˆç©ºç™½ï¼šåŒæ—¥å†å…¥é™¢ä»¥å¤–ã€ï¼‘ï¼šåŒæ—¥å†å…¥é™¢ï¼‰
            03  LNK-SCNYUACCT-DOUJITSUKBN             PIC  X(01).
-      *¿ÇÎÅ²ñ·×ºï½ü³«»ÏÆü
+      *è¨ºç™‚ä¼šè¨ˆå‰Šé™¤é–‹å§‹æ—¥
            03  LNK-SCNYUACCT-SRYDELYMD               PIC  X(08).
-      *°ÛÆ°¼è¾Ã»þ¤ÎÆþ±¡²ñ·×ºîÀ®¶èÊ¬
+      *ç•°å‹•å–æ¶ˆæ™‚ã®å…¥é™¢ä¼šè¨ˆä½œæˆåŒºåˆ†
            03  LNK-SCNYUACCT-IDOSAKUSEI-KBN          PIC  X(01).
-      *Éüµ¢¥³¡¼¥É
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰
            03  LNK-SCNYUACCT-RC                      PIC S9(9) BINARY.
       *

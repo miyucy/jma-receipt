@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,38 +18,38 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBM037.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ���ݡ������������ʰ�ʡ���������
-      *                      �����������������б�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  08/04/04    NACL-ƣ��     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 社保・診療報酬請求書（医科・入院外）
+      *                      ２００８．４改正対応
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  08/04/04    NACL-藤原     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.02.01    NACL-ƣ��    08/09/24  ʿ������ǯ����������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-藤原    08/09/24  平成２０年１０月改正対応
       *
-      *  04.05.01    NACL-ƣ��    11/04/04  �ҳ��б�
-      *                                     ������ε������ɲ�
-      *  04.05.02    NACL-ƣ��    11/04/18  �ҳ��б�
-      *                                     ����ʬ�ε��ܤ����
-      *  04.05.03    NACL-ƣ��    12/04/17  ʿ������ǯ��������б�
-      *                                     ʿ������ǯ����ʬ�ʹߤϤޤȤ��
-      *  04.05.04    NACL-ƣ��    12/09/10  ������ô��ε����б�
+      *  04.05.01    NACL-藤原    11/04/04  災害対応
+      *                                     備考欄の記載等追加
+      *  04.05.02    NACL-藤原    11/04/18  災害対応
+      *                                     確定分の記載を中止
+      *  04.05.03    NACL-藤原    12/04/17  平成２４年４月改正対応
+      *                                     平成２４年４月分以降はまとめる
+      *  04.05.04    NACL-藤原    12/09/10  一部負担金の記載対応
       *
-      *  04.07.01    NACL-ƣ��    12/01/24  monpe-0.6.20�б�
-      *  04.07.02    NACL-ƣ��    12/02/13  �����ȹ�ؤ�ľ������ȿ���
-      *                                     ��ʧ���������б�
-      *  04.07.03    NACL-ƣ��    15/08/18  ���ŵ����Խ�����ؤγ��߼�̾
-      *                                     �ɲ��б�
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.02    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
+      *  04.07.03    NACL-藤原    15/08/18  医療機関編集情報への開設者名
+      *                                     追加対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-ƣ��    16/06/13  ���ݿ����������κҳ�����
-      *                                     ʬ�ΤޤȤ��б�
-      *  04.08.03    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    16/06/13  社保診療報酬請求書の災害該当
+      *                                     分のまとめ対応
+      *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,20 +57,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
       *
            COPY    "HCM3CV02.INC"  REPLACING  //HCM3CV02//
@@ -79,11 +79,11 @@
            COPY    "HCM3DV01.INC"  REPLACING  //HCM3DV01//
                                    BY         //HCM3D//.
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -92,12 +92,12 @@
            03  FLG-MF01-END        PIC 9(01).
            03  FLG-PRTKBN          PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(03).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -108,7 +108,7 @@
            03  IDX2                PIC 9(04).      
            03  IDX3                PIC 9(04).      
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SEIYMD          PIC X(08).
            03  WRK-SEIYMDWH        PIC X(22).
@@ -154,30 +154,30 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    �������
+      *    固定項目
        01  WRK-CONS-AREA.
-      *    ��������ǯ���������
+      *    ２００８年１０月改正
            03  WRK-CONS-SRYYM-200810   PIC X(06)   VALUE   "200810".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *     
-      *    �ݸ��ֹ�
+      *    保険番号
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ������
+      *    医療機関情報情報
            COPY    "CPSK1001.INC".
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ���� 
+      *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
       *    
            COPY    "CPSK1005.INC".
@@ -194,40 +194,40 @@
            COPY    "CPPRTDATA.INC".          
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".          
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    集計領域
        01  SUM-AREA.
          02  SUM-TABLE-OCC         OCCURS  100.
            03  SUM-TBL-SRYKA       PIC X(02).
-      *    1:����¾�Υ쥻��2:�����Ǥ��ꤷ���쥻 
+      *    1:その他のレセ、2:在総診を算定したレセ 
            03  SUM-TBL-OCC         OCCURS  2.
-      *        �����ݸ���1,2:�����ʾ� 3:�ܿ� 4:��² 5:���� 
+      *        医療保険　1,2:７０以上 3:本人 4:家族 5:三歳 
                05  SUM-TABLE           OCCURS  5. 
                    07  SUM-TBL             OCCURS  12.
                        09  SUM-KENSU          PIC  9(06).
@@ -239,7 +239,7 @@
                        09  SUM-SHOKUJINISSU   PIC  9(06).
                        09  SUM-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-SHOKUJIFTN     PIC  9(10).
-      *        Ϸ���ݷ�
+      *        老人保健
                05  SUM-ROU-TABLE           OCCURS  2. 
                    07  SUM-ROU-TBL             OCCURS  3.
                        09  SUM-ROU-KENSU          PIC  9(06).
@@ -257,7 +257,7 @@
                    07  SUM-ROU-GOK-SHOKUJINISSU   PIC  9(06).
                    07  SUM-ROU-GOK-SHOKUJIRYOYOHI PIC  9(10).
                    07  SUM-ROU-GOK-SHOKUJIFTN     PIC  9(10).
-      *        ������ô 
+      *        公費負担 
                05  SUM-KOH-TABLE           OCCURS  3. 
                    07  SUM-KOH-TBL         OCCURS  100.
                        09  SUM-KOH-KOHNUM         PIC  X(03).
@@ -269,7 +269,7 @@
                        09  SUM-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-KOH-SHOKUJIFTN     PIC  9(10).
                        09  SUM-KOH-MEISYO         PIC  X(44).
-      *        Ϸ���ݷ�ʺƷǡ�      
+      *        老人保健（再掲）      
                05  SUM-ROU-KOH-TABLE           OCCURS  10. 
                    07  SUM-ROU-KOH-TBL.
                        09  SUM-ROU-KOH-KENSU          PIC  9(06).
@@ -280,12 +280,12 @@
                        09  SUM-ROU-KOH-SHOKUJINISSU   PIC  9(06).
                        09  SUM-ROU-KOH-SHOKUJIRYOYOHI PIC  9(10).
                        09  SUM-ROU-KOH-SHOKUJIFTN     PIC  9(10).
-      *        ���         
+      *        合計         
                05  SUM-GOK-TBL         OCCURS  4.
                    07  SUM-GOK-KENSU      PIC 9(06).    
                    07  SUM-GOK-SHOKENSU   PIC 9(06).
       *
-      *        �������̤����ʬ�� 
+      *        備考欄（未確定分） 
                05  SUM-BIKOU. 
                    07  SUM-BIKOU-KENSU          PIC  9(06).
                    07  SUM-BIKOU-NISSU          PIC  9(06).
@@ -319,7 +319,7 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //LNK-RECEERR//.
       *
@@ -336,7 +336,7 @@
            .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -350,7 +350,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -371,7 +371,7 @@
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-SRYYMWH 
       *
-      *    �����ƥ�����ޥ����ʰ��ŵ��ؾ����
+      *    システム管理マスタ（医療機関情報）
            PERFORM 120-HOSPINF-GET-SEC
       *
            .
@@ -379,11 +379,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؾ��󸡺�
+      *    医療機関情報検索
       *****************************************************************
        120-HOSPINF-GET-SEC            SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
            MOVE    "21"                TO  LNK-DAY2-IRAI
@@ -394,7 +394,7 @@
                MOVE    LNK-DAY2-EDTYMD3    TO  WRK-SEIYMDWH
            END-IF
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -417,13 +417,13 @@
                    MOVE    SPACE               TO  SYS-1001-KAISETUNAME
                END-IF    
            ELSE
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���"
+               MOVE    "医療機関情報が取得できませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
            END-IF 
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
@@ -443,7 +443,7 @@
                    MOVE    SPACE               TO  SYS-1002-ADRS
                END-IF    
            ELSE
-               MOVE    "���ŵ��ؾ���ʽ���ϡˤ������Ǥ��ޤ���Ǥ���"
+               MOVE    "医療機関情報（所在地）が取得できませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1                   TO  FLG-END
@@ -453,7 +453,7 @@
            MOVE    SYS-1001-KAISETUNAME
                                        TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
       *
            .
@@ -461,7 +461,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -479,9 +479,9 @@
                AND   ( IDX3                   <   100   )
                    CONTINUE
                ELSE
-      *            ���̾��
+      *            主科名称
                    IF      SUM-TBL-SRYKA (IDX3)   =   "00"
-                       MOVE    "���̤����"       TO  SYS-1005-SRYKANAME
+                       MOVE    "主科未設定"       TO  SYS-1005-SRYKANAME
                    ELSE
                        INITIALIZE                  SYS-1005-REC
                        MOVE    "1005"          TO  SYS-1005-KANRICD
@@ -508,15 +508,15 @@
                        OR    ( SUM-BIKOU-KENSU (IDX3 IDX1) >   ZERO )
                            MOVE    ZERO            TO  FLG-PRTKBN
       *           
-      *                    Ģɼ�Խ�<���Ф����ȣãͣ���>����
+      *                    帳票編集<見出し・ＨＣＭ３Ｃ>処理
                            PERFORM 310-HEAD-HEN-01-SEC
-      *                    Ģɼ�Խ�<���Ф����ȣãͣ���>����
+      *                    帳票編集<見出し・ＨＣＭ３Ｄ>処理
                            PERFORM 310-HEAD-HEN-02-SEC
-      *                    Ģɼ�Խ�<����>����
+      *                    帳票編集<明細>処理
                            PERFORM 320-BODY-HEN-SEC
-      *                    Ģɼ�Խ�<���>����
+      *                    帳票編集<合計>処理
                            PERFORM 330-TERM-HEN-SEC
-      *                    Ģɼ���������ʣ��ǰʹߡ�
+      *                    帳票印刷処理（２頁以降）
                            PERFORM 390-PRINT-OUT-SEC
                        END-IF    
                    END-PERFORM 
@@ -530,20 +530,20 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���Ф����ȣãͣ���>����
+      *    帳票編集<見出し・ＨＣＭ３Ｃ>処理
       *****************************************************************
        310-HEAD-HEN-01-SEC          SECTION.
       *
            INITIALIZE                      HCM3C
       *
            IF      LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200810
-               MOVE    "������"            TO  HCM3C-SEIDONAME (1)
+               MOVE    "（政）"            TO  HCM3C-SEIDONAME (1)
                                                HCM3C-SEIDONAME (2)
                                                HCM3C-SEIDONAME (3)
                                                HCM3C-SEIDONAME (4)
                                                HCM3C-SEIDONAME (5)
            ELSE
-               MOVE    "�ʶ����"          TO  HCM3C-SEIDONAME (1)
+               MOVE    "（協会）"          TO  HCM3C-SEIDONAME (1)
                                                HCM3C-SEIDONAME (2)
                                                HCM3C-SEIDONAME (3)
                                                HCM3C-SEIDONAME (4)
@@ -554,14 +554,14 @@
       *
            MOVE    WRK-SRYYMWH         TO  HCM3C-PRTYM
       *
-      *    ���ŵ��ؽ���
+      *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM3C-ADRS
-           INSPECT HCM3C-ADRS          REPLACING   ALL "  "    BY  "��"
-      *    ���ŵ���̾
+           INSPECT HCM3C-ADRS          REPLACING   ALL "  "    BY  "　"
+      *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM3C-HOSPNAME
-           INSPECT HCM3C-HOSPNAME      REPLACING   ALL "  "    BY  "��"
+           INSPECT HCM3C-HOSPNAME      REPLACING   ALL "  "    BY  "　"
       *
-      *    ���߼�̾
+      *    開設者名
            MOVE    WRK-KAISETUNAME     TO  HCM3C-KAISETUNAME
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM3C-HOSPCD
@@ -569,36 +569,36 @@
            EVALUATE    IDX1
                WHEN    1
                    IF      WRK-PRTFLG          <   5
-                       MOVE    "����¾�Υ쥻"      TO  HCM3C-TITLE
+                       MOVE    "その他のレセ"      TO  HCM3C-TITLE
                    END-IF
                WHEN    2
                    IF      WRK-PRTFLG          =   1
-                       MOVE    "�����Ǥޤ��Ϻ߰������ꤷ���쥻"
+                       MOVE    "在総診または在医総を算定したレセ"
                                                    TO  HCM3C-TITLE
                    ELSE   
-                       MOVE    "�߰����ɤޤ��Ϻ߰������ꤷ���쥻"
+                       MOVE    "在医総管または在医総を算定したレセ"
                                                    TO  HCM3C-TITLE
                    END-IF
            END-EVALUATE
       * 
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
-                   MOVE    "������ʬ��"  TO  HCM3C-TITLE1
+                   MOVE    "（返戻分）"  TO  HCM3C-TITLE1
            END-EVALUATE           
       *
            EVALUATE    WRK-PARA-MARUCHO
                WHEN    "2"
-                   MOVE    "��"          TO  HCM3C-MARUCHO (1)
-                   MOVE    "Ĺ"          TO  HCM3C-MARUCHO (2)
+                   MOVE    "◯"          TO  HCM3C-MARUCHO (1)
+                   MOVE    "長"          TO  HCM3C-MARUCHO (2)
            END-EVALUATE           
       *
-      *    ���㸩��۲��Ͽ��б�
+      *    新潟県中越沖地震対応
            EVALUATE    WRK-PARA-GENMENKBN
                WHEN    ZERO
                WHEN    "9"
                    MOVE    SYS-1005-SRYKANAME    TO  HCM3C-SRYKA
                WHEN    "1"
-                   STRING  "��̤����ʬ��"      DELIMITED   BY  SIZE
+                   STRING  "（未確定分）"      DELIMITED   BY  SIZE
                            SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
                                                INTO  HCM3C-SRYKA
                    END-STRING
@@ -608,7 +608,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���Ф����ȣãͣ���>����
+      *    帳票編集<見出し・ＨＣＭ３Ｄ>処理
       *****************************************************************
        310-HEAD-HEN-02-SEC          SECTION.
       *
@@ -619,36 +619,36 @@
            EVALUATE    IDX1
                WHEN    1
                    IF      WRK-PRTFLG          <   5
-                       MOVE    "����¾�Υ쥻"      TO  HCM3D-TITLE
+                       MOVE    "その他のレセ"      TO  HCM3D-TITLE
                    END-IF
                WHEN    2
                    IF      WRK-PRTFLG          =   1
-                       MOVE    "�����Ǥޤ��Ϻ߰������ꤷ���쥻"
+                       MOVE    "在総診または在医総を算定したレセ"
                                                    TO  HCM3D-TITLE     
                    ELSE   
-                       MOVE    "�߰����ɤޤ��Ϻ߰������ꤷ���쥻"
+                       MOVE    "在医総管または在医総を算定したレセ"
                                                    TO  HCM3D-TITLE
                    END-IF
            END-EVALUATE
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
-                   MOVE    "������ʬ��"  TO  HCM3D-TITLE1
+                   MOVE    "（返戻分）"  TO  HCM3D-TITLE1
            END-EVALUATE           
       *
            EVALUATE    WRK-PARA-MARUCHO
                WHEN    "2"
-                   MOVE    "��"        TO  HCM3D-MARUCHO (1)
-                   MOVE    "Ĺ"        TO  HCM3D-MARUCHO (2)
+                   MOVE    "◯"        TO  HCM3D-MARUCHO (1)
+                   MOVE    "長"        TO  HCM3D-MARUCHO (2)
            END-EVALUATE           
       *
-      *    ���㸩��۲��Ͽ��б�
+      *    新潟県中越沖地震対応
            EVALUATE    WRK-PARA-GENMENKBN
                WHEN    ZERO
                WHEN    "9"
                    MOVE    SYS-1005-SRYKANAME    TO  HCM3D-SRYKA
                WHEN    "1"
-                   STRING  "��̤����ʬ��"      DELIMITED   BY  SIZE
+                   STRING  "（未確定分）"      DELIMITED   BY  SIZE
                            SYS-1005-SRYKANAME  DELIMITED   BY  SPACE  
                                                INTO  HCM3D-SRYKA
                    END-STRING
@@ -659,11 +659,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        320-BODY-HEN-SEC      SECTION.
       *
-      *    ����ñ�ȡʣ����ʾ壹���
+      *    医保単独（７０以上９割）
            MOVE    1                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       10
@@ -686,7 +686,7 @@
            MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)   TO  WRK-FTNMONEYZ
            MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN1(11)
       *
-      *    ����ñ�ȡʣ����ʾ壸���
+      *    医保単独（７０以上８割）
            MOVE    2                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
@@ -709,7 +709,7 @@
            MOVE    SUM-FTNMONEY (IDX3 IDX1 IDX 12)   TO  WRK-FTNMONEYZ
            MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN2(9)
       *
-      *    ����ñ�ȡ��ܿ͡�
+      *    医保単独（本人）
            MOVE    3                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       11
@@ -743,7 +743,7 @@
                MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN3(12)
            END-IF
       *
-      *    ����ñ�ȡʲ�²��
+      *    医保単独（家族）
            MOVE    4                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
@@ -771,7 +771,7 @@
                MOVE    WRK-FTNMONEYZ           TO  HCM3C-ITBFTN4 (9)
            END-IF
       *
-      *    ����ñ�ȡʻ��С�
+      *    医保単独（三歳）
            MOVE    5                   TO  IDX
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       8
@@ -802,11 +802,11 @@
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 1)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3C-KENSUG   
       *     
-      *    Ģɼ���������ʣ����ܡ�
+      *    帳票印刷処理（１頁目）
            MOVE    ZERO                TO  FLG-PRTKBN
            PERFORM 390-PRINT-OUT-SEC
            MOVE    1                   TO  FLG-PRTKBN
-      *    ������ôʬ�Խ�����
+      *    公費負担分編集処理
            MOVE    ZERO                TO  FLG-MF01-END
            MOVE    1                   TO  IDX2
       * 
@@ -817,7 +817,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<������ôʬ>����
+      *    帳票編集<公費負担分>処理
       *****************************************************************
        3201-KOH-HENSYU-SEC         SECTION.
       *
@@ -859,9 +859,9 @@
            AND     SUM-KOH-KOHNUM (IDX3 IDX1 3 IDX2)    =   SPACE
                MOVE    1                      TO  FLG-MF01-END
            ELSE
-      *        Ģɼ���������ʣ��ǰʹߡ�
+      *        帳票印刷処理（２頁以降）
                PERFORM 390-PRINT-OUT-SEC
-      *        Ģɼ�Խ�<���Ф�>����
+      *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-02-SEC
            END-IF     
       *
@@ -870,16 +870,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ���ʬ�Խ�����
+      *    公費保険区分編集処理
       *****************************************************************
        3202-HKNNUM-HENSYU-SEC         SECTION.
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-      *    �����ֹ�ޤȤ���󤫤�ν��פ�
+      *    公費番号まとめ情報からの集計か
            IF      SUM-KOH-MEISYO  (IDX3 IDX1 IDX IDX2)
                                        =   SPACE
-      *        �ݸ��ֹ��ɹ���  
+      *        保険番号読込み  
                INITIALIZE                      HKNNUM-REC
                MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                MOVE   SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
@@ -899,16 +899,16 @@
                PERFORM UNTIL       FLG-HKNNUM      =   1
                    IF    ( HKN-TEKSTYMD            <=  WRK-SRYYMD )
                    AND   ( HKN-TEKEDYMD            >=  WRK-SRYYMD )
-      *                ��������ΤȤ� 
+      *                特定疾患のとき 
                        IF      SUM-KOH-KOHNUM (IDX3 IDX1 IDX IDX2)
                                                =   "051"
-                           MOVE    "�����������"  TO   WRK-HKNNAME
+                           MOVE    "（特定疾患）"  TO   WRK-HKNNAME
                        ELSE
-      *                ����¾���ݸ��ΤȤ� 
-                           STRING  "��"        DELIMITED  BY  SIZE
+      *                その他の保険のとき 
+                           STRING  "（"        DELIMITED  BY  SIZE
                                    HKN-TANSEIDONAME
                                                DELIMITED  BY  SPACE
-                                   "��"        DELIMITED  BY  SIZE
+                                   "）"        DELIMITED  BY  SIZE
                                                INTO   WRK-HKNNAME
                            END-STRING
                        END-IF
@@ -947,10 +947,10 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���>����
+      *    帳票編集<合計>処理
       *****************************************************************
        330-TERM-HEN-SEC         SECTION.
-      *    ��ס������
+      *    合計・総合計
       *
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 3)  TO  WRK-KENSUZ
            MOVE    WRK-KENSUZ              TO  HCM3D-KENSUG
@@ -958,16 +958,16 @@
            MOVE    SUM-GOK-KENSU (IDX3 IDX1 4)  TO  WRK-GKENSUZ
            MOVE    WRK-GKENSUZ             TO  HCM3D-GKENSU
       *
-      *    ������
+      *    備考欄
            IF    ( WRK-PARA-GENMENKBN  =   "1"     )
            OR    ( WRK-PARA-GENMENKBN  =   "9" AND
                    SUM-BIKOU-KENSU (IDX3 IDX1)
                                        >   ZERO    )
-               MOVE    "̤����ʬ��"    TO  HCM3D-BIKOH-TITLE
-               MOVE    "���"          TO  HCM3D-BIKOH-TITLE-KENSU
-               MOVE    "����"          TO  HCM3D-BIKOH-TITLE-NISSU
-               MOVE    "����"          TO  HCM3D-BIKOH-TITLE-TENSU
-               MOVE    "������ô��"    TO  HCM3D-BIKOH-TITLE-ITBFTN
+               MOVE    "未確定分："    TO  HCM3D-BIKOH-TITLE
+               MOVE    "件数"          TO  HCM3D-BIKOH-TITLE-KENSU
+               MOVE    "日数"          TO  HCM3D-BIKOH-TITLE-NISSU
+               MOVE    "点数"          TO  HCM3D-BIKOH-TITLE-TENSU
+               MOVE    "一部負担金"    TO  HCM3D-BIKOH-TITLE-ITBFTN
                MOVE    SUM-BIKOU-KENSU     (IDX3 IDX1)
                                        TO  WRK-KENSU9        
                MOVE    WRK-KENSU9      TO  HCM3D-BIKOH-KENSU
@@ -986,7 +986,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC                SECTION.
       *
@@ -1018,38 +1018,38 @@
            IF      WRK-PARA-MARUCHO    =   "2"
                EVALUATE    IDX1    ALSO    WRK-SYOKBN
                    WHEN    1       ALSO    "1"                      
-                       MOVE    "�ޥ�Ĺʬ����������ɽ"
+                       MOVE    "マル長分　社保総括表"
                                                    TO  SPRT-TITLE
                    WHEN    2       ALSO    "1"                        
-                       MOVE    "�ޥ�Ĺʬ����������ɽ�ʺ߰�������"
+                       MOVE    "マル長分　社保総括表（在医総等）"
                                                    TO  SPRT-TITLE
                    WHEN    1       ALSO    "2"                        
-                       MOVE    "�ޥ�Ĺʬ����������ɽ������ʬ��"
+                       MOVE    "マル長分　社保総括表［返戻分］"
                                                    TO  SPRT-TITLE
                    WHEN    2       ALSO    "2"                        
                        MOVE
-                           "�ޥ�Ĺʬ����������ɽ�ʺ߰������ˡ�����ʬ��"
+                           "マル長分　社保総括表（在医総等）［返戻分］"
                                                    TO  SPRT-TITLE
                END-EVALUATE
            ELSE
                EVALUATE    IDX1    ALSO    WRK-SYOKBN
                    WHEN    1       ALSO    "1"                      
-                       MOVE    "��������ɽ"        TO  SPRT-TITLE
+                       MOVE    "社保総括表"        TO  SPRT-TITLE
                    WHEN    2       ALSO    "1"                        
-                       MOVE    "��������ɽ�ʺ߰�������"
+                       MOVE    "社保総括表（在医総等）"
                                                    TO  SPRT-TITLE
                    WHEN    1       ALSO    "2"                        
-                       MOVE    "��������ɽ������ʬ��"
+                       MOVE    "社保総括表［返戻分］"
                                                    TO  SPRT-TITLE
                    WHEN    2       ALSO    "2"                        
-                       MOVE    "��������ɽ�ʺ߰������ˡ�����ʬ��"
+                       MOVE    "社保総括表（在医総等）［返戻分］"
                                                    TO  SPRT-TITLE
                END-EVALUATE
            END-IF
            IF      WRK-PARA-GENMENKBN  =   "1" 
                MOVE    SPRT-TITLE          TO  WRK-SPRT-TITLE
                MOVE    SPACE               TO  SPRT-TITLE
-               STRING  "̤����ʬ��"        DELIMITED  BY  SIZE
+               STRING  "未確定分・"        DELIMITED  BY  SIZE
                        WRK-SPRT-TITLE      DELIMITED  BY  SPACE
                                            INTO    SPRT-TITLE
                END-STRING
@@ -1058,9 +1058,9 @@
            IF      WRK-PARA-HKNJANAME  NOT =   SPACE    
                MOVE    SPRT-TITLE          TO  WRK-SPRT-TITLE
                MOVE    SPACE               TO  SPRT-TITLE
-               STRING  "��"                DELIMITED  BY  SIZE
+               STRING  "【"                DELIMITED  BY  SIZE
                        WRK-PARA-HKNJANAME  DELIMITED  BY  SPACE
-                       "��"                DELIMITED  BY  SIZE
+                       "】"                DELIMITED  BY  SIZE
                        WRK-SPRT-TITLE      DELIMITED  BY  SPACE
                                            INTO    SPRT-TITLE
                END-STRING
@@ -1076,7 +1076,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC                           
                PERFORM 500-COBABORT-SEC
@@ -1086,7 +1086,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -1097,13 +1097,13 @@
            CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -1117,7 +1117,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1132,7 +1132,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -1149,7 +1149,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1162,11 +1162,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
       *****************************************************************
        900-1900-READ-SEC           SECTION.
       *
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
            MOVE    SPACE           TO  SYS-1900-REC
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
@@ -1185,11 +1185,11 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(7)  NOT =   SPACE
-      *            ���ŵ���̾���Խ�����
+      *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
-      *            ���ŵ��ؽ����Խ�����
+      *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            ���ŵ���̾���Խ�����ʣ���
+      *            医療機関名称編集情報（２）
                    PERFORM 900-1903-READ-SEC
                END-IF
            ELSE
@@ -1201,11 +1201,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
            MOVE    SPACE           TO  SYS-1901-REC
            INITIALIZE                  SYS-1901-REC
            MOVE    "1901"          TO  SYS-1901-KANRICD
@@ -1235,11 +1235,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
            MOVE    "1902"          TO  SYS-1902-KANRICD
@@ -1269,7 +1269,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ�����ʣ����ɤ߹���
+      *    医療機関名称編集情報（２）読み込み
       *****************************************************************
        900-1903-READ-SEC           SECTION.
       *
@@ -1302,7 +1302,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
@@ -1331,7 +1331,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɹ�
+      *    保険番号マスター読込
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
@@ -1349,7 +1349,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1366,7 +1366,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1383,7 +1383,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1395,7 +1395,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1407,7 +1407,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

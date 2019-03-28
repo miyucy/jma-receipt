@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÍè±¡°ìÍ÷¾ðÊó¼èÆÀ (xml2)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ¥é™¢ä¸€è¦§æƒ…å ±å–å¾— (xml2)
       *                                        COPY (CPVISITPTLSTEQ.INC)
       ******************************************************************
         01  XML-VISITPTLSTREQ.
@@ -29,10 +29,10 @@
             02  VISREQ-MODE              PIC S9(9)   BINARY.
             02  VISREQ-RECORDNAME        PIC X(128).
             02  VISREQ-VISITPTREQ.
-      *       ½èÍý¶èÊ¬
+      *       å‡¦ç†åŒºåˆ†
               03  VISREQ-REQUEST-NUMBER    PIC X(02).
-      *       ¿ÇÎÅÆüÉÕ
+      *       è¨ºç™‚æ—¥ä»˜
               03  VISREQ-VISIT-DATE        PIC X(10).
-      *       ¿ÇÎÅ²Ê
+      *       è¨ºç™‚ç§‘
               03  VISREQ-DEP-CODE          PIC X(02).
       *

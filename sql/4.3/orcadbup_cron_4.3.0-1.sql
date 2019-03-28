@@ -1,16 +1,16 @@
 --                                    --
--- Corn¾ğÊóÀßÄê                       --
+-- Cornæƒ…å ±è¨­å®š                       --
 --                                    --
 -- Create Date : 2008/09/01           --
--- £Ä£Â¥Ğ¥Ã¥¯¥¢¥Ã¥×                   --
--- ¥Ş¥¹¥¿¹¹¿·                         --
+-- ï¼¤ï¼¢ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—                   --
+-- ãƒã‚¹ã‚¿æ›´æ–°                         --
 
 \set ON_ERROR_STOP
 
 DELETE from tbl_cron where cronid in (1,2);
 
 COPY tbl_cron (cronid, run, name, crnmin, crnhour, crndom, crnmon, crndow, script, termid, opid, creymd, upymd, uphms) FROM stdin;
-1	0	£Ä£Â¥Ğ¥Ã¥¯¥¢¥Ã¥×	00	01	* 	* 	*	db-backup.sh			20080828	20080828	032359
-2	0	¥Ş¥¹¥¿¹¹¿·	00	01 	* 	* 	*	run_master_upgrade.sh			20080901	20080901	145930
+1	0	ï¼¤ï¼¢ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—	00	01	* 	* 	*	db-backup.sh			20080828	20080828	032359
+2	0	ãƒã‚¹ã‚¿æ›´æ–°	00	01 	* 	* 	*	run_master_upgrade.sh			20080901	20080901	145930
 \.
 

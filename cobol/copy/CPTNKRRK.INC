@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,43 +16,43 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Ç¯¶âÍúÎò¡¡        ¡¡ COPY (CPTNKRRK.INC)     *
+      *    å¹´é‡‘å±¥æ­´ã€€        ã€€ COPY (CPTNKRRK.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TNKRRK-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  TNKRRK-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  TNKRRK-HOSPNUM           PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  TNKRRK-PTID             PIC  9(10).
-      *³«»ÏÇ¯·îÆü
+      *é–‹å§‹å¹´æœˆæ—¥
                05  TNKRRK-STYMD            PIC  X(08).
-      *½ªÎ»Ç¯·îÆü
+      *çµ‚äº†å¹´æœˆæ—¥
            03  TNKRRK-EDYMD                PIC  X(08).
-      *¿©»öÉ¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+      *é£Ÿäº‹æ¨™æº–è² æ‹…é¡æ¸›é¡é–‹å§‹æ—¥
            03  TNKRRK-SKJNINSTYMD          PIC  X(08).
-      *Ï·ÎðÊ¡»ãÇ¯¶â¼õµë¼Ô¾Ú¶èÊ¬¡Ê£°¡§¤Ê¤·¡¡£±¡§¤¢¤ê¡Ë
+      *è€é½¢ç¦ç¥‰å¹´é‡‘å—çµ¦è€…è¨¼åŒºåˆ†ï¼ˆï¼ï¼šãªã—ã€€ï¼‘ï¼šã‚ã‚Šï¼‰
            03  TNKRRK-RRI-FUKUSHI-KBN      PIC  X(01).
-      *ÊÝ¸±Å¬ÍÑ¶èÊ¬¡Ê£°¡§Á´¤ÆÂÐ¾Ý¡¡£±¡§ÃÏÊý¸øÈñ¤ÏÂÐ¾Ý³°
-      *              £²¡§ÃÏÊý¸øÈñ¤Î¤ßÂÐ¾Ý¡Ë
+      *ä¿é™ºé©ç”¨åŒºåˆ†ï¼ˆï¼ï¼šå…¨ã¦å¯¾è±¡ã€€ï¼‘ï¼šåœ°æ–¹å…¬è²»ã¯å¯¾è±¡å¤–
+      *              ï¼’ï¼šåœ°æ–¹å…¬è²»ã®ã¿å¯¾è±¡ï¼‰
            03  TNKRRK-HKNTEKKBN            PIC  X(01).
-      *¶­³¦ÁØ³ºÅö¶èÊ¬¡Ê¶õÇòËô¤Ï£°¡§¶­³¦ÁØÈó³ºÅö¡¡£±¡§¶­³¦ÁØ³ºÅö
+      *å¢ƒç•Œå±¤è©²å½“åŒºåˆ†ï¼ˆç©ºç™½åˆã¯ï¼ï¼šå¢ƒç•Œå±¤éžè©²å½“ã€€ï¼‘ï¼šå¢ƒç•Œå±¤è©²å½“
            03  TNKRRK-KYOUKAISOUKBN        PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  TNKRRK-TERMID               PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  TNKRRK-OPID                 PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  TNKRRK-CREYMD               PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  TNKRRK-UPYMD                PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  TNKRRK-UPHMS                PIC  X(06).
-      *¡¡¡¡¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ã€€ã€€ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  TNKRRK-KEY-O.
                05  TNKRRK-HOSPNUM-O           PIC 9(2).
                05  TNKRRK-PTID-O             PIC  9(10).

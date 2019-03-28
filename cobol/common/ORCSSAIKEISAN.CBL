@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -20,70 +20,70 @@
       ****************************************************************
       *    OS           LINUX                                         
       *                                                               
-      *    PROGRAM      ORCSSAIKEISAN  /  ��ô��Ʒ׻�����            
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/07/16    NACL������    ��������
+      *    PROGRAM      ORCSSAIKEISAN  /  負担金再計算サブ            
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/07/16    NACL−門脇    新規作成
       ****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    04/10/01  ���������������������б�
-      *  01.00.02    NACL-����    04/12/01  ��Ǽ������Ʒ׻��б�
-      *  01.00.03    NACL-����    04/12/17  ���������Ӳû����ϳ������
-      *                                     ���Ѳû�����������
-      *  01.00.04    NACL-����    05/01/27  �������������Ӳû����ϳ������
-      *                                     ���Ѳû��ε��ѡ��������������б�
-      *  01.00.05    NACL-��Ʀ��  05/07/15  ���񣱣������б�
-      *  01.00.06    NACL-����    05/07/19  ��Ǽ�����ɲä�ȼ������
-      *  01.00.07    NACL-����    06/03/30  ϫ��Ʊ������б�
-      *  03.01.01    NACL-����    06/07/06  �μ����б�
-      *  03.02.01    NACL-����    06/09/05  ���ݸ�ˡ����������б�
-      *  03.04.01    NACL-����    06/12/01  �����շ��ݽ���б�
-      *  03.04.02    NACL-����    07/01/22  ��Ǽ�����Խ�����
-      *  03.04.03    NACL-¿��Ǽ  07/03/06  �����ź�Ƚ���ɲ�
-      *  03.04.04    NACL-����    07/05/11  ϫ�ҡ�������ñ��������̤���б�
-      *  03.04.05    NACL-����    07/06/08  �����������ξ���ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
-      *  04.01.01    NACL-����    07/10/25  ��̳�ҳ��б�
-      *  04.01.02    NACL-����    07/12/07  �����б�
-      *  04.02.01    NACL-����    08/02/29  ʿ������ǯ��������б�
-      *  04.04.01    NACL-����    10/03/31  �����б������������Ӳû����б���
-      *  04.05.01    NACL-����    09/06/16  ���Ʒ׻���ˡ����ǽ�б�
-      *  04.05.02    NACL-����    10/01/19  �����б�
-      *  04.05.03    NACL-����    10/01/26  ����ԥޥ���ɲ��б�
-      *  04.05.04    NACL-����    11/02/28  Ĺ�긩���������б�
-      *  04.05.05    NACL-����    12/03/09  �����б������踽ʪ�����б�
-      *  04.05.06    NACL-����    12/03/30  �����б���ϫ�Һƿǡ�Ʊ���������ܡ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04/10/01  自賠責特定器材等消費税対応
+      *  01.00.02    NACL-門脇    04/12/01  収納外来一括再計算対応
+      *  01.00.03    NACL-門脇    04/12/17  胸部固定帯加算、創外固定器
+      *                                     使用加算を薬剤等へ
+      *  01.00.04    NACL-門脇    05/01/27  腰・胸部固定帯加算、創外固定器
+      *                                     使用加算の技術・薬剤等の選択対応
+      *  01.00.05    NACL-小豆沢  05/07/15  自費１０項目対応
+      *  01.00.06    NACL-門脇    05/07/19  収納項目追加に伴う修正
+      *  01.00.07    NACL-門脇    06/03/30  労災同日初診対応
+      *  03.01.01    NACL-門脇    06/07/06  領収書対応
+      *  03.02.01    NACL-門脇    06/09/05  健康保険法１０月改正対応
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
+      *  03.04.02    NACL-門脇    07/01/22  収納明細編集修正
+      *  03.04.03    NACL-多々納  07/03/06  包括診療剤判定追加
+      *  03.04.04    NACL-門脇    07/05/11  労災・自賠責単価１０円未満対応
+      *  03.04.05    NACL-門脇    07/06/08  初診料算定時の条件追加
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.01.01    NACL-門脇    07/10/25  公務災害対応
+      *  04.01.02    NACL-門脇    07/12/07  公害対応
+      *  04.02.01    NACL-門脇    08/02/29  平成２０年４月改正対応
+      *  04.04.01    NACL-門脇    10/03/31  改正対応（頸部固定帯加算の対応）
+      *  04.05.01    NACL-門脇    09/06/16  一括再計算方法選択機能対応
+      *  04.05.02    NACL-門脇    10/01/19  治験対応
+      *  04.05.03    NACL-門脇    10/01/26  東京都マル子追加対応
+      *  04.05.04    NACL-門脇    11/02/28  長崎県地方公費対応
+      *  04.05.05    NACL-門脇    12/03/09  改正対応：外来現物給付対応
+      *  04.05.06    NACL-門脇    12/03/30  改正対応：労災再診（同一日２科目）
       *
-      *  04.06.01    NACL-����    10/09/02  �л���������ľ�ܻ�ʧ���١ʳ����
-      *  04.06.02    NACL-����    10/11/08  ���ݸ��ܥޥ�Ĺ�������б�
-      *  04.06.03    NACL-����    10/12/06  ϫ�ҡ������դζ�ۥե꡼����
-      *                                     �������б�
-      *  04.06.04    NACL-����    13/02/18  ϫ�ҥ쥻���б�
-      *                                     �ʿ����Ź԰٥������б���
-      *  04.06.05    NACL-����    13/02/27  ʿ������ǯ��������б�
-      *  04.06.06    NACL-����    13/09/25  ϫ�ҥޥ����ɲ��б�
-      *                                     �����úƿ���������
+      *  04.06.01    NACL-門脇    10/09/02  出産育児一時金直接支払制度（外来）
+      *  04.06.02    NACL-門脇    10/11/08  主保険＋マル長の請求対応
+      *  04.06.03    NACL-門脇    10/12/06  労災・自賠責の金額フリー入力
+      *                                     コード対応
+      *  04.06.04    NACL-門脇    13/02/18  労災レセ電対応
+      *                                     （新診療行為コード対応）
+      *  04.06.05    NACL-門脇    13/02/27  平成２５年４月改正対応
+      *  04.06.06    NACL-門脇    13/09/25  労災マスタ追加対応
+      *                                     （電話再診料　等）
       *
-      *  04.07.01    NACL-����    13/07/10  �����ա��軰�Թ԰١��б�
-      *  04.07.02    NACL-����    14/02/13  ϫ�ҡ������դλܽѲû��б�
-      *  04.07.03    NACL-����    14/03/01  ϫ�ҥޥ����ɲ��б�
-      *  04.07.04    NACL-����    14/07/31  �軰�Թ԰٤θ�ʪ�����б�
-      *  04.07.05    NACL-¿��Ǽ  14/09/02  �ޥ��ʥ�������Ƚ���б�
-      *  04.07.06    NACL-����    14/12/09  ʿ������ǯ��������б�
-      *                                     �ʽ�ƿ��������ŷ�Ψ�б���
+      *  04.07.01    NACL-門脇    13/07/10  自賠責（第三者行為）対応
+      *  04.07.02    NACL-門脇    14/02/13  労災・自賠責の施術加算対応
+      *  04.07.03    NACL-門脇    14/03/01  労災マスタ追加対応
+      *  04.07.04    NACL-門脇    14/07/31  第三者行為の現物給付対応
+      *  04.07.05    NACL-多々納  14/09/02  マイナス剤点数判定対応
+      *  04.07.06    NACL-門脇    14/12/09  平成２７年１月改正対応
+      *                                     （初再診料・低妥結率対応）
       *
-      *  04.08.00    NACL-¿��Ǽ  13/01/18  ���Ų���ơ��֥룱���б�
-      *  04.08.01    NACL-����    16/03/03  ����������ô��������
-      *                                     ���ޡ�������μ�갷���Ȥ���
-      *  04.08.02    NACL-����    16/03/24  ʿ������ǯ��������б�
-      *  04.08.03    NACL-����    17/01/05  ���Ʒ׻������ԤΥꥹ�ȥ��å�
-      *                                     �б�
-      *  04.08.04    NACL-����    17/02/21  ��ǻ������ɲ�
-      *  04.08.05    NACL-����    17/12/15  �軰�Թ԰ٸ�ʪ���դ˴ؤ��
-      *                                     ��ô��׻��б�
+      *  04.08.00    NACL-多々納  13/01/18  診療回数テーブル１０対応
+      *  04.08.01    NACL-門脇    16/03/03  公害の療養担当手当は
+      *                                     薬剤・器材点の取り扱いとする
+      *  04.08.02    NACL-門脇    16/03/24  平成２８年４月改正対応
+      *  04.08.03    NACL-門脇    17/01/05  一括再計算該当者のリストアップ
+      *                                     対応
+      *  04.08.04    NACL-門脇    17/02/21  初診算定条件追加
+      *  04.08.05    NACL-門脇    17/12/15  第三者行為現物給付に関わる
+      *                                     負担金計算対応
       *
-      *  05.00.01    NACL-����    18/11/16  �ܾ븩���������б�
+      *  05.00.01    NACL-門脇    18/11/16  宮城県地方公費対応
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -96,7 +96,7 @@
       *
        WORKING-STORAGE SECTION.
       *
-      *    ź�����ΰ�
+      *    添え字領域
        01  IDX-AREA.
            03  IDX1                        PIC 9(03).
            03  IDX2                        PIC 9(03).
@@ -109,7 +109,7 @@
            03  IDW                         PIC 9(03).
            03  SAI-IDX                     PIC 9(03).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
@@ -131,7 +131,7 @@
            03  FLG-GENBUTU2                PIC 9(01).
            03  FLG-GENBUTU3                PIC 9(01).
       *
-      *    ����ΰ�
+      *    ワーク領域
        01  WRK-AREA.
            03  WRK-SEIKYUGK-TBL.
               04  WRK-SEIKYUGK-TBL-OCC     OCCURS  15.
@@ -167,7 +167,7 @@
            03  WRK-FUTANWARI               PIC 9V99.
            03  WRK-KEISAN2                 PIC 9(09).
       *
-      *    ���ֹ��������ѥơ��֥�
+      *    剤番号等退避用テーブル
        01  ZAIBAN-TABLE.
            03  ZAIBAN-TBL                  OCCURS 100.
                  05  TBL-SRYKBN            PIC  X(02).
@@ -178,7 +178,7 @@
                  05  TBL-GENTEN            PIC  9(08).
                  05  TBL-ZAIKBN            PIC  9(03).
       *
-      *    �ݸ�Ŭ�ѳ���������ѥơ��֥�
+      *    保険適用外金額退避用テーブル
        01  HKNTEKGAI-TABLE.
            03  HKNTEKGAI-TBL               OCCURS 16.
                  05  TBL-TGMONEY           PIC  9(08).
@@ -188,7 +188,7 @@
                  05  TBL-JIHI-TAXNASI      PIC  9(08).
                  05  TBL-JIHI-TAXARI       PIC  9(08).
       *
-      *    ϫ�Ҿ����ѥơ��֥�
+      *    労災情報用テーブル
        01  RSI-TABLE.
            03  WK-RSISHOSHIN-TENSU         PIC  9(08).
            03  WK-RSISAISHIN-TENSU         PIC  9(08).
@@ -219,7 +219,7 @@
            03  WRK-TEN-KG                  PIC  9(09).
            03  WRK-TEN-KG2                 PIC  9(09).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY                  PIC 9(02).
@@ -230,7 +230,7 @@
                05  WRK-SYSMM               PIC 9(02).
                05  WRK-SYSDD               PIC 9(02).
       *
-      *    ���������ե饰�ѥơ��֥�
+      *    初診料算定フラグ用テーブル
        01  TBL-SYOSIN-AREA.
            03  FILLER          PIC X(09)   VALUE    "111003610".
            03  FILLER          PIC X(09)   VALUE    "111700210".
@@ -253,96 +253,96 @@
        01  TBL-SYOSIN-MAX      PIC 9(02)   VALUE    14.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ�ޥ�����
+      *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    �����Ǽ�ޥ������ʹ���ѡ�
+      *    ワーク収納マスター（合計用）
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
       *
-      *    �����Ǽ�ޥ������ʸ����ѡ�
+      *    ワーク収納マスター（減点用）
        01  WRK-SYUNOUG-REC.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYUG-//.
       *
-      *    �����Ǽ�ޥ������������ѡ�
+      *    ワーク収納マスター（退避用）
        01  WRK-SYUNOU-TAIHI-REC.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYUT-//.
       *
-      *    ��Ǽ���٥ޥ�����
+      *    収納明細マスター
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    ��Ǽ��ץޥ���
+      *    収納合計マスタ
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ų���ղþ���ޥ�����
+      *    診療会計付加情報マスタ−
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ����
+      *    点数
            COPY    "CPTENSU.INC".
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSK1038.INC".
       *
            COPY    "CPSK4001.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ʡ����������������оݳ�������������
+      *    福岡県地方公費給付対象外点数取得サブ
            COPY    "CPORCSSYU40.INC".
       *
-      *    ���󥭡���������
+      *    日報キー取得サブ
            COPY "CPORCSDAILYKEY.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ��ô��۷׻��ѥѥ�᥿
+      *    負担金額計算用パラメタ
            COPY    "CPORCS01.INC".
       *
-      *    ��Ǽ�������ۼ���
+      *    収納更新差額取得
            COPY    "CPORCSS002.INC".
       *
-      *    �ݸ�������ǯ�𡦳��׻�����
+      *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
-      *    �����ô��۷׻��ѥѥ�᥿�ʹ���ѡ�
+      *    ワーク負担金額計算用パラメタ（合計用）
       ***  COPY    "CPORCS01.INC" REPLACING  //LNK-// BY //WRK-//.
       *
-      *    �����Ǽ�ޥ�����
+      *    ワーク収納マスター
        01  LNK-SYUNOU-REC-T.
          02 LNK-SYUNOU-REC     OCCURS 15.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //LNK-SYU-//.
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       ***  COPY    "CPORCMCP.INC".
@@ -357,12 +357,12 @@
                                      SPA-AREA
                                      LNK-ORCSSAIKEISAN-REC.
       ******************************************************************
-      *        �����������
+      *        依頼制御処理
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
       *
-      *    ��Ǽ�ǡ�����ơ��֥���Խ�
+      *    収納データをテーブルに編集
       *
            INITIALIZE                  LNK-ORCS01-REC
            INITIALIZE                  LNK-SYUNOU-REC-T
@@ -529,7 +529,7 @@
       *
            END-IF
       *
-      *    ��Ǽ�ǡ����κ��Խ�
+      *    収納データの再編集
       *
            INITIALIZE                  WRK-SYUNOU-REC
            INITIALIZE                  WRK-SYUNOUG-REC
@@ -542,7 +542,7 @@
       *
                INITIALIZE             WRK-SYUNOUG-REC
       *
-      *        ��Ǽ���ܽ����
+      *        収納項目初期化
       *
                MOVE       SPACE   TO  LNK-SYU-SKY-NAIYOU(IDY)
                INITIALIZE             LNK-SYU-SKY-NAIYOU(IDY)
@@ -566,7 +566,7 @@
       *
                IF   LNK-SYU-SRYKA(IDY)  NOT =  "00"
       *
-      *          �������򤫤�ɣΣģţؼ���
+      *          受診履歴からＩＮＤＥＸ取得
       *
                  MOVE    ZERO                   TO  SAI-IDX
                  INITIALIZE                         JYURRK-REC
@@ -586,7 +586,7 @@
                     MOVE       "key6"           TO  MCP-PATHNAME
                     PERFORM     900-JYURRK-READ-SEC
       *H24.5
-      *             �ݸ��ȹ礻Ƚ���ɲ�
+      *             保険組合せ判定追加
                     PERFORM UNTIL   (FLG-JYURRK     =   1   )
                             OR      (JYURRK-HKNCOMBINUM 
                                          =   LNK-SYU-HKNCOMBINUM(IDY))
@@ -657,13 +657,13 @@
                    EVALUATE  LNK-SYU-SYUHKNNUM(IDY)
                      WHEN      "971"
                        EVALUATE  AGECHK-HKNKBN
-      *                  ϫ�ҽ��
+      *                  労災準拠
                          WHEN      1
                            IF  JYURRK-HKNKBN  =  "5"
                              MOVE    "0062"         TO  SPA-ERRCD
                              GO       TO                MAIN-EXT
                            END-IF
-      *                  ���ݽ��
+      *                  健保準拠
                          WHEN      5
                            IF  JYURRK-HKNKBN  =  "1"
                              MOVE    "0062"         TO  SPA-ERRCD
@@ -672,13 +672,13 @@
                        END-EVALUATE
                      WHEN      "973"
                        EVALUATE  AGECHK-HKNKBN
-      *                  ϫ�ҽ��
+      *                  労災準拠
                          WHEN      2
                            IF  JYURRK-HKNKBN  =  "4"
                              MOVE    "0062"         TO  SPA-ERRCD
                              GO       TO                MAIN-EXT
                            END-IF
-      *                  ���ݽ��
+      *                  健保準拠
                          WHEN      4
                            IF  JYURRK-HKNKBN  =  "2"
                              MOVE    "0062"         TO  SPA-ERRCD
@@ -689,7 +689,7 @@
       *
                  END-IF
       *
-      *          �����̶кҳ���Ƚ��
+      *          船員通勤災害の判別
       *
                  MOVE    ZERO                TO  FLG-SENIN                    
                  INITIALIZE                      HKNCOMBI-REC 
@@ -728,7 +728,7 @@
                     END-IF                                                    
                  END-IF                                                       
       *
-      *          ����ơ��֥�����
+      *          ワークテーブル初期化
       *
                  MOVE    SPACE               TO     ZAIBAN-TABLE
                  INITIALIZE                         ZAIBAN-TABLE
@@ -739,7 +739,7 @@
                  MOVE    SPACE               TO     RSI-TABLE
                  INITIALIZE                         RSI-TABLE
       *
-      *          �����Ų�ץޥ���������ֹ��������ѥơ��֥��
+      *          診療療会計マスタから剤番号等退避用テーブルへ
       *
                  INITIALIZE                      SRYACCT-REC
                  MOVE    LNK-SYU-HOSPNUM(IDY)
@@ -777,11 +777,11 @@
                  MOVE     "key24"            TO  MCP-PATHNAME
                  PERFORM   DB-CLOSE-SEC
       *
-      *          ��Ǽ�����Խ�
+      *          収納項目編集
       *
                  PERFORM      4402-SYUNOU-HENSYU-SEC
       *
-      *          ʡ���б�
+      *          福岡対応
       *
                  IF      SPA-PREFNUM         =   40
                      INITIALIZE                    ORCSSYU40AREA
@@ -800,7 +800,7 @@
                      END-PERFORM
                  END-IF
       *
-      *          ��ץǡ����κ��Խ�������
+      *          合計データの再編集用退避
       *
                  IF   WRK-TAIHI-HKNCOMBINUM  NOT =  SPACE
                  AND  WRK-TAIHI-HKNCOMBINUM
@@ -816,7 +816,7 @@
       *
                ELSE
       *
-      *          ��ץǡ����κ��Խ�
+      *          合計データの再編集
       *
                  PERFORM   4404-GOKEI-HENSYU-SEC
       *
@@ -824,7 +824,7 @@
       *
            END-PERFORM
       *
-      *    ������ô�۷׻�����
+      *    患者負担額計算処理
       *
            MOVE    "1"           TO  LNK-S01-SAIKEISAN-KBN
            MOVE    LNK-ORCSSKS-IKTSORTKBN
@@ -849,7 +849,7 @@
                                        LNK-SYUNOU-REC-T
                                        SPA-AREA
       *
-      *    �ޤȤẹ�ۻ��Ф�����ۻ���
+      *    まとめ差額算出と請求額算出
       *
            INITIALIZE                  WRK-SKYMONEY-TBL
            MOVE       ZERO      TO     WRK-RUI-SKYMONEY
@@ -903,7 +903,7 @@
       *
            END-PERFORM
       *
-      *    ��Ǽ�ǡ���������
+      *    収納データ更新等
       *
            MOVE       ZERO      TO     IDY2
       *
@@ -914,7 +914,7 @@
       *
              IF   LNK-SYU-SRYKA(IDY)  NOT =  "00"
       *
-      *          �ޤȤẹ�ۤ�����ۤ��֤�����
+      *          まとめ差額と請求額の置き換え
       *
                  MOVE   WRK-SKYMONEY(IDY) TO   LNK-SYU-SKYMONEY(IDY)
                  MOVE   WRK-GRP-SGKMONEY(IDY)
@@ -924,7 +924,7 @@
                  MOVE   LNK-SYU-SKYMONEY(IDY)
                                           TO   WRK-ATO-SEIKYUGK(IDY)
       *
-      *          ��ɼ���ֶ�ʬ�κƥ��å�
+      *          伝票状態区分の再セット
       *
                  IF     LNK-SYU-SKYMONEY(IDY)  =  ZERO
                          MOVE    SPACE    TO   LNK-SYU-DENPJTIKBN(IDY)
@@ -937,7 +937,7 @@
                      END-IF
                  END-IF
       *
-      *          ����ѹ���ʬ�ν����
+      *          会計変更区分の初期化
       *
                  MOVE     SPACE           TO   LNK-SYU-ACCT-UPDKBN(IDY)
       *
@@ -945,7 +945,7 @@
                  MOVE     SMCNDATE-YMD    TO   LNK-SYU-UPYMD(IDY)
                  MOVE     SMCNDATE-HMS    TO   LNK-SYU-UPHMS(IDY)
       *
-      *          ��Ǽ�ޥ����ι���
+      *          収納マスタの更新
       *
                  MOVE    LNK-SYUNOU-REC(IDY) TO  SYUNOU-REC
       *
@@ -966,14 +966,14 @@
                  IF     WRK-KAGRPFLG             =   "0"
                  AND    LNK-ORCSSKS-IKTCHECKFLG  =  SPACE
       *
-      *            �ޤȤẹ�ۤ�����ۤ��֤�����
+      *            まとめ差額と請求額の置き換え
       *
                    MOVE   WRK-SKYMONEY(IDY)
                                       TO   LNK-SYU-SKYMONEY(IDY)
                    MOVE   WRK-GRP-SGKMONEY(IDY)
                                       TO   LNK-SYU-GRP-SGKMONEY(IDY)
       *
-      *            ��ɼ���ֶ�ʬ�κƥ��å�
+      *            伝票状態区分の再セット
       *
                    IF     LNK-SYU-SKYMONEY(IDY)  =  ZERO
                            MOVE    SPACE    TO   LNK-SYU-DENPJTIKBN(IDY)
@@ -990,7 +990,7 @@
                    MOVE     SMCNDATE-YMD    TO   LNK-SYU-UPYMD(IDY)
                    MOVE     SMCNDATE-HMS    TO   LNK-SYU-UPHMS(IDY)
       *
-      *            ��Ǽ��ץޥ����ι���
+      *            収納合計マスタの更新
       *
                    IF  LNK-ORCSSKS-BUNBENJIHIKBN = "1"
                      CONTINUE
@@ -1019,7 +1019,7 @@
            STOP RUN.
       *
       ******************************************************************
-      *    ��Ǽ��ץޥ��������뤫
+      *    収納合計マスタがあるか
       ******************************************************************
        4400-SYUTOTAL-FIND-SEC           SECTION.
       *
@@ -1067,7 +1067,7 @@
            EXIT.
       *
       ******************************************************************
-      *    ��Ǽ��ץޥ��������뤫
+      *    収納合計マスタがあるか
       ******************************************************************
        4400-SYUTOTAL-FIND2-SEC           SECTION.
       *
@@ -1084,32 +1084,32 @@
            EXIT.
       *
       ******************************************************************
-      *    ��Ǽ��ץޥ������ܤ��Ǽ�ޥ������ܤإ��å�
+      *    収納合計マスタ項目を収納マスタ項目へセット
       ******************************************************************
        44001-SYUTOTAL-SET-SEC           SECTION.
-      *�ˣţ�
+      *ＫＥＹ
            MOVE     SYUTTL-KEY            TO  LNK-SYU-KEY(IDY)
-      *���Ų�
+      *診療科
            MOVE     SYUTTL-SRYKA          TO  LNK-SYU-SRYKA(IDY)
-      *Ʊ�����Ͽ��Ų�
+      *同時入力診療科
            PERFORM   VARYING   IDX3   FROM   1    BY    1
                       UNTIL    IDX3    >     10
               MOVE  SYUTTL-DOUJI-SRYKA(IDX3)
                                           TO  WRK-DOUJI-SRYKA(IDY IDX3)
            END-PERFORM
-      *������
+      *診療日
            MOVE     SYUTTL-SRYYMD         TO  LNK-SYU-SRYYMD(IDY)
-      *��ɼ���ֶ�ʬ
+      *伝票状態区分
            MOVE     SYUTTL-DENPJTIKBN     TO  LNK-SYU-DENPJTIKBN(IDY)
-      *��ɼ������ʬ
+      *伝票作成区分
            MOVE     SYUTTL-CREATEKBN      TO  LNK-SYU-CREATEKBN(IDY)
-      *��ɼȯ����
+      *伝票発行日
            MOVE     SYUTTL-DENPPRTYMD     TO  LNK-SYU-DENPPRTYMD(IDY)
-      *�������
+      *請求期間
            MOVE     SYUTTL-SKY-KIKAN      TO  LNK-SYU-SKY-KIKAN(IDY)
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            MOVE     SYUTTL-HKNCOMBINUM    TO  LNK-SYU-HKNCOMBINUM(IDY)
-      *���ݸ�����ô����
+      *主保険−負担情報
            MOVE     SYUTTL-SYUHKNNUM      TO  LNK-SYU-SYUHKNNUM(IDY)
       *
            MOVE     SYUTTL-SYUHKNFTNMONEY
@@ -1125,101 +1125,101 @@
            MOVE     SYUTTL-SYUCOMPTOTAL   TO  LNK-SYU-SYUCOMPTOTAL(IDY)
       *
            MOVE     SYUTTL-SYUYKZFTNKBN   TO  LNK-SYU-SYUYKZFTNKBN(IDY)
-      *�������ô����
+      *公費−負担情報
            MOVE     SYUTTL-KOH-AREA       TO  LNK-SYU-KOH-AREA(IDY)
-      *������ôΨ
+      *患者負担率
            MOVE     SYUTTL-PTFTNRATE      TO  LNK-SYU-PTFTNRATE(IDY)
-      *����������ʬ
+      *請求書作成区分
            MOVE     SYUTTL-SKYKUKBN       TO  LNK-SYU-SKYKUKBN(IDY)
-      *��������
+      *請求内容
            MOVE     SYUTTL-SKY-NAIYOU     TO  LNK-SYU-SKY-NAIYOU(IDY)
-      *�����������Ʒ�
+      *処方せん料再掲
            MOVE     SYUTTL-SHOHOU-SAI     TO  LNK-SYU-SHOHOU-SAI(IDY)
-      *�ݸ�Ŭ�ѳ���ۡݾ����ǡʺƷǡ�
+      *保険適用外金額−消費税（再掲）
            MOVE     SYUTTL-TGMONEY-TAX-SAI
                                       TO  LNK-SYU-TGMONEY-TAX-SAI(IDY)
-      *���񣱤��飵
+      *自費１から５
            MOVE     SYUTTL-JIHI-NAIYOU    TO  LNK-SYU-JIHI-NAIYOU(IDY)
-      *���񾮷סʾ����Ǥʤ���
+      *自費小計（消費税なし）
            MOVE     SYUTTL-JIHI-TOTAL     TO  LNK-SYU-JIHI-TOTAL(IDY)
-      *���񾮷סʾ����Ǥ����
+      *自費小計（消費税あり）
            MOVE     SYUTTL-JIHI-TOTAL-TAX
                                       TO  LNK-SYU-JIHI-TOTAL-TAX(IDY)
-      *�����۾�����
+      *自費金額消費税
            MOVE     SYUTTL-JIHI-TAX       TO  LNK-SYU-JIHI-TAX(IDY)
-      *Ϸ�Ͱ�����ô��
+      *老人一部負担金
            MOVE     SYUTTL-RJN-FTN        TO  LNK-SYU-RJN-FTN(IDY)
-      *���������ô��
+      *公費一部負担金
            MOVE     SYUTTL-KOH-FTN        TO  LNK-SYU-KOH-FTN(IDY)
-      *���������ô��ʱ�ñ�̡�
+      *公費一部負担金（円単位）
            MOVE     SYUTTL-KOH-FTN-ENTANI
                                       TO  LNK-SYU-KOH-FTN-ENTANI(IDY)
-      *Ĵ����
+      *調整金
            MOVE     SYUTTL-CHOSEI         TO  LNK-SYU-CHOSEI(IDY)
-      *�ޤȤ�������ɼ�ֹ�
+      *まとめ入力伝票番号
            MOVE     WRK-GRP-DENPNUM       TO  LNK-SYU-GRP-DENPNUM(IDY)
-      *�ޤȤ����Ϻ���
+      *まとめ入力差額
            MOVE     SYUTTL-GRP-SGKMONEY   TO  LNK-SYU-GRP-SGKMONEY(IDY)
-      *�ݸ�Ŭ�Ѷ��
+      *保険適用金額
            MOVE     SYUTTL-HKNTEKMONEY    TO  LNK-SYU-HKNTEKMONEY(IDY)
-      *�±����Ȼ�ͳ��ʬ
+      *病院減免事由区分
            MOVE     SYUTTL-DISCOUNT-KBN   TO  LNK-SYU-DISCOUNT-KBN(IDY)
-      *�±����Ȼ�ͳ
+      *病院減免事由
            MOVE     SYUTTL-DISCOUNT-BODY  TO  LNK-SYU-DISCOUNT-BODY(IDY)
-      *���Ψ��ʬ
+      *割引率区分
            MOVE     SYUTTL-DISCOUNT-RATEKBN
                                       TO  LNK-SYU-DISCOUNT-RATEKBN(IDY)
-      *��Ψ��۶�ʬ
+      *定率定額区分
            MOVE     SYUTTL-DISCOUNT-TEIRITU
                                       TO  LNK-SYU-DISCOUNT-TEIRITU(IDY)
-      *���Ψ
+      *割引率
            MOVE     SYUTTL-DISCOUNT-RATE  TO  LNK-SYU-DISCOUNT-RATE(IDY)
-      *���ȶ��
+      *減免金額
            MOVE     SYUTTL-DISCOUNT-MONEY
                                       TO  LNK-SYU-DISCOUNT-MONEY(IDY)
-      *ϫ���ݸ��ݽ����
+      *労災保険−初診料
            MOVE     SYUTTL-RSISHOSHIN-MONEY
                                       TO  LNK-SYU-RSISHOSHIN-MONEY(IDY)
-      *ϫ���ݸ��ݺƿ���
+      *労災保険−再診料
            MOVE     SYUTTL-RSISAISHIN-MONEY
                                       TO  LNK-SYU-RSISAISHIN-MONEY(IDY)
-      *ϫ���ݸ��ݻ�Ƴ��
+      *労災保険−指導料
            MOVE     SYUTTL-RSISDO-MONEY   TO  LNK-SYU-RSISDO-MONEY(IDY)
-      *ϫ���ݸ��ݤ���¾
+      *労災保険−その他
            MOVE     SYUTTL-RSIETC-MONEY   TO  LNK-SYU-RSIETC-MONEY(IDY)
-      *ϫ���ݸ��ݾ����ǡʺƷǡ�
+      *労災保険−消費税（再掲）
            MOVE     SYUTTL-RSI-TAX-SAI    TO  LNK-SYU-RSI-TAX-SAI(IDY)
-      *ϫ���ݸ��ݴ�������ʬ�߷��ƹ�׳�
+      *労災保険−患者請求分円建て合計額
            MOVE     SYUTTL-RSI-TOTAL      TO  LNK-SYU-RSI-TOTAL(IDY)
-      *ϫ�Ҽ���������ۡ�����ɽ�����ѡ�
+      *労災自賠−請求金額（日計表記載用）
            MOVE     SYUTTL-RSIJIBAI-SKYMONEY
                                       TO  LNK-SYU-RSIJIBAI-SKYMONEY(IDY)
-      *�����ۡݾ����ǡʺƷǡ�
+      *請求金額−消費税（再掲）
            MOVE     SYUTTL-SKYMONEY-TAX-SAI
                                       TO  LNK-SYU-SKYMONEY-TAX-SAI(IDY)
-      *������
+      *請求金額
            MOVE     SYUTTL-SKYMONEY       TO  LNK-SYU-SKYMONEY(IDY)
-      *�����׳�
+      *入金合計額
            MOVE     SYUTTL-NYUKIN-TOTAL   TO  LNK-SYU-NYUKIN-TOTAL(IDY)
-      *������
+      *入金回数
            MOVE     SYUTTL-NYUKIN-KAISU   TO  LNK-SYU-NYUKIN-KAISU(IDY)
-      *̤����ͳ
+      *未収理由
            MOVE     SYUTTL-MISYURIYU      TO  LNK-SYU-MISYURIYU(IDY)
-      *�����Ƕ�ʬ
+      *在総診区分
            MOVE     SYUTTL-ZAITAKU        TO  LNK-SYU-ZAITAKU(IDY)
-      *���Ŷ�ʬ�̵��ճ�����
+      *診療区分別給付外点数
            MOVE     SYUTTL-KYUFUGAI       TO  LNK-SYU-KYUFUGAI(IDY)
-      *�ݸ�Ŭ�Ѷ�ʬ
+      *保険適用区分
            MOVE     SYUTTL-HKNTEKKBN      TO  LNK-SYU-HKNTEKKBN(IDY)
-      *ü���ɣ�
+      *端末ＩＤ
            MOVE     SYUTTL-TERMID         TO  LNK-SYU-TERMID(IDY)
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            MOVE     SYUTTL-OPID           TO  LNK-SYU-OPID(IDY)
-      *����ǯ����
+      *作成年月日
            MOVE     SYUTTL-CREYMD         TO  LNK-SYU-CREYMD(IDY)
-      *����ǯ����
+      *更新年月日
            MOVE     SYUTTL-UPYMD          TO  LNK-SYU-UPYMD(IDY)
-      *��������
+      *更新時間
            MOVE     SYUTTL-UPHMS          TO  LNK-SYU-UPHMS(IDY)
       *
            .
@@ -1228,7 +1228,7 @@
            EXIT.
       *
       **************************************************************
-      *    �����Ų�ץޥ���������ֹ��������ѥơ��֥��
+      *    診療療会計マスタから剤番号等退避用テーブルへ
       **************************************************************
        4401-SRYACCT-SET-SEC           SECTION.
       *
@@ -1313,9 +1313,9 @@
            OR   ( FLG-TAISYO            =   1                    )
       *
       *H26.10
-      *       ���Ź԰����þ��󤫤�ޥ��ʥ������ޤ�Ƚ��
+      *       診療行為附加情報からマイナス点数剤の判定
               IF      ACCT-ZAIREQFLG     =   "1"
-      *           �ղþ��󤢤�
+      *           付加情報あり
                   PERFORM  44011-SRYACCTPLUS-KENSAKU-SEC
               ELSE
                   MOVE     ZERO          TO  ACCTP-PLUSKBN
@@ -1329,7 +1329,7 @@
                    MOVE  ACCT-ZAITEN TO  TBL-GENTEN(IDX1)
                    MOVE  ACCT-ZAIKBN TO  TBL-ZAIKBN(IDX1)
               ELSE
-      *H26.10   �ޥ��ʥ�Ƚ��
+      *H26.10   マイナス判定
                 IF   ACCTP-PLUSKBN     =    1
                    COMPUTE   TBL-ZAITEN(IDX1)  =  TBL-ZAITEN(IDX1) +
                                                 (ACCT-ZAITEN * -1)
@@ -1339,7 +1339,7 @@
               END-IF
               IF   (   ACCT-SRYKBN       =   "95"  OR  "96"   )         
               OR   (   ACCT-ZAIKBN       =    2               )
-      *H26.10   �ޥ��ʥ�Ƚ��
+      *H26.10   マイナス判定
               OR   (   ACCTP-PLUSKBN     =    1               )
                  CONTINUE                                               
               ELSE                                                      
@@ -1365,7 +1365,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ų���ղþ��󸡺�
+      *    診療会計付加情報検索
       **************************************************************
        44011-SRYACCTPLUS-KENSAKU-SEC           SECTION.
       *
@@ -1409,7 +1409,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰پ��󸡺�
+      *    診療行為情報検索
       **************************************************************
        44012-SRYACT-KENSAKU-SEC           SECTION.
       *
@@ -1454,7 +1454,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰پ��󸡺�
+      *    診療行為情報検索
       **************************************************************
        44013-SRYACT-KENSAKU2-SEC           SECTION.
       *
@@ -1499,7 +1499,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰پ��󸡺�
+      *    診療行為情報検索
       **************************************************************
        44014-SRYACT-KENSAKU3-SEC           SECTION.
       *
@@ -1544,7 +1544,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰پ��󸡺�
+      *    診療行為情報検索
       **************************************************************
        44015-SRYACT-KENSAKU4-SEC           SECTION.
       *
@@ -1589,7 +1589,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰پ��󸡺�
+      *    診療行為情報検索
       **************************************************************
        44016-SRYACT-KENSAKU5-SEC           SECTION.
       *
@@ -1634,7 +1634,7 @@
            EXIT.
       *
       ******************************************************************
-      *    ��Ǽ�����Խ�
+      *    収納項目編集
       ******************************************************************
        4402-SYUNOU-HENSYU-SEC           SECTION.
       *
@@ -1650,7 +1650,7 @@
                        OR       (TBL-SRYKBN(IDX1)   =   SPACE)
       *
                EVALUATE    TBL-SRYKBN  (IDX1)
-      *            ����
+      *            診療
                    WHEN    "11"
                     COMPUTE LNK-SYU-HKNTEN(IDY 01) =
                             LNK-SYU-HKNTEN(IDY 01) +
@@ -1669,7 +1669,7 @@
                               LNK-SYU-HKNTEN(IDY 01) +
                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
                     END-IF
-      *            ��Ƴ
+      *            指導
                    WHEN    "13"
                     IF   TBL-ZAIKBN(IDX1) =  2
                       COMPUTE WRK-SYUG-HKNTEN(02) =
@@ -1680,7 +1680,7 @@
                               LNK-SYU-HKNTEN(IDY 02) +
                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
                     END-IF
-      *            ����
+      *            在宅
                    WHEN    "14"
                     IF   TBL-ZAIKBN(IDX1) =  2
                       COMPUTE WRK-SYUG-HKNTEN(03) =
@@ -1691,49 +1691,49 @@
                               LNK-SYU-HKNTEN(IDY 03) +
                              (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
                     END-IF
-      *            ����
+      *            投薬
                    WHEN    "21"   THRU  "27"
                     COMPUTE WRK-TYK-HKNTEN  =
                             WRK-TYK-HKNTEN  +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ����
+      *            注射
                    WHEN    "31"
                    WHEN    "32"
                    WHEN    "33"
                     COMPUTE LNK-SYU-HKNTEN(IDY 05) =
                             LNK-SYU-HKNTEN(IDY 05) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ����
+      *            処置
                    WHEN    "40"
                     COMPUTE LNK-SYU-HKNTEN(IDY 06) =
                             LNK-SYU-HKNTEN(IDY 06) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ���
+      *            手術
                    WHEN    "50"
                     COMPUTE LNK-SYU-HKNTEN(IDY 07) =
                             LNK-SYU-HKNTEN(IDY 07) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ���
+      *            麻酔
                    WHEN    "54"
                     COMPUTE LNK-SYU-HKNTEN(IDY 08) =
                             LNK-SYU-HKNTEN(IDY 08) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ����
+      *            検査
                    WHEN    "60"
                     COMPUTE LNK-SYU-HKNTEN(IDY 09) =
                             LNK-SYU-HKNTEN(IDY 09) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ��������
+      *            病理診断
                    WHEN    "64"
                     COMPUTE LNK-SYU-HKNTEN(IDY 14) =
                             LNK-SYU-HKNTEN(IDY 14) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ����
+      *            Ｘ線
                    WHEN    "70"
                     COMPUTE LNK-SYU-HKNTEN(IDY 10) =
                             LNK-SYU-HKNTEN(IDY 10) +
                            (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *            ����¾
+      *            その他
                    WHEN    "80"
                     INITIALIZE                       SRYACT-REC
                     MOVE    LNK-SYU-HOSPNUM(IDY)
@@ -1761,34 +1761,34 @@
                     END-IF
                     IF      FLG-SRYACT          =   ZERO
                       EVALUATE   SRY-SRYSYUKBN
-      *                ���
+      *                リハ
                        WHEN         "800"
                        WHEN         "809"
       ***              WHEN         "810"
                         COMPUTE LNK-SYU-HKNTEN(IDY 11) =
                                 LNK-SYU-HKNTEN(IDY 11) +
                               (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ����������
+      *                処方せん料
                        WHEN         "820"
                          COMPUTE WRK-TYK-HKNTEN2 =
                                  WRK-TYK-HKNTEN2 +
                               (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ������������ˡ
+      *                精神科専門療法
                        WHEN         "830"
                         COMPUTE LNK-SYU-HKNTEN(IDY 12) =
                                 LNK-SYU-HKNTEN(IDY 12) +
                               (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ������
+      *                放射線
                        WHEN         "840"
                         COMPUTE LNK-SYU-HKNTEN(IDY 13) =
                                 LNK-SYU-HKNTEN(IDY 13) +
                               (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ����ô������
+      *                療養担当手当
                        WHEN         "850"
                         COMPUTE LNK-SYU-HKNTEN(IDY 16) =
                                 LNK-SYU-HKNTEN(IDY 16) +
                               (TBL-ZAITEN(IDX1)  *  TBL-ZAIKAISU(IDX1))
-      *                ������
+      *                入院料
                        WHEN         "890"
                         COMPUTE LNK-SYU-HKNTEN(IDY 15) =
                                 LNK-SYU-HKNTEN(IDY 15) +
@@ -1815,7 +1815,7 @@
       *
                  IF  TBL-SRYKBN(IDX1)   =   "21"   OR  "22"  OR  "23"
       *
-      *            ���ޥ��������Υ��å�
+      *            薬剤コード等のセット
                    INITIALIZE                       SRYACT-REC
                    MOVE    LNK-SYU-HOSPNUM(IDY)
                                                TO   SRY-HOSPNUM
@@ -1904,7 +1904,7 @@
                      MOVE     "key2"            TO   MCP-PATHNAME
                      PERFORM   900-SRYACT-READ-SEC
                      PERFORM  UNTIL  (FLG-SRYACT   =    1)
-      *                   �ݸ�Ŭ�ѳ��Υơ��֥륻�å�
+      *                   保険適用外のテーブルセット
                           PERFORM    44022-HKNTEKGAI-TBL-SEC
       *
                           MOVE     "tbl_sryact" TO   MCP-TABLE
@@ -1947,7 +1947,7 @@
                      MOVE     "key2"            TO   MCP-PATHNAME
                      PERFORM   900-SRYACT-READ-SEC
                      PERFORM  UNTIL  (FLG-SRYACT   =    1)
-      *                   ��ô��ۤμ굻��������
+      *                   負担金額の手技点算出等
                           IF   LNK-SYU-KOH1HKNNUM(IDY)  =   "970"
                              PERFORM    44026-SYUTEN-KEISAN2-SEC
                           ELSE
@@ -1967,7 +1967,7 @@
       *
            END-PERFORM
       *
-      *    ϫ�Ҽ������ݸ�����
+      *    労災自賠責保険処理
            IF  LNK-SYU-SYUHKNNUM(IDY)       =   "971"  OR "973"
              COMPUTE  LNK-SYU-RSISHOSHIN-MONEY(IDY)  =
                       WK-RSISHOSHIN   *   10
@@ -2042,7 +2042,7 @@
               MOVE     ZERO    TO    LNK-SYU-HKNTEN(IDY 03)
            END-IF
       *
-      *    �������ݸ�����
+      *    自賠責保険処理
            IF  LNK-SYU-SYUHKNNUM(IDY)  =   "973"
       *
              COMPUTE   WK-SYUTEN-KEI  =  WK-SYUTEN-KEI
@@ -2070,7 +2070,7 @@
       *
            END-IF
       *
-      *    ��������
+      *    公害処理
            IF  LNK-SYU-SYUHKNNUM(IDY)  =   "975"
       *
              COMPUTE   WK-SYUTEN-KEI  =  WK-SYUTEN-KEI
@@ -2094,7 +2094,7 @@
            ADD         WRK-TYK-HKNTEN2 TO   LNK-SYU-HKNTEN(IDY 04)
            MOVE        WRK-TYK-HKNTEN2 TO   LNK-SYU-SHOHOU-SAI(IDY)
       *
-      *    �ݸ�Ŭ�ѳ���ۤν��ץơ��֥뤫���Ǽ�ơ��֥�ؤΥ��å�
+      *    保険適用外金額の集計テーブルから収納テーブルへのセット
            PERFORM     44024-HKNTEKGAI-SET-SEC
       *
            PERFORM   VARYING   IDX3     FROM    1   BY  1
@@ -2109,7 +2109,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���ޥ��������Υ��å�
+      *    薬剤コード等のセット
       **************************************************************
        44021-YAKUZAI-SET-SEC           SECTION.
       *
@@ -2133,7 +2133,7 @@
            EXIT.
       *
       **************************************************************
-      *    �ݸ�Ŭ�ѳ��Υơ��֥륻�å�
+      *    保険適用外のテーブルセット
       **************************************************************
        44022-HKNTEKGAI-TBL-SEC          SECTION.
       *
@@ -2749,7 +2749,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��ô��ۤμ굻��������
+      *    負担金額の手技点算出等
       **************************************************************
        44023-SYUTEN-KEISAN-SEC          SECTION.
       *
@@ -2886,7 +2886,7 @@
                                     (TNS-TEN  *   TBL-ZAIKAISU (IDX1))
                            END-IF
       *
-      *                    �������ݸ�����
+      *                    自賠責保険処理
                            IF    LNK-SYU-SYUHKNNUM(IDY)  =   "973"
                               IF   IDX5  >= 20
                                 DISPLAY "TABLE OVER"
@@ -2987,11 +2987,11 @@
            EXIT.
       *
       **************************************************************
-      *    �ݸ�Ŭ�ѳ���ۤν��ץơ��֥뤫���Ǽ�ơ��֥�ؤΥ��å�
+      *    保険適用外金額の集計テーブルから収納テーブルへのセット
       **************************************************************
        44024-HKNTEKGAI-SET-SEC          SECTION.
       *
-      *  �ݸ�Ŭ�ѳ�
+      *  保険適用外
            PERFORM     VARYING   IDX3    FROM   1    BY    1
                          UNTIL   IDX3    >      16
                MOVE   TBL-TGMONEY(IDX3)
@@ -3000,7 +3000,7 @@
                                  TO  LNK-SYU-TGMONEY-TAX(IDY IDX3)
            END-PERFORM
       *
-      *  ���񣱤��飱��
+      *  自費１から１０
            PERFORM     VARYING   IDX3    FROM    1    BY    1
                          UNTIL   IDX3    >     10
               MOVE   TBL-JIHI-TAXNASI(IDX3)
@@ -3014,7 +3014,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���������ե饰�����������ѡˤΥ��å�
+      *    初診料算定フラグ（地方公費用）のセット
       **************************************************************
        44025-SYOSINFLG-SET-SEC          SECTION.
       *
@@ -3068,7 +3068,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��ô��ۤμ굻�����������軰�Թ԰١�
+      *    負担金額の手技点算出等（第三者行為）
       **************************************************************
        44026-SYUTEN-KEISAN2-SEC          SECTION.
       *
@@ -3130,7 +3130,7 @@
            EXIT.
       *
       ******************************************************************
-      *    ��ץǡ����κ��Խ�������
+      *    合計データの再編集用退避
       ******************************************************************
        4403-GOKEI-TAIHI-SEC           SECTION.
       *
@@ -3186,7 +3186,7 @@
            EXIT.
       *
       ******************************************************************
-      *    ��ץǡ����κ��Խ�
+      *    合計データの再編集
       ******************************************************************
        4404-GOKEI-HENSYU-SEC           SECTION.
       *
@@ -3231,32 +3231,32 @@
            EXIT.
       *
       ******************************************************************
-      *    ��Ǽ��ץޥ����ι����֤�����
+      *    収納合計マスタの項目置き換え
       ******************************************************************
        4406-GOKEI-OKIKAE-SEC           SECTION.
-      *�ˣţ�
+      *ＫＥＹ
            MOVE    LNK-SYU-KEY(IDY)            TO  SYUTTL-KEY
-      *���Ų�
+      *診療科
            MOVE    LNK-SYU-SRYKA(IDY)          TO  SYUTTL-SRYKA
-      *Ʊ�����Ͽ��Ų�
+      *同時入力診療科
            PERFORM   VARYING   IDX3   FROM   1    BY    1
                       UNTIL    IDX3    >     10
               MOVE   WRK-DOUJI-SRYKA(IDY IDX3)
                                            TO  SYUTTL-DOUJI-SRYKA(IDX3)
            END-PERFORM
-      *������
+      *診療日
            MOVE    LNK-SYU-SRYYMD(IDY)         TO  SYUTTL-SRYYMD
-      *��ɼ���ֶ�ʬ
+      *伝票状態区分
            MOVE    LNK-SYU-DENPJTIKBN(IDY)     TO  SYUTTL-DENPJTIKBN
-      *��ɼ������ʬ
+      *伝票作成区分
            MOVE    LNK-SYU-CREATEKBN(IDY)      TO  SYUTTL-CREATEKBN
-      *��ɼȯ����
+      *伝票発行日
            MOVE    LNK-SYU-DENPPRTYMD(IDY)     TO  SYUTTL-DENPPRTYMD
-      *�������
+      *請求期間
            MOVE    LNK-SYU-SKY-KIKAN(IDY)      TO  SYUTTL-SKY-KIKAN
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            MOVE    LNK-SYU-HKNCOMBINUM(IDY)    TO  SYUTTL-HKNCOMBINUM
-      *���ݸ�����ô����
+      *主保険−負担情報
            MOVE    LNK-SYU-SYUHKNNUM(IDY)      TO  SYUTTL-SYUHKNNUM
       *
            MOVE    LNK-SYU-SYUHKNFTNMONEY(IDY) TO  SYUTTL-SYUHKNFTNMONEY
@@ -3271,96 +3271,96 @@
            MOVE    LNK-SYU-SYUCOMPTOTAL(IDY)   TO  SYUTTL-SYUCOMPTOTAL
       *
            MOVE    LNK-SYU-SYUYKZFTNKBN(IDY)   TO  SYUTTL-SYUYKZFTNKBN
-      *�������ô����
+      *公費−負担情報
            MOVE    LNK-SYU-KOH-AREA(IDY)       TO  SYUTTL-KOH-AREA
-      *������ôΨ
+      *患者負担率
            MOVE    LNK-SYU-PTFTNRATE(IDY)      TO  SYUTTL-PTFTNRATE
-      *����������ʬ
+      *請求書作成区分
            MOVE    LNK-SYU-SKYKUKBN(IDY)       TO  SYUTTL-SKYKUKBN
-      *��������
+      *請求内容
            MOVE    LNK-SYU-SKY-NAIYOU(IDY)     TO  SYUTTL-SKY-NAIYOU
-      *�����������Ʒ�
+      *処方せん料再掲
            MOVE    LNK-SYU-SHOHOU-SAI(IDY)     TO  SYUTTL-SHOHOU-SAI
-      *�ݸ�Ŭ�ѳ���ۡݾ����ǡʺƷǡ�
+      *保険適用外金額−消費税（再掲）
            MOVE    LNK-SYU-TGMONEY-TAX-SAI(IDY)
                                            TO  SYUTTL-TGMONEY-TAX-SAI
-      *���񣱤��飵
+      *自費１から５
            MOVE    LNK-SYU-JIHI-NAIYOU(IDY)    TO  SYUTTL-JIHI-NAIYOU
-      *���񾮷סʾ����Ǥʤ���
+      *自費小計（消費税なし）
            MOVE    LNK-SYU-JIHI-TOTAL(IDY)     TO  SYUTTL-JIHI-TOTAL
-      *���񾮷סʾ����Ǥ����
+      *自費小計（消費税あり）
            MOVE    LNK-SYU-JIHI-TOTAL-TAX(IDY) TO  SYUTTL-JIHI-TOTAL-TAX
-      *�����۾�����
+      *自費金額消費税
            MOVE    LNK-SYU-JIHI-TAX(IDY)       TO  SYUTTL-JIHI-TAX
-      *Ϸ�Ͱ�����ô��
+      *老人一部負担金
            MOVE    LNK-SYU-RJN-FTN(IDY)        TO  SYUTTL-RJN-FTN
-      *���������ô��
+      *公費一部負担金
            MOVE    LNK-SYU-KOH-FTN(IDY)        TO  SYUTTL-KOH-FTN
-      *���������ô��ʱ�ñ�̡�
+      *公費一部負担金（円単位）
            MOVE    LNK-SYU-KOH-FTN-ENTANI(IDY) TO  SYUTTL-KOH-FTN-ENTANI
-      *Ĵ����
+      *調整金
            MOVE    LNK-SYU-CHOSEI(IDY)         TO  SYUTTL-CHOSEI
-      *�ޤȤ����Ϻ���
+      *まとめ入力差額
            MOVE    LNK-SYU-GRP-SGKMONEY(IDY)   TO  SYUTTL-GRP-SGKMONEY
-      *�ݸ�Ŭ�Ѷ��
+      *保険適用金額
            MOVE    LNK-SYU-HKNTEKMONEY(IDY)    TO  SYUTTL-HKNTEKMONEY
-      *�±����Ȼ�ͳ��ʬ
+      *病院減免事由区分
            MOVE    LNK-SYU-DISCOUNT-KBN(IDY)   TO  SYUTTL-DISCOUNT-KBN
-      *�±����Ȼ�ͳ
+      *病院減免事由
            MOVE    LNK-SYU-DISCOUNT-BODY(IDY)  TO  SYUTTL-DISCOUNT-BODY
-      *���Ψ��ʬ
+      *割引率区分
            MOVE    LNK-SYU-DISCOUNT-RATEKBN(IDY)
                                            TO  SYUTTL-DISCOUNT-RATEKBN
-      *��Ψ��۶�ʬ
+      *定率定額区分
            MOVE    LNK-SYU-DISCOUNT-TEIRITU(IDY)
                                            TO  SYUTTL-DISCOUNT-TEIRITU
-      *���Ψ
+      *割引率
            MOVE    LNK-SYU-DISCOUNT-RATE(IDY)  TO  SYUTTL-DISCOUNT-RATE
-      *���ȶ��
+      *減免金額
            MOVE    LNK-SYU-DISCOUNT-MONEY(IDY) TO  SYUTTL-DISCOUNT-MONEY
-      *ϫ���ݸ��ݽ����
+      *労災保険−初診料
            MOVE    LNK-SYU-RSISHOSHIN-MONEY(IDY)
                                            TO  SYUTTL-RSISHOSHIN-MONEY
-      *ϫ���ݸ��ݺƿ���
+      *労災保険−再診料
            MOVE    LNK-SYU-RSISAISHIN-MONEY(IDY)
                                            TO  SYUTTL-RSISAISHIN-MONEY
-      *ϫ���ݸ��ݻ�Ƴ��
+      *労災保険−指導料
            MOVE    LNK-SYU-RSISDO-MONEY(IDY)   TO  SYUTTL-RSISDO-MONEY
-      *ϫ���ݸ��ݤ���¾
+      *労災保険−その他
            MOVE    LNK-SYU-RSIETC-MONEY(IDY)   TO  SYUTTL-RSIETC-MONEY
-      *ϫ���ݸ��ݾ����ǡʺƷǡ�
+      *労災保険−消費税（再掲）
            MOVE    LNK-SYU-RSI-TAX-SAI(IDY)    TO  SYUTTL-RSI-TAX-SAI
-      *ϫ���ݸ��ݴ�������ʬ�߷��ƹ�׳�
+      *労災保険−患者請求分円建て合計額
            MOVE    LNK-SYU-RSI-TOTAL(IDY)      TO  SYUTTL-RSI-TOTAL
-      *ϫ�Ҽ���������ۡ�����ɽ�����ѡ�
+      *労災自賠−請求金額（日計表記載用）
            MOVE    LNK-SYU-RSIJIBAI-SKYMONEY(IDY)
                                            TO  SYUTTL-RSIJIBAI-SKYMONEY
-      *�����ۡݾ����ǡʺƷǡ�
+      *請求金額−消費税（再掲）
            MOVE    LNK-SYU-SKYMONEY-TAX-SAI(IDY)
                                            TO  SYUTTL-SKYMONEY-TAX-SAI
-      *������
+      *請求金額
            MOVE    LNK-SYU-SKYMONEY(IDY)       TO  SYUTTL-SKYMONEY
-      *�����׳�
+      *入金合計額
            MOVE    LNK-SYU-NYUKIN-TOTAL(IDY)   TO  SYUTTL-NYUKIN-TOTAL
-      *������
+      *入金回数
            MOVE    LNK-SYU-NYUKIN-KAISU(IDY)   TO  SYUTTL-NYUKIN-KAISU
-      *̤����ͳ
+      *未収理由
            MOVE    LNK-SYU-MISYURIYU(IDY)      TO  SYUTTL-MISYURIYU
-      *�����Ƕ�ʬ
+      *在総診区分
            MOVE    LNK-SYU-ZAITAKU(IDY)        TO  SYUTTL-ZAITAKU
-      *���Ŷ�ʬ�̵��ճ�����
+      *診療区分別給付外点数
            MOVE    LNK-SYU-KYUFUGAI(IDY)       TO  SYUTTL-KYUFUGAI
-      *�ݸ�Ŭ�Ѷ�ʬ
+      *保険適用区分
            MOVE    LNK-SYU-HKNTEKKBN(IDY)      TO  SYUTTL-HKNTEKKBN
-      *ü���ɣ�
+      *端末ＩＤ
            MOVE    LNK-SYU-TERMID(IDY)         TO  SYUTTL-TERMID
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            MOVE    LNK-SYU-OPID(IDY)           TO  SYUTTL-OPID
-      *����ǯ����
+      *作成年月日
            MOVE    LNK-SYU-CREYMD(IDY)         TO  SYUTTL-CREYMD
-      *����ǯ����
+      *更新年月日
            MOVE    LNK-SYU-UPYMD(IDY)          TO  SYUTTL-UPYMD
-      *��������
+      *更新時間
            MOVE    LNK-SYU-UPHMS(IDY)          TO  SYUTTL-UPHMS
       *
            .
@@ -3369,7 +3369,7 @@
            EXIT.
       *
       ******************************************************************
-      *    ʣ���ʤޤȤ�����ʬ�Υ����å�
+      *    複数科まとめ入力分のチェック
       ******************************************************************
        4407-GRP-DATA-CHECK-SEC           SECTION.
       *
@@ -3420,7 +3420,7 @@
            EXIT.
       *
       ******************************************************************
-      *    ��Ǽ����
+      *    収納更新
       ******************************************************************
        4408-SYUNOU-KOUSIN-SEC           SECTION.
       *
@@ -3440,7 +3440,7 @@
                                               MCPDATA-REC
                                               SPA-AREA
       *
-      *    �Ʒ׻�ʬ�μ�Ǽ���٥ޥ�������
+      *    再計算分の収納明細マスタ作成
       *
            INITIALIZE                       SYUMEI-REC
            MOVE    LNK-SYU-HOSPNUM(IDY) TO  SMEI-HOSPNUM
@@ -3487,7 +3487,7 @@
            EXIT.
       *
       *************************************************************
-      *    ��Ǽ���٥쥳���ɺ���
+      *    収納明細レコード作成
       *************************************************************
        44081-SMEI-SAKUSEI-SEC           SECTION.
       *
@@ -3498,45 +3498,45 @@
            MOVE    LNK-SYU-NYUGAIKBN(IDY)
                                         TO  SMEI-NYUGAIKBN
            MOVE    LNK-SYU-PTID(IDY)    TO  SMEI-PTID
-      *��ɼ�ֹ�
+      *伝票番号
            MOVE    LNK-SYU-DENPNUM(IDY) TO  SMEI-DENPNUM
-      *��ɼ�ֹ����
+      *伝票番号枝番
            MOVE    IDX3                 TO  SMEI-DENPEDANUM
-      *����Ϣ��
+      *入金連番
            MOVE    ZERO                 TO  SMEI-NYUKINRENNUM
-      *���Ų�
+      *診療科
            MOVE    LNK-SYU-SRYKA(IDY)   TO  SMEI-SRYKA
-      *��ɼ���ֶ�ʬ
+      *伝票状態区分
            MOVE    SPACE                TO  SMEI-MEISAIJOUTAIKBN
-      *����ȯ������ȯ�����������
+      *請求発行日（発行日の西暦）
            MOVE    SPACE                TO  SMEI-SKYPRINTYMD
-      *�����ȯ����
+      *請求再発行日
            MOVE    SPACE                TO  SMEI-SKYREPRINTYMD
-      *�μ���ȯ����
+      *領収書発行日
            MOVE    SPACE                TO  SMEI-RYOSYUPRINTYMD
-      *�μ����ȯ����
+      *領収書再発行日
            MOVE    SPACE                TO  SMEI-RYOSYUREPRINTYMD
-      *������
+      *請求金額
            IF  WRK-ATO-SEIKYUGK(IDY)    NOT =   WRK-MAE-SEIKYUGK(IDY)
                COMPUTE   SMEI-SKYMONEY  =   WRK-ATO-SEIKYUGK(IDY)  -
                                             WRK-MAE-SEIKYUGK(IDY)
            ELSE
                MOVE    ZERO             TO  SMEI-SKYMONEY
            END-IF
-      *���ֶ��ʬ
+      *入返金区分
            MOVE    SPACE                TO  SMEI-NYUHEN-KBN
-      *���ֶ��
+      *入返金額
            MOVE    ZERO                 TO  SMEI-NYUHEN-MONEY
-      *���ֶ���
+      *入返金日
            IF    ( LNK-ORCSSKS-SYSYMD   IS  NUMERIC )
                MOVE    LNK-ORCSSKS-SYSYMD
                                         TO  SMEI-NYUHEN-YMD
            ELSE
                MOVE    SPA-SYSYMD       TO  SMEI-NYUHEN-YMD
            END-IF
-      *������ˡ
+      *入金方法
            MOVE    "00"                 TO  SMEI-NYUKIN-HOHO
-      *���ֶ�ʬ
+      *状態区分
            MOVE    "3"                  TO  SMEI-JOUTAIKBN
       *
            MOVE    WRK-SYURRKNUM        TO  SMEI-SYURRKNUM
@@ -3579,7 +3579,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���󥭡���������
+      *    日報キー取得サブ
       *****************************************************************
        800-DAILYKEY-SEC         SECTION.
       *
@@ -3591,7 +3591,7 @@
        800-DAILYKEY-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -3603,7 +3603,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    ��Ǽ�ޥ������ɹ�
+      *    収納マスター読込
       *****************************************************************
        900-SYUNOU-READ-SEC          SECTION.
       *
@@ -3625,7 +3625,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��ץޥ����ɹ�
+      *    収納合計マスタ読込
       *****************************************************************
        900-SYUTOTAL-READ-SEC          SECTION.
       *
@@ -3658,7 +3658,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��ץޥ����ɹ�
+      *    収納合計マスタ読込
       *****************************************************************
        901-SYUTOTAL-FETCH-SEC          SECTION.
       *
@@ -3680,7 +3680,7 @@
            EXIT.
       *
       ******************************************************************
-      *    �����ƥ�������������ɹ�
+      *    システム管理１０３８読込
       ******************************************************************
        900-SYS1038-READ-SEC           SECTION.
       *
@@ -3713,7 +3713,7 @@
            EXIT.
       *
       ******************************************************************
-      *    �����ƥ�������������ɹ�
+      *    システム管理４００１読込
       ******************************************************************
        900-SYS4001-READ-SEC           SECTION.
       *
@@ -3746,7 +3746,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        901-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3770,7 +3770,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       **************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
@@ -3791,7 +3791,7 @@
            EXIT.
       *
       **************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɹ�
+      *    保険組合せマスター読込
       **************************************************************
        900-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -3812,7 +3812,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       **************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -3833,7 +3833,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       **************************************************************
        900-SRYACT-READ-SEC         SECTION.
       *
@@ -3854,7 +3854,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʼ祭����
+      *    点数マスター読込（主キー）
       *****************************************************************
        900-TENSU-READ-SEC         SECTION.
       *
@@ -3894,7 +3894,7 @@
            EXIT.
       *
       **************************************************************
-      *    ��Ǽ�����ɹ�
+      *    収納明細読込
       **************************************************************
        900-SYUMEI-READ-SEC         SECTION.
       *
@@ -3915,7 +3915,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ����ɹ�
+      *    患者情報読込
       *****************************************************************
        900-PTINF-READ-SEC           SECTION.
       *
@@ -3936,7 +3936,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        DB-CLOSE-SEC                 SECTION.
       *

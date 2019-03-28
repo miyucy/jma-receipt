@@ -1,19 +1,19 @@
 --                                      --
--- ¥ì¥»¥×¥ÈÌÀºÙ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹           --
--- ¹àÌÜÄÉ²Ã (ÊÔÄÖÂÐ±þ)                  --
---   ¡¡¡¡¡¡¡¡¿ÇÎÅ²Ê  ¡¡(SRYKA)          --
---   ¡¡¡¡¡¡¡¡¸©Æâ³°°õºþ½ç(PREFKBN_SRT)  --
---   ¡¡¡¡¡¡¡¡ÊÝ¸±¼Ô°õºþ½ç(HKNJANUM_SRT) --
---   ¡¡¡¡¡¡¡¡¥ì¥»¥×¥È¼ïÊÌ°õºþ½ç         --
+-- ãƒ¬ã‚»ãƒ—ãƒˆæ˜Žç´°ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´           --
+-- é …ç›®è¿½åŠ  (ç·¨ç¶´å¯¾å¿œ)                  --
+--   ã€€ã€€ã€€ã€€è¨ºç™‚ç§‘  ã€€(SRYKA)          --
+--   ã€€ã€€ã€€ã€€çœŒå†…å¤–å°åˆ·é †(PREFKBN_SRT)  --
+--   ã€€ã€€ã€€ã€€ä¿é™ºè€…å°åˆ·é †(HKNJANUM_SRT) --
+--   ã€€ã€€ã€€ã€€ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥å°åˆ·é †         --
 --                    (RECESYUBETU_SRT) --
---   ¡¡¡¡¡¡¡¡ºßÁí¿Ç¼±ÊÌ(ZAITAKU)        --
---   ¡¡¡¡¡¡¡¡Ä¹´ü¼±ÊÌ  (CHOUKI)         --
+--   ã€€ã€€ã€€ã€€åœ¨ç·è¨ºè­˜åˆ¥(ZAITAKU)        --
+--   ã€€ã€€ã€€ã€€é•·æœŸè­˜åˆ¥  (CHOUKI)         --
 --                                      --
 -- Create Date : 2005/12/06             --
 --                                      --
 
 
--- TBL_RECEPRTWWK ºîÀ®                 --
+-- TBL_RECEPRTWWK ä½œæˆ                 --
 create table TBL_RECEPRTWWK (
 PRTID				char(4)		not null,
 RECEYM				char(6)		not null,
@@ -40,16 +40,16 @@ PRTDATA				varchar(10000),
 constraint TBL_RECEPRTWWK_primary_key primary key (PRTID,RECEYM,
 CREYMD,CREHMS,PREFKBN,PREFNUM,HKNJANUM,TEKSTYMD,TEISYUTUSAKI,RECESYUBETU,PTNUM,SRYYM,RENNUM,RECENUM));
 
--- TBL_RECEPRT ¢ª TBL_RECEPRTWWK   --
+-- TBL_RECEPRT â†’ TBL_RECEPRTWWK   --
 
 insert into TBL_RECEPRTWWK
 select * from TBL_RECEPRT;
 
--- TBL_RECEPRT ºï½ü               --
+-- TBL_RECEPRT å‰Šé™¤               --
 
 drop table TBL_RECEPRT;
 
--- TBL_RECEPRT ºîÀ®               --
+-- TBL_RECEPRT ä½œæˆ               --
 
 create table TBL_RECEPRT (
 PRTID				char(4)		not null,
@@ -85,7 +85,7 @@ OPID				varchar(16),
 constraint TBL_RECEPRT_primary_key primary key (PRTID,RECEYM,
 CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,TEKSTYMD,ZAITAKU,CHOUKI,PTNUM,RENNUM,RECENUM));
 
--- TBL_RECEPRTWWK ¢ª TBL_RECEPRT   --
+-- TBL_RECEPRTWWK â†’ TBL_RECEPRT   --
 
 insert into TBL_RECEPRT
 (PRTID,
@@ -136,6 +136,6 @@ PRTDATA,
 TERMID
 from TBL_RECEPRTWWK;
 
--- TBL_RECEPRTWWK ºï½ü             --
+-- TBL_RECEPRTWWK å‰Šé™¤             --
 
 drop table TBL_RECEPRTWWK;

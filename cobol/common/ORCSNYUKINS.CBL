@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,12 +18,12 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSNYUKINS.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : 
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : §ﬁ§»§·∆˛∂‚•µ•÷° Ã§º˝§ﬁ§»§·∆˛∂‚≤ËÃÃÕ—°À
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  03.05.00    NACL-¬ø°π«º  07/04/XX  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : 
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : „Åæ„Å®„ÇÅÂÖ•Èáë„Çµ„ÉñÔºàÊú™Âèé„Åæ„Å®„ÇÅÂÖ•ÈáëÁîªÈù¢Áî®Ôºâ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  03.05.00    NACL-Â§ö„ÄÖÁ¥ç  07/04/XX  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,41 +38,41 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-PTINF           PIC 9(01).
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-SYUMEI          PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-SYUNOU-DBPATH  PIC X(20).
            03  WRK-NYUKIN-ZAN     PIC 9(08).
            03  WRK-MISYU          PIC 9(07).
       *
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ∆¸ Û•≠°ººË∆¿•µ•÷
+      *    Êó•Â†±„Ç≠„ÉºÂèñÂæó„Çµ„Éñ
            COPY "CPORCSDAILYKEY.INC".
       *
-      *    ∂¶ƒÃŒŒ∞Ë
+      *    ÂÖ±ÈÄöÈ†òÂüü
            COPY    "MCPAREA".
       *
-      *    ¥µº‘æ Û
+      *    ÊÇ£ËÄÖÊÉÖÂ†±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    º˝«º
+      *    ÂèéÁ¥ç
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    º˝«ºÃ¿∫Ÿ
+      *    ÂèéÁ¥çÊòéÁ¥∞
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
@@ -81,12 +81,12 @@
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSNYUKINS.INC".
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
       *
@@ -95,11 +95,11 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -110,7 +110,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    •—•È•·°º•ø•¡•ß•√•Ø
+      *    „Éë„É©„É°„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM   100-PRM-CHK-SEC
            IF       (LNK-SCNYUKINS-RC   NOT =   ZERO)
                GO   TO   000-PROC-EXT
@@ -126,11 +126,11 @@
            .
       *
       *****************************************************************
-      *    •—•È•·°º•ø•¡•ß•√•Ø
+      *    „Éë„É©„É°„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ¥µº‘•ﬁ•π•ø°º∏°∫˜
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
            INITIALIZE                      PTINF-REC
            MOVE    LNK-SCNYUKINS-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-SCNYUKINS-PTID      TO  PTINF-PTID
@@ -146,11 +146,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ºÁºË∆¿
+      *    ‰∏ªÂèñÂæó
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    º˝«ºππø∑
+      *    ÂèéÁ¥çÊõ¥Êñ∞
            PERFORM    VARYING  IDX   FROM  1  BY  1
              UNTIL    (IDX        >   LNK-SCNYUKINS-MAX )   OR
                       (IDX        >   500)                     OR
@@ -164,7 +164,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º˝«ºππø∑ΩËÕ˝
+      *    ÂèéÁ¥çÊõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        300-SYUNOU-UPD-SEC                SECTION.
       *
@@ -216,7 +216,7 @@
                    MOVE    SYU-CREATEKBN
                                    TO  LNK-SCNYUKINS-CREATEKBN (IDX)
       *
-      *           º˝«ºππø∑
+      *           ÂèéÁ¥çÊõ¥Êñ∞
                   MOVE    SYUNOU-REC          TO  MCPDATA-REC
                   MOVE    "DBUPDATE"          TO  MCP-FUNC
                   MOVE    "tbl_syunou"        TO  MCP-TABLE
@@ -232,7 +232,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    º˝«º•Ø•Ì°º•∫
+      *    ÂèéÁ¥ç„ÇØ„É≠„Éº„Ç∫
            MOVE    "tbl_syunou"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM    910-DB-CLOSE-SEC
@@ -242,11 +242,11 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *************************************************************
-      *    º˝«ºÃ¿∫Ÿ∫Ó¿Æ
+      *    ÂèéÁ¥çÊòéÁ¥∞‰ΩúÊàê
       *************************************************************
        310-SYUMEI-INS-SEC           SECTION.
       *
-      *    ø∑µ¨∫Ó¿Æ§Œº˝«ºÃ¿∫Ÿ•ﬁ•π•ø§À…¨Õ◊§ ≈¡…º»÷πÊªﬁ»÷ºË∆¿
+      *    Êñ∞Ë¶è‰ΩúÊàê„ÅÆÂèéÁ¥çÊòéÁ¥∞„Éû„Çπ„Çø„Å´ÂøÖË¶Å„Å™‰ºùÁ•®Áï™Âè∑ÊûùÁï™ÂèñÂæó
            INITIALIZE                      SYUMEI-REC
            MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
@@ -276,49 +276,49 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                             PERFORM   910-SYUMEI-READ-SEC
                  END-PERFORM
            END-IF
-      *    º˝«ºÃ¿∫Ÿ•Ø•Ì°º•∫
+      *    ÂèéÁ¥çÊòéÁ¥∞„ÇØ„É≠„Éº„Ç∫
            MOVE    "tbl_syumei"   TO  MCP-TABLE
            MOVE    "key2"         TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
            MOVE    IDX1                TO  LNK-SCNYUKINS-DENPEDANUM(IDX)
       *
-      *º˝«ºÃ¿∫Ÿ∫Ó¿ÆΩËÕ˝
+      *ÂèéÁ¥çÊòéÁ¥∞‰ΩúÊàêÂá¶ÁêÜ
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
            MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SYU-NYUGAIKBN       TO  SMEI-NYUGAIKBN
            MOVE    SYU-PTID            TO  SMEI-PTID
-      *≈¡…º»÷πÊ
+      *‰ºùÁ•®Áï™Âè∑
            MOVE    SYU-DENPNUM         TO  SMEI-DENPNUM
-      *≈¡…º»÷πÊªﬁ»÷
+      *‰ºùÁ•®Áï™Âè∑ÊûùÁï™
            MOVE    IDX1                TO  SMEI-DENPEDANUM
-      *∆˛∂‚œ¢»÷
+      *ÂÖ•ÈáëÈÄ£Áï™
            MOVE    ZERO                TO  SMEI-NYUKINRENNUM
-      *ø«Œ≈≤ 
+      *Ë®∫ÁôÇÁßë
            MOVE    SYU-SRYKA           TO  SMEI-SRYKA
-      *≈¡…ºæı¬÷∂Ë ¨
+      *‰ºùÁ•®Áä∂ÊÖãÂå∫ÂàÜ
            MOVE    SPACE               TO  SMEI-MEISAIJOUTAIKBN
-      *¿¡µ·»Øπ‘∆¸° »Øπ‘∆¸§Œ¿æŒÒ°À
+      *Ë´ãÊ±ÇÁô∫Ë°åÊó•ÔºàÁô∫Ë°åÊó•„ÅÆË•øÊö¶Ôºâ
            MOVE    SPACE               TO  SMEI-SKYPRINTYMD
-      *¿¡µ·∫∆»Øπ‘∆¸
+      *Ë´ãÊ±ÇÂÜçÁô∫Ë°åÊó•
            MOVE    SPACE               TO  SMEI-SKYREPRINTYMD
-      *ŒŒº˝ΩÒ»Øπ‘∆¸
+      *È†òÂèéÊõ∏Áô∫Ë°åÊó•
            MOVE    SPACE               TO  SMEI-RYOSYUPRINTYMD
-      *ŒŒº˝ΩÒ∫∆»Øπ‘∆¸
+      *È†òÂèéÊõ∏ÂÜçÁô∫Ë°åÊó•
            MOVE    SPACE               TO  SMEI-RYOSYUREPRINTYMD
-      *¿¡µ·∂‚≥€
+      *Ë´ãÊ±ÇÈáëÈ°ç
            MOVE    ZERO                TO  SMEI-SKYMONEY
-      *∆˛ ÷∂‚∂Ë ¨
+      *ÂÖ•ËøîÈáëÂå∫ÂàÜ
            IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >=  ZERO
                MOVE    "1"             TO  SMEI-NYUHEN-KBN
            ELSE
                MOVE    "2"             TO  SMEI-NYUHEN-KBN
            END-IF
-      *∆˛ ÷∂‚≥€
+      *ÂÖ•ËøîÈáëÈ°ç
            MOVE    LNK-SCNYUKINS-NYUKIN-MONEY(IDX)
                                        TO  SMEI-NYUHEN-MONEY
-      *∆˛ ÷∂‚∆¸
+      *ÂÖ•ËøîÈáëÊó•
            IF    ( LNK-SCNYUKINS-NYUKIN-YMD2 (IDX)
                                        NOT =   SPACE )
                MOVE    LNK-SCNYUKINS-NYUKIN-YMD2 (IDX)
@@ -327,7 +327,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    LNK-SCNYUKINS-NYUKIN-YMD
                                        TO  SMEI-NYUHEN-YMD
            END-IF
-      *∆˛∂‚ ˝À°
+      *ÂÖ•ÈáëÊñπÊ≥ï
            IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
                IF    ( LNK-SCNYUKINS-NYUKIN-HOHO2 (IDX)
                                        NOT =   SPACE )
@@ -340,7 +340,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "00"            TO  SMEI-NYUKIN-HOHO
            END-IF
-      *æı¬÷∂Ë ¨
+      *Áä∂ÊÖãÂå∫ÂàÜ
            IF  LNK-SCNYUKINS-NYUKIN-MONEY(IDX)  >  ZERO
                MOVE    "2"             TO  SMEI-JOUTAIKBN
            ELSE
@@ -385,7 +385,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ∆¸ Û•≠°ººË∆¿•µ•÷
+      *    Êó•Â†±„Ç≠„ÉºÂèñÂæó„Çµ„Éñ
       *****************************************************************
        800-DAILYKEY-SEC         SECTION.
       *
@@ -397,7 +397,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        800-DAILYKEY-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘•ﬁ•π•ø°º∆…π˛
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -436,7 +436,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    º˝«º•ﬁ•π•ø°º∏°∫˜
+      *    ÂèéÁ¥ç„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-SYUNOU-SELECT-SEC        SECTION.
       *
@@ -456,7 +456,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    º˝«º•ﬁ•π•ø°º∆…π˛
+      *    ÂèéÁ¥ç„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-SYUNOU-READ-SEC         SECTION.
       *
@@ -477,7 +477,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    º˝«ºÃ¿∫Ÿ•ﬁ•π•ø°º∆…π˛
+      *    ÂèéÁ¥çÊòéÁ¥∞„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-SYUMEI-READ-SEC         SECTION.
       *
@@ -498,7 +498,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

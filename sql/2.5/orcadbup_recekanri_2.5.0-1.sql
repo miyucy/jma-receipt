@@ -1,16 +1,16 @@
 --                                    --
--- ¥ì¥»¥×¥È´ÉÍý¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹         --
+-- ãƒ¬ã‚»ãƒ—ãƒˆç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´         --
 --                                    --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¡¡¡¡¡¡¡¡ÆüÉÕ»ØÄê¡¡(STYMD)        --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ã€€ã€€ã€€ã€€æ—¥ä»˜æŒ‡å®šã€€(STYMD)        --
 --                     (EDYMD)        --
---   ¡¡¡¡¡¡¡¡½èÍý¼ïÊÌ¡¡(SYORISBT)     --
+--   ã€€ã€€ã€€ã€€å‡¦ç†ç¨®åˆ¥ã€€(SYORISBT)     --
 --                                    --
 -- Create Date : 2005/01/13           --
 --                                    --
 
--- TBL_RECEKANRIWK ºîÀ®               --
+-- TBL_RECEKANRIWK ä½œæˆ               --
 
 create table TBL_RECEKANRIWK (
 PRTID               char(4)		not null,
@@ -28,16 +28,16 @@ TERMID              varchar(16),
 constraint TBL_RECEKANRIWK_primary_key primary key (PRTID,SYOKBN,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU));
 
 
--- TBL_RECEKANRI ¢ª TBL_RECEKANRIWK   --
+-- TBL_RECEKANRI â†’ TBL_RECEKANRIWK   --
 
 insert into TBL_RECEKANRIWK
 select * from TBL_RECEKANRI;
 
--- TBL_RECEKANRI ºï½ü               --
+-- TBL_RECEKANRI å‰Šé™¤               --
 
 drop table TBL_RECEKANRI;
 
--- TBL_RECEKANRI ºîÀ®               --
+-- TBL_RECEKANRI ä½œæˆ               --
 
 create table TBL_RECEKANRI (
 PRTID               char(4)		not null,
@@ -57,7 +57,7 @@ EDYMD               char(8),
 TERMID              varchar(16),
 constraint TBL_RECEKANRI_primary_key primary key (PRTID,SYOKBN,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU));
 
--- TBL_RECEKANRIWK ¢ª TBL_RECEKANRI  ¡Ê°ì³çÊ¬¡Ë --
+-- TBL_RECEKANRIWK â†’ TBL_RECEKANRI  ï¼ˆä¸€æ‹¬åˆ†ï¼‰ --
 
 insert into TBL_RECEKANRI
 (PRTID,
@@ -88,7 +88,7 @@ RECEKBN,
 TERMID from TBL_RECEKANRIWK where SYOKBN = '1';
 
 
--- TBL_RECEKANRIWK ¢ª TBL_RECEKANRI  ¡Ê¸ÄÊÌÊ¬¡Ë --
+-- TBL_RECEKANRIWK â†’ TBL_RECEKANRI  ï¼ˆå€‹åˆ¥åˆ†ï¼‰ --
 
 insert into TBL_RECEKANRI
 (PRTID,
@@ -122,6 +122,6 @@ TERMID from TBL_RECEKANRIWK where SYOKBN = '2';
 
 
 
--- TBL_RECEKANRIWK ºï½ü             --
+-- TBL_RECEKANRIWK å‰Šé™¤             --
 
 drop table TBL_RECEKANRIWK;

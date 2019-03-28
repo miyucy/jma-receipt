@@ -2,43 +2,43 @@
 # coding : euc-jp
 Encoding.default_external = "ascii-8bit" if defined?(Encoding) && Encoding.respond_to?("default_external")
 
-# ʸ����β��Զ��ڤ������ˤ��ơ����������Υץ��������Ϥ�����
-# (2002/03/07 ���Ļ��ɲð���)
-# ��������Τ�Τ򡢰���data�ե�����˴ޤ��褦���ѹ�(2002/04/16 :���Ļ���� :�����б�)
+# 文字列の改行区切りで配列にして、それを引数のプログラムに渡す処理
+# (2002/03/07 竹田氏追加依頼)
+# 引数指定のものを、一部dataファイルに含めるように変更(2002/04/16 :竹田氏依頼 :曳野対応)
 #
-# red2ps�б��Ѥ�
-# site-lib��ʬ�б� (2002/10/16)
-#   woody�ǤǤϡ�site-lib��dia/red�ե�����⸫�ʤ���Фʤ�ʤ��Τǡ�����˴ؤ����б�
-#   ���ǥ��쥯�ȥ���ɲä��뤳�Ȥ��б�
-#   data�ե�����ե����ޥåȤ���(LP̾�Τ��Ȥˡ�site��ʬ���ɲ�)
-# �ǥ��쥯�ȥ�����б� (2002/11/13)
-#   ���ޥ�ɥ饤�����3��6�Υǥ��쥯�ȥ���־������Ѥ���褦�˽���
-# ʣ���ץ������б� (2003/05/22)
-#   ���ޥ�ɥ饤�����1�ǻ��ꤷ�Ƥ�������ե�����̾��������λ���ǤϤʤ���
-#     ��������������褦�ˤ���
-#   ����ե�����̾�˻��ꤹ��Τϡ�����7��data�ե�����ǡ�
-#     �Ǹ�γ�ĥ��(.dat)��.tmp���Ѵ�����褦�ˤ���
-#   �����ȼ��������1�ϥ��ߡ������Ȥ���
-#   �����б��ǡ�ʣ���ץ������μ¹Ԥ��Ǥ���褦�ˤʤ�
-# ��ĥ�����¸�б� (2003/05/24)
-#   data�ե�����γ�ĥ�Ҥ�(.dat)�Ǥʤ��Ȥ����ʤ��ä�����
-#   ��ĥ�Ҥ˰�¸���ʤ��褦�˽�������
-# (2007/12/27 ) patch-lib �б�
+# red2ps対応済み
+# site-lib区分対応 (2002/10/16)
+#   woody版では、site-libのdia/redファイルも見なければならないので、それに関する対応
+#   基準ディレクトリを追加することで対応
+#   dataファイルフォーマットを修正(LP名のあとに、site区分を追加)
+# ディレクトリ位置対応 (2002/11/13)
+#   コマンドライン引数3〜6のディレクトリ位置情報を使用するように修正
+# 複数プロセス対応 (2003/05/22)
+#   コマンドライン引数1で指定していた一時ファイル名を外部からの指定ではなく、
+#     内部で生成するようにした
+#   一時ファイル名に指定するのは、引数7のdataファイルで、
+#     最後の拡張子(.dat)を.tmpに変換するようにする
+#   これに伴い、引数1はダミー扱いとする
+#   この対応で、複数プロセスの実行ができるようになる
+# 拡張子非依存対応 (2003/05/24)
+#   dataファイルの拡張子が(.dat)でないといけなかったが、
+#   拡張子に依存しないように修正した
+# (2007/12/27 ) patch-lib 対応
 
 
-# ����������ˡ
-# ����1 = data�ե�����
+# 引数指定方法
+# 引数1 = dataファイル
 
-# data�ե�����ե����ޥå�
+# dataファイルフォーマット
 # +------------------+------------+---------------+---------------+---------------+--------------------------+
-# |�ե�����̾(30Byte)|LP̾(20Byte)|offset-x(5byte)|offset-y(5byte)|site��ʬ(1Byte)|Ģɼ�ǡ���(Max20000�Х���)|
+# |ファイル名(30Byte)|LP名(20Byte)|offset-x(5byte)|offset-y(5byte)|site区分(1Byte)|帳票データ(Max20000バイト)|
 # +------------------+------------+---------------+---------------+---------------+--------------------------+
-# �ե�����̾�ˡ���ĥ�Ҥȥǥ��쥯�ȥ�̾���ղä�����Τ�ҥץ������ΰ������Ϥ�
-#    site��ʬ
-#      1 = orcaɸ��
-#      2 = site-lib�Υ������ޥ���Ģɼ
+# ファイル名に、拡張子とディレクトリ名を付加したものを子プロセスの引数に渡す
+#    site区分
+#      1 = orca標準
+#      2 = site-libのカスタマイズ帳票
 #
-# ��LP̾�϶���ξ�硢�ҥץ������ΰ������ά����
+# ※LP名は空白の場合、子プロセスの引数を省略する
 
 
 require "tempfile"
@@ -46,7 +46,7 @@ require "tempfile"
 
 # ============================================================
 
-# �إ��ɽ��
+# ヘルプ表示
 
 help_flg = 0
 
@@ -60,73 +60,73 @@ else
 end
 
 if (help_flg != 0)
-	puts '���Υ�����ץȤϡ����ԤǶ��ڤäơ������Υץ��������Ϥ��ץ������Ǥ�'
+	puts 'このスクリプトは、改行で区切って、引数のプログラムに渡すプログラムです'
 	puts $0 + ' <data>'
-	puts '<data>        = data�ե�����'
+	puts '<data>        = dataファイル'
 	exit 0
 end
 
 
 std_form = ''; std_record = ''; site_form = ''; site_record = ''; patch_form = ''
 
-# ����λ���(�Ǹ�ˡ����ʤ餺��/�פ��դ������ˤ��Ƥ�������)
-std_form = ARGV[1] + '/'   		# ���쥻ɸ��form�ǥ��쥯�ȥ�
-std_record = ARGV[2] + '/' 	# ���쥻ɸ��record�ǥ��쥯�ȥ�
-site_form = ARGV[3] + '/'  		# ���쥻site��ͭform�ǥ��쥯�ȥ�
-site_record = ARGV[4] + '/'		# ���쥻site��ͭrecord�ǥ��쥯�ȥ�
-patch_form = ARGV[5] + '/'  		# ���쥻site��ͭform�ǥ��쥯�ȥ�
+# 定数の指定(最後に、かならず「/」を付けた形にしてください)
+std_form = ARGV[1] + '/'   		# 日レセ標準formディレクトリ
+std_record = ARGV[2] + '/' 	# 日レセ標準recordディレクトリ
+site_form = ARGV[3] + '/'  		# 日レセsite固有formディレクトリ
+site_record = ARGV[4] + '/'		# 日レセsite固有recordディレクトリ
+patch_form = ARGV[5] + '/'  		# 日レセsite固有formディレクトリ
 
-# .red����ps�ե�������Ѵ�����ݤ˻��Ѥ���ץ������
+# .redからpsファイルに変換する際に使用するプログラム
 #RED_EXEC = 'red2ps'
 RED2EMBED = 'red2embed'
 MONPE = 'monpe'
-# .red�ե�����ǡ�LP̾���ά���줿�ݤ˻��Ѥ���ץ��̾
+# .redファイルで、LP名を省略された際に使用するプリンタ名
 DEFAULT_LP = 'lp1'
 
 
 
 # ============================================================
-# �ΰ�ν����
+# 領域の初期化
 
-# �ե�����̾�ΰ�
+# ファイル名領域
 temp_file = '';  data_file = ''; lp_name = ''; offset_x = ''; offset_y = ''
 site_flag = ''; base_dir = ''
-# ʸ�����ΰ�
+# 文字列領域
 word1 = ''; word2 = []; word3 = ''
-# exec��ʸ�����ΰ�
+# exec用文字列領域
 w_exec = ''
-# fork���ΰ�
+# fork用領域
 pid = []
-# ���������ΰ�
+# カウンタ用領域
 li_cnt1 = 0
-# ʸ����Ĺ���ΰ�
+# 文字列長用領域
 d2_len = 0
 
 
 # ============================================================
-# �����Υ��å�
+# 引数のセット
 
-# �������ΰ褫�顢ʸ����μ���
-#temp_file = String(ARGV[0])		# ����ե�����
-data_file = String(ARGV[0])		# data�ե�����̾
+# 引数の領域から、文字列の取得
+#temp_file = String(ARGV[0])		# 一時ファイル
+data_file = String(ARGV[0])		# dataファイル名
 
 
-# ����ե�����Υե�����̾������
+# 一時ファイルのファイル名を生成
 temp_file = data_file + '.tmp'
 
 
 
 # ============================================================
-# �ؿ������
+# 関数定義部
 
 
-# �ե�����̾������Ρ�'�ס�"�פ����������
+# ファイル名の前後の「'」「"」を取り除く処理
 def filename_change(name)
 	return name.gsub(/\A[\'\"]([\s\S]*?)[\'\"][\s]*?\z/, '\1')
 end
 
 
-# �ե�����̾�˶��򤬤����硢����ˡ�"�פ򥻥åȤ������
+# ファイル名に空白がある場合、前後に「"」をセットする処理
 def filename_unchange(name)
 	if name =~ / /
 		return  "\"" + name + "\""
@@ -136,7 +136,7 @@ def filename_unchange(name)
 end
 
 
-# slash���դ���
+# slashを付ける
 def add_slash(str)
 	if str =~ /[^\/]$/
 		return (str += '/')
@@ -148,59 +148,59 @@ end
 
 
 # ============================================================
-# �����βù�����
+# 引数の加工処理
 
-# �ؿ���ƤӽФ��ơ�����Ρ�'�ס�"�פ���
+# 関数を呼び出して、前後の「'」「"」を削除
 temp_file = filename_change(temp_file)
 data_file = filename_change(data_file)
 
 
-# �դˡ��֤˶��򤬤���ʸ����ˡ���"�פ��ɲä�����Τ��Ѱ�
+# 逆に、間に空白がある文字列に、「"」を追加したものを用意
 data_file2 = filename_unchange(data_file)
 
 
-# ���ޥ�ɰ�����form��record�Υǥ��쥯�ȥ�̾�ˡ�/�פ��ʤ���硢��/�פ��դ������
+# コマンド引数のformやrecordのディレクトリ名に「/」がない場合、「/」を付ける処理
 std_form = add_slash(std_form)
 std_record = add_slash(std_record)
 site_form = add_slash(site_form)
 site_record = add_slash(site_record)
 
 
-# �ǥХå��Ѥ�ɽ��
-#puts "����ե�����   = [" + temp_file + "]"
-#puts "data�ե�����   = [" + data_file + "]"
+# デバッグ用の表示
+#puts "一時ファイル   = [" + temp_file + "]"
+#puts "dataファイル   = [" + data_file + "]"
 
 
 # ============================================================
 
-# ����ե�����¸�ߥ����å�
+# 一時ファイル存在チェック
 begin
 	if nil != File.size(temp_file)
-		puts '����ե����뤬¸�ߤ���ΤǺ�����ޤ�'
-		puts '�ե�����̾ = [' + temp_file + ']'
-		# ����ե�����κ��
+		puts '一時ファイルが存在するので削除します'
+		puts 'ファイル名 = [' + temp_file + ']'
+		# 一時ファイルの削除
 		File.delete(temp_file)
-		puts '������ޤ���'
-#		puts '����ե����뤬¸�ߤ��뤿�ᡢ�񤭹��ߤǤ��ޤ���'
-#		puts '�ե�����̾ = [' + temp_file + ']'
+		puts '削除しました'
+#		puts '一時ファイルが存在するため、書き込みできません'
+#		puts 'ファイル名 = [' + temp_file + ']'
 #		exit 2
 	end
 rescue
-# �㳰��ȯ������С�����ե����뤬¸�ߤ��ʤ��Τǡ��ϣ�
+# 例外が発生すれば、一時ファイルが存在しないので、ＯＫ
 end
 
 
-# data�ե������¸�ߥ����å�
+# dataファイルの存在チェック
 begin
 	if nil == File.size(data_file)
-		puts 'data�ե����뤬¸�ߤ��ޤ���'
-		puts '�ե�����̾ = [' + data_file + ']'
+		puts 'dataファイルが存在しません'
+		puts 'ファイル名 = [' + data_file + ']'
 		exit 3
 	end
 rescue
-# �㳰��ȯ������С�data�ե����뤬¸�ߤ��ʤ�
-	puts 'data�ե����뤬¸�ߤ��ޤ���'
-	puts '�ե�����̾ = [' + data_file + ']'
+# 例外が発生すれば、dataファイルが存在しない
+	puts 'dataファイルが存在しません'
+	puts 'ファイル名 = [' + data_file + ']'
 	exit 3
 end
 
@@ -208,8 +208,8 @@ end
 # ============================================================
 
 
-# data�ե�������ɤ߹���
-# ���ϥե�������ɤ߹��߽���
+# dataファイルの読み込み
+# 入力ファイルの読み込み処理
 open(data_file, "r") do |fp|
 	word1 = fp.read
 end
@@ -217,7 +217,7 @@ end
 
 # -----------------------------------
 
-# ���Զ��ڤ����
+# 改行区切り処理
 #word2 = word1.split(/\s*\n\s*/)
 word2 = word1.split(/\n/)
 
@@ -227,7 +227,7 @@ word2 = word1.split(/\n/)
 
 li_cnt1 = 0
 
-# �¹Խ���
+# 実行処理
 word2.each do |d2|
 
 	fred=Tempfile.new(['tmpred','.red'])
@@ -236,23 +236,23 @@ word2.each do |d2|
 	fpdf.close
 
 
-# �ǥХå��ѥ�����
+# デバッグ用コード
 #	puts '[' + d2 + ']'
 	li_cnt1 = li_cnt1 + 1
-	d2_len = d2.size	# ʸ�����Ĺ���μ���
+	d2_len = d2.size	# 文字列の長さの取得
 
 	layeroption = d2.scan(/MonpeLayerIn(.*)MonpeLayerOut/).join.gsub(/ *-L */,",").sub(/,/,"-H ")
 
-	# ��Ƭ30�Х��Ȥϡ�.dia��.def�ե�����Υե�����̾��ʬ
-	# ���뤤�ϡ�.red�ե�����γ�ĥ�Ҥ�ޤ�ե�����̾
+	# 先頭30バイトは、.diaと.defファイルのファイル名部分
+	# あるいは、.redファイルの拡張子を含むファイル名
 	red_file = ''
-	ls_w1 = ''	# �����ʸ�����ΰ�
-	ls_w1 = d2[0, 30].strip	# �ե�����̾�����ζ��������Ƽ���
-	site_flag = d2[60, 1].strip		# site��ͭȽ��ե饰�μ���
+	ls_w1 = ''	# 一時用文字列領域
+	ls_w1 = d2[0, 30].strip	# ファイル名を後ろの空白を除いて取得
+	site_flag = d2[60, 1].strip		# site固有判定フラグの取得
 	if ls_w1 =~ /.red$/
-		# .red�ե�����Ǥ���
+		# .redファイルである
 
-		# Red�ե�����̾�Υ��å�
+		# Redファイル名のセット
 		case	site_flag
 		when	'1'
 			red_file = std_form + ls_w1
@@ -262,18 +262,18 @@ word2.each do |d2|
 			red_file = std_form + ls_w1
 		end
 
-		lp_name = d2[30, 20].strip	# LP̾�Υ��å�
-		offset_x = d2[50, 5].strip				# offset-x�Υ��å�
-		offset_y = d2[55, 5].strip				# offset-y�Υ��å�
-		word3 = d2[61, (d2_len - 61)]	# ����ե�����ؽ��Ϥ������ƤΥ��å�
+		lp_name = d2[30, 20].strip	# LP名のセット
+		offset_x = d2[50, 5].strip				# offset-xのセット
+		offset_y = d2[55, 5].strip				# offset-yのセット
+		word3 = d2[61, (d2_len - 61)]	# 一時ファイルへ出力する内容のセット
 
-		# ����ե�����ؤν񤭹���
+		# 一時ファイルへの書き込み
 		open(temp_file, "w") do |fp|
 			fp.print word3
 			fp.print ' ' * 20000
 		end
 
-# take patch-lib ��form��¸�ߤ�����ϡ�path�����ؤ���
+# take patch-lib にformが存在する場合は、pathを切替える
 site_red_file = site_form + ls_w1
 patch_red_file = patch_form + ls_w1
      puts 'Site  file ' + ls_w1 + ' ' + site_form
@@ -289,29 +289,29 @@ else
   end
 end
 
-# �ǥХå��Ѥ�ɽ��
+# デバッグ用の表示
 		case	word3
 		when	nil
-			puts	'���ԤΤߤǤ�' + '[' + String(li_cnt1) + ']'
+			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
 		when	''
-			puts	'���ԤΤߤǤ�' + '[' + String(li_cnt1) + ']'
+			puts	'改行のみです' + '[' + String(li_cnt1) + ']'
 		else
 			if d2 =~ /\A\s*\z/
-				puts	'���򡦲��ԤǤ�' + '[' + String(li_cnt1) + ']'
+				puts	'空白・改行です' + '[' + String(li_cnt1) + ']'
 #			else
 #				puts	'OK [' + String(li_cnt1) + ']'
 			end
 		end
-		# LP̾�����ꤵ��Ƥ��ʤ��ä��顢LP̾��lp1�ˤ���
+		# LP名が指定されていなかったら、LP名をlp1にする
 		if lp_name == ''
 			lp_name = DEFAULT_LP
 		end
 
-		# offset-x�����ꤵ��Ƥ��ʤ��ä��顢0�ˤ���
+		# offset-xが指定されていなかったら、0にする
 		if offset_x == ''
 			offset_x = '0'
 		end
-		# offset-y�����ꤵ��Ƥ��ʤ��ä��顢0�ˤ���
+		# offset-yが指定されていなかったら、0にする
 		if offset_y == ''
 			offset_y = '0'
 		end
@@ -323,22 +323,22 @@ end
                + 'lpr -P ' + lp_name + ' ' + fpdf.path
 
 
-# �ǥХå��Ѥ�ɽ��
+# デバッグ用の表示
 #		puts w_exec
 # **
-		# �¹�����å���������
+		# 実行前メッセージ出力
 		puts	'Print Start [' + String(li_cnt1) + ']'
-		# �ץ������μ¹�
+		# プログラムの実行
 		pid = fork do
 			exec w_exec
 		end
-		sleep 0.01	# ͽ�����̥��顼�β���Τ��ᡢ�Ԥ�(�����Ԥ�ʤ��ȡ�ruby ver1.4��ǸƤӽФ��줿������ץȤ˥��顼��ȯ������)
-		# �¹Ԥ����ץ�����ब�����ޤ��Ԥ�(�����Σ����ܤϡ�1.4�ǤΥ��顼����Τ���)
+		sleep 0.01	# 予期せぬエラーの回避のため、待つ(これを行わないと、ruby ver1.4上で呼び出されたスクリプトにエラーが発生する)
+		# 実行したプログラムが終わるまで待つ(引数の２番目は、1.4でのエラー回避のため)
 		Process.waitpid(pid, 0)
 
 
 	else
-#	monpe�ʳ��Υե�����ϥ��顼�Ȥ��롣
+#	monpe以外のファイルはエラーとする。
 		exit 4
 	end
 
@@ -351,15 +351,15 @@ end
 
 # ============================================================
 
-# ����ե�������
+# 一時ファイル削除
 begin
 	if nil != File.size(temp_file)
-		# ����ե����뤬¸�ߤ���
-		# ����ե�����κ��
+		# 一時ファイルが存在する
+		# 一時ファイルの削除
 		File.delete(temp_file)
 	end
 rescue
-# �㳰��ȯ������С�����ե����뤬¸�ߤ��ʤ�
+# 例外が発生すれば、一時ファイルが存在しない
 end
 
 

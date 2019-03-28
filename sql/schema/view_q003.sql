@@ -25,5 +25,5 @@ CREATE VIEW view_q003 AS
       FROM tbl_nsrysrh;
 
 
-COMMENT ON VIEW view_q003 IS '���ԾȲ�ӥ塼3';
+COMMENT ON VIEW view_q003 IS '患者照会ビュー3';
 

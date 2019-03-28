@@ -1,131 +1,131 @@
 kanri_cd    : "1034"
-name        : "½ĞÎÏÀè¥×¥ê¥ó¥¿³ä¤êÅö¤Æ¾ğÊó¡ÊÆş±¡¡Ë "
+name        : "å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿å‰²ã‚Šå½“ã¦æƒ…å ±ï¼ˆå…¥é™¢ï¼‰ "
 class_cd    : "*"
 item_max    : 21
 item_list   :
 - item_no   : 1
   item      : "PRTNM1"
-  item_jp   : "¿ÇÎÅÏ¿¡Ê¥«¥ë¥Æ£±¹æ»æ¡Ë"
+  item_jp   : "è¨ºç™‚éŒ²ï¼ˆã‚«ãƒ«ãƒ†ï¼‘å·ç´™ï¼‰"
   type      : "X"
   start     : 1
   length    : 16
 - item_no   : 2
   item      : "PRTNM2"
-  item_jp   : "Âà±¡¾ÚÌÀ½ñ"
+  item_jp   : "é€€é™¢è¨¼æ˜æ›¸"
   type      : "X"
   start     : 17
   length    : 16
 - item_no   : 3
   item      : "PRTNM3"
-  item_jp   : "ÀÁµá½ñ·óÎÎ¼ı½ñ"
+  item_jp   : "è«‹æ±‚æ›¸å…¼é ˜åæ›¸"
   type      : "X"
   start     : 33
   length    : 16
 - item_no   : 4
   item      : "PRTNM4"
-  item_jp   : "¿ÇÎÅÏ¿¡Ê¥«¥ë¥Æ£³¹æ»æ¡Ë"
+  item_jp   : "è¨ºç™‚éŒ²ï¼ˆã‚«ãƒ«ãƒ†ï¼“å·ç´™ï¼‰"
   type      : "X"
   start     : 49
   length    : 16
 - item_no   : 5
   item      : "PRTNM5"
-  item_jp   : "¿ÇÎÅÏ¿¡Ê¥«¥ë¥Æ£³¹æ»æ¡ËÄÉµ­"
+  item_jp   : "è¨ºç™‚éŒ²ï¼ˆã‚«ãƒ«ãƒ†ï¼“å·ç´™ï¼‰è¿½è¨˜"
   type      : "X"
   start     : 65
   length    : 16
 - item_no   : 6
   item      : "PRTNM6"
-  item_jp   : "Æş±¡½èÊıäµ"
+  item_jp   : "å…¥é™¢å‡¦æ–¹ç®‹"
   type      : "X"
   start     : 81
   length    : 16
 - item_no   : 7
   item      : "PRTNM7"
-  item_jp   : "Ãí¼Í½èÊıäµ"
+  item_jp   : "æ³¨å°„å‡¦æ–¹ç®‹"
   type      : "X"
   start     : 97
   length    : 16
 - item_no   : 8
   item      : "PRTNM8"
-  item_jp   : "»Ø¼¨äµ"
+  item_jp   : "æŒ‡ç¤ºç®‹"
   type      : "X"
   start     : 113
   length    : 16
 - item_no   : 9
   item      : "PRTNM9"
-  item_jp   : "¿ÇÎÅÈñÌÀºÙ½ñ"
+  item_jp   : "è¨ºç™‚è²»æ˜ç´°æ›¸"
   type      : "X"
   start     : 129
   length    : 16
 - item_no   : 10
   item      : "PRTNM10"
-  item_jp   : "ÌôºŞ¾ğÊóÄó¶¡½ñ"
+  item_jp   : "è–¬å‰¤æƒ…å ±æä¾›æ›¸"
   type      : "X"
   start     : 145
   length    : 16
 - item_no   : 11
   item      : "PRTNM11"
-  item_jp   : "¤ªÌô¼êÄ¢"
+  item_jp   : "ãŠè–¬æ‰‹å¸³"
   type      : "X"
   start     : 161
   length    : 16
 - item_no   : 12
   item      : "PRTNM12"
-  item_jp   : "½èÊı¤»¤ó¡ÊÂà±¡»ş±¡³°¡Ë"
+  item_jp   : "å‡¦æ–¹ã›ã‚“ï¼ˆé€€é™¢æ™‚é™¢å¤–ï¼‰"
   type      : "X"
   start     : 177
   length    : 16
 - item_no   : 13
   item      : "PRTNM13"
-  item_jp   : "Ê¬ÊÚÈñÍÑÌÀºÙ½ñ"
+  item_jp   : "åˆ†å¨©è²»ç”¨æ˜ç´°æ›¸"
   type      : "X"
   start     : 193
   length    : 16
 - item_no   : 14
   item      : "PRTNM14"
-  item_jp   : "°åÎÅ¶èÊ¬¡¦£Á£Ä£Ì¶èÊ¬É¾²ÁÉ¼"
+  item_jp   : "åŒ»ç™‚åŒºåˆ†ãƒ»ï¼¡ï¼¤ï¼¬åŒºåˆ†è©•ä¾¡ç¥¨"
   type      : "X"
   start     : 209
   length    : 16
 - item_no   : 15
   item      : "PRTNM15"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 225
   length    : 16
 - item_no   : 16
   item      : "PRTNM16"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 241
   length    : 16
 - item_no   : 17
   item      : "PRTNM17"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 257
   length    : 16
 - item_no   : 18
   item      : "PRTNM18"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 273
   length    : 16
 - item_no   : 19
   item      : "PRTNM19"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 289
   length    : 16
 - item_no   : 20
   item      : "PRTNM20"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 305
   length    : 16
 - item_no   : 21
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 321
   length    : 180

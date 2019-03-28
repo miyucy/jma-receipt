@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ÌôºÞ¾ðÊó       (CPYAKUJYO.INC) 
+      *  è–¬å‰¤æƒ…å ±       (CPYAKUJYO.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  YAKUJYO-REC.
            03  YAKUJYO-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  YAKUJYO-HOSPNUM          PIC 9(2).
-      *°åÌôÉÊ¥³¡¼¥É
+      *åŒ»è–¬å“ã‚³ãƒ¼ãƒ‰
                05  YAKUJYO-SRYCD           PIC X(09).
-      *Å¬ÍÑÈÖ¹æ
+      *é©ç”¨ç•ªå·
                05  YAKUJYO-TEKNUM          PIC 9(02).
-      *°åÌôÉÊÌ¾¾Î
+      *åŒ»è–¬å“åç§°
            03  YAKUJYO-NAME                PIC X(170).
-      *¸úÇ½¸ú²Ì
+      *åŠ¹èƒ½åŠ¹æžœ
            03  YAKUJYO-EFFECT              PIC X(2000).
-      *Ãí°Õ»ö¹à
+      *æ³¨æ„äº‹é …
            03  YAKUJYO-CAUTION             PIC X(4000).
-      *²èÁü¥Õ¥¡¥¤¥ëÌ¾
+      *ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«å
            03  YAKUJYO-PHOTO               PIC X(256).
-      *¿§
+      *è‰²
            03  YAKUJYO-COLOR               PIC X(360).
-      *·Á
+      *å½¢
            03  YAKUJYO-SHAPE               PIC X(360).
-      *µ­¹æ
+      *è¨˜å·
            03  YAKUJYO-MARK                PIC X(360).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  YAKUJYO-TERMID              PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  YAKUJYO-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  YAKUJYO-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  YAKUJYO-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  YAKUJYO-UPHMS               PIC  X(06).

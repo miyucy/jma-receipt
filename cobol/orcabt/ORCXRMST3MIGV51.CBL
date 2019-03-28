@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCXRMST3MIGV51.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ޥ�����������
-      *  ����ݡ��ͥ��̾  : �����ե������������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : マスタ更新処理
+      *  コンポーネント名  : 更新ファイル作成処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/07/14    NACL-��ƣ     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/07/14    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  05.01.00    NACL-��ƣ    17/10/26  V510�ޥ�����ʬΥ�б�������
-      *                                     �оݥޥ���
-      *                                       09:�ݸ���
-      *                                     �оݥơ��֥�
-      *                                       tbl_mstkanri_org(�׻�)
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  05.01.00    NACL-伊藤    17/10/26  V510マスター分離対応特別版
+      *                                     対象マスタ
+      *                                       09:保険者
+      *                                     対象テーブル
+      *                                       tbl_mstkanri_org(臨時)
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,17 +40,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ѥ�᡼���ե�����
+      *    入力：パラメータファイル
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ������ե������ɸ���
+      *    出力：更新ファイル（標準）
            SELECT  OUT1-FILE       ASSIGN
                                    ASS-OUT1
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-OUT1.
-      *    ���ϡ������ե�����ʰܹ�����
+      *    出力：更新ファイル（移行前）
            SELECT  OUT2-FILE       ASSIGN
                                    ASS-OUT2
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -59,7 +59,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϥե�����
+      *    入力ファイル
        FD  IN-FILE.
        01  IN-REC.
            03  IN-MASTER-KBN           PIC X(02).
@@ -69,7 +69,7 @@
            03  IN-UPFILE               PIC X(100).
            03  IN-UPPG                 PIC X(10).
       *
-      *    �����ե�����
+      *    更新ファイル
        FD  OUT1-FILE.
        01  OUT1-REC                    PIC X(200).
       *
@@ -80,32 +80,32 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-OUT1                PIC X(256).
            03  ASS-OUT2                PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-OUT1                PIC X(02).
            03  STS-OUT2                PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-DBKANRI             PIC 9(01).
            03  FLG-MSTKANRI            PIC 9(01).
            03  FLG-OUTFILE             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-OUT1                PIC 9(06).
            03  CNT-OUT2                PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -118,7 +118,7 @@ grpsys     COPY    "COMMON-SPA".
            03  OUT-UPPG                PIC X(10).
            03  OUT-UPFILE              PIC X(100).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-DBRVERSION          PIC X(64).
            03  WRK-DBRVERSION-ORG      PIC X(64).
@@ -144,25 +144,25 @@ grpsys     COPY    "COMMON-SPA".
                "/var/lib/jma-receipt/master/".
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �ģ´�������
+      *    ＤＢ管理情報
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
       *
        01  MSTKANRI-REC.
            COPY    "CPMSTKANRI.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
        01  PARA-REC.
@@ -174,7 +174,7 @@ grpsys     COPY    "COMMON-SPA".
            USING
            PARA-REC.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -190,7 +190,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -212,10 +212,10 @@ grpsys     COPY    "COMMON-SPA".
                DISPLAY "DBOPEN ERR"
            END-IF.
       *
-      *    �ե��������
+      *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT           IN-FILE
            IF      STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
@@ -223,7 +223,7 @@ grpsys     COPY    "COMMON-SPA".
                                        STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            OPEN    OUTPUT          OUT1-FILE
            IF      STS-OUT1        NOT =   ZERO
                DISPLAY "*(ORCXRMST3MIGV51)* OUT1-FILE OPN STS["
@@ -236,7 +236,7 @@ grpsys     COPY    "COMMON-SPA".
            END-IF
       *
            PERFORM 101-VERSION-GET-SEC
-      *    MSTKANRI �쥳���ɥС������Υơ��֥�ί�����
+      *    MSTKANRI レコードバージョンのテーブル溜め込み
            PERFORM 101-DBR-TBL-SET-SEC
            PERFORM 101-ORG-TBL-SET-SEC
       *
@@ -245,7 +245,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
@@ -255,7 +255,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    PARA-HOSPNUM        DELIMITED  BY  SIZE
@@ -265,7 +265,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���ϡ��ե�����
+      *    出力ーファイル
            MOVE    SPACE               TO  ASS-OUT1
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    PARA-HOSPNUM        DELIMITED  BY  SIZE
@@ -288,11 +288,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    DBKANRI �С�������������
+      *    DBKANRI バージョン取得処理
       *****************************************************************
        101-VERSION-GET-SEC             SECTION.
       *
-      *    �ģ´����ޥ�������
+      *    ＤＢ管理マスタ検索
            INITIALIZE                  DBKANRI-REC
            MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
@@ -331,11 +331,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    MSTKANRI �쥳���ɥС������Υơ��֥�ί����߽���
+      *    MSTKANRI レコードバージョンのテーブル溜め込み処理
       *****************************************************************
        101-DBR-TBL-SET-SEC              SECTION.
       *
-      *    �ޥ��������ޥ�������
+      *    マスタ管理マスタ検索
            INITIALIZE                  MSTKANRI-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    MSTKANRI-REC        TO  MCPDATA-REC
@@ -375,7 +375,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    MSTKANRI �쥳���ɥС������Υơ��֥�ί����߽���
+      *    MSTKANRI レコードバージョンのテーブル溜め込み処理
       *****************************************************************
        101-ORG-TBL-SET-SEC             SECTION.
            INITIALIZE                  MSTKANRI-REC
@@ -415,15 +415,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    �쥳���ɴ����ե������ɹ���
+      *    レコード管理ファイル読込み
            PERFORM 900-IN-READ-SEC
            PERFORM UNTIL   FLG-IN      =   1
                MOVE     SPACE              TO  WRK-DBRVERSION
-      *        �����ޥ����Υ쥳���ɥС���������
+      *        該当マスタのレコードバージョン取得
                SET     DBR-IDX             TO  1
                SEARCH  WRK-TBL-DBRVERSION  VARYING DBR-IDX
                    AT END
@@ -482,11 +482,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                            CONTINUE
                    END-EVALUATE
                END-IF
-      *        �쥳���ɴ����ե������ɹ���
+      *        レコード管理ファイル読込み
                PERFORM 900-IN-READ-SEC
            END-PERFORM
       *
-      *    �ޥ��������ޥ�������
+      *    マスタ管理マスタ更新
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         =   100 OR
                            WRK-TBL-MASTER-KBN(IDX) =   SPACE
@@ -577,7 +577,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ե��������  ����
+      *    更新ファイル出力  処理
       *****************************************************************
        210-OUTFILE-SEC               SECTION.
       *
@@ -603,14 +603,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       OUT1-FILE
            CLOSE                       OUT2-FILE
@@ -624,7 +624,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե������ɹ��߽���
+      *    入力ファイル読込み処理
       *****************************************************************
        900-IN-READ-SEC          SECTION.
       *
@@ -647,7 +647,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ޥ��������ե������ɹ�
+      *    マスタ管理ファイル読込
       *****************************************************************
        910-MSTKANRI-READ-SEC           SECTION.
       *
@@ -666,7 +666,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ´����ե������ɹ�
+      *    ＤＢ管理ファイル読込
       *****************************************************************
        910-DBKANRI-READ-SEC            SECTION.
       *
@@ -685,7 +685,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -699,7 +699,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        910-CLOSE-SEC                   SECTION.
       *
@@ -711,7 +711,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                  SECTION.
       *
@@ -729,7 +729,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -747,7 +747,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

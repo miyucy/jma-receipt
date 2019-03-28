@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0011.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ݸ��ֹ�ޥ�����������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : 保険番号マスタ更新処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/09/05    NACL-ƣ��     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/09/05    NACL-藤原     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-����    03/01/08  �ݸ��ֹ�ޥ����쥤�������ѹ�
-      *                                     �б�
-      * 01.00.02     NACL-��ƣ    03/02/13  �ݸ��ֹ�ޥ����쥤�������ѹ�
-      *                                     �б���ˡ���ֹ�����å���ʬ
-      * 01.00.03     NACL-����    04/02/09  �ݸ��ֹ�ޥ����쥤�������ѹ�
-      *                                     �б�
-      * 01.00.03     NACL-��Ʀ��  06/04/03  MONFUNC�б�
-      * 04.03.00     NACL-����    08/05/28  ���顼���������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-太田    03/01/08  保険番号マスタレイアウト変更
+      *                                     対応
+      * 01.00.02     NACL-伊藤    03/02/13  保険番号マスタレイアウト変更
+      *                                     対応−法別番号チェック区分
+      * 01.00.03     NACL-太田    04/02/09  保険番号マスタレイアウト変更
+      *                                     対応
+      * 01.00.03     NACL-小豆沢  06/04/03  MONFUNC対応
+      * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,17 +43,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ݸ��ֹ�ޥ��������ե�����
+      *    入力：保険番号マスタ更新ファイル
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -62,19 +62,19 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ݸ��ֹ�ޥ��������ե�����
+      *    入力：保険番号マスタ更新ファイル
        FD  IN-FILE.
       *---(01.00.01) LINE UPD START -------------------------------------
       *    COPY    "CPHKNNUMWK.INC".
        01  IN-REC                      PIC X(10000).
       *---(01.00.01) LINE UPD END   -------------------------------------
       *
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
        FD  ERR-FILE.
            COPY    "CPHKNNUMWK.INC"       REPLACING
                                        //HKNWK-// BY //ERR-HKNWK-//.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                 PIC X(1000).
       *
@@ -84,24 +84,24 @@ grpsys     COPY    "COMMON-SPA".
       *
            COPY    "CPHKNNUMWK.INC".
       *
-      *    ��쥤������
+      *    旧レイアウト
            COPY    "CPHKNNUMWKV01.INC".
            COPY    "CPHKNNUMWKV02.INC".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-IN                  PIC 9(01).
@@ -111,7 +111,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-SYORI               PIC 9(01).
            03  FLG-HKNNUM              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-IN                  PIC 9(06).
@@ -121,7 +121,7 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-ERR                 PIC 9(06).
            03  CNT-PLF                 PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -131,7 +131,7 @@ grpsys     COPY    "COMMON-SPA".
            03  SYS-YY                  PIC 9(02).
            03  SYS-MM                  PIC 9(02).
            03  SYS-DD                  PIC 9(02).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -141,7 +141,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-SYY2            PIC 9(02).
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
-      *�����祭�������ѹ���
+      *　　主キー更新用項目
            03  WRK-TNSUP-KEY.
                05  WRK-TNSUP-HKNNUM         PIC  X(09).
                05  WRK-TNSUP-TEKSTYMD     PIC  X(08).
@@ -152,11 +152,11 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-IN                  PIC X(01). 
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ���ϥե������ΰ�
+      *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCMUP0011.CBL��".
+                                       "【PGID:ORCMUP0011.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -184,38 +184,38 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
       *
-      *    �ݸ��ֹ�ޥ�����
+      *    保険番号マスタ−
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSK1001.INC".
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -226,7 +226,7 @@ grpsys     COPY    "COMMON-SPA".
            LNK-AREA.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -243,7 +243,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -261,7 +261,7 @@ grpsys     COPY    "COMMON-SPA".
       *        DISPLAY "DBOPEN ERR"
       *    END-IF.
       * 
-      *    ���ŵ��أɣ��Խ�
+      *    医療機関ＩＤ編集
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -277,10 +277,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                DISPLAY "SYS 001 ERR"
            END-IF                                     
       *
-      *    �ե��������
+      *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT           IN-FILE
            IF  STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
@@ -288,10 +288,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                        STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    �ݸ��ֹ�ޥ��������ե������ɹ��߽���
+      *    保険番号マスタ更新ファイル読込み処理
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -301,7 +301,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
@@ -314,7 +314,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -325,7 +325,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -336,7 +336,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    �ץ롼�եե�����
+      *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -351,25 +351,25 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
            EVALUATE    HKNWK-SYORIKBN
-      *        �ɲ�
+      *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ����
+      *        更新
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ���
+      *        削除
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    �ݸ��ֹ�ޥ��������ե������ɹ��߽���
+      *    保険番号マスタ更新ファイル読込み処理
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -377,7 +377,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ɲ�  ����
+      *    追加  処理
       *****************************************************************
        2010-INSERT-SYORI-SEC               SECTION.
       *
@@ -400,34 +400,34 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-HKNNUM
            END-IF
       *
-      *    ñ���ɲ�
+      *    単純追加
            IF      HKNWK-TEKEDYMD2    =   SPACE
       *
                MOVE    "tbl_hknnum"        TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
-      *        �ɲå��顼
+      *        追加エラー
                IF      FLG-HKNNUM           =   ZERO
                    MOVE    5               TO  WRK-ERRCD
                    PERFORM 2040-ERR-SYORI-SEC
                    GO      TO      2010-INSERT-SYORI-EXT
                END-IF
       *
-      *        �ģ��ɲ�
+      *        ＤＢ追加
                PERFORM 20101-HKNNUM-INS-SEC
            ELSE
       *
-      *    �ɲù���
+      *    追加更新
                MOVE    ZERO                TO  FLG-SYORI
                PERFORM UNTIL   (FLG-HKNNUM      =   1  )  OR
                                (FLG-SYORI       =   1  )
                    IF     (HKN-TEKSTYMD   <=  HKNWK-TEKEDYMD2 ) AND
                           (HKN-TEKEDYMD   >   HKNWK-TEKEDYMD2 )
-      *                ����
+      *                更新
                        MOVE    HKNWK-TEKEDYMD2    TO  HKN-TEKEDYMD
                        PERFORM 20102-HKNNUM-UPD-SEC
       *
-      *                �ģ��ɲ�
+      *                ＤＢ追加
       ***************  PERFORM 20101-HKNNUM-INS-SEC
                        MOVE    1                   TO  FLG-SYORI
                    ELSE
@@ -442,7 +442,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *******  IF      FLG-SYORI           =   ZERO
       *
-      *            �ģ��ɲ�
+      *            ＤＢ追加
                    PERFORM 20101-HKNNUM-INS-SEC
       *******  END-IF
            END-IF
@@ -451,7 +451,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɲ�  ����
+      *    ＤＢ追加  処理
       *****************************************************************
        20101-HKNNUM-INS-SEC           SECTION.
       *
@@ -463,7 +463,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN
            MOVE    HKNWK-TEKEDYMD      TO  HKN-TEKEDYMD
            MOVE    HKNWK-REC (55:)     TO  HKNNUM-REC(24:)
-      *    �ݸ��ֹ�ޥ����γ�ǧ
+      *    保険番号マスタの確認
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -487,7 +487,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO      20101-HKNNUM-INS-EXT
            END-IF
       *
-      *    �ݸ��ֹ�ޥ����ɲ�
+      *    保険番号マスタ追加
            INITIALIZE                  HKNNUM-REC
       *****MOVE    HKNWK-KEY           TO  HKN-KEY
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
@@ -516,7 +516,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        20102-HKNNUM-UPD-SEC           SECTION.
       *
@@ -537,7 +537,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģº��  ����
+      *    ＤＢ削除  処理
       *****************************************************************
        20103-HKNNUM-DEL-SEC           SECTION.
       *
@@ -556,7 +556,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����  ����
+      *    更新  処理
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
       *
@@ -580,13 +580,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-HKNNUM
            END-IF
       *
-      *    �̾ﹹ��
+      *    通常更新
            IF      HKNWK-TEKEDYMD2     =   SPACE
                PERFORM UNTIL   (FLG-HKNNUM      =   1  )  OR
                                (FLG-SYORI       =   1  )
                    IF     (HKN-TEKSTYMD   <=  HKNWK-TEKSTYMD ) AND
                           (HKN-TEKEDYMD   >=  HKNWK-TEKSTYMD )
-      *                ����
+      *                更新
       *****************MOVE    HKNWK-KEY           TO  HKN-KEY
                        MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
                        MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
@@ -609,12 +609,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 900-CLOSE-SEC
            ELSE
       *
-      *    ���¹���
+      *    期限更新
                PERFORM UNTIL   (FLG-HKNNUM      =   1  )  OR
                                (FLG-SYORI       =   1  )
                    IF     (HKN-TEKSTYMD   <=  HKNWK-TEKEDYMD2 ) AND
                           (HKN-TEKEDYMD   >   HKNWK-TEKEDYMD2 )
-      *                ����
+      *                更新
                        MOVE    HKNWK-TEKEDYMD2     TO  HKN-TEKEDYMD
                        PERFORM 20102-HKNNUM-UPD-SEC
                        ADD     1                   TO  CNT-UPD
@@ -632,7 +632,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            END-IF
       *
-      *    �������顼
+      *    更新エラー
            IF      FLG-SYORI           =   ZERO
                MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -642,7 +642,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���  ����
+      *    削除  処理
       *****************************************************************
        2030-DELETE-SYORI-SEC           SECTION.
       *
@@ -666,7 +666,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-HKNNUM
            END-IF
       *
-      *    �������
+      *    削除処理
            IF      FLG-HKNNUM          =   ZERO
                    PERFORM 20103-HKNNUM-DEL-SEC
                    ADD     1           TO  CNT-DEL
@@ -681,16 +681,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����
+      *    エラー処理
       *****************************************************************
        2040-ERR-SYORI-SEC            SECTION.
       *
-      *    ���顼����
+      *    エラー出力
            MOVE    HKNWK-REC          TO  ERR-HKNWK-REC
            WRITE                          ERR-HKNWK-REC
            ADD     1                  TO  CNT-ERR
       *
-      *    ���顼��å���������
+      *    エラーメッセージ出力
            PERFORM 20401-PLF-OUT-SEC
       *
            .
@@ -698,7 +698,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������Ͻ���
+      *    エラーメッセージ出力処理
       *****************************************************************
        20401-PLF-OUT-SEC            SECTION.
       *
@@ -710,15 +710,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    HKNWK-SEIDONAME   TO  WRK-NAME
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "�ɲå��顼"       TO  WRK-MSG-01
+                   MOVE    "追加エラー"       TO  WRK-MSG-01
                WHEN    2
-                   MOVE    "�������顼"       TO  WRK-MSG-01
+                   MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "�����оݤʤ�"   TO  WRK-MSG-01
+                   MOVE    "更新対象なし"   TO  WRK-MSG-01
                WHEN    4
-                   MOVE    "������顼"       TO  WRK-MSG-01
+                   MOVE    "削除エラー"       TO  WRK-MSG-01
                WHEN    5
-                   MOVE    "�ݸ��ֹ���Ͽ�Ѥ�"
+                   MOVE    "保険番号登録済み"
                                                TO  WRK-MSG-01
            END-EVALUATE
       *
@@ -731,7 +731,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
       *****************************************************************
        2700-OUTLST-INIT-SEC            SECTION.
       *
@@ -741,7 +741,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ���顼�쥳���ɽ��ϥե����롡�����ץ�
+      *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUP0011)* PLFFILE OPN STS[" STS-PLF "]"
@@ -761,14 +761,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -803,7 +803,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ��������ե������ɹ��߽���
+      *    保険番号マスタ更新ファイル読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -827,7 +827,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *---(01.00.01) LINE ADD START -------------------------------------
       *****************************************************************
-      *    �ݸ��ֹ�ޥ����ѹ��ǡ����������
+      *    保険番号マスタ変更データ設定処理
       *****************************************************************
        900-IN-DATA-SET-SEC         SECTION.
       *
@@ -847,7 +847,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѹ���쥤�����Ȱ�������
+      *    変更後レイアウト移送処理
       *****************************************************************
        900-HKNWK-V01-SET-SEC           SECTION.
       *
@@ -855,143 +855,143 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE  HKNWK-REC
       *
-      *������ʬ
+      *処理区分
            MOVE    HKNWKV01-SYORIKBN   TO  HKNWK-SYORIKBN
-      *����
-      *���ŵ��أɣ�
+      *キー
+      *医療機関ＩＤ
            MOVE    HKNWKV01-HOSPID     TO  HKNWK-HOSPID
-      *�ݸ��ֹ�
+      *保険番号
            MOVE    HKNWKV01-HKNNUM     TO  HKNWK-HKNNUM
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
            MOVE    HKNWKV01-TEKSTYMD   TO  HKNWK-TEKSTYMD
-      *��ʧ��ʬ
+      *支払区分
            MOVE    HKNWKV01-PAYKBN     TO  HKNWK-PAYKBN
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
            MOVE    HKNWKV01-TEKEDYMD   TO  HKNWK-TEKEDYMD
-      *Ŭ�ѽ�λǯ������
+      *適用終了年月日２
            MOVE    HKNWKV01-TEKEDYMD2  TO  HKNWK-TEKEDYMD2
-      *ˡ���ֹ�
+      *法別番号
            MOVE    HKNWKV01-HBTNUM     TO  HKNWK-HBTNUM
-      *����̾
+      *制度名
            MOVE    HKNWKV01-SEIDONAME  TO  HKNWK-SEIDONAME
-      *û������̾
+      *短縮制度名
            MOVE    HKNWKV01-TANSEIDONAME
                                        TO  HKNWK-TANSEIDONAME
-      *�ݸ�������̶�ʬ
+      *保険公費種別区分
            MOVE    HKNWKV01-HKNKOHSBTKBN
                                        TO  HKNWK-HKNKOHSBTKBN
       *---(01.00.02) LINE UPD START -------------------------------------
-      *ˡ���ֹ�����å���ʬ
+      *法別番号チェック区分
            IF      HKNWK-HBTNUM        =   SPACE
                MOVE    "0"             TO  HKNWK-HBTNUMCHKKBN
            ELSE
                MOVE    "1"             TO  HKNWK-HBTNUMCHKKBN
            END-IF
       *---(01.00.02) LINE UPD END   -------------------------------------
-      *�����ֹ�����å���ʬ
+      *検証番号チェック区分
            MOVE    HKNWKV01-KENSNUMCHKKBN
                                        TO  HKNWK-KENSNUMCHKKBN
-      *����Ը����ֹ�����å���ʬ
+      *受給者検証番号チェック区分
            MOVE    HKNWKV01-JKYSKENSNUMCHKKBN
                                        TO  HKNWK-JKYSKENSNUMCHKKBN
-      *������ݶ�ʬ
+      *公費主保区分
            MOVE    HKNWKV01-HKNKOHKBN  TO  HKNWK-HKNKOHKBN
-      *�����ݸ��ֹ�
+      *限定保険番号
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 3
                MOVE    HKNWKV01-GENHKNNUM (IDX)
                                        TO  HKNWK-GENHKNNUM (IDX)
            END-PERFORM
-      *����ǯ�𳫻�
+      *条件−年齢開始
            MOVE   HKNWKV01-JOKEN-STYEAR
                                        TO  HKNWK-JOKEN-STYEAR
-      *����ǯ��λ
+      *条件−年齢終了
            MOVE   HKNWKV01-JOKEN-EDYEAR
                                        TO  HKNWK-JOKEN-EDYEAR
-      *����ñ��
+      *点数単価
            MOVE   HKNWKV01-TENTNK      TO  HKNWK-TENTNK
-      *�쥻�ץ������ʬ
+      *レセプト請求区分
            MOVE   HKNWKV01-RECESKYKBN  TO  HKNWK-RECESKYKBN
       *
-      *�쥻�ץȣ���ñ��ɽ����ʬ
+      *レセプト１円単位表示区分
            MOVE   "1"                  TO  HKNWK-RECEFTNDSPKBN
       *
       * 
-      *�쥻�ץȴ�����ô��Ƚ��ɽ����ʬ (02.01.00 �ɲ� )
+      *レセプト患者負担額判定表示区分 (02.01.00 追加 )
            MOVE   "0"                  TO  HKNWK-RECEJGNDSPKBN
       *
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 4
       *
-      *  �������ô��ʬ
+      *  外来−負担区分
                MOVE   HKNWKV01-GAIFTNKBN (IDX)
                                        TO  HKNWK-GAIFTNKBN (IDX)
-      *  ���������
-      *    ����ݲ����ô���
+      *  外来−内容
+      *    外来−回−負担割合
                MOVE   HKNWKV01-GAIKFTNRATE (IDX)
                                        TO  HKNWK-GAIKFTNRATE (IDX)
-      *    ����ݲ�ݸ����
+      *    外来−回−固定額
                MOVE   HKNWKV01-GAIKKOTGAK (IDX)
                                        TO  HKNWK-GAIKKOTGAK (IDX)
-      *    ����ݲ�ݾ�³�
+      *    外来−回−上限額
                MOVE   HKNWKV01-GAIKJGNGAK (IDX)
                                        TO  HKNWK-GAIKJGNGAK (IDX)
-      *    ��������ݾ�³�
+      *    外来−日−上限額
                MOVE   HKNWKV01-GAIDJGNGAK (IDX)
                                        TO  HKNWK-GAIDJGNGAK (IDX)
-      *    ��������ݾ�²��
+      *    外来−日−上限回数
                MOVE   HKNWKV01-GAIDJGNCNT (IDX)
                                        TO  HKNWK-GAIDJGNCNT (IDX)
-      *    ����ݷ�ݱ���ݾ�³�
+      *    外来−月−院内−上限額
                MOVE   HKNWKV01-GAIMNAIJGNGAK (IDX)
                                        TO  HKNWK-GAIMNAIJGNGAK (IDX)
-      *    ����ݷ�ݱ����ݾ�³�
+      *    外来−月−院外−上限額
                MOVE   HKNWKV01-GAIMGAIJGNGAK (IDX)
                                        TO  HKNWK-GAIMGAIJGNGAK (IDX)
-      *    ����ݷ�ݾ�²��
+      *    外来−月−上限回数
                MOVE   HKNWKV01-GAIMJGNCNT (IDX)
                                        TO  HKNWK-GAIMJGNCNT (IDX)
-      *    �����������ô��ʬ
+      *    外来−薬剤負担区分
                MOVE   HKNWKV01-GAIYKZFTNKBN (IDX)
                                        TO  HKNWK-GAIYKZFTNKBN (IDX)
-      *  ��������ô��ʬ
+      *  入院−負担区分
                MOVE   HKNWKV01-NYUFTNKBN (IDX)
                                        TO  HKNWK-NYUFTNKBN (IDX)
-      *  ����������
-      *    �����ݲ����ô���
+      *  入院−内容
+      *    入院−回−負担割合
                MOVE   HKNWKV01-NYUKFTNRATE (IDX)
                                        TO  HKNWK-NYUKFTNRATE (IDX)
-      *    �����ݲ�ݸ����
+      *    入院−回−固定額
                MOVE   HKNWKV01-NYUKKOTGAK (IDX)
                                        TO  HKNWK-NYUKKOTGAK (IDX)
-      *    �����ݲ�ݾ�³�
+      *    入院−回−上限額
                MOVE   HKNWKV01-NYUKJGNGAK (IDX)
                                        TO  HKNWK-NYUKJGNGAK (IDX)
-      *    ���������ݾ�³�
+      *    入院−日−上限額
                MOVE   HKNWKV01-NYUDJGNGAK (IDX)
                                        TO  HKNWK-NYUDJGNGAK (IDX)
-      *    ���������ݾ�²��
+      *    入院−日−上限回数
                MOVE   HKNWKV01-NYUDJGNCNT (IDX)
                                        TO  HKNWK-NYUDJGNCNT (IDX)
-      *    �����ݷ�ݾ�³�
+      *    入院−月−上限額
                MOVE   HKNWKV01-NYUMJGNGAK (IDX)
                                        TO  HKNWK-NYUMJGNGAK (IDX)
-      *    �����ݷ�ݾ�²��
+      *    入院−月−上限回数
                MOVE   HKNWKV01-NYUMJGNCNT (IDX)
                                        TO  HKNWK-NYUMJGNCNT (IDX)
-      *    �����ݿ������ܶ�ʬ
+      *    入院−食事療養区分
                MOVE   HKNWKV01-NYUSKJRYYKBN (IDX)
                                        TO  HKNWK-NYUSKJRYYKBN (IDX)
-      *    �����ݿ�����ô������ (02.01.00 �ɲ� )
+      *    入院−食事負担助成額 (02.01.00 追加 )
                MOVE   ZERO             TO  HKNWK-NYUSKJJYOGAK  (IDX)
            END-PERFORM
-      *����ü���ɣ�
+      *　　端末ＩＤ
            MOVE   HKNWKV01-TERMID      TO  HKNWK-TERMID
-      *�������ڡ��졼���ɣ�
+      *　　オペーレータＩＤ
            MOVE   HKNWKV01-OPID        TO  HKNWK-OPID
-      *��������ǯ����
+      *　　作成年月日
            MOVE   HKNWKV01-CREYMD      TO  HKNWK-CREYMD
-      *��������ǯ����
+      *　　更新年月日
            MOVE   HKNWKV01-UPYMD       TO  HKNWK-UPYMD
-      *������������
+      *　　更新時間
            MOVE   HKNWKV01-UPHMS       TO  HKNWK-UPHMS
       *
           .
@@ -1000,7 +1000,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *---(01.00.01) LINE ADD END   -------------------------------------
       *****************************************************************
-      *    �ѹ���쥤�����Ȱ�������
+      *    変更後レイアウト移送処理
       *****************************************************************
        900-HKNWK-V02-SET-SEC           SECTION.
       *
@@ -1008,138 +1008,138 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE  HKNWK-REC
       *
-      *������ʬ
+      *処理区分
            MOVE    HKNWKV02-SYORIKBN   TO  HKNWK-SYORIKBN
-      *����
-      *���ŵ��أɣ�
+      *キー
+      *医療機関ＩＤ
            MOVE    HKNWKV02-HOSPID     TO  HKNWK-HOSPID
-      *�ݸ��ֹ�
+      *保険番号
            MOVE    HKNWKV02-HKNNUM     TO  HKNWK-HKNNUM
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
            MOVE    HKNWKV02-TEKSTYMD   TO  HKNWK-TEKSTYMD
-      *��ʧ��ʬ
+      *支払区分
            MOVE    HKNWKV02-PAYKBN     TO  HKNWK-PAYKBN
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
            MOVE    HKNWKV02-TEKEDYMD   TO  HKNWK-TEKEDYMD
-      *Ŭ�ѽ�λǯ������
+      *適用終了年月日２
            MOVE    HKNWKV02-TEKEDYMD2  TO  HKNWK-TEKEDYMD2
-      *ˡ���ֹ�
+      *法別番号
            MOVE    HKNWKV02-HBTNUM     TO  HKNWK-HBTNUM
-      *����̾
+      *制度名
            MOVE    HKNWKV02-SEIDONAME  TO  HKNWK-SEIDONAME
-      *û������̾
+      *短縮制度名
            MOVE    HKNWKV02-TANSEIDONAME
                                        TO  HKNWK-TANSEIDONAME
-      *�ݸ�������̶�ʬ
+      *保険公費種別区分
            MOVE    HKNWKV02-HKNKOHSBTKBN
                                        TO  HKNWK-HKNKOHSBTKBN
-      *ˡ���ֹ�����å���ʬ
+      *法別番号チェック区分
            MOVE    HKNWKV02-HBTNUMCHKKBN
                                        TO  HKNWK-HBTNUMCHKKBN
-      *�����ֹ�����å���ʬ
+      *検証番号チェック区分
            MOVE    HKNWKV02-KENSNUMCHKKBN
                                        TO  HKNWK-KENSNUMCHKKBN
-      *����Ը����ֹ�����å���ʬ
+      *受給者検証番号チェック区分
            MOVE    HKNWKV02-JKYSKENSNUMCHKKBN
                                        TO  HKNWK-JKYSKENSNUMCHKKBN
-      *������ݶ�ʬ
+      *公費主保区分
            MOVE    HKNWKV02-HKNKOHKBN  TO  HKNWK-HKNKOHKBN
-      *�����ݸ��ֹ�
+      *限定保険番号
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 3
                MOVE    HKNWKV02-GENHKNNUM (IDX)
                                        TO  HKNWK-GENHKNNUM (IDX)
            END-PERFORM
-      *����ǯ�𳫻�
+      *条件−年齢開始
            MOVE   HKNWKV02-JOKEN-STYEAR
                                        TO  HKNWK-JOKEN-STYEAR
-      *����ǯ��λ
+      *条件−年齢終了
            MOVE   HKNWKV02-JOKEN-EDYEAR
                                        TO  HKNWK-JOKEN-EDYEAR
-      *����ñ��
+      *点数単価
            MOVE   HKNWKV02-TENTNK      TO  HKNWK-TENTNK
-      *�쥻�ץ������ʬ
+      *レセプト請求区分
            MOVE   HKNWKV02-RECESKYKBN  TO  HKNWK-RECESKYKBN
       *
-      *�쥻�ץȣ���ñ��ɽ����ʬ
+      *レセプト１円単位表示区分
            MOVE   HKNWKV02-RECEFTNDSPKBN
                                        TO  HKNWK-RECEFTNDSPKBN
       *
-      *�쥻�ץȴ�����ô��Ƚ��ɽ����ʬ (02.01.00 �ɲ� )
+      *レセプト患者負担額判定表示区分 (02.01.00 追加 )
            MOVE   "0"                  TO  HKNWK-RECEJGNDSPKBN
       *
            PERFORM VARYING IDX FROM 1 BY 1 UNTIL IDX > 4
       *
-      *  �������ô��ʬ
+      *  外来−負担区分
                MOVE   HKNWKV02-GAIFTNKBN (IDX)
                                        TO  HKNWK-GAIFTNKBN (IDX)
-      *  ���������
-      *    ����ݲ����ô���
+      *  外来−内容
+      *    外来−回−負担割合
                MOVE   HKNWKV02-GAIKFTNRATE (IDX)
                                        TO  HKNWK-GAIKFTNRATE (IDX)
-      *    ����ݲ�ݸ����
+      *    外来−回−固定額
                MOVE   HKNWKV02-GAIKKOTGAK (IDX)
                                        TO  HKNWK-GAIKKOTGAK (IDX)
-      *    ����ݲ�ݾ�³�
+      *    外来−回−上限額
                MOVE   HKNWKV02-GAIKJGNGAK (IDX)
                                        TO  HKNWK-GAIKJGNGAK (IDX)
-      *    ��������ݾ�³�
+      *    外来−日−上限額
                MOVE   HKNWKV02-GAIDJGNGAK (IDX)
                                        TO  HKNWK-GAIDJGNGAK (IDX)
-      *    ��������ݾ�²��
+      *    外来−日−上限回数
                MOVE   HKNWKV02-GAIDJGNCNT (IDX)
                                        TO  HKNWK-GAIDJGNCNT (IDX)
-      *    ����ݷ�ݱ���ݾ�³�
+      *    外来−月−院内−上限額
                MOVE   HKNWKV02-GAIMNAIJGNGAK (IDX)
                                        TO  HKNWK-GAIMNAIJGNGAK (IDX)
-      *    ����ݷ�ݱ����ݾ�³�
+      *    外来−月−院外−上限額
                MOVE   HKNWKV02-GAIMGAIJGNGAK (IDX)
                                        TO  HKNWK-GAIMGAIJGNGAK (IDX)
-      *    ����ݷ�ݾ�²��
+      *    外来−月−上限回数
                MOVE   HKNWKV02-GAIMJGNCNT (IDX)
                                        TO  HKNWK-GAIMJGNCNT (IDX)
-      *    �����������ô��ʬ
+      *    外来−薬剤負担区分
                MOVE   HKNWKV02-GAIYKZFTNKBN (IDX)
                                        TO  HKNWK-GAIYKZFTNKBN (IDX)
-      *  ��������ô��ʬ
+      *  入院−負担区分
                MOVE   HKNWKV02-NYUFTNKBN (IDX)
                                        TO  HKNWK-NYUFTNKBN (IDX)
-      *  ����������
-      *    �����ݲ����ô���
+      *  入院−内容
+      *    入院−回−負担割合
                MOVE   HKNWKV02-NYUKFTNRATE (IDX)
                                        TO  HKNWK-NYUKFTNRATE (IDX)
-      *    �����ݲ�ݸ����
+      *    入院−回−固定額
                MOVE   HKNWKV02-NYUKKOTGAK (IDX)
                                        TO  HKNWK-NYUKKOTGAK (IDX)
-      *    �����ݲ�ݾ�³�
+      *    入院−回−上限額
                MOVE   HKNWKV02-NYUKJGNGAK (IDX)
                                        TO  HKNWK-NYUKJGNGAK (IDX)
-      *    ���������ݾ�³�
+      *    入院−日−上限額
                MOVE   HKNWKV02-NYUDJGNGAK (IDX)
                                        TO  HKNWK-NYUDJGNGAK (IDX)
-      *    ���������ݾ�²��
+      *    入院−日−上限回数
                MOVE   HKNWKV02-NYUDJGNCNT (IDX)
                                        TO  HKNWK-NYUDJGNCNT (IDX)
-      *    �����ݷ�ݾ�³�
+      *    入院−月−上限額
                MOVE   HKNWKV02-NYUMJGNGAK (IDX)
                                        TO  HKNWK-NYUMJGNGAK (IDX)
-      *    �����ݷ�ݾ�²��
+      *    入院−月−上限回数
                MOVE   HKNWKV02-NYUMJGNCNT (IDX)
                                        TO  HKNWK-NYUMJGNCNT (IDX)
-      *    �����ݿ������ܶ�ʬ
+      *    入院−食事療養区分
                MOVE   HKNWKV02-NYUSKJRYYKBN (IDX)
                                        TO  HKNWK-NYUSKJRYYKBN (IDX)
-      *    �����ݿ�����ô������ (02.01.00 �ɲ� )
+      *    入院−食事負担助成額 (02.01.00 追加 )
                MOVE   ZERO             TO  HKNWK-NYUSKJJYOGAK  (IDX)
            END-PERFORM
-      *����ü���ɣ�
+      *　　端末ＩＤ
            MOVE   HKNWKV02-TERMID      TO  HKNWK-TERMID
-      *�������ڡ��졼���ɣ�
+      *　　オペーレータＩＤ
            MOVE   HKNWKV02-OPID        TO  HKNWK-OPID
-      *��������ǯ����
+      *　　作成年月日
            MOVE   HKNWKV02-CREYMD      TO  HKNWK-CREYMD
-      *��������ǯ����
+      *　　更新年月日
            MOVE   HKNWKV02-UPYMD       TO  HKNWK-UPYMD
-      *������������
+      *　　更新時間
            MOVE   HKNWKV02-UPHMS       TO  HKNWK-UPHMS
       *
           .
@@ -1148,7 +1148,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *---(01.00.01) LINE ADD END   -------------------------------------
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɹ�
+      *    保険番号マスター読込
       *****************************************************************
        910-HKNNUM-READ-SEC         SECTION.
       *
@@ -1167,7 +1167,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
@@ -1198,7 +1198,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1210,7 +1210,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1228,7 +1228,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1246,7 +1246,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

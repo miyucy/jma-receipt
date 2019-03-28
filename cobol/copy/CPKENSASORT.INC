@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ************************************************************
       ************************************************************
-      *    ¸¡ººÊ¬Îà¡¡        ¡¡ COPY (CPKENSASORT.INC)     *
+      *    æ¤œæŸ»åˆ†é¡žã€€        ã€€ COPY (CPKENSASORT.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  KENSASORT-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  KENSASORT-KEY.
-      *¸¡ººÊ¬Îà¥³¡¼¥É
+      *æ¤œæŸ»åˆ†é¡žã‚³ãƒ¼ãƒ‰
                05  KENSASORT-KNSBUNRUI     PIC  9(02).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  KENSASORT-SRYCD         PIC  X(09).
-      *É½¼¨Ï¢ÈÖ
+      *è¡¨ç¤ºé€£ç•ª
            03  KENSASORT-DSPSEQ            PIC  9(04).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  KENSASORT-TERMID            PIC  X(32).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  KENSASORT-OPID              PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  KENSASORT-CREYMD            PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  KENSASORT-UPYMD             PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  KENSASORT-UPHMS             PIC  X(06).

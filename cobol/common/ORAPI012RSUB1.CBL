@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI012RSUB1.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���Ծ����Խ�����
-      *                      ���ϰ�Ϣ�Ȥʤɡ�
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  12/06/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 患者情報編集サブ
+      *                      （地域連携など）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  12/06/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 05.00.00     NACL-¿��Ǽ  18/10/XX  ǥ�����꤫�鴵�Զش������ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 05.00.00     NACL-多々納  18/10/XX  妊婦設定から患者禁忌薬剤追加
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -59,12 +59,12 @@
            03  FLG-CONFCHK             PIC 9(01).
            03  FLG-TENSU-OK            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -76,7 +76,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -87,21 +87,21 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
       *
-      *    ��ôΨ�����Խ�
+      *    負担率・額編集
            03  WRK-FTNRATE             PIC 9(02)V99.
            03  WRK-Z9                  PIC 9.ZZ.
            03  WRK-FTNRATEMEI          PIC X(04).
-      *    ���Ψ
+      *    割引率
            03  WRK-RATE-EDIT.
                05  WRK-RATE-EDITZ      PIC ZZZZZZZ.
                05  WRK-RATE-TANI       PIC X(04).
       *
-      *    �����ޥ���̾��
+      *    点数マスタ名称
            03  WRK-SRYCD               PIC X(09).
            03  WRK-TNS-NAME            PIC X(80).
            03  WRK-TNS-YUKOEDYMD       PIC X(08).
@@ -109,46 +109,46 @@
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����象������ѥ�᥿
+      *    前回来院日設定パラメタ
            COPY    "CPORCSLASTYMD.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ϰ�Ϣ�ȥơ��֥�
+      *    患者地域連携テーブル
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
       *
-      *    ���Բ���ݸ�����ơ��֥�
+      *    患者介護保険情報テーブル
        01  PTCARE-HKNINF-REC.
            COPY    "CPPTCARE-HKNINF.INC".
-      *    ���Բ��ǧ��Ծ���ơ��֥�
+      *    患者介護認定者情報テーブル
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
-      *    ���Ը�������ơ��֥�
+      *    患者個別設定テーブル
        01  PTCONF-REC.
            COPY    "CPPTCONF.INC".
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
-      *    ϫƯ�����Ľ�ޥ���
+      *    労働基準監督署マスタ
        01  LABOR-SIO-REC.
            COPY    "CPLABOR-SIO.INC".
       *
-      *    ���ԸĿ��ֹ�ơ��֥�
+      *    患者個人番号テーブル
        01  PTMYNUMBER-REC.
            COPY    "CPPTMYNUMBER.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *H30.10
-      *    ���Զش����ޥޥ���
+      *    患者禁忌薬剤マスタ
        01  PTKINKI-REC.
            COPY    "CPPTKINKI.INC".
       *
@@ -158,12 +158,12 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPORAPI012RSUB1.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -172,7 +172,7 @@
            .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -180,9 +180,9 @@
            INITIALIZE                      IDX-AREA
            INITIALIZE                      WRK-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      SPA-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
@@ -192,7 +192,7 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
            .
@@ -200,31 +200,31 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �ϰ�Ϣ���Խ�����
+      *    地域連携編集処理
            PERFORM 20022-PTNUMPUBLIC-HEN-SEC
       *
       *H26.5
-      *    ���Բ���ݸ������Խ�����
+      *    患者介護保険情報編集処理
            PERFORM 20022-PTCAREHKNINF-HEN-SEC
       *H26.5
-      *    �����ײ������Խ�����
+      *    患者要介護情報編集処理
            PERFORM 20022-PTCARENINTEI-HEN-SEC
       *H26.5
-      *    ���Ը��̾����Խ�
+      *    患者個別情報編集
            PERFORM 20022-PTCONF-HEN-SEC
       *H26.11
-      *    �ǽ��象��¾�Խ�
+      *    最終来院日他編集
            PERFORM 20023-LASTYMDHEN-SEC
       *H26.12
-      *    ���ԸĿ��ֹ��Խ�
+      *    患者個人番号編集
            PERFORM 20023-PTMYNUMBER-HEN-SEC
       *
       *H30.10
-      *    ���Զش������Խ�
+      *    患者禁忌薬剤編集
            PERFORM 20024-KINKIYKZ-HEN-SEC
       *
            .
@@ -232,7 +232,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ϰ�Ϣ���Խ�����
+      *    地域連携編集処理
       *****************************************************************
        20022-PTNUMPUBLIC-HEN-SEC       SECTION.
       *
@@ -241,14 +241,14 @@
            MOVE    API12SUB-PTID       TO  PTPUBLIC-PTID
            PERFORM 920-PTPUBLIC-READ-SEC
       *
-      *    �ϰ�Ϣ��ID
+      *    地域連携ID
            MOVE    PTPUBLIC-PATIENT-ID1    TO  API12SUB-COMMUNITY-CID
-      *    ������Ʊ��̵ͭ
+      *    情報提供同意有無
            IF      PTPUBLIC-AGREEMENT  =   "1"
-      *        Ʊ�դ���
+      *        同意する
                MOVE    "True"          TO  API12SUB-COMMUNITY-CID-AGREE
            ELSE
-      *        Ʊ�դ��ʤ�
+      *        同意しない
                MOVE    "False"         TO  API12SUB-COMMUNITY-CID-AGREE
            END-IF
            .
@@ -257,11 +257,11 @@
       *ver.4.7
       *H26.5
       *****************************************************************
-      *    ���Բ���ݸ������Խ�����
+      *    患者介護保険情報編集処理
       *****************************************************************
        20022-PTCAREHKNINF-HEN-SEC       SECTION.
       *
-      *    ���Բ���ݸ�����
+      *    患者介護保険情報
            MOVE    SPACE               TO  PTCARE-HKNINF-REC
            INITIALIZE                  PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
@@ -284,21 +284,21 @@
            PERFORM UNTIL      (FLG-PTCARE-HKNINF   =   1  )
                           OR  (IDX                 >=  10 )
                ADD     1                   TO  IDX
-      *        �ݸ����ֹ�
+      *        保険者番号
                MOVE    PTCRHKN-HKNJANUM    TO
                                        API12SUB-CARE-INSURANCE-NUMBER
                                                              (IDX)
-      *        ���ݸ����ֹ�
+      *        被保険者番号
                MOVE    PTCRHKN-HIHKNJANUM  TO
                                        API12SUB-CARE-POLICYHOLDER
                                                              (IDX)
-      *        ������
+      *        開始日
                MOVE    PTCRHKN-TEKSTYMD    TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  API12SUB-CARE-START-DATE
                                                              (IDX)
-      *        ��λ��
+      *        終了日
                MOVE    PTCRHKN-TEKEDYMD    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  API12SUB-CARE-END-DATE
@@ -316,11 +316,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ײ������Խ�����
+      *    患者要介護情報編集処理
       *****************************************************************
        20022-PTCARENINTEI-HEN-SEC       SECTION.
       *
-      *    ���Բ���ݸ�����
+      *    患者介護保険情報
            INITIALIZE                  PTCARE-NINTEI-REC
            MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
            MOVE    API12SUB-PTID       TO  PTCRNIN-PTID
@@ -342,25 +342,25 @@
            PERFORM UNTIL      (FLG-PTCARE-NINTEI   =   1  )
                           OR  (IDX                 >=  50 )
                ADD     1                   TO  IDX
-      *        �ײ�����
+      *        要介護状態
                MOVE    PTCRNIN-CAREJOTAICD TO
                                            API12SUB-NEED-CARE-STATE-CODE
                                                              (IDX)
-      *        �ײ�����̾���Խ�
+      *        要介護状態名称編集
                PERFORM 200221-PTCARE-CARESTATE-SEC
-      *        ǧ��ǯ����
+      *        認定年月日
                MOVE    PTCRNIN-NINTEIYMD   TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  API12SUB-NEED-DATE
                                                              (IDX)
-      *        ������
+      *        開始日
                MOVE    PTCRNIN-TEKSTYMD    TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  API12SUB-NEED-START-DATE
                                                              (IDX)
-      *        ��λ��
+      *        終了日
                MOVE    PTCRNIN-TEKEDYMD    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  API12SUB-NEED-END-DATE
@@ -379,33 +379,33 @@
            EXIT.
       *
       *****************************************************************
-      *    �ײ�����̾���Խ�����
+      *    要介護状態名称編集処理
       *****************************************************************
        200221-PTCARE-CARESTATE-SEC       SECTION.
       *
-      *    �ײ����ֶ�ʬ
+      *    要介護状態区分
            EVALUATE    PTCRNIN-CAREJOTAICD
                WHEN    "01"
-                   MOVE    "��Ω"      TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "自立"      TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "11"
-                   MOVE    "�׻ٱ�"    TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要支援"    TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "12"
-                   MOVE    "�׻ٱ磱"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要支援１"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "13"
-                   MOVE    "�׻ٱ磲"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要支援２"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "21"
-                   MOVE    "�ײ�"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護１"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "22"
-                   MOVE    "�ײ�"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護２"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "23"
-                   MOVE    "�ײ�"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護３"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "24"
-                   MOVE    "�ײ�"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護４"  TO  API12SUB-NEED-CARE-STATE(IDX)
                WHEN    "25"
-                   MOVE    "�ײ�"  TO  API12SUB-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護５"  TO  API12SUB-NEED-CARE-STATE(IDX)
       *H30.9
                WHEN    "31"
-                   MOVE    "�����оݼ�"
+                   MOVE    "事業対象者"
                                        TO  API12SUB-NEED-CARE-STATE(IDX)
            END-EVALUATE
            .
@@ -413,11 +413,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը��̾����Խ�����
+      *    患者個別情報編集処理
       *****************************************************************
        20022-PTCONF-HEN-SEC       SECTION.
       *
-      *    �ϰ��������оݼ��¸���
+      *    地域包括診療対象疾病検索
            INITIALIZE                  PTCONF-REC
            MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
            MOVE    API12SUB-PTID       TO  PTCONF-PTID
@@ -442,7 +442,7 @@
       *
            MOVE    ZERO                TO  FLG-CONFCHK
            IF      FLG-PTCONF          =   ZERO
-      *        �ϰ��������оݼ���
+      *        地域包括診療対象疾病
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   4
                    IF      PTCONF-CDATA(IDX:1) =   "1"
@@ -459,7 +459,7 @@
                END-IF
            END-IF
       *
-      *    ���Ը��̾���
+      *    患者個別情報
            INITIALIZE                  PTCONF-REC
            MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
            MOVE    API12SUB-PTID       TO  PTCONF-PTID
@@ -480,23 +480,23 @@
            PERFORM UNTIL       FLG-PTCONF      =   1
                EVALUATE    PTCONF-CKEY
                WHEN    "NINTIHOKATU"
-      *            ǧ�ξ��ϰ�������
+      *            認知症地域包括診療
                    IF      PTCONF-CDATA(1:1)   =   "1"
                        MOVE    "True"      TO  API12SUB-NINTIHOKATU
                    END-IF
       *
                WHEN    "SYOUNIKAKARI"
-      *            ����������Ĥ�����
+      *            小児かかりつけ診療
                    IF      PTCONF-CDATA(1:1)   =   "1"
                        MOVE    "True"      TO  API12SUB-SYOUNIKAKARI
                    END-IF
                WHEN    "NINPUKBN"
-      *            ǥ�ض�ʬ
+      *            妊婦区分
                    IF      PTCONF-CDATA(1:1)   =   "1"
                        MOVE    "True"      TO  API12SUB-NINPUKBN
                    END-IF
       *
-      *        ��Ƴ������ư����
+      *        指導料等自動算定
                WHEN    "JIDOSANTEI-1"
                    MOVE    PTCONF-CDATA(1:9)
                                            TO  API12SUB-AUTO-SRYCD(1)
@@ -528,7 +528,7 @@
       *
       *H30.10
       *****************************************************************
-      *    ��Ƴ������ư����̾�Τʤ��Խ�����
+      *    指導料等自動算定名称など編集処理
       *****************************************************************
        200221-JIDOUSANTEI-HEN-SEC               SECTION.
       *
@@ -542,7 +542,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ���̾�Τʤ��Խ�����
+      *    点数マスタ名称など編集処理
       *****************************************************************
        400-TENSU-HENSYU-SEC         SECTION.
       *
@@ -553,7 +553,7 @@
            INITIALIZE                      TNS-TENSU-REC
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
-      *    �������ι߽�˸���
+      *    開始日の降順に検索
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key24"             TO  MCP-PATHNAME
@@ -567,7 +567,7 @@
            PERFORM UNTIL  (FLG-TENSU       =   1 ) OR
                           (FLG-TENSU-OK    =   1 )
                MOVE    TNS-NAME            TO  WRK-TNS-NAME
-      *        �ǽ�����ν�λ��
+      *        最終履歴の終了日
                IF      WRK-TNS-YUKOEDYMD   =   SPACE
                    MOVE    TNS-YUKOEDYMD       TO  WRK-TNS-YUKOEDYMD
                END-IF
@@ -586,7 +586,7 @@
            MOVE    "key24"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ͭ����λ��
+      *    有効終了日
            IF      WRK-TNS-YUKOEDYMD   NOT =  SPACE
                MOVE    WRK-TNS-YUKOEDYMD   TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
@@ -599,32 +599,32 @@
       *
       *H26.11
       *****************************************************************
-      *    �ǽ��象��¾�Խ�����
+      *    最終来院日他編集処理
       *****************************************************************
        20023-LASTYMDHEN-SEC               SECTION.
       *
-      *    �����象���Խ�
+      *    前回来院日編集
            INITIALIZE                  ORCSLASTYMDAREA
            MOVE    API12SUB-PTID       TO  ORCSLASTYMD-PTID
            CALL    "ORCSLASTYMD"       USING
                                        ORCSLASTYMDAREA
                                        SPA-AREA
-      *    ������������Ƚ��
+      *    入院中は病棟で判断
            IF      ORCSLASTYMD-BRMNUM  =   SPACE
                IF      ORCSLASTYMD-LASTYMD NOT =   SPACE
-      *            �ǽ��象��
+      *            最終来院日
                    MOVE    ORCSLASTYMD-LASTYMD TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE        TO  API12SUB-LAST-DATE
                END-IF
            ELSE
-      *        ������
+      *        入院中
                MOVE    "1"                 TO  API12SUB-OUTPATIENT-CLASS
-      *        ��������
+      *        入院日付
                MOVE    ORCSLASTYMD-NYUINYMD    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  API12SUB-ADMISSION-DATE
-      *        �ౡ��
+      *        退院日
                IF      ORCSLASTYMD-LASTYMD     =   SPA-SYSYMD
                    MOVE    ORCSLASTYMD-LASTYMD TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
@@ -632,7 +632,7 @@
                                            API12SUB-DISCHARGE-DATE
                END-IF
            END-IF
-      *    ����象���ʼ�������Σ����ܡ�
+      *    初回来院日（受診履歴の１件目）
            INITIALIZE                  JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    API12SUB-PTID       TO  JYURRK-PTID
@@ -662,11 +662,11 @@
            EXIT.
       *H26.12
       *****************************************************************
-      *    ���ԸĿ��ֹ��Խ�����
+      *    患者個人番号編集処理
       *****************************************************************
        20023-PTMYNUMBER-HEN-SEC       SECTION.
       *
-      *    �ϰ��������оݼ��¸���
+      *    地域包括診療対象疾病検索
            INITIALIZE                  PTMYNUMBER-REC
            MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
            MOVE    API12SUB-PTID       TO  PTMYNUM-PTID
@@ -709,7 +709,7 @@
       *
       *H30.10
       *****************************************************************
-      *    ���Զش������Խ�����
+      *    患者禁忌薬剤編集処理
       *****************************************************************
        20024-KINKIYKZ-HEN-SEC                SECTION.
       *
@@ -749,22 +749,22 @@
            EXIT.
       *
       ****************************************************************
-      *    ���Զش������Խ�����
+      *    患者禁忌薬剤編集処理
       **************************************************************
        200131-PTKINKI-HEN-SEC           SECTION.
       *
-      *    ���ޥ�����
+      *    薬剤コード
            MOVE    PTKINKI-SRYCD       TO  API12SUB-DRUGCD-CODE
                                                              (IDX)
-      *    �����ޥ�������
+      *    点数マスタ検索
            MOVE    PTKINKI-SRYCD       TO  WRK-SRYCD
            PERFORM 400-TENSU-HENSYU-SEC
            MOVE    WRK-TNS-NAME        TO  API12SUB-DRUGCD-NAME
                                                              (IDX)
-      *    ͭ����λ���ʥޥ�����λ����
+      *    有効終了日（マスタ終了日）
            MOVE    WRK-TNS-ENDDATE     TO  API12SUB-DRUGCD-END-DATE
                                                              (IDX)
-      *    �ش�������
+      *    禁忌開始日
            IF      PTKINKI-KINKSTYMD   NOT =   SPACE
                MOVE    PTKINKI-KINKSTYMD   TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
@@ -776,7 +776,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -805,7 +805,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -827,7 +827,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ϰ�Ϣ���Ծ������
+      *    地域連携編情報取得
       *****************************************************************
        920-PTPUBLIC-READ-SEC              SECTION.
       *
@@ -857,7 +857,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը��̾���ǡ����ɹ�����
+      *    患者個別情報データ読込処理
       *****************************************************************
        930-PTCONF-READ-SEC         SECTION.
       *
@@ -875,7 +875,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Բ���ݸ�����ǡ����ǡ����ɹ�����
+      *    患者介護保険情報データデータ読込処理
       *****************************************************************
        930-PTCAREHKNINF-READ-SEC         SECTION.
       *
@@ -893,7 +893,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Բ���ǧ�����ǡ����ɹ�����
+      *    患者介護者認定情報データ読込処理
       *****************************************************************
        930-PTCARENINTEI-READ-SEC         SECTION.
       *
@@ -910,7 +910,7 @@
        930-PTCARENINTEI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -929,7 +929,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԸĿ��ֹ����ǡ����ɹ�����
+      *    患者個人番号情報データ読込処理
       *****************************************************************
        930-PTMYNUMBER-READ-SEC         SECTION.
       *
@@ -946,7 +946,7 @@
        930-PTMYNUMBER-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ɹ�����
+      *    点数マスタ読込処理
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -963,7 +963,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Զش����ޥޥ������ɹ�����
+      *    患者禁忌薬剤マスター読込処理
       *****************************************************************
        900-PTKINKI-READ-SEC         SECTION.
       *
@@ -982,7 +982,7 @@
       *
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -996,7 +996,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1010,7 +1010,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

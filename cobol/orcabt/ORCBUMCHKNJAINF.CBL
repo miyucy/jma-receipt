@@ -1,30 +1,30 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBUMCHKNJAINF.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : •ﬁ•π•ø•Í•π•»ΩËÕ˝
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  :  ›∏±º‘•ﬁ•π•ø•¡•ß•√•Ø
-      *                    :  ›∏±º‘•ﬁ•π•ø§Œ•Ê°º•∂°º§»…∏Ω‡ƒÛ∂°§Œ
-      *                    : ∆‚Õ∆§Ú•¡•ß•√•Ø§∑•Í•π•»§π§Î
-      *  ¥…Õ˝º‘            :
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  19/02/07    NACL-∞À∆£     ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : „Éû„Çπ„Çø„É™„Çπ„ÉàÂá¶ÁêÜ
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ‰øùÈô∫ËÄÖ„Éû„Çπ„Çø„ÉÅ„Çß„ÉÉ„ÇØ
+      *                    : ‰øùÈô∫ËÄÖ„Éû„Çπ„Çø„ÅÆ„É¶„Éº„Ç∂„Éº„Å®Ê®ôÊ∫ñÊèê‰æõ„ÅÆ
+      *                    : ÂÜÖÂÆπ„Çí„ÉÅ„Çß„ÉÉ„ÇØ„Åó„É™„Çπ„Éà„Åô„Çã
+      *  ÁÆ°ÁêÜËÄÖ            :
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  19/02/07    NACL-‰ºäËó§     Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
            SELECT  BUMCPERR-FILE   ASSIGN  BUMCP-ERRFNAME
                                    FILE    STATUS  IS  STS-BUMCPERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
        FD  BUMCPERR-FILE.
        01  BUMCPERR-REC                PIC X(200).
       *
@@ -48,7 +48,7 @@
        01  IDX-AREA.
            03  IDX                     PIC 9(02).
            03  IDW                     PIC 9(05).
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-BUMCPERR            PIC X(200).
            03  WRK-MSG                 PIC X(256).
@@ -61,7 +61,7 @@
            03  WRK-CSV-ITEM            PIC X(22).
            03  WRK-CSV-VAL-USR         PIC X(200).
            03  WRK-CSV-VAL-STD         PIC X(200).
-      *    £√£”£÷•«°º•ø ‘Ω∏Õ—
+      *    Ôº£Ôº≥Ôº∂„Éá„Éº„ÇøÁ∑®ÈõÜÁî®
        01  WRK-CSV-AREA.
            03  WRK-IN-DATA             PIC X(2000).
            03  WRK-OUT-REC             PIC X(2000).
@@ -73,16 +73,16 @@
                                        "/var/tmp/".
            03  WRK-CSVFNAME            PIC X(23)   VALUE
                                        "hknjainf_user_check.csv".
-      *    »Ê≥”•∆°º•÷•Î
+      *    ÊØîËºÉ„ÉÜ„Éº„Éñ„É´
        01  TBL-COMP-AREA.
            03  TBL-COMP                PIC 9(01) OCCURS    16.
-      *    •◊•Î°º•’ ‘Ω∏ŒŒ∞Ë
+      *    „Éó„É´„Éº„ÉïÁ∑®ÈõÜÈ†òÂüü
        01  PRF-AREA.
            03  PRF-HEADER1.
                05  FILLER              PIC X(34) VALUE
-                   " ›∏±º‘•Ê°º•∂°º•ﬁ•π•ø•¡•ß•√•Ø•Í•π•»".
+                   "‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„Éû„Çπ„Çø„ÉÅ„Çß„ÉÉ„ÇØ„É™„Çπ„Éà".
                05  FILLER              PIC X(19) VALUE
-                   "°⁄ORCBUMCHKNJAINF°€".
+                   "„ÄêORCBUMCHKNJAINF„Äë".
                05  PRF-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE "/".
                05  PRF-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -90,29 +90,29 @@
                05  PRF-TITLE1-DD       PIC X(02) VALUE SPACE.
                05  FILLER              PIC X(10) VALUE SPACE.
                05  PRF-PAGE            PIC ZZ,ZZ9.
-               05  FILLER              PIC X(03) VALUE "  «".
+               05  FILLER              PIC X(03) VALUE " È†Å".
            03  PRF-HEADER2.
                05  FILLER              PIC X(01) VALUE "[".
                05  PRF-HOSPNUM         PIC 9(02).
                05  FILLER              PIC X(01) VALUE "]".
                05  PRF-HOSPNAME        PIC X(120) VALUE SPACE.
            03  PRF-HEADER3.
-               05  FILLER              PIC X(02) VALUE "£∆".
+               05  FILLER              PIC X(02) VALUE "Ôº¶".
                05  FILLER              PIC X(01) VALUE SPACE.
-               05  FILLER              PIC X(10) VALUE " ›∏±º‘»÷πÊ".
+               05  FILLER              PIC X(10) VALUE "‰øùÈô∫ËÄÖÁï™Âè∑".
                05  FILLER              PIC X(01) VALUE SPACE.
-               05  FILLER              PIC X(08) VALUE " ›∏±º‘Ãæ".
+               05  FILLER              PIC X(08) VALUE "‰øùÈô∫ËÄÖÂêç".
                05  FILLER              PIC X(48) VALUE SPACE.
                05  FILLER              PIC X(26) VALUE
-                                       "£∆°°°˛°ß•Ê°º•∂°º∫Ó¿Æ•ﬁ•π•ø".
+                                       "Ôº¶„ÄÄ‚óáÔºö„É¶„Éº„Ç∂„Éº‰ΩúÊàê„Éû„Çπ„Çø".
            03  PRF-HEADER4.
                05  FILLER              PIC X(14) VALUE SPACE.
-               05  FILLER              PIC X(06) VALUE "∆‚Õ∆".
+               05  FILLER              PIC X(06) VALUE "ÂÜÖÂÆπ".
                05  FILLER              PIC X(46) VALUE
-                   "° æÂ√ °°•Ê°º•∂°º¿ﬂƒÍ√Õ°¢≤º√ °°…∏Ω‡ƒÛ∂°¿ﬂƒÍ√Õ°À".
+                   "Ôºà‰∏äÊÆµ„ÄÄ„É¶„Éº„Ç∂„ÉºË®≠ÂÆöÂÄ§„ÄÅ‰∏ãÊÆµ„ÄÄÊ®ôÊ∫ñÊèê‰æõË®≠ÂÆöÂÄ§Ôºâ".
                05  FILLER              PIC X(08) VALUE SPACE.
                05  FILLER              PIC X(28) VALUE
-                                       "°˙°ß…∏Ω‡ƒÛ∂°•ﬁ•π•ø§»∆±∞Ï∆‚Õ∆".
+                                       "‚òÖÔºöÊ®ôÊ∫ñÊèê‰æõ„Éû„Çπ„Çø„Å®Âêå‰∏ÄÂÜÖÂÆπ".
            03  PRF-DETAIL-1.
                05  PRF-FLG             PIC X(02).
                05  FILLER              PIC X(01) VALUE SPACE.
@@ -122,25 +122,25 @@
            03  PRF-DETAIL-3.
                05  FILLER              PIC X(16) VALUE SPACE.
                05  PRF-ITEM            PIC X(22).
-               05  PRF-LITE1           PIC X(02) VALUE "°ß".
+               05  PRF-LITE1           PIC X(02) VALUE "Ôºö".
                05  PRF-VAL-USR         PIC X(200).
            03  PRF-DETAIL-4.
                05  FILLER              PIC X(40) VALUE SPACE.
                05  PRF-VAL-STD         PIC X(200).
        01  CSV-HEAD-01.
-           03  FILLER                  PIC X(02) VALUE "£∆".
+           03  FILLER                  PIC X(02) VALUE "Ôº¶".
            03  FILLER                  PIC X(01) VALUE ",".
-           03  FILLER                  PIC X(10) VALUE " ›∏±º‘»÷πÊ".
+           03  FILLER                  PIC X(10) VALUE "‰øùÈô∫ËÄÖÁï™Âè∑".
            03  FILLER                  PIC X(01) VALUE ",".
-           03  FILLER                  PIC X(08) VALUE " ›∏±º‘Ãæ".
+           03  FILLER                  PIC X(08) VALUE "‰øùÈô∫ËÄÖÂêç".
            03  FILLER                  PIC X(01) VALUE ",".
-           03  FILLER                  PIC X(14) VALUE "π‡Ã‹Ãæ° ∆‚Õ∆°À".
+           03  FILLER                  PIC X(14) VALUE "È†ÖÁõÆÂêçÔºàÂÜÖÂÆπÔºâ".
            03  FILLER                  PIC X(01) VALUE ",".
-           03  FILLER                  PIC X(12) VALUE "•Ê°º•∂°º¿ﬂƒÍ".
+           03  FILLER                  PIC X(12) VALUE "„É¶„Éº„Ç∂„ÉºË®≠ÂÆö".
            03  FILLER                  PIC X(01) VALUE ",".
-           03  FILLER                  PIC X(08) VALUE "…∏Ω‡¿ﬂƒÍ".
+           03  FILLER                  PIC X(08) VALUE "Ê®ôÊ∫ñË®≠ÂÆö".
        01  CONST-AREA.
-           03  CONST-COMM3             PIC X(08) VALUE "° ∂ı«Ú°À".
+           03  CONST-COMM3             PIC X(08) VALUE "ÔºàÁ©∫ÁôΩÔºâ".
            03  CONST-KUGIRI            PIC X(01) VALUE ",".
            03  CONST-KAIGYO            PIC X(01) VALUE X"0D".
       *
@@ -149,39 +149,39 @@
       *
            COPY    "CPRECEERR.INC".
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—ƒÍµ¡
+      *    „Çµ„Éñ„Éó„É≠Áî®ÂÆöÁæ©
       *****************************************************************
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó
            COPY    "CPORCSMCNDATE.INC".
-      *    ∞Ïª˛•’•°•§•ÎÃæ ‘Ω∏
+      *    ‰∏ÄÊôÇ„Éï„Ç°„Ç§„É´ÂêçÁ∑®ÈõÜ
            COPY    "CPORCSGETTEMP.INC".
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
-      *    ≈˝∑◊£√£”£÷¿©∏Ê•µ•÷
+      *    Áµ±Ë®àÔº£Ôº≥Ôº∂Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSTOUKEICSV.INC".
       *****************************************************************
-      *    •’•°•§•ÎƒÍµ¡
+      *    „Éï„Ç°„Ç§„É´ÂÆöÁæ©
       *****************************************************************
-      *     ›∏±º‘•ﬁ•π•ø°º•∆°º•÷•Î
+      *    ‰øùÈô∫ËÄÖ„Éû„Çπ„Çø„Éº„ÉÜ„Éº„Éñ„É´
        01  HKNJAINFM-REC.
            COPY    "CPHKNJAINF.INC"    REPLACING
                                        //HKNJA-// BY //HKNJAM-//.
-      *     ›∏±º‘•Ê°º•∂°º•∆°º•÷•Î
+      *    ‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„ÉÜ„Éº„Éñ„É´
        01  HKNJAINFU-REC.
            COPY    "CPHKNJAINF.INC"    REPLACING
                                        //HKNJA-// BY //HKNJAU-//.
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *    ∞ÂŒ≈µ°¥ÿæ Û°›¥À‹æ Û 
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±‚àíÂü∫Êú¨ÊÉÖÂ†± 
            COPY    "CPSK1001.INC".
-      *    ∞ı∫˛£ƒ£¬ππø∑•µ•÷
+      *    Âç∞Âà∑Ôº§Ôº¢Êõ¥Êñ∞„Çµ„Éñ
            COPY    "CPORCSPRT.INC".
-      *    ∂¶ƒÃ•—•È•·•ø
+      *    ÂÖ±ÈÄö„Éë„É©„É°„Çø
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
        01  BUMCP-AREA.
@@ -194,7 +194,7 @@
                                        BUMCP-AREA
                                        SPA-AREA.
       ****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
            PERFORM 100-INIT-SEC
@@ -203,7 +203,7 @@
            PERFORM 990-EXIT-PROGRAM-SEC
            .
       *****************************************************************
-      *    ΩÈ¥¸ΩËÕ˝
+      *    ÂàùÊúüÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
            INITIALIZE  FLG-AREA
@@ -213,7 +213,7 @@
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    " ›∏±º‘•Ê°º•∂°º•ﬁ•π•ø•¡•ß•√•Ø•Í•π•»"
+           MOVE    "‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„Éû„Çπ„Çø„ÉÅ„Çß„ÉÉ„ÇØ„É™„Çπ„Éà"
                                        TO  JOB-YOBI
            PERFORM 800-ORCSJOB-SEC
       *
@@ -235,7 +235,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    •·•§•ÛΩËÕ˝
+      *    „É°„Ç§„É≥Âá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
            PERFORM 900-HKNJAINFM-READ-SEC
@@ -250,9 +250,9 @@
                MOVE    1                   TO  FLG-SYORI
            END-IF
       *    FLG-SYORI
-      *      1:•Ê°º•∂°º§¢§Í°¢…∏Ω‡§ §∑
-      *      2:•Ê°º•∂°º§¢§Í°¢…∏Ω‡§¢§Í°¢…‘∞Ï√◊
-      *      3:•Ê°º•∂°º§¢§Í°¢…∏Ω‡§¢§Í°¢∞Ï√◊
+      *      1:„É¶„Éº„Ç∂„Éº„ÅÇ„Çä„ÄÅÊ®ôÊ∫ñ„Å™„Åó
+      *      2:„É¶„Éº„Ç∂„Éº„ÅÇ„Çä„ÄÅÊ®ôÊ∫ñ„ÅÇ„Çä„ÄÅ‰∏ç‰∏ÄËá¥
+      *      3:„É¶„Éº„Ç∂„Éº„ÅÇ„Çä„ÄÅÊ®ôÊ∫ñ„ÅÇ„Çä„ÄÅ‰∏ÄËá¥
            ADD     1                   TO  CNT-OUT
            PERFORM 290-PRF-SEC
            PERFORM 900-HKNJAINFU-FETCH-SEC
@@ -260,79 +260,79 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    π‡Ã‹ Ã»Ê≥”
+      *    È†ÖÁõÆÂà•ÊØîËºÉ
       *****************************************************************
        220-COMPARE-SEC             SECTION.
            MOVE    ZERO                TO  TBL-COMP-AREA
-      *     ›∏±º‘Ãæ
+      *    ‰øùÈô∫ËÄÖÂêç
            IF      HKNJAU-HKNJANAME
                                    NOT =   HKNJAM-HKNJANAME
                MOVE    1                   TO  TBL-COMP (1)
            END-IF
-      *     ›∏±º‘ÃæŒ¨æŒ£±
+      *    ‰øùÈô∫ËÄÖÂêçÁï•Áß∞Ôºë
            IF      HKNJAU-HKNJANAME-TAN1
                                    NOT =   HKNJAM-HKNJANAME-TAN1
                MOVE    1                   TO  TBL-COMP (2)
            END-IF
-      *     ›∏±º‘ÃæŒ¨æŒ£≤
+      *    ‰øùÈô∫ËÄÖÂêçÁï•Áß∞Ôºí
            IF      HKNJAU-HKNJANAME-TAN2
                                    NOT =   HKNJAM-HKNJANAME-TAN2
                MOVE    1                   TO  TBL-COMP (3)
            END-IF
-      *     ›∏±º‘ÃæŒ¨æŒ£≥
+      *    ‰øùÈô∫ËÄÖÂêçÁï•Áß∞Ôºì
            IF      HKNJAU-HKNJANAME-TAN3
                                    NOT =   HKNJAM-HKNJANAME-TAN3
                MOVE    1                   TO  TBL-COMP (4)
            END-IF
-      *     ›∏±»÷πÊ
+      *    ‰øùÈô∫Áï™Âè∑
            IF      HKNJAU-HKNNUM   NOT =   HKNJAM-HKNNUM
                MOVE    1                   TO  TBL-COMP (5)
            END-IF
-      *    µÎ…’≥‰πÁ° À‹øÕ°¶≥∞ÕË°À
+      *    Áµ¶‰ªòÂâ≤ÂêàÔºàÊú¨‰∫∫„ÉªÂ§ñÊù•Ôºâ
            IF      HKNJAU-HON-GAIKYURATE
                                    NOT =   HKNJAM-HON-GAIKYURATE
                MOVE    1                   TO  TBL-COMP (6)
            END-IF
-      *    µÎ…’≥‰πÁ° À‹øÕ°¶∆˛±°°À
+      *    Áµ¶‰ªòÂâ≤ÂêàÔºàÊú¨‰∫∫„ÉªÂÖ•Èô¢Ôºâ
            IF      HKNJAU-HON-NYUKYURATE
                                    NOT =   HKNJAM-HON-NYUKYURATE
                MOVE    1                   TO  TBL-COMP (7)
            END-IF
-      *    µÎ…’≥‰πÁ° ≤»¬≤°¶≥∞ÕË°À
+      *    Áµ¶‰ªòÂâ≤ÂêàÔºàÂÆ∂Êóè„ÉªÂ§ñÊù•Ôºâ
            IF      HKNJAU-KZK-GAIKYURATE
                                    NOT =   HKNJAM-KZK-GAIKYURATE
                MOVE    1                   TO  TBL-COMP (8)
            END-IF
-      *    µÎ…’≥‰πÁ° ≤»¬≤°¶∆˛±°°À
+      *    Áµ¶‰ªòÂâ≤ÂêàÔºàÂÆ∂Êóè„ÉªÂÖ•Èô¢Ôºâ
            IF      HKNJAU-KZK-NYUKYURATE
                                    NOT =   HKNJAM-KZK-NYUKYURATE
                MOVE    1                   TO  TBL-COMP (9)
            END-IF
-      *    Õπ ÿ»÷πÊ
+      *    ÈÉµ‰æøÁï™Âè∑
            IF      HKNJAU-POST     NOT =   HKNJAM-POST
                MOVE    1                   TO  TBL-COMP(10)
            END-IF
-      *    ΩªΩÍ
+      *    ‰ΩèÊâÄ
            IF      HKNJAU-ADRS     NOT =   HKNJAM-ADRS
                MOVE    1                   TO  TBL-COMP(11)
            END-IF
-      *    »÷√œ ˝ΩÒ
+      *    Áï™Âú∞ÊñπÊõ∏
            IF      HKNJAU-BANTI    NOT =   HKNJAM-BANTI
                MOVE    1                   TO  TBL-COMP(12)
            END-IF
-      *    ≈≈œ√»÷πÊ
+      *    ÈõªË©±Áï™Âè∑
            IF      HKNJAU-TEL      NOT =   HKNJAM-TEL
                MOVE    1                   TO  TBL-COMP(13)
            END-IF
-      *    µ≠πÊ
+      *    Ë®òÂè∑
            IF      HKNJAU-KIGO     NOT =   HKNJAM-KIGO
                MOVE    1                   TO  TBL-COMP(14)
            END-IF
-      *    ∞€∆∞∂Ë ¨
+      *    Áï∞ÂãïÂå∫ÂàÜ
            IF      HKNJAU-IDOKBN   NOT =   HKNJAM-IDOKBN
                MOVE    1                   TO  TBL-COMP(15)
            END-IF
-      *    ∞€∆∞«Ø∑Ó∆¸
+      *    Áï∞ÂãïÂπ¥ÊúàÊó•
            IF      HKNJAU-IDOYMD   NOT =   HKNJAM-IDOYMD
                MOVE    1                   TO  TBL-COMP(16)
            END-IF
@@ -340,7 +340,7 @@
        220-COMPARE-EXT.
            EXIT.
       *****************************************************************
-      *    •◊•Î°º•’Ω–ŒœΩËÕ˝
+      *    „Éó„É´„Éº„ÉïÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        290-PRF-SEC                 SECTION.
            IF      CNT-LINE            =   ZERO
@@ -351,11 +351,11 @@
            MOVE    HKNJAU-HKNJANAME    TO  PRF-HKNJANAME
            EVALUATE    FLG-SYORI
                WHEN    1
-                   MOVE    "°˛"            TO  PRF-FLG
+                   MOVE    "‚óá"            TO  PRF-FLG
                WHEN    2
                    MOVE    SPACE           TO  PRF-FLG
                WHEN    3
-                   MOVE    "°˙"            TO  PRF-FLG
+                   MOVE    "‚òÖ"            TO  PRF-FLG
            END-EVALUATE
            PERFORM 2901-PRF-SEC
            IF      FLG-SYORI           =   2
@@ -378,7 +378,7 @@
        290-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    •◊•Î°º•’Ω–ŒœΩËÕ˝
+      *    „Éó„É´„Éº„ÉïÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        2901-PRF-SEC                SECTION.
            IF      CNT-LINE            >=  MAX-LINE
@@ -409,72 +409,72 @@
        2901-PRF-EXT.
            EXIT.
       *****************************************************************
-      *     —ππ∏ƒΩÍ…Ωº®ΩËÕ˝
+      *    Â§âÊõ¥ÂÄãÊâÄË°®Á§∫Âá¶ÁêÜ
       *****************************************************************
        2902-PRF-SET-VALUE-SEC      SECTION.
            EVALUATE    IDX
                WHEN    1
-                   MOVE    " ›∏±º‘Ãæ"          TO  PRF-ITEM
+                   MOVE    "‰øùÈô∫ËÄÖÂêç"          TO  PRF-ITEM
                    MOVE    HKNJAU-HKNJANAME    TO  PRF-VAL-USR
                    MOVE    HKNJAM-HKNJANAME    TO  PRF-VAL-STD
                WHEN    2
-                   MOVE    " ›∏±º‘ÃæŒ¨æŒ£±"        TO  PRF-ITEM
+                   MOVE    "‰øùÈô∫ËÄÖÂêçÁï•Áß∞Ôºë"        TO  PRF-ITEM
                    MOVE    HKNJAU-HKNJANAME-TAN1   TO  PRF-VAL-USR
                    MOVE    HKNJAM-HKNJANAME-TAN1   TO  PRF-VAL-STD
                WHEN    3
-                   MOVE    " ›∏±º‘ÃæŒ¨æŒ£≤"        TO  PRF-ITEM
+                   MOVE    "‰øùÈô∫ËÄÖÂêçÁï•Áß∞Ôºí"        TO  PRF-ITEM
                    MOVE    HKNJAU-HKNJANAME-TAN2   TO  PRF-VAL-USR
                    MOVE    HKNJAM-HKNJANAME-TAN2   TO  PRF-VAL-STD
                WHEN    4
-                   MOVE    " ›∏±º‘ÃæŒ¨æŒ£≥"        TO  PRF-ITEM
+                   MOVE    "‰øùÈô∫ËÄÖÂêçÁï•Áß∞Ôºì"        TO  PRF-ITEM
                    MOVE    HKNJAU-HKNJANAME-TAN3   TO  PRF-VAL-USR
                    MOVE    HKNJAM-HKNJANAME-TAN3   TO  PRF-VAL-STD
                WHEN    5
-                   MOVE    " ›∏±»÷πÊ"          TO  PRF-ITEM
+                   MOVE    "‰øùÈô∫Áï™Âè∑"          TO  PRF-ITEM
                    MOVE    HKNJAU-HKNNUM       TO  PRF-VAL-USR
                    MOVE    HKNJAM-HKNNUM       TO  PRF-VAL-STD
                WHEN    6
-                   MOVE    "µÎ…’≥‰πÁ° À‹øÕ°¶≥∞ÕË°À"    TO  PRF-ITEM
+                   MOVE    "Áµ¶‰ªòÂâ≤ÂêàÔºàÊú¨‰∫∫„ÉªÂ§ñÊù•Ôºâ"    TO  PRF-ITEM
                    MOVE    HKNJAU-HON-GAIKYURATE       TO  PRF-VAL-USR
                    MOVE    HKNJAM-HON-GAIKYURATE       TO  PRF-VAL-STD
                WHEN    7
-                   MOVE    "µÎ…’≥‰πÁ° À‹øÕ°¶∆˛±°°À"    TO  PRF-ITEM
+                   MOVE    "Áµ¶‰ªòÂâ≤ÂêàÔºàÊú¨‰∫∫„ÉªÂÖ•Èô¢Ôºâ"    TO  PRF-ITEM
                    MOVE    HKNJAU-HON-NYUKYURATE       TO  PRF-VAL-USR
                    MOVE    HKNJAM-HON-NYUKYURATE       TO  PRF-VAL-STD
                WHEN    8
-                   MOVE    "µÎ…’≥‰πÁ° ≤»¬≤°¶≥∞ÕË°À"    TO  PRF-ITEM
+                   MOVE    "Áµ¶‰ªòÂâ≤ÂêàÔºàÂÆ∂Êóè„ÉªÂ§ñÊù•Ôºâ"    TO  PRF-ITEM
                    MOVE    HKNJAU-KZK-GAIKYURATE       TO  PRF-VAL-USR
                    MOVE    HKNJAM-KZK-GAIKYURATE       TO  PRF-VAL-STD
                WHEN    9
-                   MOVE    "µÎ…’≥‰πÁ° ≤»¬≤°¶∆˛±°°À"    TO  PRF-ITEM
+                   MOVE    "Áµ¶‰ªòÂâ≤ÂêàÔºàÂÆ∂Êóè„ÉªÂÖ•Èô¢Ôºâ"    TO  PRF-ITEM
                    MOVE    HKNJAU-KZK-NYUKYURATE       TO  PRF-VAL-USR
                    MOVE    HKNJAM-KZK-NYUKYURATE       TO  PRF-VAL-STD
                WHEN    10
-                   MOVE    "Õπ ÿ»÷πÊ"          TO  PRF-ITEM
+                   MOVE    "ÈÉµ‰æøÁï™Âè∑"          TO  PRF-ITEM
                    MOVE    HKNJAU-POST         TO  PRF-VAL-USR
                    MOVE    HKNJAM-POST         TO  PRF-VAL-STD
                WHEN    11
-                   MOVE    "ΩªΩÍ"              TO  PRF-ITEM
+                   MOVE    "‰ΩèÊâÄ"              TO  PRF-ITEM
                    MOVE    HKNJAU-ADRS         TO  PRF-VAL-USR
                    MOVE    HKNJAM-ADRS         TO  PRF-VAL-STD
                WHEN    12
-                   MOVE    "»÷√œ ˝ΩÒ"          TO  PRF-ITEM
+                   MOVE    "Áï™Âú∞ÊñπÊõ∏"          TO  PRF-ITEM
                    MOVE    HKNJAU-BANTI        TO  PRF-VAL-USR
                    MOVE    HKNJAM-BANTI        TO  PRF-VAL-STD
                WHEN    13
-                   MOVE    "≈≈œ√»÷πÊ"          TO  PRF-ITEM
+                   MOVE    "ÈõªË©±Áï™Âè∑"          TO  PRF-ITEM
                    MOVE    HKNJAU-TEL          TO  PRF-VAL-USR
                    MOVE    HKNJAM-TEL          TO  PRF-VAL-STD
                WHEN    14
-                   MOVE    "µ≠πÊ"              TO  PRF-ITEM
+                   MOVE    "Ë®òÂè∑"              TO  PRF-ITEM
                    MOVE    HKNJAU-KIGO         TO  PRF-VAL-USR
                    MOVE    HKNJAM-KIGO         TO  PRF-VAL-STD
                WHEN    15
-                   MOVE    "∞€∆∞∂Ë ¨"          TO  PRF-ITEM
+                   MOVE    "Áï∞ÂãïÂå∫ÂàÜ"          TO  PRF-ITEM
                    MOVE    HKNJAU-IDOKBN       TO  PRF-VAL-USR
                    MOVE    HKNJAM-IDOKBN       TO  PRF-VAL-STD
                WHEN    16
-                   MOVE    "∞€∆∞«Ø∑Ó∆¸"        TO  PRF-ITEM
+                   MOVE    "Áï∞ÂãïÂπ¥ÊúàÊó•"        TO  PRF-ITEM
                    MOVE    HKNJAU-IDOYMD       TO  PRF-VAL-USR
                    MOVE    HKNJAM-IDOYMD       TO  PRF-VAL-STD
                WHEN    OTHER
@@ -490,7 +490,7 @@
        2902-PRF-SET-VALUE-EXT.
            EXIT.
       *****************************************************************
-      *    ∏´Ω–§∑ ‘Ω∏ΩËÕ˝
+      *    Ë¶ãÂá∫„ÅóÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2903-PRF-HEADER-SEC         SECTION.
            MOVE    SPACE               TO  HCMSL55
@@ -507,19 +507,19 @@
        2903-PRF-HEADER-EXT.
            EXIT.
       *****************************************************************
-      *    ¬–æ›§ §∑∞ı∫˛ΩËÕ˝
+      *    ÂØæË±°„Å™„ÅóÂç∞Âà∑Âá¶ÁêÜ
       *****************************************************************
        2904-PRF-NOTHING-SEC        SECTION.
            PERFORM 2903-PRF-HEADER-SEC
            ADD     3                   TO  CNT-LINE
-           MOVE    "°°°°°·°·°·°° ›∏±º‘•Ê°º•∂°º•ﬁ•π•ø≈–œø§ §∑°°°·°·°·"
+           MOVE    "„ÄÄ„ÄÄÔºùÔºùÔºù„ÄÄ‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„Éû„Çπ„ÇøÁôªÈå≤„Å™„Åó„ÄÄÔºùÔºùÔºù"
                                        TO  HCMSL55-MOJI (CNT-LINE)
            PERFORM 2909-PRINT-SEC
            .
        2904-PRF-NOTHING-EXT.
            EXIT.
       *****************************************************************
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
       *****************************************************************
        2909-PRINT-SEC              SECTION.
            INITIALIZE  ORCSPRTAREA
@@ -538,7 +538,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCMSL55.red"       TO  SPRT-PRTID
-           MOVE    " ›∏±º‘•Ê°º•∂°º•ﬁ•π•ø•¡•ß•√•Ø•Í•π•»"
+           MOVE    "‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„Éû„Çπ„Çø„ÉÅ„Çß„ÉÉ„ÇØ„É™„Çπ„Éà"
                                        TO  SPRT-TITLE
            MOVE    HCMSL55             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -550,7 +550,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "∞ı∫˛£ƒ£¬§¨ππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Âç∞Âà∑Ôº§Ôº¢„ÅåÊõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                        TO  WRK-BUMCPERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -558,7 +558,7 @@
        2909-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    Ω™ŒªΩËÕ˝
+      *    ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                 SECTION.
            IF      CNT-LINE            >   6
@@ -571,7 +571,7 @@
       *
            IF      CNT-HKNJAINFU       =   ZERO
                PERFORM 2904-PRF-NOTHING-SEC
-               MOVE    "ΩËÕ˝¬–æ›§Œ•«°º•ø§¨§¢§Í§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Âá¶ÁêÜÂØæË±°„ÅÆ„Éá„Éº„Çø„Åå„ÅÇ„Çä„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                        TO  WRK-BUMCPERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -582,7 +582,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    •®•È°ºΩ–ŒœΩËÕ˝
+      *    „Ç®„É©„ÉºÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
            OPEN    INPUT   BUMCPERR-FILE
@@ -593,7 +593,7 @@
                MOVE    WRK-BUMCPERR        TO  BUMCPERR-REC
                WRITE   BUMCPERR-REC
                CLOSE   BUMCPERR-FILE
-      *        •∏•Á•÷¥…Õ˝≥´ªœΩËÕ˝
+      *        „Ç∏„Éß„ÉñÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-ERRMSG      TO  JOB-YOBI
@@ -608,7 +608,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    £√£”£÷•«°º•øΩËÕ˝
+      *    Ôº£Ôº≥Ôº∂„Éá„Éº„ÇøÂá¶ÁêÜ
       *****************************************************************
        600-CSV-SYORI-SEC           SECTION.
            IF      CNT-CSV             =   ZERO
@@ -616,41 +616,41 @@
            END-IF
            INITIALIZE  WRK-CSV-AREA
            IF      FLG-SYORI           =   2
-      *        •’•È•∞
+      *        „Éï„É©„Ç∞
                MOVE    PRF-FLG             TO  WRK-IN-DATA
                MOVE    2                   TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *         ›∏±º‘»÷πÊ
+      *        ‰øùÈô∫ËÄÖÁï™Âè∑
                MOVE    PRF-HKNJANUM        TO  WRK-IN-DATA
                MOVE    8                   TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *         ›∏±º‘Ãæ
+      *        ‰øùÈô∫ËÄÖÂêç
                MOVE    PRF-HKNJANAME       TO  WRK-IN-DATA
                MOVE    200                 TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *        π‡Ã‹Ãæ
+      *        È†ÖÁõÆÂêç
                MOVE    WRK-CSV-ITEM        TO  WRK-IN-DATA
                MOVE    200                 TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *        •Ê°º•∂°º¿ﬂƒÍ
+      *        „É¶„Éº„Ç∂„ÉºË®≠ÂÆö
                MOVE    WRK-CSV-VAL-USR     TO  WRK-IN-DATA
                MOVE    200                 TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *        …∏Ω‡¿ﬂƒÍ
+      *        Ê®ôÊ∫ñË®≠ÂÆö
                MOVE    WRK-CSV-VAL-STD     TO  WRK-IN-DATA
                MOVE    200                 TO  WRK-IN-MAX
                MOVE    1                   TO  WRK-END
                PERFORM 6002-MOJI-HENSYU-SEC
            ELSE
-      *        •’•È•∞
+      *        „Éï„É©„Ç∞
                MOVE    PRF-FLG             TO  WRK-IN-DATA
                MOVE    2                   TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *         ›∏±º‘»÷πÊ
+      *        ‰øùÈô∫ËÄÖÁï™Âè∑
                MOVE    PRF-HKNJANUM        TO  WRK-IN-DATA
                MOVE    8                   TO  WRK-IN-MAX
                PERFORM 6002-MOJI-HENSYU-SEC
-      *         ›∏±º‘Ãæ
+      *        ‰øùÈô∫ËÄÖÂêç
                MOVE    PRF-HKNJANAME       TO  WRK-IN-DATA
                MOVE    200                 TO  WRK-IN-MAX
                MOVE    1                   TO  WRK-END
@@ -667,7 +667,7 @@
        600-CSV-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ≈˝∑◊£√£”£÷Ω–ŒœΩËÕ˝
+      *    Áµ±Ë®àÔº£Ôº≥Ôº∂Âá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        6001-CSV-HEAD-SEC           SECTION.
            MOVE    CSV-HEAD-01         TO  WRK-OUT-REC
@@ -681,7 +681,7 @@
        6001-CSV-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    Ω–Œœ•Ï•≥°º•…ΩËÕ˝°  ∏ª˙°À
+      *    Âá∫Âäõ„É¨„Ç≥„Éº„ÉâÂá¶ÁêÜÔºàÊñáÂ≠óÔºâ
       *****************************************************************
        6002-MOJI-HENSYU-SEC        SECTION.
            IF      WRK-IN-DATA         =   SPACE
@@ -722,7 +722,7 @@
        6002-MOJI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ≈˝∑◊£√£”£÷Ω–ŒœΩËÕ˝
+      *    Áµ±Ë®àÔº£Ôº≥Ôº∂Âá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        6009-TOUKEICSV-SEC          SECTION.
            INITIALIZE  ORCSTOUKEICSVAREA
@@ -741,14 +741,14 @@
            MOVE    WRK-CSVFNAME        TO  STOUKEICSV-TO-DATA
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-CSV-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    " ›∏±º‘•Ê°º•∂°º•ﬁ•π•ø•¡•ß•√•Ø•Í•π•»£√£”£÷∫Ó¿Æ"
+           MOVE    "‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„Éû„Çπ„Çø„ÉÅ„Çß„ÉÉ„ÇØ„É™„Çπ„ÉàÔº£Ôº≥Ôº∂‰ΩúÊàê"
                                        TO  STOUKEICSV-TITLE
            CALL    "ORCSTOUKEICSV" USING   ORCSTOUKEICSVAREA
                                            SPA-AREA
            IF      STOUKEICSV-RETURN   =   ZERO
                ADD     1                   TO  CNT-CSV
            ELSE
-               MOVE    "≈˝∑◊£√£”£÷£ƒ£¬§Àππø∑§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+               MOVE    "Áµ±Ë®àÔº£Ôº≥Ôº∂Ôº§Ôº¢„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                        TO  WRK-BUMCPERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -756,7 +756,7 @@
        6009-TOUKEICSV-EXT.
            EXIT.
       *****************************************************************
-      *    •∏•Á•÷¥…Õ˝•µ•÷
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Çµ„Éñ
       *****************************************************************
        800-ORCSJOB-SEC             SECTION.
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -772,7 +772,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±º‘•Ê°º•∂°º•∆°º•÷•Î∆…π˛
+      *    ‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„ÉÜ„Éº„Éñ„É´Ë™≠Ëæº
       *****************************************************************
        900-HKNJAINFU-SELECT-SEC    SECTION.
            INITIALIZE  HKNJAINFU-REC
@@ -788,7 +788,7 @@
        900-HKNJAINFU-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±º‘•Ê°º•∂°º•∆°º•÷•Î∆…π˛
+      *    ‰øùÈô∫ËÄÖ„É¶„Éº„Ç∂„Éº„ÉÜ„Éº„Éñ„É´Ë™≠Ëæº
       *****************************************************************
        900-HKNJAINFU-FETCH-SEC     SECTION.
            MOVE    "tbl_hknjainf_user" TO  MCP-TABLE
@@ -810,7 +810,7 @@
        900-HKNJAINFU-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±º‘•ﬁ•π•ø•∆°º•÷•Î∆…π˛
+      *    ‰øùÈô∫ËÄÖ„Éû„Çπ„Çø„ÉÜ„Éº„Éñ„É´Ë™≠Ëæº
       *****************************************************************
        900-HKNJAINFM-READ-SEC      SECTION.
            INITIALIZE  HKNJAINFM-REC
@@ -842,7 +842,7 @@
        900-HKNJAINFM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    •∑•π•∆•‡¥…Õ˝∆…π˛
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜË™≠Ëæº
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
            INITIALIZE  SYS-1001-REC
@@ -875,7 +875,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    •∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -887,7 +887,7 @@
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    •Ï•≥°º•…√ÍΩ–ΩËÕ˝
+      *    „É¨„Ç≥„Éº„ÉâÊäΩÂá∫Âá¶ÁêÜ
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -899,7 +899,7 @@
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    •´°º•Ω•Î•Ø•Ì°º•∫ΩËÕ˝
+      *    „Ç´„Éº„ÇΩ„É´„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-CLOSE-SEC               SECTION.
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -911,7 +911,7 @@
        900-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    •◊•Ì•∞•È•‡Ω™ŒªΩËÕ˝
+      *    „Éó„É≠„Ç∞„É©„É†ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        990-EXIT-PROGRAM-SEC        SECTION.
            DISPLAY "ORCBUMCHKNJAINF RC [" BUMCP-RC "]"

@@ -30,7 +30,7 @@ xml_patientmodv3req1 {
 			PhoneNumber1		varchar(15);
 			PhoneNumber2		varchar(15);
         	};
-#--- ¶ĞÌ³Àè
+#--- å‹¤å‹™å…ˆ
 		WorkPlace_Information	{
 			WholeName		varchar(50);
 			Address_ZipCode		varchar(07);
@@ -38,7 +38,7 @@ xml_patientmodv3req1 {
 			WholeAddress2		varchar(100);
 			PhoneNumber		varchar(15);
         	};
-#--- Ï¢ÍíÀè
+#--- é€£çµ¡å…ˆ
 		Contact_Information	{
 			WholeName		varchar(50);
 			Relationship 		varchar(30);
@@ -48,7 +48,7 @@ xml_patientmodv3req1 {
 			PhoneNumber1		varchar(15);
 			PhoneNumber2		varchar(15);
         	};
-#--- µ¢¾ÊÀè
+#--- å¸°çœå…ˆ
 		Home2_Information	{
 			WholeName		varchar(50);
 			Address_ZipCode		varchar(07);
@@ -66,16 +66,16 @@ xml_patientmodv3req1 {
 		Comment2		varchar(100);
 		TestPatient_Flag	varchar(01);
 		Death_Flag		varchar(01);
-#---            ¸ºÌÈ»öÍ³
+#---            æ¸›å…äº‹ç”±
 		Reduction_Reason	varchar(02);
-#---            ³ä°úÎ¨
+#---            å‰²å¼•ç‡
 		Discount		varchar(02);
-#---            ¾õÂÖ£±¤«¤é£³
+#---            çŠ¶æ…‹ï¼‘ã‹ã‚‰ï¼“
 		Condition1		varchar(02);
 		Condition2		varchar(02);
 		Condition3		varchar(02);
         };
-#--- µìÀ«ÍúÎòÅĞÏ¿
+#--- æ—§å§“å±¥æ­´ç™»éŒ²
 	Modify_Option	{
 		Former_Name_Mode	varchar(5);
     		};

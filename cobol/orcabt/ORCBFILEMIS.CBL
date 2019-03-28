@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBFILEMIS.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : 
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ø«Œ≈æ Û•∑•π•∆•‡Õ—•’•°•§•Îæ Û¥…Õ˝§Œππø∑
-      *                    : ºÁ§À•Ø•È•¶•…¥ƒ∂≠§«•Ø•È•§•¢•Û•» ›¬∏§Ú§π§Î§ø§·
-      *                    : CSV•«°º•ø§Úmonblob§ÿ≥ «º§∑°¢•’•°•§•Îæ Û°¢
-      *                    : UUID§Ú≥ «º§π§Î
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  18/02/01    NACL°›∞À∆£    ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : 
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Ë®∫ÁôÇÊÉÖÂ†±„Ç∑„Çπ„ÉÜ„É†Áî®„Éï„Ç°„Ç§„É´ÊÉÖÂ†±ÁÆ°ÁêÜ„ÅÆÊõ¥Êñ∞
+      *                    : ‰∏ª„Å´„ÇØ„É©„Ç¶„ÉâÁí∞Â¢É„Åß„ÇØ„É©„Ç§„Ç¢„É≥„Éà‰øùÂ≠ò„Çí„Åô„Çã„Åü„ÇÅ
+      *                    : CSV„Éá„Éº„Çø„Çímonblob„Å∏Ê†ºÁ¥ç„Åó„ÄÅ„Éï„Ç°„Ç§„É´ÊÉÖÂ†±„ÄÅ
+      *                    : UUID„ÇíÊ†ºÁ¥ç„Åô„Çã
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  18/02/01    NACL‚àí‰ºäËó§    Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -59,13 +59,13 @@
            03  WRK-ERRMSG              PIC X(300).
            03  WRK-MCP-RC              PIC 9(9).
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
       *01  JOBKANRI-REC.
       *    COPY    "CPJOBKANRI.INC".
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®È†òÂüü
       *****************************************************************
            COPY    "CPORCSGETTEMP.INC".
       *    COPY    "CPORCSJOBKANRI.INC".
@@ -83,7 +83,7 @@
        PROCEDURE                   DIVISION
                                    USING   COMMAND-PARAM.
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -93,7 +93,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ΩÈ¥¸ΩËÕ˝
+      *    ÂàùÊúüÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -172,17 +172,17 @@
       *    MOVE    "ORCBFILEMIS"       TO  JOB-PGID
       *    EVALUATE    WRK-PARA-SHELLID
       *        WHEN    "RENKEI1"
-      *            MOVE    "œ¢∑»¥»◊•«°º•øΩËÕ˝"
+      *            MOVE    "ÈÄ£Êê∫Âü∫Áõ§„Éá„Éº„ÇøÂá¶ÁêÜ"
       *                                        TO  JOB-SHELLMSG
       *        WHEN    OTHER
-      *            MOVE    "…‘Ã¿•«°º•øΩËÕ˝"    TO  JOB-SHELLMSG
+      *            MOVE    "‰∏çÊòé„Éá„Éº„ÇøÂá¶ÁêÜ"    TO  JOB-SHELLMSG
       *    END-EVALUATE
       *    PERFORM 900-CALL-ORCSJOB-SEC
            .
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -200,7 +200,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    •’•°•§•Î ›¬∏æ Ûππø∑ΩËÕ˝
+      *    „Éï„Ç°„Ç§„É´‰øùÂ≠òÊÉÖÂ†±Êõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        2001-FILE-MIS-INSERT-SEC    SECTION.
       *
@@ -243,36 +243,36 @@
        2001-FILE-MIS-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    •«°º•ø∆‚Õ∆° •ø•§•»•Î°À§Œ ‘Ω∏° œ¢∑»¥»◊°ÀΩËÕ˝
+      *    „Éá„Éº„ÇøÂÜÖÂÆπÔºà„Çø„Ç§„Éà„É´Ôºâ„ÅÆÁ∑®ÈõÜÔºàÈÄ£Êê∫Âü∫Áõ§ÔºâÂá¶ÁêÜ
       *****************************************************************
        20011-RENKEI1-TITLE-SEC     SECTION.
       *
-           MOVE    "œ¢∑»¥»◊°¶"        TO  WRK-TITLE
+           MOVE    "ÈÄ£Êê∫Âü∫Áõ§„Éª"        TO  WRK-TITLE
            IF      WRK-PARA-NYUGAIKBN  =   "1"
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "∆˛±°°¶"            DELIMITED BY SIZE
+                       "ÂÖ•Èô¢„Éª"            DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "≥∞ÕË°¶"            DELIMITED BY SIZE
+                       "Â§ñÊù•„Éª"            DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
            IF      WRK-PARA-TEISYUTUSAKI   =   "1"
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "º“ ›"              DELIMITED BY SIZE
+                       "Á§æ‰øù"              DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "πÒ ›"              DELIMITED BY SIZE
+                       "ÂõΩ‰øù"              DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
            IF      LNK-PRTKANRI-SHELLID    =   "recept4_renkei2.sh"
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "° ≈ˆ∆¸ºıø« ¨°À"    DELIMITED BY SIZE
+                       "ÔºàÂΩìÊó•ÂèóË®∫ÂàÜÔºâ"    DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
@@ -280,38 +280,38 @@
        20011-RENKEI1-TITLE-EXT.
            EXIT.
       *****************************************************************
-      *    •«°º•ø∆‚Õ∆° •ø•§•»•Î°À§Œ ‘Ω∏° •Ï•ª≈≈°ÀΩËÕ˝
+      *    „Éá„Éº„ÇøÂÜÖÂÆπÔºà„Çø„Ç§„Éà„É´Ôºâ„ÅÆÁ∑®ÈõÜÔºà„É¨„ÇªÈõªÔºâÂá¶ÁêÜ
       *****************************************************************
        20011-MISRECE1-TITLE-SEC    SECTION.
       *
-           MOVE    "•Ï•ª≈≈°¶"          TO  WRK-TITLE
+           MOVE    "„É¨„ÇªÈõª„Éª"          TO  WRK-TITLE
            IF      WRK-PARA-NYUGAIKBN  =   "1"
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "∆˛±°°¶"            DELIMITED BY SIZE
+                       "ÂÖ•Èô¢„Éª"            DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "≥∞ÕË°¶"            DELIMITED BY SIZE
+                       "Â§ñÊù•„Éª"            DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
            IF      LNK-PRTKANRI-RENNUM =   101 OR  102
                                        OR  111 OR  112
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "œ´∫“"              DELIMITED BY SIZE
+                       "Âä¥ÁÅΩ"              DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                IF      WRK-PARA-TEISYUTUSAKI   =   "1"
                    STRING  WRK-TITLE           DELIMITED BY SPACE
-                           "º“ ›"              DELIMITED BY SIZE
+                           "Á§æ‰øù"              DELIMITED BY SIZE
                            INTO    WRK-TITLE
                    END-STRING
                ELSE
                    IF      WRK-PARA-TEISYUTUSAKI   =   "4"
                      STRING  WRK-TITLE           DELIMITED BY SPACE
-                             "πÒ ›"              DELIMITED BY SIZE
+                             "ÂõΩ‰øù"              DELIMITED BY SIZE
                              INTO    WRK-TITLE
                      END-STRING
                    END-IF
@@ -320,12 +320,12 @@
            IF      LNK-PRTKANRI-RENNUM =   1   OR  11
                                        OR  101 OR  111
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "° ∆¸º°°À"          DELIMITED BY SIZE
+                       "ÔºàÊó•Ê¨°Ôºâ"          DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "° ≥ŒƒÍ°À"          DELIMITED BY SIZE
+                       "ÔºàÁ¢∫ÂÆöÔºâ"          DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
@@ -333,31 +333,31 @@
        20011-MISRECE1-TITLE-EXT.
            EXIT.
       *****************************************************************
-      *    •«°º•ø∆‚Õ∆° •ø•§•»•Î°À§Œ ‘Ω∏° •«°º•ø•’•©°º•ﬁ•√•»°ÀΩËÕ˝
+      *    „Éá„Éº„ÇøÂÜÖÂÆπÔºà„Çø„Ç§„Éà„É´Ôºâ„ÅÆÁ∑®ÈõÜÔºà„Éá„Éº„Çø„Éï„Ç©„Éº„Éû„ÉÉ„ÉàÔºâÂá¶ÁêÜ
       *****************************************************************
        20011-MISJMAMR-TITLE-SEC    SECTION.
       *
-           MOVE    "ø«Œ≈æ Û°¶"        TO  WRK-TITLE
+           MOVE    "Ë®∫ÁôÇÊÉÖÂ†±„Éª"        TO  WRK-TITLE
            IF      WRK-PARA-NYUGAIKBN  =   "1"
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "∆˛±°"              DELIMITED BY SIZE
+                       "ÂÖ•Èô¢"              DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "≥∞ÕË"              DELIMITED BY SIZE
+                       "Â§ñÊù•"              DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
            IF      LNK-PRTKANRI-TBL-GROUP(1:8)
                                            =   LNK-PRTKANRI-SKYYMD
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "°¶≈ˆ∆¸ ¨"          DELIMITED BY SIZE
+                       "„ÉªÂΩìÊó•ÂàÜ"          DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            ELSE
                STRING  WRK-TITLE           DELIMITED BY SPACE
-                       "° ƒ˚¿µ ¨°À"        DELIMITED BY SIZE
+                       "ÔºàË®ÇÊ≠£ÂàÜÔºâ"        DELIMITED BY SIZE
                        INTO    WRK-TITLE
                END-STRING
            END-IF
@@ -365,29 +365,29 @@
        20011-MISJMAMR-TITLE-EXT.
            EXIT.
       *****************************************************************
-      *    •«°º•ø∆‚Õ∆° •ø•§•»•Î°À§Œ ‘Ω∏° •ﬁ•π•ø•«°º•ø∞‹π‘°ÀΩËÕ˝
+      *    „Éá„Éº„ÇøÂÜÖÂÆπÔºà„Çø„Ç§„Éà„É´Ôºâ„ÅÆÁ∑®ÈõÜÔºà„Éû„Çπ„Çø„Éá„Éº„ÇøÁßªË°åÔºâÂá¶ÁêÜ
       *****************************************************************
        20011-MIGRATE1-TITLE-SEC    SECTION.
       *
            MOVE    SPACE               TO  WRK-TITLE
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    "≈¿øÙ•ﬁ•π•ø"        TO  WRK-TITLE
+                   MOVE    "ÁÇπÊï∞„Éû„Çπ„Çø"        TO  WRK-TITLE
                WHEN    "2"
-                   MOVE    "•¡•ß•√•Ø•ﬁ•π•ø"    TO  WRK-TITLE
+                   MOVE    "„ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„Çø"    TO  WRK-TITLE
                WHEN    "3"
-                   MOVE    "∞Ï»Ãœ∑øÕ√÷¥π•ﬁ•π•ø"
+                   MOVE    "‰∏ÄËà¨ËÄÅ‰∫∫ÁΩÆÊèõ„Éû„Çπ„Çø"
                                                TO  WRK-TITLE
                WHEN    "4"
-                   MOVE    " ›∏±º‘•ﬁ•π•ø"      TO  WRK-TITLE
+                   MOVE    "‰øùÈô∫ËÄÖ„Éû„Çπ„Çø"      TO  WRK-TITLE
                WHEN    "5"
-                   MOVE    "ΩªΩÍ•ﬁ•π•ø"        TO  WRK-TITLE
+                   MOVE    "‰ΩèÊâÄ„Éû„Çπ„Çø"        TO  WRK-TITLE
            END-EVALUATE
            .
        20011-MIGRATE1-TITLE-EXT.
            EXIT.
       *****************************************************************
-      *    Ω™ŒªΩËÕ˝
+      *    ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                 SECTION.
       *    MOVE    "STE"               TO  SJOBKANRI-MODE
@@ -399,7 +399,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    •®•È°ºΩËÕ˝
+      *    „Ç®„É©„ÉºÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -416,7 +416,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏ÊΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°Âá¶ÁêÜ
       *****************************************************************
        900-CALL-ORCSJOB-SEC        SECTION.
       *
@@ -430,7 +430,7 @@
        900-CALL-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    •∆°º•÷•Î•¢•Ø•ª•πΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„Ç¢„ÇØ„Çª„ÇπÂá¶ÁêÜ
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
       *
@@ -441,7 +441,7 @@
        900-ORCDBMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -458,7 +458,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

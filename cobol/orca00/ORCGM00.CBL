@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,60 +18,60 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGM00.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��̳����
-      *  ����ݡ��ͥ��̾  : �ޥ�����˥塼�ʣͣ�����
-      *  ������            : 
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 業務選択
+      *  コンポーネント名  : マスタメニュー（Ｍ００）
+      *  管理者            : 
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/05/22  ��ư���������ɲ�
-      *  01.00.02    MCC-ƣ��     01/05/23  �����ֹ湽���������ɲ�
-      *  01.00.03    MCC-ƣ��     01/06/05  ��ư�������Υ��å����
-      *  01.00.04    MCC-ƣ��     01/06/29  �����ƥ����դΥ��å��ɲ�
-      *  01.00.05    MCC-����     01/07/30  MID1���ɲ�
-      *  01.00.06    MCC-ƣ��     01/09/13  ��λ�ΤȤ��ν�������
-      *  01.01.01    MCC-¿��Ǽ   01/09/20  JOIN�ν���      
-      *  01.01.02    MCC-ƣ��     01/09/27  MVER���ɲ�  
-      *  01.01.03    MCC-¿��Ǽ   01/10/03  ��ͳ�����η����ӣУ����ɲ�
-      *  01.01.04    MCC-¿��Ǽ   01/11/27  ��ͳ������ʬ��ӣУ����ɲ�
-      *                                     SPA��ü���ɣĤ򣳣����
-      *  01.02.01    MCC-ƣ��     01/11/21  ORCMCPSUB���ѹ�  
-      *  01.02.02    MCC-¿��Ǽ   01/12/11  ��ĥ�������ɲ�
-      *  01.02.03    MCC-¿��Ǽ   02/02/13  �ǥ��ѹ��ܤκ��
-      *  01.02.04    MCC-¿��Ǽ   02/02/22  MID1���ɲ�
-      *  01.02.05    NACL-¿��Ǽ  02/10/22  �¾����ɲ�
-      *  01.02.06    NACL-¿��Ǽ  02/12/19  �����������ѹ�����
-      *  01.02.07    NACL-¿��Ǽ  03/02/10  �¾����ʰ��̡��ɲ�
-      *  01.02.08    NACL-ƣ��    03/03/01  ��¾���� �ɲ�
-      *  01.02.09    NACL-��ƣ    03/03/10  ü���ɣģ����Х��Ȥس�ĥ
-      *  01.02.10    NACL-¿��Ǽ  03/06/27  �����������ɲ�
-      *  01.02.11    NACL-¿��Ǽ  03/08/25  ���ֹ��ɲ�
-      *  01.02.13    NACL-����    04/01/13  ��������������Ի��ν�������
-      *  01.02.14    NACL-¿��Ǽ  04/02/02  �Ķ�����˳�����ֳ���ʬ�ɲ�
-      *  01.02.15    NACL-��ƣ    04/02/05  M97���ɲ�
-      *  01.02.16    NACL-����    04/01/16  �ץ�����๹���ܥ����ɲ�
-      *  01.02.17    NACL-¿��Ǽ  04/03/19  ���������ɲ�
-      *  01.02.18    NACL-¿��Ǽ  05/05/17  �¾����ե饰�ɲ�
-      *  01.02.19    NACL-¿��Ǽ  05/10/14  �ǡ������������ե饰��
-      *                                     �ǡ������������ˡ��ʬ�ɲ�
-      *  02.07.00    NACL-���ġ�  06/02/16  ������쥯������ɽ��(��)
-      *  02.07.01    NACL-��ƣ��  06/02/22  MONFUNC �б�
-      *  02.07.02    NACL-¿��Ǽ  06/02/24  �����������ɲ�
-      *  03.01.00    NACL-����    06/07/14  �ģ�����������å��ɲ�
-      *  03.03.00    NACL-¿��Ǽ  06/10/24  ��¾���������꽤��
-      *  03.04.01    NACL-����    06/12/13  �桼�����ȣԣͣ�ɽ��
-      *  03.04.02    NACL-¿��Ǽ  07/01/16  �����ֹ湽��ǯ���ؤ����ɲ�
-      *  04.03.00    NACL-����    08/08/25  �ޥ���������������ɽ��
-      *  04.03.00    NACL-����    08/09/04  ���Ǥΰ��Ż�̳���ܤ�ץ��ƥ���
-      *  04.04.00    NACL-¿��Ǽ  09/01/26  �ӣУ����궦���б�
-      *  04.06.01    NACL-��ƣ    11/01/28  �ꥢ�륿��������
-      *  04.06.02    NACL-��ƣ    11/05/19  �����ɻ�������
-      *  04.06.00    NACL-¿��Ǽ  12/03/26  ʿ������ǯ��������б�
-      *  04.07.00    NACL-����    12/07/04  �桼�����ɣ�ɽ��
-      *  04.08.00    NACL-��ƣ    14/09/24  �ץ�����๹������LD�ذ�ư
-      *  05.00.00    NACL-��ƣ    16/09/30  DB��¤�С����������å��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/05/22  自動算定情報の追加
+      *  01.00.02    MCC-藤原     01/05/23  患者番号構成管理の追加
+      *  01.00.03    MCC-藤原     01/06/05  自動算定情報のセット中止
+      *  01.00.04    MCC-藤原     01/06/29  システム日付のセット追加
+      *  01.00.05    MCC-森脇     01/07/30  MID1の追加
+      *  01.00.06    MCC-藤原     01/09/13  終了のときの処理修正
+      *  01.01.01    MCC-多々納   01/09/20  JOINの修正      
+      *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
+      *  01.01.03    MCC-多々納   01/10/03  自由構成の桁数をＳＰＡへ追加
+      *  01.01.04    MCC-多々納   01/11/27  自由構成区分をＳＰＡへ追加
+      *                                     SPAの端末ＩＤを３６桁ヘ
+      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
+      *  01.02.02    MCC-多々納   01/12/11  拡張構成の追加
+      *  01.02.03    MCC-多々納   02/02/13  デモ用項目の削除
+      *  01.02.04    MCC-多々納   02/02/22  MID1の追加
+      *  01.02.05    NACL-多々納  02/10/22  病床数追加
+      *  01.02.06    NACL-多々納  02/12/19  入院時日付変更修正
+      *  01.02.07    NACL-多々納  03/02/10  病床数（一般）追加
+      *  01.02.08    NACL-藤原    03/03/01  排他制御 追加
+      *  01.02.09    NACL-伊藤    03/03/10  端末ＩＤ６４バイトへ拡張
+      *  01.02.10    NACL-多々納  03/06/27  職員コード追加
+      *  01.02.11    NACL-多々納  03/08/25  県番号追加
+      *  01.02.13    NACL-太田    04/01/13  職員情報取得失敗時の処理修正
+      *  01.02.14    NACL-多々納  04/02/02  環境設定に外来時間外区分追加
+      *  01.02.15    NACL-伊藤    04/02/05  M97の追加
+      *  01.02.16    NACL-森脇    04/01/16  プログラム更新ボタン追加
+      *  01.02.17    NACL-多々納  04/03/19  曜日設定追加
+      *  01.02.18    NACL-多々納  05/05/17  病床数フラグ追加
+      *  01.02.19    NACL-多々納  05/10/14  データ収集作成フラグ、
+      *                                     データ収集提出方法区分追加
+      *  02.07.00    NACL-竹田　  06/02/16  リダイレクタ不整表示(仮)
+      *  02.07.01    NACL-伊藤　  06/02/22  MONFUNC 対応
+      *  02.07.02    NACL-多々納  06/02/24  主科設定情報追加
+      *  03.01.00    NACL-太田    06/07/14  ＤＢ不整合チェック追加
+      *  03.03.00    NACL-多々納  06/10/24  排他制御初期設定修正
+      *  03.04.01    NACL-森脇    06/12/13  ユーザーＨＴＭＬ表示
+      *  03.04.02    NACL-多々納  07/01/16  患者番号構成年切替え月追加
+      *  04.03.00    NACL-太田    08/08/25  マスタ更新処理状況表示
+      *  04.03.00    NACL-太田    08/09/04  従での医療事務遷移をプロテクト
+      *  04.04.00    NACL-多々納  09/01/26  ＳＰＡ設定共通対応
+      *  04.06.01    NACL-伊藤    11/01/28  リアルタイム送信
+      *  04.06.02    NACL-伊藤    11/05/19  感染症参加送信
+      *  04.06.00    NACL-多々納  12/03/26  平成２４年４月改正対応
+      *  04.07.00    NACL-森脇    12/07/04  ユーザーＩＤ表示
+      *  04.08.00    NACL-伊藤    14/09/24  プログラム更新を別LDへ移動
+      *  05.00.00    NACL-伊藤    16/09/30  DB構造バージョンチェック追加
       *****************************************************************
       *
       *
@@ -85,17 +85,17 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "M00COMMON-SPA".
       *   
            COPY    "ENUM-VALUE".
       *
-      *    �ͣ��������ΰ�
+      *    Ｍ００スパ領域
            COPY    "M00SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -106,7 +106,7 @@
       *
            03  FLG-INIT            PIC 9(01).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -117,7 +117,7 @@
            03  IDX1                PIC 9(05).
            03  IDX-PNT             PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  IDX                   PIC 9(03).
            03  WRK-SYSYMD.
@@ -180,92 +180,92 @@
            03  CONST-MNTSHELLID    PIC X(08)  VALUE    "MSTMNT".
            03  CONST-MLIJOBID      PIC 9(07)  VALUE    1.
            03  CONST-MLISHELLID    PIC X(08)  VALUE    "MSTMLI".
-      *    ���������  
+      *    感染症報告  
            03  CONST-INFJOBID      PIC 9(07)  VALUE    1.
            03  CONST-INFSHELLID    PIC X(08)  VALUE    "INFECTIO".
-      *    �����ɻ�������  
+      *    感染症参加送信  
            03  CONST-INFAJOBID     PIC 9(07)  VALUE    1.
            03  CONST-INFASHELLID   PIC X(08)  VALUE    "INFAGREE".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �����ƥ�����ޥ����ΰ�
-      *    ��������
+      *    システム管理マスタ領域
+      *    職員情報
            COPY  "CPSK1010.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1001.INC".
       *---- (01.00.01) LINE ADD START --------------------------------
-      *    ��ư�������
+      *    自動算定情報
            COPY  "CPSK1007.INC".
       *---- (01.00.01) LINE ADD END   --------------------------------
       *---- (01.00.02) LINE ADD START --------------------------------
-      *    �����ֹ湽����������
+      *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
       *---- (01.00.02) LINE ADD END   --------------------------------
       *---- (01.02.08) LINE ADD START --------------------------------
-      *    ��¾��������
+      *    排他管理情報
            COPY  "CPSK9800.INC".
       *---- (01.02.08) LINE ADD END   --------------------------------
-      *    ����������
+      *    主科設定情報
            COPY  "CPSK2009.INC".
       *----(03.04.01)--ADD-START---------------------------------------
-      *    �������
+      *    広告情報
            COPY  "CPSK1003.INC".
       *----(03.04.01)--ADD-END-----------------------------------------
       *
            COPY    "CPSK1006.INC".
       *
-      *    �����ƥ����
+      *    システム基本
        01  SYSBASE-REC.
            COPY    "CPSYSBASE.INC".
       *
-      *    �ģ´���
+      *    ＤＢ管理
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
-      *    �ޥ�������
+      *    マスタ管理
        01  MSTKANRI-REC.
            COPY    "CPMSTKANRI.INC".
-      *    ����ִ���
+      *    ジョブ管理
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ५������
+      *    システムカタログ
            COPY    "CPDBCTG.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ƥ�С���������
+      *    システムバージョン取得
            COPY    "CPORCSVERSION.INC".
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
            COPY    "CPORCSCOLCHK.INC".
            COPY    "CPORCSINFCHK.INC".
-      *    COMMON-SPA ����Խ�
+      *    COMMON-SPA 初期編集
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -299,7 +299,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -316,15 +316,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -338,7 +338,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -346,10 +346,10 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  IDX-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "MERR"
       *H24.4
-      *        ��ǧ��å�����ɽ���塢��̳��
+      *        確認メッセージ表示後、業務へ
                IF      WRK-SPA-ERRCD           =   "9999"
                    MOVE    "M01"               TO  SPA-SAKIPG
                    MOVE    SPACE               TO  SPA-MOTOPG2
@@ -366,7 +366,7 @@
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
       *
                IF      SPA-ERRCD       NOT =   SPACE
@@ -374,21 +374,21 @@
                    MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG
                    IF      SPA-ERRCD       =   "1019"
                        MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
-                       MOVE    "jma-setup ������»ܤ��Ƥ���������"
+                       MOVE    "jma-setup 処理を実施してください。"
                                                TO  SPA-GMN-LBLMSG
                    END-IF
                    IF      SPA-ERRCD       =   "1020"
                        MOVE    SPA-ERRMSG      TO  SPA-GMN-LBLMSG2
-                       MOVE    "�ץ�����๹��������»ܤ��Ƥ���������"
+                       MOVE    "プログラム更新処理を実施してください。"
                                                TO  SPA-GMN-LBLMSG
                    END-IF
-      *            ����Τߤηٹ�ɽ��
+      *            １回のみの警告表示
                    IF      SPA-ERRCD       =   "K001"
                        MOVE    1           TO  SPA-ERR-FLG
                    END-IF
                END-IF
       *
-      *        ��������������ư
+      *        感染症報告処理起動
                IF      SPA-NAI-REDL   NOT  =   1
                    IF      WRK-MOTOPG          =   SPACE
                                                OR  "M95"
@@ -397,7 +397,7 @@
                    END-IF
                END-IF
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
       *
@@ -420,13 +420,13 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            INITIALIZE              SPA-M00-AREA
       *---- (01.00.04) LINE ADD START --------------------------------
-      *    ���ե��åȲ��̤��
+      *    日付セット画面より
       *****IF      SPA-MOTOPG          =   "M95"  OR
       *    IF      SPA-MOTOPG          =   "MVER"
       *        MOVE    1               TO  SPA-GMN-CUR
@@ -438,11 +438,11 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
       *
-      *    �������̤��
+      *    内部画面より
            EVALUATE    SPA-MOTOPG
                WHEN    "MID1"
-      *2012.10 �����٥��ʰ��������
-      *        MDAS�����������MID1����������ˤʤꤹ�ޤ�
+      *2012.10 サーベイ簡易設定改修
+      *        MDASからの復帰はMID1からの復帰になりすます
                WHEN    "MDAS"
                    PERFORM 3001-MID1-SYORI-SEC
       ****             GO  TO  300-SCREEN-EXT
@@ -458,14 +458,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        3001-MID1-SYORI-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
                WHEN    "9102"
                    IF      SPA-MID1-FLG        =   "OK"
-      *                �����ƥ������Ͽ������
+      *                システム管理登録処理へ
                        PERFORM 810-INFECTION-003-SEC
                        PERFORM 800-INFECTION-AGREE-EX-SEC
                    END-IF
@@ -479,7 +479,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -492,7 +492,7 @@
                                        OR  "M98"
                MOVE    SPA-MOTOPG          TO  WRK-MOTOPG
            END-IF
-      *    ������ꥢ
+      *    初期クリア
            IF      SPA-MOTOPG(1:1)     =   "M"
                                        OR  "K"
                CONTINUE
@@ -501,7 +501,7 @@
            END-IF
       *
       *---- (01.00.04) LINE ADD START --------------------------------
-      *    �ͣ��������äƤ������������ƥ����դΥ��åȤ򤷤ʤ�
+      *    Ｍ０１より戻ってきた時、システム日付のセットをしない
            IF      SPA-MOTOPG          =   "M01"
                                        OR  "M01N"
                                        OR  "M95"
@@ -539,7 +539,7 @@
       *
            INITIALIZE              SPA-AREA
            MOVE    MCP-USER            TO  SPA-OPID
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
            MOVE    SYS-MM              TO  WRK-SYSMM
@@ -569,7 +569,7 @@
                MOVE    "1003"              TO  SPA-ERRCD
                GO  TO  310-SPASET-EXT
            END-IF
-      *    ��������
+      *    曜日指定
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY3-AREA
            MOVE    "31"                TO  LNK-DAY3-IRAI
@@ -587,7 +587,7 @@
            INITIALIZE                  ORCSCOMMONAREA
       *
       *---- (01.00.04) LINE ADD END   --------------------------------
-      *    ���ŵ��ؼ����ֹ楻�å� SPA-HOSPNUM
+      *    医療機関識別番号セット SPA-HOSPNUM
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
                                        SPA-AREA
@@ -595,7 +595,7 @@
                GO  TO  310-SPASET-EXT
            END-IF
       *!!
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -604,11 +604,11 @@
                                        SPA-AREA
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
-      *    ǯ�����إ�å�����
+      *    年度切替メッセージ
            MOVE    ORCSCOMMON-LABLMSG  TO  SPA-GMN-LBLMSG2
       *ver.4.7
       *****IF      FLG-INIT            =   1
-      *        �Ķ�����ν��ɽ�����طʿ������ꤹ��
+      *        環境設定の初期表示で背景色を設定する
                PERFORM 3109-M95INIT-SEC
       *****END-IF
       *ver.4.7
@@ -635,9 +635,9 @@
            MOVE    ZERO                TO  SPA-NOCHK-HOSPNUM
       *
       *!!
-      *�ʲ� �ӣУ����åȤϺ��
+      *以下 ＳＰＡセットは削除
       *!!
-      *    ���ŵ��أɣ��Խ�
+      *    医療機関ＩＤ編集
       *    MOVE    SPACE               TO  SYS-1001-REC
       *    INITIALIZE                  SYS-1001-REC
       *    MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -660,9 +660,9 @@
       *            MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
       *************MOVE    SYS-1001-SYOHOKBN   TO  SPA-SYOHOKBN
       ************ MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG
-      *            �¾���
+      *            病床数
       *            MOVE    SYS-1001-BEDSU      TO  SPA-BEDSU
-      *            �¾����ʰ��̡�
+      *            病床数（一般）
       *            IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
       *                   (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
       *                MOVE    ZERO                TO  SPA-BEDSUIPN
@@ -670,7 +670,7 @@
       *                MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
       *            END-IF
       *
-      *            �ǡ��������ե饰
+      *            データ作成フラグ
       *            IF     (SYS-1001-DATACREATEFLG  =   SPACE )  OR
       *                   (SYS-1001-DATACREATEFLG  NOT NUMERIC)
       *                MOVE    ZERO            TO  SPA-DATACREATEFLG
@@ -678,7 +678,7 @@
       *                MOVE    SYS-1001-DATACREATEFLG
       *                                        TO  SPA-DATACREATEFLG
       *            END-IF
-      *            �ǡ��������ˡ��ʬ
+      *            データ提出方法区分
       *            IF     (SYS-1001-DATATEISYUTUKBN  =   SPACE )  OR
       *                   (SYS-1001-DATATEISYUTUKBN  NOT NUMERIC)
       *                MOVE    ZERO            TO  SPA-DATATEISYUTUKBN
@@ -687,9 +687,9 @@
       *                                        TO  SPA-DATATEISYUTUKBN
       *            END-IF
       *
-      *            ���ֹ�
+      *            県番号
       *            MOVE    SYS-1001-PREFNUM    TO  SPA-PREFNUM
-      *           ͭ����ʬ
+      *           有床区分
       *            MOVE    1                   TO  SPA-BEDKBN
       *
 *******@ CLINIC_BED_SET_TO_ZERO @
@@ -710,7 +710,7 @@
       *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *    MOVE    "key10"             TO  MCP-PATHNAME
       *    PERFORM 990-DBCLOSE-SEC
-      *    �¾����ե饰
+      *    病床数フラグ
       *    IF     (SPA-BEDKBN          =   ZERO )  OR
       *           (SPA-BEDSU           =   ZERO )
       *        MOVE    ZERO            TO  SPA-BEDFLG
@@ -720,7 +720,7 @@
       *---- (01.00.03) LINE DEL START --------------------------------
       *---- (01.00.01) LINE ADD START --------------------------------
       *
-      *    ��ư��������Խ�
+      *    自動算定情報編集
       *     INITIALIZE                  SYS-1007-REC
       *     MOVE    "1007"              TO  SYS-1007-KANRICD
       *     MOVE    "*"                 TO  SYS-1007-KBNCD
@@ -739,7 +739,7 @@
       *---- (01.00.03) LINE DEL END   --------------------------------
       *---- (01.00.02) LINE ADD START --------------------------------
       *
-      *    �����ֹ湽�����������Խ�
+      *    患者番号構成管理情報編集
       *    MOVE    SPACE               TO  SYS-1009-REC
       *    INITIALIZE                  SYS-1009-REC
       *    MOVE    "1009"              TO  SYS-1009-KANRICD
@@ -771,7 +771,7 @@
       *                                TO  SPA-1009-HJNKSIRENNUMKBN
       *            MOVE    SYS-1009-HJNKSIRENNUMKETA
       *                                TO  SPA-1009-HJNKSIRENNUMKETA
-      *��ĥ������ʬ
+      *拡張構成区分
       *            MOVE    SYS-1009-KKCKSIKBN
       *                                TO  SPA-1009-KKCKSIKBN
       *            MOVE    SYS-1009-KKCKSIMAEKETA
@@ -798,7 +798,7 @@
       *    MOVE    "key10"             TO  MCP-PATHNAME
       *    PERFORM 990-DBCLOSE-SEC
       *
-      *    �����ֹ湽����ǯ���ؤ������å�
+      *    患者番号構成の年切替えチェック
       *    IF      SYS-1009-NENTUKI        =   SPACE
       *        MOVE    "01"                TO  SYS-1009-NENTUKI
       *    END-IF
@@ -807,8 +807,8 @@
       *                                    OR  "2" )  AND
       *           (SYS-1009-NEN        NOT =   SPA-SYSYMD (1:4)) AND
       *           (SYS-1009-NENTUKI        <=  SPA-SYSYMD (5:2))
-      *        STRING  "�ڴ����ֹ湽����ǯ���ؤ���ˤʤ�ޤ�����"
-      *                "�����ƥ��������򹹿����Ʋ���������"
+      *        STRING  "【患者番号構成の年切替え月になりました。"
+      *                "システム管理情報を更新して下さい。】"
       *                                    DELIMITED  BY  SIZE
       *                                    INTO    SPA-GMN-LBLMSG2
       *        END-STRING
@@ -819,7 +819,7 @@
       *                                SPA-1009-PTNUMKSIKBN
       *---- (01.00.02) LINE ADD END   --------------------------------
       *---- (01.02.08) LINE ADD START --------------------------------
-      *    ��¾���������Խ�
+      *    排他管理情報編集
       *    MOVE    SPACE               TO  SYS-9800-REC
       *    INITIALIZE                  SYS-9800-REC
       *    MOVE    "9800"              TO  SYS-9800-KANRICD
@@ -849,7 +849,7 @@
       *    PERFORM 990-DBCLOSE-SEC
       *---- (01.02.08) LINE ADD END   --------------------------------
       *
-      *    ü���ɣ�
+      *    端末ＩＤ
       *    MOVE    MCP-TERM            TO  SPA-TERMID
       **** PERFORM VARYING IDX FROM    32  BY  -1
       *    PERFORM VARYING IDX FROM    64  BY  -1
@@ -862,11 +862,11 @@
       *    END-PERFORM 
       *    DISPLAY "310-SPASET-SEC SPA-TERMID = " SPA-TERMID
       *
-      *    ���ڥ졼���ɣ�
+      *    オペレータＩＤ
       *    MOVE    MCP-USER            TO  SPA-OPID
       *    DISPLAY "310-SPASET-SEC SPA-OPID = " SPA-OPID
       *
-      *    ��������
+      *    職員情報
       *    MOVE    SPACE               TO  SYS-1010-REC
       *    INITIALIZE                  SYS-1010-REC
       *    MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -900,7 +900,7 @@
       *        IF      FLG-OK              =   1
       *            MOVE    MCPDATA-REC         TO  SYS-1010-REC
       *
-      *2001.9.27 �����ץ��ƥ��ȡʣУ�̤������
+      *2001.9.27 強制プロテクト（ＰＧ未作成）
       *----(01.02.16)--UPD-START---
       *         MOVE    "0"             TO  SYS-1010-GSRAUTH(3:1)
       *            MOVE    "0"          TO  SYS-1010-GSRAUTH(4:1)
@@ -914,10 +914,10 @@
       *                MOVE    "0"      TO SYS-1010-GSRAUTH(1:1)
       *            END-IF
       *----(01.02.16)--UPD-END-----
-      *2001.9.27 �����ץ��ƥ��ȡʣУ�̤������END
+      *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *********MOVE    SYS-1010-REC        TO  SPA-WORK
       *---- (01.02.10) LINE ADD START --------------------------------
-      *        ��������������
+      *        職員コード設定
       *            MOVE    SYS-1010-KBNCD(1:5)     TO  SPA-STAFFCD
       *---- (01.02.10) LINE ADD END   --------------------------------
       *        ELSE
@@ -929,7 +929,7 @@
       *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
       *    MOVE    "key3"              TO  MCP-PATHNAME
       *    PERFORM 990-DBCLOSE-SEC
-      *    �����ѡ��Х�������
+      *    スーパーバイザー？
       *    IF    ( SPA-SUPERVISOR          =   "F" )
       *    AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
       *        MOVE    ZERO                TO  FLG-SYSBASE
@@ -959,7 +959,7 @@
       *        END-IF
       *    END-IF
       *
-      *    ����������
+      *    主科設定情報
       *    INITIALIZE                      SPA-SYUKA-INFO
       *    MOVE    SPACE               TO  SYS-2009-REC
       *    INITIALIZE                  SYS-2009-REC
@@ -1015,13 +1015,13 @@
                MOVE    WRK-MNTMSG          TO  SPA-GMN-MLIMSG
            END-IF
       *
-      *    �����ޥ�������Ƚ��(2006/7/27ʬ������
+      *    点数マスタ更新判定(2006/7/27分更新）
            PERFORM 3101-MSTKANRI-SET-SEC
       *
-      *    ����Ĵ�� �����å�
+      *    定点調査 チェック
            PERFORM 3102-TEITEN-CHK-SEC
       *
-      *     ������쥯�����������å��ɲ�
+      *     リダイレクタ不整チェック追加
            IF  MCP-DBSTATUS                =   "DISC"
                MOVE    "1006"              TO  SPA-ERRCD
            END-IF
@@ -1084,18 +1084,18 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *        �ޥ����ǡ����ܹԽ��������å��η�̼���
-      *        ����:SPA-ERRCD=SPACE �۾�:SPA-ERRCD="1022"
+      *        マスタデータ移行処理チェックの結果取得
+      *        正常:SPA-ERRCD=SPACE 異常:SPA-ERRCD="1022"
                CALL    "ORCSMSTCONVCHECK"  USING   SPA-AREA
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *        �ץ饰����ư����������å��η�̼���
-      *        ����:SPA-ERRCD=SPACE �۾�:SPA-ERRCD="1021"
+      *        プラグイン起動時設定チェックの結果取得
+      *        正常:SPA-ERRCD=SPACE 異常:SPA-ERRCD="1021"
                CALL    "ORCSPLUGINCHECK"   USING   SPA-AREA
            END-IF
       *
-      *    ������
+      *    感染症
            PERFORM 810-INFECTION-001-SEC
       *
            MOVE    SPACE           TO  SPA-MID1-FLG
@@ -1104,7 +1104,7 @@
        310-SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    �ǡ����١���������Ƚ�����
+      *    データベース整合性判定処理
       *****************************************************************
        3101-DBVERSION-CHK-SEC      SECTION.
       *
@@ -1135,7 +1135,7 @@
        3101-DBVERSION-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ�������Ƚ�����
+      *    点数マスタ更新判定処理
       *****************************************************************
        3101-MSTKANRI-SET-SEC               SECTION.
       *
@@ -1176,7 +1176,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ޥ������������Խ�����
+      *    マスタ更新情報編集処理
       *****************************************************************
        3101-MNTUPD-EDIT-SEC            SECTION.
       *
@@ -1184,7 +1184,7 @@
                                        WRK-MNTMSG-STYLE
                                        WRK-MNTMSG
       *
-      *    �ʣϣ´��� 
+      *    ＪＯＢ管理 
            INITIALIZE                  ORCSJOBKANRIAREA
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1216,30 +1216,30 @@
                    WHEN    "00"
                    WHEN    "0000"
                        IF    ( JOB-UPDCNT      >   ZERO )
-                           MOVE    "�ޥ���������̤����꤬����ޤ���"
+                           MOVE    "マスタ更新結果に問題があります。"
                                            TO  WRK-MNTMSG
                            MOVE    "blue"  TO  WRK-MNTMSG-STYLE
                        ELSE
-                           MOVE    "�ޥ�������������˽�λ���ޤ�����"
+                           MOVE    "マスタ更新は正常に終了しました。"
                                            TO  WRK-MNTMSG
                            MOVE    "blue"  TO  WRK-MNTMSG-STYLE
                        END-IF
                    WHEN    "01"
                    WHEN    "8001"
-                       MOVE    "�����ǡ����Ϥ���ޤ���Ǥ�����"
+                       MOVE    "更新データはありませんでした。"
                                            TO  WRK-MNTMSG
                        MOVE    "blue"      TO  WRK-MNTMSG-STYLE
                    WHEN    "98"
                    WHEN    "8002"
-                       MOVE    "�����Ф���³�Ǥ��ޤ���Ǥ�����"
+                       MOVE    "サーバへ接続できませんでした。"
                                            TO  WRK-MNTMSG
                        MOVE    "blue"      TO  WRK-MNTMSG-STYLE
                    WHEN    "8888"
-                       MOVE    "�ޥ�����������ߤ���ޤ���"
+                       MOVE    "マスタ更新は中止されました"
                                            TO  WRK-MNTMSG
                        MOVE    "blue"      TO  WRK-MNTMSG-STYLE
                    WHEN    OTHER
-                       MOVE    "�ޥ��������ϰ۾ｪλ���ޤ�����"
+                       MOVE    "マスタ更新は異常終了しました。"
                                            TO  WRK-MNTMSG
                        MOVE    "red"       TO  WRK-MNTMSG-STYLE
                    END-EVALUATE
@@ -1247,13 +1247,13 @@
                        MOVE    WRK-MNTMSG  TO  WRK-MSG
                        MOVE    SPACE       TO  WRK-MNTMSG
                        STRING  WRK-MSG         DELIMITED   BY  SPACE
-                               "�ڳ�ǧ�ꥹ�Ȥ���������ޤ�����"
+                               "【確認リストが作成されました】"
                                                DELIMITED   BY  SIZE
                        INTO    WRK-MNTMSG
                        END-STRING
                    END-IF
                ELSE
-                   MOVE    "�ޥ���������Ǥ���"
+                   MOVE    "マスタ更新中です。"
                                            TO  WRK-MNTMSG
                    MOVE    "blue"          TO  WRK-MNTMSG-STYLE
                END-IF
@@ -1264,7 +1264,7 @@
        3101-MNTUPD-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ����Ĵ��������� �����ǡ������������������å�����
+      *    定点調査研究事業 収集データ・作成送信チェック処理
       *****************************************************************
        3102-TEITEN-CHK-SEC             SECTION.
       *
@@ -1284,38 +1284,38 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ��λ
+      *        終了
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *        �����������å�����
+      *        感染症設定メッセージ
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 810-INFECTION-002-SEC
-      *        �Хå�����
+      *        バッチログ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-MJOB-SEC
-      *        �����ƥ���������
+      *        システム日付設定
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-M95-SEC
-      *        ����Ϣ��
+      *        情報連携
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 440-MIS-SEC
-      *        �������
+      *        情報画面
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 470-MVER-SEC
-      *        JOBLOG����
+      *        JOBLOG画面
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 480-M98-SEC
       *!!!!!!!
-      *����ޤȤ�ƥ���
-      *        ����ޤȤ�ƥ���
+      *外来まとめテスト
+      *        外来まとめテスト
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-KT01-SEC
-      *        LOGIN�������
+      *        LOGIN情報画面
                WHEN    "CLICKED"       ALSO    "B10"
                    IF    ( SPA-MW    = SPA-PANDA )
                        PERFORM 470-MLOG-SEC
@@ -1325,7 +1325,7 @@
                        END-IF
                    END-IF
       *!!!!!!!
-      *    �ƶ�̳��ư��
+      *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
            END-EVALUATE
@@ -1334,7 +1334,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -1348,7 +1348,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϡ�����
+      *    入力　処理
       *****************************************************************
        4101-KEY-ENT-SEC            SECTION.
       *
@@ -1364,7 +1364,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϡ�����
+      *    入力　処理
       *****************************************************************
        400-GYOMU-SEL-SEC            SECTION.
       *
@@ -1376,7 +1376,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̳��ư������
+      *    業務起動　処理
       *****************************************************************
        420-GYOMU-START-SEC         SECTION.
       *
@@ -1385,7 +1385,7 @@
       *
           MOVE    SPACE               TO  SPA-SAKIPG
           EVALUATE    WRK-GNO
-      *        �����̳
+      *        医事業務
                WHEN    "01"
                    IF      SYS-1010-GSRAUTH(1:1)    =  "1"
                        MOVE    "M01"           TO  SPA-SAKIPG
@@ -1393,7 +1393,7 @@
                        MOVE    "0002"          TO  SPA-ERRCD
                    END-IF 
       *----(01.02.16)--UPD-START---
-      *        �ץ�����๹������
+      *        プログラム更新処理
                WHEN    "03"
                  IF  ( SPA-MW              NOT =   SPA-PANDA )
                        MOVE    "0001"          TO  SPA-ERRCD
@@ -1407,7 +1407,7 @@
                    END-IF 
                  END-IF 
       *----(01.02.16)--UPD-END-----
-      *        ������������
+      *        点数改正処理
       *        WHEN    "04"
       *            IF      SYS-1010-GSRAUTH(4:1)    =  "1"
       *                MOVE    "???"           TO  SPA-SAKIPG
@@ -1420,7 +1420,7 @@
       *
       *
       *H24.4
-      *    H24.4.2�ޤǻ��ߴ��ι�����ǧ��å�����ɽ��
+      *    H24.4.2まで施設基準の更新確認メッセージ表示
            IF      SPA-SAKIPG          =   "M01"
                 ACCEPT  SYS-YMD         FROM    DATE
                 COMPUTE WRK-SYSYY   =   SYS-YY      +   2000
@@ -1461,7 +1461,7 @@
       *
       *H24.4
       *****************************************************************
-      *    ���ߴ��ι�����ǧ
+      *    施設基準の更新確認
       *****************************************************************
        420-SYS1006-CHK-SEC                  SECTION.
       *
@@ -1473,7 +1473,7 @@
            MOVE    "2"                 TO  SYS-1006-KBNCD
            MOVE    "20120331"          TO  SYS-1006-STYUKYMD
            MOVE    "20120331"          TO  SYS-1006-EDYUKYMD
-      *    �����ƥ���������ʻ��ߴ���
+      *    システム管理検索（施設基準）
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1489,7 +1489,7 @@
            END-IF
            IF      FLG-SYSKANRI    =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
-      *        �ϰ���Ź׸��û�(754 - 500)
+      *        地域医療貢献加算(754 - 500)
                IF      SYS-1006-SSTKIJUN (254) =   1
                    MOVE    1               TO  FLG-CHIIKKBN-ARI
                END-IF
@@ -1503,7 +1503,7 @@
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    "20120401"          TO  SYS-1006-STYUKYMD
            MOVE    "20120401"          TO  SYS-1006-EDYUKYMD
-      *    �����ƥ���������ʻ��ߴ���
+      *    システム管理検索（施設基準）
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1520,13 +1520,13 @@
            PERFORM UNTIL   FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                IF      SYS-1006-KBNCD      =   "2"
-      *            �ϰ���Ź׸��û�(754 - 500)
+      *            地域医療貢献加算(754 - 500)
                    IF      SYS-1006-SSTKIJUN (254) =   1
                        MOVE    1               TO  FLG-CHIIKKBN-ARI
                    END-IF
                END-IF
                IF      SYS-1006-KBNCD      =   "7"
-      *            ���ֳ��б��û�(3001)(3155)(3002)
+      *            時間外対応加算(3001)(3155)(3002)
                    IF     (SYS-1006-SSTKIJUN (001) =   1  )
                       OR  (SYS-1006-SSTKIJUN (155) =   1  )
                       OR  (SYS-1006-SSTKIJUN (002) =   1  )
@@ -1547,7 +1547,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����ե�������ϻؼ���̳
+      *    データファイル出力指示業務
       *****************************************************************
        440-MIS-SEC                 SECTION.
       *
@@ -1557,7 +1557,7 @@
       *
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *    ���������̤򸵤��᤹
+      *    戻り時、画面を元へ戻す
            MOVE    SPA-M00             TO  LNK-FREE
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE   "XG04"               TO  MCP-WINDOW
@@ -1570,7 +1570,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Хå���������
+      *    バッチログ画面
       *****************************************************************
        450-MJOB-SEC                SECTION.
       *
@@ -1580,7 +1580,7 @@
       *
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *    ���������̤򸵤��᤹
+      *    戻り時、画面を元へ戻す
            MOVE    SPA-M00             TO  LNK-FREE
            MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE   "MJOB   "            TO  MCP-WINDOW
@@ -1595,7 +1595,7 @@
       *H24.4
       *
       *****************************************************************
-      *    �����ƥ������ѹ����̤�1
+      *    システム日付変更画面へ1
       *****************************************************************
        460-M95-SEC                    SECTION.
       *
@@ -1632,7 +1632,7 @@
            EXIT.
       *
       *****************************************************************
-      *   �Ķ�����ν��ɽ��
+      *   環境設定の初期表示
       *****************************************************************
        3109-M95INIT-SEC                    SECTION.
       *
@@ -1660,7 +1660,7 @@
       *
       *
       *****************************************************************
-      *    ��������������ɽ�����̤�
+      *    ヴァージョン情報表示画面へ
       *****************************************************************
        470-MVER-SEC                    SECTION.
       *
@@ -1682,7 +1682,7 @@
            EXIT.
       *
       *****************************************************************
-      *    LOGIN����ɽ�����̤�
+      *    LOGIN情報表示画面へ
       *****************************************************************
        470-MLOG-SEC                    SECTION.
       *
@@ -1718,7 +1718,7 @@
            EXIT.
       *
       *****************************************************************
-      *    GINBEE�Ķ��ǥץ饰����������̤�
+      *    GINBEE環境でプラグイン設定画面へ
       *****************************************************************
        470-GINBEE-PLUGIN-SEC       SECTION.
       *
@@ -1743,7 +1743,7 @@
            EXIT.
       *
       *****************************************************************
-      *    JOBLOGɽ�����̤�
+      *    JOBLOG表示画面へ
       *****************************************************************
        480-M98-SEC                     SECTION.
       *
@@ -1770,7 +1770,7 @@
       *
       *!!!!!!!
       *****************************************************************
-      *    ����ޤȤ�ƥ��ȡ�����
+      *    外来まとめテスト　処理
       *****************************************************************
        490-KT01-SEC                   SECTION.
       *
@@ -1779,7 +1779,7 @@
                GO  TO  490-KT01-EXT
            END-IF
       *!!
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M01"               TO  ORCSCOMMON-PG
@@ -1806,7 +1806,7 @@
       *!!!!!!!
       *
       *****************************************************************
-      *    ��λ������
+      *    終了　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -1832,7 +1832,7 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1862,7 +1862,7 @@
       *
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1884,8 +1884,8 @@
            MOVE    SPA-GMN-LBLMSG2     TO  M00-LBLMSG2
            IF    ( SPA-GMN-MNTYMD      NOT =   SPACE )
             OR   ( SPA-GMN-MNTMSG      NOT =   SPACE )
-               MOVE    "ɸ���󶡥ޥ���"    TO  M00-MNTTITLE
-               STRING  "�ǽ������� "       DELIMITED   BY  SIZE
+               MOVE    "標準提供マスタ"    TO  M00-MNTTITLE
+               STRING  "最終更新日 "       DELIMITED   BY  SIZE
                        SPA-GMN-MNTYMD      DELIMITED   BY  SIZE
                INTO    M00-MNTYMD
                END-STRING
@@ -1896,8 +1896,8 @@
       *
            IF    ( SPA-GMN-MLIYMD      NOT =   SPACE )
             OR   ( SPA-GMN-MLIMSG      NOT =   SPACE )
-               MOVE    "�饤���󥹥ޥ���"  TO  M00-MLITITLE
-               STRING  "�ǽ������� "       DELIMITED   BY  SIZE
+               MOVE    "ライセンスマスタ"  TO  M00-MLITITLE
+               STRING  "最終更新日 "       DELIMITED   BY  SIZE
                        SPA-GMN-MLIYMD      DELIMITED   BY  SIZE
                INTO    M00-MLIYMD
                END-STRING
@@ -1919,20 +1919,20 @@
       *
            IF    ( SPA-NAI-REDL        =   1 )
                MOVE    "blue"          TO  M00-LBLMSG3-STYLE
-               MOVE    "�������Ф���³���Ƥ��ޤ���"
+               MOVE    "従サーバに接続しています。"
                                        TO  M00-LBLMSG3
            END-IF
       *
            IF    ( MCP-DBSTATUS        =   "SYNC" )
                MOVE    "blue"          TO  M00-LBLMSG3-STYLE
-               MOVE    "Ʊ��������Ǥ���"
+               MOVE    "同期処理中です。"
                                        TO  M00-LBLMSG3
            END-IF
       *
            IF    ( SPA-DATACREATEFLG   =    1 )  OR
                  ( SPA-DATAINFECTIONKBN    =    1 )  OR
                  ( SPA-DATAINFECTIONKBN    =    2 )
-               MOVE    "����Ĵ��"      TO  M00-B11-LABEL
+               MOVE    "定点調査"      TO  M00-B11-LABEL
            END-IF
       *
       *ver.4.7
@@ -1945,7 +1945,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̳�������������
+      *    業務権限非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
@@ -1989,15 +1989,15 @@
            END-IF
       *
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"
-               MOVE    "�ʤޤȤ��"       TO  M00-B09-LABEL
+               MOVE    "（まとめ）"       TO  M00-B09-LABEL
            ELSE
                MOVE    SPACE              TO  M00-B09-LABEL
            END-IF
       *
            IF    ( SPA-MW                 =   SPA-PANDA )
-               MOVE    "�桼������"       TO  M00-B10-LABEL
+               MOVE    "ユーザ管理"       TO  M00-B10-LABEL
            ELSE
-               MOVE    "�ץ饰����"       TO  M00-B10-LABEL
+               MOVE    "プラグイン"       TO  M00-B10-LABEL
            END-IF
       *
            IF    ( SPA-NAI-REDL           =   1 )
@@ -2017,15 +2017,15 @@
            IF    ( SPA-SUPERVISOR          =   "T" )   OR
                  ( SYS-1010-KANRIAUTHFLG   =   "T" )
                MOVE    WIDGET-NORMAL       TO  M00-B05-STATE
-               MOVE    "�Хå�����"        TO  M00-B05-LABEL
+               MOVE    "バッチログ"        TO  M00-B05-LABEL
            END-IF
       *
-      *2001.8.7 �����ץ��ƥ��ȡʣУ�̤������
+      *2001.8.7 強制プロテクト（ＰＧ未作成）
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G03-STATE
       ***     MOVE    WIDGET-INSENSITIVE      TO  M00-G04-STATE
       *
       *----(03.04.01)--ADD-START---------------------------------------
-      *    ��������Խ�
+      *    広告情報編集
            MOVE    SPACE               TO  SYS-1003-REC
            INITIALIZE                  SYS-1003-REC
            MOVE    "1003"              TO  SYS-1003-KANRICD
@@ -2062,7 +2062,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -2076,7 +2076,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -2103,7 +2103,7 @@
        510-ERRSET-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        5101-ERRSET-SEC             SECTION.
       *
@@ -2111,135 +2111,135 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "���ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "���ζ�̳������Ǥ��ޤ���"
+                   MOVE    "この業務は選択できません"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���Ǥ�����������"
+                   MOVE    "職員情報が取得できませんでした。処理を終"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "λ���Ƥ���������"
+                   MOVE    "了してください。"
                                                TO  SPA-ERRMSG (41:)
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���������"
+                   MOVE    "医療機関情報が取得できませんでした。処理"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "��λ���Ƥ���������"
+                   MOVE    "を終了してください。"
                                                TO  SPA-ERRMSG (41:)
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���Ǥ���������"
+                   MOVE    "システム日付が取得できませんでした。処理"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "��λ���Ƥ���������"
+                   MOVE    "を終了してください。"
                                                TO  SPA-ERRMSG (41:)
       *---- (01.00.01) LINE ADD START --------------------------------
                WHEN    "1004"
-                   MOVE    "��ư������󤬼����Ǥ��ޤ���Ǥ���������"
+                   MOVE    "自動算定情報が取得できませんでした。処理"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "��λ���Ƥ���������"
+                   MOVE    "を終了してください。"
                                                TO  SPA-ERRMSG (41:)
       *---- (01.00.01) LINE ADD END   --------------------------------
       *---- (01.00.02) LINE ADD START --------------------------------
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���Ǥ�����"
+                   MOVE    "患者番号構成情報が取得できませんでした。"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "������λ���Ƥ���������"
+                   MOVE    "処理を終了してください。"
                                                TO  SPA-ERRMSG (41:)
       *---- (01.00.02) LINE ADD END   --------------------------------
                WHEN    "1006"
-                   MOVE    "�罾�Υǡ����١����������礬ȯ�����Ƥ���"
+                   MOVE    "主従のデータベースに不整合が発生していま"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "����"
+                   MOVE    "す。"
                                                TO  SPA-ERRMSG (41:)
                WHEN    "1007"
-                   MOVE    "������쥯����³�Ԥ��Ǥ���"
+                   MOVE    "リダイレクタ接続待ちです。"
                                                TO  SPA-ERRMSG (1:40)
                WHEN    "1008"
-                   MOVE    "������쥯����³�˼��Ԥ��ޤ�����"
+                   MOVE    "リダイレクタ接続に失敗しました。"
                                                TO  SPA-ERRMSG (1:40)
       *        WHEN    "1009"
-      *            MOVE    "������쥯��̤��ư�Ǥ���"
+      *            MOVE    "リダイレクタ未起動です。"
       *                                        TO  SPA-ERRMSG (1:40)
                WHEN    "1010"
                    MOVE
-                      "�ģ¤ι�¤�С������������礬ȯ�����Ƥ��ޤ�����"
+                      "ＤＢの構造バージョンに不整合が発生しています！！"
                                                TO  SPA-ERRMSG
                WHEN    "1011"
                    MOVE
-                      "�ģ¤ι�¤�С������μ����˼��Ԥ��ޤ�����"
+                      "ＤＢの構造バージョンの取得に失敗しました。"
                                                TO  SPA-ERRMSG
                WHEN    "1012"
                    MOVE
-                           "�����ƥ�С������ȣģ¤ι�¤�������礬"
+                           "システムバージョンとＤＢの構造に不整合が"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "ȯ�����Ƥ��ޤ�����"
+                   MOVE    "発生しています！！"
                                                TO  SPA-ERRMSG (41:)
                WHEN    "1013"
-                   MOVE    "����Ĵ��������ȡʥǡ����������ѤΥե���"
+                   MOVE    "定点調査研究事業（データ収集）用のファイ"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "�����������Ǥ���"
+                   MOVE    "ル作成処理中です。"
                                                TO  SPA-ERRMSG (41:)
                WHEN    "1014"
-                   MOVE    "����Ĵ��������ȡʥǡ����������ѤΥե���"
+                   MOVE    "定点調査研究事業（データ収集）用のファイ"
                                                TO  SPA-ERRMSG (1:40)
-                   MOVE    "�뤬̤�����Ǥ���"
+                   MOVE    "ルが未送信です。"
                                                TO  SPA-ERRMSG (41:)
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1016"
-                   MOVE    "�����������Ǥ��ޤ���Ǥ�����"
+                   MOVE    "更新処理ができませんでした。"
                                                TO  SPA-ERRMSG
                WHEN    "1017"
-                   STRING  "�ϣңã������٥����Ĵ��"
-                           "�ؤϻ�����Ǥ���"
+                   STRING  "ＯＲＣＡサーベイランス調査"
+                           "へは参加中です。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1018"
-                   STRING  "���ʤ��ϴ����ԤǤϤ���ޤ���Τǻ���"
-                           "������ϴ����Ԥޤ�Ϣ�����Ƥ���������"
+                   STRING  "あなたは管理者ではありませんので参加"
+                           "する場合は管理者まで連絡してください。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1019"
                WHEN    "1020"
-                   STRING  "�ץ������Σģ¹�¤�С�������"
-                           "�ģ´����ơ��֥�ι�¤�С������"
-                           "������Ǥ�����"
+                   STRING  "プログラムのＤＢ構造バージョンと"
+                           "ＤＢ管理テーブルの構造バージョンが"
+                           "不整合です！！"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1021"
-                   STRING  "�ץ饰���������̷�⤬����ޤ���"
-                           "�����Ԥޤ�Ϣ�����Ƥ���������"
+                   STRING  "プラグイン設定に矛盾があります。"
+                           "管理者まで連絡してください。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1022"
-                   STRING  "�ޥ����ǡ����ܹԽ�����̤�»ܤǤ���"
-                           "�����Ԥޤ�Ϣ�����Ƥ���������"
+                   STRING  "マスタデータ移行処理が未実施です。"
+                           "管理者まで連絡してください。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1023"
-                   STRING  "���ŵ��ؼ����ֹ棲�ʾ�Υǡ����ˤ�"
-                           "��³�Ǥ��ޤ���"
+                   STRING  "医療機関識別番号２以上のデータには"
+                           "接続できません。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K001"
-                   STRING  "�ٹ𡪡�"
-                           "����ü���ϻ��ѤǤ��ޤ���"
+                   STRING  "警告！！"
+                           "この端末は使用できません。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
       *H24.4
                WHEN    "9999"
-                   STRING  "���ߴ�ॳ���ɤ�"
-                           "�ϰ���Ź׸��û������ֳ��б��û�����"
-                           "�ѹ�����Ƥ��ޤ���"
+                   STRING  "施設基準コードの"
+                           "地域医療貢献加算が時間外対応加算２へ"
+                           "変更されていません。"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
@@ -2250,15 +2250,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ��å�����ɽ����
+      *    確認メッセージ表示理
       *****************************************************************
        520-KIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
                WHEN    "9102"
-                   STRING  "�ϣңã������٥����Ĵ��"
-                           "�ؤΥǡ����󶡡ʻ��áˤ�"
-                           "���Ϥ��ޤ�����"
+                   STRING  "ＯＲＣＡサーベイランス調査"
+                           "へのデータ提供（参加）を"
+                           "開始しますか？"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-MIDMSG
                    END-STRING
@@ -2288,7 +2288,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    感染症報告処理
       *****************************************************************
        800-INFECTION-SEC               SECTION.
       *
@@ -2302,7 +2302,7 @@
                GO  TO    800-INFECTION-EXT
 	   END-IF
       *    
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
            MOVE    "DEL"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -2346,7 +2346,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɻ�����������
+      *    感染症参加送信処理
       *****************************************************************
        800-INFECTION-AGREE-SEC         SECTION.
       *
@@ -2368,11 +2368,11 @@
            EXIT.
       *    
       *****************************************************************
-      *    �����ɻ�����������
+      *    感染症参加送信処理
       *****************************************************************
        800-INFECTION-AGREE-EX-SEC      SECTION.
       *
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
            MOVE    "DEL"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -2415,21 +2415,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɻ���¥�ʽ���
+      *    感染症参加促進処理
       *****************************************************************
        810-INFECTION-001-SEC       SECTION.
       *
            IF     (SPA-ERRCD           =   SPACE)  AND
                   (SPA-DATAINFECTIONKBN    =   ZERO)  AND
                   (ORCSCOMMON-LABLMSG      =   SPACE)
-               STRING  "���쥻���鼫ư�����ˤ���ϰ�ޥåפ�"
-                       "���ܰ�ղ�ۡ���ڡ����ˤƸ�����Ǥ���"
-                       "�����Ϥ���������"
+               STRING  "日レセから自動送信による地域マップを"
+                       "日本医師会ホームページにて公開中です。"
+                       "ご協力ください。"
                                            DELIMITED  BY  SIZE
                                            INTO    SPA-GMN-LBLMSG2
                END-STRING
-               STRING  "�ƣ�������Ĵ�����ϥܥ���ˤǻ���"
-                       "��Ͽ�򤪴ꤤ���ޤ���"
+               STRING  "Ｆ４キー（調査協力ボタン）で参加"
+                       "登録をお願いします。"
                                            DELIMITED  BY  SIZE
                                            INTO    SPA-GMN-LBLMSG
                END-STRING
@@ -2439,7 +2439,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɻ���¥�ʽ���
+      *    感染症参加促進処理
       *****************************************************************
        810-INFECTION-002-SEC       SECTION.
       *
@@ -2465,11 +2465,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɻ���¥�ʽ���
+      *    感染症参加促進処理
       *****************************************************************
        810-INFECTION-003-SEC       SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -2527,7 +2527,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
       *
@@ -2546,7 +2546,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ´����ɹ��߽���
+      *    ＤＢ管理読込み処理
       *****************************************************************
        900-DBKANRI-READ-SEC         SECTION.
       *
@@ -2567,7 +2567,7 @@
        900-DBKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ��������ɹ��߽���
+      *    マスタ管理読込み処理
       *****************************************************************
        900-MSTKANRI-READ-SEC        SECTION.
       *
@@ -2587,7 +2587,7 @@
        900-MSTKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2602,7 +2602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�FETCH����
+      *    テーブルFETCH処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -2616,7 +2616,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *
@@ -2631,7 +2631,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

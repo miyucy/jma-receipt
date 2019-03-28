@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSP01.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ¥µº‘≈–œø
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ¥µº‘»÷πÊ»Øπ‘•µ•÷
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  01/12/04    MCC-¬ø°π«º    ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÊÇ£ËÄÖÁôªÈå≤
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ÊÇ£ËÄÖÁï™Âè∑Áô∫Ë°å„Çµ„Éñ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  01/12/04    MCC-Â§ö„ÄÖÁ¥ç    Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      * 01.00.01     NACL-¬ø°π«º  05/01/06  «Ø§Ú•∑•π•∆•‡¥…Õ˝§ÿΩ§¿µ
-      * 01.00.02     NACL-¬ø°π«º  05/11/14  MONFUNC ¬–±˛
-      * 03.05.00     NACL-¬ø°π«º  07/05/XX  •∞•Î°º•◊ø«Œ≈¬–±˛
-      * 04.03.00     NACL-¬ø°π«º  09/03/30  œ¢»÷πÊ»ΩƒÍ§œ∆±«Ø ¨§Œ§ﬂ§»§π§Î
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      * 01.00.01     NACL-Â§ö„ÄÖÁ¥ç  05/01/06  Âπ¥„Çí„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Å∏‰øÆÊ≠£
+      * 01.00.02     NACL-Â§ö„ÄÖÁ¥ç  05/11/14  MONFUNC ÂØæÂøú
+      * 03.05.00     NACL-Â§ö„ÄÖÁ¥ç  07/05/XX  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
+      * 04.03.00     NACL-Â§ö„ÄÖÁ¥ç  09/03/30  ÈÄ£Áï™Âè∑Âà§ÂÆö„ÅØÂêåÂπ¥ÂàÜ„ÅÆ„Åø„Å®„Åô„Çã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,18 +43,18 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-KANRIMST        PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-CHKNO           PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -64,7 +64,7 @@
            03  IDX3                PIC 9(02).
            03  IDX4                PIC 9(02).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-PTNUM1          PIC X(20).
            03  WRK-PTNUM2          PIC X(20).
@@ -100,39 +100,39 @@
                05  WRK-TMM         PIC 99.
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„Çø
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1009.INC".
       *
-      *    ¥µº‘æ Û
+      *    ÊÇ£ËÄÖÊÉÖÂ†±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ¥µº‘»÷πÊ —¥π° ¥…Õ˝°À
+      *    ÊÇ£ËÄÖÁï™Âè∑Â§âÊèõÔºàÁÆ°ÁêÜÔºâ
        01  PTNUM-REC.
            COPY  "CPPTNUM.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *   •¡•ß•√•Ø•«•∏•√•»
+      *   „ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç∏„ÉÉ„Éà
            COPY    "CPORCCHKDGT.INC".
       *
-      *   ¥µº‘»÷πÊ —¥π•µ•÷
+      *   ÊÇ£ËÄÖÁï™Âè∑Â§âÊèõ„Çµ„Éñ
            COPY    "CPORCSPTID.INC".
       *
-      *    øÙª˙ —¥πŒŒ∞Ë
+      *    Êï∞Â≠óÂ§âÊèõÈ†òÂüü
            COPY    "CPORCSNUM.INC".
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
@@ -141,13 +141,13 @@
       *****COPY    "ORCA-SPA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    •—•È•·•ø
+      *    „Éë„É©„É°„Çø
            COPY    "CPORCSP01.INC".
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -156,14 +156,14 @@
       *
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *
-      *    ¥µº‘»÷πÊ∫Œ»÷∏°∫˜
+      *    ÊÇ£ËÄÖÁï™Âè∑Êé°Áï™Ê§úÁ¥¢
            PERFORM 980-PTGETNUM-GET-SEC
            IF    FLG-KANRIMST      NOT =   ZERO
                MOVE    "1011"          TO  SPA-ERRCD
@@ -171,12 +171,12 @@
            END-IF
       *
            EVALUATE    ORCSP01-SYORI
-      *        ¥µº‘»÷πÊ»Øπ‘
+      *        ÊÇ£ËÄÖÁï™Âè∑Áô∫Ë°å
                WHEN    "1"
                WHEN    "3"
                    PERFORM 100-HAKKOU-SEC
                            UNTIL    FLG-SYORI      =   1
-      *        ¥µº‘»÷πÊ•¡•ß•√•Ø
+      *        ÊÇ£ËÄÖÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØ
                WHEN    "2"
                    PERFORM 200-CHECK-SEC
            END-EVALUATE
@@ -185,14 +185,14 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ¥µº‘»÷πÊ»Øπ‘ΩËÕ˝
+      *    ÊÇ£ËÄÖÁï™Âè∑Áô∫Ë°åÂá¶ÁêÜ
       *****************************************************************
        100-HAKKOU-SEC               SECTION.
       *
            MOVE    1                    TO  FLG-SYORI
-      *    «Ø§Œœ¬ŒÒ —¥π
+      *    Âπ¥„ÅÆÂíåÊö¶Â§âÊèõ
            PERFORM 1000-NEN-WAREKI-SEC
-      *    œ¢»÷§Œππø∑
+      *    ÈÄ£Áï™„ÅÆÊõ¥Êñ∞
            PERFORM 1001-RENNUM-SEC
            IF      SPA-ERRCD           =   SPACE   OR  "8000"
                CONTINUE
@@ -200,11 +200,11 @@
                GO      TO      100-HAKKOU-EXT
            END-IF
       *
-      *    ¥µº‘»÷πÊºË∆¿
+      *    ÊÇ£ËÄÖÁï™Âè∑ÂèñÂæó
            PERFORM 320-PTNUM-SET-SEC
       *
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *        2:…∏Ω‡πΩ¿Æ
+      *        2:Ê®ôÊ∫ñÊßãÊàê
                WHEN    "2"
                    MOVE    SPACE               TO  ORCSP01-PTNUM
                    MOVE    SPACE               TO  ORCSP01-PTNUM1
@@ -215,7 +215,7 @@
                            WRK-PTNUM3  DELIMITED  BY  " "
                         INTO            ORCSP01-PTNUM
                    END-STRING
-      *        3:≥»ƒ•πΩ¿Æ
+      *        3:Êã°ÂºµÊßãÊàê
                WHEN    "3"
                    MOVE    SPACE               TO  ORCSP01-PTNUM
                    MOVE    WRK-PTNUM1          TO  ORCSP01-PTNUM1
@@ -223,7 +223,7 @@
                    MOVE    WRK-PTNUM3          TO  ORCSP01-PTNUM3
            END-EVALUATE
       *
-      *    ≈–œø∫—§ﬂ§´§Œ•¡•ß•√•Ø
+      *    ÁôªÈå≤Ê∏à„Åø„Åã„ÅÆ„ÉÅ„Çß„ÉÉ„ÇØ
            IF      ORCSP01-PTNUM   NOT =   SPACE
                INITIALIZE                      ORCSPTIDAREA
                MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
@@ -231,7 +231,7 @@
                CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                                SPA-AREA
                IF      SPTID-RC            =   ZERO
-      *            ¥˚§À¥µº‘»÷πÊ§¨≈–œø§µ§Ï§∆§§§ÎæÏπÁ°¢∫∆≈ŸºË∆¿
+      *            Êó¢„Å´ÊÇ£ËÄÖÁï™Âè∑„ÅåÁôªÈå≤„Åï„Çå„Å¶„ÅÑ„ÇãÂ†¥Âêà„ÄÅÂÜçÂ∫¶ÂèñÂæó
                    MOVE    ZERO            TO  FLG-SYORI
                END-IF
            END-IF
@@ -241,11 +241,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ∫∆»Øπ‘ΩËÕ˝
+      *    ÂÜçÁô∫Ë°åÂá¶ÁêÜ
       *****************************************************************
        1001-RENNUM-SEC               SECTION.
       *
-      *!   ¥µº‘£…£ƒ»Øπ‘° ∫∆»Øπ‘∞ ≥∞§Œª˛°À
+      *!   ÊÇ£ËÄÖÔº©Ôº§Áô∫Ë°åÔºàÂÜçÁô∫Ë°å‰ª•Â§ñ„ÅÆÊôÇÔºâ
       *!   IF      ORCSP01-SYORI   NOT =   "3"
       *!       IF      SYS-1009-PTID       =   ALL "9"
       *!           MOVE    "8001"              TO  SPA-ERRCD
@@ -255,14 +255,14 @@
       *!       MOVE    SYS-1009-PTID       TO  ORCSP01-PTID
       *!   END-IF
       *
-      *    œ¢»÷∑ÂøÙªªƒÍ
+      *    ÈÄ£Áï™Ê°ÅÊï∞ÁÆóÂÆö
            MOVE    ZERO                TO  IDX1
            MOVE    ZERO                TO  IDXS
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *    …∏Ω‡πΩ¿Æ
+      *    Ê®ôÊ∫ñÊßãÊàê
                WHEN    "2"
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  IDX1
-      *    ≥»ƒ•πΩ¿Æ
+      *    Êã°ÂºµÊßãÊàê
                WHEN    "3"
                    MOVE    SYS-1009-KKCKSIRENNUMKETA   TO  IDX1
            END-EVALUATE
@@ -280,7 +280,7 @@
            IF     (IDXS                >   ZERO )  AND
                   (IDX1                >   ZERO )
                IF      SYS-1009-RENNUM(IDXS:IDX1)   =   ALL "9"
-      *            …∏Ω‡πΩ¿Æ§Œœ¢»÷πÊ§Œ§ﬂ§ŒæÏπÁ
+      *            Ê®ôÊ∫ñÊßãÊàê„ÅÆÈÄ£Áï™Âè∑„ÅÆ„Åø„ÅÆÂ†¥Âêà
                    IF      (SYS-1009-PTNUMKSIKBN   =   "2"  )  AND
                            (SYS-1009-HJNKSIKBN     =   "3"  OR  "4")
                        MOVE    "8002"              TO  SPA-ERRCD
@@ -298,7 +298,7 @@
            END-IF
            COMPUTE   SYS-1009-RENNUM   =   SYS-1009-RENNUM  +   1
       *
-      *    ¥µº‘»÷πÊ∫Œ»÷  ππø∑
+      *    ÊÇ£ËÄÖÁï™Âè∑Êé°Áï™  Êõ¥Êñ∞
            MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -317,23 +317,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘»÷πÊºË∆¿ΩËÕ˝
+      *    ÊÇ£ËÄÖÁï™Âè∑ÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        320-PTNUM-SET-SEC               SECTION.
       *
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *    °¸ 2:…∏Ω‡πΩ¿Æ
+      *    ‚óè 2:Ê®ôÊ∫ñÊßãÊàê
            WHEN    "2"
                EVALUATE    SYS-1009-HJNKSIKBN
-      *        <«Ø + œ¢»÷πÊ + ∏°æ⁄»÷πÊ>
+      *        <Âπ¥ + ÈÄ£Áï™Âè∑ + Ê§úË®ºÁï™Âè∑>
                WHEN    "1"
                    INITIALIZE                     LNK-CHKDGT-AREA
                    IF  SYS-1009-HJNKSINENKBN  =   "1"
-      *                œ¬ŒÒ
+      *                ÂíåÊö¶
       **************** MOVE    SPA-SYSYMDW(1:3)   TO  WRK-PTNUM1
                        MOVE    WRK-NEN-W          TO  WRK-PTNUM1
                    ELSE
-      *                ¿æŒÒ
+      *                Ë•øÊö¶
       *****************MOVE    SPA-SYSYMD (1:4)   TO  WRK-PTNUM1
                        MOVE    SYS-1009-NEN       TO  WRK-PTNUM1
                    END-IF
@@ -364,14 +364,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        MOVE    "1010"          TO  SPA-ERRCD
                    END-IF
-      *        <«Ø + œ¢»÷πÊ>
+      *        <Âπ¥ + ÈÄ£Áï™Âè∑>
                WHEN   "2"
                    IF  SYS-1009-HJNKSINENKBN     =   "1"
-      *                œ¬ŒÒ
+      *                ÂíåÊö¶
       *****************MOVE    SPA-SYSYMDW(1:3)  TO  WRK-PTNUM1
                        MOVE    WRK-NEN-W         TO  WRK-PTNUM1
                    ELSE
-      *                ¿æŒÒ
+      *                Ë•øÊö¶
       **************** MOVE    SPA-SYSYMD (1:4)  TO  WRK-PTNUM1
                        MOVE    SYS-1009-NEN      TO  WRK-PTNUM1
                    END-IF
@@ -392,7 +392,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  WRK-PTNUM2 (IDY:10)
                    END-IF
       *
-      *        <œ¢»÷πÊ + ∏°æ⁄»÷πÊ>
+      *        <ÈÄ£Áï™Âè∑ + Ê§úË®ºÁï™Âè∑>
                WHEN   "3"
                    MOVE    SPACE           TO  WRK-PTNUM1
                    IF  SYS-1009-HJNKSIRENNUMKETA   <=  10
@@ -419,7 +419,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    LNK-O-CHKDGT TO  WRK-PTNUM2 (1:1)
                    END-IF
       *
-      *        <œ¢»÷πÊ>
+      *        <ÈÄ£Áï™Âè∑>
                WHEN   "4"
                    IF  SYS-1009-HJNKSIRENNUMKETA   <=   10
                        COMPUTE IDY     =   10
@@ -442,10 +442,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-EVALUATE
       *
       *
-      *    °¸ 3:≥»ƒ•πΩ¿Æ
+      *    ‚óè 3:Êã°ÂºµÊßãÊàê
            WHEN    "3"
                EVALUATE    SYS-1009-KKCKSIKBN
-      *        <•’•Í°º + œ¢»÷πÊ + •’•Í°º>
+      *        <„Éï„É™„Éº + ÈÄ£Áï™Âè∑ + „Éï„É™„Éº>
                WHEN    "1"
                    IF  SYS-1009-KKCKSIRENNUMKETA  <=  10
                        COMPUTE     IDY    =   10
@@ -464,7 +464,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                           TO  WRK-PTNUM2 (IDY:10)
 
                    END-IF
-      *        <•’•Í°º + œ¢»÷πÊ>
+      *        <„Éï„É™„Éº + ÈÄ£Áï™Âè∑>
                WHEN   "2"
                    IF  SYS-1009-KKCKSIRENNUMKETA <=  10
                        COMPUTE   IDY    =   10
@@ -484,7 +484,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 
                    END-IF
       *
-      *        <œ¢»÷πÊ + •’•Í°º>
+      *        <ÈÄ£Áï™Âè∑ + „Éï„É™„Éº>
                WHEN   "3"
                    IF  SYS-1009-KKCKSIRENNUMKETA <=  10
                        COMPUTE   IDY    =   10
@@ -514,13 +514,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        320-PTNUM-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘»÷πÊ•¡•ß•√•ØΩËÕ˝
+      *    ÊÇ£ËÄÖÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        200-CHECK-SEC               SECTION.
       *
-      *    «Ø§Œœ¬ŒÒ —¥π
+      *    Âπ¥„ÅÆÂíåÊö¶Â§âÊèõ
            PERFORM 1000-NEN-WAREKI-SEC
-      *    ∑ÂøÙ•¡•ß•√•Ø
+      *    Ê°ÅÊï∞„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    ZERO                TO  WRK-CODSU
            PERFORM VARYING     IDX     FROM    20  BY  -1
                    UNTIL       IDX         <   1
@@ -536,10 +536,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2"
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
                    IF      SYS-1009-HJNKSINENKBN   =   "1"
-      *                œ¬ŒÒ
+      *                ÂíåÊö¶
                        MOVE    3                  TO  WRK-KETA2
                    ELSE
-      *                ¿æŒÒ
+      *                Ë•øÊö¶
                        MOVE    4                  TO  WRK-KETA2
                    END-IF
                    EVALUATE    SYS-1009-HJNKSIKBN
@@ -566,23 +566,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      200-CHECK-EXT
            END-IF
       *
-      *    œ¢»÷•¡•ß•√•Ø
+      *    ÈÄ£Áï™„ÉÅ„Çß„ÉÉ„ÇØ
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *        º´Õ≥πΩ¿Æ
+      *        Ëá™Áî±ÊßãÊàê
                WHEN    "1"
-      *            øÙª˙•¡•ß•√•Ø
+      *            Êï∞Â≠ó„ÉÅ„Çß„ÉÉ„ÇØ
                    IF     (SYS-1009-JIYKSIKBN  =   "2"  )  AND
                           (ORCSP01-PTNUM(1:WRK-KETA)    NOT NUMERIC)
                        MOVE    "1006"          TO  SPA-ERRCD
                    END-IF
-      *        …∏Ω‡πΩ¿Æ
+      *        Ê®ôÊ∫ñÊßãÊàê
                WHEN    "2"
-      *            øÙª˙•¡•ß•√•Ø° §π§Ÿ§∆øÙ√Õ§»§ §Î°À
+      *            Êï∞Â≠ó„ÉÅ„Çß„ÉÉ„ÇØÔºà„Åô„Åπ„Å¶Êï∞ÂÄ§„Å®„Å™„ÇãÔºâ
                    IF      ORCSP01-PTNUM(1:WRK-KETA)   NOT NUMERIC
                        MOVE    "1006"          TO  SPA-ERRCD
                        GO      TO      200-CHECK-EXT
                    END-IF
-      *            œ¢»÷πÊ§»§Œ•¡•ß•√•Ø
+      *            ÈÄ£Áï™Âè∑„Å®„ÅÆ„ÉÅ„Çß„ÉÉ„ÇØ
                    MOVE    SPACE               TO  WRK-RENNUM-X
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
                    COMPUTE WRK-KETAN       =   WRK-KETA2   +   1
@@ -597,20 +597,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  WRK-RENNUM-X
                    END-EVALUATE
       *TEST
-      *            «Ø§¨§¢§Îª˛¡∞«Ø§œ¬–æ›≥∞
+      *            Âπ¥„Åå„ÅÇ„ÇãÊôÇÂâçÂπ¥„ÅØÂØæË±°Â§ñ
                    MOVE    ZERO                TO  FLG-CHKNO
                    EVALUATE    SYS-1009-HJNKSIKBN
                        WHEN    "2"
                            COMPUTE WRK-K-NEN       =   WRK-KETAN
                                                    -   1
-      *                    œ¬ŒÒ
+      *                    ÂíåÊö¶
                            IF      SYS-1009-HJNKSINENKBN  =   "1"
                                IF      ORCSP01-PTNUM(1:WRK-K-NEN)
                                                    <   WRK-NEN-W
                                    MOVE    1           TO  FLG-CHKNO
                                END-IF
                            ELSE
-      *                    ¿æŒÒ
+      *                    Ë•øÊö¶
                                IF      ORCSP01-PTNUM(1:WRK-K-NEN)
                                                    <   SYS-1009-NEN
                                    MOVE    1           TO  FLG-CHKNO
@@ -625,7 +625,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        GO      TO      200-CHECK-EXT
                    END-IF
       *
-      *            ∏°æ⁄»÷πÊ•¡•ß•√•Ø
+      *            Ê§úË®ºÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØ
                    EVALUATE    SYS-1009-HJNKSIKBN
                        WHEN    "1"
                        WHEN    "3"
@@ -638,7 +638,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                MOVE    "1007"      TO  SPA-ERRCD
                            END-IF
                    END-EVALUATE
-      *        ≥»ƒ•πΩ¿Æ
+      *        Êã°ÂºµÊßãÊàê
                WHEN    "3"
                    COMPUTE WRK-KETA        =  SYS-1009-KKCKSIMAEKETA
                                            +  1
@@ -654,11 +654,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
       *H30.10
-      *    \ §œ•®•È°º
+      *    \ „ÅØ„Ç®„É©„Éº
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   WRK-CODSU )
                          OR   (SPA-ERRCD   NOT =   SPACE)
-      *        \ §œ•®•È°º
+      *        \ „ÅØ„Ç®„É©„Éº
                IF      ORCSP01-PTNUM(IDX:1)    =   "\"
                   MOVE    "1013"           TO  SPA-ERRCD
                END-IF
@@ -667,7 +667,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *!   IF      SPA-ERRCD       =   SPACE
       *!       IF      ORCSP01-PTID    =   ZERO
-      *!           ¥µº‘£…£ƒ§ŒºË∆¿
+      *!           ÊÇ£ËÄÖÔº©Ôº§„ÅÆÂèñÂæó
       *!           PERFORM 2001-PTID-SET-SEC
       *!       END-IF
       *!   END-IF
@@ -676,7 +676,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    øÙª˙ —¥πºË∆¿ΩËÕ˝
+      *    Êï∞Â≠óÂ§âÊèõÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        2002-SNUM-SEC               SECTION.
       *
@@ -694,11 +694,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        2002-SNUM-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘£…£ƒ§ŒºË∆¿ΩËÕ˝
+      *    ÊÇ£ËÄÖÔº©Ôº§„ÅÆÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        2001-PTID-SET-SEC               SECTION.
       *
-      *    ¥µº‘£…£ƒ»Øπ‘° ∫∆»Øπ‘∞ ≥∞§Œª˛°À
+      *    ÊÇ£ËÄÖÔº©Ôº§Áô∫Ë°åÔºàÂÜçÁô∫Ë°å‰ª•Â§ñ„ÅÆÊôÇÔºâ
            IF      ORCSP01-SYORI   NOT =   "3"
                IF      SYS-1009-PTID       =   ALL "9"
                    MOVE    "8001"              TO  SPA-ERRCD
@@ -708,7 +708,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SYS-1009-PTID       TO  ORCSP01-PTID
            END-IF
       *
-      *    ¥µº‘»÷πÊ∫Œ»÷  ππø∑
+      *    ÊÇ£ËÄÖÁï™Âè∑Êé°Áï™  Êõ¥Êñ∞
            MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -727,7 +727,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ∏°æ⁄»÷πÊ•¡•ß•√•Ø∏°∫˜ΩËÕ˝
+      *    Ê§úË®ºÁï™Âè∑„ÉÅ„Çß„ÉÉ„ÇØÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        2001-KENBAN-CHK-SEC          SECTION.
       *
@@ -758,7 +758,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    «Øœ¬ŒÒ —¥πΩËÕ˝
+      *    Âπ¥ÂíåÊö¶Â§âÊèõÂá¶ÁêÜ
       *****************************************************************
        1000-NEN-WAREKI-SEC             SECTION.
       *
@@ -773,7 +773,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      STS-DAY-RC1         =   ZERO
                MOVE    LNK-DAY1-YMD (2:3)  TO  WRK-NEN-W
            ELSE
-      *        •®•È°º§Œª˛°¢ ø¿Æ§À —¥π§π§Î
+      *        „Ç®„É©„Éº„ÅÆÊôÇ„ÄÅÂπ≥Êàê„Å´Â§âÊèõ„Åô„Çã
                MOVE    SYS-1009-NEN    TO  WRK-NEN-9
                COMPUTE WRK-NEN-WY      =   WRK-NEN-9
                                        -   1988
@@ -785,7 +785,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘»÷πÊ∫Œ»÷∏°∫˜
+      *    ÊÇ£ËÄÖÁï™Âè∑Êé°Áï™Ê§úÁ¥¢
       *****************************************************************
        980-PTGETNUM-GET-SEC          SECTION.
       *
@@ -817,7 +817,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø∆…π˛
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„ÇøË™≠Ëæº
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
       *
@@ -836,7 +836,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        960-KANRIMST-READ-EXT.
            EXIT.
       *****************************************************************
-      *    •∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -849,7 +849,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -864,7 +864,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

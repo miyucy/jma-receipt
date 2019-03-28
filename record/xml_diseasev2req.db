@@ -25,34 +25,34 @@ xml_diseasev2req {
 				Disease_Scode3		varchar(10);
 				Disease_Sname		varchar(40);
 			};
-#---------------> Æş³°¶èÊ¬
+#---------------> å…¥å¤–åŒºåˆ†
 			Disease_InOut			varchar(1);
-#---------------> ¼çÉÂ
+#---------------> ä¸»ç—…
 			Disease_Category		varchar(2);
-#---------------> µ¿¤¤¥Õ¥é¥°
+#---------------> ç–‘ã„ãƒ•ãƒ©ã‚°
 			Disease_SuspectedFlag		varchar(1);
 			Disease_StartDate		varchar(10);
 			Disease_EndDate			varchar(10);
-#---------------> Å¾µ¢¶èÊ¬
+#---------------> è»¢å¸°åŒºåˆ†
 			Disease_OutCome			varchar(2);
-#---------------> ¤³¤ì°Ê¹ß¡ÖNone¡×ÂĞ±ş¹àÌÜ
-#---------------> ¥«¥ë¥ÆÉÂÌ¾
+#---------------> ã“ã‚Œä»¥é™ã€ŒNoneã€å¯¾å¿œé …ç›®
+#---------------> ã‚«ãƒ«ãƒ†ç—…å
 			Disease_Karte_Name		varchar(80);
-#---------------> ¼À´µ¶èÊ¬
+#---------------> ç–¾æ‚£åŒºåˆ†
 			Disease_Class			varchar(4);
-#---------------> Êİ¸±Å¬ÍÑ
+#---------------> ä¿é™ºé©ç”¨
 			Insurance_Combination_Number	varchar(4);
-#---------------> ¥ì¥»¥×¥ÈÉ½¼¨
+#---------------> ãƒ¬ã‚»ãƒ—ãƒˆè¡¨ç¤º
 			Disease_Receipt_Print		varchar(4);
-#---------------> É½¼¨´ü´Ö
+#---------------> è¡¨ç¤ºæœŸé–“
 			Disease_Receipt_Print_Period	varchar(4);
-#---------------> Êİ¸±ÉÂÌ¾
+#---------------> ä¿é™ºç—…å
 			Insurance_Disease		varchar(4);
-#---------------> Âà±¡¾ÚÌÀ½ñ
+#---------------> é€€é™¢è¨¼æ˜æ›¸
 			Discharge_Certificate		varchar(4);
-#---------------> ¸¶¼À´µ¶èÊ¬
+#---------------> åŸç–¾æ‚£åŒºåˆ†
 			Main_Disease_Class		varchar(4);
-#---------------> ¹çÊ»¾É¶èÊ¬
+#---------------> åˆä½µç—‡åŒºåˆ†
 			Sub_Disease_Class		varchar(4);
 		}[50];
 	};

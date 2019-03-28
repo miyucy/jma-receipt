@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- ÆÃºàÉÊÌÜ¡¦»»Äê¥Ç¡¼¥¿¥Ù¡¼¥¹¡¿ºßÂğ¡¦Ä´ºŞ
+-- ç‰¹æå“ç›®ãƒ»ç®—å®šãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ï¼åœ¨å®…ãƒ»èª¿å‰¤
 -- Create Date : 2017/03/18
 --
 
@@ -8,7 +8,7 @@ CREATE SCHEMA IF NOT EXISTS
     master
 ;
 
--- ÉÊÌÜ¾ğÊó
+-- å“ç›®æƒ…å ±
 
 CREATE TABLE master.tbl_material_h_m (
 KANRINO    bigint default 0,
@@ -29,7 +29,7 @@ UPHMS      character varying(6)
 ALTER TABLE ONLY master.tbl_material_h_m
   ADD CONSTRAINT tbl_material_h_m_primary_key PRIMARY KEY (KANRINO);
 
--- ÉÊÌÜ¾ğÊó¡¿À½Â¤ÈÎÇä¶È¼Ô
+-- å“ç›®æƒ…å ±ï¼è£½é€ è²©å£²æ¥­è€…
 
 CREATE TABLE master.tbl_material_h_c (
 COMPANYCD smallint default 0,
@@ -42,7 +42,7 @@ UPHMS     character varying(6)
 ALTER TABLE ONLY master.tbl_material_h_c
   ADD CONSTRAINT tbl_material_h_c_primary_key PRIMARY KEY (COMPANYCD);
 
--- ÉÊÌÜ¾ğÊó¡¿µ¬³Ê
+-- å“ç›®æƒ…å ±ï¼è¦æ ¼
 
 CREATE TABLE master.tbl_material_h_k (
 KIKAKUCD smallint default 0,
@@ -55,7 +55,7 @@ UPHMS    character varying(6)
 ALTER TABLE ONLY master.tbl_material_h_k
   ADD CONSTRAINT tbl_material_h_k_primary_key PRIMARY KEY (KIKAKUCD);
 
--- ÉÊÌÜ¾ğÊó¡¿À½ÉÊÌ¾
+-- å“ç›®æƒ…å ±ï¼è£½å“å
 
 CREATE TABLE master.tbl_material_h_n (
 SNAMECD smallint default 0,
@@ -70,7 +70,7 @@ ALTER TABLE ONLY master.tbl_material_h_n
 
 CREATE INDEX idx_material_h_n_sname ON master.tbl_material_h_n USING btree (sname);
 
--- ´ØÏ¢¼êµ»¾ğÊó
+-- é–¢é€£æ‰‹æŠ€æƒ…å ±
 
 CREATE TABLE master.tbl_material_k (
 SRYCD   character(9) NOT NULL,
@@ -85,7 +85,7 @@ UPHMS   character varying(6)
 ALTER TABLE ONLY master.tbl_material_k
   ADD CONSTRAINT tbl_material_k_primary_key PRIMARY KEY (SRYCD, RENNUM1, RENNUM2);
 
--- Å¬±ş¼À´µ¾ğÊó
+-- é©å¿œç–¾æ‚£æƒ…å ±
 
 CREATE TABLE master.tbl_material_s (
 SRYCD     character(9) NOT NULL,
@@ -102,7 +102,7 @@ UPHMS     character varying(6)
 ALTER TABLE ONLY master.tbl_material_s
   ADD CONSTRAINT tbl_material_s_primary_key PRIMARY KEY (SRYCD, RENNUM1, RENNUM2);
 
--- ÉÊÌÜ¾ğÊó¥Ó¥å¡¼
+-- å“ç›®æƒ…å ±ãƒ“ãƒ¥ãƒ¼
 
 CREATE VIEW
     tbl_material_h
@@ -133,10 +133,10 @@ ORDER BY
 )
 ;
 
--- ´ØÏ¢¼êµ»¾ğÊó¥Ó¥å¡¼
+-- é–¢é€£æ‰‹æŠ€æƒ…å ±ãƒ“ãƒ¥ãƒ¼
 
 CREATE VIEW tbl_material_k AS SELECT * FROM master.tbl_material_k;
 
--- Å¬±ş¼À´µ¾ğÊó
+-- é©å¿œç–¾æ‚£æƒ…å ±
 
 CREATE VIEW tbl_material_s AS SELECT * FROM master.tbl_material_s;

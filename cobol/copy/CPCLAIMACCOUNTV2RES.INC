@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ì¥¹¥Ý¥ó¥¹£Ã£Ì£Á£É£ÍÀÁµáÁ÷¿®¼èÆÀ(xml2)
+      *    ï¼¡ï¼°ï¼©ãƒ¬ã‚¹ãƒãƒ³ã‚¹ï¼£ï¼¬ï¼¡ï¼©ï¼­è«‹æ±‚é€ä¿¡å–å¾—(xml2)
       *                                      COPY (CPCLAIMACCOUNTV2RES.INC)
       ******************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
        01  XML-CLAIM-ACCOUNTV2RES.
            02  CLACRES-CONTEXT           PIC S9(9)   BINARY.
@@ -29,277 +29,277 @@
            02  CLACRES-MODE              PIC S9(9)   BINARY.
            02  CLACRES-RECORDNAME        PIC X(128).
            02  CLACRES-CLAIM-FRONT.
-      *        ¼Â»ÜÆü
+      *        å®Ÿæ–½æ—¥
                03  CLACRES-INFORMATION-DATE    PIC X(10).
-      *        ¼Â»Ü»þ´Ö
+      *        å®Ÿæ–½æ™‚é–“
                03  CLACRES-INFORMATION-TIME    PIC X(8).
-      *        ÊÖµÑ¥³¡¼¥É
+      *        è¿”å´ã‚³ãƒ¼ãƒ‰
                03  CLACRES-API-RESULT          PIC X(2).
-      *        ÊÖµÑ¥á¥Ã¥»¡¼¥¸
+      *        è¿”å´ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                03  CLACRES-API-RESULT-MSG      PIC X(100).
-      *        ´µ¼ÔÈÖ¹æ
+      *        æ‚£è€…ç•ªå·
                03  CLACRES-PATIENTID           PIC X(20).
       *
-      * ¼Â»ÜÆü(CCYY-MM-DDTHH:MM:SS·Á¼°)
+      * å®Ÿæ–½æ—¥(CCYY-MM-DDTHH:MM:SSå½¢å¼)
                03  CLACRES-INFORMATION-HEN     PIC X(19).
-      * ´µ¼Ô¼çID
+      * æ‚£è€…ä¸»ID
                03  CLACRES-PTID1               PIC X(20).
-      * ´µ¼Ô¼çID¤Î¥Æ¡¼¥Ö¥ëÌ¾
+      * æ‚£è€…ä¸»IDã®ãƒ†ãƒ¼ãƒ–ãƒ«å
                03  CLACRES-IDTYPE1        PIC X(08).
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                03  CLACRES-CRE001-PERSONALID   PIC X(20).
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLACRES-CRE001-FULLNAME     PIC X(100).
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLACRES-CRE001-FAMILYNAME   PIC X(50).
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLACRES-CRE001-GIVENNAME    PIC X(50).
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                03  CLACRES-CRE001-MIDDLENAME   PIC X(50).
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                03  CLACRES-CRE001-PREFIX       PIC X(50).
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                03  CLACRES-CRE001-DEGREE       PIC X(50).
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                03  CLACRES-CRE001-FACILITYNAME PIC X(50).
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                03  CLACRES-CRE001-FACILITYID   PIC X(20).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                03  CLACRES-CRE001-DPERTNAME    PIC X(50).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                03  CLACRES-CRE001-DPERTID      PIC X(20).
-      * ºîÀ®¼Ô ½»½ê
+      * ä½œæˆè€… ä½æ‰€
                03  CLACRES-CRE001-ADRFULLNAME  PIC X(400).
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                03  CLACRES-CRE001-ADRCLASS     PIC X(10).
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸©
+      * ä½œæˆè€… éƒ½é“åºœçœŒ
                03  CLACRES-CRE001-ADRPREF      PIC X(20).
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡
                03  CLACRES-CRE001-ADRCITY      PIC X(20).
-      * ºîÀ®¼Ô Ä®¡¢Â¼
+      * ä½œæˆè€… ç”ºã€æ‘
                03  CLACRES-CRE001-ADRTOWN      PIC X(20).
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰
                03  CLACRES-CRE001-ADRHOMENUM   PIC X(200).
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                03  CLACRES-CRE001-ZIP          PIC X(8).
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                03  CLACRES-CRE001-COUNTRY      PIC X(10).
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                03  CLACRES-CRE001-EMAIL        PIC X(100).
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª
                03  CLACRES-CRE001-PHONEAREA    PIC X(10).
-      * ºîÀ®¼Ô ¶ÉÈÖ
+      * ä½œæˆè€… å±€ç•ª
                03  CLACRES-CRE001-PHONECITY    PIC X(10).
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ
+      * ä½œæˆè€… åŠ å…¥ç•ªå·
                03  CLACRES-CRE001-PHONENUM     PIC X(10).
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                03  CLACRES-CRE001-PHONEEXT     PIC X(10).
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                03  CLACRES-CRE001-PHONECOUNTRY PIC X(10).
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                03  CLACRES-CRE001-PHONEMEMO    PIC X(100).
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLACRES-CRE001-PHONEEQUIP   PIC X(10).
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
                03  CLACRES-CRE001-LICENSE      PIC X(20).
-      *## ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<accessRight permit="all" />) const
+      *## ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<accessRight permit="all" />) const
                03  CLACRES-M-RI401-ACC1             PIC X(50).
-      *## ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Amount) const
+      *## ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Amount) const
                03  CLACRES-M-RI401-TITLE            PIC X(20).
       *
-      * [ÅÀ¿ô¶â³Û¥â¥¸¥å¡¼¥ë]
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * [ç‚¹æ•°é‡‘é¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«]
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
                03  CLACRES-UID1                PIC X(36).
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
                03  CLACRES-CONFIRMDATE1        PIC X(10).
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                03  CLACRES-CRE401-PERSONALID   PIC X(20).
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLACRES-CRE401-FULLNAME     PIC X(100).
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLACRES-CRE401-FAMILYNAME   PIC X(50).
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                03  CLACRES-CRE401-GIVENNAME    PIC X(50).
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                03  CLACRES-CRE401-MIDDLENAME   PIC X(50).
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                03  CLACRES-CRE401-PREFIX       PIC X(50).
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                03  CLACRES-CRE401-DEGREE       PIC X(50).
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                03  CLACRES-CRE401-FACILITYNAME PIC X(50).
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                03  CLACRES-CRE401-FACILITYID   PIC X(20).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                03  CLACRES-CRE401-DPERTNAME    PIC X(50).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                03  CLACRES-CRE401-DPERTID      PIC X(20).
-      * ºîÀ®¼Ô ½»½ê
+      * ä½œæˆè€… ä½æ‰€
                03  CLACRES-CRE401-ADRFULLNAME  PIC X(400).
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                03  CLACRES-CRE401-ADRCLASS     PIC X(10).
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸©
+      * ä½œæˆè€… éƒ½é“åºœçœŒ
                03  CLACRES-CRE401-ADRPREF      PIC X(20).
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡
                03  CLACRES-CRE401-ADRCITY      PIC X(20).
-      * ºîÀ®¼Ô Ä®¡¢Â¼
+      * ä½œæˆè€… ç”ºã€æ‘
                03  CLACRES-CRE401-ADRTOWN      PIC X(20).
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰
                03  CLACRES-CRE401-ADRHOMENUM   PIC X(200).
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                03  CLACRES-CRE401-ZIP          PIC X(8).
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                03  CLACRES-CRE401-COUNTRY      PIC X(10).
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                03  CLACRES-CRE401-EMAIL        PIC X(100).
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª
                03  CLACRES-CRE401-PHONEAREA    PIC X(10).
-      * ºîÀ®¼Ô ¶ÉÈÖ
+      * ä½œæˆè€… å±€ç•ª
                03  CLACRES-CRE401-PHONECITY    PIC X(10).
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ
+      * ä½œæˆè€… åŠ å…¥ç•ªå·
                03  CLACRES-CRE401-PHONENUM     PIC X(10).
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                03  CLACRES-CRE401-PHONEEXT     PIC X(10).
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                03  CLACRES-CRE401-PHONECOUNTRY PIC X(10).
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                03  CLACRES-CRE401-PHONEMEMO    PIC X(100).
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                03  CLACRES-CRE401-PHONEEQUIP   PIC X(10).
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
                03  CLACRES-CRE401-LICENSE      PIC X(20).
-      *### ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />)                const
+      *### ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />)                const
                03  CLACRES-M-RX401-I1               PIC X(20).
       *
-      * ÅÀ¿ô¶â³Û¥â¥¸¥å¡¼¥ë¤Î¾õÂÖ(claimA:status) (account¤òÀßÄê)
+      * ç‚¹æ•°é‡‘é¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®çŠ¶æ…‹(claimA:status) (accountã‚’è¨­å®š)
                03  CLACRES-STATUS              PIC X(07).
-      *¥ª¡¼¥À¡¼È¯¹ÔÆü»þ
+      *ã‚ªãƒ¼ãƒ€ãƒ¼ç™ºè¡Œæ—¥æ™‚
                03  CLACRES-ORDER-TIME          PIC X(19).
-      *¼Â»ÜÍ½ÄêÆü»þ
+      *å®Ÿæ–½äºˆå®šæ—¥æ™‚
                03  CLACRES-APPOINT-TIME        PIC X(19).
-      *¼õÉÕÆü»þ
+      *å—ä»˜æ—¥æ™‚
                03  CLACRES-REGIST-TIME         PIC X(19).
-      *¼Â»ÜÆü»þ
+      *å®Ÿæ–½æ—¥æ™‚
                03  CLACRES-PERFORM-TIME        PIC X(19).
-      *²ñ·×½ªÎ»Æü»þ
+      *ä¼šè¨ˆçµ‚äº†æ—¥æ™‚
                03  CLACRES-ACCOUNT-TIME        PIC X(19).
-      *Æþ³°¶èÊ¬ (true OR false)
+      *å…¥å¤–åŒºåˆ† (true OR false)
                03  CLACRES-NYUGAIKBN           PIC X(05).
-      *»þ´Ö³°¶èÊ¬
+      *æ™‚é–“å¤–åŒºåˆ†
                03  CLACRES-JIKANNGAIKBN        PIC X(01).
-      *»ÈÍÑÊÝ¸±£Õ£É£Ä
+      *ä½¿ç”¨ä¿é™ºï¼µï¼©ï¼¤
                03  CLACRES-HOKEN-UID           PIC X(36).
-      *¶¦ÄÌ°å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+      *å…±é€šåŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
                03  CLACRES-DEFAULT-TABLED      PIC X(100).
-      *¿ÇÎÅ²ÊÌ¾¾Î
+      *è¨ºç™‚ç§‘åç§°
                03  CLACRES-SRYKA-NAME          PIC X(12).
-      * ¿ÇÎÅ²ÊÌ¾¾Î¤ÎÉ½µ­Ë¡ (mmlDp:repCode)
+      * è¨ºç™‚ç§‘åç§°ã®è¡¨è¨˜æ³• (mmlDp:repCode)
                03  CLACRES-SRYKA-REPCODE       PIC X(01).
-      * ¿ÇÎÅ²ÊID
+      * è¨ºç™‚ç§‘ID
                03  CLACRES-SRYKA-ID            PIC X(02).
-      * ¿ÇÎÅ²ÊID¤Î¼ïÎà (mmlCm:type)
+      * è¨ºç™‚ç§‘IDã®ç¨®é¡ž (mmlCm:type)
                03  CLACRES-SRYKA-IDCODE        PIC X(07).
-      * ¿ÇÎÅÉÂÅïÌ¾¾Î
+      * è¨ºç™‚ç—…æ£Ÿåç§°
                03  CLACRES-SNRBT-NAME          PIC X(12).
-      * ¿ÇÎÅÉÂÅïÌ¾¾Î¤ÎÉ½µ­Ë¡ (mmlDp:repCode)
+      * è¨ºç™‚ç—…æ£Ÿåç§°ã®è¡¨è¨˜æ³• (mmlDp:repCode)
                03  CLACRES-SNRBT-REPCODE       PIC X(01).
-      * ¿ÇÎÅÉÂÅïID
+      * è¨ºç™‚ç—…æ£ŸID
                03  CLACRES-SNRBT-ID            PIC X(02).
-      * ¿ÇÎÅÉÂÅïID¤Î¼ïÎà (mmlCm:type)
+      * è¨ºç™‚ç—…æ£ŸIDã®ç¨®é¡ž (mmlCm:type)
                03  CLACRES-SNRBT-IDCODE        PIC X(07).
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ
+      * å¥åº·ä¿é™ºç¨®åˆ¥
                03  CLACRES-HKNSBT              PIC X(20).
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ¥³¡¼¥É
+      * å¥åº·ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰
                03  CLACRES-HKNSBTCODE          PIC X(2).
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ¥³¡¼¥É¥Æ¡¼¥Ö¥ëÌ¾
+      * å¥åº·ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«å
                03  CLACRES-HKNSBTTBL           PIC X(7).
       *
                03  CLACRES-SRYTBL             OCCURS  30.
-      *¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É (claimA:classCode)
+      *è¨ºç™‚è¡Œç‚ºåŒºåˆ†ã‚³ãƒ¼ãƒ‰ (claimA:classCode)
                    05  CLACRES-SRYCD          PIC  X(03).
-      * ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claimA:classCodeId)
+      * è¨ºç™‚è¡Œç‚ºåŒºåˆ†ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claimA:classCodeId)
                    05  CLACRES-SRYCDTBL       PIC  X(08).
-      *¿ÇÎÅ¹Ô°Ù¶èÊ¬Ì¾
+      *è¨ºç™‚è¡Œç‚ºåŒºåˆ†å
                    05  CLACRES-SRYNAME        PIC  X(40).
-      *¹ç·×ÀÁµáÅÀ¿ô(ZÊÔ½¸)
+      *åˆè¨ˆè«‹æ±‚ç‚¹æ•°(Zç·¨é›†)
                    05  CLACRES-TENNSUALL      PIC  X(16).
-      *¹ç·×ÀÁµá¶â³Û(ZÊÔ½¸)
+      *åˆè¨ˆè«‹æ±‚é‡‘é¡(Zç·¨é›†)
                    05  CLACRES-GINGAKUALL     PIC  X(16).
-      *ÍÑË¡
+      *ç”¨æ³•
                    05  CLACRES-ADMINISTRATION
                                        PIC  X(50).
-      *ÍÑË¡¥³¡¼¥É
+      *ç”¨æ³•ã‚³ãƒ¼ãƒ‰
                    05  CLACRES-ADMINCODE      PIC  X(09).
-      * ÍÑË¡¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claimA:adminCodeId)
+      * ç”¨æ³•ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claimA:adminCodeId)
                    05  CLACRES-ADMINCODETBL   PIC  X(08).
-      *ÍÑË¡¥³¥á¥ó¥È
+      *ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆ
                    05  CLACRES-ADMMEMO        PIC  X(100).
-      *²ó¿ôËô¤ÏÆü¿ô(ZÊÔ½¸)
+      *å›žæ•°åˆã¯æ—¥æ•°(Zç·¨é›†)
                    05  CLACRES-KAISU          PIC  X(16).
-      *¼êµ»ÎÁ¹ç·×ÅÀ¿ô(ZÊÔ½¸)
+      *æ‰‹æŠ€æ–™åˆè¨ˆç‚¹æ•°(Zç·¨é›†)
                    05  CLACRES-SYUGI          PIC  X(16).
-      *ºàÎÁÎÁ¹ç·×ÅÀ¿ô(ZÊÔ½¸)
+      *ææ–™æ–™åˆè¨ˆç‚¹æ•°(Zç·¨é›†)
                    05  CLACRES-ZAIRYOU        PIC  X(16).
-      *ÌôºÞÎÁ¹ç·×ÅÀ¿ô(ZÊÔ½¸)
+      *è–¬å‰¤æ–™åˆè¨ˆç‚¹æ•°(Zç·¨é›†)
                    05  CLACRES-YAKUZAI        PIC  X(16).
-      *Êñ³ç¶èÊ¬Êñ³ç¥Õ¥é¥°(true OR false)
+      *åŒ…æ‹¬åŒºåˆ†åŒ…æ‹¬ãƒ•ãƒ©ã‚°(true OR false)
                    05  CLACRES-PPSFLG         PIC  X(05).
-      *ÌÀºÙ¥Æ¡¼¥Ö¥ë
+      *æ˜Žç´°ãƒ†ãƒ¼ãƒ–ãƒ«
                    05  CLACRES-SRYTBL       OCCURS  30.
-      *¿ÇÎÅ¼ïÊÌ¶èÊ¬¥³¡¼¥É(0:¼êµ»¡¢1:ºàÎÁ,2:ÌôºÞ)
+      *è¨ºç™‚ç¨®åˆ¥åŒºåˆ†ã‚³ãƒ¼ãƒ‰(0:æ‰‹æŠ€ã€1:ææ–™,2:è–¬å‰¤)
                        07  CLACRES-SRYSYUBETSU
                                        PIC  X(01).
-      * ¿ÇÎÅ¼ïÊÌ¶èÊ¬¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claimA:subclassCodeId)
+      * è¨ºç™‚ç¨®åˆ¥åŒºåˆ†ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claimA:subclassCodeId)
                        07  CLACRES-SRYSYUBETSUTBL
                                        PIC  X(08).
-      *°å»öÀÁµá¥³¡¼¥É(S + ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É)
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰(S + è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰)
                        07  CLACRES-IJICD      PIC  X(10).
-      *°å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
                        07  CLACRES-TBLID      PIC  X(20).
-      *°å»öÀÁµá¥³¡¼¥É
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰
                        07  CLACRES-ALSCODE    PIC  X(10).
-      *°å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
                        07  CLACRES-ALSTBLID   PIC  X(20).
-      *°å»öÀÁµá¥³¡¼¥ÉÌ¾¾Î
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰åç§°
                        07  CLACRES-ALSNAME    PIC  X(80).
-      *¿ôÎÌ(ZÊÔ½¸)
+      *æ•°é‡(Zç·¨é›†)
                        07  CLACRES-SURYO      PIC  X(12).
-      *¿ôÎÌ¥³¡¼¥É
+      *æ•°é‡ã‚³ãƒ¼ãƒ‰
                        07  CLACRES-SURYOCD    PIC  X(02).
-      * ¿ôÎÌ¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claimA:numberCodeId)
+      * æ•°é‡ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claimA:numberCodeId)
                        07  CLACRES-SURYOCDTBL PIC  X(08).
-      *Ã±°Ì
+      *å˜ä½
                        07  CLACRES-TANI       PIC  X(20).
-      *ÀÁµáÅÀ¿ô(ZÊÔ½¸)
+      *è«‹æ±‚ç‚¹æ•°(Zç·¨é›†)
                        07  CLACRES-SEIKYUTEN  PIC  X(16).
-      *ÌÀºÙÃ±²Á(ZÊÔ½¸)
+      *æ˜Žç´°å˜ä¾¡(Zç·¨é›†)
                        07  CLACRES-MEISAITANKA
                                        PIC  X(16).
-      *½êÍ×»þ´Ö(PTnHnM,5»þ´Ö23Ê¬¢ªPT5H23M)
+      *æ‰€è¦æ™‚é–“(PTnHnM,5æ™‚é–“23åˆ†â†’PT5H23M)
                        07  CLACRES-DURATION   PIC  X(19).
-      *Éô°Ì
+      *éƒ¨ä½
                        07  CLACRES-LOCATION   PIC  X(50).
-      *¥Õ¥£¥ë¥à
-      *¥Õ¥£¥ë¥à¥µ¥¤¥º
+      *ãƒ•ã‚£ãƒ«ãƒ 
+      *ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚º
                        07  CLACRES-FILMSIZE   PIC  X(50).
-      *¥Õ¥£¥ë¥à¥µ¥¤¥º¥³¡¼¥É
+      *ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚ºã‚³ãƒ¼ãƒ‰
                        07  CLACRES-FILMSIZECD
                                               PIC  X(02).
-      * ¥Õ¥£¥ë¥à¥µ¥¤¥º¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claimA:numberCodeId)
+      * ãƒ•ã‚£ãƒ«ãƒ ã‚µã‚¤ã‚ºã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claimA:numberCodeId)
                        07  CLACRES-FILMSIZECDTBL
                                               PIC  X(08).
-      *¥Õ¥£¥ë¥àÊ¬³ä
+      *ãƒ•ã‚£ãƒ«ãƒ åˆ†å‰²
                        07  CLACRES-FILMDEV    PIC  X(02).
-      *¥Õ¥£¥ë¥àËç¿ô(ZÊÔ½¸)
+      *ãƒ•ã‚£ãƒ«ãƒ æžšæ•°(Zç·¨é›†)
                        07  CLACRES-FILMNUM    PIC  X(06).
-      *´ØÏ¢¼êµ»
+      *é–¢é€£æ‰‹æŠ€
                        07  CLACRES-EVENT      PIC  X(50).
-      *³«»ÏÆü
+      *é–‹å§‹æ—¥
                        07  CLACRES-EVENTSTART PIC  X(10).
-      *½ªÎ»Æü
+      *çµ‚äº†æ—¥
                        07  CLACRES-EVENTEND   PIC  X(10).
-      *¥á¥â
+      *ãƒ¡ãƒ¢
                        07  CLACRES-SRYMEMO    PIC  X(100).
-      *³ç¤ê¥á¥â
+      *æ‹¬ã‚Šãƒ¡ãƒ¢
                    05  CLACRES-MEMO           PIC  X(1000).
 

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ֹ��Ѵ�         COPY  (CPPTNUM.INC)     *
+      *    患者番号変換         COPY  (CPPTNUM.INC)     *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTNUM-REC.
       *
            03  PTNUM-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTNUM-HOSPNUM              PIC 9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTNUM-PTID                PIC  9(10).
-      *�����ֹ�
+      *患者番号
            03  PTNUM-PTNUM                   PIC  X(20).
-      *�ݸ��ɣ�
+      *保険ＩＤ
            03  PTNUM-HKNID                   PIC  9(10).
-      *����ɣ�
+      *公費ＩＤ
            03  PTNUM-KOHID                   PIC  9(10).
-      *��ư�ȹ礻�ֹ�
+      *自動組合せ番号
            03  PTNUM-AUTOCOMBINUM            PIC  9(04).
-      *��ư�ȹ礻�ֹ�
+      *手動組合せ番号
            03  PTNUM-MANUCOMBINUM            PIC  9(04).
-      *�ƥ��ȴ����ֹ��ʬ
+      *テスト患者番号区分
            03  PTNUM-TSTPTNUMKBN             PIC  X(01).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTNUM-TERMID                  PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTNUM-OPID                    PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTNUM-CREYMD                  PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTNUM-UPYMD                   PIC  X(08).
-      *��������
+      *更新時間
            03  PTNUM-UPHMS                   PIC  X(06).

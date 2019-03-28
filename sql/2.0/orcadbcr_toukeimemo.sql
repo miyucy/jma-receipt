@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- Åı·×½èÍı¥Ñ¥é¥á¡¼¥¿³Ğ½ñ         --
+-- çµ±è¨ˆå‡¦ç†ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è¦šæ›¸         --
 --                                --
 -- Table Name  : TBL_TOUKEIMEMO   --
 -- Create Date : 2004/09/29       --

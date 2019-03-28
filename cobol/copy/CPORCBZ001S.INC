@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,26 +16,26 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¶õ¤­´µ¼ÔÈÖ¹æ°ìÍ÷¥Ñ¥é¥á¥¿¡¡   COPY (CPORCBZ001S.INC)
+      *    ç©ºãæ‚£è€…ç•ªå·ä¸€è¦§ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€   COPY (CPORCBZ001S.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCBZ001SAREA.
       *
-      *    ½ªÎ»¥Õ¥é¥° ¡Ê£±¡§½ªÎ»¡Ë
+      *    çµ‚äº†ãƒ•ãƒ©ã‚° ï¼ˆï¼‘ï¼šçµ‚äº†ï¼‰
            03  ORCBZ001S-ENDFLG        PIC 9(01).
-      *    ºÇÂç·ï¿ô
+      *    æœ€å¤§ä»¶æ•°
            03  ORCBZ001S-MAX-CNT       PIC 9(04).
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
            03  ORCBZ001S-PTNUM-AREA.
                05  ORCBZ001S-PTNUM-G       OCCURS   120.
                    07  ORCBZ001S-PTNUM     PIC X(20).
-      *    ºÇ½ª´µ¼ÔÈÖ¹æ
+      *    æœ€çµ‚æ‚£è€…ç•ªå·
            03  ORCBZ001S-LST-PTNUM     PIC X(20).
       *
-      *    ¥¨¥é¡¼¥³¡¼¥É ¡Ê1:ÂÐ¾Ý³°,9:¥¨¥é¡¼¡Ë
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰ ï¼ˆ1:å¯¾è±¡å¤–,9:ã‚¨ãƒ©ãƒ¼ï¼‰
            03  ORCBZ001S-RC            PIC 9(04).
       *

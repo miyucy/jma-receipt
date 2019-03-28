@@ -25,7 +25,7 @@ CREATE TABLE tbl_order (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_order IS 'Æþ±¡¥ª¡¼¥À';
+COMMENT ON TABLE tbl_order IS 'å…¥é™¢ã‚ªãƒ¼ãƒ€';
 
 ALTER TABLE ONLY tbl_order
     ADD CONSTRAINT tbl_order_primary_key PRIMARY KEY (hospnum, karte_key, ordernum);

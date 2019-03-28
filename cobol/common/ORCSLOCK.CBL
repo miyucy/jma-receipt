@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       * 
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSLOCK.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��¾����
-      *  ����ݡ��ͥ��̾  : ��¾����ģ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/08/08    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 排他管理
+      *  コンポーネント名  : 排他制御ＤＢ制御
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/08/08    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.04.00    NACL-¿��Ǽ  07/01/23  ������Ͽ�����Ź԰١���׾Ȳ����¾����
-      *  03.04.00    NACL-����    07/02/23  �ǡ��������å�����¾���ɲ�
-      *  03.05.00    NACL-����    07/05/09  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.00    NACL-多々納  07/01/23  患者登録、診療行為、会計照会の排他修正
+      *  03.04.00    NACL-太田    07/02/23  データチェックの排他を追加
+      *  03.05.00    NACL-太田    07/05/09  グループ診療対応
       *
-      *  04.05.01    NACL-����    10/02/27  �ƻ���������б�
-      *  04.08.00    NACL-¿��Ǽ  17/04/XX  ���դ���¾�ɲ�
+      *  04.05.01    NACL-竹田    10/02/27  監視ログ出力対応
+      *  04.08.00    NACL-多々納  17/04/XX  受付の排他追加
       *****************************************************************
 001200*
 001300 ENVIRONMENT             DIVISION.
@@ -42,7 +42,7 @@
 007000 DATA                    DIVISION.
 010200 WORKING-STORAGE         SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
@@ -51,7 +51,7 @@
            03  FLG-MAP                                 PIC 9(01).
            03  WRK-LOCK-MATCH-FLG                      PIC S9(09).
            03  FLG-ALLCHK                              PIC 9(01).
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
       *
@@ -66,7 +66,7 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC 9(06).
                05  WRK-SRYDD           PIC 9(02).  
-      *������ɣ�
+      *シェルＩＤ
            03  WRK-LDNAME              PIC X(40).
            03  WRK-LD                  PIC X(20).
            03  WRK-WINDOW              PIC X(10).
@@ -74,7 +74,7 @@
            03  WRK-OPID                PIC X(16).
            03  WRK-IPV4-TABLE.
              05 WRK-IPV4-TBL           PIC 9(03)  OCCURS 4.
-      *H27.2  API��
+      *H27.2  API用
       *    MCP-TERMID
            03  WRK-MCP-TERM            PIC X(64).
       *
@@ -171,25 +171,25 @@
                07  CNST-IPV4-1-X        PIC X(01).
                07  CNST-IPV4-1-N        PIC 9(03).
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
            COPY    "CPTBLLOCK.INC".
            COPY    "CPLDMAP.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -200,7 +200,7 @@
       **************************************************************************
       *
        LINKAGE                 SECTION.
-      *   ��¾����ģ����極��
+      *   排他制御ＤＢ制御サブ
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
            COPY    "CPORCSLOCK.INC".
@@ -213,7 +213,7 @@
                ORCSLOCKAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -229,16 +229,16 @@
            MOVE        ZERO            TO  SLOCK-RETURN  
       *
            MOVE    ZERO            TO  SPA-LOCK
-      *H27.2  API�б�
+      *H27.2  API対応
            MOVE    MCP-TERM        TO  WRK-MCP-TERM
       *
-      *    �����⡼�ɤΥ����å�
+      *    処理モードのチェック
            EVALUATE    SLOCK-MODE
-      *    �����å����̣ϣã�
+      *    チェック＆ＬＯＣＫ
                WHEN    1
-      *            ���̣ɣĤ���̳�̣Ĥ򸡺�����
+      *            画面ＩＤより業務ＬＤを検索する
                    PERFORM 1101-LD-GET-SEC
-      *            ��̳�ˤ����¾�ե饰��̵���ˤ���
+      *            業務により排他フラグを無効にする
                    IF      FLG-ALLCHK      =   ZERO
                        IF  SPA-HAITAFLG    =      ZERO
                            MOVE     ZERO   TO     SLOCK-RETURN
@@ -248,13 +248,13 @@
                    ELSE
                        PERFORM 110-CHK-SEC
                    END-IF
-      *    �̣ϣã˲��
+      *    ＬＯＣＫ解除
                WHEN    2
                        PERFORM 120-RESET-SEC
-      *    �̣ϣã˥ꥻ�åȡ�ü���ɣ����
+      *    ＬＯＣＫリセット（端末ＩＤ毎）
                WHEN    3
                        PERFORM 130-CLEAR-SEC
-      *    �ѥ�᡼�����顼
+      *    パラメータエラー
                WHEN    OTHER
                        MOVE  99            TO  SLOCK-RETURN  
                        MOVE  1             TO  FLG-END
@@ -270,18 +270,18 @@
            EXIT PROGRAM
            .
       *****************************************************************
-      *    ��¾��������å�����
+      *    排他制御チェック処理
       *****************************************************************
        110-CHK-SEC                 SECTION.
       *
-      *    ���̣ɣĤ���̳�̣Ĥ򸡺�����
-      *    (���̡���̾�����ʳ��ϡ����̣ɣĤξ壱��Ǽ�����
+      *    画面ＩＤより業務ＬＤを検索する
+      *    (当面、氏名検索以外は、画面ＩＤの上１桁で取得）
       *!!  PERFORM 1101-LD-GET-SEC
            IF      WRK-LD          =   SPACE
                    MOVE  99        TO  SLOCK-RETURN
                    GO    TO        110-CHK-EXT
            END-IF
-      *    ¾ü���쥳����¸�ߥ����å�
+      *    他端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       ***  MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
@@ -309,7 +309,7 @@ grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
 grpsys     CALL "ORCDBMAIN" USING MCPAREA
                                   MCPDATA-REC
 grpsys                            SPA-AREA
-      * ��¾
+      * 排他
            IF  FLG-MAP          =     1
       *        PERFORM  1102-TERMID-BUNKAI-SEC
                MOVE     WRK-TERMID    TO     SLOCK-TERMID
@@ -317,14 +317,14 @@ grpsys                            SPA-AREA
                                              WRK-MSG-O1
                MOVE     10            TO     SLOCK-RETURN
                MOVE     WRK-MSG-AREA  TO     SLOCK-MSG
-      *        ɽ���Τߤ�����
+      *        表示のみの設定
                IF       FLG-ALLCHK    =   1
                    MOVE    1              TO  SPA-LOCK
                END-IF
            ELSE
-      * �����å��ϣˤʤ����¾�ơ��֥����
+      * チェックＯＫならば排他テーブル作成
                PERFORM  1101-LOCK-MAKE-SEC
-      *    �ƻ��������
+      *    監視ログ出力
                CALL    "ORCSAUDIT"     USING
                                       "1"
                                        MCPAREA
@@ -339,7 +339,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ü���ɣ�ʬ�򡡽���
+      *    端末ＩＤ分解　処理
       *****************************************************************
        1102-TERMID-BUNKAI-SEC        SECTION.
       *
@@ -379,7 +379,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̳LD����������
+      *    業務LD取得　処理
       *****************************************************************
        1101-LD-GET-SEC               SECTION.
       *
@@ -417,15 +417,15 @@ grpsys                            SPA-AREA
                                               TO  WRK-LDNAME
            END-SEARCH
       *
-      *    ��̳��������Ͽ�����Ź԰١���׾Ȳ�Ϥ��٤���¾������Ԥ�
-      *    �ǡ��������å���̳�⤹�٤���¾������Ԥ�
+      *    業務が患者登録・診療行為・会計照会はすべて排他処理を行う
+      *    データチェック業務もすべて排他処理を行う
            IF      WRK-LD              =   "ORCA12"
                                        OR  "ORCA21"
                                        OR  "ORCA24"
                                        OR  "ORCA31"
                                        OR  "ORCA32"
                                        OR  "ORCA41"
-      *H29.4     ���դ��оݤȤ���
+      *H29.4     受付も対象とする
                                        OR  "ORCA11"
                MOVE    1               TO  FLG-ALLCHK
            ELSE
@@ -436,7 +436,7 @@ grpsys                            SPA-AREA
        1101-LD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ��¾LD�Ѵ�������
+      *    排他LD変換　処理
       *****************************************************************
        1101-LOCK-CHEK1-SEC           SECTION.
            MOVE    ZERO                TO  FLG-MAP
@@ -464,10 +464,10 @@ grpsys             MOVE     SPA-HOSPNUM   TO  LDMAP-HOSPNUM
        1101-LOCK-CHEK1-EXT.
           EXIT.
       *****************************************************************
-      *    ��¾����ơ��֥������������
+      *    排他制御テーブル作成　　処理
       *****************************************************************
        1101-LOCK-MAKE-SEC            SECTION.
-      *    ��ü���쥳����¸�ߥ����å�
+      *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       **   MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
@@ -476,7 +476,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
-      *    �쥳�����ɲý���
+      *    レコード追加処理
               INITIALIZE   TBL-LOCK
       *        MOVE  MCP-TERM(5:)          TO  LOCK-TERMID
       *        MOVE  MCP-TERM              TO  LOCK-TERMID
@@ -499,8 +499,8 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                MOVE  "1"               TO  SLOCK-INSERT
       *
            ELSE
-      *    �쥳���ɹ�������
-      *    (�������֤μ���)
+      *    レコード更新処理
+      *    (更新位置の取得)
                MOVE  ZERO              TO  IDZ
                PERFORM VARYING      IDX FROM  1   BY   1
                        UNTIL       (IDX     >     50)
@@ -532,7 +532,7 @@ grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
                PERFORM 910-LOCK-UPD-SEC
            END-IF
       *
-      *  �ǡ������������ʤ��ץ���
+      *  データ作成処理（りんプロ）
       *    MOVE  "ORCA21"          TO  LDMAP-LDNAME
       *    MOVE  "ORCA12"          TO  LDMAP-CHK-LDNAME(01)
       *    MOVE  "ORCA21"          TO  LDMAP-CHK-LDNAME(02)
@@ -557,7 +557,7 @@ grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
        1101-LOCK-MAKE-EXT.
           EXIT.
       *****************************************************************
-      *    ��¾�����å�����������
+      *    排他チェック　　処理２
       *****************************************************************
        11011-LOCK-CHEK2-SEC          SECTION.
       *
@@ -565,7 +565,7 @@ grpsys         MOVE  SPA-HOSPNUM            TO  LOCK-HOSPNUM
        11011-LOCK-CHEK2-EXT.
           EXIT.
       *****************************************************************
-      *    ��¾�ơ��֥��ɲá�����
+      *    排他テーブル追加　処理
       *****************************************************************
        910-LOCK-INS-SEC              SECTION.
       *
@@ -590,7 +590,7 @@ grpsys                            SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    ��¾�ơ��֥빹��������
+      *    排他テーブル更新　処理
       *****************************************************************
        910-LOCK-UPD-SEC              SECTION.
       *
@@ -613,7 +613,7 @@ grpsys                            SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    ��¾�ơ��֥���������
+      *    排他テーブル削除　処理
       *****************************************************************
        920-LOCK-DEL-SEC              SECTION.
       *
@@ -636,13 +636,13 @@ grpsys                            SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    ��¾���ϥ��åȡ�����
+      *    排他開始セット　処理
       *****************************************************************
        120-RESET-SEC                 SECTION.
       *
-      *    ��̳LD����������
+      *    業務LD取得　処理
            PERFORM 1101-LD-GET-SEC
-      *    ��ü���쥳����¸�ߥ����å�
+      *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       *    DISPLAY  "RESET MCP-TERM   = " MCP-TERM                 
       **** MOVE    MCP-TERM                TO  LOCK-TERMID
@@ -651,11 +651,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
-      *    �쥳���ɤ�¸�ߤ��ʤ����ϡ����⤷�ʤ�
+      *    レコードが存在しない場合は、何もしない
                MOVE  ZERO              TO  SLOCK-RETURN
                GO    TO                120-RESET-EXT
            ELSE
-      *    �쥳���ɤ�¸�ߤ������ϡ������Σ̣Ĥ򥯥ꥢ
+      *    レコードが存在した場合は、該当のＬＤをクリア
       *        DISPLAY  "WRK-LD = " WRK-LD
                MOVE    ZERO             TO  IDZ
                PERFORM VARYING      IDX FROM  1   BY   1
@@ -666,7 +666,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                      MOVE  99               TO    IDX
                  END-IF
                END-PERFORM
-      *        �����Σ̣Ĥ��ʤ���
+      *        該当のＬＤがない時
                IF    IDZ                    =   ZERO
                    MOVE  ZERO              TO  SLOCK-RETURN
                    GO    TO                120-RESET-EXT
@@ -680,7 +680,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
                MOVE  SPACE                  TO  LOCK-STARTTIME(IDZ)
                MOVE  SPACE                  TO  LOCK-ENDTIME(IDZ)
                MOVE  SPACE                  TO  LOCK-FLG(IDZ)
-      *    ���ܡ����ա����֡�
+      *    項目（日付、時間）
       *        DISPLAY  "RESET IDZ =  [" IDZ "]"
 grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                MOVE  SLOCK-KARTE-UID   TO  LOCK-KARTE-UID
@@ -695,7 +695,7 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                END-IF
            END-IF
       *
-      *    �ƻ��������
+      *    監視ログ出力
                CALL    "ORCSAUDIT"     USING
                                       "1"
                                        MCPAREA
@@ -709,11 +709,11 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    ��¾��λ���åȡ�����
+      *    排他終了セット　処理
       *****************************************************************
        130-CLEAR-SEC                 SECTION.
       *
-      *    ��ü���쥳����¸�ߥ����å�
+      *    自端末レコード存在チェック
       *    MOVE    MCP-TERM(5:)            TO  LOCK-TERMID
       **   MOVE    MCP-TERM                TO  LOCK-TERMID
            MOVE    WRK-MCP-TERM            TO  LOCK-TERMID
@@ -721,12 +721,12 @@ grpsys     MOVE    SPA-HOSPNUM             TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
            IF      FLG-LOCK       NOT  =  ZERO
-      *    �쥳���ɤ�¸�ߤ��ʤ����ϡ����⤷�ʤ�
+      *    レコードが存在しない場合は、何もしない
                MOVE  ZERO              TO  SLOCK-RETURN
                GO    TO                130-CLEAR-EXT
            ELSE
-      *    �쥳���ɤ�¸�ߤ������ϡ������Σ̣ĥơ��֥�򥯥ꥢ
-      *   �ʽ��������ٽ���Ͻ������ե饰���դΤȤ��Τߡ�
+      *    レコードが存在した場合は、該当のＬＤテーブルをクリア
+      *   （除く、明細書出力処理＝＞フラグオフのときのみ）
       *        MOVE  SPACE             TO  LOCKTABLE
                PERFORM VARYING      IDX FROM  1   BY   1
                        UNTIL       (IDX     >     50)
@@ -761,11 +761,11 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
       * 
       * 
       *****************************************************************
-      *    ���ƥå׽�λ���åȡ�����
+      *    ステップ終了セット　処理
       *****************************************************************
        160-STE-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
 grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
@@ -774,7 +774,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
                GO    TO                160-STE-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -796,11 +796,11 @@ grpsys                            SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        140-DEL-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
 grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV2-SEC
@@ -809,7 +809,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
                GO    TO                140-DEL-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
 grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    TBL-LOCK            TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -831,11 +831,11 @@ grpsys                            SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    ����������оݤΥ�����ɣĤ����ơ�
+      *    削除処理（対象のシェルＩＤを全て）
       *****************************************************************
        170-DELALL-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
 grpsys     MOVE SPA-HOSPNUM        TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            PERFORM 910-LOCK-INV-SEC
@@ -844,7 +844,7 @@ grpsys     MOVE SPA-HOSPNUM        TO  LOCK-HOSPNUM
                GO    TO                170-DELALL-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
 grpsys     MOVE    SPA-HOSPNUM     TO  LOCK-HOSPNUM
            MOVE    TBL-LOCK        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -866,7 +866,7 @@ grpsys                            SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    ��¾����ޥ����ɹ�
+      *    排他制御マスタ読込
       *****************************************************************
        910-LOCK-INV-SEC         SECTION.
       *
@@ -908,7 +908,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��¾����ޥ����ɹ��ʣˣţ٣���
+      *    排他制御マスタ読込（ＫＥＹ２）
       *****************************************************************
        910-LOCK-INV2-SEC         SECTION.
       *
@@ -944,7 +944,7 @@ grpsys                                SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��¾����ޥ����ɹ��ʣˣţ٣���
+      *    排他制御マスタ読込（ＫＥＹ２）
       *****************************************************************
        910-MAP-INV1-SEC         SECTION.
       *
@@ -986,7 +986,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��¾����ޥ����ɹ��ʣˣţ٣���
+      *    排他制御マスタ読込（ＫＥＹ２）
       *****************************************************************
        910-LOCK-READ2-SEC         SECTION.
       *
@@ -1011,7 +1011,7 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -1025,7 +1025,7 @@ grpsys                            SPA-AREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

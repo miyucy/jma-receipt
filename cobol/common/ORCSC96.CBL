@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,23 +18,23 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC96.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���顼��å��������åȽ���
-      *                      �ʣˣ������ˣ������ʣ����Τ߶��̻��ѡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/01/09    MCC��¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : エラーメッセージセット処理
+      *                      （Ｋ０２、Ｋ０５、Ｊ０４のみ共通使用）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/01/09    MCC−多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.00     MCC-¿��Ǽ   02/03/20  �ȣ������������б��Ѥ�
-      * 01.00.01     NACL-¿��Ǽ  02/10/03  ϫ�Ҳû��ʤ����ɲ�
-      * 01.00.02     NACL-¿��Ǽ  02/10/18  �����ɲ�
-      * 01.00.03     NACL��¿��Ǽ 02/11/11  �ģգͣͣٿǻ����ɲ�
-      * 01.00.04     NACL��¿��Ǽ 02/12/09  ư̮���ͥ��顼�ɲ�
-      * 04.07.00     NACL-¿��Ǽ  12/03/XX  �ȣ���ǯ��������б�
-      * 04.07.00     NACL-¿��Ǽ  15/03/XX  �ȣ���ǯ��������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.00     MCC-多々納   02/03/20  Ｈ１４．４改正対応済み
+      * 01.00.01     NACL-多々納  02/10/03  労災加算なしの追加
+      * 01.00.02     NACL-多々納  02/10/18  入院追加
+      * 01.00.03     NACL−多々納 02/11/11  ＤＵＭＭＹ診察料追加
+      * 01.00.04     NACL−多々納 02/12/09  動脈注射エラー追加
+      * 04.07.00     NACL-多々納  12/03/XX  Ｈ２４年４月改正対応
+      * 04.07.00     NACL-多々納  15/03/XX  Ｈ２７年４月改正対応
       *****************************************************************
       *
       *
@@ -49,26 +49,26 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
       *01  WRK-AREA.
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    �ѥ�᥿
+      *    パラメタ
            COPY    "CPORCSC96.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -77,16 +77,16 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            MOVE    SPACE               TO  SPA-ERRMSG
-      *    ���̥��顼��å������Խ�
+      *    共通エラーメッセージ編集
            PERFORM 100-KYOUTU-ERRMSG-SEC
       *
            IF      SPA-ERRMSG          =   SPACE
-      *        �ץ�������̥�å������Խ�
+      *        プログラム別メッセージ編集
                PERFORM 200-PG-ERRMSG-SEC
            END-IF
       *
@@ -98,2345 +98,2345 @@
            .
       *
       *****************************************************************
-      *    ���̥��顼��å������Խ�����
+      *    共通エラーメッセージ編集処理
       *****************************************************************
        100-KYOUTU-ERRMSG-SEC            SECTION.
       *
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�������������ޥ�������¸�ߤ��ޤ���"
+                   MOVE    "該当する点数マスターが存在しません"
                                        TO  SPA-ERRMSG
                WHEN    "0890"
-                   STRING  "���Ź԰٤Ǥϻ��ѤǤ��ʤ������ɤǤ���"
-                           "�ե꡼�����ȥ����ɤ��ѹ����Ʋ�������"
+                   STRING  "診療行為では使用できないコードです。"
+                           "フリーコメントコードに変更して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0002"
-                   MOVE    "���Ź԰٤Ͽ��̤����ϤǤ��ޤ���"
+                   MOVE    "診療行為は数量を入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "�����ʤ�ɬ�����̤����Ϥ��Ƥ�������"
+                   MOVE    "医薬品は必ず数量を入力してください"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�������ͤο��̤����������Ϥ��Ʋ�������"
+                   MOVE    "きざみ値の数量は整数で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-      **           MOVE    "���ϥ����ɤ�ʸ�����顼"
-                   STRING  "���ϥ����ɤ�����Ⱦ�Ѻ��ߥ��顼�Ǥ���"
-                           "���������ϥ����ɤ����Ϥ��Ʋ�������"
+      **           MOVE    "入力コードの文字エラー"
+                   STRING  "入力コードの全角半角混在エラーです。"
+                           "正しい入力コードを入力して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0006"
-                   MOVE    "���ż��̤�����ޤ���"
+                   MOVE    "診療種別がありません"
                                        TO  SPA-ERRMSG
                WHEN    "0007"
-                   STRING  "�������Ԥ�Ķ���ޤ���"
-                           "����ʾ������ϤǤ��ޤ���"
+                   STRING  "４００行を超えます。"
+                           "これ以上挿入はできません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0008"
-                   MOVE    "����ϣ���ΤߤǤ���"
+                   MOVE    "回数は１回のみです。"
                                        TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "�����������ϤǤ��ޤ���"
+                   MOVE    "注射薬は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "���ֳ������ϤϤǤ��ޤ���"
+                   MOVE    "時間外の入力はできません"
                                        TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "�������̥����ɤ����ϤǤ��ޤ���"
+                   MOVE    "撮影部位コードは入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "���̡�������ο�����������顼�Ǥ�"
+                   MOVE    "数量・回数等の数字・桁数エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "0312"
-                   MOVE    "���ο��̤Ͼ������ʲ�����ޤǤǤ�"
+                   MOVE    "器材の数量は小数点以下３桁までです"
                                        TO  SPA-ERRMSG
                WHEN    "0013"
-                   MOVE    "�굻�������Ϥ��Ʋ�����" 
+                   MOVE    "手技料を入力して下さい" 
                                        TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "�����Υ����ɤǤ�������Ǥ����ϤǤ��ޤ���" 
+                   MOVE    "入院のコードです。外来では入力できません。" 
                                        TO  SPA-ERRMSG
                WHEN    "0114"
-                   MOVE    "����Υ����ɤǤ��������Ǥ����ϤǤ��ޤ���" 
+                   MOVE    "外来のコードです。入院では入力できません。" 
                                        TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "Ϸ�ͤΥ����ɤǤ������ϤǤ��ޤ���" 
+                   MOVE    "老人のコードです。入力できません。" 
                                        TO  SPA-ERRMSG
                WHEN    "0115"
-                   MOVE    "Ϸ�ͤΥ����ɤǤϤ���ޤ���"
+                   MOVE    "老人のコードではありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���ϤǤ��ޤ���" 
+                   MOVE    "入力できません。" 
                                        TO  SPA-ERRMSG(29:)
                WHEN    "0016"
-                   MOVE    "�±��Υ����ɤǤ������Ž�Ǥ����ϤǤ��ޤ���"
+                   MOVE    "病院のコードです。診療所では入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0116"
-                   MOVE    "���Ž�Υ����ɤǤ����±��Ǥ����ϤǤ��ޤ���"
+                   MOVE    "診療所のコードです。病院では入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0017"
-                   MOVE    "��ǡ��ƿǤϽ�ʣ�Ǥ��ޤ���"
+                   MOVE    "初診・再診は重複できません"
                                        TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "����ѤǤ�������Ǥ��ޤ���"
+                   MOVE    "算定済です。算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0019"
-                   MOVE    "�굻���Ϻ���ˣ��ĤΤߤǤ�"
+                   MOVE    "手技料は剤内に１つのみです"
                                        TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE    "���������顼"
+                   MOVE    "行挿入エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0021"
-                   MOVE    "���̤������Ͱʲ��Ǥ�"
+                   MOVE    "数量が下限値以下です"
                                        TO  SPA-ERRMSG
                WHEN    "0022"
-                   MOVE    "���̤�����Ͱʾ�Ǥ�"
+                   MOVE    "数量が上限値以上です"
                                        TO  SPA-ERRMSG
                WHEN    "K030"
-                   MOVE    "�ٹ𡪿��̤�����Ͱʾ�Ǥ���"
+                   MOVE    "警告！数量が上限値以上です。"
                                        TO  SPA-ERRMSG
                WHEN    "0023"
-                   MOVE    "�޺���Ϻ޳��Ϥ���Ǥ�"
+                   MOVE    "剤削除は剤開始からです"
                                        TO  SPA-ERRMSG
                WHEN    "0024"
-                   MOVE    "���ߴ��ǤϤ���ޤ��󡣻���Ǥ��ޤ���"
+                   MOVE    "施設基準ではありません。算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "2001"
-                   STRING   "�����߿��ͤ����٤ƥ����ˤʤ�ޤ���"
+                   STRING   "埋め込み数値がすべてゼロになります。"
                                        DELIMITED  BY  SIZE
-                            "�������ͤ����Ϥ��Ʋ�������"
+                            "正しい値を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0025"
-                   MOVE    "�������Ϥο��ť����ɤ����Ϥ��Ƥ�������"
+                   MOVE    "時間入力の診療コードを入力してください"
                                        TO  SPA-ERRMSG
                WHEN    "0026"
-               MOVE    "����Ƚ��������Ǥ��븡�������Ϥ��Ʋ�������"
+               MOVE    "病理判断料を算定できる検査を入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0027"
-                   STRING  "������Ū����Ƚ����������ѤǤ���"
+                   STRING  "病理学的検査判断料が算定済です。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0028"
-                   MOVE    "����������оݤ����ߤ��Ƥ��ޤ���"
+                   MOVE    "検査の包括対象が混在しています。"
                                        TO  SPA-ERRMSG
                WHEN    "0029"
-      ****         MOVE    "�����Ȥ������ͥ��顼"
+      ****         MOVE    "コメントの入力値エラー"
       **                               TO  SPA-ERRMSG
-                   STRING  "�����������ͤΥ��顼�Ǥ���"
+                   STRING  "コメント入力値のエラーです。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0030"
-                   MOVE    "���ֲû��ϤǤ��ޤ���"
+                   MOVE    "時間加算はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "0089"
-                   MOVE    "���˰㤦���ֳ���ʬ������ޤ���"
+                   MOVE    "既に違う時間外区分があります。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���ϤǤ��ޤ���"
+                   MOVE    "入力できません。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "0031"
-                   MOVE    "���Ļ��û��ϤǤ��ޤ���"
+                   MOVE    "乳幼児加算はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "0032"
-                   MOVE    "����Ǥ��ʤ�ǯ��Ǥ���"
+                   MOVE    "算定できない年齢です。"
                                        TO  SPA-ERRMSG
                WHEN    "0033"
-                   MOVE    "�嵭����ѤǤ���ʻ�ѻ���ϤǤ��ޤ���"
+                   MOVE    "上記算定済です。併用算定はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "K033"
-                   STRING  "�ٹ𡪡�"
-                           "�嵭����ѤǤ���ʻ�ѻ���ϤǤ��ޤ���"
+                   STRING  "警告！！"
+                           "上記算定済です。併用算定はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *H25.8
                WHEN    "K035"
-                   STRING  "�ٹ�"
-                           "�嵭����ѤǤ���"
-                           "ϫ�ҤǤ�ʻ�ѻ���ϤǤ��ޤ���"
-                           "�ݸ��γ�ǧ�򤷤Ʋ�������"
+                   STRING  "警告！"
+                           "上記算定済です。"
+                           "労災では併用算定はできません。"
+                           "保険の確認をして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0034"
                    MOVE
-                   "�������������ꡢ�������Ǥ�������Ǥ��ޤ���"
+                   "初診料算定日より、１月以内です。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0120"
                    MOVE
-                   "�ౡ����ꡢ�������Ǥ�������Ǥ��ޤ���"
+                   "退院日より、１月以内です。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0121"
-                   STRING  "¾���ౡ����ꡢ�������Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "他院退院日より、１月以内です。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0035"
                    MOVE
-                   "����˼굻���ϣ���Ǥ����ޤ�λ���Ʋ�������"
+                   "剤内に手技料は１件です。剤を終了して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0036"
-                   MOVE    "���̥����ɤ����Ϥ��Ʋ�����"
+                   MOVE    "部位コードを入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0037"
-                   MOVE    "���̤���¤�Ķ���Ƥ��ޤ�"
+                   MOVE    "数量が上限を超えています"
                                        TO  SPA-ERRMSG
                WHEN    "0038"
-                   MOVE    "���Ǥ����Ϥ��Ʋ�����"
+                   MOVE    "酸素を入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0039"
-                   MOVE    "���ǡ����Ǥ����ϤǤ��ޤ���"
+                   MOVE    "酸素・窒素は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0040"
-                   MOVE    "̤�ϻ��û���ͭ��ޤ�"
+                   MOVE    "未熟児加算が有ります"
                                        TO  SPA-ERRMSG
                WHEN    "0041"
-                   MOVE    "̤�ϻ��û��ϤǤ��ޤ���"
+                   MOVE    "未熟児加算はできません"
                                        TO  SPA-ERRMSG
                WHEN    "0042"
-                   STRING  "����Ʊ������βû�������ޤ���"
-                           "���βû��ϤǤ��ޤ���"
+                   STRING  "既に同じ種類の加算があります。"
+                           "この加算はできません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0043"
-                   MOVE    "���ֳ��û��ϣ���Ǥ�"
+                   MOVE    "時間外加算は１件です"
                                        TO  SPA-ERRMSG
                WHEN    "0044"
-                   MOVE    "�����ʳ���������ʳ��Ǥ�"
+                   MOVE    "小児科外来診療料以外です"
                                        TO  SPA-ERRMSG
                WHEN    "0045"
-                   MOVE    "�����ʳ���������ϻ���Ǥ��ޤ���"
+                   MOVE    "小児科外来診療料は算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0046"
-                   MOVE    "�����ʳ���������ϻ���ѤǤ�"
+                   MOVE    "小児科外来診療料は算定済です"
                                        TO  SPA-ERRMSG
                WHEN    "0047"
-                   MOVE    "�������ϤǤ��ޤ���"
+                   MOVE    "器材は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0147"
-                   MOVE    "���ޤ����ϤǤ��ޤ���"
+                   MOVE    "薬剤は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0048"
-                   MOVE    "��«���åȤλ������ż��̤����Ϥ��Ʋ�����"
+                   MOVE    "約束セットの時、診療種別を入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0049"
-                   MOVE    "��«���å����Ƥȿ��ż��̤��㤤�ޤ�"
+                   MOVE    "約束セット内容と診療種別が違います"
                                        TO  SPA-ERRMSG
                WHEN    "0050"
-                   MOVE    "���ϥ����ɤ�����ޤ���"
+                   MOVE    "入力コードがありません"
                                        TO  SPA-ERRMSG
                WHEN    "0150"
-                   MOVE    "�оݴ��֤����ϥ��åȤϤ���ޤ���"
+                   MOVE    "対象期間の入力セットはありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0051"
-                   MOVE    "���̤ϣ���ޤǤǤ�"
+                   MOVE    "数量は５桁までです"
                                        TO  SPA-ERRMSG
                WHEN    "0052"
                    MOVE
-                   "Ϸ����������������������������������Ǥ��ޤ���"
+                   "老人慢性疾患外来総合診療料を算定時、算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0053"
                    MOVE
-                   "Ϸ������������������������ϻ���Ǥ��ޤ���"
+                   "老人慢性疾患外来総合診療料は算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0054"
                    MOVE
-                   "��������Ϸ�ͺ�����������������������Ǥ��ޤ���"
+                   "寝たきり老人在宅総合診療料を算定時、算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0055"
-                   MOVE    "�������ϤǤ��ޤ���"
+                   MOVE    "自費入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0086"
-                   STRING  "��ۤ��ǹ��ߤǤ���"
-                           ".950 �Ǥϻ���Ǥ��ޤ���"
+                   STRING  "金額が税込みです。"
+                           ".950 では算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0056"
-                   MOVE    "�������������Ǥ��ޤ��󡣻����������夷�ޤ�"
+                   MOVE    "検査の逓減ができません。算定日が前後します"
                                        TO  SPA-ERRMSG
                WHEN    "0057"
-                   MOVE    "��ũ�ϣ������󤷤�����Ǥ��ޤ���"
+                   MOVE    "点滴は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0157"
-                   MOVE    "ư̮���ͤϣ������󤷤�����Ǥ��ޤ���"
+                   MOVE    "動脈注射は１日１回しか算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "K025"
-                   STRING  "�ٹ𡪡����û������ɤΤ���û��ϤޤȤ��"
-                           "���Ϥ��Ʋ��������쥻�ť��顼�ˤʤ�ޤ���"
+                   STRING  "警告！！注加算コードのある加算はまとめて"
+                           "入力して下さい。レセ電エラーになります。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0301"
-                   STRING  "������ũ���͡��濴��̮���ͤ�����ѤߤǤ���"
-                           "��̮���ͤϻ���Ǥ��ޤ���"
+                   STRING  "既に点滴注射・中心静脈注射が算定済みです。"
+                           "静脈注射は算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0302"
-                   STRING  "������̮���͡��濴��̮���ͤ�����ѤߤǤ���"
-                           "��ũ���ͤϻ���Ǥ��ޤ���"
+                   STRING  "既に静脈注射・中心静脈注射が算定済みです。"
+                           "点滴注射は算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0303"
-                   STRING  "������ũ���͡���̮���͡��濴��̮���ͤ�"
-                           "����ѤߤǤ�������Ǥ��ޤ���"
+                   STRING  "既に点滴注射・静脈注射・中心静脈注射が"
+                           "算定済みです。算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0058"
-                   MOVE    "��������û��ϻ���ѤǤ�������Ǥ��ޤ���"
+                   MOVE    "外来管理加算は算定済です。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0059"
                    MOVE
-                   "�û��ϻ���Ǥ��ޤ��󡣿ǻ����˲û����Ʋ�����"
+                   "加算は算定できません。診察料に加算して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0060"
                    MOVE
-                   "�����ν�ʣ���ꥨ�顼�Ǥ���"
+                   "検査の重複算定エラーです。"
                                        TO  SPA-ERRMSG
                WHEN    "0061"
                    MOVE
-                   "�����Ѵ������Ͱʳ������ϤǤ��ޤ���"
+                   "残量廃棄は注射以外は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "0062"
                    MOVE
-                   "ʴ�դ������ʳ������ϤǤ��ޤ���"
+                   "粉砕は内服以外は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "2062"
-                   MOVE    "���̳������������Ϥ��Ʋ�������"
+                   MOVE    "用量割合は投薬で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0063"
                    MOVE
-                   "ʴ�դμ��ˤϾ��ޤ����Ϥ��Ʋ�����"
+                   "粉砕の次には錠剤を入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0064"
                    MOVE
-                   "Ʊ�측��������ޤ���������Ʋ�����"
+                   "同一検査があります。削除して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0065"
                    MOVE
-                   "�������������ꡢ�������Ǥ�������Ǥ��ޤ���"
+                   "初診料算定日より、２月以内です。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0066"
                    MOVE
-                   "������̤���Ǥ�������Ǥ��ޤ���"
+                   "１５才未満です。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0067"
                    MOVE
-                   "����ϫƯ��ä����봵�ԤǤ�������Ǥ��ޤ���"
+                   "厚生労働大臣が定める患者です。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0068"
                    MOVE
-                   "���转���»�Ƴ�����������������Ǥ��ޤ���"
+                   "生活習慣病指導管理料を算定時、算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0069"
-                   MOVE    "���ֳ�������ŵ��ؤǤϤ���ޤ���"
+                   MOVE    "時間外特例医療機関ではありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���ֳ�����ϻ���Ǥ��ޤ���"
+                   MOVE    "時間外特例は算定できません。"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "1401"
                    MOVE
-                   "����������������ǻ��������������Ǥ��ޤ���"
+                   "在宅末期医療総合診察料を算定時、算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "1402"
                    MOVE
-                   "����������������������������Ǥ��ޤ���"
+                   "在宅時医学総合管理料を算定時、算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "0070"
-                   MOVE    "Ʊ��ʻ��ʬ�Ǥ������ϤǤ��ޤ���"
+                   MOVE    "同時併施分です。入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "K070"
-                   MOVE    "�ٹ�Ʊ��ʻ�ܤΥ����ɤǤ���"
+                   MOVE    "警告！同時併施のコードです。"
                                        TO  SPA-ERRMSG
                WHEN    "0071"
-      ************ MOVE    "���������㤤�ޤ���"
+      ************ MOVE    "撮影料が違います。"
       ***********                      TO  SPA-ERRMSG
-                   STRING  "����˻����������ꤵ��Ƥ��ޤ���"
-                           "�ޤ�ʬ���Ʋ�������"
+                   STRING  "剤内に撮影料が算定されています。"
+                           "剤を分けて下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0072"
                    MOVE
-               "�������Ϥ���ʾ����ϤǤ��ޤ��󡣺ޤ��Ѥ��Ʋ�����"
+               "撮影料はこれ以上入力できません。剤を変えて下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0073"
-                   MOVE    "���ߴ����Ŭ������Ϥ�����ޤ���"
+                   MOVE    "施設基準不適合の入力がありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���������ɤ����ϤǤ��ޤ���"
+                   MOVE    "逓減コードは入力できません"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "0173"
-                   MOVE    "���ߴ����Ŭ��μ�ѤǤϤ���ޤ���"
+                   MOVE    "施設基準不適合の手術ではありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "�������û������ɤ����ϤǤ��ޤ���"
+                   MOVE    "逓減・加算コードは入力できません"
                                        TO  SPA-ERRMSG(37:)
       *H27.4
                    IF      SPA-SRYYMD      >=  "20150401"
                        MOVE    SPACE           TO  SPA-ERRMSG
-                       STRING  "���ߴ����Ŭ��μ�ѤǤϤ���ޤ���"
-                               "���������ɤ����ϤǤ��ޤ���"
+                       STRING  "施設基準不適合の手術ではありません。"
+                               "逓減コードは入力できません"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                        END-STRING
                    END-IF
                WHEN    "0074"
                    MOVE
-               "���μ��̤�������������Ǥ��ʤ����Τ����ϤǤ��ޤ���"
+               "この種別は投薬料が算定できない時のみ入力できます。"
                                        TO  SPA-ERRMSG
                WHEN    "0075"
                    MOVE
-                   "�����ǽ���¾����ǤϤ���ޤ��󡣻���Ǥ��ޤ���"
+                   "算定可能な病床数ではありません。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0076"
                    MOVE
-                   "�����ˣ����̤ޤǻ���Ǥ��ޤ������˻���ѤߤǤ���"
+                   "１日に３部位まで算定できます。既に算定済みです。"
                                        TO  SPA-ERRMSG
                WHEN    "0077"
                    MOVE
-                   "���úƿǻ��ˤϡ�����Ǥ��ޤ���"
+                   "電話再診時には、算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0078"
-                   MOVE    "�ãԡ��ͣңɤϴ��˻���ѤߤǤ���"
+                   MOVE    "ＣＴ，ＭＲＩは既に算定済みです。"
                                        TO  SPA-ERRMSG
-                   MOVE    "�����ܰʹߤΥ����ɤ����Ϥ��Ʋ�����"
+                   MOVE    "２回目以降のコードを入力して下さい"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "0079"
-                   MOVE    "������������ޤ���"
+                   MOVE    "撮影料がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0080"
-                   MOVE    "̾�Τ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "名称は全角で入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0081"
-                   MOVE    "������ˡ������ñ�̤�Ķ���ޤ���"
+                   MOVE    "個別療法が１０単位を超えます。"
                                        TO  SPA-ERRMSG
-                   MOVE    "ʬ���������Ϥ��Ʋ�������"
+                   MOVE    "分散して入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "K081"
-                   MOVE    "�ٹ𡪸�����ˡ������ñ�̤�Ķ���ޤ���"
+                   MOVE    "警告！個別療法が１０単位を超えます。"
                                        TO  SPA-ERRMSG
-                   MOVE    "ʬ���������Ϥ��Ʋ�������"
+                   MOVE    "分散して入力して下さい。"
                                        TO  SPA-ERRMSG(37:)
                WHEN    "K082"
-                   MOVE    "�ٹ𡪸�����ˡ������ñ�̰ʲ��Ǥ���"
+                   MOVE    "警告！個別療法が１０単位以下です。"
                                        TO  SPA-ERRMSG
                WHEN    "0082"
-                   MOVE    "�������������ꡢ������ʹߤǤ���"
+                   MOVE    "初診料算定日より、６ヶ月以降です。"
                                        TO  SPA-ERRMSG
-                   MOVE    "����Ǥ��ޤ���"
+                   MOVE    "算定できません。"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "0083"
-                   MOVE    "���βû��ϻ���Ǥ��ޤ���"
+                   MOVE    "この加算は算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0084"
-                   MOVE    "������ˡ����ñ�̤�Ķ���ޤ���"
+                   MOVE    "集団療法が８単位を超えます。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���ϤǤ��ޤ���"
+                   MOVE    "入力できません。"
                                        TO  SPA-ERRMSG(29:)
                WHEN    "0085"
-                   MOVE    "������ˡ������ñ�̤�Ķ���ޤ���"
+                   MOVE    "集団療法が１２単位を超えます。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���ϤǤ��ޤ���"
+                   MOVE    "入力できません。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "0091"
                    MOVE
-                   "�����²����Ķ���Ƥ��ޤ�������Ǥ��ޤ���"
+                   "算定上限回数を超えています。算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0092"
-                   MOVE    "��ϥӥ�Σ����ξ��ñ�̤�Ķ���Ƥ��ޤ���"
+                   MOVE    "リハビリの１日の上限単位を超えています。"
                                        TO  SPA-ERRMSG
-                   MOVE    "����Ǥ��ޤ���"
+                   MOVE    "算定できません"
                                        TO  SPA-ERRMSG(43:)
                WHEN    "1093"
-                   MOVE    "���ӽ�λ��Ͽ���顼��"
+                   MOVE    "中途終了登録エラー。"
                                        TO  SPA-ERRMSG
                WHEN    "K092"
-                   MOVE    "�ٹ�"
+                   MOVE    "警告！"
                                        TO  SPA-ERRMSG
-                   MOVE    "��ϥӥ�Σ���ñ�̤���ñ�̤�Ķ���Ƥ��ޤ���"
+                   MOVE    "リハビリの１日単位が４単位を超えています。"
                                        TO  SPA-ERRMSG(7:)
                WHEN    "0093"
-                   MOVE    "������ˡ�Ƚ�����ˡ�κ��ߤϤǤ��ޤ���"
+                   MOVE    "個別療法と集団療法の混在はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "0094"
-                   MOVE    "���ˤ���ϫ�ҤǤϻ���ѤǤ�������Ǥ��ޤ���"
+                   MOVE    "既にこの労災では算定済です。算定できません"
                                        TO  SPA-ERRMSG
       *H25.10
                WHEN    "K094"
-                   STRING  "�ٹ�"
-                           "���ˤ���ϫ�ҤǤϻ���ѤǤ�������Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "既にこの労災では算定済です。算定できません"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0095"
-                   MOVE    "������ˡ�Ƚ�����ˡ�κ��ߤ��Ƥ�������"
+                   MOVE    "個別療法と集団療法の混在している日が"
                                        TO  SPA-ERRMSG
-                   MOVE    "����ޤ���"
+                   MOVE    "あります。"
                                        TO  SPA-ERRMSG(37:)
                WHEN    "0096"
-                   STRING  "���������ˤʤ�ޤ����ޤ�ʬ��������"
-                           "���Ʋ�����"
+                   STRING  "検査逓減になります。剤を分けて入力"
+                           "して下さい"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K097"
-                   MOVE    "�ٹ������ϥӥ�û���"
+                   MOVE    "警告！早期リハビリ加算は"
                                        TO  SPA-ERRMSG
-                   MOVE    "����ȯ�������飹��������˻���Ǥ��ޤ���"
+                   MOVE    "急性発症日から９０日以内に算定できます。"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "K098"
-                   STRING  "�ٹ������ϥӥ�ơ������û���"
+                   STRING  "警告！早期リハビリテーション加算の"
                                        DELIMITED   BY  SIZE
-                           "���֤��㤤�ޤ���"
+                           "期間が違います。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K101"
-                   STRING  "�ٹ𡪵���ȯ������λ���ʹߤ����Ǥ���"
+                   STRING  "警告！急性発症日終了日以降の日です。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0110"
-                   MOVE    "¾�ݸ��ˤƿǻ�������ѤΥ����Ȥ�"
+                   MOVE    "他保険にて診察料算定済のコメントは"
                                        TO  SPA-ERRMSG
-                   MOVE    "�ǻ�����Ʊ���˻���Ǥ��ޤ���"
+                   MOVE    "診察料と同時に算定できません。"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "0112"
-                   MOVE    "������������ֳ���ʬ�ϻ���Ǥ��ޤ���"
+                   MOVE    "小児科特例時間外区分は算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0113"
-                   MOVE    "������������ֳ��ϻ���Ǥ��ޤ���"
+                   MOVE    "小児科特例時間外は算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "0130"
-                   STRING  "�������޼��Ŵ������������ܰ���Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "特定薬剤治療管理料が３月目以内です。"
+                           "算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0131"
-                   STRING  "�����������޼��Ŵ������ϻ���ѤߤǤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "この特定薬剤治療管理料は算定済みです。"
+                           "算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0132"
-                   STRING  "�����������޼��Ŵ������������ѤǤ���"
-                           "�����Ǥ��ޤ���"
+                   STRING  "既に特定薬剤治療管理料は当月算定済です。"
+                           "初回算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0133"
-                   MOVE    "��������ˤϿ���ǯ������Ϥ��Ʋ�������"
+                   MOVE    "初回算定日には診療年月を入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0134"
-                   STRING  "����Ʊ�����ť����ɤ����Ϥ���Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "既に同じ診療コードが入力されています。"
+                           "算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0135"
-                   MOVE    "��������Ͽ���ǯ����������Ϥ��Ʋ�������"
+                   MOVE    "初回算定日は診療年月以前を入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0136"
-                   STRING  "�ǻ����Σģգͣͣٻ����ѤǤ���"
-                           "��ǤȺƿǤο��ť����ɤ����ꤷ�Ʋ�������"
+                   STRING  "診察料のＤＵＭＭＹ算定用です。"
+                           "初診と再診の診療コードを設定して下さい。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0137"
-                   MOVE    "�ǻ����Σģգͣͣ٤��������Ϥ���Ƥ��ޤ���"
+                   MOVE    "診察料のＤＵＭＭＹが既に入力されています。"
                                        TO  SPA-ERRMSG
                WHEN    "0138"
-                   STRING  "������������ѤǤ���"
-                           "�ƿ��������Ϥ��Ʋ�������"
+                   STRING  "既に当日算定済です。"
+                           "再診料を入力して下さい。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0139"
-                   MOVE    "����������ꤵ��Ƥ��ޤ���"
+                   MOVE    "初診料が算定されていません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "����������Ϥ��Ʋ�������"
+                   MOVE    "初診料を入力して下さい。"
                                        TO  SPA-ERRMSG(29:)
                WHEN    "0140"
-                   MOVE    "ϫ�Ҥ��ɤ��ؤ��û����Ǥ��ޤ���"
+                   MOVE    "労災の読み替え加算ができません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "����򣱲�ˤ���ʬ�������Ϥ��Ʋ�������"
+                   MOVE    "回数を１回にして分けて入力して下さい。"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "0141"
-                   MOVE    "�ޤȤ�����Ϣ�֤�����������ޤ���"
+                   MOVE    "まとめ入力連番が正しくありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "�оݳ��Ȥ��ޤ���"
+                   MOVE    "対象外とします。"
                                        TO  SPA-ERRMSG(33:)
                WHEN    "0142"
                    MOVE
-                   "��������Ϸ�ͺ�������ǻ����λ��꤬����ޤ���"
+                   "寝たきり老人在宅総合診察料の算定がありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "���꽪λ�ϻ���Ǥ��ޤ���"
+                   MOVE    "算定終了は算定できません。"
                                        TO  SPA-ERRMSG(47:)
                WHEN    "7007"
-                   STRING  "��ư����ǣ������Ԥ�Ķ���ޤ���"
-                           "ʬ�������Ϥ��Ʋ�������"
+                   STRING  "自動算定で４００行を超えます。"
+                           "分けて入力して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7001"
-                   STRING  "�������Ԥ�Ķ�����ԤǤ���"
-                           "����ʾ����ϤǤ��ޤ���"
+                   STRING  "４００行を超えた行です。"
+                           "これ以上入力できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7002"
-                   STRING  "�ǽ��ڡ����Ǥ���"
-                           "����ʾ����ϤǤ��ޤ���"
+                   STRING  "最終ページです。"
+                           "これ以上入力できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7003"
-                   STRING  "���Ϻǽ��ڡ����Ǥ�������ʾ����Ϥ����"
-                           "��Ͽ���˥��顼�Ȥʤ뤳�Ȥ�����ޤ���"
+                   STRING  "次は最終ページです。これ以上入力すると"
+                           "登録時にエラーとなることがあります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7004"
-                   STRING  "�������Ԥ򥪡��С����ޤ���"
-                           "�������ԤޤǤ��оݤȤ��ޤ���"
+                   STRING  "４００行をオーバーします。"
+                           "４００行までを対象とします。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7006"
-                   STRING  "�ޤ����ٿ��ϣ������٤ޤǤǤ���"
-                           "�ޤ�ʬ���Ʋ�������"
+                   STRING  "剤の明細数は５０明細までです。"
+                           "剤を分けて下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7008"
-                   STRING  "������Ǥ�����������������ѹ��Ǥ��ޤ���"
+                   STRING  "訂正中です。受診履歴一覧は変更できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7009"
-                   STRING  "��������μ��ǤϤ���ޤ���"
+                   STRING  "受診履歴の次頁はありません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "7010"
-                   STRING  "������������ǤϤ���ޤ���"
+                   STRING  "受診履歴の前頁はありません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8000"
-                   MOVE    "ϫ���ݸ��ο��ť����ɤǤ������ϤǤ��ޤ���"
+                   MOVE    "労災保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
                WHEN    "8001"
-                   MOVE    "ϫ���ݸ��ο��ť����ɤ����Ϥ��Ʋ�������"
+                   MOVE    "労災保険の診療コードを入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "8002"
-                   STRING  "����ϫ���ݸ��οǻ��ϴ������ϺѤߤǤ���"
-                           "������ϻ���Ǥ��ޤ���"
+                   STRING  "この労災保険の診察は既に入力済みです。"
+                           "初診料は算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8003"
-                   STRING  "�ߵް��Ŵ����û��ϴ��˻���ѤߤǤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "救急医療管理加算は既に算定済みです。"
+                           "算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8004"
-                   STRING  "�ͻ�û����Ǥ��ʤ������ɤǤ���"
-                           "ϫ�Ҳû��������Ʋ�������"
+                   STRING  "四肢加算ができないコードです。"
+                           "労災加算を削除して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H28.6
                WHEN    "K804"
-                   STRING  "�ٹ�"
-                           "�ͻ�û����Ǥ��ʤ������ɤǤ���"
-                           "ϫ�Ҳû��������Ʋ�������"
+                   STRING  "警告！"
+                           "四肢加算ができないコードです。"
+                           "労災加算を削除して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8005"
-                   MOVE    "ϫ�Ҳû��ϣ������ܤΤߤǤ���"
+                   MOVE    "労災加算は１．５倍のみです。"
                                        TO  SPA-ERRMSG
                WHEN    "8006"
-                   STRING  "���ե��������λ�����³�����û���"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、継続管理加算は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8007"
-                   STRING  "���ե��������λ�����������û���"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、外来管理加算は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8008"
-                   STRING  "���ե��������λ������𼫸�ƳǢ��Ƴ��������"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、在宅自己導尿指導管理料は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8009"
-                   STRING  "���ե��������λ����Ƥ󤫤��Ƴ����"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、てんかん指導料は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8010"
-                   STRING  "�ߵް��Ŵ����û��Ͻ����������ˤΤ�"
-                           "����Ǥ��ޤ���"
+                   STRING  "救急医療管理加算は初診料算定時にのみ"
+                           "算定できます。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8011"
-                   STRING  "���ܤε��������谷���ϴ��˻���ѤߤǤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "療養の給付請求書取扱料は既に算定済みです。"
+                           "算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8012"
-                   STRING  "���ե��������λ����ƿǻ����ܻ�Ƴ��������"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、再診時療養指導管理料は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8013"
-                   STRING  "�ƿǻ����ܻ�Ƴ�������Ͻ����������ˤ�"
-                           "����Ǥ��ޤ���"
+                   STRING  "再診時療養指導管理料は初診料算定時には"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8014"
-                   STRING  "��ǻ��֥�å������Ͻ����������ˤΤ�"
-                           "����Ǥ��ޤ���"
+                   STRING  "初診時ブラッシング料は初診料算定時にのみ"
+                           "算定できます。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8015"
-                   STRING  "���ե��������λ����ߵް��Ŵ����û���"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、救急医療管理加算は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8016"
-                   STRING  "���ե��������λ���ϫ�Ҥλ�Ƴ��������"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、労災の指導管理等は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8017"
-                   MOVE    "���ե��������λ����������ϻ���Ǥ��ޤ���"
+                   MOVE    "アフターケアの時、在宅料は算定できません"
                                        TO  SPA-ERRMSG
                WHEN    "8018"
-                   STRING  "���ե��������λ�����ǻ��֥�å�������"
-                           "����Ǥ��ޤ���"
+                   STRING  "アフターケアの時、初診時ブラッシング料は"
+                           "算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8019"
-                   STRING  "��ؤ��Ͻ��˷��뵡ǽ���Ƴ�û���"
-                           "���˻���ѤǤ�������Ǥ��ޤ���"
+                   STRING  "手指の創傷に係る機能回指導加算は"
+                           "既に算定済です。算定できません"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8020"
-                   MOVE    "���ο��ż��̤ˤ����ϤǤ��ޤ���"
+                   MOVE    "この診療種別には入力できません。"
                                        TO  SPA-ERRMSG
                WHEN    "8021"
-                   MOVE    "ϫ���ݸ��ο��ť����ɤ����Ϥ��Ʋ�������"
+                   MOVE    "労災保険の診療コードを入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "8022"
-                   MOVE    "�ߵް��Ŵ����û����������Τߤ�"
+                   MOVE    "救急医療管理加算は入院日のみに"
                                        TO  SPA-ERRMSG
-                   MOVE    "�����ǽ�Ǥ���"
+                   MOVE    "算定可能です。"
                                        TO  SPA-ERRMSG(31:)
                WHEN    "8023"
-                   MOVE    "Ǿ��ɵ���ȯ������ȯ����λ����Ʊ����"
+                   MOVE    "脳血管急性発生日と発生終了日を同日に"
                                        TO  SPA-ERRMSG
-                   MOVE    "����Ǥ��ޤ���"
+                   MOVE    "算定できません。"
                                        TO  SPA-ERRMSG(37:)
                WHEN    "8024"
-                   MOVE    "Ǿ��ɵ���ȯ���������ꤵ��Ƥ��ޤ���"
+                   MOVE    "脳血管急性発生日が設定されていません。"
                                        TO  SPA-ERRMSG
                WHEN    "8025"
-                   MOVE    "Ǿ��ɵ���ȯ����λ����ϫ�ҡ������դǤ�"
+                   MOVE    "脳血管急性発生終了日は労災・自賠責では"
                                        TO  SPA-ERRMSG
-                   MOVE    "����Ǥ��ޤ���"
+                   MOVE    "算定できません。"
                                        TO  SPA-ERRMSG(39:)
                WHEN    "8026"
-                   MOVE    "ϫ�Ҳû�����Ψ���㤤�ޤ���"
+                   MOVE    "労災加算の倍率が違います。"
                                        TO  SPA-ERRMSG
-                   MOVE    "Ʊ����Ψ��˺ޤ�ʬ���Ʋ�������"
+                   MOVE    "同じ倍率毎に剤を分けて下さい。"
                                        TO  SPA-ERRMSG(27:)
                WHEN    "8050"
-                   MOVE    "����ǻ�������������úƿǤλ����"
+                   MOVE    "外来診察料算定時は電話再診の算定は"
                                        TO  SPA-ERRMSG
-                   MOVE    "�Ǥ��ޤ���"
+                   MOVE    "できません。"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "8051"
-                   MOVE    "��³�����û�����������û��ϻ���"
+                   MOVE    "継続管理加算、外来管理加算は算定"
                                        TO  SPA-ERRMSG
-                   MOVE    "�Ǥ��ޤ���"
+                   MOVE    "できません。"
                                        TO  SPA-ERRMSG(31:)
       *H25.4
                WHEN    "8052"
-                   STRING  "��������û����ɤ��ؤ��û��ˤ�"
-                           "���ϤǤ��ޤ���"
+                   STRING  "外来管理加算（読み替え加算）は"
+                           "入力できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "8100"
-                   MOVE    "�����ݸ��ο��ť����ɤǤ������ϤǤ��ޤ���"
+                   MOVE    "公害保険の診療コードです。入力できません。"
                                        TO  SPA-ERRMSG
       *H25.11
                WHEN    "8101"
-                   STRING  "ϫ���ݸ��ڸ�̳�ҳ��ۤο��ť����ɤǤ���"
-                           "���ϤǤ��ޤ���"
+                   STRING  "労災保険【公務災害】の診療コードです。"
+                           "入力できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K811"
-                   STRING  "�ٹ�"
-                           "�����ܤ�ϫ���ݸ��ڸ�̳�ҳ��ۤ�"
-                           "���ť����ɤǤ���"
+                   STRING  "警告！"
+                           "京都府の労災保険【公務災害】の"
+                           "診療コードです。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "S001"
-                   STRING  "��«���å���˻��ѤǤ��ʤ������ɤ�����ޤ�"
-                           "��������«���åȤϻ��ѤǤ��ޤ���"
+                   STRING  "約束セット内に使用できないコードがあります"
+                           "。この約束セットは使用できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "A001"
-                   MOVE    "���̥��������ϤǤ��ޤ���"
+                   MOVE    "数量ゼロは入力できません。"
                                        TO  SPA-ERRMSG
                WHEN    "A002"
-                   MOVE    "���̥��������ϤǤ��ޤ���"
+                   MOVE    "数量ゼロは入力できません。"
                                        TO  SPA-ERRMSG
                WHEN    "9001"
-      *            MOVE    "�������դǤ�������¸�ߤ��ޤ���"
+      *            MOVE    "診療日付では入院は存在しません。"
       *                                TO  SPA-ERRMSG
-      *            MOVE    "�������դ��ѹ����Ʋ�������"
+      *            MOVE    "診療日付を変更して下さい。"
       *                                TO  SPA-ERRMSG(33:)
-                   STRING   "���������������֤ǤϤ���ޤ���"
-                            "��Ͽ�ϤǤ��ޤ���"
+                   STRING   "診療日が入院期間ではありません。"
+                            "登録はできません。"
                                         DELIMITED  BY  SIZE
                                         INTO      SPA-ERRMSG
                    END-STRING
                WHEN    "9002"
-                   MOVE    "���ֳ���ʬ������ޤ���"
+                   MOVE    "時間外区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "9003"
-                   MOVE    "���������դϹԤ��Ѥ������Ϥ��Ʋ�������"
+                   MOVE    "入院の日付は行を変えて入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "9004"
-                   MOVE    "����ιԤ������λ��ΤߤǤ��ޤ���"
+                   MOVE    "回数の行は入院の時のみできます。"
                                        TO  SPA-ERRMSG
                WHEN    "9005"
-                   MOVE    "����ϺޤκǸ�����Ϥ��Ʋ�������"
+                   MOVE    "回数は剤の最後に入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "9006"
-                   MOVE    "���դϣ����ޤǤǤ���"
+                   MOVE    "日付は３１までです。"
                                        TO  SPA-ERRMSG
                WHEN    "9007"
-                   MOVE    "����������ǤϤ���ޤ���"
+                   MOVE    "入院中の日ではありません。"
                                        TO  SPA-ERRMSG
                WHEN    "9008"
-                   MOVE    "�����λ����������Τߤ����ϤǤ���"
+                   MOVE    "訂正の時は訂正日のみの入力です。"
                                        TO  SPA-ERRMSG
                WHEN    "9009"
-                   MOVE    "��������Ρ������Ϥ��Ʋ�������"
+                   MOVE    "入院回数の／を入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "9010"
-                   MOVE    "��������Ρ��ϣ���ΤߤǤ���"
+                   MOVE    "入院回数の／は１回のみです。"
                                        TO  SPA-ERRMSG
                WHEN    "9012"
-                   MOVE    "���դϣ���ޤǤǤ���"
+                   MOVE    "日付は２桁までです。"
                                        TO  SPA-ERRMSG
                WHEN    "9013"
-                   MOVE    "���ա����դδ��֤��㤤�ޤ���"
+                   MOVE    "日付−日付の期間が違います。"
                                        TO  SPA-ERRMSG
                WHEN    "9014"
-                   STRING  "�ñ������������ʤɤ������ˤʤ�ޤ���"
-                           "ʬ�������Ϥ��Ʋ�������"
+                   STRING  "消炎鎮痛等処理などは逓減になります。"
+                           "分けて入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9015"
-                   STRING  "��ũ�굻���λ���Ǥ��ʤ����̤Ǥ���"
-                           "������Ʋ�������"
+                   STRING  "点滴手技料の算定できない液量です。"
+                           "削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9016"
-                   STRING  "��Ѥ����ꤵ��Ƥ��ޤ���"
-                           "��ũ�굻���ϻ���Ǥ��ޤ���"
+                   STRING  "手術が算定されています。"
+                           "点滴手技料は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9017"
-                   STRING  "��ʪ��Ū�������ͤϲû��Ǥ��ޤ���"
-                           "������Ʋ�������"
+                   STRING  "生物学的製剤注射は加算できません。"
+                           "削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9018"
-                   STRING  "�������ͤϲû��Ǥ��ޤ���"
-                           "������Ʋ�������"
+                   STRING  "麻毒注射は加算できません。"
+                           "削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9019"
-                   STRING  "����¾����ũ�굻������ѤߤǤ���"
-                           "������Ʋ�������"
+                   STRING  "既に他の点滴手技が算定済みです。"
+                           "削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9020"
-                   STRING  "��������ũ�굻�����ޤϺޤ�ʬ����"
-                           "���Ϥ��Ʋ�������"
+                   STRING  "入院の点滴手技と薬剤は剤を分けて"
+                           "入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9021"
-                   STRING  "�����������ˤʤ�ޤ����ޤ�ʬ����"
-                           "���Ϥ��Ʋ�������"
+                   STRING  "検査が逓減になります。剤を分けて"
+                           "入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9022"
-                   STRING  "������ũ�굻������ѤߤǤ���"
-                           "¤�ƺ���������ũ�ϻ���Ǥ��ޤ���"
+                   STRING  "既に点滴手技が算定済みです。"
+                           "造影剤注入の点滴は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9023"
-                   STRING  "��ũ�굻�������꤬�Ǥ��ޤ���"
-                           "¤�ƺ���������ũ�굻�ϻ���Ǥ��ޤ���"
+                   STRING  "点滴手技料が算定ができます。"
+                           "造影剤注入の点滴手技は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9024"
-                   MOVE    "���ο��ż��̤������Τߤλ��ѤǤ���"
+                   MOVE    "この診療種別は入院のみの使用です。"
                                        TO  SPA-ERRMSG
                WHEN    "9025"
-                   STRING  "�濴��̮���������ꤷ�ޤ���"
-                           "��ũ�굻���ϻ���Ǥ��ޤ���"
+                   STRING  "中心静脈注射料を算定します。"
+                           "点滴手技料は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9026"
-                   STRING  "�����濴��̮������������ѤǤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "既に中心静脈注射料が算定済です。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9027"
-                   STRING  "��Ѥ����ꤵ��Ƥ��ޤ���"
-                           "�濴��̮�������ϻ���Ǥ��ޤ���"
+                   STRING  "手術が算定されています。"
+                           "中心静脈注射料は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9028"
-                   MOVE    "���ο��ż��̤ϳ���Τߤλ��ѤǤ���"
+                   MOVE    "この診療種別は外来のみの使用です。"
                                        TO  SPA-ERRMSG
                WHEN    "9029"
-                   MOVE    "���ե��������������Ǥ�����Ǥ��ޤ���"
+                   MOVE    "アフターケアは入院では選択できません。"
                                        TO  SPA-ERRMSG
                WHEN    "9036"
-                   STRING  "������Ǥ���"
-                           "���ե��������������ݸ��ʳ������ϤǤ��ޤ���"
+                   STRING  "入院中です。"
+                           "アフターケア・自費保険以外は入力できません"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H24.9
                WHEN    "9041"
-                   STRING  "���ե�����������������Ͽ�ϤǤ��ޤ���"
-                           "�ݸ��ѹ��ޤ������ӥǡ��������ԤäƲ�����"
+                   STRING  "アフターケアは入院の登録はできません。"
+                           "保険変更または中途データ削除を行って下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H24.9
                WHEN    "9030"
-                   STRING  "���ֲû���ʬ��������λ��ֲû���ʬ��"
-                           "�㤤�ޤ���"
+                   STRING  "時間加算区分が選択中の時間加算区分と"
+                           "違います。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9031"
-                   MOVE    "�������Խ��û��ϴ��˻���ѤߤǤ���"
+                   MOVE    "入院患者初回加算は既に算定済みです。"
                                        TO  SPA-ERRMSG
                WHEN    "9032"
-                   STRING  "�������ֳ��ο������Ǥ���"
-                           "���Ƥ�Ÿ�����Ǥ��ޤ���Τ�"
-                           "��׾Ȳ���ѹ����Ʋ�������"
+                   STRING  "入院期間外の診療日です。"
+                           "内容の展開ができませんので"
+                           "会計照会で変更して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9033"
-                   STRING  "�������ֳ��ο������Ǥ���"
-                           "�������Ƥ���Ͽ�ϤǤ��ޤ���"
+                   STRING  "入院期間外の診療日です。"
+                           "診療内容の登録はできません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9034"
-                   STRING  "��������������˻���ѤߤǤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "既に入院期間中に算定済みです。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9035"
-                   STRING  "������ˣ���Τߤλ���Ǥ���"
+                   STRING  "入院中に１回のみの算定です。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9037"
-                   STRING  "��������û������ɤ��ۤʤ�ޤ���"
-                           "���û���������˺ޤ�ʬ���Ʋ�������"
+                   STRING  "剤内の注加算コードが異なります。"
+                           "注加算コード毎に剤を分けて下さい。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9038"
-                   STRING  "�ݸ��ȹ礻ͭ�����ֳ����������ꤵ��ޤ�����"
-                           "���������Ʋ�������"
+                   STRING  "保険組合せ有効期間外の日が指定されました。"
+                           "日を修正して下さい。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!! 2011.11.15
                WHEN    "9040"
-                   STRING  "�������濴��̮���ͤ����ޤ�"
-                           ".350�������Ϥ��Ʋ�������"
+                   STRING  "入院の中心静脈注射の薬剤は"
+                           ".350等で入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H27.1
                WHEN    "9042"
-                   STRING  "�������濴��̮���ͤδ����̺ޤ�"
-                           "���Ϥ��Ƥ���������"
+                   STRING  "入院の中心静脈注射の器材は別剤で"
+                           "入力してください。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
                WHEN    "9100"
-                   STRING  "�������Ƥ��������Ԥ�Ķ���ޤ���"
-                           "��׾Ȳ���������Ʋ�������"
+                   STRING  "診療内容が４００行を超えます。"
+                           "会計照会で訂正して下さい。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9200"
-                   MOVE    "�����������ϳ���Ǥ����ϤǤ��ޤ���"
+                   MOVE    "入院・食事は外来では入力できません。"
                                        TO  SPA-ERRMSG
       *
                WHEN    "1055"
-                   MOVE    "ʣ���ʡ�ʣ���ݸ������ϤϤǤ��ޤ���"
+                   MOVE    "複数科、複数保険は入力はできません。"
                                        TO  SPA-ERRMSG
       *
                WHEN    "1060"
-                   MOVE    "������ʬ����ٻ��������������¤�"
+                   MOVE    "既に内分泌負荷試験の当月点数が上限を"
                                        TO  SPA-ERRMSG
-                   MOVE    "Ķ���Ƥ��ޤ�������Ǥ��ޤ���"
+                   MOVE    "超えています。算定できません。"
                                        TO  SPA-ERRMSG(37:)
                WHEN    "1061"
-                   MOVE    "��ʬ����ٻ�������顼"
+                   MOVE    "内分泌負荷試験点数エラー"
                                        TO  SPA-ERRMSG
                WHEN    "K060"
-                   MOVE    "�ٹ���ʬ����ٻ��������ɬ�פǤ���"
+                   MOVE    "警告！内分泌負荷試験の訂正が必要です。"
                                        TO  SPA-ERRMSG
                WHEN    "K999"
-                   STRING  "�ٹ𡪡���Ͽ���ȿ������Ƥ��㤤�ޤ���"
-                           "ɬ����Ͽ�򤷤��������ѹ����Ʋ�������"
+                   STRING  "警告！！登録時と診療内容が違います。"
+                           "必ず登録をして点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1062"
-                   STRING  "���ޤȤ��оݤθ������������Ϥ�����ޤ���"
-                           "�����ΤޤȤ�ϤǤ��ޤ���"
+                   STRING  "包括まとめ対象の検査に日付入力があります。"
+                           "検査のまとめはできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *        ���󥿥��ȥ�󥺸���
+      *        コンタクトレンズ検査
                WHEN    "K600"
-                   STRING  "�ٹ𡪥��󥿥��ȥ�󥺸�����"
-                           "�ϴ��˻��ꤵ��Ƥ��ޤ���"
-                           "������ѼԤϻ���Ǥ��ޤ���"
+                   STRING  "警告！コンタクトレンズ検査料"
+                           "は既に算定されています。"
+                           "初回装用者は算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0600"
-                   STRING  "���󥿥��ȥ�󥺸�����������˻���Ǥ��ʤ�"
-                           "�����Ǥ���"
+                   STRING  "コンタクトレンズ検査料算定時に算定できない"
+                           "検査です。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H30.4
                WHEN    "0604"
-                   STRING  "���󥿥��ȥ�󥺸������������"
-                           "����Ǥ��ޤ���"
+                   STRING  "コンタクトレンズ検査料算定時に"
+                           "算定できません"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "9300"
-                   STRING  "������Ͽ�ζ�̳���¤Ϥ���ޤ���"
-                           "������Ͽ�ϤǤ��ޤ���"
+                   STRING  "患者登録の業務権限はありません。"
+                           "患者登録はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "9301"
-                   MOVE    "���٤�����ޤ�����Ͽ�Ǥ��ޤ���"
+                   MOVE    "明細がありません。登録できません。"
                                                 TO  SPA-ERRMSG
       *
                WHEN    "K140"
-                   STRING  "�ٹ𡪼�Ѥ����ꤵ��Ƥ��ޤ���"
-                           "�������ϻ���Ǥ��ޤ���"
+                   STRING  "警告！手術が算定されています。"
+                           "注射料は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K130"
-                   STRING  "�ٹ��������޼��Ŵ������������ܰ���Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "警告！特定薬剤治療管理料が３月目以内です。"
+                           "算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K131"
-                   STRING  "�����������޼��Ŵ������ϻ���ѤߤǤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "この特定薬剤治療管理料は算定済みです。"
+                           "算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K132"
-                   STRING  "�����������޼��Ŵ������������ѤǤ���"
-                           "�����Ǥ��ޤ���"
+                   STRING  "既に特定薬剤治療管理料は当月算定済です。"
+                           "初回算定できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K133"
-                   MOVE    "��������ˤϿ���ǯ������Ϥ��Ʋ�������"
+                   MOVE    "初回算定日には診療年月を入力して下さい。"
                                        TO  SPA-ERRMSG
-      *�ȣ���ǯ��
+      *Ｈ１８年度
                WHEN    "K138"
-                   MOVE    "�ٹ�����ν���������飱ǯ̤���Ǥ���"
+                   MOVE    "警告！前回の初回算定日から１年未満です。"
                                        TO  SPA-ERRMSG
                WHEN    "K139"
-                   STRING  "�ٹ𡪽����������"
-                           "�������ʾ�вᤷ�Ƥ��ޤ���"
+                   STRING  "警告！初回算定日から"
+                           "１２週以上経過しています。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1300"
-                   STRING  "��󤬻��ꤷ�Ƥ���ޤ���"
-                           "�����ꤷ�Ʋ�������"
+                   STRING  "初回が算定してありません。"
+                           "初回を算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1301"
-                   STRING  "���ˣ����ꤷ�Ƥ��ޤ���"
-                           "�����ܤ��ꤷ�Ʋ�������"
+                   STRING  "既に４回算定しています。"
+                           "５回目を算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1302"
-                   STRING  "�����ܤ��飴���ܤλ�������­��ޤ���"
-                           "�����ꤷ�Ʋ�������"
+                   STRING  "２回目から４回目の算定回数が足りません。"
+                           "３回算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1303"
-                   STRING  "���ˣ����ܤλ���򤷤Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "既に５回目の算定をしています。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K401"
-                   STRING  "�ٹ𡪽��֤μ굻�������ʣ������ޤ���"
-                           "�굻��˺�ʬΥ���Ʋ�������"
+                   STRING  "警告！処置の手技が剤内に複数あります。"
+                           "手技毎に剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0401"
-                   STRING  "���֤μ굻����§�û�������ޤ���"
-                           "�굻��˺�ʬΥ���Ʋ�������"
+                   STRING  "処置の手技に通則加算があります。"
+                           "手技毎に剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H25.7   ����
+      *H25.7   から
                WHEN    "K402"
-                   STRING  "�ٹ�ϫ�Ҥι��������ɤ�"
-                           "���ꤷ�Ʋ�������"
+                   STRING  "警告！労災の合成コードで"
+                           "算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0402"
-                   STRING  "�굻��ʣ������ޤ���"
-                           "ϫ�Ҥι��������ɤǻ��ꤷ�Ʋ�������"
+                   STRING  "手技が複数あります。"
+                           "労災の合成コードで算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0404"
-                   STRING  "�굻�����ޤ����ߤ��Ƥ��ޤ���"
-                           "�굻��˺�ʬΥ���뤫��"
-                           "���ޤ�ޤȤ�Ʋ�������"
+                   STRING  "手技と薬剤が混在しています。"
+                           "手技毎に剤分離するか、"
+                           "薬剤をまとめて下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0405"
-                   STRING  "�굻�ȴ�ब���ߤ��Ƥ��ޤ���"
-                           "�굻��˺�ʬΥ���뤫��"
-                           "����ޤȤ�Ʋ�������"
+                   STRING  "手技と器材が混在しています。"
+                           "手技毎に剤分離するか、"
+                           "器材をまとめて下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K404"
-                   STRING  "�ٹ�"
-                           "�굻�����ޤ����ߤ��Ƥ��ޤ���"
-                           "�굻��˺�ʬΥ���뤫��"
-                           "���ޤ�ޤȤ�Ʋ�������"
+                   STRING  "警告！"
+                           "手技と薬剤が混在しています。"
+                           "手技毎に剤分離するか、"
+                           "薬剤をまとめて下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K405"
-                   STRING  "�ٹ�"
-                           "�굻�ȴ�ब���ߤ��Ƥ��ޤ���"
-                           "�굻��˺�ʬΥ���뤫��"
-                           "����ޤȤ�Ʋ�������"
+                   STRING  "警告！"
+                           "手技と器材が混在しています。"
+                           "手技毎に剤分離するか、"
+                           "器材をまとめて下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K406"
-                   STRING  "�ٹ�"
-                           "ʣ���μ굻�Ȼ��ֳ��û�������ޤ���"
-                           "ϫ�Ҥι��������ɤǻ��ꤷ�Ʋ�������"
+                   STRING  "警告！"
+                           "複数の手技と時間外加算があります。"
+                           "労災の合成コードで算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
                WHEN    "K501"
-                   STRING  "�ٹ𡪼�Ѥμ굻�������ʣ������ޤ���"
-                           "�굻��˺�ʬΥ���Ʋ�������"
+                   STRING  "警告！手術の手技が剤内に複数あります。"
+                           "手技毎に剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K502"
-                   STRING  "�ٹ𡪼�Ѥμ굻�����Ĥ���ޤ���"
-                           "�������Ѥ����������Ϥ��Ʋ�������"
+                   STRING  "警告！手術の手技が２つあります。"
+                           "従たる手術の逓減を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H18.4�����ɲ�
+      *H18.4改正追加
                WHEN    "2063"
-                   STRING  "��ȯ�����ʤؤ��ѹ��ԲĤ�������"
-                           "���ޤβ������Ϥ��Ʋ�������"
+                   STRING  "後発医薬品への変更不可は投薬の"
+                           "薬剤の下に入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2064"
-                   STRING  "��ȯ�����ʤؤ��ѹ��ԲĤ�"
-                           "���ޤβ������Ϥ��Ʋ�������"
+                   STRING  "後発医薬品への変更不可は"
+                           "薬剤の下に入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2065"
-                   STRING  "������ޤϸ�ȯ�����ʤǤ���"
+                   STRING  "上の薬剤は後発医薬品です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2066"
-                   STRING  "������ޤ˸�ȯ�����ʤϤ���ޤ���"
+                   STRING  "上の薬剤に後発医薬品はありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2067"
-                   STRING  "��ǡ��ƿǤ�Ʊ����Ǥο��Ųʤ�Ʊ���Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "初診・再診と同日初診の診療科が同じです。"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K267"
-                   STRING  "�ٹ𡪡�"
-                           "��ǡ��ƿǤ�Ʊ����Ǥο��Ųʤ�Ʊ���Ǥ���"
-                           "�ݸ����ǧ���Ʋ�������"
+                   STRING  "警告！！"
+                           "初診・再診と同日初診の診療科が同じです。"
+                           "保険を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2070"
-                   STRING  "�ǻ��������塢���ꤷ�Ƥ���������"
+                   STRING  "診察料を削除後、算定してください。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2069"
-                   STRING  "�����˽�ǡ��ƿǤ����ꤵ��Ƥ��ޤ���"
-                           "Ʊ����Ǥϻ���Ǥ��ޤ���"
+                   STRING  "当日に初診・再診が算定されていません。"
+                           "同日初診は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2068"
-                   STRING  "�����νŽ������û��λ���Ǥ��ʤ���ѤǤ���"
+                   STRING  "極低体重出生時加算の算定できない手術です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8027"
-                   STRING  "��ϥӥ�ơ����������"
-                           "������ñ�̰ʾ�ˤʤ�ޤ���"
+                   STRING  "リハビリテーション料が"
+                           "１日９単位以上になります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K827"
-                   STRING  "�ٹ𡪣�����ñ�̰ʾ�ˤʤ�ޤ���"
+                   STRING  "警告！１日６単位以上になります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K831"
-                   STRING  "�ٹ𡪿����ɼ�����ϥӥ�ơ������"
-                           "ȯ�������飱�������ʾ�Ǥ���"
+                   STRING  "警告！心大血管疾患リハビリテーション"
+                           "発症日から１５０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K832"
-                   STRING  "�ٹ�Ǿ��ɼ�����ϥӥ�ơ������"
-                           "ȯ�������飱�������ʾ�Ǥ���"
+                   STRING  "警告！脳血管疾患リハビリテーション"
+                           "発症日から１８０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K833"
-                   STRING  "�ٹ𡪱�ư���ϥӥ�ơ������"
-                           "ȯ�������飱�������ʾ�Ǥ���"
+                   STRING  "警告！運動器リハビリテーション"
+                           "発症日から１５０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K834"
-                   STRING  "�ٹ𡪸Ƶ۴��ϥӥ�ơ������"
-                           "ȯ�������飹�����ʾ�Ǥ���"
+                   STRING  "警告！呼吸器リハビリテーション"
+                           "発症日から９０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8028"
-                   STRING  "�ߵް��Ŵ����û������������飷���֤Τ�"
-                           "�����ǽ�Ǥ���"
+                   STRING  "救急医療管理加算は入院日から７日間のみ"
+                           "算定可能です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8029"
-                   STRING  "�����ɼ�����ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "心大血管疾患リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8030"
-                   STRING  "�����ɼ�����ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "心大血管疾患リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8031"
-                   STRING  "Ǿ��ɼ�����ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "脳血管疾患リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8032"
-                   STRING  "Ǿ��ɼ�����ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "脳血管疾患リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8033"
-                   STRING  "��ư���ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "運動器リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8034"
-                   STRING  "��ư���ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "運動器リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8035"
-                   STRING  "�Ƶ۴��ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "呼吸器リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8036"
-                   STRING  "�Ƶ۴��ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "呼吸器リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8037"
-                   STRING  "�ݿ���ǽ��ˡ��������"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "摂食機能療法開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8038"
-                   STRING  "�ݿ���ǽ��ˡ��λ���ϳ�������"
-                           "Ʊ�������ϤǤ��ޤ���"
+                   STRING  "摂食機能療法終了日は開始日と"
+                           "同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8039"
-                   STRING  "���´��ԥ�ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "難病患者リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8040"
-                   STRING  "���´��ԥ�ϥӥ�ơ�����󳫻�����"
-                       "��λ����Ʊ�������ϤǤ��ޤ���"
+                   STRING  "難病患者リハビリテーション開始日と"
+                       "終了日は同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8041"
-                   STRING  "�㳲����ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "障害児リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8042"
-                   STRING  "�㳲����ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "障害児リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8043"
-                   STRING  "��ϥӥ�ơ���������������ˤʤ�ޤ���"
-                       "������ʬ�������Ϥ��Ʋ�������"
+                   STRING  "リハビリテーション料は逓減になります。"
+                       "逓減を分けて入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8044"
-                   STRING  "ϫ�ҡ������դǤϥ�ϥӥ�ơ����������"
-                           "�����Ϥ���ޤ���"
+                   STRING  "労災・自賠責ではリハビリテーション料の"
+                           "逓減はありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8045"
-                   STRING  "ϫ�ҡ������դǤϥ�ϥӥ�ơ������"
-                           "��ش������ϻ���Ǥ��ޤ���"
+                   STRING  "労災・自賠責ではリハビリテーション"
+                           "医学管理料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *�������þ��󥨥顼
+      *投薬附加情報エラー
                WHEN    "0200"
-                   STRING  "Ĺ����Ϳ�����ʾ�Ǥ���"
+                   STRING  "長期投与日数以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K200"
-                   STRING  "�ٹ�Ĺ����Ϳ�����ʾ�Ǥ���"
+                   STRING  "警告！長期投与日数以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0201"
-                   STRING  "��Ϳ�̰ʾ�Ǥ������̤��ѹ����Ʋ�������"
+                   STRING  "投与量以上です。数量を変更して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K201"
-                   STRING  "�ٹ�"
-                           "��Ϳ�̰ʾ�Ǥ������̤��ѹ����Ʋ�������"
+                   STRING  "警告！"
+                           "投与量以上です。数量を変更して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!
                WHEN    "K202"
-                   STRING  "�ٹ�"
-                           "����������ť����ɰʳ��λ��꤬����ޤ���"
-                           "��ʬΥ�򤷤Ʋ�������"
+                   STRING  "警告！"
+                           "剤内に包括診療コード以外の算定があります。"
+                           "剤分離をして下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!
                WHEN    "K210"
-                   STRING  "�ٹ𡪡�"
-                           "���å���˴��Զش����ޤ�����ޤ���"
+                   STRING  "警告！！"
+                           "セット内に患者禁忌薬剤があります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K211"
-                   STRING  "�ٹ𡪡�"
-                           "���Զش����ޤǤ���"
+                   STRING  "警告！！"
+                           "患者禁忌薬剤です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K212"
-                   STRING  "�ٹ𡪡�"
-                           "�в������������Զش����ޤǤ���"
-                           "���Զش����ޤ���Ͽ���Ʋ�������"
+                   STRING  "警告！！"
+                           "経過措置前が患者禁忌薬剤です。"
+                           "患者禁忌薬剤を登録して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K213"
-                   STRING  "�ٹ𡪡�"
-                           "���å���δ��Զش����ޤϷв�������"
-                           "�Ǥ���"
-                           "���Զش����ޤ���Ͽ���Ʋ�������"
+                   STRING  "警告！！"
+                           "セット内の患者禁忌薬剤は経過措置前"
+                           "です。"
+                           "患者禁忌薬剤を登録して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *�ȣ�����������
+      *Ｈ２０．４から
                WHEN    "K835"
-                   STRING  "�ٹ𡪿����ɼ�����ϥӥ�"
-                           "ȯ�������飱�������ʾ�Ǥ���"
-                           "����ñ�̰ʾ廻��Ǥ��ޤ���"
-                           "���ñ�̤�Ķ���ޤ�����"
+                   STRING  "警告！心大血管疾患リハビリ"
+                           "発症日から１５０日以上です。"
+                           "１３単位以上算定できません。"
+                           "月１３単位を超えました。"
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K836"
-                   STRING  "�ٹ�Ǿ��ɼ�����ϥӥ�"
-                           "ȯ�������飱�������ʾ�Ǥ���"
-                           "���ñ�̤�Ķ���ޤ�����"
+                   STRING  "警告！脳血管疾患リハビリ"
+                           "発症日から１８０日以上です。"
+                           "月１３単位を超えました。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K837"
-                   STRING  "�ٹ𡪱�ư���ϥӥ�"
-                           "ȯ�������飱�������ʾ�Ǥ���"
-                           "���ñ�̤�Ķ���ޤ�����"
+                   STRING  "警告！運動器リハビリ"
+                           "発症日から１５０日以上です。"
+                           "月１３単位を超えました。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K838"
-                   STRING  "�ٹ𡪸Ƶ۴��ϥӥ�"
-                           "ȯ�������飹�����ʾ�Ǥ���"
-                           "���ñ�̤�Ķ���ޤ�����"
+                   STRING  "警告！呼吸器リハビリ"
+                           "発症日から９０日以上です。"
+                           "月１３単位を超えました。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8047"
-                   STRING  "�����ϥӥ�ơ������û���"
-                           "����Ǥ�����֤ǤϤ���ޤ���"
+                   STRING  "早期リハビリテーション加算を"
+                           "算定できる期間ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K839"
-                   STRING  "�ٹ𡪡�"
-                           "�����Υ�ϥӥ�ơ������ȯ������"
-                           "����ޤ���"
+                   STRING  "警告！！"
+                           "該当のリハビリテーション発症日が"
+                           "ありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.5
                WHEN    "K840"
-                   STRING  "�ٹ𡪡�"
-                           "���������飶��ʾ�Ǥ���"
+                   STRING  "警告！！"
+                           "入院日から６月以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K841"
-                   STRING  "�ٹ𡪡�"
-                           "���������飳��ʾ�Ǥ���"
+                   STRING  "警告！！"
+                           "入院日から３月以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K842"
-                   STRING  "�ٹ𡪡�"
-                           "������������飶��ʾ�Ǥ���"
+                   STRING  "警告！！"
+                           "初回入院日から６月以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K843"
-                   STRING  "�ٹ𡪡�"
-                           "������������飳��ʾ�Ǥ���"
+                   STRING  "警告！！"
+                           "初回入院日から３月以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K844"
-                   STRING  "�ٹ𡪡�"
-                           "��³�����Ǥ���"
-                           "��²����������ˡ�ϻ���Ǥ��ޤ���"
+                   STRING  "警告！！"
+                           "継続入院です。"
+                           "家族入院精神療法は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!
                WHEN    "0210"
-                   STRING  "��֡���ī�û��λ��ߴ��ǤϤ���ޤ���"
+                   STRING  "夜間・早朝加算の施設基準ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0212"
-                   STRING  "������ξ�²����Ķ���Ƥ��ޤ���"
+                   STRING  "入院中の上限回数を超えています。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.7
                WHEN    "K214"
-                   STRING  "�ٹ�"
-                           "�������������β������²����"
-                           "Ķ���Ƥ��ޤ���"
+                   STRING  "警告！"
+                           "初回入院日からの回数が上限回数を"
+                           "超えています。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0213"
-                   STRING  "��������ѻٱ�û��λ���Ǥ��ʤ���ѤǤ���"
+                   STRING  "画像等手術支援加算の算定できない手術です。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0214"
-                   STRING  "���β�������ѻٱ�û��ϻ���Ǥ��ʤ�"
-                           "��ѤǤ���"
+                   STRING  "この画像等手術支援加算は算定できない"
+                           "手術です。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0215"
-                   STRING  "�������������꣱ǯ�ʾ�вᤷ�Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "初診料算定日より１年以上経過しています。"
+                           "算定できません。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K216"
-                   STRING  "�ٹ��ĺ��۴ļ���������¾�μ굻��"
-                           "�ޤ�ʬ���Ʋ�������"
+                   STRING  "警告！閉鎖循環式全身麻酔と他の手技は"
+                           "剤を分けて下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8046"
-                   STRING  "���ݤΥ�ϥӥ�ơ���������Ǥ���"
-                           "ϫ�ҤΥ����ɤǻ��ꤷ�Ʋ�������"
+                   STRING  "健保のリハビリテーション料です。"
+                           "労災のコードで算定して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!
-      *        ���������
+      *        入院料包括
                WHEN    "0217"
-                   STRING  "����������������ꤵ��Ƥ��ޤ���"
-                           "������׾Ȳ�Ǻ������Ʋ�������"
+                   STRING  "当月の入院料が算定されていません。"
+                           "入院会計照会で作成して下さい。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0218"
-                   STRING  "�������������ʳ������ꤵ��Ƥ�������"
-                           "���ꤵ��ޤ�����"
-                           "����Ǥ��ޤ���"
+                   STRING  "当日の入院料以外が算定されている日が"
+                           "指定されました。"
+                           "算定できません。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0219"
-                   STRING  "����⻻�ꥳ���ɤϺޤκǽ�����Ϥ��Ʋ�����"
+                   STRING  "出来高算定コードは剤の最初に入力して下さい"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "9210"
-                   STRING  "���ؤǤ�����ŵ����ֹ�ǤϤ���ޤ���"
+                   STRING  "切替できる医療機関番号ではありません。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.5
                WHEN    "0202"
-                   STRING   "�����͡߿��̤η���������С����ޤ���"
-                            "���̤��ѹ����Ʋ�������"
+                   STRING   "換算値×数量の桁数がオーバーします。"
+                            "数量を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0203"
-                   STRING   "������ؼ��ϳ�����������ޤΤ����ϲ�ǽ"
-                            "�Ǥ���"
+                   STRING   "種類数指示は外来の内服薬剤のみ入力可能"
+                            "です。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0204"
-                   STRING   "���̴����ͤ����꤬����ޤ���"
-                            "���������ϤϤǤ��ޤ���"
+                   STRING   "数量換算値の設定がありません。"
+                            "換算値入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0205"
-                   STRING   "���̤����Ϥ��Ʋ�������"
+                   STRING   "数量を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0206"
-                   STRING   "���������ϡ�������ؼ����ط������Ȼؼ���"
-                            "�ȣ���ǯ�����ε�ǽ�Ǥ���"
+                   STRING   "換算値入力、種類数指示、関係コメント指示は"
+                            "Ｈ２０年４月からの機能です。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0207"
-                   STRING   "���������Ϥ����ޤΤ����ϤǤ��ޤ���"
-                            "���������ϤϤǤ��ޤ���"
+                   STRING   "換算値入力は薬剤のみ入力できます。"
+                            "換算値入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0208"
-                   STRING   "�ط������Ȥ����˴ط����륳���ɤ�"
-                            "����ޤ������ϤǤ��ޤ���"
+                   STRING   "関係コメントの前に関係するコードが"
+                            "ありません。入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0209"
-                   STRING   "�����������ˤϴط������Ȥ�"
-                            "���ϤǤ��ޤ���"
+                   STRING   "入院・食事には関係コメントは"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0220"
-                   STRING   "���Ųʤμ�������Ϻ�������Ͽ�ѤߤǤ���"
-                            "���ο��ŲʤǤ����ϤϤǤ��ޤ���"
+                   STRING   "診療科の受診履歴は最大件数登録済みです。"
+                            "この診療科での入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0221"
-                   STRING   "��ɾ����ɾ����ɾ����ɾ�Ͽ��ż��̤�ľ����"
-                            "���Ϥ��Ʋ�����"
+                   STRING   "薬評・器評・加評・体評は診療種別の直下に"
+                            "入力して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0222"
-                   STRING   "����ʬ�Ϻƿǡ���Ƴ�����������ο��ż��̤�"
-                            "ľ�������Ϥ��Ʋ�����"
+                   STRING   "減点分は再診・指導・在宅・入院の診療種別の"
+                            "直下に入力して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0223"
-                   STRING   "����������ޥ��ʥ��Ȥʤ�ޤ���"
-                            "�����������ѹ����Ʋ�������"
+                   STRING   "合計点数がマイナスとなります。"
+                            "減点点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0224"
-                   STRING   "����ʬ�ο��Ŷ�ʬ�ι���������ޥ��ʥ���"
-                            "�ʤ�ޤ���"
-                            "�����������ѹ����Ʋ�������"
+                   STRING   "減点分の診療区分の合計点数がマイナスと"
+                            "なります。"
+                            "減点点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0225"
-                   STRING   "��ɾ����ɾ����ɾ�Ǥ����ϤϤǤ��ޤ���"
-                            "��ʬΥ���Ʋ�������"
+                   STRING   "薬評・器評・加評での入力はできません。"
+                            "剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0226"
-                   STRING   "����ʬ�����ϤϤǤ��ޤ���"
-                            "��ʬΥ���Ʋ�������"
+                   STRING   "減点分の入力はできません。"
+                            "剤分離して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K227"
-                   STRING   "�ٹ𡪡�"
-                            "���²����Ķ���Ƥ��ޤ���"
-                            "��ǧ���Ʋ�������"
+                   STRING   "警告！！"
+                            "月上限回数を超えています。"
+                            "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K228"
-                   STRING   "�ٹ𡪡�"
-                            "������Ϳ�̤�Ķ���Ƥ��ޤ���"
-                            "��ǧ���Ʋ�������"
+                   STRING   "警告！！"
+                            "月総投与量を超えています。"
+                            "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0501"
-                   STRING   "���ο��ż��̤�ʿ������ǯ�����ͭ���Ǥ���"
-                            "���ϤǤ��ޤ���"
+                   STRING   "この診療種別は平成２０年４月から有効です。"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0502"
-                   STRING   "���ο��ż��̤ϳ����ϫ�ҡ������դǤ��о�"
-                            "�Ǥ������ϤǤ��ޤ���"
+                   STRING   "この診療種別は外来の労災・自賠責での対象"
+                            "です。入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.6
                WHEN    "0503"
-                   STRING   "���ο��ż��̤�ʿ������ǯ�����ͭ���Ǥ���"
-                            "���ϤǤ��ޤ���"
+                   STRING   "この診療種別は平成２２年４月から有効です。"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.7
                WHEN    "0504"
-                   STRING   "���ο��ż��̤�ʿ������ǯ�����ͭ���Ǥ���"
-                            "���ϤǤ��ޤ���"
+                   STRING   "この診療種別は平成２６年４月から有効です。"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0505"
-                   STRING   "���ο��ż��̤�ʿ������ǯ�������"
-                            "ͭ���Ǥ���"
-                            "���ϤǤ��ޤ���"
+                   STRING   "この診療種別は平成２６年１０月から"
+                            "有効です。"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H28.1
                WHEN    "0506"
-                   STRING   "���ο��ż��̤�ʿ������ǯ�����"
-                            "ͭ���Ǥ���"
-                            "���ϤǤ��ޤ���"
+                   STRING   "この診療種別は平成２７年４月から"
+                            "有効です。"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *�ȣ�����������
+      *Ｈ２２．４から
                WHEN    "0270"
-                   STRING  "�ãԡ��ͣңɤ������ˤʤ�ޤ���"
-                           "�ޤ�ʬ�������Ϥ��Ʋ�����"
+                   STRING  "ＣＴ、ＭＲＩが逓減になります。"
+                           "剤を分けて入力して下さい"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0260"
-                   STRING  "�ȿ�����������Ǥ��븡�������Ϥ���"
-                           "��������"
+                   STRING  "組織診断料を算定できる検査を入力して"
+                           "下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0261"
-                   STRING  "��˦����������Ǥ��븡�������Ϥ���"
-                           "��������"
+                   STRING  "細胞診断料を算定できる検査を入力して"
+                           "下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K262"
-                   STRING  "�ٹ𡪡��ౡ����꣱��Ķ�Ǥ���"
+                   STRING  "警告！！退院日より１月超です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K263"
-                   STRING  "�ٹ𡪡��ౡ����ꣳ��Ķ�Ǥ���"
+                   STRING  "警告！！退院日より３月超です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K264"
-                   STRING  "�ٹ𡪡��ౡ������Ͽ������ޤ���"
+                   STRING  "警告！！退院日の登録がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0266"
-                   STRING  "ǧ����ˡ��ǧ�ι�ư��ˡ��¾������������"
-                           "��ˡ��Ʊ������Ǥ��ޤ���"
+                   STRING  "認知療法・認知行動療法と他の精神科専門"
+                           "療法は同時算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0267"
-                   STRING  "���̵����ѹ��Բġ��޷��ѹ��ԲĤ�"
-                           "���ޤβ������Ϥ��Ʋ�������"
+                   STRING  "含量規格変更不可・剤形変更不可は"
+                           "薬剤の下に入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0268"
-                   STRING  "���̵����ѹ��Բġ��޷��ѹ��ԲĤ�"
-                           "���������ޤβ������Ϥ��Ʋ�������"
+                   STRING  "含量規格変更不可・剤形変更不可は"
+                           "投薬の薬剤の下に入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K269"
-                   STRING  "�ٹ𡪡�"
-                           "���Ŵѻ�ˡ���ѥ����ɤǤ���"
+                   STRING  "警告！！"
+                           "医療観察法専用コードです。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.7
                WHEN    "K270"
-                   STRING  "�ٹ𡪡�"
-                           "�����ʥ�������û����������飱ǯĶ�Ǥ���"
+                   STRING  "警告！！"
+                           "精神科ケア早期加算開始日から１年超です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0280"
-                   STRING  "Ʊ�����Ƥλ������Ǥ���"
-                           "�������β������Ϥ��Ʋ�������"
+                   STRING  "同時撮影の撮影料です。"
+                           "撮影料の下に入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8048"
-                   STRING  "���󴵼ԥ�ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "がん患者リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8049"
-                   STRING  "���󴵼ԥ�ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "がん患者リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *ver.4.6
                WHEN    "0601"
-                   STRING  "�嵭�����Ͻ�ʣ����Ǥ��ޤ���"
+                   STRING  "上記検査は重複算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0602"
-                   STRING  "�嵭�����Ͻ�ʣ����Ǥ��ޤ���"
-                           "�����ܻ��ꤷ�Ʋ�������"
+                   STRING  "上記検査は重複算定できません。"
+                           "２項目算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *H30.7
                WHEN    "K601"
-                   STRING  "�ٹ�"
-                           "�嵭�����Ͻ�ʣ����Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "上記検査は重複算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0603"
-                   STRING  "���ֳ��û��Ƚ顦�ƿ������㤤�ޤ���"
-                           "���������ֳ��û������Ϥ��Ʋ�������"
+                   STRING  "時間外加算と初・再診料が違います。"
+                           "正しい時間外加算を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K845"
-                   STRING  "�ٹ�"
-                           "�����ϥӥ�ơ������û���"
-                           "����Ǥ�����֤ǤϤ���ޤ���"
+                   STRING  "警告！"
+                           "早期リハビリテーション加算を"
+                           "算定できる期間ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0229"
-                   STRING  "��绻�ꥳ���ɤϺޤκǽ�����Ϥ��Ʋ�����"
+                   STRING  "包括算定コードは剤の最初に入力して下さい"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0129"
-                   STRING  "�����Ȥ������ͤϣ�ʸ���ޤǤǤ���"
+                   STRING  "コメントの入力値は８文字までです。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K029"
-                   STRING  "�ٹ�"
-                           "�������Ѵ����̾�Τ�ɽ���Ǥ��ޤ���"
-                           "�����Ȥ������ͤ��ѹ����Ʋ�������"
+                   STRING  "警告！"
+                           "入力値変換後の名称が表示できません。"
+                           "コメントの入力値を変更して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
                WHEN    "K901"
-                   STRING  "�ٹ𡪡�"
-                           "�ߵ������������������������"
-                           "���ꤵ��Ƥ��ޤ���"
+                   STRING  "警告！！"
+                           "救急搬送診療料が入院期間中に"
+                           "算定されています。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
-      *H24.4�����ɲ�
+      *H24.4改正追加
                WHEN    "2071"
-                   STRING  "����̾���ܡ�����̾���ܤΥ����ɤ�������"
-                           "���ޤβ������Ϥ��Ʋ�������"
+                   STRING  "一般名記載・銘柄名記載のコードは投薬の"
+                           "薬剤の下に入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8070"
-                   STRING  "����û��ʥ�ϥӥ�ơ���������ˤ�"
-                           "����Ǥ�����֤ǤϤ���ޤ���"
+                   STRING  "初期加算（リハビリテーション料）を"
+                           "算定できる期間ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K873"
-      ********     STRING  "�ٹ�"
-      *                    "�������������꣱ǯ�ʾ�вᤷ�Ƥ��ޤ���"
-      *                    "����Ǥ��ޤ���"
+      ********     STRING  "警告！"
+      *                    "初診料算定日より１年以上経過しています。"
+      *                    "算定できません。"
       *                                DELIMITED  BY  SPACE
       *                                INTO    SPA-ERRMSG
       ********     END-STRING
-                   STRING  "�ٹ�"
-                           "���������������λ�����֤�"
-                           "�вᤷ�Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "初診料算定日からの算定期間を"
+                           "経過しています。"
+                           "算定できません。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H26.4
                WHEN    "K874"
-                   STRING  "�ٹ�"
-                           "�̱�������������ˡ�����������"
-                           "������֤�вᤷ�Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "通院・在宅精神療法開始日からの"
+                           "算定期間を経過しています。"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K870"
-                   STRING  "�ٹ�"
-                           "����û��ʥ�ϥӥ�ơ���������ˤ�"
-                           "����Ǥ�����֤ǤϤ���ޤ���"
+                   STRING  "警告！"
+                           "初期加算（リハビリテーション料）を"
+                           "算定できる期間ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K871"
-                   STRING  "�ٹ�Ǿ��ɼ�������ϥӥ�ơ������"
-                           "ȯ�����Σ�������Ķ���黻�ꤷ�Ʋ�������"
+                   STRING  "警告！脳血管疾患等リハビリテーション"
+                           "発症日の１８０日超から算定して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K872"
-                   STRING  "�ٹ𡪱�ư���ϥӥ�ơ������"
-                           "ȯ�����Σ�������Ķ���黻�ꤷ�Ʋ�������"
+                   STRING  "警告！運動器リハビリテーション"
+                           "発症日の１５０日超から算定して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K272"
-                   STRING  "�ٹ�"
-                           "�ȿ������������Ϥ�����ޤ���"
+                   STRING  "警告！"
+                           "組織診断料の入力がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K273"
-                   STRING  "�ٹ�"
-                           "��˦�����������Ϥ�����ޤ���"
+                   STRING  "警告！"
+                           "細胞診断料の入力がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K244"
-                   STRING  "�ٹ𡪡�"
-                           "������¥������������ꤷ�Ƥ��ޤ���"
-                           "�����λ��꤬����ޤ���"
+                   STRING  "警告！！"
+                           "外来緩和ケア管理料を算定しています。"
+                           "麻薬の算定がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1421"
                    MOVE
-                   "���𤬤��������ǻ��������������Ǥ��ޤ���"
+                   "在宅がん医療総合診察料を算定時、算定できません"
                                        TO  SPA-ERRMSG
       *ver.4.7
                WHEN    "0240"
-                   STRING   "�����Ͽ��ż��̤�ľ�������Ϥ��Ʋ�����"
+                   STRING   "減点は診療種別の直下に入力して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0241"
-                   STRING   "�����������ʹ绻���������Ķ�ˤ�"
-                            "����¾���ͤ����Ϥ��Ʋ�������"
+                   STRING   "薬剤料減点（合算薬剤料上限超）は"
+                            "その他注射で入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0242"
-                   STRING   "�����������ʹ绻���������Ķ�ˤ�"
-                            "���������Ϥ��Ʋ�������"
+                   STRING   "薬剤料減点（合算薬剤料上限超）は"
+                            "入院で入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K119"
-                   STRING   "�ٹ�"
-                            "����ũ�ޤ����ޤ����������ʾ�Ǥ���"
-                            "���̤����Ϥ��Ʋ�������"
+                   STRING   "警告！"
+                            "内服滴剤の薬剤の日数が１以上です。"
+                            "総量で入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1105"
-                   STRING  "���ν�Ǥν�ǻ�������ʿ������ǯ����ʹ�"
-                           "�ˤ��Ʋ�������"
+                   STRING  "この初診の初診算定日は平成２８年４月以降"
+                           "にして下さい。"
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
       *H25.2
                WHEN    "7011"
-                   STRING  "�쥻�ץ��Ż��ǡ�������ܹԤ����ǡ����Ǥ���"
-                           "�����Ǥ��ޤ���"
+                   STRING  "レセプト電算データから移行したデータです。"
+                           "訂正できません。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H26.4 ����
+      *H26.4 から
                WHEN    "0511"
-                   STRING  "��ɡ�м���������û��λ���Ǥ��ʤ�"
-                           "��ѤǤ���"
+                   STRING  "副鼻腔手術用内視鏡加算の算定できない"
+                           "手術です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0512"
-                   STRING  "��ɡ�м��������ȿ��ڽ���û���"
-                           "����Ǥ��ʤ���ѤǤ���"
+                   STRING  "副鼻腔手術軟骨部組織切除器加算の"
+                           "算定できない手術です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0513"
-                   STRING  "�����Կ�Ͷȯ�Ű�¬�����û��λ���Ǥ��ʤ�"
-                           "��ѤǤ���"
+                   STRING  "この脊髄誘発電位測定等加算の算定できない"
+                           "手術です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0514"
-                   STRING  "�Կ�Ͷȯ�Ű�¬�����û��ϻ���Ǥ��ʤ�"
-                           "��ѤǤ���"
+                   STRING  "脊髄誘発電位測定等加算は算定できない"
+                           "手術です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0541"
-                   STRING  "Ĺ�����������û��λ���Ǥ��ʤ�"
-                           "���Ǥ���"
+                   STRING  "長時間麻酔管理加算の算定できない"
+                           "麻酔です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K990"
-                   STRING  "�ٹ𡪡�"
-                           "�������������ǤϤ���ޤ���"
-                           "��ޡ������ޥ���������å����Ƥ���������"
+                   STRING  "警告！！"
+                           "４月改定の点数ではありません。"
+                           "至急、点数マスタをチェックしてください。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H27.1 ��������
+      *H27.1 改正から
                WHEN    "K111"
-                   STRING  "�ٹ�"
-                           "�ŷ�Ψ����ʲ�������ǤϤ���ޤ���"
-                           "��ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "妥結率５割以下の設定ではありません。"
+                           "確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K112"
-                   STRING  "�ٹ�"
-                           "�ŷ�Ψ����ʲ�������Ǥ���"
-                           "�ŷ�Ψ����ʲ��Υ����ɤ����Ϥ��Ʋ�������"
+                   STRING  "警告！"
+                           "妥結率５割以下の設定です。"
+                           "妥結率５割以下のコードを入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1104"
-                   STRING  "���ν�Ǥν�ǻ�������ʿ������ǯ����ʹ�"
-                           "�ˤ��Ʋ�������"
+                   STRING  "この初診の初診算定日は平成２７年１月以降"
+                           "にして下さい。"
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
       *!!!
       *H27.6
                WHEN    "2072"
-                   STRING  "��ȯ���ѹ��Բġʽ���ñ�̡ˡ�"
-                           "��ȯ���ѹ��ġʽ���ñ�̡�"
-                           "����ʣ���ޤ���"
+                   STRING  "後発品変更不可（処方単位）・"
+                           "後発品変更可（処方単位）"
+                           "が重複します。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2073"
-                   STRING  "��ȯ���ѹ��Բġʽ���ñ�̡ˤ�"
-                           "���ϤǤ��ޤ���"
-                           "�����ƥ�������ѹ��ԲĤǤ���"
+                   STRING  "後発品変更不可（処方単位）は"
+                           "入力できません。"
+                           "システム管理が変更不可です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2074"
-                   STRING  "��ȯ���ѹ��ġʽ���ñ�̡ˤ����ϤǤ��ޤ���"
-                           "�����ƥ�������ѹ��ĤǤ���"
+                   STRING  "後発品変更可（処方単位）は入力できません。"
+                           "システム管理が変更可です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H27.4
                WHEN    "K116"
-                   STRING  "�ٹ�"
-                           "��Ҳ�Ψ������ǤϤ���ޤ���"
-                           "�����������ϹԤ��ޤ���"
+                   STRING  "警告！"
+                           "低紹介率の設定ではありません。"
+                           "投薬の逓減は行いません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H29.9
                WHEN    "0542"
-                   STRING  "�û��ν��������˳������ʤ����ܤ�����ޤ���"
-                           "�̺ޤȤ������Ϥ��Ʋ�������"
+                   STRING  "加算の所定点数に該当しない項目があります。"
+                           "別剤として入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
       *H30.2
                WHEN    "0701"
-                   STRING  "�������ι�׿��̤Ȱ㤤�ޤ���"
-                           "Ʊ�����̤����Ϥ��Ʋ�������"
+                   STRING  "撮影料の合計数量と違います。"
+                           "同じ数量を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K701"
-                   STRING  "�ٹ𡪻������ι�׿��̤Ȱ㤤�ޤ���"
-                           "Ʊ�����̤����Ϥ��Ʋ�������"
+                   STRING  "警告！撮影料の合計数量と違います。"
+                           "同じ数量を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
       *H30.4
                WHEN    "0181"
-                   STRING  "ǥ�زû��Ƚ顦�ƿ������㤤�ޤ���"
-                           "�������û������Ϥ��Ʋ�������"
+                   STRING  "妊婦加算と初・再診料が違います。"
+                           "正しい加算を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0182"
-                   STRING  "����̤���Ǥ���ǥ�زû������ϤϤǤ��ޤ���"
+                   STRING  "６歳未満です。妊婦加算の入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0183"
-                   STRING  "�����Ǥ���ǥ�زû������ϤϤǤ��ޤ���"
+                   STRING  "男性です。妊婦加算の入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0184"
-                   STRING  "����ǥ�زû������Ϥ�����ޤ���"
+                   STRING  "既に妊婦加算の入力があります。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0185"
-                   STRING  "�������������ؿͲ�������ֳ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "小児・産・産婦人科特例時間外は"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0186"
-                   STRING  "�������ؿͲ�������ֳ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "産・産婦人科特例時間外は"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0187"
-                   STRING  "ǥ�زû������ϤǤ���ޤǤϤ���ޤ���"
+                   STRING  "妊婦加算の入力できる剤ではありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0281"
-                   STRING  "ʬ��Ĵ�ޤϱ������������Ϥ��Ʋ�������"
+                   STRING  "分割調剤は院外投薬で入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0282"
-                   STRING  "ʬ��Ĵ�ޤϣ��ޤˣ������Ϥ��Ʋ�������"
+                   STRING  "分割調剤は１剤に１つ入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0283"
-                   STRING  "ʬ��Ĵ�ޤϣ������ʾ�����Ϥ��Ʋ�������"
+                   STRING  "分割調剤は３０日以上で入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0284"
-                   STRING  "ʬ��Ĵ�ޤ��������Ϥ��㤤�ޤ���"
+                   STRING  "分割調剤の日数入力が違います。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0285"
-                   STRING  "ʬ��Ĵ�ޤι�������������������㤤�ޤ���"
+                   STRING  "分割調剤の合計日数と投薬日数が違います。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0286"
-                   STRING  "ʬ��Ĵ�ޤ����Ƥ�����ޤ���"
+                   STRING  "分割調剤の内容がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0287"
-                   STRING  "���û������ɤΤ���û��ϤޤȤ��"
-                           "���Ϥ��Ʋ�������"
+                   STRING  "注加算コードのある加算はまとめて"
+                           "入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K120"
-                   STRING  "�ٹ�"
-                           "���¥�ʡ������ݼ��ޤ����Ϥ�����ޤ���"
-                           "��ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "血行促進・皮膚保湿剤の入力があります。"
+                           "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K274"
-                   STRING  "�ٹ�"
-                           "�������������ȿ�ɸ�ܲû���"
-                           "����Ǥ����Ѥλ��꤬����ޤ���"
+                   STRING  "警告！"
+                           "悪性腫瘍病理組織標本加算の"
+                           "算定できる手術の算定がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K503"
-                   STRING  "�ٹ𡪽���Ǿ��ή��˥���󥰲û���"
-                           "����Ǥ����Ѥλ��꤬����ޤ���"
+                   STRING  "警告！術中脳灌流モニタリング加算の"
+                           "算定できる手術の算定がありません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H30.5
                WHEN    "K088"
-                   STRING  "�ٹ�"
-                           "����ϣ���ΤߤǤ���"
+                   STRING  "警告！"
+                           "回数は１回のみです。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H30.6
                WHEN    "1088"
-                   STRING  "�ݸ�����ۤ������Ķ���ޤ���"
-                           "��������С��Ȥʤ�ޤ���"
+                   STRING  "保険外金額が７桁を超えます。"
+                           "桁数オーバーとなります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1089"
-                   STRING  "�ݸ�����ۤι�פ������Ķ���ޤ���"
-                           "��������С��Ȥʤ�ޤ���"
+                   STRING  "保険外金額の合計が７桁を超えます。"
+                           "桁数オーバーとなります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1090"
-                   STRING  "������פ������Ķ���ޤ���"
-                           "��������С��Ȥʤ�ޤ���"
+                   STRING  "点数合計が７桁を超えます。"
+                           "桁数オーバーとなります。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0702"
-                   STRING  "�ͣңɻ������Ⱦ������Ų��ͣңɻ��Ʋû�"
-                           "���㤤�ޤ���"
+                   STRING  "ＭＲＩ撮影料と小児鎮静下ＭＲＩ撮影加算"
+                           "が違います。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
       *H30.9
                WHEN    "1106"
-                   STRING  "��������򼰥����Ȥ�ɬ�פ�"
-                           "���ŤϤ���ޤ���"
+                   STRING  "剤内に選択式コメントの必要な"
+                           "診療はありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1107"
-                   STRING  "���򼰥����Ȥϡ�ʿ������ǯ�����"
-                            "ͭ���Ǥ���"
-                            "���ϤǤ��ޤ���"
+                   STRING  "選択式コメントは、平成３０年４月から"
+                            "有効です。"
+                            "入力できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K117"
-                   STRING  "�ٹ�"
-                           "���򼰥����Ȥ����ԤǺ޽�λ���Ƥ��ޤ���"
-                           "����Ԥ��ѹ����Ʋ�������"
+                   STRING  "警告！"
+                           "選択式コメントの前行で剤終了しています。"
+                           "回数行を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
       *H31.3
                WHEN    "0248"
-                   STRING   "�����������̤���������С����ޤ���"
-                            "���̤Ȳ�����ǧ���Ʋ�������"
+                   STRING   "外用薬の総量が桁数オーバーします。"
+                            "数量と回数を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "0249"
-                   STRING   "��������������С����ޤ���"
-                            "���̤Ȳ�����ǧ���Ʋ�������"
+                   STRING   "点数が桁数オーバーします。"
+                            "数量と回数を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K229"
-                   STRING   "�ٹ�"
-                            "��������Ĺ�����������оݤ�"
-                            "����������ޤ���"
+                   STRING   "警告！"
+                            "向精神薬長期処方減算対象の"
+                            "投薬がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -2447,7 +2447,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�������̥�å������Խ�����
+      *    プログラム別メッセージ編集処理
       *****************************************************************
        200-PG-ERRMSG-SEC            SECTION.
       *
@@ -2466,1248 +2466,1248 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥��顼��å������Խ�����
+      *    診療行為エラーメッセージ編集処理
       *****************************************************************
        2001-K02-ERRMSG-SEC              SECTION.
       *
            EVALUATE    SPA-ERRCD
                WHEN    "1000"
-                   MOVE    "�ģ����򥨥顼�Ǥ�"
+                   MOVE    "ＤＯ選択エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "�������顼�Ǥ�"
+                   MOVE    "処理エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "���̡���ۤ����ϤǤ��ޤ���"
+                   MOVE    "数量・金額は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����δ��Ԥ�¸�ߤ��ޤ���" 
+                   MOVE    "該当の患者が存在しません。" 
                                        TO  SPA-ERRMSG
                WHEN    "1004"
-                   MOVE    "���ԥޥ���������ޤ���"
+                   MOVE    "患者マスタがありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ�����Ϥ��Ʋ�����"
+                   MOVE    "患者番号を入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "1006"
-                   MOVE    "�ݸ��ȹ礬����ޤ��󡣽����Ǥ��ޤ���"
+                   MOVE    "保険組合がありません。処理できません"
                                        TO  SPA-ERRMSG
                WHEN    "1007"
-                   MOVE    "�ݸ��ȹ礬����ޤ���"
+                   MOVE    "保険組合がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1008"
-                   MOVE    "�����λ������Ųʤ��ѹ��ϤǤ��ޤ���"
+                   MOVE    "訂正の時、診療科の変更はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1009"
-                   MOVE    "�����λ������������ѹ��ϤǤ��ޤ���"
+                   MOVE    "訂正の時、診療日の変更はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1010"
-                   MOVE    "���������ϥ��顼"
+                   MOVE    "診療日入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "1011"
-                   MOVE    "���������ο����������ϤǤ��ޤ���"
+                   MOVE    "誕生日前の診療日は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1012"
-                   MOVE    "�оݤΥǡ���������ޤ���"
+                   MOVE    "対象のデータがありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1013"
-                   MOVE    "�����Ƿ�³����Ѥߤλ���"
+                   MOVE    "訂正で継続確定済みの時、"
                                        TO  SPA-ERRMSG(1:24)
-                   MOVE    "�ݸ����ѹ��ϤǤ��ޤ���"
+                   MOVE    "保険の変更はできません"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "1014"
-                   STRING  "�������������ꤷ�ޤ���"
-                           "����������������û��ʽ����������ˤ�"
-                           "����Ǥ��ޤ���"
+                   STRING  "処方せん料を算定しません。"
+                           "特定疾患処方管理加算（処方せん料）は"
+                           "算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1015"
-                   STRING  "���������ꤷ�ޤ���"
-                           "����������������û��ʽ������ˤ�"
-                           "����Ǥ��ޤ���"
+                   STRING  "処方料を算定しません。"
+                           "特定疾患処方管理加算（処方料）は"
+                           "算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *VER.4.3.0 ����ٹ��
+      *VER.4.3.0 から警告へ
                WHEN    "K114"
-                   STRING  "�ٹ𡪽������������ꤷ�ޤ���"
-                           "����������������û��Τߤλ���Ȥʤ�ޤ���"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "特定疾患処方管理加算のみの算定となります。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K115"
-                   STRING  "�ٹ𡪽��������ꤷ�ޤ���"
-                           "����������������û��Τߤλ���Ȥʤ�ޤ���"
+                   STRING  "警告！処方料を算定しません。"
+                           "特定疾患処方管理加算のみの算定となります。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "1016"
-                   MOVE    "������ؤμ�ư�ѹ��ϤǤ��ޤ���"
+                   MOVE    "初診料への自動変更はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1046"
-                   STRING  "�ƿ����ؤμ�ư�ѹ��ϤǤ��ޤ���"
+                   STRING  "再診料への自動変更はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "1101"
-                   MOVE    "��ǻ�����������������Ϥ��Ʋ�������"
+                   MOVE    "初診算定日＜診療日で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "1102"
-                   MOVE    "��ǻ������������ǤϤ���ޤ���"
+                   MOVE    "初診算定日が暦日ではありません。"
                                        TO  SPA-ERRMSG
       *H25.4
                WHEN    "1103"
-                   STRING  "���ν�Ǥν�ǻ�������ʿ������ǯ����ʹ�"
-                           "�ˤ��Ʋ�������"
+                   STRING  "この初診の初診算定日は平成２５年４月以降"
+                           "にして下さい。"
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1017"
       *?           MOVE
-      *            "��ǻ���������Ͽ���ơ��ƿ�����ư����򤷤Ʋ�����"
+      *            "初診算定日を登録して、再診料自動算定をして下さい"
       *?                               TO  SPA-ERRMSG
-                   STRING  "��ǻ������������β������Ϥ��ƽ�ǻ�����"
-                           "����Ͽ�塢�ƿ����μ�ư����򤷤Ʋ�����"
+                   STRING  "初診算定日を初診料の横に入力して初診算定日"
+                           "を登録後、再診料の自動算定をして下さい"
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1058"
-                   STRING  "��ǻ�����������ޤ���"
-                           "��ǻ���������Ͽ���Ʋ�������"
+                   STRING  "初診算定日がありません。"
+                           "初診算定日を登録して下さい。"
                                            DELIMITED   BY  SIZE
                                            INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1018"
                    MOVE
-                   "�оݴ��Ԥ����ӽ�λ�ǡ����Ϥ���ޤ���"
+                   "対象患者の中途終了データはありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1019"
                    MOVE
-                   "���ӽ�λ�ǡ����Ϥ���ޤ���"
+                   "中途終了データはありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1020"
-                   STRING  "����������ꤵ��Ƥޤ���"
-                           "���������塢���ꤷ�Ʋ�����"
+                   STRING  "初診料が算定されてません。"
+                           "初診料を算定後、算定して下さい"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1040"
-                   MOVE    "�������ϻ���Ǥ��ޤ���"
+                   MOVE    "往診料は算定できません。"
                                        TO  SPA-ERRMSG
                WHEN    "1042"
-                   STRING  "����������ꤵ��Ƥ��ޤ���"
-                           "Ʊ������Ǥ��ޤ���"
+                   STRING  "初診料が算定されています。"
+                           "同時算定できません。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1041"
-                   STRING  "������ȿ�������Ϸ���ౡ����Ʊ��Ƴ����"
-                           "Ʊ������Ǥ��ޤ���"
+                   STRING  "初診料と寝たきり老人退院時共同指導料は"
+                           "同時算定できません。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1043"
-                   STRING  "����������ꤵ��Ƥ��ޤ���"
-                           "�ģգͣͣ٤ν�������ꤷ�Ʋ�������"
+                   STRING  "初診料が算定されていません。"
+                           "ＤＵＭＭＹの初診料を算定して下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1044"
-                   STRING  "�������ʣ���ʡ��ݸ��ȹ礻��"
-                           "���ꤷ�ʤ��ǲ�������"
+                   STRING  "初診料を複数科・保険組合せで"
+                           "算定しないで下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "K144"
-                   STRING  "�ٹ𡪡��ǻ�����ʣ���ʡ��ݸ��ȹ礻��"
-                           "���ꤷ�ʤ��ǲ�������"
+                   STRING  "警告！！診察料を複数科・保険組合せで"
+                           "算定しないで下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1021"
-                   MOVE    "�������������������ϣ��ĤΤߤλ���Ǥ���"
+                   MOVE    "処方料・処方せん料は１つのみの算定です。"
                                        TO  SPA-ERRMSG
                WHEN    "1022"
-                   MOVE    "�ñ����������֤ʤɤϴ���Ʊ������ѤߤǤ���"
+                   MOVE    "消炎鎮痛等処置などは既に同日算定済みです。"
                                        TO  SPA-ERRMSG
                WHEN    "1023"
-                   STRING  "��ǻ���������ư���ꤵ��Ƥ��ޤ���"
-                           "���ӽ�λ�ϤǤ��ޤ���"
+                   STRING  "初診算定日が自動算定されています。"
+                           "中途終了はできません。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1024"
-                   MOVE    "������Ǥ������ӽ�λ�ϤǤ��ޤ���"
+                   MOVE    "訂正中です。中途終了はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1025"
-                   STRING  "���������ΤǤ��ʤ����꤬����ޤ���"
-                           "������ؤ��Ѵ��ϤǤ��ޤ���"
+                   STRING  "初診料算定のできない算定があります。"
+                           "初診料への変換はできません。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1026"
-                   MOVE    "���ż����Ϥλ��ϡ������ϤǤ��ޤ���"
+                   MOVE    "診療室入力の時は、訂正はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1027"
-                   STRING  "Ϸ�ͤ��ݸ���礬���ꤵ��Ƥ��ޤ���"
-                           "�ݸ�����Ͽ��ľ���Ʋ�������"
+                   STRING  "老人の保険割合が設定されていません。"
+                           "保険を登録し直して下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1028"
-                   STRING  "�ݸ��ȹ��̷�⤬����ޤ���"
-                           "������Ͽ���ݸ�����Ͽ��ľ���Ʋ�������"
+                   STRING  "保険組合に矛盾があります。"
+                           "患者登録で保険を登録し直して下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1029"
-                   STRING  "�����Ƿ�³����Ѥߤλ���"
-                           "���Ųʤ��ѹ��ϤǤ��ޤ���"
+                   STRING  "訂正で継続確定済みの時、"
+                           "診療科の変更はできません"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1030"
-                   STRING  "��������ץ�����ब����ޤ���"
-                           "�����ƥ�������ǧ���Ʋ�������"
+                   STRING  "処方せんプログラムがありません。"
+                           "システム管理を確認して下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1031"
-                   STRING  "���޾�������ץ�����ब����ޤ���"
-                           "�����ƥ�������ǧ���Ʋ�������"
+                   STRING  "薬剤情報印刷プログラムがありません。"
+                           "システム管理を確認して下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1032"
-                   STRING  "����δ��֤�̷�⤬����ޤ���"
-                           "������Ͽ���ݸ��ȹ礻����Ͽ��ľ���Ʋ�������"
+                   STRING  "公費の期間に矛盾があります。"
+                           "患者登録で保険組合せを登録し直して下さい。"
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "1033"
-                   MOVE    "���������ʬ���Ϥ��ѹ��ϤǤ��ޤ���"
+                   MOVE    "訂正で包括分入力の変更はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1034"
-                   MOVE    "�ݸ��ȹ礻������ޤ�������ľ���Ʋ�����"
+                   MOVE    "保険組合せがありません。選択し直して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "K034"
-                   MOVE    "�ٹ𡪡���������Τߤ��ݸ��ȹ礻�Ǥ���"
+                   MOVE    "警告！！地方公費のみの保険組合せです。"
                                        TO  SPA-ERRMSG
                WHEN    "1036"
-                   STRING  "�����������ɼ�ֹ椬�����Ǥ���"
-                           "�����Ǥ��ޤ���"
+                   STRING  "受診履歴の伝票番号がゼロです。"
+                           "訂正できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1037"
-                   STRING  "�����������ꤵ��ޤ���"
-                           "Ĺ�������û��ʽ������ˤϻ���Ǥ��ޤ���"
+                   STRING  "処方料が算定されません。"
+                           "長期投薬加算（処方料）は算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 ����
+      *H30.4 から
                    IF      SPA-SRYYMD      >=  "20180401"
-                       STRING  "�����������ꤵ��ޤ���"
-                               "����������������û����ʽ�������"
-                               "�ϻ���Ǥ��ޤ���"
+                       STRING  "処方料が算定されません。"
+                               "特定疾患処方管理加算２（処方料）"
+                               "は算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                        END-STRING
                    END-IF
                WHEN    "1038"
-                   STRING  "���������������ꤵ��ޤ���"
-                           "Ĺ�������û��ʽ����������ˤϻ���Ǥ��ޤ���"
+                   STRING  "処方せん料が算定されません。"
+                           "長期投薬加算（処方せん料）は算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 ����
+      *H30.4 から
                    IF      SPA-SRYYMD      >=  "20180401"
-                       STRING  "������������ꤵ��ޤ���"
-                               "����������������û����ʽ��������"
-                               "�ϻ���Ǥ��ޤ���"
+                       STRING  "処方箋料が算定されません。"
+                               "特定疾患処方管理加算２（処方箋料）"
+                               "は算定できません"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                        END-STRING
                    END-IF
-      *VER.4.3.0 ����ٹ��ɲ�
+      *VER.4.3.0 から警告追加
                WHEN    "K038"
-                   STRING  "�ٹ𡪽������������ꤷ�ޤ���"
-                           "Ĺ�������û��ʽ����������ˤΤߤλ����"
-                           "�ʤ�ޤ�"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "長期投薬加算（処方せん料）のみの算定と"
+                           "なります"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 ����
+      *H30.4 から
                    IF      SPA-SRYYMD      >=  "20180401"
-                   STRING  "�ٹ𡪽���������ꤷ�ޤ���"
-                           "����������������û����ʽ��������"
-                           "�Τߤλ���Ȥʤ�ޤ�"
+                   STRING  "警告！処方箋料を算定しません。"
+                           "特定疾患処方管理加算２（処方箋料）"
+                           "のみの算定となります"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                    END-IF
                WHEN    "K037"
-                   STRING  "�ٹ𡪽��������ꤷ�ޤ���"
-                           "Ĺ�������û��ʽ������ˤΤߤλ���Ȥʤ�ޤ�"
+                   STRING  "警告！処方料を算定しません。"
+                           "長期投薬加算（処方料）のみの算定となります"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *H30.4 ����
+      *H30.4 から
                    IF      SPA-SRYYMD      >=  "20180401"
-                   STRING  "�ٹ𡪽��������ꤷ�ޤ���"
-                           "����������������û����ʽ�������"
-                           "�Τߤλ���Ȥʤ�ޤ�"
+                   STRING  "警告！処方料を算定しません。"
+                           "特定疾患処方管理加算２（処方料）"
+                           "のみの算定となります"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                    END-IF
                WHEN    "1039"
-                   STRING  "���˽���������������ѤߤǤ���"
-                           "Ĵ�޵��Ѵ������ϻ���Ǥ��ޤ���"
+                   STRING  "既に処方せん料が算定済みです。"
+                           "調剤技術基本料は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *        �ȣ���������������
+      *        Ｈ２０．４改正から
                WHEN    "1076"
-                   STRING  "�������Ԥ�ǯ��Ǥ���"
-                           "�������Ԥ��ݸ�����Ͽ���Ʋ�������"
+                   STRING  "後期高齢者の年齢です。"
+                           "後期高齢者の保険を登録して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K076"
-                   STRING  "�ٹ𡪡��������Ԥ�ǯ��Ǥ���"
-                           "�������Ԥ��ݸ�����Ͽ���Ʋ�������"
+                   STRING  "警告！！後期高齢者の年齢です。"
+                           "後期高齢者の保険を登録して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1077"
-                   STRING  "�����аʾ�Ǥ���"
-                           "�࿦���ݤ��оݤǤϤ���ޤ���"
+                   STRING  "６５歳以上です。"
+                           "退職国保は対象ではありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *        �ȣ�����������������
+      *        Ｈ１８．１０改正から
                WHEN    "1070"
-      *            STRING  "Ϸ�ͤ��ݸ���礬����Ǥ���"
-      *                    "������ݸ�����Ͽ��ľ���Ʋ�������"
+      *            STRING  "老人の保険割合が２割です。"
+      *                    "３割に保険を登録し直して下さい。"
       *                                DELIMITED  BY  SIZE
       *                                INTO    SPA-ERRMSG
       *            END-STRING
-      *H26.5 ���顡������оݤʤ�Τǡ������
-                   STRING  "Ϸ�ͤ��ݸ���礬�㤤�ޤ���"
-                           "�ݸ�����Ͽ��ľ���Ʋ�������"
+      *H26.5 から　２割も対象なるので、割合削除
+                   STRING  "老人の保険割合が違います。"
+                           "保険を登録し直して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1071"
-                   STRING  "���ݤ������������ã���ʹߤγ�ǧ��"
-                           "����ޤ����ݸ����ǧ���Ʋ�������"
+                   STRING  "国保の前期高齢者到達日以降の確認が"
+                           "ありません。保険を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K171"
-                   STRING  "�ٹ𡪡������������ã���ʹߤ��ݸ���ǧ��"
-                           "���Ƥ���ޤ��󡣳�ǧ���Ʋ�������"
+                   STRING  "警告！！前期高齢者到達日以降に保険確認が"
+                           "してありません。確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K172"
-                   STRING  "�ٹ𡪡�������ݸ��ȹ礻���㤤�ޤ���"
-                           "��ǧ���Ʋ�������"
+                   STRING  "警告！！前回と保険組合せが違います。"
+                           "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K173"
-                   STRING  "�ٹ𡪡�"
-                           "������ݸ��ȹ礻�Ϻ���ˤʤäƤ��ޤ���"
-                           "�ݸ��ȹ礻���ǧ���Ʋ�������"
+                   STRING  "警告！！"
+                           "前回の保険組合せは削除になっています。"
+                           "保険組合せを確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K174"
-                   STRING  "�ٹ𡪡�"
-                           "����˽������ʻ�ѻ���Ǥ��ʤ������ɤ���Ͽ"
-                           "����Ƥ��ޤ���"
+                   STRING  "警告！！"
+                           "当月に初診料と併用算定できないコードが登録"
+                           "されています。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K175"
-                   STRING  "�ٹ𡪡�"
-                           "�������ʻ�ѻ��ꥨ�顼�Ǥ���"
-      **************       "������μ�ưȯ���ϤǤ��ޤ���"
+                   STRING  "警告！！"
+                           "初診料は併用算定エラーです。"
+      **************       "初診料の自動発生はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K177"
-                   STRING  "�ٹ𡪡�"
-                          "��������转���´��������ꤷ�Ƥ��ޤ���"
+                   STRING  "警告！！"
+                          "当月に生活習慣病管理料を算定しています。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *!
                WHEN    "1050"
-                   STRING  "ϫ�ҡ������ա����������ʬ���Ϥ�"
-                           "ʣ���ݸ����ϤϤǤ��ޤ���"
+                   STRING  "労災・自賠責・公害、包括分入力の"
+                           "複数保険入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1051"
-                   MOVE    "�ݸ��ȹ礻������ޤ���"
+                   MOVE    "保険組合せがありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1052"
-                   MOVE    "���ݸ���Ϸ�͡����̤�Ƚ�꤬�㤤�ޤ���"
+                   MOVE    "主保険と老人・一般の判定が違います。"
                                        TO  SPA-ERRMSG
-                   MOVE    "ʣ���ݸ����ϤϤǤ��ޤ���"
+                   MOVE    "複数保険入力はできません。"
                                        TO  SPA-ERRMSG(37:)
                WHEN    "1053"
-                   MOVE    "���Ųʤ�����ޤ���"
+                   MOVE    "診療科がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1054"
-                   MOVE    "�ɥ�����������ޤ���"
+                   MOVE    "ドクターがありません。"
                                        TO  SPA-ERRMSG
                WHEN    "1056"
-                   STRING  "ʣ���ʡ�ʣ���ݸ��ϣ����ܤˤ�"
-                           "���ϤϤǤ��ޤ���"
+                   STRING  "複数科、複数保険は１行目には"
+                           "入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1057"
-                   STRING  "��³���ϡ�ʣ���ʤޤȤ�����Ϥ���Ƥ��ޤ���"
-                           "�����Ǥ�ʣ���ʡ��ݸ����ϤϤǤ��ޤ���"
+                   STRING  "継続入力・複数科まとめで入力されています。"
+                           "訂正での複数科・保険入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1200"
-                   MOVE    "����Ģɼ�������ޥ����������顼��"
+                   MOVE    "入院帳票オーダマスタ更新エラー。"
                                        TO  SPA-ERRMSG
                WHEN    "1201"
-                   MOVE    "����Ģɼ���������顼�Ǥ���"
+                   MOVE    "入院帳票が印刷エラーです。"
                                        TO  SPA-ERRMSG
                WHEN    "1202"
-                   MOVE    "��������䵥ץ�����ब����ޤ���"
+                   MOVE    "入院処方箋プログラムがありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "�����ƥ�������ǧ���Ʋ�������"
+                   MOVE    "システム管理を確認して下さい。"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "1203"
-                   MOVE    "���ͽ���䵥ץ�����ब����ޤ���"
+                   MOVE    "注射処方箋プログラムがありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "�����ƥ�������ǧ���Ʋ�������"
+                   MOVE    "システム管理を確認して下さい。"
                                        TO  SPA-ERRMSG(35:)
                WHEN    "1204"
-                   MOVE    "�ؼ�䵥ץ�����ब����ޤ���"
+                   MOVE    "指示箋プログラムがありません。"
                                        TO  SPA-ERRMSG
-                   MOVE    "�����ƥ�������ǧ���Ʋ�������"
+                   MOVE    "システム管理を確認して下さい。"
                                        TO  SPA-ERRMSG(31:)
       *!
                WHEN    "1205"
-                   MOVE    "�������������������Ϥ��Ʋ�������"
+                   MOVE    "初回算定日＜診療日で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "1206"
-                   MOVE    "���������ǽ��象�������Ϥ��Ʋ�������"
+                   MOVE    "初回算定日≦最終来院日で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "1207"
-                   STRING   "���˽�ǻ���������Ͽ����Ƥ��ޤ���"
-                           "����������Ͽ�ϤǤ��ޤ���"
+                   STRING   "既に初診算定日が登録されています。"
+                           "算定日の登録はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1208"
-                   STRING  "���˻���������Ͽ����Ƥ��ޤ���"
-                           "�����������Ͽ�ϤǤ��ޤ���"
+                   STRING  "既に算定履歴が登録されています。"
+                           "初回算定日の登録はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1209"
-                   STRING  "�ȣ���ǯ������ʹߤˤ��Ʋ�������"
+                   STRING  "Ｈ１８年４月１日以降にして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!
                WHEN    "K001"
-                   MOVE    "�ٹ𡪻��ֳ����꤬����ޤ���"
+                   MOVE    "警告！時間外算定がありません"
                                        TO  SPA-ERRMSG
                WHEN    "K002"
-                   MOVE    "�ٹ𡪽�ǻ�������꣱�����Ǥ�"
+                   MOVE    "警告！初診算定日より１月以内です"
                                        TO  SPA-ERRMSG
                WHEN    "K022"
-                   MOVE    "�ٹ��ౡ����꣱�����Ǥ�"
+                   MOVE    "警告！退院日より１月以内です"
                                        TO  SPA-ERRMSG
                WHEN    "K032"
-                   MOVE    "�ٹ�¾���ౡ����꣱�����Ǥ�"
+                   MOVE    "警告！他院退院日より１月以内です"
                                        TO  SPA-ERRMSG
                WHEN    "K003"
-                   MOVE    "�ٹ𡪻������ϣ����ܤμ굻��������Ǥ��ޤ�"
+                   MOVE    "警告！撮影料は１回目の手技料が算定できます"
                                        TO  SPA-ERRMSG
                WHEN    "K004"
-                   MOVE    "�ٹ𡪴��˺����ѤߤǤ���"
+                   MOVE    "警告！既に今月算定済みです。"
                                        TO  SPA-ERRMSG
       *        WHEN    "K018"
-      *            MOVE    "�ٹ𡪴��˺�����²����Ķ���Ƥ��ޤ���"
+      *            MOVE    "警告！既に今月算定上限回数を超えています。"
       *                                TO  SPA-ERRMSG
                WHEN    "K005"
-                   STRING  "�ٹ𡪴��˿ǻ������ꤷ�Ƥޤ���"
-                           "�����ʳ���������μ�ưȯ���Ϥ��ޤ���"
+                   STRING  "警告！既に診察料を算定してます。"
+                           "小児科外来診療料の自動発生はしません"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K006"
-                   MOVE    "�ٹ𡪴�����ũ�굻�����ꤷ�Ƥ��ޤ���"
+                   MOVE    "警告！既に点滴手技料を算定しています。"
                                        TO  SPA-ERRMSG
                WHEN    "K009"
-                   STRING  "�ٹ���������ũ��ױ��̤���ũ�굻����"
-                           "�㤤�ޤ����ޤȤ�ƻ��ꤷ�Ʋ�������"
+                   STRING  "警告！当日の点滴合計液量と点滴手技料が"
+                           "違います。まとめて算定して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K007"
-                   STRING  "�ٹ��������޼��Ŵ������ϣ����ܰʹߤ�"
-                           "������ѹ����Ʋ�������"
+                   STRING  "警告！特定薬剤治療管理料は４月目以降の"
+                           "算定に変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K008"
-      ***********  MOVE    "�ٹ𡪣����Ф���ã���ޤ�����"
-                   STRING  "�ٹ𡪡�Ϸ��ǯ�����ã���ޤ�����"
-                           "Ϸ�͸�������Ϥ��Ʋ�������"
+      ***********  MOVE    "警告！７５歳に到達しました。"
+                   STRING  "警告！！老人年齢に到達しました。"
+                           "老人公費を入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K010"
-                   STRING  "�ٹ𡪼�Ѥ���ũ�굻����Ʊ����"
-                           "���ꤵ��Ƥ��ޤ���"
+                   STRING  "警告！手術と点滴手技料が同日に"
+                           "算定されています。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K011"
-                   STRING  "�ٹ𡪴��˰㤦�굻����Ʊ����"
-                           "���ꤵ��Ƥ��ޤ���"
+                   STRING  "警告！既に違う手技料が同日に"
+                           "算定されています。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K012"
-                   STRING  "�ٹ���ũ�굻���λ���Ǥ���"
-                           "���̤ǤϤ���ޤ���"
+                   STRING  "警告！点滴手技料の算定できる"
+                           "液量ではありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K013"
-                   STRING  "�ٹ𡪴���¤�ƺ�������ũ�굻����"
-                           "����ѤǤ���"
+                   STRING  "警告！既に造影剤注入点滴手技料が"
+                           "算定済です。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K014"
-                   STRING  "�ٹ𡪴�����ũ�굻��������ѤǤ���"
-                           "�濴��̮���ͤϼ�ư���ꤷ�ޤ���"
+                   STRING  "警告！既に点滴手技料が算定済です。"
+                           "中心静脈注射は自動算定しません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K015"
-                   STRING  "�ٹ𡪼�Ѥ��濴��̮��������Ʊ����"
-                           "���ꤵ��Ƥ��ޤ���"
+                   STRING  "警告！手術と中心静脈注射料が同日に"
+                           "算定されています。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K020"
-                   MOVE    "�ٹ𡪺ƿ����μ��ǲ�����㤤�ޤ���"
+                   MOVE    "警告！再診料の受診回数が違います。"
                                        TO  SPA-ERRMSG
                WHEN    "K016"
-                   STRING  "�ٹ𡪿��ž���������"
-                           "����ʾ�λ���ˤʤ�ޤ���"
+                   STRING  "警告！診療情報提供料が"
+                           "２回以上の算定になります。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K017"
-                   STRING  "�ٹ𡪴��˳����Ĵ�޵��Ѵ�����������Ѥ�"
-                           "�Ǥ�����ư���ꤷ�ޤ���"
+                   STRING  "警告！既に外来で調剤技術基本料が算定済み"
+                           "です。自動算定しません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K023"
-                   STRING  "�ٹ𡪴��˽���������������ѤߤǤ���"
-                           "Ĵ��μ�ư����Ϥ��ޤ���"
+                   STRING  "警告！既に処方せん料が算定済みです。"
+                           "調基の自動算定はしません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K024"
-                   STRING  "�ٹ𡪴���Ĵ�޵��Ѵ�����������ѤߤǤ���"
-                           "�������������ꤷ�ޤ��ΤǺ�����Ʋ�����"
+                   STRING  "警告！既に調剤技術基本料が算定済みです。"
+                           "処方せん料を算定しますので削除して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K019"
-                   STRING  "�ٹ𡪴����ý�û�����ѤߤǤ���"
-                         "Ĺ�������û����ꤹ����Ϻ�����Ʋ�������"
+                   STRING  "警告！既に特処加算を算定済みです。"
+                         "長期投薬加算を算定する場合は削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H30.4 ����
+      *H30.4 から
                    IF      SPA-SRYYMD      >=  "20180401"
-                   STRING  "�ٹ𡪴����ý�û�������ѤߤǤ���"
-                           "�ý�û���"
-                           "���ꤹ����Ϻ�����Ʋ�������"
+                   STRING  "警告！既に特処加算１を算定済みです。"
+                           "特処加算２"
+                           "を算定する場合は削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                    END-IF
                WHEN    "K021"
-                   MOVE    "�ٹ𡪣������ʾ������������ޤ���"
+                   MOVE    "警告！２８日以上の投薬がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "K540"
-                   STRING  "�ٹ𡪿��Х֥��å����ȥꥬ���ݥ�������͡�"
-                           "���д������ͤ�Ʊ������Ǥ��ޤ���"
+                   STRING  "警告！神経ブロック・トリガーポイント注射・"
+                           "神経幹内注射は同時算定できません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K091"
-                   MOVE    "�ٹ𡪴���������������Ķ���Ƥ��ޤ���"
+                   MOVE    "警告！既に当日算定回数を超えています。"
                                        TO  SPA-ERRMSG
-      *�ȣ�����������
+      *Ｈ２０．４から
                WHEN    "K240"
-                   STRING  "�ٹ𡪡�"
-                           "����꤫�飲ǯ�ʾ�вᤷ�Ƥ��ޤ���"
+                   STRING  "警告！！"
+                           "初回算定から２年以上経過しています。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0241"
-                   MOVE    "�������Կ����������������Ǥ��ޤ���"
+                   MOVE    "後期高齢者診療料を算定時、算定できません"
                                        TO      SPA-ERRMSG
                WHEN    "K241"
-                   STRING  "�ٹ𡪡�"
-                           "�������Կ��������ꤷ�Ƥޤ���"
-                           "�����������Τ߻����ǽ�Ǥ���"
+                   STRING  "警告！！"
+                           "後期高齢者診療料を算定してます。"
+                           "急性増悪時のみ算定可能です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K242"
-                   STRING  "�ٹ𡪡�"
-                           "�͹���¡������ξ�²����Ķ���Ƥ��ޤ���"
+                   STRING  "警告！！"
+                           "人工腎臓の当月の上限回数を超えています。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K243"
-                   STRING  "�ٹ𡪡�"
-                           "���������˴��»�Ƴ���������ꤷ�Ƥ��ޤ���"
-                           "�����λ��꤬����ޤ���"
+                   STRING  "警告！！"
+                           "がん性疼痛緩和指導管理料を算定しています。"
+                           "麻薬の算定がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K026"
-                   STRING  "�ٹ𡪡�"
-                           "��ǻ�������꣱�����Ǥ���"
-                           "��ǻ����������ݸ����ǧ���Ʋ�������"
+                   STRING  "警告！！"
+                           "初診算定日より１月以内です。"
+                           "初診算定日した保険を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K134"
-                   STRING  "�ٹ𡪰��������ð�ʪ���Ŵ�������"
-                           "���Ǥ˻���ѤߤǤ���"
-                           "���û��ϻ���Ǥ��ޤ���"
+                   STRING  "警告！悪性腫瘍特異物資治療管理料は"
+                           "すでに算定済みです。"
+                           "初回加算は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K176"
-                   STRING  "�ٹ�"
-                           "ͭ�����ݸ��ȹ礻���ѹ����ޤ�����"
-                           "ɬ����Ͽ���Ʋ�������"
+                   STRING  "警告！"
+                           "有効な保険組合せに変更しました。"
+                           "必ず登録して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *ver.4.5
                WHEN    "K178"
-                   STRING  "�ٹ�"
-                           "��׾Ȳ�Ǽ���������ѹ�������ޤ�����"
-                           "���󴵼ԥܥ���򲡲����Ʋ�������"
+                   STRING  "警告！"
+                           "会計照会で受診履歴に変更がありました。"
+                           "前回患者ボタンを押下して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0178"
-                   STRING  "��׾Ȳ�Ǽ���������ѹ�������ޤ�����"
-                           "���󴵼ԥܥ���򲡲����Ʋ�������"
+                   STRING  "会計照会で受診履歴に変更がありました。"
+                           "前回患者ボタンを押下して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *�ȣ�����������
+      *Ｈ２２．４から
                WHEN    "0230"
-                   STRING  "���������������ꤵ��ޤ���"
-                           "����������޽��������û��ʽ����������ˤ�"
-                           "�����ԲĤǤ�"
+                   STRING  "処方せん料が算定されません。"
+                           "抗悪性腫瘍剤処方管理加算（処方せん料）は"
+                           "算定不可です"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K230"
-                   STRING  "�ٹ𡪽������������ꤷ�ޤ���"
-                           "����������޽��������û��ʽ�����������"
-                           "�Τߤλ���"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "抗悪性腫瘍剤処方管理加算（処方せん料）"
+                           "のみの算定"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0231"
-                   STRING  "�����������ꤵ��ޤ���"
-                           "����������޽��������û��ʽ������ˤ�"
-                           "�����ԲĤǤ�"
+                   STRING  "処方料が算定されません。"
+                           "抗悪性腫瘍剤処方管理加算（処方料）は"
+                           "算定不可です"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K231"
-                   STRING  "�ٹ𡪽��������ꤷ�ޤ���"
-                           "����������޽��������û��ʽ�������"
-                           "�Τߤλ���Ǥ�"
+                   STRING  "警告！処方料を算定しません。"
+                           "抗悪性腫瘍剤処方管理加算（処方料）"
+                           "のみの算定です"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *ver.4.6
                WHEN    "0901"
-                   STRING  "���λ����²����Ķ���Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "週の算定上限回数を超えています。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K903"
-                   MOVE    "�ٹ𡪴��˽��λ����²����Ķ���Ƥ��ޤ���"
+                   MOVE    "警告！既に週の算定上限回数を超えています。"
                                        TO  SPA-ERRMSG
                WHEN    "0902"
-                   STRING  "�����λ����²����Ķ���Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "１日の算定上限回数を超えています。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K902"
-                   STRING  "�ٹ�"
-                           "���ˣ����λ����²����Ķ���Ƥ��ޤ���"
+                   STRING  "警告！"
+                           "既に１日の算定上限回数を超えています。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1059"
-                   STRING  "������Ǥ��������ݸ��ʳ���"
-                           "ʣ���ݸ����ϤϤǤ��ޤ���"
+                   STRING  "入院中です。自費保険以外の"
+                           "複数保険入力はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *ver.4.7
                WHEN    "0170"
-                   STRING  "��������Ʊ���������Ϥ���ޤ���"
+                   STRING  "診療日に同日再入院はありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0171"
-                   STRING  "Ʊ�����������ǤϤ���ޤ���"
-                           "���Ƥ򥯥ꥢ���Ƽ�������������Ʋ�������"
+                   STRING  "同日再入院日ではありません。"
+                           "内容をクリアして受診履歴を削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0172"
-                   STRING  "���������ӽ�λ�ǡ��������Ƥ��ִ����ޤ�����"
+                   STRING  "該当の中途終了データの内容に置換えました。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *H24.7
       *        WHEN    "0122"
-      *            STRING  "���������Τߤλ���Ǥ���"
-      *                    "�����������ϻ���Ǥ��ޤ���"
+      *            STRING  "院内投薬のみの算定です。"
+      *                    "処方せん料は算定できません。"
       *                                DELIMITED  BY  SIZE
       *                                INTO  SPA-ERRMSG
       *****        END-STRING
                WHEN    "K122"
-                   STRING  "�ٹ�"
-                           "���������Τߤλ���Ǥ���"
-                           "�����������������Ʋ�������"
+                   STRING  "警告！"
+                           "院内投薬のみの算定です。"
+                           "処方せん料を削除して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K232"
-                   STRING  "�ٹ�"
-                           "�������ޤ�������ʾ�Ȥʤ�ޤ���"
-                           "�������������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "内服薬剤が７種類以上となります。"
+                           "処方せん料を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K233"
-                   STRING  "�ٹ�"
-                           "�������ޤ�������̤���Ǥ���"
-                           "�������������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "内服薬剤が７種類未満です。"
+                           "処方せん料を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *!!!
-      *H24.4�����ɲ�
+      *H24.4改正追加
                WHEN    "2100"
-                   STRING  "�ƿǤ�Ʊ�죲���ܤο��Ųʤ�Ʊ���Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "再診と同一２科目の診療科が同じです。"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2101"
-                   STRING  "�����˺ƿǤ����ꤵ��Ƥ��ޤ���"
-                           "�ƿ�����Ʊ�죲���ܡˤϻ���Ǥ��ޤ���"
+                   STRING  "当日に再診が算定されていません。"
+                           "再診料（同一２科目）は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2102"
-                   STRING  "����������ꤵ��Ƥ��ޤ���"
-                           "�ƿ�����Ʊ�죲���ܡˤϻ���Ǥ��ޤ���"
+                   STRING  "初診料が算定されています。"
+                           "再診料（同一２科目）は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2103"
-                   STRING  "���úƿǤλ��꤬����ޤ���"
-                           "���úƿǡ�Ʊ�죲���ܡˤϻ���Ǥ��ޤ���"
+                   STRING  "電話再診の算定がありません。"
+                           "電話再診（同一２科目）は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2106"
-                   STRING  "���úƿǤ����ꤵ��Ƥ��ޤ���"
-                           "�ƿ�����Ʊ�죲���ܡˤϻ���Ǥ��ޤ���"
+                   STRING  "電話再診が算定されています。"
+                           "再診料（同一２科目）は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2104"
-                   STRING  "�����ϥӥ�ơ�������������������Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "外来リハビリテーション診療料が算定中です。"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "2105"
-                   STRING  "�����������ȼͿ�������������Ǥ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "外来放射線照射診療料が算定中です。"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K104"
-                   STRING  "�ٹ�"
-                           "�����ϥӥ�ơ�������������������Ǥ���"
-                           "�ǻ����ϻ���Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "外来リハビリテーション診療料が算定中です。"
+                           "診察料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K105"
-                   STRING  "�ٹ�"
-                           "�����������ȼͿ�������������Ǥ���"
-                           "�ǻ����ϻ���Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "外来放射線照射診療料が算定中です。"
+                           "診察料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0234"
-                   STRING  "���������������ꤵ��ޤ���"
-                           "����̾�����û��ʽ����������ˤ�"
-                           "�����ԲĤǤ�"
+                   STRING  "処方せん料が算定されません。"
+                           "一般名処方加算（処方せん料）は"
+                           "算定不可です"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K234"
-                   STRING  "�ٹ𡪽������������ꤷ�ޤ���"
-                           "����̾�����û��ʽ����������ˤΤߤλ���Ǥ�"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "一般名処方加算（処方せん料）のみの算定です"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *H24.6
                WHEN    "K235"
-                   STRING  "�ٹ�"
-                           "����̾�����û��ʽ����������ˤ��о����ޤ�"
-                           "����ޤ���"
+                   STRING  "警告！"
+                           "一般名処方加算（処方せん料）の対象薬剤が"
+                           "ありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K236"
-                   STRING  "�ٹ�"
-                           "����̾�����û��ʽ����������ˤλ��꤬��ǽ"
-                           "�Ǥ���"
+                   STRING  "警告！"
+                           "一般名処方加算（処方せん料）の算定が可能"
+                           "です。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K237"
-                   STRING  "�ٹ�"
-                           "��������������礵��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "処方せん料が包括されます。"
+                           "算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *ver.4.7
                WHEN    "K239"
-                   STRING  "�ٹ�"
-                           "��ˡ�ޤȤ�Ǥ�"
-                           "�������ޤ�������ʾ�Ȥʤ�ޤ���"
-                           "�������������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "用法まとめでは"
+                           "内服薬剤が７種類以上となります。"
+                           "処方せん料を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K238"
-                   STRING  "�ٹ�"
-                           "��ˡ�ޤȤ�Ǥ�"
-                           "�������ޤ�������̤���Ǥ���"
-                           "�������������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "用法まとめでは"
+                           "内服薬剤が７種類未満です。"
+                           "処方せん料を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K160"
-                   STRING  "�ٹ�"
-                           "���ֳ��Ǥ���"
-                           "���ֳ��۵ޱ��⸡���û��λ����"
-                           "��ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "時間外です。"
+                           "時間外緊急院内検査加算の算定を"
+                           "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K161"
-                   STRING  "�ٹ�"
-                           "���ֳ��Ǥ���"
-                           "���ֳ��۵ޱ���������ǲû��λ����"
-                           "��ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "時間外です。"
+                           "時間外緊急院内画像診断加算の算定を"
+                           "確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
-      *H26.4����������
+      *H26.4　改正から
                WHEN    "K106"
-                   STRING  "�ٹ�"
-                           "�ϰ���������������ѤߤǤ���"
-                           "�ǻ����ϻ���Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "地域包括診療料が算定済みです。"
+                           "診察料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K250"
-                   STRING  "�ٹ�"
-                           "���������Τߤ������Ȥʤ�ޤ���"
+                   STRING  "警告！"
+                           "うがい薬のみの投薬となります。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K541"
-                   STRING  "�ٹ�Ĺ�����������û��λ���Ǥ���"
-                           "��Ѥλ��꤬����ޤ���"
+                   STRING  "警告！長時間麻酔管理加算の算定できる"
+                           "手術の算定がありません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
-      *H26.10����������
+      *H26.10　改正から
                WHEN    "K252"
-                   STRING  "�ٹ�"
-                           "��������¿����Ϳ�ǤϤ���ޤ���"
-                           "�������������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "向精神薬多剤投与ではありません。"
+                           "処方せん料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K251"
-                   STRING  "�ٹ�"
-                           "��������¿����Ϳ�Ȥʤ�ޤ���"
-                           "�������������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "向精神薬多剤投与となります。"
+                           "処方せん料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K265"
-                   STRING  "�ٹ�"
-                           "��������¿����Ϳ�Ȥʤ�ޤ���"
-                           "�����ʷ�³����ٱ硦��Ƴ���ϻ���Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "向精神薬多剤投与となります。"
+                           "精神科継続外来支援・指導料は算定できません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H27.4
                WHEN    "K253"
-                   STRING  "�ٹ�"
-                           "�������ʾ������������ޤ���"
-                           "��������Σ������ʾ����������λ���"
-                           "������ޤ���"
+                   STRING  "警告！"
+                           "３０日以上の投薬があります。"
+                           "処方せんの３０日以上投薬逓減の算定"
+                           "がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K254"
-                   STRING  "�ٹ�"
-                           "�������ʾ������������ޤ���"
-                           "��������Σ������ʾ����������λ���"
-                           "������ޤ���"
+                   STRING  "警告！"
+                           "３０日以上の投薬がありません。"
+                           "処方せんの３０日以上投薬逓減の算定"
+                           "があります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K256"
-                   STRING  "�ٹ�"
-                           "��Ҳ�Ψ������ǤϤ���ޤ���"
-                           "��������Σ������ʾ����������λ���"
-                           "������ޤ���"
+                   STRING  "警告！"
+                           "低紹介率の設定ではありません。"
+                           "処方せんの３０日以上投薬逓減の算定"
+                           "があります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H28.9
                WHEN    "K257"
-                   STRING  "�ٹ�"
-                           "ǧ�ξ��ϰ������Ťλ��꤬����ޤ���"
-                           "����������������¤�Ķ���Ƥ��ޤ���"
+                   STRING  "警告！"
+                           "認知症地域包括診療の算定があります。"
+                           "投薬種類数が算定上限を超えています。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *==
       *
                WHEN    "1316"
-                   MOVE    "������ؤμ�ư�ѹ��ϤǤ��ޤ���"
+                   MOVE    "初診料への自動変更はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "1317"
-                   STRING  "�ƿ����ؤμ�ư�ѹ��ϤǤ��ޤ���"
+                   STRING  "再診料への自動変更はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1318"
-                   STRING  "�����ʳ�������������Ϥ�����ޤ���"
-                           "��ư�ѹ��ϤǤ��ޤ���"
+                   STRING  "小児科外来診療料の入力がありません。"
+                           "自動変更はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
-      *H28.4����������
+      *H28.4　改正から
                WHEN    "K107"
-                   STRING  "�ٹ�"
-                           "ǧ�ξ��ϰ���������������ѤߤǤ���"
-                           "�ǻ����ϻ���Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "認知症地域包括診療料が算定済みです。"
+                           "診察料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K108"
-                   STRING  "�ٹ�"
-                           "���������������Ķ���Ƥ��ޤ���"
-                           "�����оݤȤʤ�ޤ���"
+                   STRING  "警告！"
+                           "湿布薬が７０枚を超えています。"
+                           "減点対象となります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K109"
-                   STRING  "�ٹ�"
-                           "������������������ޤ���"
-                           "���̡������̤Υ����Ȥ����Ϥ��Ʋ�������"
+                   STRING  "警告！"
+                           "湿布薬の投薬があります。"
+                           "全量・１日量のコメントを入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K110"
-                   STRING  "�ٹ�"
-                           "���������������Ķ���Ƥ��ޤ���"
-                           "��Ϳ��ͳ�Υ����Ȥ����Ϥ��Ʋ�������"
+                   STRING  "警告！"
+                           "湿布薬が７０枚を超えています。"
+                           "投与理由のコメントを入力して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0101"
-                   STRING  "��������̵���ղû��κ������ǤϤ���ޤ���"
+                   STRING  "処方せん無交付加算の在宅料ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K222"
-                   STRING  "�ٹ�"
-                           "����̾�����û����ʽ����������ˤ��оݤǤ�"
-                           "����ޤ���"
+                   STRING  "警告！"
+                           "一般名処方加算１（処方せん料）の対象では"
+                           "ありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "K223"
-                   STRING  "�ٹ�"
-                           "����̾�����û����ʽ����������ˤ��оݤǤ�"
-                           "����ޤ���"
+                   STRING  "警告！"
+                           "一般名処方加算２（処方せん料）の対象では"
+                           "ありません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0236"
-                   STRING  "�����������������������ˤʤ�ޤ���"
-                           "���ż��̤�.231���ѹ����Ʋ�������"
+                   STRING  "外用薬院内投薬がゼロ点になります。"
+                           "診療種別を.231に変更して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8053"
-                   STRING  "���Ѿɸ�����ϥӥ�ơ�����󳫻�����"
-                       "���ꤵ��Ƥ��ޤ��󡣽�λ�������ϤϤǤ��ޤ���"
+                   STRING  "廃用症候群リハビリテーション開始日が"
+                       "算定されていません。終了日の入力はできません"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8054"
-                   STRING  "���Ѿɸ�����ϥӥ�ơ������λ����"
-                       "��������Ʊ�������ϤǤ��ޤ���"
+                   STRING  "廃用症候群リハビリテーション終了日は"
+                       "開始日と同日に入力できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K855"
-                   STRING  "�ٹ����Ѿɸ�����ϥӥ�ơ������"
-                           "ȯ�������飱�������ʾ�Ǥ���"
+                   STRING  "警告！廃用症候群リハビリテーション"
+                           "発症日から１２０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K856"
-                   STRING  "�ٹ����Ѿɸ�����ϥӥ�"
-                           "ȯ�������飱�������ʾ�Ǥ���"
-                           "���ñ�̤�Ķ���ޤ�����"
+                   STRING  "警告！廃用症候群リハビリ"
+                           "発症日から１２０日以上です。"
+                           "月１３単位を超えました。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K857"
-                   STRING  "�ٹ����Ѿɸ�����ϥӥ�ơ������"
-                           "ȯ�������飱�������ʾ�Ǥ���"
+                   STRING  "警告！廃用症候群リハビリテーション"
+                           "発症日から１８０日以上です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K858"
-                   STRING  "�ٹ����Ѿɸ�����ϥӥ�"
-                           "ȯ�������飱�������ʾ�Ǥ���"
-                           "���ñ�̤�Ķ���ޤ�����"
+                   STRING  "警告！廃用症候群リハビリ"
+                           "発症日から１８０日以上です。"
+                           "月１３単位を超えました。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K859"
-                   STRING  "�ٹ����Ѿɸ�����ϥӥ�ơ������"
-                           "ȯ�����Σ�������Ķ���黻�ꤷ�Ʋ�������"
+                   STRING  "警告！廃用症候群リハビリテーション"
+                           "発症日の１２０日超から算定して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K860"
-                   STRING  "�ٹ����Ѿɸ�����ϥӥ�ơ������"
-                           "ȯ�����Σ�������Ķ���黻�ꤷ�Ʋ�������"
+                   STRING  "警告！廃用症候群リハビリテーション"
+                           "発症日の１８０日超から算定して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "K542"
-                   STRING  "�ٹ��󿯽�Ū���ư�֥�˥���󥰲û���"
-                           "����Ǥ����Ѥλ��꤬����ޤ���"
+                   STRING  "警告！非侵襲的血行動態モニタリング加算の"
+                           "算定できる手術の算定がありません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K543"
-                   STRING  "�ٹ��󿯽�Ū���ư�֥�˥���󥰲û���"
-                           "����Ǥ������λ��꤬����ޤ���"
+                   STRING  "警告！非侵襲的血行動態モニタリング加算の"
+                           "算定できる麻酔の算定がありません。"
                                        DELIMITED   BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0515"
-                   STRING  "�����¸Ʊ���ȿ��û���"
-                           "����Ǥ��ʤ���ѤǤ���"
+                   STRING  "凍結保存同種組織加算の"
+                           "算定できない手術です。"
                                            DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K876"
-                   STRING  "�ٹ𡪴���"
-                           "��Ƹ�׽մ���������������û��ʣ�����̤����"
-                           "�λ��꤬����ޤ���"
+                   STRING  "警告！既に"
+                           "児童思春期精神科専門管理加算（２０歳未満）"
+                           "の算定があります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H28.7 ����
+      *H28.7 から
                WHEN    "K877"
-                   STRING  "�ٹ�"
-                           "�̱�������������ˡ���θ��������"
-                           "�������ޤ���"
-                           "���ꥳ���ɤ��ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "通院・在宅精神療法等の減算規定に"
+                           "該当しません。"
+                           "算定コードを確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K878"
-                   STRING  "�ٹ�"
-                           "�̱�������������ˡ���θ��������"
-                           "�������ޤ���"
-                           "���ꥳ���ɤ��ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "通院・在宅精神療法等の減算規定に"
+                           "該当します。"
+                           "算定コードを確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H28.7
                WHEN    "8055"
-                   STRING  "ϫ�Ҳû��ϣ������ܤΤߤǤ���"
+                   STRING  "労災加算は１．５倍のみです。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "8056"
-                   STRING  "ϫ�Ҳû��ϣ��ܤΤߤǤ���"
+                   STRING  "労災加算は２倍のみです。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K805"
-                   STRING  "�ٹ�"
-                           "ϫ�Ҳû��ϣ������ܤΤߤǤ���"
+                   STRING  "警告！"
+                           "労災加算は１．５倍のみです。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K806"
-                   STRING  "�ٹ�"
-                           "ϫ�Ҳû��ϣ��ܤΤߤǤ���"
+                   STRING  "警告！"
+                           "労災加算は２倍のみです。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K407"
-                   STRING  "�ٹ�"
-                           "ϫ�Ҳû��ϻ���Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "労災加算は算定できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
       *H28.9
                WHEN    "K511"
-                   STRING  "�ٹ�"
-                           "¿�Ǵ�����¿�ǵݼ»ܲû���"
-                           "���˼�Ѥ����Ϥ�����ޤ���"
-                           "���̤ޤȤ�ϹԤ��ޤ���"
+                   STRING  "警告！"
+                           "多椎間又は多椎弓実施加算の"
+                           "下に手術の入力があります。"
+                           "数量まとめは行いません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0227"
-                   STRING  "������ͽ�󥳡��ɤ�"
-                           "�����ޤκǽ�����Ϥ��Ʋ�������"
+                   STRING  "持参薬予約コードは"
+                           "投薬剤の最初に入力して下さい。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0228"
-                   STRING  "������ͽ�󥳡��ɤ�"
-                           "�����ʬ���ϡפǤ����ϤϤǤ��ޤ���"
+                   STRING  "持参薬予約コードは"
+                           "「包括分入力」での入力はできません。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H28.9����������
+      *H28.9　改正から
                WHEN    "K810"
-                   STRING  "�ٹ�"
-                           "��ɸ�������ٱ硦�������ʽ��ˤλ��꤬"
-                           "����ޤ���"
+                   STRING  "警告！"
+                           "目標設定等支援・管理料（初回）の算定が"
+                           "ありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K816"
-                   STRING  "�ٹ�"
-                           "������ɸ�������ٱ硦�������ʽ��ˤλ���"
-                           "�Ǥ���"
+                   STRING  "警告！"
+                           "前回が目標設定等支援・管理料（初回）の算定"
+                           "です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K812"
-                   STRING  "�ٹ�"
-                           "�������ɸ�������ٱ硦��������������"
-                           "�������Ǥ���"
+                   STRING  "警告！"
+                           "前回の目標設定等支援・管理料算定日が"
+                           "３月以内です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K813"
-                   STRING  "�ٹ�"
-                           "��ɸ�������ٱ硦�������λ��꤬��������"
-                           "����ޤ��󡣸����оݤǤ���"
+                   STRING  "警告！"
+                           "目標設定等支援・管理料の算定が３月以内に"
+                           "ありません。減点対象です。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K814"
-                   STRING  "�ٹ�"
-                           "��ɸ�������ٱ硦�������λ��꤬����ޤ���"
-                           "�����оݤǤϤ���ޤ���"
+                   STRING  "警告！"
+                           "目標設定等支援・管理料の算定があります。"
+                           "減点対象ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K815"
-                   STRING  "�ٹ�"
-                           "�����оݳ�������̤���Ǥ���"
-                           "�����оݤǤϤ���ޤ���"
+                   STRING  "警告！"
+                           "減点対象開始日付未満です。"
+                           "減点対象ではありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
       *H31.3
                WHEN    "K818"
-                   STRING  "�ٹ�"
-                           "�ݻ�����Ϸв����ֽ�λ�ˤ�������б���"
-                           "�׷���������Ƥޤ�����"
+                   STRING  "警告！"
+                           "維持期リハ経過措置終了による特別対応の"
+                           "要件を満たしてますか？"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
       *H29.1
                WHEN    "K190"
-                   STRING  "�ٹ�"
-                           "�������������꤬����ޤ���"
-                           "��������Ĵ�����Ͻ����Ǻ������ޤ���"
+                   STRING  "警告！"
+                           "翌月の入院料算定がありません。"
+                           "翌月の入院調剤料は出来高で作成します。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -3715,172 +3715,172 @@
       *!!!
       *H29.3
                WHEN    "K258"
-                   STRING  "�ٹ�"
-                           "��������¿����Ϳ�Ȥʤ�ޤ���"
-                           "���������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "向精神薬多剤投与となります。"
+                           "処方料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K259"
-                   STRING  "�ٹ�"
-                           "�������ޤ�������ʾ�Ǥ���"
-                           "���������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "内服薬剤が７種類以上です。"
+                           "処方料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K260"
-                   STRING  "�ٹ�"
-                           "��������¿����Ϳ�ǤϤ���ޤ���"
-                           "�������Ǥ��ޤ���"
-                           "���������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "向精神薬多剤投与ではありません。"
+                           "逓減ができません。"
+                           "処方料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K261"
-                   STRING  "�ٹ�"
-                           "�������ޤ�������ʾ�ǤϤ���ޤ���"
-                           "���������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "内服薬剤が７種類以上ではありません。"
+                           "処方料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0235"
-                   STRING  "��������������ޤ���"
-                           "�������λ���ϤǤ��ޤ���"
+                   STRING  "院内投薬がありません。"
+                           "処方料の算定はできません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K266"
-                   STRING  "�ٹ�"
-                           "�ϰ������Ťλ��꤬����ޤ���"
-                           "�����оݳ��Ǥ���"
-                           "���������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "地域包括診療の算定があります。"
+                           "逓減対象外です。"
+                           "処方料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0238"
-                   STRING  "���������㡦�����С��ǡˤλ����"
-                           "�Ǥ��ޤ���"
+                   STRING  "処方料（麻・向・覚・毒）の算定は"
+                           "できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0239"
-                   STRING  "������������Ǥ��ޤ���"
-                           "�����ȯ�����ʻ��������û���"
-                           "����Ǥ��ޤ���"
+                   STRING  "処方料が算定できません。"
+                           "外来後発医薬品使用体制加算は"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K262"
-                   STRING  "�ٹ�"
-                           "������������Ǥ��ޤ���"
-                           "�����ȯ�����ʻ��������û���"
-                           "����Ǥ��ޤ���"
+                   STRING  "警告！"
+                           "処方料が算定できません。"
+                           "外来後発医薬品使用体制加算は"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0243"
-                   STRING  "�������������оݤǤϤ���ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "処方料減算の対象ではありません。"
+                           "算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0244"
-                   STRING  "���������������Ķ���Ƥ��ޤ���"
-                           "�������ϻ���Ǥ��ޤ���"
+                   STRING  "湿布薬が７０枚を超えています。"
+                           "処方料は算定できません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H29.4
                WHEN    "K268"
-                   STRING  "��ǧ��"
-                           "Ĺ�������Τ�����ͳ�ε��ܤ�"
-                           "ɬ�פȤʤ��礬����ޤ���"
+                   STRING  "確認！"
+                           "長期投薬のため理由の記載が"
+                           "必要となる場合があります。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *H30.4 ����
+      *H30.4 改正
                WHEN    "0245"
-                   STRING  "���������������ꤵ��ޤ���"
-                           "��������Ĵ��Ϣ�Ȳû��ʽ�������ˤ�"
-                           "�����ԲĤǤ�"
+                   STRING  "処方せん料が算定されません。"
+                           "向精神薬調整連携加算（処方箋料）は"
+                           "算定不可です"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K245"
-                   STRING  "�ٹ𡪽������������ꤷ�ޤ���"
-                           "��������Ĵ��Ϣ�Ȳû��ʽ��������"
-                           "�Τߤλ���"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "向精神薬調整連携加算（処方箋料）"
+                           "のみの算定"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0246"
-                   STRING  "�����������ꤵ��ޤ���"
-                           "��������Ĵ��Ϣ�Ȳû��ʽ������ˤ�"
-                           "�����ԲĤǤ�"
+                   STRING  "処方料が算定されません。"
+                           "向精神薬調整連携加算（処方料）は"
+                           "算定不可です"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K246"
-                   STRING  "�ٹ𡪽��������ꤷ�ޤ���"
-                           "��������Ĵ��Ϣ�Ȳû��ʽ�������"
-                           "�Τߤλ���Ǥ�"
+                   STRING  "警告！処方料を算定しません。"
+                           "向精神薬調整連携加算（処方料）"
+                           "のみの算定です"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *H31.4
                WHEN    "K277"
-                   STRING  "�ٹ�"
-                           "��������Ĺ�����������оݤǤ���"
-                           "���������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "向精神薬長期処方減算対象です。"
+                           "処方料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K278"
-                   STRING  "�ٹ�"
-                           "��������Ĺ�����������оݤǤ���"
-                           "����������ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "向精神薬長期処方減算対象です。"
+                           "処方箋料を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *H29.8
                WHEN    "1310"
-                   STRING  "�ݸ��ȹ礻������������¤�Ķ���Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "保険組合せの選択件数が上限を超えています。"
+                           "選択できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1311"
-                   STRING  "���Ųʤ�����������¤�Ķ���Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "診療科の選択件数が上限を超えています。"
+                           "選択できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "1312"
-                   STRING  "�ݸ��ȹ礻�����Ųʤ��ȹ礻�����"
-                           "��·����Ķ���Ƥ��ޤ���"
-                           "����Ǥ��ޤ���"
+                   STRING  "保険組合せ・診療科の組合せ件数が"
+                           "上限件数を超えています。"
+                           "選択できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *H29.9
                WHEN    "K300"
-                   STRING  "�ٹ�����˼��Ǥ�����ޤ���"
-                           "��Ͽ�Ѥߤο������Ƥ�"
-                           "����ǧ�򤷤Ʋ�������"
+                   STRING  "警告！当月に受診があります。"
+                           "登録済みの診療内容の"
+                           "包括確認をして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
       **
                WHEN    "K910"
-                   STRING  "�ٹ�"
-                           "������׾Ȳ���ǧ���Ʋ�������"
+                   STRING  "警告！"
+                           "入院会計照会を確認して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
       *
                WHEN    "1999"
-                   STRING  "���ӽ�λ�ǡ����ι����˼��Ԥ��ޤ���"
+                   STRING  "中途終了データの更新に失敗しました"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
@@ -3893,110 +3893,110 @@
            EXIT.
       *
       *****************************************************************
-      *    ���å���Ͽ���顼��å������Խ�����
+      *    セット登録エラーメッセージ編集処理
       *****************************************************************
        2002-K05-ERRMSG-SEC              SECTION.
       *
            EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������顼�Ǥ�"
+                   MOVE    "処理エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "���̡���ۤ����ϤǤ��ޤ���"
+                   MOVE    "数量・金額は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "5001"
-                   MOVE    "���åȥ��������ϥ��顼"
+                   MOVE    "セットコード入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "5100"
-                   STRING  "�оݤΥ��åȤ�¸�ߤ��ޤ���"
+                   STRING  "対象のセットが存在しません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "5002"
-                   MOVE    "���Ǥ����Ϻѥ����ɤǤ�"
+                   MOVE    "すでに入力済コードです"
                                        TO  SPA-ERRMSG
                WHEN    "5003"
-                   MOVE    "���åȥ����ɤ�¸�ߤ��ޤ���"
+                   MOVE    "セットコードが存在しません"
                                        TO  SPA-ERRMSG
                WHEN    "5004"
-                   MOVE    "���åȥ����ɤȥ��å�̾��ɬ�����ϤǤ�"
+                   MOVE    "セットコードとセット名は必須入力です"
                                        TO  SPA-ERRMSG
                WHEN    "5005"
-                   MOVE    "�ɲå��顼"
+                   MOVE    "追加エラー"
                                        TO  SPA-ERRMSG
                WHEN    "5006"
-                   MOVE    "�������顼"
+                   MOVE    "更新エラー"
                                        TO  SPA-ERRMSG
                WHEN    "5007"
-                   MOVE    "����Ǥ��ޤ���"
+                   MOVE    "削除できません"
                                        TO  SPA-ERRMSG
                WHEN    "5008"
-                   MOVE    "�ݸ��������ϤǤ��ޤ���"
+                   MOVE    "保険外は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "5009"
-                   MOVE    "��«���åȤλ������åȤ����ϤǤ��ޤ���"
+                   MOVE    "約束セットの時、セットは入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "5010"
-                   MOVE    "��«���åȤλ������ޤΤ����ϤǤ�"
+                   MOVE    "約束セットの時、１剤のみ入力です"
                                        TO  SPA-ERRMSG
                WHEN    "5011"
-               MOVE    "��«���åȤλ������ż��̤����ϤϤǤ��ޤ���"
+               MOVE    "約束セットの時、診療種別の入力はできません。"
                                        TO  SPA-ERRMSG
                WHEN    "5012"
-                   MOVE    "�������Τ�ʣ�̤��Ǥ��ޤ���"
+                   MOVE    "修正時のみ複写ができます。"
                                        TO  SPA-ERRMSG
                WHEN    "5020"
-                   MOVE    "������ʬ������ޤ���"
+                   MOVE    "入外区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "5021"
-                   MOVE    "Ϸ�Ͱ��̶�ʬ������ޤ���"
+                   MOVE    "老人一般区分がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "5022"
-                   MOVE    "ͭ���������������顼"
+                   MOVE    "有効開始日暦日エラー"
                                        TO  SPA-ERRMSG
                WHEN    "5023"
-                   MOVE    "ͭ����λ���������顼"
+                   MOVE    "有効終了日暦日エラー"
                                        TO  SPA-ERRMSG
                WHEN    "5024"
-                   MOVE    "ͭ����������ͭ����λ�������Ϥ��Ʋ�������"
+                   MOVE    "有効開始日＜有効終了日で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "5025"
-                   MOVE    "�����ֹ椬����ޤ���"
+                   MOVE    "選択番号がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "5026"
-                   MOVE    "�����������«���åȤλ��ΤߤǤ���"
+                   MOVE    "期間設定は約束セットの時のみです。"
                                        TO  SPA-ERRMSG
                WHEN    "5027"
-                   MOVE    "���֤���ʣ���Ƥ��ޤ���"
+                   MOVE    "期間が重複しています。"
                                        TO  SPA-ERRMSG
                WHEN    "5028"
-                   STRING  "��«���åȤ˴�ྦ�ʥ����ɤλ����"
-                           "�Ǥ��ޤ���"
+                   STRING  "約束セットに器材商品コードの算定は"
+                           "できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "5029"
-                   STRING  "��«���åȤ˸���ʬ�����ɤ����Ϥ�"
-                           "�Ǥ��ޤ���"
+                   STRING  "約束セットに減点分コードの入力は"
+                           "できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "5030"
-                   STRING  "��«���åȤ���ɾ����ɾ�����ɤ����Ϥ�"
-                           "�Ǥ��ޤ���"
+                   STRING  "約束セットに薬評・器評コードの入力は"
+                           "できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "5031"
-                   STRING  "����ϣ�����ޤǤ���Ͽ�Ȥʤ�ޤ���"
-                           "����ʾ���Ͽ�Ǥ��ޤ���"
+                   STRING  "履歴は１０件までの登録となります。"
+                           "これ以上登録できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K050"
-                   STRING  "�ٹ𡪡�"
-                           "ͭ����λ�������ꤵ��Ƥ��ޤ���"
-                           "��λ���Ǵ����ѹ��򤷤Ʋ�������"
+                   STRING  "警告！！"
+                           "有効終了日が設定されています。"
+                           "終了日で期間変更をして下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -4009,113 +4009,113 @@
            EXIT.
       *
       *****************************************************************
-      *    ��׾Ȳ񥨥顼��å������Խ�����
+      *    会計照会エラーメッセージ編集処理
       *****************************************************************
        2003-J04-ERRMSG-SEC              SECTION.
       *
       *
            EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������顼�Ǥ�"
+                   MOVE    "処理エラーです"
                                        TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "���̡���ۤ����ϤǤ��ޤ���"
+                   MOVE    "数量・金額は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1020"
-                   MOVE    "�Ƕ���ѹ��Ǥ��ޤ���"
+                   MOVE    "診区は変更できません"
                                        TO  SPA-ERRMSG
                WHEN    "1021"
-                   MOVE    "��������ϤǤ��ޤ���"
+                   MOVE    "回数は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1022"
-                   MOVE    "���åȤ����ϤǤ��ޤ���"
+                   MOVE    "セットは入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1023"
-                   MOVE    "�ޤϣ��ޤΤߤǤ�"
+                   MOVE    "剤は１剤のみです"
                                        TO  SPA-ERRMSG
                WHEN    "1024"
-                   MOVE    "���Ź԰٥ޥ����������Ǥ��ޤ���"
+                   MOVE    "診療行為マスタが更新できません"
                                        TO  SPA-ERRMSG
                WHEN    "1025"
-                   STRING  "����Ʊ�����Ź԰٤κޤ�¸�ߤ��ޤ���"
-                           "������ѹ��ǽ������Ʋ�����"
+                   STRING  "既に同じ診療行為の剤が存在します。"
+                           "回数の変更で修正して下さい"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1026"
-                   MOVE    "���Ų�ץޥ������ɲäǤ��ޤ���"
+                   MOVE    "診療会計マスタが追加できません"
                                        TO  SPA-ERRMSG
                WHEN    "1027"
-                   MOVE    "���Ų�ץޥ����ɹ��ߥ��顼"
+                   MOVE    "診療会計マスタ読込みエラー"
                                        TO  SPA-ERRMSG
                WHEN    "1028"
-                   MOVE    "���ֹ�����ߥ��顼"
+                   MOVE    "剤番号取り込みエラー"
                                        TO  SPA-ERRMSG
                WHEN    "1029"
-                   MOVE    "�����ȥޥ������������顼"
+                   MOVE    "コメントマスター更新エラー"
                                        TO  SPA-ERRMSG
                WHEN    "1032"
-                   MOVE    "���Ų�����ù������顼"
+                   MOVE    "診療会計附加更新エラー"
                                        TO  SPA-ERRMSG
                WHEN    "1030"
-                   MOVE    "�޺�������ϤǤ��ޤ���"
+                   MOVE    "剤削除は入力できません"
                                        TO  SPA-ERRMSG
                WHEN    "1031"
-                   MOVE    "���٤�����ޤ����ѹ��Ǥ��ޤ���"
+                   MOVE    "明細がありません。変更できません。"
                                        TO  SPA-ERRMSG
-      *        ���ɲá��ݸ��ѹ�
+      *        剤追加・保険変更
                WHEN    "1033"
-                   MOVE    "�ݸ��ȹ礻���򥨥顼��"
+                   MOVE    "保険組合せ選択エラー。"
                                        TO  SPA-ERRMSG
                WHEN    "1036"
-                   STRING  "�ݸ��ȹ礻��ͭ�����ֳ��˲�����꤬"
-                           "����ޤ�������Ǥ��ޤ���"
+                   STRING  "保険組合せの有効期間外に回数設定が"
+                           "あります。選択できません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1034"
-                   STRING  "��縡���������ʲ��Ǥ���"
-                           "�������Τ����Ϥ��Ʋ�������"
+                   STRING  "包括検査が包括数以下です。"
+                           "１検査のみ入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "1035"
-                   STRING  "�������㤤�ޤ�����ʬΥ�ˤʤ�ޤ��Τ�"
-                           "�������Τ����Ϥ��Ʋ�������"
+                   STRING  "検査が違います。剤分離になりますので"
+                           "１検査のみ入力して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "1036"
-                   STRING  "�����Ŷ�ʬ������ޤ���"
+                   STRING  "包括診療区分がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
                WHEN    "1099"
-                   MOVE    "�ģ¹������顼��"
+                   MOVE    "ＤＢ更新エラー。"
                                        TO  SPA-ERRMSG
       *
                WHEN    "K001"
-                   MOVE    "�ٹ𡪡����ֳ����꤬����ޤ���"
+                   MOVE    "警告！！時間外算定がありません"
                                        TO  SPA-ERRMSG
                WHEN    "K102"
-                   STRING  "�ٹ𡪡����������оݤκޤǤ��������塢"
-                           "ɬ�������������������ѹ����Ʋ�������"
+                   STRING  "警告！！内服逓減対象の剤です。更新後、"
+                           "必ず訂正で逓減点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K103"
-                   STRING  "�ٹ𡪡���Ͽ���ȿ������Ƥ��㤤�ޤ���"
-                           "ɬ����Ͽ�򤷤��������ѹ����Ʋ�������"
+                   STRING  "警告！！登録時と診療内容が違います。"
+                           "必ず登録をして点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K104"
-                   STRING  "�ٹ�"
-                           "��Ͽ�����������㤤�ޤ���"
-                           "�����������оݤǤ���С�"
-                           "�������������ѹ����Ʋ�������"
+                   STRING  "警告！"
+                           "登録時と点数が違います。"
+                           "湿布薬減点対象であれば、"
+                           "訂正で点数を変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

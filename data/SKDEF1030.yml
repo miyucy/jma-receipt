@@ -1,41 +1,41 @@
 kanri_cd    : "1030"
-name        : "Ä¢É¼ÊÔ½¸¶èÊ¬¾ğÊó"
+name        : "å¸³ç¥¨ç·¨é›†åŒºåˆ†æƒ…å ±"
 class_cd    : "*"
 item_max    : 6
 item_list   :
 - item_no   : 1
   item      : "SYOHOGEPRTFLG"
-  item_jp   : "½èÊı¤»¤ó£Ç£ÅÉ½¼¨¶èÊ¬"
+  item_jp   : "å‡¦æ–¹ã›ã‚“ï¼§ï¼¥è¡¨ç¤ºåŒºåˆ†"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SYOHODSPNAME"
-  item_jp   : "¸åÈ¯°åÌôÉÊÉ½¼¨Ì¾¾Î"
+  item_jp   : "å¾Œç™ºåŒ»è–¬å“è¡¨ç¤ºåç§°"
   type      : "X"
   start     : 2
   length    : 20
 - item_no   : 3
   item      : "KARUTE3KBN"
-  item_jp   : "¥«¥ë¥Æ£³¹æ»æ¡Ê³°Íè¡ËÆâÍÆ"
+  item_jp   : "ã‚«ãƒ«ãƒ†ï¼“å·ç´™ï¼ˆå¤–æ¥ï¼‰å†…å®¹"
   type      : "X"
   start     : 22
   length    : 1
 - item_no   : 4
   item      : "GAZOFOLDER"
-  item_jp   : "ÌôºŞ¾ğÊó¡İ²èÁü¥Õ¥¡¥¤¥ë¥Õ¥©¥ë¥À"
+  item_jp   : "è–¬å‰¤æƒ…å ±âˆ’ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚©ãƒ«ãƒ€"
   type      : "X"
   start     : 23
   length    : 128
 - item_no   : 5
   item      : "KOUHATUKA"
-  item_jp   : "¸åÈ¯°åÌôÉÊ¤Ø¤ÎÊÑ¹¹²Ä½ğÌ¾"
+  item_jp   : "å¾Œç™ºåŒ»è–¬å“ã¸ã®å¤‰æ›´å¯ç½²å"
   type      : "X"
   start     : 151
   length    : 1
 - item_no   : 6
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 152
   length    : 349
